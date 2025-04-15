@@ -32,13 +32,13 @@ export default function ProjectCard({ title, description, imageUrl, isActive = t
           </Badge>
         )}
       </div>
-      <CardHeader className="px-6">
+      <CardHeader className="px-6 pt-3">
         <CardTitle className="text-xl font-medium">{title}</CardTitle>
       </CardHeader>
       <CardContent className="px-6">
         <p className="text-sm text-muted-foreground">{description}</p>
       </CardContent>
-      <CardFooter className="flex gap-2 px-6 pt-2">
+      <CardFooter className="flex gap-2 px-6 pt-3">
         <Button className="flex-1 bg-[#3B82F6] hover:bg-blue-600">Ver Atualizações</Button>
         <Button variant="ghost" size="icon" className="h-10 w-10 border border-gray-300">
           <InfoIcon className="h-4 w-4" />

@@ -6,10 +6,12 @@ import { Plus, Infinity } from "lucide-react"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useTheme } from "next-themes"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/logo"
+import { UserButton, SignInButton, useUser } from "@clerk/nextjs"
 
 export default function Header() {
   const { theme } = useTheme()
+  const { isSignedIn, user } = useUser()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-header">
@@ -23,15 +25,30 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm">
-            <Plus className="h-4 w-4" />
-            Criar
-          </Button>
-          <ModeToggle />
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Avatar" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
+          {isSignedIn ? (
+            <>
+              <Button variant="outline" size="sm">
+                <Plus className="h-4 w-4" />
+                Criar
+              </Button>
+              <ModeToggle />
+              <UserButton afterSignOutUrl="/" />
+            </>
+          ) : (
+            <>
+              <SignInButton mode="modal">
+                <Button variant="outline" size="sm">
+                  Entrar
+                </Button>
+              </SignInButton>
+              <SignInButton mode="modal">
+                <Button size="sm">
+                  Cadastrar
+                </Button>
+              </SignInButton>
+              <ModeToggle />
+            </>
+          )}
         </div>
       </div>
     </header>

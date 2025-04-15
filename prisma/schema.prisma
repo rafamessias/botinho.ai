@@ -1,0 +1,199 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User model that extends Clerk's user data
+model User {
+  id                 String          @id @default(cuid())
+  clerkId            String          @unique // Clerk user ID
+  email              String          @unique
+  phone              String          @unique
+  firstName          String?
+  lastName           String?
+  avatar             String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  comments           Comment[]
+  company            Company?        @relation(fields: [companyId], references: [id])
+  companyId          String?
+  companyMemberships CompanyMember[]
+  rdos               RDO[]
+  incidents          Incident[]
+  projectOwners      ProjectOwner[]
+}
+
+// Company model
+model Company {
+  id           String          @id @default(uuid())
+  name         String
+  document     String
+  documentType String          @map("document_type")
+  address      String
+  city         String
+  state        String
+  zipCode      String          @map("zip_code")
+  logoUrl      String?         @map("logo_url")
+  coverUrl     String?         @map("cover_url")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+  users        User[]
+  projects     Project[]
+  members      CompanyMember[]
+  media        Media[]
+
+  @@map("company")
+}
+
+// CompanyMember model
+model CompanyMember {
+  id        String   @id @default(uuid())
+  companyId String   @map("company_id")
+  userId    String   @map("user_id")
+  role      String
+  isAdmin   Boolean  @map("is_admin")
+  canPost   Boolean  @map("can_post")
+  createdAt DateTime @default(now()) @map("created_at")
+  company   Company  @relation(fields: [companyId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("company_member")
+}
+
+// Project model
+model Project {
+  id            String         @id @default(uuid())
+  companyId     String         @map("company_id")
+  name          String
+  description   String?
+  address       String
+  status        String         @default("active")
+  imageUrl      String?        @map("image_url")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  rdoCount      Int            @default(0) @map("rdo_count")
+  incidentCount Int            @default(0) @map("incident_count")
+  photoCount    Int            @default(0) @map("photo_count")
+  latitude      String
+  longitude     String
+  city          String
+  state         String
+  company       Company        @relation(fields: [companyId], references: [id])
+  comments      Comment[]
+  rdos          RDO[]
+  incidents     Incident[]
+  media         Media[]
+  owners        ProjectOwner[]
+
+  @@map("project")
+}
+
+// RDO model
+model RDO {
+  id               String    @id @default(uuid())
+  projectId        String    @map("project_id")
+  authorId         String    @map("author_id")
+  rdoNumber        Int       @map("rdo_number")
+  date             DateTime
+  status           String
+  description      String
+  weatherMorning   Json      @map("weather_morning")
+  weatherAfternoon Json      @map("weather_afternoon")
+  weatherNight     Json      @map("weather_night")
+  equipmentUsed    String    @map("equipment_used")
+  workforce        String
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  commentCount     Int       @default(0) @map("comment_count")
+  project          Project   @relation(fields: [projectId], references: [id])
+  author           User      @relation(fields: [authorId], references: [id])
+  comments         Comment[]
+  media            Media[]
+
+  @@map("rdo")
+}
+
+// Incident model
+model Incident {
+  id             String    @id @default(uuid())
+  projectId      String    @map("project_id")
+  authorId       String    @map("author_id")
+  date           DateTime
+  status         String
+  priority       String
+  description    String
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  commentCount   Int       @default(0) @map("comment_count")
+  incidentNumber Int       @map("incident_number")
+  project        Project   @relation(fields: [projectId], references: [id])
+  author         User      @relation(fields: [authorId], references: [id])
+  comments       Comment[]
+  media          Media[]
+
+  @@map("incident")
+}
+
+// Media model
+model Media {
+  id         String    @id @default(uuid())
+  recordId   String    @map("record_id")
+  recordType String    @map("record_type")
+  url        String
+  type       String
+  createdAt  DateTime  @default(now()) @map("created_at")
+  projectId  String    @map("project_id")
+  companyId  String    @map("company_id")
+  project    Project   @relation(fields: [projectId], references: [id])
+  company    Company   @relation(fields: [companyId], references: [id])
+  rdo        RDO?      @relation(fields: [rdoId], references: [id])
+  rdoId      String?
+  incident   Incident? @relation(fields: [incidentId], references: [id])
+  incidentId String?
+
+  @@map("media")
+}
+
+// ProjectOwner model
+model ProjectOwner {
+  id        String   @id @default(uuid())
+  projectId String   @map("project_id")
+  name      String
+  email     String
+  phone     String
+  createdAt DateTime @default(now()) @map("created_at")
+  status    String   @default("pending")
+  userId    String?  @map("user_id")
+  project   Project  @relation(fields: [projectId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("project_owner")
+}
+
+// Comment model
+model Comment {
+  id         String    @id @default(cuid())
+  content    String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  projectId  String?
+  project    Project?  @relation(fields: [projectId], references: [id])
+  rdoId      String?
+  rdo        RDO?      @relation(fields: [rdoId], references: [id])
+  incidentId String?
+  incident   Incident? @relation(fields: [incidentId], references: [id])
+}
