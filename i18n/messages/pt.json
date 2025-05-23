@@ -1,0 +1,54 @@
+{
+    "rdo": {
+        "rdo": "RDO",
+        "postedBy": "Postado por",
+        "morning": "Manhã",
+        "afternoon": "Tarde",
+        "night": "Noite",
+        "waitingApproval": "Esperando Aprovação",
+        "comments": "Comentários",
+        "approvals": "Aprovações",
+        "rdoCard": {
+            "postedBy": "Postado por",
+            "date": "Data",
+            "status": "Status",
+            "morning": "Manhã",
+            "afternoon": "Tarde",
+            "night": "Noite",
+            "waitingApproval": "Esperando Aprovação"
+        },
+        "bottomNav": {
+            "progress": "Andamento",
+            "occurrences": "Ocorrências",
+            "project": "Projeto",
+            "projectList": "Lista Projetos"
+        }
+    },
+    "homepage": {
+        "navigation": {
+            "progress": "Andamento",
+            "occurrences": "Ocorrências",
+            "project": "Projeto",
+            "projectList": "Lista Projetos"
+        },
+        "home": {
+            "searchProjects": "Buscar projetos...",
+            "allProjects": "Todos os Projetos",
+            "activeProjects": "Projetos Ativos",
+            "inactiveProjects": "Projetos Inativos",
+            "newProject": "Novo Projeto"
+        }
+    },
+    "auth": {
+        "signIn": "Entrar",
+        "signUp": "Cadastrar"
+    },
+    "error": {
+        "notFound": {
+            "code": "404",
+            "title": "Página não encontrada",
+            "message": "A página que você está procurando não existe.",
+            "button": "Voltar para a Home"
+        }
+    }
+}

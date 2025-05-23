@@ -1,23 +1,14 @@
-import { NextResponse, NextRequest } from 'next/server'
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import createMiddleware from 'next-intl/middleware';
 
-const isProtectedRoute = createRouteMatcher(['/'])
+export default createMiddleware({
+    // A list of all locales that are supported
+    locales: ['en', 'pt'],
 
-export default clerkMiddleware(async (auth, req) => {
-    const { userId, redirectToSignIn } = await auth()
-
-    if (!userId && isProtectedRoute(req)) {
-        // Add custom logic to run before redirecting
-
-        return NextResponse.redirect(new URL('/sign-in', req.url))
-    }
-})
+    // If this locale is matched, pathnames work without a prefix (e.g. `/about`)
+    defaultLocale: 'pt'
+});
 
 export const config = {
-    matcher: [
-        // Skip Next.js internals and all static files, unless found in search params
-        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-        // Always run for API routes
-        '/(api|trpc)(.*)',
-    ],
-}
+    // Skip all paths that should not be internationalized
+    matcher: ['/((?!api|_next|.*\\..*).*)']
+};

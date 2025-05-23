@@ -3,15 +3,13 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Plus, Infinity } from "lucide-react"
-import { ModeToggle } from "@/components/mode-toggle"
 import { useTheme } from "next-themes"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Logo } from "@/components/logo"
-import { UserButton, SignInButton, useUser } from "@clerk/nextjs"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 
 export default function Header() {
   const { theme } = useTheme()
-  const { isSignedIn, user } = useUser()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-header">
@@ -25,30 +23,25 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          {isSignedIn ? (
-            <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <Plus className="h-4 w-4" />
                 Criar
               </Button>
-              <ModeToggle />
-              <UserButton afterSignOutUrl="/" />
-            </>
-          ) : (
-            <>
-              <SignInButton mode="modal">
-                <Button variant="outline" size="sm">
-                  Entrar
-                </Button>
-              </SignInButton>
-              <SignInButton mode="modal">
-                <Button size="sm">
-                  Cadastrar
-                </Button>
-              </SignInButton>
-              <ModeToggle />
-            </>
-          )}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>
+                <Link href="/rdo/create">Criar RDO</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/projeto/create">Criar Projeto</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/incidente/create">Criar Incidente</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

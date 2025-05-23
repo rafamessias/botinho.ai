@@ -1,0 +1,54 @@
+{
+    "rdo": {
+        "rdo": "RDO",
+        "postedBy": "Posted by",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "night": "Night",
+        "waitingApproval": "Waiting Approval",
+        "comments": "Comments",
+        "approvals": "Approvals",
+        "rdoCard": {
+            "postedBy": "Posted by",
+            "date": "Date",
+            "status": "Status",
+            "morning": "Morning",
+            "afternoon": "Afternoon",
+            "night": "Night",
+            "waitingApproval": "Waiting Approval"
+        },
+        "bottomNav": {
+            "progress": "Progress",
+            "occurrences": "Occurrences",
+            "project": "Project",
+            "projectList": "Project List"
+        }
+    },
+    "homepage": {
+        "home": {
+            "searchProjects": "Search projects...",
+            "allProjects": "All Projects",
+            "activeProjects": "Active Projects",
+            "inactiveProjects": "Inactive Projects",
+            "newProject": "New Project"
+        },
+        "navigation": {
+            "progress": "Progress",
+            "occurrences": "Occurrences",
+            "project": "Project",
+            "projectList": "Project List"
+        }
+    },
+    "auth": {
+        "signIn": "Sign In",
+        "signUp": "Sign Up"
+    },
+    "error": {
+        "notFound": {
+            "code": "404",
+            "title": "Page Not Found",
+            "message": "The page you are looking for does not exist.",
+            "button": "Go to Home"
+        }
+    }
+}
