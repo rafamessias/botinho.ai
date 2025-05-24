@@ -41,7 +41,7 @@ export function RdoCard({
     const t = useTranslations('rdo.rdoCard');
 
     return (
-        <Card className="mb-4">
+        <Card className="mb-4 px-2 py-4">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <div className="text-xs text-muted-foreground">ID<span className="font-bold">#{id}</span></div>

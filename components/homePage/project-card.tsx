@@ -1,9 +1,11 @@
+"use client"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { InfoIcon } from "lucide-react"
 import Link from "next/link"
+import { strapiUrl } from "@/lib/strapi"
 interface ProjectCardProps {
   id: string
   title: string
@@ -14,16 +16,27 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ id, title, description, imageUrl, isActive = true, priority = false }: ProjectCardProps) {
+
+
+
+  const image = imageUrl ? `${strapiUrl}${imageUrl}` : "/placeholder-image.webp"
+  console.log(image)
+
   return (
-    <Card className="overflow-hidden pb-6 shadow-md">
+    <Card className="overflow-hidden pb-6 shadow-sm hover:shadow-md">
       <div className="relative h-[200px]">
         <Image
-          src={imageUrl}
+          src={image}
           alt={title}
           fill
           priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover"
+          onError={(e) => {
+            // If image fails to load, set src to placeholder
+            const target = e.target as HTMLImageElement
+            target.src = "/placeholder-image.webp"
+          }}
         />
         {isActive ? (
           <Badge className="absolute right-3 top-3 bg-emerald-100 text-emerald-900 px-3 py-1 text-sm font-medium hover:bg-emerald-100">

@@ -20,8 +20,8 @@ export default async function RdoPage({ params }: { params: { locale: string, sl
 
     return (
 
-        <main className="min-h-screen bg-white flex flex-col pb-20">
-            <div className="flex-1 mx-auto w-full p-6">
+        <main className="min-h-screen flex flex-col items-center justify-start">
+            <div className="md:w-[620px] min-w-[320px]">
                 {rdos.map(item => (
                     <RdoCard key={item.id} {...item} />
                 ))}

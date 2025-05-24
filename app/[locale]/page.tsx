@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import ProjectCard from "@/components/project-card"
+import ProjectCard from "@/components/homePage/project-card"
 import { Plus, Search } from "lucide-react"
-import { client, strapiUrl } from "@/lib/strapi"
+import { client } from "@/lib/strapi"
 import { getTranslations } from "next-intl/server"
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
@@ -52,7 +52,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
                         id={project.id}
                         title={project.name}
                         description={project.description}
-                        imageUrl={`${strapiUrl}${project.image.url}`}
+                        imageUrl={project.image?.url}
                         isActive={project.projectStatus === "active"}
                     />
                 ))}
