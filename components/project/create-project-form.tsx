@@ -2,28 +2,43 @@
 import { useForm } from 'react-hook-form';
 import { UploadPhoto } from './upload-photo';
 import { OwnerList } from './owner-list';
-
+import { client } from '@/lib/strapi';
 interface ProjectFormValues {
     projectName: string;
+    projectDescription: string;
     projectAddress: string;
 }
 
 export function CreateProjectForm() {
+
+    let projects: any;
+    try {
+        projects = client.collection('projects')
+    } catch (error) {
+        console.error('Failed to fetch projects:', error);
+    }
+
     const { register, handleSubmit, formState: { errors } } = useForm<ProjectFormValues>({
         defaultValues: {
             projectName: '',
+            projectDescription: '',
             projectAddress: '',
         }
     });
 
-    const onSubmit = (data: ProjectFormValues) => {
+    const onSubmit = async (data: ProjectFormValues) => {
         // For now, just log the data
         console.log('Project Data:', data);
-        alert('Projeto criado! (dummy)');
+        const project = await projects.create({
+            name: data.projectName,
+            address: data.projectAddress,
+        });
+        console.log('Project created:', project);
     };
 
     return (
         <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
+
             <UploadPhoto photoUrl="/placeholder-image.webp" />
 
             <div>
@@ -36,6 +51,18 @@ export function CreateProjectForm() {
                 />
                 {errors.projectName && <span className="text-xs text-red-500">{errors.projectName.message}</span>}
             </div>
+
+            <div>
+                <label className="font-semibold text-base">Descrição do Projeto</label>
+                <div className="text-xs text-muted-foreground mb-2">Adicione uma descrição detalhada do projeto</div>
+                <textarea
+                    {...register('projectDescription', { required: 'A descrição do projeto é obrigatória' })}
+                    className="w-full rounded-lg border px-3 py-2 text-sm min-h-[100px]"
+                    placeholder="Descreva os detalhes do projeto..."
+                />
+                {errors.projectDescription && <span className="text-xs text-red-500">{errors.projectDescription.message}</span>}
+            </div>
+
 
             <div>
                 <label className="font-semibold text-base">Endereço do Projeto</label>

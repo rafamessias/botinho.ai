@@ -1,29 +1,65 @@
-import { OwnerItem } from './owner-item';
+'use client';
 
-const dummyOwners = [
-    {
-        name: 'João da Silva',
-        email: 'joaodasilva@terra.com',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    },
-    {
-        name: 'Maria Aparecida da Silva',
-        email: 'mariaap@uol.com',
-        avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-];
+import { useState } from 'react';
+import { OwnerItem } from './owner-item';
+import { AddOwnerDialog } from './add-owner-dialog';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+
+interface Owner {
+    name: string;
+    email: string;
+    phone: string;
+    avatar?: string;
+}
 
 export function OwnerList() {
+    const [owners, setOwners] = useState<Owner[]>([]);
+
+    const handleAddOwner = (newOwner: Owner) => {
+        setOwners([...owners, newOwner]);
+    };
+
+    const handleEditOwner = (index: number, updatedOwner: Owner) => {
+        const newOwners = [...owners];
+        newOwners[index] = updatedOwner;
+        setOwners(newOwners);
+    };
+
+    const handleRemoveOwner = (index: number) => {
+        setOwners(owners.filter((_, i) => i !== index));
+    };
+
     return (
-        <div className="flex flex-col gap-2">
-            <span className="font-semibold text-base">Proprietários</span>
-            <span className="text-xs text-muted-foreground">Adicione quem do cliente irá acompanhar o projeto</span>
-            <div className="flex flex-col gap-2 mt-2">
-                {dummyOwners.map((owner) => (
-                    <OwnerItem key={owner.email} {...owner} />
-                ))}
+        <div className="space-y-4">
+            <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Proprietários</h3>
+                <AddOwnerDialog
+                    onAddOwner={handleAddOwner}
+                    trigger={
+                        <Button size="sm">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Adicionar Proprietário
+                        </Button>
+                    }
+                />
             </div>
-            <button className="w-full mt-2 py-2 rounded-lg border bg-secondary text-primary font-medium">Adicionar</button>
+
+            <div className="space-y-2">
+                {owners.map((owner, index) => (
+                    <OwnerItem
+                        key={`${owner.email}-${index}`}
+                        {...owner}
+                        onEdit={(updatedOwner) => handleEditOwner(index, updatedOwner)}
+                        onRemove={() => handleRemoveOwner(index)}
+                    />
+                ))}
+                {owners.length === 0 && (
+                    <div className="text-center text-muted-foreground py-4">
+                        Nenhum proprietário adicionado
+                    </div>
+                )}
+            </div>
         </div>
     );
 } 

@@ -2,9 +2,8 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Plus, Infinity } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useTheme } from "next-themes"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Logo } from "@/components/logo"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 
@@ -17,7 +16,7 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded bg-blue-700 text-white">
-              <Logo className="h-10 w-10 text-[#2f4679]" />
+              <Logo className="h-10 w-10 text-blue-700" />
             </div>
             <span className="text-lg font-semibold">Obraguru</span>
           </Link>
@@ -31,18 +30,19 @@ export default function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>
-                <Link href="/rdo/create">Criar RDO</Link>
+              <DropdownMenuItem >
+                <Link href="/rdo/create" className="w-full">Criar RDO</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link href="/projeto/create">Criar Projeto</Link>
+                <Link href="/projeto/create" className="w-full">Criar Projeto</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link href="/incidente/create">Criar Incidente</Link>
+                <Link href="/incidente/create" className="w-full">Criar Incidente</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
       </div>
     </header>
   )

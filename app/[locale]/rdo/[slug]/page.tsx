@@ -11,7 +11,7 @@ export default async function RdoPage({ params }: { params: { locale: string, sl
 
     let rdos: any[] = [];
     try {
-        const rdoItens = await client.collection('rdos?populate=*')
+        const rdoItens = client.collection('rdos?populate=*')
         const rdosData = await rdoItens.find()
         rdos = rdosData.data;
     } catch (error) {
