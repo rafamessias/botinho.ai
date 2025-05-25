@@ -62,7 +62,7 @@ export default async function RootLayout({
                         storageKey="obraguru-theme"
                     >
                         <Header />
-                        <div className="container max-w-[1280px] flex-1 mx-auto w-full p-6">
+                        <div className="container max-w-[1280px] h-screen flex-1 mx-auto w-full py-12 ">
                             {children}
                         </div>
                     </ThemeProvider>

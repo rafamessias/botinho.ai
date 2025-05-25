@@ -72,7 +72,7 @@ export function AddOwnerDialog({
                         {ownerToEdit ? 'Editar Proprietário' : 'Adicionar Proprietário'}
                     </DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Nome</label>
                         <Input
@@ -141,11 +141,14 @@ export function AddOwnerDialog({
                         >
                             Cancelar
                         </Button>
-                        <Button type="submit">
+                        <Button
+                            type="button"
+                            onClick={handleSubmit(onSubmit)}
+                        >
                             {ownerToEdit ? 'Salvar' : 'Adicionar'}
                         </Button>
                     </div>
-                </form>
+                </div>
             </DialogContent>
         </Dialog>
     );

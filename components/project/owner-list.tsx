@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, forwardRef, useImperativeHandle } from 'react';
 import { OwnerItem } from './owner-item';
 import { AddOwnerDialog } from './add-owner-dialog';
 import { Button } from '@/components/ui/button';
@@ -13,8 +13,16 @@ interface Owner {
     avatar?: string;
 }
 
-export function OwnerList() {
+export interface OwnerListRef {
+    getOwners: () => Owner[];
+}
+
+export const OwnerList = forwardRef<OwnerListRef>((_, ref) => {
     const [owners, setOwners] = useState<Owner[]>([]);
+
+    useImperativeHandle(ref, () => ({
+        getOwners: () => owners
+    }));
 
     const handleAddOwner = (newOwner: Owner) => {
         setOwners([...owners, newOwner]);
@@ -37,7 +45,7 @@ export function OwnerList() {
                 <AddOwnerDialog
                     onAddOwner={handleAddOwner}
                     trigger={
-                        <Button size="sm">
+                        <Button size="sm" variant="outline" className="text-primary bg-white hover:bg-gray-100 hover:text-primary border border-gray-200">
                             <Plus className="h-4 w-4 mr-2" />
                             Adicionar Proprietário
                         </Button>
@@ -62,4 +70,4 @@ export function OwnerList() {
             </div>
         </div>
     );
-} 
+}); 

@@ -1,8 +1,16 @@
 import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import { UseFormRegister } from 'react-hook-form';
 
-export function UploadPhoto({ photoUrl }: { photoUrl: string }) {
+interface ProjectFormValues {
+    projectName: string;
+    projectDescription: string;
+    projectAddress: string;
+    projectPhoto?: FileList;
+}
+
+export function UploadPhoto({ register, photoUrl }: { register: UseFormRegister<ProjectFormValues>, photoUrl: string }) {
     const [previewUrl, setPreviewUrl] = useState<string>(photoUrl);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,24 +24,21 @@ export function UploadPhoto({ photoUrl }: { photoUrl: string }) {
     return (
         <div className="w-full flex flex-col gap-2">
             <span className="font-semibold text-base">Subir Foto</span>
-            <span className="text-xs text-muted-foreground">Adicione uma foto para representar o Projeto</span>
+            <span className="text-xs text-muted-foreground">Adicione uma foto (550px x 158px) para representar o Projeto </span>
+
+            <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                {...register('projectPhoto')}
+                onChange={handleFileChange}
+            />
+
             <div
-                className="relative w-full h-40 rounded-xl overflow-hidden border border-dashed border-gray-300 mt-2 cursor-pointer"
+                className="relative w-full h-40 rounded-xl overflow-hidden border border-dashed border-gray-300 mt-2 cursor-pointer bg-gray-100"
                 onClick={() => {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.style.display = 'none';
-                    document.body.appendChild(input);
-                    input.onchange = (e) => {
-                        const file = (e.target as HTMLInputElement).files?.[0];
-                        if (file) {
-                            const imageUrl = URL.createObjectURL(file);
-                            setPreviewUrl(imageUrl);
-                        }
-                    };
-                    input.click();
-                    document.body.removeChild(input);
+                    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+                    input?.click();
                 }}
             >
                 {previewUrl ? (

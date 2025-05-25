@@ -19,12 +19,12 @@ export default function ProjectCard({ id, title, description, imageUrl, isActive
 
 
 
-  const image = imageUrl ? `${strapiUrl}${imageUrl}` : "/placeholder-image.webp"
+  const image = imageUrl ? imageUrl : "/placeholder-image.webp"
   console.log(image)
 
   return (
     <Card className="overflow-hidden pb-6 shadow-sm hover:shadow-md">
-      <div className="relative h-[200px]">
+      <div className="relative h-[200px] bg-gray-100">
         <Image
           src={image}
           alt={title}
