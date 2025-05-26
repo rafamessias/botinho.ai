@@ -10,7 +10,11 @@ const publicRoutes = routing.locales.flatMap(locale => [
     `/${locale}/sign-in`,
     `/sign-in`,
     `/${locale}/sign-up`,
-    `/sign-up`
+    `/sign-up`,
+    `/${locale}/reset-password`,
+    `/reset-password`,
+    `/${locale}/reset-password/new`,
+    `/reset-password/new`,
 ]);
 
 

@@ -13,6 +13,7 @@ import { Logo } from '@/components/logo';
 import { signIn } from '@/lib/strapi';
 import { useRouter } from '@/i18n/navigation';
 import { useUser } from '@/components/UserProvider';
+import Link from 'next/link';
 
 interface SignInFormValues {
     email: string;
@@ -26,7 +27,8 @@ export function SignInForm() {
     const [showPassword, setShowPassword] = useState(false);
     const { setUser } = useUser();
 
-    const { register, handleSubmit, formState: { errors } } = useForm<SignInFormValues>();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm<SignInFormValues>();
+    const emailValue = watch('email');
 
     const onSubmit = async (data: SignInFormValues) => {
         setIsLoading(true);
@@ -119,6 +121,14 @@ export function SignInForm() {
                         {errors.password && (
                             <p className="text-sm text-red-500">{errors.password.message}</p>
                         )}
+                        <div className="text-right mt-1">
+                            <Link
+                                href={emailValue ? `/reset-password?email=${encodeURIComponent(emailValue)}` : '/reset-password'}
+                                className="text-sm text-blue-700 hover:underline"
+                            >
+                                Forgot password?
+                            </Link>
+                        </div>
                     </div>
                     <Button
                         type="submit"

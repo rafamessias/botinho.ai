@@ -13,6 +13,7 @@ export default async function RdoPage({ params }: { params: { locale: string, sl
     try {
         const rdosFetch: any = await fetchContentApi('rdos?populate=*');
         rdos = rdosFetch.data || [];
+        console.log(rdos);
     } catch (error) {
         console.error('Failed to fetch projects:', error);
     }

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Logo } from '@/components/logo';
 import { registerUserAction, googleSignUpAction } from '@/components/actions/auth-actions';
 import { useUser } from '@/components/UserProvider';
+import Link from 'next/link';
 
 interface SignUpFormValues {
     firstName: string;
@@ -21,6 +22,7 @@ interface SignUpFormValues {
     phone: string;
     password: string;
     confirmPassword: string;
+    agree: boolean;
 }
 
 export default function SignUpForm() {
@@ -33,6 +35,7 @@ export default function SignUpForm() {
 
     const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<SignUpFormValues>();
     const password = watch('password');
+    const agree = watch('agree');
 
     const onSubmit = async (data: SignUpFormValues) => {
         setIsLoading(true);
@@ -226,10 +229,27 @@ export default function SignUpForm() {
                             <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
                         )}
                     </div>
+                    <div className="flex items-center space-x-2">
+                        <input
+                            id="agree"
+                            type="checkbox"
+                            {...register('agree', { required: 'You must agree to the terms and privacy policy' })}
+                            className="border rounded"
+                        />
+                        <label htmlFor="agree" className="text-sm">
+                            I agree to the{' '}
+                            <Link href="/terms" className="text-blue-700 hover:underline" target="_blank">Terms and Conditions</Link>{' '}
+                            and{' '}
+                            <Link href="/privacy" className="text-blue-700 hover:underline" target="_blank">Privacy Policy</Link>
+                        </label>
+                    </div>
+                    {errors.agree && (
+                        <p className="text-sm text-red-500">{errors.agree.message as string}</p>
+                    )}
                     <Button
                         type="submit"
                         className="w-full mt-4"
-                        disabled={isLoading}
+                        disabled={isLoading || !agree}
                     >
                         {isLoading && (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -252,7 +272,7 @@ export default function SignUpForm() {
                     type="button"
                     className="w-full"
                     onClick={handleGoogleSignUp}
-                    disabled={isLoading}
+                    disabled={isLoading || !agree}
                 >
                     {isLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
