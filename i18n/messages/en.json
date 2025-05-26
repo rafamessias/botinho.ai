@@ -43,6 +43,22 @@
         "signIn": "Sign In",
         "signUp": "Sign Up"
     },
+    "company": {
+        "createTitle": "Create Company",
+        "uploadLogo": "Upload Logo",
+        "uploadLogoHint": "Add a logo for your company",
+        "companyName": "Company Name",
+        "companyNamePlaceholder": "e.g. John Construction and Renovation",
+        "companyAddress": "Company Address",
+        "companyAddressPlaceholder": "Avenida Paulista 4550\nSão Paulo\nCEP 09000-000",
+        "companyCnpj": "CNPJ",
+        "companyCnpjPlaceholder": "e.g. 00.000.000/0001-00",
+        "companyTeam": "Company Team",
+        "companyTeamHint": "Add your team to work on the platform",
+        "addTeam": "Add",
+        "cancel": "Cancel",
+        "create": "Create"
+    },
     "error": {
         "notFound": {
             "code": "404",

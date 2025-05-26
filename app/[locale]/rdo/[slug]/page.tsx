@@ -2,7 +2,7 @@ import Header from '@/components/header';
 import { RdoCard } from '@/components/rdo/rdo-card';
 import { BottomNav } from '@/components/rdo/bottom-nav';
 import { getTranslations } from 'next-intl/server';
-import { client } from '@/lib/strapi';
+import { fetchContentApi } from '@/components/actions/fetch-content-api';
 
 
 export default async function RdoPage({ params }: { params: { locale: string, slug: string } }) {
@@ -11,9 +11,8 @@ export default async function RdoPage({ params }: { params: { locale: string, sl
 
     let rdos: any[] = [];
     try {
-        const rdoItens = client.collection('rdos?populate=*')
-        const rdosData = await rdoItens.find()
-        rdos = rdosData.data;
+        const rdosFetch: any = await fetchContentApi('rdos?populate=*');
+        rdos = rdosFetch.data || [];
     } catch (error) {
         console.error('Failed to fetch projects:', error);
     }

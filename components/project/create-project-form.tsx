@@ -1,10 +1,10 @@
 'use client';
 import { useForm } from 'react-hook-form';
-import { UploadPhoto } from './upload-photo';
+import { UploadPhoto } from '@/components/shared/upload-photo';
 import { OwnerList } from './owner-list';
-import { client, uploadFile } from '@/lib/strapi';
+//import { uploadFile } from '@/lib/strapi';
 import { useRef } from 'react';
-
+import { fetchContentApi } from '@/components/actions/fetch-content-api';
 interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
@@ -18,17 +18,17 @@ interface Owner {
     phone: string;
 }
 
-export function CreateProjectForm() {
+export async function CreateProjectForm() {
     const ownersRef = useRef<{ getOwners: () => Owner[] }>(null);
 
     let projects: any;
     try {
-        projects = client.collection('projects')
+        projects = await fetchContentApi('projects')
     } catch (error) {
         console.error('Failed to fetch projects:', error);
     }
 
-    const { register, handleSubmit, formState: { errors } } = useForm<ProjectFormValues>({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProjectFormValues>({
         defaultValues: {
             projectName: '',
             projectDescription: '',
@@ -42,6 +42,8 @@ export function CreateProjectForm() {
 
         const { projectPhoto, ...projectData } = data;
 
+        console.log('Project Photo:', projectPhoto);
+
         try {
             const newProject = await projects.create({
                 name: projectData.projectName,
@@ -51,22 +53,25 @@ export function CreateProjectForm() {
             console.log('Project created:', newProject);
 
             // Upload project photo if exists
-            if (data.projectPhoto?.[0]) {
-                await uploadFile(
-                    data.projectPhoto[0],
-                    newProject.id,
-                    'api::project.project',
-                    'image'
-                );
-            }
+            //   if (projectPhoto && projectPhoto[0]) {
+            //     await uploadFile(
+            //           projectPhoto[0],
+            //           newProject.id,
+            //           'api::project.project',
+            //           'image'
+            //       );
+            //   }
 
             // Create project users for each owner
             for (const owner of owners) {
-                await client.collection('project-users').create({
-                    project: newProject.id,
-                    name: owner.name,
-                    email: owner.email,
-                    phone: owner.phone,
+                await fetchContentApi('project-users', {
+                    method: 'POST',
+                    body: {
+                        project: newProject.id,
+                        name: owner.name,
+                        email: owner.email,
+                        phone: owner.phone,
+                    }
                 });
             }
 
@@ -79,7 +84,14 @@ export function CreateProjectForm() {
 
     return (
         <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
-            <UploadPhoto register={register} photoUrl="/placeholder-image.webp" />
+            <UploadPhoto
+                register={register}
+                setValue={setValue}
+                name="projectPhoto"
+                photoUrl="/placeholder-image.webp"
+                label="Subir Foto"
+                hint="Adicione uma foto (550px x 158px) para representar o Projeto"
+            />
 
             <div>
                 <label className="font-semibold text-base">Nome Projeto</label>

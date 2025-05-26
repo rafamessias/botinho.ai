@@ -6,6 +6,8 @@ import Header from '@/components/header';
 import DynamicIntlProvider from "@/components/dynamic-intl-provider"
 import '@/app/globals.css';
 import { notFound } from 'next/navigation';
+import { Toaster } from '@/components/ui/sonner';
+import { UserProvider } from '@/components/UserProvider';
 
 const inter = Inter({
     subsets: ["latin"],
@@ -61,10 +63,13 @@ export default async function RootLayout({
                         disableTransitionOnChange
                         storageKey="obraguru-theme"
                     >
-                        <Header />
-                        <div className="container max-w-[1280px] h-screen flex-1 mx-auto w-full py-12 ">
-                            {children}
-                        </div>
+                        <UserProvider>
+                            <Header />
+                            <div className="container max-w-[1280px] h-screen flex-1 mx-auto w-full py-12 ">
+                                {children}
+                            </div>
+                            <Toaster />
+                        </UserProvider>
                     </ThemeProvider>
                 </DynamicIntlProvider>
             </body>

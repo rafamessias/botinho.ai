@@ -9,9 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Logo } from '@/components/logo';
-import { authService } from '@/lib/strapi';
+import { registerUserAction, googleSignUpAction } from '@/components/actions/auth-actions';
+import { useUser } from '@/components/UserProvider';
 
 interface SignUpFormValues {
     firstName: string;
@@ -24,45 +25,32 @@ interface SignUpFormValues {
 
 export default function SignUpForm() {
     const t = useTranslations('auth');
-    const { toast } = useToast();
+    const { setUser } = useUser();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<SignUpFormValues>();
+    const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<SignUpFormValues>();
     const password = watch('password');
 
     const onSubmit = async (data: SignUpFormValues) => {
         setIsLoading(true);
         try {
-            const response = await authService.signUp({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                phone: data.phone,
-                password: data.password,
-            });
+            const formData = new FormData();
+            Object.entries(data).forEach(([key, value]) => formData.append(key, value));
+            const result = await registerUserAction(formData);
+            if (result.success) {
+                setUser(result.user);
 
-            console.log(response);
-
-            // Store the JWT token
-            localStorage.setItem('token', response.jwt);
-            localStorage.setItem('user', JSON.stringify(response.user));
-
-            toast({
-                title: "Success",
-                description: "Your account has been created successfully.",
-            });
-
-            // Redirect to dashboard or home page
-            router.push('/dashboard');
+                toast.success("You have been signed in successfully.");
+                router.push('/');
+            } else {
+                console.error(result);
+                toast.error(result.error);
+            }
         } catch (error) {
-            toast({
-                title: "Error",
-                description: error instanceof Error ? error.message : "Something went wrong. Please try again.",
-                variant: "destructive",
-            });
+            toast.error("Something went wrong. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -71,17 +59,15 @@ export default function SignUpForm() {
     const handleGoogleSignUp = async () => {
         setIsLoading(true);
         try {
-            // TODO: Implement Google sign up logic
-            toast({
-                title: "Success",
-                description: "Your account has been created with Google successfully.",
-            });
+            const result = await googleSignUpAction();
+            if (result.success) {
+                toast.success("You have been signed in with Google successfully.");
+                router.push('/');
+            } else {
+                toast.error(result.error);
+            }
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Something went wrong. Please try again.",
-                variant: "destructive",
-            });
+            toast.error("Something went wrong. Please try again.");
         } finally {
             setIsLoading(false);
         }

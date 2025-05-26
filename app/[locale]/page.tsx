@@ -3,17 +3,16 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ProjectCard from "@/components/homePage/project-card"
 import { Plus, Search } from "lucide-react"
-import { client } from "@/lib/strapi"
+import { fetchContentApi } from "@/components/actions/fetch-content-api"
 import { getTranslations } from "next-intl/server"
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
     const { locale } = await params;
     const t = await getTranslations({ locale, namespace: 'homepage' });
 
-    let allProjects;
+    let allProjects: any;
     try {
-        const projects = client.collection('projects?populate=*')
-        allProjects = await projects.find()
+        allProjects = await fetchContentApi('projects?populate=*')
     } catch (error) {
         console.error('Failed to fetch projects:', error);
         allProjects = { data: [] };
@@ -46,7 +45,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-                {allProjects.data.map((project) => (
+                {allProjects.data.map((project: any) => (
                     <ProjectCard
                         key={project.id}
                         id={project.id}

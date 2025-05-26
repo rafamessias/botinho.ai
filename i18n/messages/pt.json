@@ -43,6 +43,22 @@
         "signIn": "Entrar",
         "signUp": "Cadastrar"
     },
+    "company": {
+        "createTitle": "Criar Empresa",
+        "uploadLogo": "Subir Logo",
+        "uploadLogoHint": "Adicione um logo para sua empresa",
+        "companyName": "Nome da Empresa",
+        "companyNamePlaceholder": "Ex.: João Construção e Reforma",
+        "companyAddress": "Endereço da Empresa",
+        "companyAddressPlaceholder": "Avenida Paulista 4550\nSão Paulo\nCEP 09000-000",
+        "companyCnpj": "CNPJ",
+        "companyCnpjPlaceholder": "Ex.: 00.000.000/0001-00",
+        "companyTeam": "Equipe da Empresa",
+        "companyTeamHint": "Adicione sua equipe para trabalhar na plataforma",
+        "addTeam": "Adicionar",
+        "cancel": "Cancelar",
+        "create": "Criar"
+    },
     "error": {
         "notFound": {
             "code": "404",

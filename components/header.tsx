@@ -6,9 +6,21 @@ import { Plus } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Logo } from "@/components/logo"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { logoutAction } from "@/components/actions/logout-action"
+import { useUser } from "./UserProvider"
+import { useState } from "react"
+import { useEffect } from "react"
 
 export default function Header() {
-  const { theme } = useTheme()
+  const { user } = useUser();
+
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.firstName.charAt(0) + user.lastName.charAt(0));
+    }
+  }, [user]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-header">
@@ -30,14 +42,38 @@ export default function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem >
+              <DropdownMenuItem className="cursor-pointer w-full">
                 <Link href="/rdo/create" className="w-full">Criar RDO</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer w-full">
                 <Link href="/projeto/create" className="w-full">Criar Projeto</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer w-full">
                 <Link href="/incidente/create" className="w-full">Criar Incidente</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+                  {userName ? (
+                    <span className="text-sm font-medium">{userName}</span>
+                  ) : (
+                    <span className="text-sm font-medium">OG</span>
+                  )}
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem className="cursor-pointer w-full">
+                <Link href="/profile" className="w-full">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer w-full">
+                <Link href="/company" className="w-full">Company</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer w-full" onClick={logoutAction}>
+                Logoff
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

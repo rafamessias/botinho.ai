@@ -8,8 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Logo } from '@/components/logo';
+import { signIn } from '@/lib/strapi';
+import { useRouter } from '@/i18n/navigation';
+import { useUser } from '@/components/UserProvider';
 
 interface SignInFormValues {
     email: string;
@@ -18,27 +21,24 @@ interface SignInFormValues {
 
 export function SignInForm() {
     const t = useTranslations('auth');
-    const { toast } = useToast();
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const { setUser } = useUser();
 
     const { register, handleSubmit, formState: { errors } } = useForm<SignInFormValues>();
 
     const onSubmit = async (data: SignInFormValues) => {
         setIsLoading(true);
         try {
-            // TODO: Implement sign in logic
-            console.log(data);
-            toast({
-                title: "Success",
-                description: "You have been signed in successfully.",
-            });
+            const response = await signIn(data.email, data.password);
+            setUser(response.user);
+
+            router.push('/');
+            toast.success("You have been signed in successfully.");
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Something went wrong. Please try again.",
-                variant: "destructive",
-            });
+            const message = error instanceof Error ? error.message : String(error);
+            toast.error(message);
         } finally {
             setIsLoading(false);
         }
@@ -48,16 +48,10 @@ export function SignInForm() {
         setIsLoading(true);
         try {
             // TODO: Implement Google sign in logic
-            toast({
-                title: "Success",
-                description: "You have been signed in with Google successfully.",
-            });
+            toast.success("You have been signed in with Google successfully.");
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Something went wrong. Please try again.",
-                variant: "destructive",
-            });
+            const message = error instanceof Error ? error.message : String(error);
+            toast.error(message);
         } finally {
             setIsLoading(false);
         }

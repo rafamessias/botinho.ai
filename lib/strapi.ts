@@ -1,7 +1,16 @@
-import { strapi } from '@strapi/client';
+"use server";
+import { getAuthToken } from "@/components/services/get-token";
+import { cookies } from "next/headers";
+import { fetchContentApi } from "@/components/actions/fetch-content-api";
+const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-export const client = strapi({ baseURL: `${process.env.NEXT_PUBLIC_STRAPI_URL}/api` });
-export const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+const config = {
+    maxAge: 60 * 60 * 24 * 1, // 1 day
+    path: "/",
+    domain: process.env.HOST ?? "localhost",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+};
 
 interface SignUpData {
     firstName: string;
@@ -11,17 +20,15 @@ interface SignUpData {
     password: string;
 }
 
-export const authService = {
-    async signUp(data: SignUpData) {
-        console.log(`${strapiUrl}/api/auth/local/register`);
-
+export async function signUp(data: SignUpData) {
+    try {
         const response = await fetch(`${strapiUrl}/api/auth/local/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username: data.email,
+                username: data.email.split('@')[0], // Use part of email as username
                 email: data.email,
                 password: data.password,
                 firstName: data.firstName,
@@ -30,15 +37,28 @@ export const authService = {
             }),
         });
 
+        const responseData = await response.json();
+
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error?.message || 'Failed to sign up');
+            throw new Error(
+                responseData.error?.message ||
+                responseData.error?.details?.errors?.[0]?.message ||
+                'Failed to sign up'
+            );
         }
 
-        return response.json();
-    },
+        const cookieStore = await cookies();
+        cookieStore.set("jwt", responseData.jwt, config);
 
-    async signIn(email: string, password: string) {
+        return responseData;
+    } catch (error) {
+        console.error('Sign up error:', error);
+        throw error;
+    }
+}
+
+export async function signIn(email: string, password: string) {
+    try {
         const response = await fetch(`${strapiUrl}/api/auth/local`, {
             method: 'POST',
             headers: {
@@ -50,14 +70,29 @@ export const authService = {
             }),
         });
 
+        const responseData = await response.json();
+
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error?.message || 'Failed to sign in');
+            throw new Error(
+                responseData.error?.message ||
+                responseData.error?.details?.errors?.[0]?.message ||
+                'Failed to sign in'
+            );
         }
 
-        return response.json();
-    },
-};
+        const cookieStore = await cookies();
+        cookieStore.set("jwt", responseData.jwt, config);
+
+        const user = await fetchContentApi(`users/me?populate=*`, {
+            token: responseData.jwt
+        })
+
+        return { responseData, user };
+    } catch (error) {
+        console.error('Sign in error:', error);
+        throw error;
+    }
+}
 
 export async function uploadFile(file: File, id: string, collection: string, field: string) {
     try {
@@ -80,6 +115,9 @@ export async function uploadFile(file: File, id: string, collection: string, fie
         // Upload file
         const response = await fetch(`${strapiUrl}/api/upload`, {
             method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${await getAuthToken()}`
+            },
             body: formData,
         });
 
