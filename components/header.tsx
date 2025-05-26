@@ -22,7 +22,7 @@ export default function Header() {
     }
   }, [user]);
 
-  return (
+  return user ? (
     <header className="sticky top-0 z-50 w-full border-b bg-header">
       <div className="container max-w-[1280px] flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
@@ -81,5 +81,5 @@ export default function Header() {
 
       </div>
     </header>
-  )
+  ) : null
 }

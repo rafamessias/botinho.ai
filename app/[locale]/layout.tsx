@@ -8,6 +8,7 @@ import '@/app/globals.css';
 import { notFound } from 'next/navigation';
 import { Toaster } from '@/components/ui/sonner';
 import { UserProvider } from '@/components/UserProvider';
+import { TopProgress } from '@/components/RouteLoading';
 
 const inter = Inter({
     subsets: ["latin"],
@@ -64,6 +65,7 @@ export default async function RootLayout({
                         storageKey="obraguru-theme"
                     >
                         <UserProvider>
+                            <TopProgress />
                             <Header />
                             <div className="container max-w-[1280px] h-screen flex-1 mx-auto w-full py-12 ">
                                 {children}

@@ -31,7 +31,7 @@ export function CreateCompanyForm() {
                 register={register}
                 setValue={setValue}
                 name="companyLogo"
-                photoUrl="/placeholder-image    e.webp"
+                photoUrl="/placeholder-image.webp"
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
             />

@@ -2,7 +2,7 @@
 import { getAuthToken } from "@/components/services/get-token";
 import { cookies } from "next/headers";
 import { fetchContentApi } from "@/components/actions/fetch-content-api";
-const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+const strapiUrl = process.env.STRAPI_URL;
 
 const config = {
     maxAge: 60 * 60 * 24 * 1, // 1 day

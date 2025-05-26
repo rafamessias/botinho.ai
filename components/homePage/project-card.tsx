@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Badge } from "@/components/ui/badge"
 import { InfoIcon } from "lucide-react"
 import Link from "next/link"
-import { strapiUrl } from "@/lib/strapi"
+
 interface ProjectCardProps {
   id: string
   title: string
@@ -17,10 +17,7 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ id, title, description, imageUrl, isActive = true, priority = false }: ProjectCardProps) {
 
-
-
   const image = imageUrl ? imageUrl : "/placeholder-image.webp"
-  console.log(image)
 
   return (
     <Card className="overflow-hidden pb-6 shadow-sm hover:shadow-md">

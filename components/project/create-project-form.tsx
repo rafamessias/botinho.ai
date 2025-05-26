@@ -5,6 +5,7 @@ import { OwnerList } from './owner-list';
 //import { uploadFile } from '@/lib/strapi';
 import { useRef } from 'react';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
+import { uploadFile } from '@/lib/strapi';
 interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
@@ -18,15 +19,8 @@ interface Owner {
     phone: string;
 }
 
-export async function CreateProjectForm() {
+export function CreateProjectForm({ projects }: { projects: any }) {
     const ownersRef = useRef<{ getOwners: () => Owner[] }>(null);
-
-    let projects: any;
-    try {
-        projects = await fetchContentApi('projects')
-    } catch (error) {
-        console.error('Failed to fetch projects:', error);
-    }
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProjectFormValues>({
         defaultValues: {
@@ -45,22 +39,25 @@ export async function CreateProjectForm() {
         console.log('Project Photo:', projectPhoto);
 
         try {
-            const newProject = await projects.create({
-                name: projectData.projectName,
-                description: projectData.projectDescription,
-                address: projectData.projectAddress,
+            const newProject: any = await fetchContentApi('projects', {
+                method: 'POST',
+                body: {
+                    name: projectData.projectName,
+                    description: projectData.projectDescription,
+                    address: projectData.projectAddress,
+                }
             });
             console.log('Project created:', newProject);
 
             // Upload project photo if exists
-            //   if (projectPhoto && projectPhoto[0]) {
-            //     await uploadFile(
-            //           projectPhoto[0],
-            //           newProject.id,
-            //           'api::project.project',
-            //           'image'
-            //       );
-            //   }
+            if (projectPhoto && projectPhoto[0]) {
+                await uploadFile(
+                    projectPhoto[0],
+                    newProject.id,
+                    'api::project.project',
+                    'image'
+                );
+            }
 
             // Create project users for each owner
             for (const owner of owners) {

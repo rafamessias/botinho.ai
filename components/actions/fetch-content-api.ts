@@ -1,6 +1,6 @@
 import { getAuthToken } from "@/components/services/get-token";
 
-const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+const strapiUrl = process.env.STRAPI_URL;
 
 export async function fetchContentApi<T>(
   endpoint: string,
@@ -12,7 +12,7 @@ export async function fetchContentApi<T>(
   }
 ): Promise<T> {
   const url = new URL(endpoint, `${strapiUrl}/api/`);
-  const token = options?.token || getAuthToken();
+  const token = options?.token || await getAuthToken();
 
   // Default fetch options
   const fetchOptions: RequestInit = {

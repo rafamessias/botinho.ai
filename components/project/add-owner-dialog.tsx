@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -72,6 +73,7 @@ export function AddOwnerDialog({
                         {ownerToEdit ? 'Editar Proprietário' : 'Adicionar Proprietário'}
                     </DialogTitle>
                 </DialogHeader>
+                <DialogDescription>Lista de proprietários</DialogDescription>
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Nome</label>

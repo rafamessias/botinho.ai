@@ -32,6 +32,7 @@ export const OwnerList = forwardRef<OwnerListRef>((_, ref) => {
         const newOwners = [...owners];
         newOwners[index] = updatedOwner;
         setOwners(newOwners);
+        return false; // Prevent form submission
     };
 
     const handleRemoveOwner = (index: number) => {

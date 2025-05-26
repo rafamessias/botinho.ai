@@ -1,7 +1,7 @@
 import { getAuthToken } from "./get-token";
 
 export async function getUserMeLoader() {
-    const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+    const baseUrl = process.env.STRAPI_URL;
 
     const url = new URL("/api/users/me", baseUrl);
 
