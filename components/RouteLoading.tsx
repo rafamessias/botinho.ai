@@ -11,6 +11,7 @@ export function TopProgress() {
         NProgress.start();
         return () => {
             NProgress.done();
+            NProgress.remove();
         };
     }, [path]);
     return null;
