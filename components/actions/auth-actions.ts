@@ -14,8 +14,11 @@ export async function registerUserAction(formData: FormData) {
             password: data.password as string,
         });
 
-        // You can return the response or a redirect instruction
-        return { success: true, user: response.user };
+        if (response.user) {
+            return { success: true, user: response.user };
+        } else {
+            return { success: false, error: response.error || "No User Found" };
+        }
     } catch (error: any) {
         return { success: false, error: error.message || "Unknown error" };
     }

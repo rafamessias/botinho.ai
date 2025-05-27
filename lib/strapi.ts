@@ -39,7 +39,7 @@ export async function signUp(data: SignUpData) {
 
         const responseData = await response.json();
 
-        if (!response.ok) {
+        if (!responseData.user) {
             throw new Error(
                 responseData.error?.message ||
                 responseData.error?.details?.errors?.[0]?.message ||
@@ -47,8 +47,8 @@ export async function signUp(data: SignUpData) {
             );
         }
 
-        const cookieStore = await cookies();
-        cookieStore.set("jwt", responseData.jwt, config);
+        //const cookieStore = await cookies();
+        //cookieStore.set("jwt", responseData.jwt, config);
 
         return responseData;
     } catch (error) {

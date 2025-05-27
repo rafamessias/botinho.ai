@@ -8,7 +8,9 @@ import { toast } from "sonner";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { Logo } from '@/components/logo';
-
+import { setNewPasswordAction } from '@/components/actions/set-new-password-action';
+import { useRouter } from "@/i18n/navigation";
+import { useUser } from "@/components/UserProvider";
 interface NewPasswordFormValues {
     code: string;
     password: string;
@@ -21,24 +23,24 @@ export default function NewPasswordForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
     const password = watch('password');
+    const router = useRouter();
+    const { setUser } = useUser();
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get('code');
 
     const onSubmit = async (data: NewPasswordFormValues) => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/reset-password`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    code: data.code,
-                    password: data.password,
-                    passwordConfirmation: data.passwordConfirmation,
-                }),
-            });
-            const result = await res.json();
-            if (res.ok) {
-                toast.success("Your password has been reset. You can now sign in.");
+            const result = await setNewPasswordAction(data.code, data.password, data.passwordConfirmation);
+            if (result.success) {
+                toast.success(result.message);
+
+                setUser(result.user);
+
+                router.push('/');
             } else {
-                toast.error(result.error?.message || "Failed to reset password.");
+                toast.error(result.error);
             }
         } catch (error) {
             toast.error(error instanceof Error ? error.message : String(error));
@@ -59,12 +61,14 @@ export default function NewPasswordForm() {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
-                        <div className="space-y-2">
+                        <div className="space-y-2 hidden">
                             <label htmlFor="code" className="font-semibold">Code</label>
                             <Input
                                 id="code"
                                 type="text"
                                 placeholder="Paste the code from your email"
+                                value={code || ""}
+                                disabled
                                 {...register("code", { required: "Code is required" })}
                             />
                             {errors.code && (

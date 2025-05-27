@@ -43,11 +43,11 @@ export default function SignUpForm() {
             const formData = new FormData();
             Object.entries(data).forEach(([key, value]) => formData.append(key, value));
             const result = await registerUserAction(formData);
+            console.log(result);
             if (result.success) {
                 setUser(result.user);
-
                 toast.success("You have been signed in successfully.");
-                router.push('/');
+                router.push('/sign-up/check-email');
             } else {
                 console.error(result);
                 toast.error(result.error);
@@ -234,7 +234,7 @@ export default function SignUpForm() {
                             id="agree"
                             type="checkbox"
                             {...register('agree', { required: 'You must agree to the terms and privacy policy' })}
-                            className="border rounded"
+                            className="border rounded cursor-pointer"
                         />
                         <label htmlFor="agree" className="text-sm">
                             I agree to the{' '}

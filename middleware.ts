@@ -15,6 +15,10 @@ const publicRoutes = routing.locales.flatMap(locale => [
     `/reset-password`,
     `/${locale}/reset-password/new`,
     `/reset-password/new`,
+    `/${locale}/sign-up/success`,
+    `/sign-up/success`,
+    `/${locale}/sign-up/check-email`,
+    `/sign-up/check-email`,
 ]);
 
 
@@ -37,11 +41,21 @@ export default async function middleware(request: NextRequest) {
     const user = await getUserMeLoader();
 
     // If user is logged in and trying to access public routes, redirect to home
-    if (user.ok && isPublicRoute(pathname)) {
-        console.log('User is logged in and trying to access public routes, redirecting to home');
-        const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}`);
-        console.log('Redirecting to:', redirectUrl.toString());
-        return NextResponse.redirect(redirectUrl);
+    if (user.ok) {
+
+        if (isPublicRoute(pathname)) {
+            console.log('User is logged in and trying to access public routes, redirecting to home');
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}`);
+            console.log('Redirecting to:', redirectUrl.toString());
+            return NextResponse.redirect(redirectUrl);
+        }
+
+        if (!user.data.company && !pathname.includes('/company/create')) {
+            console.log('User is logged in and trying to access protected routes without setup a Company, redirecting to company/create');
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}/company/create`);
+            console.log('Redirecting to:', redirectUrl.toString());
+            return NextResponse.redirect(redirectUrl);
+        }
     }
 
     // If user is not logged in and trying to access protected routes, redirect to sign in

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
+import { forgotPasswordAction } from '@/components/actions/forgot-password-action';
 
 export default function ResetPasswordForm() {
     const searchParams = useSearchParams();
@@ -16,6 +17,7 @@ export default function ResetPasswordForm() {
         defaultValues: { email: emailParam }
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {
         if (emailParam) setValue('email', emailParam);
@@ -24,16 +26,12 @@ export default function ResetPasswordForm() {
     const onSubmit = async (data: { email: string }) => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/forgot-password`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: data.email }),
-            });
-            const result = await res.json();
-            if (res.ok) {
-                toast.success("If your email exists, you will receive a password reset link.");
+            const result = await forgotPasswordAction(data.email);
+            if (result.success) {
+                toast.success(result.message);
+                setIsSuccess(true);
             } else {
-                toast.error(result.error?.message || "Failed to send reset email.");
+                toast.error(result.error);
             }
         } catch (error) {
             toast.error(error instanceof Error ? error.message : String(error));
@@ -60,6 +58,7 @@ export default function ResetPasswordForm() {
                                 id="email"
                                 type="email"
                                 placeholder="name@example.com"
+                                disabled={isSuccess}
                                 {...register("email", {
                                     required: "Email is required",
                                     pattern: {
@@ -72,7 +71,7 @@ export default function ResetPasswordForm() {
                                 <p className="text-sm text-red-500">{errors.email.message}</p>
                             )}
                         </div>
-                        <Button type="submit" className="w-full" disabled={isLoading}>
+                        <Button type="submit" className="w-full" disabled={isLoading || isSuccess}>
                             {isLoading ? "Sending..." : "Send Reset Link"}
                         </Button>
                     </form>
