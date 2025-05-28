@@ -67,7 +67,10 @@
         "companyTeamHint": "Adicione sua equipe para trabalhar na plataforma",
         "addTeam": "Adicionar",
         "cancel": "Cancelar",
-        "create": "Criar"
+        "create": "Criar",
+        "creating": "Criando...",
+        "companyCreated": "Empresa criada com sucesso",
+        "companyCreationError": "Falha ao criar empresa"
     },
     "error": {
         "notFound": {

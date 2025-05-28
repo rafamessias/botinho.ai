@@ -8,6 +8,9 @@ import { User } from '@/components/shared/add-user-dialog';
 import { Input } from '@/components/ui/input';
 import { useRef, useState } from 'react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { createCompany } from '@/components/actions/company-action';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 interface CompanyFormValues {
     companyName: string;
@@ -24,32 +27,54 @@ interface CompanyFormValues {
 
 export function CreateCompanyForm() {
     const t = useTranslations('company');
+    const router = useRouter();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const userListRef = useRef<UserListRef>(null);
     const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<CompanyFormValues>({
         defaultValues: { documentType: 'cnpj' }
     });
     const documentType = watch('documentType');
 
-    const onSubmit = (data: CompanyFormValues) => {
-        // Remove masking from cpf, cnpj, and zipcode
-        const cleanData = {
-            ...data,
-            cpf: data.cpf ? data.cpf.replace(/\D/g, '') : undefined,
-            cnpj: data.cnpj ? data.cnpj.replace(/\D/g, '') : undefined,
-            zipcode: data.zipcode.replace(/\D/g, '')
-        };
+    const onSubmit = async (data: CompanyFormValues) => {
+        try {
+            setIsSubmitting(true);
 
-        // Get users from the UserList component
-        const users = userListRef.current?.getUsers() || [];
+            // Remove masking from cpf, cnpj, and zipcode
+            const cleanData = {
+                ...data,
+                cpf: data.cpf ? data.cpf.replace(/\D/g, '') : undefined,
+                cnpj: data.cnpj ? data.cnpj.replace(/\D/g, '') : undefined,
+                zipcode: data.zipcode.replace(/\D/g, '')
+            };
 
-        // Combine form data with users
-        const formData = {
-            ...cleanData,
-            users
-        };
+            // Get users from the UserList component
+            const users = userListRef.current?.getUsers() || [];
 
-        // handle company creation
-        console.log(formData);
+            // Combine form data with users
+            const formData = {
+                ...cleanData,
+                users,
+            };
+
+            const image = new FormData();
+            if (data.companyLogo?.[0]) {
+                image.append('companyLogo', data.companyLogo[0]);
+            }
+
+            const result = await createCompany(formData, image);
+
+            if (result.success) {
+                toast.success(t('companyCreated'));
+                router.push('/');
+            } else {
+                toast.error(result.error || t('companyCreationError'));
+            }
+        } catch (error) {
+            toast.error(t('companyCreationError'));
+            console.error('Error creating company:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -228,11 +253,19 @@ export function CreateCompanyForm() {
             />
 
             <div className="flex gap-4 mt-8">
-                <button type="button" className="flex-1 py-2 rounded-lg border border-gray-300 text-gray-700">
+                <button
+                    type="button"
+                    className="flex-1 py-2 rounded-lg border border-gray-300 text-gray-700"
+                    onClick={() => router.back()}
+                >
                     {t('cancel')}
                 </button>
-                <button type="submit" className="flex-1 py-2 rounded-lg bg-blue-700 text-white font-semibold">
-                    {t('create')}
+                <button
+                    type="submit"
+                    className="flex-1 py-2 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? t('creating') : t('create')}
                 </button>
             </div>
         </form>

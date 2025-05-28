@@ -35,28 +35,25 @@ export function UploadPhoto<T extends FieldValues>({
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (isCarousel && files) {
+        if (!files || files.length === 0) return;
+
+        if (isCarousel) {
             const fileArr = Array.from(files);
             const urls = fileArr.map(file => URL.createObjectURL(file));
             setPreviewUrls(prev => [...prev, ...urls]);
             setCarouselFiles(prev => [...prev, ...fileArr]);
             setCarouselIndex(prev => prev);
-            setValue(name, [...carouselFiles, ...fileArr] as any);
+            setValue(name, fileArr as any);
             onChange?.([...carouselFiles, ...fileArr]);
         } else {
-            const file = files?.[0];
-            setValue(name, files as any);
+            const file = files[0];
             if (file) {
                 const imageUrl = URL.createObjectURL(file);
                 setPreviewUrls([imageUrl]);
                 setCarouselFiles([file]);
                 setCarouselIndex(0);
+                setValue(name, files as any);
                 onChange?.(file);
-            } else {
-                setPreviewUrls([]);
-                setCarouselFiles([]);
-                setCarouselIndex(0);
-                onChange?.(null);
             }
         }
     };
@@ -70,7 +67,7 @@ export function UploadPhoto<T extends FieldValues>({
             setCarouselFiles(newFiles);
             setCarouselIndex(0);
             if (inputRef.current) inputRef.current.value = '';
-            setValue(name, undefined as any);
+            setValue(name, newFiles as any);
             onChange?.(newFiles.length ? newFiles : null);
         } else {
             setPreviewUrls([]);
@@ -86,6 +83,7 @@ export function UploadPhoto<T extends FieldValues>({
         e.stopPropagation();
         setCarouselIndex((prev) => (prev === 0 ? previewUrls.length - 1 : prev - 1));
     };
+
     const handleNext = (e: React.MouseEvent) => {
         e.stopPropagation();
         setCarouselIndex((prev) => (prev === previewUrls.length - 1 ? 0 : prev + 1));

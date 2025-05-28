@@ -116,12 +116,15 @@ export async function uploadFile(file: File, id: string, collection: string, fie
         const response = await fetch(`${strapiUrl}/api/upload`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${await getAuthToken()}`
+                'Authorization': `Bearer ${await getAuthToken()}`,
+                'Content-Type': 'multipart/form-data'
             },
             body: formData,
         });
 
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Upload failed:', errorText);
             throw new Error('Failed to upload file');
         }
 

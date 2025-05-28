@@ -56,6 +56,13 @@ export default async function middleware(request: NextRequest) {
             console.log('Redirecting to:', redirectUrl.toString());
             return NextResponse.redirect(redirectUrl);
         }
+
+        if (user.data.company && pathname.includes('/company/create')) {
+            console.log('User is logged in and trying to access company/create, redirecting to home');
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}`);
+            console.log('Redirecting to:', redirectUrl.toString());
+            return NextResponse.redirect(redirectUrl);
+        }
     }
 
     // If user is not logged in and trying to access protected routes, redirect to sign in
