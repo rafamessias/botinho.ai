@@ -6,7 +6,9 @@ import { Plus, Search } from "lucide-react"
 import { fetchContentApi } from "@/components/actions/fetch-content-api"
 import { getTranslations } from "next-intl/server"
 
-export default async function HomePage({ params }: { params: { locale: string } }) {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
     const t = await getTranslations({ locale, namespace: 'homepage' });
 
@@ -19,7 +21,6 @@ export default async function HomePage({ params }: { params: { locale: string } 
     }
 
     return (
-
         <div className="">
             <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative w-full ">
@@ -57,6 +58,5 @@ export default async function HomePage({ params }: { params: { locale: string } 
                 ))}
             </div>
         </div>
-
     );
 } 

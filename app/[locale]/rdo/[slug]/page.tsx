@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
 
 
-export default async function RdoPage({ params }: { params: { locale: string, slug: string } }) {
+export default async function RdoPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
     const { locale, slug } = await params;
     const t = await getTranslations({ locale, namespace: 'homepage' });
 
