@@ -78,7 +78,7 @@ export function CreateCompanyForm() {
     };
 
     return (
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
             <h2 className="text-2xl font-semibold mb-2">
                 {t('createTitle')}
             </h2>
@@ -99,7 +99,7 @@ export function CreateCompanyForm() {
                     className="mt-1"
                 />
                 {errors.companyName && (
-                    <p className="text-sm text-red-500">{errors.companyName.message}</p>
+                    <p className="text-sm text-red-500 mt-1">{errors.companyName.message}</p>
                 )}
             </div>
 
@@ -147,7 +147,7 @@ export function CreateCompanyForm() {
                             }}
                         />
                         {errors.cpf && (
-                            <p className="text-sm text-red-500">{errors.cpf.message}</p>
+                            <p className="text-sm text-red-500 mt-1">{errors.cpf.message}</p>
                         )}
                     </div>
                 )}
@@ -177,7 +177,7 @@ export function CreateCompanyForm() {
                             }}
                         />
                         {errors.cnpj && (
-                            <p className="text-sm text-red-500">{errors.cnpj.message}</p>
+                            <p className="text-sm text-red-500 mt-1">{errors.cnpj.message}</p>
                         )}
                     </div>
                 )}
@@ -206,7 +206,7 @@ export function CreateCompanyForm() {
                         }}
                     />
                     {errors.zipcode && (
-                        <p className="text-sm text-red-500">{errors.zipcode.message}</p>
+                        <p className="text-sm text-red-500 mt-1">{errors.zipcode.message}</p>
                     )}
                 </div>
                 <div>
@@ -218,7 +218,7 @@ export function CreateCompanyForm() {
                         maxLength={2}
                     />
                     {errors.state && (
-                        <p className="text-sm text-red-500">{errors.state.message}</p>
+                        <p className="text-sm text-red-500 mt-1">{errors.state.message}</p>
                     )}
                 </div>
             </div>
@@ -231,7 +231,7 @@ export function CreateCompanyForm() {
                     className="mt-1"
                 />
                 {errors.city && (
-                    <p className="text-sm text-red-500">{errors.city.message}</p>
+                    <p className="text-sm text-red-500 mt-1">{errors.city.message}</p>
                 )}
             </div>
 
@@ -244,7 +244,7 @@ export function CreateCompanyForm() {
                     placeholder={t('companyAddressPlaceholder')}
                 />
                 {errors.companyAddress && (
-                    <p className="text-sm text-red-500">{errors.companyAddress.message}</p>
+                    <p className="text-sm text-red-500 mt-1">{errors.companyAddress.message}</p>
                 )}
             </div>
 
@@ -252,17 +252,11 @@ export function CreateCompanyForm() {
                 ref={userListRef}
             />
 
-            <div className="flex gap-4 mt-8">
-                <button
-                    type="button"
-                    className="flex-1 py-2 rounded-lg border border-gray-300 text-gray-700"
-                    onClick={() => router.back()}
-                >
-                    {t('cancel')}
-                </button>
+            <div className="flex justify-end gap-4 mt-8">
+
                 <button
                     type="submit"
-                    className="flex-1 py-2 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
+                    className=" py-2 px-4 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? t('creating') : t('create')}

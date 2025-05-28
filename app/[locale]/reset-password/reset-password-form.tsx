@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { forgotPasswordAction } from '@/components/actions/forgot-password-action';
+import { useUser } from "@/components/UserProvider";
 
 export default function ResetPasswordForm() {
     const searchParams = useSearchParams();
@@ -18,10 +19,13 @@ export default function ResetPasswordForm() {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const { setUser } = useUser();
 
     useEffect(() => {
         if (emailParam) setValue('email', emailParam);
-    }, [emailParam, setValue]);
+        // Clean up user context when component mounts
+        setUser(null);
+    }, [emailParam, setValue, setUser]);
 
     const onSubmit = async (data: { email: string }) => {
         setIsLoading(true);

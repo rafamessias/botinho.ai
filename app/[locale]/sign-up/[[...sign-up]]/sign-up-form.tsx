@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -30,6 +30,7 @@ export default function SignUpForm() {
     const { setUser } = useUser();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isNavigating, setIsNavigating] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -43,9 +44,10 @@ export default function SignUpForm() {
             const formData = new FormData();
             Object.entries(data).forEach(([key, value]) => formData.append(key, value));
             const result = await registerUserAction(formData);
-            console.log(result);
+
             if (result.success) {
                 setUser(result.user);
+                setIsNavigating(true);
                 toast.success("You have been signed in successfully.");
                 router.push('/sign-up/check-email');
             } else {
@@ -64,6 +66,7 @@ export default function SignUpForm() {
         try {
             const result = await googleSignUpAction();
             if (result.success) {
+                setIsNavigating(true);
                 toast.success("You have been signed in with Google successfully.");
                 router.push('/');
             } else {
@@ -76,8 +79,21 @@ export default function SignUpForm() {
         }
     };
 
+    useEffect(() => {
+        // Clean up user context when component mounts
+        setUser(null);
+    }, [setUser]);
+
     return (
-        <Card className="w-full max-w-md py-12 px-6 grid gap-6">
+        <Card className="w-full max-w-md py-12 px-6 grid gap-6 relative">
+            {isNavigating && (
+                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        <p className="text-sm text-muted-foreground">{t('redirecting')}</p>
+                    </div>
+                </div>
+            )}
             <CardHeader className="flex flex-col items-center gap-5">
                 <Logo className="h-15 w-15 text-blue-700" />
                 <CardTitle className="text-2xl font-bold text-center">
@@ -94,6 +110,7 @@ export default function SignUpForm() {
                             <Label htmlFor="firstName">First Name</Label>
                             <Input
                                 id="firstName"
+                                disabled={isLoading || isNavigating}
                                 {...register('firstName', {
                                     required: 'First name is required'
                                 })}
@@ -106,6 +123,7 @@ export default function SignUpForm() {
                             <Label htmlFor="lastName">Last Name</Label>
                             <Input
                                 id="lastName"
+                                disabled={isLoading || isNavigating}
                                 {...register('lastName', {
                                     required: 'Last name is required'
                                 })}
@@ -121,6 +139,7 @@ export default function SignUpForm() {
                             id="email"
                             type="email"
                             placeholder="name@example.com"
+                            disabled={isLoading || isNavigating}
                             {...register('email', {
                                 required: 'Email is required',
                                 pattern: {
@@ -138,6 +157,7 @@ export default function SignUpForm() {
                         <Input
                             id="phone"
                             type="tel"
+                            disabled={isLoading || isNavigating}
                             {...register('phone', {
                                 required: 'Telefone é obrigatório',
                                 pattern: {
@@ -174,6 +194,7 @@ export default function SignUpForm() {
                             <Input
                                 id="password"
                                 type={showPassword ? "text" : "password"}
+                                disabled={isLoading || isNavigating}
                                 {...register('password', {
                                     required: 'Password is required',
                                     minLength: {
@@ -188,6 +209,7 @@ export default function SignUpForm() {
                                 size="sm"
                                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                                 onClick={() => setShowPassword(!showPassword)}
+                                disabled={isLoading || isNavigating}
                             >
                                 {showPassword ? (
                                     <EyeOff className="h-4 w-4" />
@@ -206,6 +228,7 @@ export default function SignUpForm() {
                             <Input
                                 id="confirmPassword"
                                 type={showConfirmPassword ? "text" : "password"}
+                                disabled={isLoading || isNavigating}
                                 {...register('confirmPassword', {
                                     required: 'Please confirm your password',
                                     validate: value => value === password || 'Passwords do not match'
@@ -217,6 +240,7 @@ export default function SignUpForm() {
                                 size="sm"
                                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                disabled={isLoading || isNavigating}
                             >
                                 {showConfirmPassword ? (
                                     <EyeOff className="h-4 w-4" />
@@ -233,14 +257,27 @@ export default function SignUpForm() {
                         <input
                             id="agree"
                             type="checkbox"
+                            disabled={isLoading || isNavigating}
                             {...register('agree', { required: 'You must agree to the terms and privacy policy' })}
                             className="border rounded cursor-pointer"
                         />
                         <label htmlFor="agree" className="text-sm">
                             I agree to the{' '}
-                            <Link href="/terms" className="text-blue-700 hover:underline" target="_blank">Terms and Conditions</Link>{' '}
+                            <Link
+                                href="/terms"
+                                className={`text-blue-700 hover:underline ${(isLoading || isNavigating) ? 'pointer-events-none opacity-50' : ''}`}
+                                target="_blank"
+                            >
+                                Terms and Conditions
+                            </Link>{' '}
                             and{' '}
-                            <Link href="/privacy" className="text-blue-700 hover:underline" target="_blank">Privacy Policy</Link>
+                            <Link
+                                href="/privacy"
+                                className={`text-blue-700 hover:underline ${(isLoading || isNavigating) ? 'pointer-events-none opacity-50' : ''}`}
+                                target="_blank"
+                            >
+                                Privacy Policy
+                            </Link>
                         </label>
                     </div>
                     {errors.agree && (
@@ -249,7 +286,7 @@ export default function SignUpForm() {
                     <Button
                         type="submit"
                         className="w-full mt-4"
-                        disabled={isLoading || !agree}
+                        disabled={isLoading || isNavigating || !agree}
                     >
                         {isLoading && (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -272,7 +309,7 @@ export default function SignUpForm() {
                     type="button"
                     className="w-full"
                     onClick={handleGoogleSignUp}
-                    disabled={isLoading || !agree}
+                    disabled={isLoading || isNavigating || !agree}
                 >
                     {isLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -290,9 +327,12 @@ export default function SignUpForm() {
             <CardFooter className="flex flex-col space-y-4">
                 <div className="text-sm text-center text-muted-foreground">
                     Already have an account?{' '}
-                    <a href="/sign-in" className="text-primary hover:underline">
+                    <Link
+                        href="/sign-in"
+                        className={`text-primary hover:underline ${(isLoading || isNavigating) ? 'pointer-events-none opacity-50' : ''}`}
+                    >
                         {t('signIn')}
-                    </a>
+                    </Link>
                 </div>
             </CardFooter>
         </Card>

@@ -41,7 +41,8 @@
     },
     "auth": {
         "signIn": "Entrar",
-        "signUp": "Cadastrar"
+        "signUp": "Cadastrar",
+        "redirecting": "Redirecionando..."
     },
     "company": {
         "createTitle": "Criar Empresa",
@@ -67,7 +68,7 @@
         "companyTeamHint": "Adicione sua equipe para trabalhar na plataforma",
         "addTeam": "Adicionar",
         "cancel": "Cancelar",
-        "create": "Criar",
+        "create": "Criar Empresa",
         "creating": "Criando...",
         "companyCreated": "Empresa criada com sucesso",
         "companyCreationError": "Falha ao criar empresa"
@@ -105,5 +106,8 @@
             "edit": "Editar usuário",
             "remove": "Remover usuário"
         }
+    },
+    "header": {
+        "redirecting": "Redirecionando..."
     }
 }

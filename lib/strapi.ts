@@ -117,7 +117,6 @@ export async function uploadFile(file: File, id: string, collection: string, fie
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${await getAuthToken()}`,
-                'Content-Type': 'multipart/form-data'
             },
             body: formData,
         });

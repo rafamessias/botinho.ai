@@ -3,7 +3,7 @@ import { getAuthToken } from "./get-token";
 export async function getUserMeLoader() {
     const baseUrl = process.env.STRAPI_URL;
 
-    const url = new URL("/api/users/me", baseUrl);
+    const url = new URL("/api/users/me?populate=*", baseUrl);
 
     const authToken = await getAuthToken();
     if (!authToken) return { ok: false, data: null, error: null };

@@ -45,16 +45,19 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
         });
 
         //console.log(`companyResponse: ${JSON.stringify(companyResponse)}`);
-        if (!companyResponse?.data?.id) {
+        const companyRecord = companyResponse.data;
+        if (!companyRecord?.id) {
             throw new Error('Failed to create company');
         }
+
+        console.log(`Creating Company ${companyRecord.id} - Company created successfully`);
 
         // Update the current user with the company relationship
         const currentUser: any = await getUserMeLoader();
         const currentUserResponse: any = await fetchContentApi(`users/${currentUser.data.id}`, {
             method: 'PUT',
             body: {
-                company: companyResponse.data.id
+                company: companyRecord.id
             },
         });
 
@@ -62,25 +65,39 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
             throw new Error('Failed to update current user with company');
         }
 
+        console.log(`Creating Company ${companyRecord.id} - Current user updated successfully`);
+
+
+        // Add current user as company member - Admin role
+        const memberResponse: any = await fetchContentApi(`company-members`, {
+            method: 'POST',
+            body: {
+                data: {
+                    company: companyRecord.id,
+                    user: currentUser.data.id,
+                    role: 'admin',
+                    isAdmin: true,
+                    canPost: true,
+                    canApprove: true
+                }
+            }
+        });
+
+        if (!memberResponse) {
+            throw new Error('Failed to add current user as company member');
+        }
+
+        console.log(`Creating Company ${companyRecord.id} - Current user added as company member Admin successfully`);
+
         // First, upload the company logo if it exists
-        let logoUrl = '';
         const logoFile = image.get('companyLogo');
         if (logoFile) {
-            console.log('Uploading logo file:', {
-                name: (logoFile as File).name,
-                type: (logoFile as File).type,
-                size: (logoFile as File).size
-            });
-
-            const uploadResponse = await uploadFile(logoFile as File, companyResponse.data.documentId, 'api::company.companies', 'logo');
-            console.log(`uploadResponse: ${JSON.stringify(uploadResponse)}`);
-            if (!uploadResponse.ok) {
+            const uploadResponse = await uploadFile(logoFile as File, companyRecord.id, 'api::company.company', 'logo');
+            if (!uploadResponse) {
                 throw new Error('Failed to upload logo');
             }
 
-            const uploadData = await uploadResponse.json();
-            logoUrl = uploadData[0].url;
-            console.log('Logo uploaded successfully:', logoUrl);
+            console.log(`Creating Company ${companyRecord.id} - Logo uploaded successfully`);
         }
 
         // Add users as company members
@@ -97,39 +114,42 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
                         firstName: user.name.split(' ')[0],
                         lastName: user.name.split(' ').slice(1).join(' '),
                         phone: user.phone,
-                        company: companyResponse.data.documentID
+                        company: companyRecord.id
                     }
                 });
 
-                console.log(`userResponse: ${userResponse} +  password: ${pwd}`);
-
-                if (!userResponse.ok) {
+                if (!userResponse?.user) {
                     throw new Error(`Failed to create user: ${user.email}`);
                 }
 
-                const userData = await userResponse.json();
+                const userData = userResponse.user;
 
                 // Then, add the user as a company member
                 const memberResponse: any = await fetchContentApi(`company-members`, {
                     method: 'POST',
                     body: {
                         data: {
-                            company: companyResponse.data.documentID,
+                            company: companyRecord.id,
                             user: userData.id,
                             role: 'member',
+                            isAdmin: false,
+                            canPost: true,
+                            canApprove: false
                         }
                     }
                 });
 
-                if (!memberResponse.ok) {
+                if (!memberResponse) {
                     throw new Error(`Failed to add member: ${user.email}`);
                 }
+                console.log(`Creating Company ${companyRecord.id} - Member ${user.email} added successfully`);
+
             });
 
             await Promise.all(memberPromises);
         }
 
-        return { success: true, data: companyResponse };
+        return { success: true, data: companyRecord };
     } catch (error) {
         console.error('Error creating company:', error);
         return { success: false, error: error instanceof Error ? error.message : 'An error occurred' };

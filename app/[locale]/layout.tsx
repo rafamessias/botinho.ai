@@ -8,6 +8,8 @@ import '@/app/globals.css';
 import { notFound } from 'next/navigation';
 import { Toaster } from '@/components/ui/sonner';
 import { UserProvider } from '@/components/UserProvider';
+import { LoadingProvider } from '@/components/LoadingProvider';
+import { LoadingOverlay } from '@/components/LoadingOverlay';
 import { TopProgress } from '@/components/RouteLoading';
 
 const inter = Inter({
@@ -32,7 +34,6 @@ export async function generateMetadata({ params }: { params: { locale: string } 
         },
         openGraph: {
             title: title,
-
         }
     }
 }
@@ -64,16 +65,19 @@ export default async function RootLayout({
                         disableTransitionOnChange
                         storageKey="obraguru-theme"
                     >
-                        <UserProvider>
-                            <TopProgress />
-                            <Header />
-                            <div className="container max-w-[1280px] h-screen flex-1 mx-auto w-full py-12 ">
-                                {children}
-                            </div>
-                            <div className="flex-1 mx-auto w-full py-[80px]">
-                            </div>
-                            <Toaster richColors closeButton />
-                        </UserProvider>
+                        <LoadingProvider>
+                            <UserProvider>
+                                <TopProgress />
+                                <Header />
+                                <div className="container max-w-[1280px] h-screen flex-1 mx-auto w-full py-12 ">
+                                    {children}
+                                </div>
+                                <div className="flex-1 mx-auto w-full py-[80px]">
+                                </div>
+                                <Toaster richColors closeButton />
+                                <LoadingOverlay />
+                            </UserProvider>
+                        </LoadingProvider>
                     </ThemeProvider>
                 </DynamicIntlProvider>
             </body>

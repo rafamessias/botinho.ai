@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,9 +36,12 @@ export default function NewPasswordForm() {
             if (result.success) {
                 toast.success(result.message);
 
+                console.log(result);
+                console.log(result.user);
                 setUser(result.user);
 
                 router.push('/');
+                router.refresh();
             } else {
                 toast.error(result.error);
             }
@@ -48,6 +51,11 @@ export default function NewPasswordForm() {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        // Clean up user context when component mounts
+        setUser(null);
+    }, [setUser]);
 
     return (
         <div className="flex items-center justify-center min-h-screen">

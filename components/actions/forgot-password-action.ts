@@ -4,7 +4,6 @@ import { fetchContentApi } from "./fetch-content-api";
 
 export async function forgotPasswordAction(email: string) {
     try {
-        console.log(email);
 
         const res: any = await fetchContentApi('auth/forgot-password', {
             method: "POST",

@@ -42,7 +42,6 @@ export default async function middleware(request: NextRequest) {
 
     // If user is logged in and trying to access public routes, redirect to home
     if (user.ok) {
-
         if (isPublicRoute(pathname)) {
             console.log('User is logged in and trying to access public routes, redirecting to home');
             const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}`);
