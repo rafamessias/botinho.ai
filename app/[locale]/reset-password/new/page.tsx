@@ -1,5 +1,9 @@
 import NewPasswordForm from './new-password-form';
 
 export default function NewPasswordPage() {
-    return <NewPasswordForm />;
+    return (
+        <div className="flex items-center justify-center h-dvh">
+            <NewPasswordForm />
+        </div>
+    );
 } 

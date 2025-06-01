@@ -5,7 +5,7 @@ import ProjectCard from "@/components/homePage/project-card"
 import { Plus, Search } from "lucide-react"
 import { fetchContentApi } from "@/components/actions/fetch-content-api"
 import { getTranslations } from "next-intl/server"
-
+import ContainerApp from "@/components/Container-app"
 export const dynamic = "force-dynamic";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -21,7 +21,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }
 
     return (
-        <div className="">
+        <ContainerApp>
             <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative w-full ">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -57,6 +57,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     />
                 ))}
             </div>
-        </div>
+
+        </ContainerApp>
     );
 } 

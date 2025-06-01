@@ -10,13 +10,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 interface UserItemProps extends User {
     onEdit?: (user: User) => void;
     onRemove?: () => void;
+    disabled?: boolean;
 }
 
-export function UserItem({ name, email, phone, onEdit, onRemove }: UserItemProps) {
+export function UserItem({ name, email, phone, onEdit, onRemove, disabled }: UserItemProps) {
     const t = useTranslations('shared.user');
 
     return (
-        <Card className="p-4 shadow-none hover:shadow-none h-[100px] bg-slate-50 flex">
+        <Card className={`p-4 shadow-none hover:shadow-none h-[100px] flex ${disabled ? 'bg-slate-100' : 'bg-slate-50'}`}>
             <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-4">
                     <Avatar className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
@@ -40,6 +41,7 @@ export function UserItem({ name, email, phone, onEdit, onRemove }: UserItemProps
                             size="icon"
                             onClick={() => onEdit({ name, email, phone })}
                             title={t('edit')}
+                            disabled={disabled}
                         >
                             <Pencil className="h-4 w-4" />
                         </Button>
@@ -51,12 +53,13 @@ export function UserItem({ name, email, phone, onEdit, onRemove }: UserItemProps
                             size="icon"
                             onClick={onRemove}
                             title={t('remove')}
+                            disabled={disabled}
                         >
                             <Trash2 className="h-4 w-4" />
                         </Button>
                     )}
                 </div>
             </div>
-        </Card >
+        </Card>
     );
 } 

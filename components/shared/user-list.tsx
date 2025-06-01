@@ -13,10 +13,12 @@ export interface UserListRef {
 
 interface UserListProps {
     onUsersChange?: (users: User[]) => void;
+    disabled?: boolean;
 }
 
 export const UserList = forwardRef<UserListRef, UserListProps>(({
-    onUsersChange
+    onUsersChange,
+    disabled = false
 }, ref) => {
     const t = useTranslations('shared.user');
     const [users, setUsers] = useState<User[]>([]);
@@ -80,6 +82,7 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
                                 setUserToEdit(undefined);
                                 setIsDialogOpen(true);
                             }}
+                            disabled={disabled}
                         >
                             <Plus className="h-4 w-4 mr-2" />
                             {t('addButton')}
@@ -93,8 +96,8 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
                     <UserItem
                         key={`${user.email}-${index}`}
                         {...user}
-                        onEdit={handleEditClick}
-                        onRemove={() => handleRemoveUser(index)}
+                        onEdit={disabled ? undefined : handleEditClick}
+                        onRemove={disabled ? undefined : () => handleRemoveUser(index)}
                     />
                 ))}
                 {users.length === 0 && (

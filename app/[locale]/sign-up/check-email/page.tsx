@@ -42,7 +42,7 @@ export default function SignUpCheckEmailPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center h-[calc(100vh-65px)] py-12 md:py-0">
             <Card className="w-full max-w-md py-12 px-6 grid gap-6">
                 <CardHeader className="space-y-1 flex flex-col items-center gap-5">
                     <Logo className="h-15 w-15 text-blue-700" />

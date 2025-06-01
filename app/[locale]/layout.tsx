@@ -56,7 +56,7 @@ export default async function RootLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body className={`${inter.className} bg-background`}>
+            <body className={`${inter.className} bg-background h-dvh`}>
                 <DynamicIntlProvider>
                     <ThemeProvider
                         attribute="class"
@@ -68,12 +68,12 @@ export default async function RootLayout({
                         <LoadingProvider>
                             <UserProvider>
                                 <TopProgress />
-                                <Header />
-                                <div className="container max-w-[1280px] h-screen flex-1 mx-auto w-full py-12 ">
-                                    {children}
-                                </div>
-                                <div className="flex-1 mx-auto w-full py-[80px]">
-                                </div>
+                                <main className="w-full h-dvh">
+                                    <Header />
+                                    <div className="container max-w-[1280px]">
+                                        {children}
+                                    </div>
+                                </main>
                                 <Toaster richColors closeButton />
                                 <LoadingOverlay />
                             </UserProvider>

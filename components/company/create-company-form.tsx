@@ -6,11 +6,13 @@ import { UploadPhoto } from '@/components/shared/upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
 import { User } from '@/components/shared/add-user-dialog';
 import { Input } from '@/components/ui/input';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { createCompany } from '@/components/actions/company-action';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useLoading } from '@/components/LoadingProvider';
+import { useUser } from '../UserProvider';
 
 interface CompanyFormValues {
     companyName: string;
@@ -29,15 +31,19 @@ export function CreateCompanyForm() {
     const t = useTranslations('company');
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
     const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<CompanyFormValues>({
         defaultValues: { documentType: 'cnpj' }
     });
     const documentType = watch('documentType');
+    const { setUser } = useUser();
+    const { user } = useUser();
 
     const onSubmit = async (data: CompanyFormValues) => {
         try {
             setIsSubmitting(true);
+            setIsLoading(true);
 
             // Remove masking from cpf, cnpj, and zipcode
             const cleanData = {
@@ -65,17 +71,28 @@ export function CreateCompanyForm() {
 
             if (result.success) {
                 toast.success(t('companyCreated'));
+                setUser({ ...user, company: result.data });
+
                 router.push('/');
             } else {
                 toast.error(result.error || t('companyCreationError'));
+                setIsLoading(false);
             }
         } catch (error) {
             toast.error(t('companyCreationError'));
             console.error('Error creating company:', error);
+            setIsLoading(false);
         } finally {
             setIsSubmitting(false);
         }
     };
+
+    // Clean up loading state when component unmounts
+    useEffect(() => {
+        return () => {
+            setIsLoading(false);
+        };
+    }, [setIsLoading]);
 
     return (
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
@@ -97,6 +114,7 @@ export function CreateCompanyForm() {
                     {...register('companyName', { required: t('companyName') + ' is required' })}
                     placeholder={t('companyNamePlaceholder')}
                     className="mt-1"
+                    disabled={isSubmitting}
                 />
                 {errors.companyName && (
                     <p className="text-sm text-red-500 mt-1">{errors.companyName.message}</p>
@@ -112,6 +130,7 @@ export function CreateCompanyForm() {
                             setValue('documentType', value as 'cpf' | 'cnpj');
                             clearErrors(['cpf', 'cnpj']);
                         }}
+                        disabled={isSubmitting}
                     >
                         <SelectTrigger className="w-full mt-1">
                             <SelectValue placeholder={t('documentTypePlaceholder')} />
@@ -136,6 +155,7 @@ export function CreateCompanyForm() {
                             placeholder={t('cpfPlaceholder')}
                             className="mt-1"
                             maxLength={14}
+                            disabled={isSubmitting}
                             onChange={e => {
                                 // Mask CPF
                                 let value = e.target.value.replace(/\D/g, '');
@@ -165,6 +185,7 @@ export function CreateCompanyForm() {
                             placeholder={t('cnpjPlaceholder')}
                             className="mt-1"
                             maxLength={18}
+                            disabled={isSubmitting}
                             onChange={e => {
                                 // Mask CNPJ
                                 let value = e.target.value.replace(/\D/g, '');
@@ -197,6 +218,7 @@ export function CreateCompanyForm() {
                         placeholder={t('zipcodePlaceholder')}
                         className="mt-1"
                         maxLength={9}
+                        disabled={isSubmitting}
                         onChange={e => {
                             // Mask Zipcode
                             let value = e.target.value.replace(/\D/g, '');
@@ -216,6 +238,7 @@ export function CreateCompanyForm() {
                         placeholder={t('statePlaceholder')}
                         className="mt-1"
                         maxLength={2}
+                        disabled={isSubmitting}
                     />
                     {errors.state && (
                         <p className="text-sm text-red-500 mt-1">{errors.state.message}</p>
@@ -229,6 +252,7 @@ export function CreateCompanyForm() {
                     {...register('city', { required: t('city') + ' is required' })}
                     placeholder={t('cityPlaceholder')}
                     className="mt-1"
+                    disabled={isSubmitting}
                 />
                 {errors.city && (
                     <p className="text-sm text-red-500 mt-1">{errors.city.message}</p>
@@ -242,6 +266,7 @@ export function CreateCompanyForm() {
                     className="w-full mt-1 rounded-md border px-3 py-2 text-sm"
                     rows={3}
                     placeholder={t('companyAddressPlaceholder')}
+                    disabled={isSubmitting}
                 />
                 {errors.companyAddress && (
                     <p className="text-sm text-red-500 mt-1">{errors.companyAddress.message}</p>
@@ -250,13 +275,13 @@ export function CreateCompanyForm() {
 
             <UserList
                 ref={userListRef}
+                disabled={isSubmitting}
             />
 
             <div className="flex justify-end gap-4 mt-8">
-
                 <button
                     type="submit"
-                    className=" py-2 px-4 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
+                    className="py-2 px-4 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? t('creating') : t('create')}
