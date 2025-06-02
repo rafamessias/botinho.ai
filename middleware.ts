@@ -35,8 +35,6 @@ export default async function middleware(request: NextRequest) {
     const intlResponse = intlMiddleware(request);
     const { pathname, locale } = request.nextUrl;
 
-    console.log('middleware', pathname, locale);
-
     // Check auth first
     const user = await getUserMeLoader();
 

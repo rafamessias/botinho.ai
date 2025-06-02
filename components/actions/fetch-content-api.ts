@@ -1,3 +1,5 @@
+'use server';
+
 import { getAuthToken } from "@/components/services/get-token";
 
 const strapiUrl = process.env.STRAPI_URL;

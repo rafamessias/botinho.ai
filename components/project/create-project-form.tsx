@@ -42,9 +42,11 @@ export function CreateProjectForm({ projects }: { projects: any }) {
             const newProject: any = await fetchContentApi('projects', {
                 method: 'POST',
                 body: {
-                    name: projectData.projectName,
-                    description: projectData.projectDescription,
-                    address: projectData.projectAddress,
+                    data: {
+                        name: projectData.projectName,
+                        description: projectData.projectDescription,
+                        address: projectData.projectAddress,
+                    }
                 }
             });
             console.log('Project created:', newProject);
@@ -64,10 +66,12 @@ export function CreateProjectForm({ projects }: { projects: any }) {
                 await fetchContentApi('project-users', {
                     method: 'POST',
                     body: {
-                        project: newProject.id,
-                        name: owner.name,
-                        email: owner.email,
-                        phone: owner.phone,
+                        data: {
+                            project: newProject.id,
+                            name: owner.name,
+                            email: owner.email,
+                            phone: owner.phone,
+                        }
                     }
                 });
             }

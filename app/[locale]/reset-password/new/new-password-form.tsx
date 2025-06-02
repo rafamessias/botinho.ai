@@ -36,8 +36,6 @@ export default function NewPasswordForm() {
             if (result.success) {
                 toast.success(result.message);
 
-                console.log(result);
-                console.log(result.user);
                 setUser(result.user);
 
                 router.push('/');
