@@ -57,10 +57,10 @@ export default function Header() {
                   <Link href="/rdo/create" className="w-full">Criar RDO</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer w-full">
-                  <Link href="/projeto/create" className="w-full">Criar Projeto</Link>
+                  <Link href="/project/create" className="w-full">Criar Projeto</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer w-full">
-                  <Link href="/incidente/create" className="w-full">Criar Incidente</Link>
+                  <Link href="/incident/create" className="w-full">Criar Incidente</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

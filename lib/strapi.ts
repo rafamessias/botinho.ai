@@ -121,6 +121,9 @@ export async function uploadFile(file: File, id: string, collection: string, fie
             body: formData,
         });
 
+        //console.log('response', response);
+        //console.log("fileInfo", fileInfo);
+
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Upload failed:', errorText);

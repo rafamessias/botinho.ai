@@ -1,4 +1,5 @@
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
+import ContainerApp from '@/components/Container-app';
 import { CreateProjectForm } from '@/components/project/create-project-form';
 
 export default async function CreateProjectPage() {
@@ -6,8 +7,10 @@ export default async function CreateProjectPage() {
     const projects = await fetchContentApi('projects');
 
     return (
-        <div className="max-w-[600px] mx-auto w-full px-6 py-12 bg-white rounded-lg shadow-md">
-            <CreateProjectForm projects={projects} />
-        </div>
+        <ContainerApp>
+            <div className="max-w-[600px] mx-auto w-full px-6 py-12 bg-white rounded-lg shadow-md">
+                <CreateProjectForm projects={projects} />
+            </div>
+        </ContainerApp>
     );
 } 
