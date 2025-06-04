@@ -18,10 +18,12 @@ export default function Header() {
   const { setIsLoading } = useLoading();
   const router = useRouter();
   const [userName, setUserName] = useState('');
+  const [companyId, setCompanyId] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
       setUserName(user.firstName.charAt(0) + user.lastName.charAt(0));
+      setCompanyId(user?.company?.documentId);
     }
   }, [user]);
 
@@ -84,7 +86,7 @@ export default function Header() {
                     <Link href="/profile" className="w-full">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer w-full">
-                    <Link href="/company" className="w-full">Company</Link>
+                    <Link href={`/company/${companyId}`} className="w-full">Company</Link>
                   </DropdownMenuItem>
                 </>
               )}

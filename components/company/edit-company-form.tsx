@@ -15,7 +15,7 @@ import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
 import { Company } from '@/components/types/strapi';
 
-export function EditCompanyForm() {
+export function EditCompanyForm({ company }: { company: Company }) {
     const t = useTranslations('company');
     const router = useRouter();
     const { user, setUser } = useUser();
@@ -23,8 +23,8 @@ export function EditCompanyForm() {
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
 
-    const company: Company = user?.company;
-    console.log(company);
+
+    console.log('company', company);
 
     const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<Company>({
         defaultValues: {
@@ -104,7 +104,10 @@ export function EditCompanyForm() {
                 name="logo"
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
-                currentImage={company.logo}
+                initialFiles={company.logo ? [company.logo] : []}
+                onRemoveImage={() => {
+                    console.log('remove image');
+                }}
             />
 
             <div>

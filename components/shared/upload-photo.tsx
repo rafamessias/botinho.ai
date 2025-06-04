@@ -1,6 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { UseFormRegister, FieldValues, Path, UseFormSetValue } from 'react-hook-form';
 
 interface UploadPhotoProps<T extends FieldValues> {
@@ -13,6 +13,47 @@ interface UploadPhotoProps<T extends FieldValues> {
     onChange?: (file: File | File[] | null) => void;
     type?: 'logo' | 'photo' | 'carousel';
     currentImage?: string;
+    initialFiles?: (string | File | StrapiFiles)[];
+    onRemoveImage?: (fileOrUrl: string | File) => void;
+}
+
+interface StrapiFiles {
+
+    alternativeText: string | null;
+    caption: string | null;
+    createdAt: string;
+    documentId: string;
+    ext: string;
+    formats: {
+        small: {
+            url: string;
+        };
+        medium: {
+            url: string;
+        };
+        thumbnail: {
+            url: string;
+        };
+        large: {
+            url: string;
+        };
+        hash: string;
+        height: number;
+        id: number;
+        mime: string;
+        name: string;
+        previewUrl: string | null;
+        provider: string;
+        provider_metadata: {
+            public_id: string;
+            resource_type: string;
+        };
+        publishedAt: string;
+        size: number;
+        updatedAt: string;
+        url: string;
+        width: number;
+    }
 }
 
 export function UploadPhoto<T extends FieldValues>({
@@ -25,11 +66,28 @@ export function UploadPhoto<T extends FieldValues>({
     onChange,
     type = 'photo',
     currentImage = '',
+    initialFiles = [],
+    onRemoveImage,
 }: UploadPhotoProps<T>) {
     const [previewUrls, setPreviewUrls] = useState<string[]>(currentImage ? [currentImage] : []);
     const [carouselFiles, setCarouselFiles] = useState<File[]>([]);
     const [carouselIndex, setCarouselIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    console.log('initialFiles', initialFiles);
+
+    useEffect(() => {
+        // If initialFiles are provided, set them as previews
+        if (initialFiles.length > 0) {
+            const urls = initialFiles.map(file => {
+                if (typeof file === 'string') return file;
+                if (file?.url) return file.url;
+                return URL.createObjectURL(file as File);
+            });
+            setPreviewUrls(urls);
+            setCarouselFiles(initialFiles.filter(f => f instanceof File) as File[]);
+        }
+    }, [initialFiles]);
 
     const isCarousel = type === 'carousel';
     const isLogo = type === 'logo';
@@ -60,8 +118,20 @@ export function UploadPhoto<T extends FieldValues>({
         }
     };
 
-    const handleRemove = (e: React.MouseEvent, index?: number) => {
+    const handleRemove = async (e: React.MouseEvent, index?: number) => {
         e.stopPropagation();
+        let fileOrUrl: string | File;
+        if (isCarousel && typeof index === 'number') {
+            fileOrUrl = initialFiles[index] || previewUrls[index];
+        } else {
+            fileOrUrl = initialFiles[0] || previewUrls[0];
+        }
+        const confirmed = window.confirm('Tem certeza que deseja remover esta imagem?');
+        if (!confirmed) return;
+        if (onRemoveImage) {
+            onRemoveImage(fileOrUrl);
+        }
+        // Remove from local state as well
         if (isCarousel && typeof index === 'number') {
             const newPreviews = previewUrls.filter((_, i) => i !== index);
             const newFiles = carouselFiles.filter((_, i) => i !== index);
