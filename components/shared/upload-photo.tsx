@@ -2,6 +2,7 @@ import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRef, useState, useEffect } from 'react';
 import { UseFormRegister, FieldValues, Path, UseFormSetValue } from 'react-hook-form';
+import { ConfirmDialog } from './confirm-dialog';
 
 interface UploadPhotoProps<T extends FieldValues> {
     register: UseFormRegister<T>;
@@ -18,7 +19,6 @@ interface UploadPhotoProps<T extends FieldValues> {
 }
 
 interface StrapiFiles {
-
     alternativeText: string | null;
     caption: string | null;
     createdAt: string;
@@ -53,7 +53,8 @@ interface StrapiFiles {
         updatedAt: string;
         url: string;
         width: number;
-    }
+    };
+    url: string;
 }
 
 export function UploadPhoto<T extends FieldValues>({
@@ -73,15 +74,17 @@ export function UploadPhoto<T extends FieldValues>({
     const [carouselFiles, setCarouselFiles] = useState<File[]>([]);
     const [carouselIndex, setCarouselIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [pendingRemove, setPendingRemove] = useState<{ fileOrUrl: string | File; index?: number } | null>(null);
 
-    console.log('initialFiles', initialFiles);
+    //console.log('initialFiles', initialFiles);
 
     useEffect(() => {
         // If initialFiles are provided, set them as previews
         if (initialFiles.length > 0) {
             const urls = initialFiles.map(file => {
                 if (typeof file === 'string') return file;
-                if (file?.url) return file.url;
+                if ((file as StrapiFiles)?.url) return (file as StrapiFiles).url;
                 return URL.createObjectURL(file as File);
             });
             setPreviewUrls(urls);
@@ -118,16 +121,27 @@ export function UploadPhoto<T extends FieldValues>({
         }
     };
 
-    const handleRemove = async (e: React.MouseEvent, index?: number) => {
+    const openRemoveDialog = (e: React.MouseEvent, index?: number) => {
         e.stopPropagation();
         let fileOrUrl: string | File;
         if (isCarousel && typeof index === 'number') {
-            fileOrUrl = initialFiles[index] || previewUrls[index];
+            const file = initialFiles[index];
+            if (typeof file === 'string') fileOrUrl = file;
+            else if ((file as StrapiFiles)?.url) fileOrUrl = (file as StrapiFiles).url;
+            else fileOrUrl = file as File;
         } else {
-            fileOrUrl = initialFiles[0] || previewUrls[0];
+            const file = initialFiles[0];
+            if (typeof file === 'string') fileOrUrl = file;
+            else if ((file as StrapiFiles)?.url) fileOrUrl = (file as StrapiFiles).url;
+            else fileOrUrl = file as File;
         }
-        const confirmed = window.confirm('Tem certeza que deseja remover esta imagem?');
-        if (!confirmed) return;
+        setPendingRemove({ fileOrUrl, index });
+        setDialogOpen(true);
+    };
+
+    const confirmRemove = () => {
+        if (!pendingRemove) return;
+        const { fileOrUrl, index } = pendingRemove;
         if (onRemoveImage) {
             onRemoveImage(fileOrUrl);
         }
@@ -149,6 +163,13 @@ export function UploadPhoto<T extends FieldValues>({
             setValue(name, undefined as any);
             onChange?.(null);
         }
+        setDialogOpen(false);
+        setPendingRemove(null);
+    };
+
+    const cancelRemove = () => {
+        setDialogOpen(false);
+        setPendingRemove(null);
     };
 
     const handlePrev = (e: React.MouseEvent) => {
@@ -211,7 +232,7 @@ export function UploadPhoto<T extends FieldValues>({
                             )}
                             <button
                                 className="absolute top-2 right-2 bg-white rounded-full p-2 shadow hover:shadow-md"
-                                onClick={e => handleRemove(e, carouselIndex)}
+                                onClick={e => openRemoveDialog(e, carouselIndex)}
                                 type="button"
                             >
                                 <Trash2 className="h-5 w-5 text-primary" />
@@ -227,7 +248,7 @@ export function UploadPhoto<T extends FieldValues>({
                         <Image src={previewUrls[0]} alt={label} fill className="object-cover" />
                         <button
                             className="absolute top-2 right-2 bg-white rounded-full p-2 shadow hover:shadow-md"
-                            onClick={handleRemove}
+                            onClick={openRemoveDialog}
                             type="button"
                         >
                             <Trash2 className="h-5 w-5 text-primary" />
@@ -255,6 +276,16 @@ export function UploadPhoto<T extends FieldValues>({
                     </button>
                 </div>
             )}
+            <ConfirmDialog
+                open={dialogOpen}
+                onConfirm={confirmRemove}
+                onCancel={cancelRemove}
+                title="Remover imagem"
+                description="Tem certeza que deseja remover esta imagem?"
+                confirmLabel="Remover"
+                cancelLabel="Cancelar"
+                confirmVariant="primary"
+            />
         </div>
     );
 } 

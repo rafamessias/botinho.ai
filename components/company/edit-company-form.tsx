@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
-import { User } from '@/components/shared/add-user-dialog';
 import { Input } from '@/components/ui/input';
 import { useRef, useState, useEffect } from 'react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
@@ -13,9 +12,21 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
-import { Company } from '@/components/types/strapi';
+import { Company, CompanyMember } from '@/components/types/strapi';
 
-export function EditCompanyForm({ company }: { company: Company }) {
+function maskCPF(value: string) {
+    return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+}
+
+function maskCNPJ(value: string) {
+    return value.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+}
+
+function maskZipCode(value: string) {
+    return value.replace(/^(\d{5})(\d{3})$/, "$1-$2");
+}
+
+export function EditCompanyForm({ company, companyMembers }: { company: Company, companyMembers: CompanyMember[] | null }) {
     const t = useTranslations('company');
     const router = useRouter();
     const { user, setUser } = useUser();
@@ -23,15 +34,16 @@ export function EditCompanyForm({ company }: { company: Company }) {
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
 
-
-    console.log('company', company);
-
     const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<Company>({
         defaultValues: {
             name: company.name,
             documentType: company.documentType,
-            document: company.document,
-            zipCode: company.zipCode,
+            document: company.documentType === 'CPF'
+                ? maskCPF(company.document)
+                : company.documentType === 'CNPJ'
+                    ? maskCNPJ(company.document)
+                    : undefined,
+            zipCode: maskZipCode(company.zipCode),
             state: company.state,
             city: company.city,
             address: company.address,
@@ -138,8 +150,8 @@ export function EditCompanyForm({ company }: { company: Company }) {
                             <SelectValue placeholder={t('documentTypePlaceholder')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="cpf">{t('cpf')}</SelectItem>
-                            <SelectItem value="cnpj">{t('cnpj')}</SelectItem>
+                            <SelectItem value="CPF">{t('cpf')}</SelectItem>
+                            <SelectItem value="CNPJ">{t('cnpj')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -278,6 +290,12 @@ export function EditCompanyForm({ company }: { company: Company }) {
             <UserList
                 ref={userListRef}
                 disabled={isSubmitting}
+                initialUsers={companyMembers?.map(member => ({
+                    name: `${member.user.firstName} ${member.user.lastName}`,
+                    email: member.user.email,
+                    phone: member.user.phone || '',
+                    avatar: member.user.avatar?.url
+                })) || []}
             />
 
             <div className="flex justify-end gap-4 mt-8">

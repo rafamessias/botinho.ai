@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { UserItem } from './user-item';
 import { AddUserDialog, User } from './add-user-dialog';
 import { Button } from '@/components/ui/button';
@@ -14,16 +14,23 @@ export interface UserListRef {
 interface UserListProps {
     onUsersChange?: (users: User[]) => void;
     disabled?: boolean;
+    initialUsers?: User[];
 }
 
 export const UserList = forwardRef<UserListRef, UserListProps>(({
     onUsersChange,
-    disabled = false
+    disabled = false,
+    initialUsers = []
 }, ref) => {
     const t = useTranslations('shared.user');
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<User[]>(initialUsers);
     const [userToEdit, setUserToEdit] = useState<User | undefined>();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    // Update users when initialUsers changes
+    useEffect(() => {
+        setUsers(initialUsers);
+    }, [initialUsers]);
 
     useImperativeHandle(ref, () => ({
         getUsers: () => users

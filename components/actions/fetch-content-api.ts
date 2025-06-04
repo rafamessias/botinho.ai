@@ -32,9 +32,9 @@ export async function fetchContentApi<T>(
     fetchOptions.body = JSON.stringify(options.body);
   }
 
-  console.log('fetchOptions', fetchOptions);
-  console.log('strapiUrl', strapiUrl);
-  console.log('url', url.toString());
+  // console.log('fetchOptions', fetchOptions);
+  // console.log('strapiUrl', strapiUrl);
+  // console.log('url', url.toString());
   const response = await fetch(url.toString(), fetchOptions);
 
   if (!response.ok) {

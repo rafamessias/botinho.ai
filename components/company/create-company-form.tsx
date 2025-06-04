@@ -136,8 +136,8 @@ export function CreateCompanyForm() {
                             <SelectValue placeholder={t('documentTypePlaceholder')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="cpf">{t('cpf')}</SelectItem>
-                            <SelectItem value="cnpj">{t('cnpj')}</SelectItem>
+                            <SelectItem value="CPF">{t('cpf')}</SelectItem>
+                            <SelectItem value="CNPJ">{t('cnpj')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
