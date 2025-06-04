@@ -29,7 +29,9 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
 
     // Update users when initialUsers changes
     useEffect(() => {
-        setUsers(initialUsers);
+        if (initialUsers && initialUsers.length > 0 && users.length === 0) {
+            setUsers(initialUsers);
+        }
     }, [initialUsers]);
 
     useImperativeHandle(ref, () => ({
@@ -41,6 +43,7 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
         setUsers(updatedUsers);
         onUsersChange?.(updatedUsers);
         setIsDialogOpen(false);
+        setUserToEdit(undefined);
     };
 
     const handleEditUser = (index: number, updatedUser: User) => {

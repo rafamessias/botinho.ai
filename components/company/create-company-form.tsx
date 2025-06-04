@@ -16,7 +16,7 @@ import { useUser } from '../UserProvider';
 
 interface CompanyFormValues {
     companyName: string;
-    documentType: 'cpf' | 'cnpj';
+    documentType: 'CPF' | 'CNPJ';
     cpf?: string;
     cnpj?: string;
     zipcode: string;
@@ -34,7 +34,7 @@ export function CreateCompanyForm() {
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
     const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<CompanyFormValues>({
-        defaultValues: { documentType: 'cnpj' }
+        defaultValues: { documentType: 'CNPJ' }
     });
     const documentType = watch('documentType');
     const { setUser } = useUser();
@@ -127,7 +127,7 @@ export function CreateCompanyForm() {
                     <Select
                         value={documentType}
                         onValueChange={value => {
-                            setValue('documentType', value as 'cpf' | 'cnpj');
+                            setValue('documentType', value as 'CPF' | 'CNPJ');
                             clearErrors(['cpf', 'cnpj']);
                         }}
                         disabled={isSubmitting}
@@ -141,7 +141,7 @@ export function CreateCompanyForm() {
                         </SelectContent>
                     </Select>
                 </div>
-                {documentType === 'cpf' && (
+                {documentType === 'CPF' && (
                     <div>
                         <label className="font-semibold">{t('cpf')}</label>
                         <Input
@@ -171,7 +171,7 @@ export function CreateCompanyForm() {
                         )}
                     </div>
                 )}
-                {documentType === 'cnpj' && (
+                {documentType === 'CNPJ' && (
                     <div>
                         <label className="font-semibold">{t('cnpj')}</label>
                         <Input

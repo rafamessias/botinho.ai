@@ -8,7 +8,7 @@ import { getUserMeLoader } from '../services/get-user-me-loader';
 
 interface CreateCompanyData {
     companyName: string;
-    documentType: 'cpf' | 'cnpj';
+    documentType: 'CPF' | 'CNPJ';
     cpf?: string;
     cnpj?: string;
     zipcode: string;
@@ -35,7 +35,7 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
                 data: {
                     name: data.companyName,
                     documentType: data.documentType.toUpperCase(),
-                    document: data.documentType === 'cpf' ? data.cpf : data.cnpj,
+                    document: data.documentType === 'CPF' ? data.cpf : data.cnpj,
                     zipCode: data.zipcode,
                     state: data.state,
                     city: data.city,

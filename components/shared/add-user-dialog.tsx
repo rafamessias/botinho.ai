@@ -57,11 +57,29 @@ export function AddUserDialog({
         }
     });
 
+    const maskPhone = (value: string) => {
+        const cleanValue = value.replace(/\D/g, '');
+        if (cleanValue.length > 11) {
+            return cleanValue.slice(0, 11);
+        }
+        return cleanValue.replace(
+            /^(\d{2})(\d{5})(\d{4})?/,
+            (_: any, ddd: string, first: string, last: string) => {
+                if (last) return `(${ddd}) ${first}-${last}`;
+                if (first) return `(${ddd}) ${first}`;
+                return `(${ddd}`;
+            }
+        );
+    };
+
     // Reset form when dialog opens/closes or userToEdit changes
     useEffect(() => {
         if (open) {
             if (userToEdit) {
-                reset(userToEdit);
+                reset({
+                    ...userToEdit,
+                    phone: maskPhone(userToEdit.phone)
+                });
             } else {
                 reset({
                     name: '',
