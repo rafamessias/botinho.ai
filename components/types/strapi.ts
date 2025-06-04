@@ -72,7 +72,7 @@ export interface Company {
     state: string;
     city: string;
     address: string;
-    logo?: StrapiImage;
+    logo?: string;
     users?: User[];
     members?: CompanyMember[];
     projects?: Project[];

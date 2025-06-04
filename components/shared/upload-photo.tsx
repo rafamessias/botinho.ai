@@ -12,6 +12,7 @@ interface UploadPhotoProps<T extends FieldValues> {
     hint?: string;
     onChange?: (file: File | File[] | null) => void;
     type?: 'logo' | 'photo' | 'carousel';
+    currentImage?: string;
 }
 
 export function UploadPhoto<T extends FieldValues>({
@@ -23,8 +24,9 @@ export function UploadPhoto<T extends FieldValues>({
     hint,
     onChange,
     type = 'photo',
+    currentImage = '',
 }: UploadPhotoProps<T>) {
-    const [previewUrls, setPreviewUrls] = useState<string[]>(photoUrl ? [photoUrl] : []);
+    const [previewUrls, setPreviewUrls] = useState<string[]>(currentImage ? [currentImage] : []);
     const [carouselFiles, setCarouselFiles] = useState<File[]>([]);
     const [carouselIndex, setCarouselIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);

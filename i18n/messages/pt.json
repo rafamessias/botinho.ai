@@ -46,6 +46,7 @@
     },
     "company": {
         "createTitle": "Criar Empresa",
+        "editTitle": "Editar Empresa",
         "uploadLogo": "Subir Logo",
         "uploadLogoHint": "Adicione um logo para sua empresa",
         "companyName": "Nome da Empresa",
@@ -69,6 +70,7 @@
         "addTeam": "Adicionar",
         "cancel": "Cancelar",
         "create": "Criar Empresa",
+        "update": "Atualizar Empresa",
         "creating": "Criando...",
         "companyCreated": "Empresa criada com sucesso",
         "companyCreationError": "Falha ao criar empresa"

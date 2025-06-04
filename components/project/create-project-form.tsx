@@ -6,7 +6,6 @@ import { useRef, useState } from 'react';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
 import { uploadFile } from '@/lib/strapi';
 import { Button } from '@/components/shared/button';
-import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 

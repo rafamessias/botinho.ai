@@ -154,4 +154,48 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
         console.error('Error creating company:', error);
         return { success: false, error: error instanceof Error ? error.message : 'An error occurred' };
     }
+}
+
+export async function updateCompany(data: any, image: FormData) {
+    try {
+        const response = await fetch('/api/company', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update company');
+        }
+
+        const result = await response.json();
+
+        // If there's an image, upload it
+        if (image.has('companyLogo')) {
+            const imageResponse = await fetch('/api/company/logo', {
+                method: 'POST',
+                body: image,
+            });
+
+            if (!imageResponse.ok) {
+                throw new Error('Failed to upload company logo');
+            }
+
+            const imageResult = await imageResponse.json();
+            result.data.logo = imageResult.logo;
+        }
+
+        return {
+            success: true,
+            data: result.data
+        };
+    } catch (error) {
+        console.error('Error updating company:', error);
+        return {
+            success: false,
+            error: 'Failed to update company'
+        };
+    }
 } 

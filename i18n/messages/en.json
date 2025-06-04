@@ -46,6 +46,7 @@
     },
     "company": {
         "createTitle": "Create Company",
+        "editTitle": "Edit Company",
         "uploadLogo": "Upload Logo",
         "uploadLogoHint": "Add a logo for your company",
         "companyName": "Company Name",
@@ -69,6 +70,7 @@
         "addTeam": "Add",
         "cancel": "Cancel",
         "create": "Create Company",
+        "update": "Update Company",
         "creating": "Creating...",
         "companyCreated": "Company created successfully",
         "companyCreationError": "Failed to create company"
