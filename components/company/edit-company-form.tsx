@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
 import { Company, CompanyMember } from '@/components/types/strapi';
+import { Button } from '../shared/button';
 
 function maskCPF(value: string) {
     return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
@@ -33,6 +34,9 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
+
+    console.log(company);
+    console.log(companyMembers);
 
     const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<Company>({
         defaultValues: {
@@ -78,16 +82,20 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 image.append('logo', data.logo[0]);
             }
 
-            const result = await updateCompany(formData, image);
+            console.log(formData);
 
-            if (result.success) {
-                toast.success(t('companyUpdated'));
-                setUser({ ...user, company: result.data });
-                router.push('/');
-            } else {
-                toast.error(result.error || t('companyUpdateError'));
-                setIsLoading(false);
-            }
+            setIsLoading(false);
+
+            // const result = await updateCompany(formData, image);
+
+            // if (result.success) {
+            //     toast.success(t('companyUpdated'));
+            //     setUser({ ...user, company: result.data });
+            //     router.push('/');
+            // } else {
+            //     toast.error(result.error || t('companyUpdateError'));
+            //     setIsLoading(false);
+            // }
         } catch (error) {
             toast.error(t('companyUpdateError'));
             console.error('Error updating company:', error);
@@ -294,18 +302,19 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                     name: `${member.user.firstName} ${member.user.lastName}`,
                     email: member.user.email,
                     phone: member.user.phone || '',
-                    avatar: member.user.avatar?.url
+                    avatar: member.user.avatar?.url,
+                    documentId: member.documentId
                 })) || []}
             />
 
             <div className="flex justify-end gap-4 mt-8">
-                <button
+                <Button
                     type="submit"
                     className="py-2 px-4 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? t('updating') : t('update')}
-                </button>
+                    {t('update')}
+                </Button>
             </div>
         </form>
     );

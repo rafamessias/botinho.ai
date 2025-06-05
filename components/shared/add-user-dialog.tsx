@@ -19,6 +19,7 @@ export interface User {
     email: string;
     phone: string;
     avatar?: string;
+    documentId?: string;
 }
 
 interface AddUserFormValues extends User { }

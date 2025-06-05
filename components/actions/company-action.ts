@@ -158,7 +158,7 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
 
 export async function updateCompany(data: any, image: FormData) {
     try {
-        const response = await fetch('/api/company', {
+        const response = await fetch(`companies/${data.documentId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

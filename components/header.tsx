@@ -31,7 +31,7 @@ export default function Header() {
     setIsLoading(true); // Set loading state to true
     setUser(null); // Clear user context
     await logoutAction(); // Call logout action
-    router.push('/sign-in'); // Redirect to sign in page
+    //router.push('/sign-in'); // Redirect to sign in page
   };
 
   return user ? (

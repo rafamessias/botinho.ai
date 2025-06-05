@@ -85,6 +85,7 @@ export interface CompanyMember {
     company: Company;
     user: User;
     role: 'admin' | 'member';
+    documentId?: string;
     isAdmin: boolean;
     canPost: boolean;
     canApprove: boolean;
