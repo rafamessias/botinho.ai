@@ -14,6 +14,7 @@ import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
 import { Company, CompanyMember } from '@/components/types/strapi';
 import { Button } from '../shared/button';
+import { ConfirmDialog } from '../shared/confirm-dialog';
 
 function maskCPF(value: string) {
     return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
@@ -32,28 +33,57 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const router = useRouter();
     const { user, setUser } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [hasChanges, setHasChanges] = useState(false);
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
+    const [imageToUpload, setImageToUpload] = useState<File | null>(null);
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
 
     console.log(company);
     console.log(companyMembers);
 
-    const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<Company>({
-        defaultValues: {
-            name: company.name,
-            documentType: company.documentType,
-            document: company.documentType === 'CPF'
-                ? maskCPF(company.document)
-                : company.documentType === 'CNPJ'
-                    ? maskCNPJ(company.document)
-                    : undefined,
-            zipCode: maskZipCode(company.zipCode),
-            state: company.state,
-            city: company.city,
-            address: company.address,
-        }
+    const getInitialValues = () => ({
+        name: company.name,
+        documentType: company.documentType,
+        document: company.documentType === 'CPF'
+            ? maskCPF(company.document)
+            : company.documentType === 'CNPJ'
+                ? maskCNPJ(company.document)
+                : undefined,
+        zipCode: maskZipCode(company.zipCode),
+        state: company.state,
+        city: company.city,
+        address: company.address,
+        logo: company.logo
+    });
+
+    const { register, handleSubmit, formState: { errors, isDirty }, setValue, watch, clearErrors, reset } = useForm<Company>({
+        defaultValues: getInitialValues()
     });
     const documentType = watch('documentType');
+
+    // Track form changes
+    useEffect(() => {
+        const hasFormChanges = isDirty || imageToUpload !== null;
+        console.log('Form State:', {
+            isDirty,
+            imageToUpload,
+            hasFormChanges,
+            currentValues: watch(),
+            initialValues: getInitialValues()
+        });
+        setHasChanges(hasFormChanges);
+    }, [isDirty, imageToUpload]);
+
+    const handleReset = () => {
+        setShowResetConfirm(true);
+    };
+
+    const confirmReset = () => {
+        reset(getInitialValues());
+        setImageToUpload(null);
+        setShowResetConfirm(false);
+    };
 
     const onSubmit = async (data: Company) => {
         try {
@@ -78,24 +108,20 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             };
 
             const image = new FormData();
-            if (data.logo?.[0]) {
-                image.append('logo', data.logo[0]);
+            if (imageToUpload) {
+                image.append('logo', imageToUpload);
             }
 
-            console.log(formData);
+            const result = await updateCompany(formData, image);
 
-            setIsLoading(false);
-
-            // const result = await updateCompany(formData, image);
-
-            // if (result.success) {
-            //     toast.success(t('companyUpdated'));
-            //     setUser({ ...user, company: result.data });
-            //     router.push('/');
-            // } else {
-            //     toast.error(result.error || t('companyUpdateError'));
-            //     setIsLoading(false);
-            // }
+            if (result.success) {
+                toast.success(t('companyUpdated'));
+                setUser({ ...user, company: result.data });
+                router.push('/');
+            } else {
+                toast.error(result.error || t('companyUpdateError'));
+                setIsLoading(false);
+            }
         } catch (error) {
             toast.error(t('companyUpdateError'));
             console.error('Error updating company:', error);
@@ -124,9 +150,18 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 name="logo"
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
-                initialFiles={company.logo ? [company.logo] : []}
+                initialFiles={company.logo?.url ? [company.logo.url] : []}
                 onRemoveImage={() => {
-                    console.log('remove image');
+                    setImageToUpload(null);
+                }}
+                onChange={(file) => {
+                    if (file instanceof File) {
+                        setImageToUpload(file);
+                    } else if (Array.isArray(file)) {
+                        setImageToUpload(file[0] || null);
+                    } else {
+                        setImageToUpload(null);
+                    }
                 }}
             />
 
@@ -308,14 +343,45 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             />
 
             <div className="flex justify-end gap-4 mt-8">
+                {hasChanges ? (
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleReset}
+                        className="py-2 px-4 rounded-lg"
+                        disabled={isSubmitting}
+                    >
+                        {t('reset')}
+                    </Button>
+                ) : (
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => router.push('/')}
+                        className="py-2 px-4 rounded-lg"
+                        disabled={isSubmitting}
+                    >
+                        {t('cancel')}
+                    </Button>
+                )}
                 <Button
                     type="submit"
                     className="py-2 px-4 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
                     disabled={isSubmitting}
                 >
-                    {t('update')}
+                    {isSubmitting ? t('updating') : t('update')}
                 </Button>
             </div>
+
+            <ConfirmDialog
+                open={showResetConfirm}
+                onConfirm={confirmReset}
+                onCancel={() => setShowResetConfirm(false)}
+                title={t('resetConfirmTitle')}
+                description={t('resetConfirmDescription')}
+                confirmLabel={t('resetConfirm')}
+                cancelLabel={t('cancel')}
+            />
         </form>
     );
 } 

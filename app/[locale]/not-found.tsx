@@ -1,25 +1,26 @@
-import { Button } from "@/components/ui/button";
+'use client';
+
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
+import { Button } from '@/components/shared/button';
+import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
-    const t = useTranslations('error');
+    const t = useTranslations('error.notFound');
+    const router = useRouter();
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-background">
-            <div className="text-center space-y-6 px-4">
-                <h1 className="text-6xl font-bold text-primary">{t('notFound.code')}</h1>
-                <h2 className="text-2xl font-semibold text-foreground">{t('notFound.title')}</h2>
-                <p className="text-muted-foreground max-w-md">
-                    {t('notFound.message')}
-                </p>
-                <div className="flex gap-4 justify-center">
-                    <Button asChild>
-                        <Link href="/dashboard">
-                            {t('notFound.button')}
-                        </Link>
-                    </Button>
-                </div>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="text-center space-y-6 p-8">
+                <h1 className="text-9xl font-bold text-blue-700">{t('code')}</h1>
+                <h2 className="text-3xl font-semibold text-gray-900">{t('title')}</h2>
+                <p className="text-gray-600 max-w-md mx-auto">{t('message')}</p>
+                <Button
+                    onClick={() => router.push('/')}
+                    className="mt-4 py-2 px-4 rounded-md"
+                    variant="primary"
+                >
+                    {t('button')}
+                </Button>
             </div>
         </div>
     );

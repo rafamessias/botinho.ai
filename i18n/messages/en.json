@@ -71,9 +71,16 @@
         "cancel": "Cancel",
         "create": "Create Company",
         "update": "Update Company",
+        "updating": "Updating...",
         "creating": "Creating...",
         "companyCreated": "Company created successfully",
-        "companyCreationError": "Failed to create company"
+        "companyCreationError": "Failed to create company",
+        "companyUpdated": "Company updated successfully",
+        "companyUpdateError": "Failed to update company",
+        "reset": "Reset",
+        "resetConfirmTitle": "Reset Changes",
+        "resetConfirmDescription": "Are you sure you want to reset all changes? This will restore the form to its initial state.",
+        "resetConfirm": "Yes, reset changes"
     },
     "error": {
         "notFound": {

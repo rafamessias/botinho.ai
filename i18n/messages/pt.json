@@ -71,9 +71,16 @@
         "cancel": "Cancelar",
         "create": "Criar Empresa",
         "update": "Atualizar Empresa",
+        "updating": "Atualizando...",
         "creating": "Criando...",
         "companyCreated": "Empresa criada com sucesso",
-        "companyCreationError": "Falha ao criar empresa"
+        "companyCreationError": "Falha ao criar empresa",
+        "companyUpdated": "Empresa atualizada com sucesso",
+        "companyUpdateError": "Falha ao atualizar empresa",
+        "reset": "Resetar",
+        "resetConfirmTitle": "Resetar Alterações",
+        "resetConfirmDescription": "Tem certeza que deseja resetar todas as alterações? Isso restaurará o formulário ao seu estado inicial.",
+        "resetConfirm": "Sim, resetar alterações"
     },
     "error": {
         "notFound": {
