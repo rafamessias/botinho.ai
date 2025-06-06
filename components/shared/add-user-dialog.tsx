@@ -13,6 +13,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 export interface User {
     name: string;
@@ -20,6 +22,9 @@ export interface User {
     phone: string;
     avatar?: string;
     documentId?: string;
+    isAdmin: boolean;
+    canPost: boolean;
+    canApprove: boolean;
 }
 
 interface AddUserFormValues extends User { }
@@ -50,13 +55,20 @@ export function AddUserDialog({
     const open = controlledOpen ?? uncontrolledOpen;
     const setOpen = onOpenChange ?? setUncontrolledOpen;
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<AddUserFormValues>({
+    const { register, handleSubmit, reset, formState: { errors }, setValue, watch } = useForm<AddUserFormValues>({
         defaultValues: {
             name: '',
             email: '',
             phone: '',
+            isAdmin: false,
+            canPost: false,
+            canApprove: false,
         }
     });
+
+    const isAdmin = watch('isAdmin');
+    const canPost = watch('canPost');
+    const canApprove = watch('canApprove');
 
     const maskPhone = (value: string) => {
         const cleanValue = value.replace(/\D/g, '');
@@ -86,6 +98,9 @@ export function AddUserDialog({
                     name: '',
                     email: '',
                     phone: '',
+                    isAdmin: false,
+                    canPost: false,
+                    canApprove: false,
                 });
             }
         } else {
@@ -93,6 +108,9 @@ export function AddUserDialog({
                 name: '',
                 email: '',
                 phone: '',
+                isAdmin: false,
+                canPost: false,
+                canApprove: false,
             });
         }
     }, [open, userToEdit, reset]);
@@ -181,6 +199,40 @@ export function AddUserDialog({
                             <span className="text-xs text-red-500">{errors.phone.message}</span>
                         )}
                     </div>
+
+                    <div className="space-y-4 pt-2">
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="isAdmin" className="text-sm font-medium">
+                                {t('permissions.isAdmin')}
+                            </Label>
+                            <Switch
+                                id="isAdmin"
+                                checked={isAdmin}
+                                onCheckedChange={(checked) => setValue('isAdmin', checked)}
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="canPost" className="text-sm font-medium">
+                                {t('permissions.canPost')}
+                            </Label>
+                            <Switch
+                                id="canPost"
+                                checked={canPost}
+                                onCheckedChange={(checked) => setValue('canPost', checked)}
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="canApprove" className="text-sm font-medium">
+                                {t('permissions.canApprove')}
+                            </Label>
+                            <Switch
+                                id="canApprove"
+                                checked={canApprove}
+                                onCheckedChange={(checked) => setValue('canApprove', checked)}
+                            />
+                        </div>
+                    </div>
+
                     <div className="flex justify-end gap-2">
                         <Button
                             type="button"

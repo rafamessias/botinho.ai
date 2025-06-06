@@ -15,6 +15,7 @@ import { useUser } from '../UserProvider';
 import { Company, CompanyMember } from '@/components/types/strapi';
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';
+import { User } from '@/components/shared/add-user-dialog';
 
 function maskCPF(value: string) {
     return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
@@ -83,6 +84,111 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
         reset(getInitialValues());
         setImageToUpload(null);
         setShowResetConfirm(false);
+    };
+
+    const handleAddCompanyMember = async (user: User) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch('/api/company-members', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    data: {
+                        companyId: company.id,
+                        user: {
+                            firstName: user.name.split(' ')[0],
+                            lastName: user.name.split(' ').slice(1).join(' '),
+                            email: user.email,
+                            phone: user.phone,
+                        },
+                        documentId: user.documentId,
+                        isAdmin: user.isAdmin,
+                        canPost: user.canPost,
+                        canApprove: user.canApprove
+                    }
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add company member');
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error adding company member:', error);
+            toast.error(t('memberAddError'));
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleEditCompanyMember = async (user: User) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`/api/company/members/${user.documentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    companyId: company.id,
+                    user: {
+                        firstName: user.name.split(' ')[0],
+                        lastName: user.name.split(' ').slice(1).join(' '),
+                        email: user.email,
+                        phone: user.phone,
+                    },
+                    isAdmin: user.isAdmin,
+                    canPost: user.canPost,
+                    canApprove: user.canApprove
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update company member');
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error updating company member:', error);
+            toast.error(t('memberUpdateError'));
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleRemoveCompanyMember = async (user: User) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`/api/company/members/${user.documentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    companyId: company.id
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to remove company member');
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error removing company member:', error);
+            toast.error(t('memberRemoveError'));
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const onSubmit = async (data: Company) => {
@@ -330,18 +436,6 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 )}
             </div>
 
-            <UserList
-                ref={userListRef}
-                disabled={isSubmitting}
-                initialUsers={companyMembers?.map(member => ({
-                    name: `${member.user.firstName} ${member.user.lastName}`,
-                    email: member.user.email,
-                    phone: member.user.phone || '',
-                    avatar: member.user.avatar?.url,
-                    documentId: member.documentId
-                })) || []}
-            />
-
             <div className="flex justify-end gap-4 mt-8">
                 {hasChanges ? (
                     <Button
@@ -372,6 +466,28 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                     {isSubmitting ? t('updating') : t('update')}
                 </Button>
             </div>
+
+
+            <div className="my-4 p-[1px] bg-gray-100 rounded-md">
+            </div>
+
+            <UserList
+                ref={userListRef}
+                disabled={isSubmitting}
+                initialUsers={companyMembers?.map(member => ({
+                    name: `${member.user.firstName} ${member.user.lastName}`,
+                    email: member.user.email,
+                    phone: member.user.phone || '',
+                    avatar: member.user.avatar?.url,
+                    documentId: member.documentId,
+                    isAdmin: member.isAdmin || false,
+                    canPost: member.canPost || false,
+                    canApprove: member.canApprove || false
+                })) || []}
+                onAddUser={handleAddCompanyMember}
+                onEditUser={handleEditCompanyMember}
+                onRemoveUser={handleRemoveCompanyMember}
+            />
 
             <ConfirmDialog
                 open={showResetConfirm}

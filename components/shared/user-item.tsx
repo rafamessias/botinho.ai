@@ -1,11 +1,12 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Shield, FileText, CheckCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { User } from './add-user-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { ConfirmDialog } from './confirm-dialog';
+import { useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface UserItemProps extends User {
     onEdit?: (user: User) => void;
@@ -13,37 +14,35 @@ interface UserItemProps extends User {
     disabled?: boolean;
 }
 
-export function UserItem({ name, email, phone, onEdit, onRemove, disabled }: UserItemProps) {
+export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, onEdit, onRemove, disabled }: UserItemProps) {
     const t = useTranslations('shared.user');
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+    const handleRemove = () => {
+        setShowConfirmDialog(true);
+    };
+
+    const handleConfirmRemove = () => {
+        onRemove?.();
+        setShowConfirmDialog(false);
+    };
 
     return (
-        <Card className={`p-4 shadow-none hover:shadow-none h-[100px] flex ${disabled ? 'bg-slate-100' : 'bg-slate-50'}`}>
-            <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-4">
-                    <Avatar className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
-                        <AvatarFallback>{name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                        <h4 className="font-medium">{name}</h4>
-                        <p className="text-sm text-muted-foreground">
-                            {email.length > 15
-                                ? `${email.slice(0, 5)}...${email.slice(-5)}`
-                                : email}
-                        </p>
-                        <p className="text-sm text-muted-foreground">{phone}</p>
-                    </div>
-                </div>
-                <div className="flex gap-2">
+        <>
+            <div className={`inline-flex items-center gap-2 mb-5 mr-2 px-3 py-1.5 rounded-full ${disabled ? 'bg-slate-100' : 'bg-slate-50'} border border-slate-200 relative`}>
+                <span className="text-sm font-medium">{name}</span>
+                <div className="flex gap-1 ml-1">
                     {onEdit && (
                         <Button
                             type="button"
                             variant="ghost"
                             size="icon"
-                            onClick={() => onEdit({ name, email, phone })}
+                            className="h-6 w-6 hover:bg-slate-200"
+                            onClick={() => onEdit({ name, email, phone, isAdmin, canPost, canApprove })}
                             title={t('edit')}
                             disabled={disabled}
                         >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="h-3 w-3" />
                         </Button>
                     )}
                     {onRemove && (
@@ -51,15 +50,76 @@ export function UserItem({ name, email, phone, onEdit, onRemove, disabled }: Use
                             type="button"
                             variant="ghost"
                             size="icon"
-                            onClick={onRemove}
+                            className="h-6 w-6 hover:bg-slate-200"
+                            onClick={handleRemove}
                             title={t('remove')}
                             disabled={disabled}
                         >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3 w-3" />
                         </Button>
                     )}
                 </div>
+                <div className="flex gap-1 absolute -bottom-4 left-1 transform ">
+                    <TooltipProvider>
+                        {isAdmin && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <div
+                                        className="h-6 w-6 flex items-center justify-center text-blue-600 bg-white rounded-full border border-slate-200 shadow-sm"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <Shield className="h-3 w-3" />
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('permissions.isAdmin')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        )}
+                        {canPost && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <div
+                                        className="h-6 w-6 flex items-center justify-center text-green-600 bg-white rounded-full border border-slate-200 shadow-sm"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <FileText className="h-3 w-3" />
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('permissions.canPost')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        )}
+                        {canApprove && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <div
+                                        className="h-6 w-6 flex items-center justify-center text-purple-600 bg-white rounded-full border border-slate-200 shadow-sm"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <CheckCircle className="h-3 w-3" />
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('permissions.canApprove')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        )}
+                    </TooltipProvider>
+                </div>
             </div>
-        </Card>
+
+            <ConfirmDialog
+                open={showConfirmDialog}
+                onConfirm={handleConfirmRemove}
+                onCancel={() => setShowConfirmDialog(false)}
+                title={t('removeConfirm.title')}
+                description={t('removeConfirm.description', { name })}
+                confirmLabel={t('removeConfirm.confirm')}
+                cancelLabel={t('removeConfirm.cancel')}
+                confirmVariant="primary"
+            />
+        </>
     );
 } 

@@ -15,12 +15,18 @@ interface UserListProps {
     onUsersChange?: (users: User[]) => void;
     disabled?: boolean;
     initialUsers?: User[];
+    onAddUser?: (user: User) => void;
+    onEditUser?: (user: User) => void;
+    onRemoveUser?: (user: User) => void;
 }
 
 export const UserList = forwardRef<UserListRef, UserListProps>(({
     onUsersChange,
     disabled = false,
-    initialUsers = []
+    initialUsers = [],
+    onAddUser,
+    onEditUser,
+    onRemoveUser
 }, ref) => {
     const t = useTranslations('shared.user');
     const [users, setUsers] = useState<User[]>(initialUsers);
@@ -42,6 +48,7 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
         const updatedUsers = [...users, newUser];
         setUsers(updatedUsers);
         onUsersChange?.(updatedUsers);
+        onAddUser?.(newUser);
         setIsDialogOpen(false);
         setUserToEdit(undefined);
     };
@@ -51,12 +58,14 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
         newUsers[index] = updatedUser;
         setUsers(newUsers);
         onUsersChange?.(newUsers);
+        onEditUser?.(updatedUser);
         setUserToEdit(undefined);
         setIsDialogOpen(false);
     };
 
     const handleRemoveUser = (index: number) => {
         const newUsers = users.filter((_, i) => i !== index);
+        onRemoveUser?.(users[index]);
         setUsers(newUsers);
         onUsersChange?.(newUsers);
     };
@@ -101,7 +110,7 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
                 />
             </div>
 
-            <div className="space-y-2">
+            <div className="">
                 {users.map((user, index) => (
                     <UserItem
                         key={`${user.email}-${index}`}

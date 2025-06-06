@@ -113,7 +113,18 @@
             "save": "Salvar",
             "cancel": "Cancelar",
             "edit": "Editar usuário",
-            "remove": "Remover usuário"
+            "remove": "Remover usuário",
+            "removeConfirm": {
+                "title": "Remover Usuário",
+                "description": "Tem certeza que deseja remover o usuário {name}?",
+                "confirm": "Remover",
+                "cancel": "Cancelar"
+            },
+            "permissions": {
+                "isAdmin": "Administrador",
+                "canPost": "Pode Postar",
+                "canApprove": "Pode Aprovar"
+            }
         }
     },
     "header": {

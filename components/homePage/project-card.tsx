@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { InfoIcon } from "lucide-react"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 
 interface ProjectCardProps {
   id: string
@@ -52,13 +52,15 @@ export default function ProjectCard({ id, title, description, imageUrl, isActive
         <p className="text-sm text-muted-foreground">{description}</p>
       </CardContent>
       <CardFooter className="flex gap-2 px-6 pt-3">
-        <Link href={`/rdo/${id}`} className="w-full">
+        <Link href={`/feed/${id}`} className="w-full">
           <Button className="w-full bg-primary hover:bg-primary/90">Ver Atualizações</Button>
         </Link>
-        <Button variant="ghost" size="icon" className="h-10 w-10 border border-gray-300">
-          <InfoIcon className="h-4 w-4" />
-          <span className="sr-only">Informações</span>
-        </Button>
+        <Link href={`/project/${id}`} >
+          <Button variant="ghost" size="icon" className="h-10 w-10 border border-gray-300">
+            <InfoIcon className="h-4 w-4" />
+            <span className="sr-only">Informações</span>
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   )
