@@ -14,10 +14,11 @@ const mockRDOs: RDO[] = [
             { label: 'Tarde', icon: '🌤️', active: false },
             { label: 'Noite', icon: '🌙', active: true },
         ],
-        images: ['/mock-image.jpg', '/mock-image.jpg'],
+        images: ['/placeholder-image.webp', '/placeholder-image.webp'],
         comments: 3,
         likes: 3,
         status: 'Esperando Aprovação',
+        documentId: '1234567890',
     },
     {
         id: 23,
@@ -29,10 +30,11 @@ const mockRDOs: RDO[] = [
             { label: 'Tarde', icon: '🌤️', active: true },
             { label: 'Noite', icon: '🌙', active: false },
         ],
-        images: ['/mock-image.jpg', '/mock-image.jpg'],
+        images: ['/placeholder-image.webp', '/placeholder-avatar.webp'],
         comments: 3,
         likes: 3,
         status: 'Esperando Aprovação',
+        documentId: '1234567890',
     },
 ];
 

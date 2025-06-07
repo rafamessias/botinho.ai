@@ -1,9 +1,8 @@
 'use client'
 import React from 'react';
-import Image from 'next/image';
 import CarouselMedia from './CarouselMedia';
 import { MessageSquare } from 'lucide-react';
-import { Heart } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 
 export interface RDO {
     id: number;
@@ -15,6 +14,7 @@ export interface RDO {
     comments: number;
     likes: number;
     status: string;
+    documentId: string;
 }
 
 interface RDOCardProps {
@@ -48,8 +48,12 @@ const RDOCard: React.FC<RDOCardProps> = ({ rdo }) => {
             <CarouselMedia images={rdo.images} />
             <div className="flex items-center justify-between text-xs text-gray-500">
                 <div className="flex gap-4">
-                    <span className="flex items-center gap-1"><MessageSquare className="w-4 h-4" /> {rdo.comments}</span>
-                    <span className="flex items-center gap-1"><Heart className="w-4 h-4" /> {rdo.likes}</span>
+                    <Link href={`/rdo/${rdo.documentId}`} className="text-blue-600 hover:text-blue-700 transition-colors">
+                        Detalhes
+                    </Link>
+                    <Link href={`/rdo/${rdo.documentId}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
+                        <MessageSquare className="w-4 h-4" /> {rdo.comments}
+                    </Link>
                 </div>
                 <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full">{rdo.status}</span>
             </div>
