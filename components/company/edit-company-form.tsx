@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
 import { Input } from '@/components/ui/input';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { updateCompany } from '@/components/actions/company-action';
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,9 @@ import { Company, CompanyMember } from '@/components/types/strapi';
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';
 import { User } from '@/components/shared/add-user-dialog';
+import { fetchContentApi } from '../actions/fetch-content-api';
+import { Controller } from 'react-hook-form';
+import { uploadFile } from '@/lib/strapi';
 
 function maskCPF(value: string) {
     return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
@@ -37,11 +40,10 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const [hasChanges, setHasChanges] = useState(false);
     const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [imageToUpload, setImageToUpload] = useState<File | null>(null);
+    const [showImageConfirm, setShowImageConfirm] = useState(false);
+    const [pendingImageChange, setPendingImageChange] = useState<File | null>(null);
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
-
-    console.log(company);
-    console.log(companyMembers);
 
     const getInitialValues = () => ({
         name: company.name,
@@ -55,25 +57,21 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
         state: company.state,
         city: company.city,
         address: company.address,
-        logo: company.logo
+        logo: company.logo,
+        documentId: company.documentId
     });
 
-    const { register, handleSubmit, formState: { errors, isDirty }, setValue, watch, clearErrors, reset } = useForm<Company>({
-        defaultValues: getInitialValues()
+    const initialValues = useMemo(() => getInitialValues(), [company]);
+
+    const { register, handleSubmit, formState: { errors, isDirty }, setValue, getValues, clearErrors, reset, control, watch } = useForm<Company>({
+        defaultValues: initialValues
     });
     const documentType = watch('documentType');
 
     // Track form changes
     useEffect(() => {
         const hasFormChanges = isDirty || imageToUpload !== null;
-        console.log('Form State:', {
-            isDirty,
-            imageToUpload,
-            hasFormChanges,
-            currentValues: watch(),
-            initialValues: getInitialValues()
-        });
-        setHasChanges(hasFormChanges);
+        setHasChanges((prev) => prev !== hasFormChanges ? hasFormChanges : prev);
     }, [isDirty, imageToUpload]);
 
     const handleReset = () => {
@@ -81,7 +79,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     };
 
     const confirmReset = () => {
-        reset(getInitialValues());
+        reset(initialValues);
         setImageToUpload(null);
         setShowResetConfirm(false);
     };
@@ -89,12 +87,9 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleAddCompanyMember = async (user: User) => {
         try {
             setIsLoading(true);
-            const response = await fetch('/api/company-members', {
+            const response: any = await fetchContentApi('/api/company-members', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+                body: {
                     data: {
                         companyId: company.id,
                         user: {
@@ -108,14 +103,14 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                         canPost: user.canPost,
                         canApprove: user.canApprove
                     }
-                }),
+                },
             });
 
-            if (!response.ok) {
+            if (!response.data) {
                 throw new Error('Failed to add company member');
             }
 
-            const data = await response.json();
+            const data = response.data;
             return data;
         } catch (error) {
             console.error('Error adding company member:', error);
@@ -129,30 +124,29 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleEditCompanyMember = async (user: User) => {
         try {
             setIsLoading(true);
-            const response = await fetch(`/api/company/members/${user.documentId}`, {
+            const response: any = await fetchContentApi(`/api/company-members/${user.documentId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
+                body: {
+                    data: {
+                        companyId: company.id,
+                        user: {
+                            firstName: user.name.split(' ')[0],
+                            lastName: user.name.split(' ').slice(1).join(' '),
+                            email: user.email,
+                            phone: user.phone,
+                        },
+                        isAdmin: user.isAdmin,
+                        canPost: user.canPost,
+                        canApprove: user.canApprove
+                    }
                 },
-                body: JSON.stringify({
-                    companyId: company.id,
-                    user: {
-                        firstName: user.name.split(' ')[0],
-                        lastName: user.name.split(' ').slice(1).join(' '),
-                        email: user.email,
-                        phone: user.phone,
-                    },
-                    isAdmin: user.isAdmin,
-                    canPost: user.canPost,
-                    canApprove: user.canApprove
-                }),
             });
 
-            if (!response.ok) {
+            if (!response.data) {
                 throw new Error('Failed to update company member');
             }
 
-            const data = await response.json();
+            const data = response.data;
             return data;
         } catch (error) {
             console.error('Error updating company member:', error);
@@ -166,26 +160,94 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleRemoveCompanyMember = async (user: User) => {
         try {
             setIsLoading(true);
-            const response = await fetch(`/api/company/members/${user.documentId}`, {
+            const response: any = await fetchContentApi(`/api/company-members/${user.documentId}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
+                body: {
+                    data: {
+                        companyId: company.id
+                    }
                 },
-                body: JSON.stringify({
-                    companyId: company.id
-                }),
             });
 
-            if (!response.ok) {
+            if (!response.data) {
                 throw new Error('Failed to remove company member');
             }
 
-            const data = await response.json();
-            return data;
+            toast.success(t('memberRemoved'));
+
         } catch (error) {
             console.error('Error removing company member:', error);
             toast.error(t('memberRemoveError'));
             throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleImageChange = async (file: any | null) => {
+        if (file) {
+            setPendingImageChange(file);
+            setShowImageConfirm(true);
+            setShowImageConfirm(true);
+        }
+    };
+
+    const confirmImageChange = async () => {
+        console.log('confirmImageChange');
+        if (!pendingImageChange) return;
+
+        try {
+            setIsLoading(true);
+            // Delete old file if exists
+            if (company.logo?.id) {
+                await fetchContentApi(`/api/upload/files/${company.logo.id}`, {
+                    method: 'DELETE'
+                });
+            }
+
+            // Upload new file
+            const uploadResponse = await uploadFile(
+                pendingImageChange,
+                company.id.toString(),
+                'api::company.company',
+                'logo'
+            );
+
+            if (!uploadResponse) {
+                throw new Error('Failed to upload new logo');
+            }
+
+            setImageToUpload(pendingImageChange);
+            toast.success(t('logoUpdated'));
+        } catch (error) {
+            console.error('Error updating logo:', error);
+            toast.error(t('logoUpdateError'));
+        } finally {
+            setIsLoading(false);
+            setShowImageConfirm(false);
+            setPendingImageChange(null);
+        }
+    };
+
+    const cancelImageChange = () => {
+        setShowImageConfirm(false);
+        setPendingImageChange(null);
+    };
+
+    const handleRemoveImage = async () => {
+        try {
+            setIsLoading(true);
+            // Delete old file if exists
+            if (company.logo?.id) {
+                await fetchContentApi(`/api/upload/files/${company.logo.id}`, {
+                    method: 'DELETE'
+                });
+            }
+            setImageToUpload(null);
+            toast.success(t('logoRemoved'));
+        } catch (error) {
+            console.error('Error removing logo:', error);
+            toast.error(error instanceof Error ? error.message : t('logoRemoveError'));
         } finally {
             setIsLoading(false);
         }
@@ -203,37 +265,22 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 zipCode: data.zipCode.replace(/\D/g, '')
             };
 
-            // Get users from the UserList component
-            const users = userListRef.current?.getUsers() || [];
-
-            // Combine form data with users
-            const formData = {
-                ...cleanData,
-                users,
-                id: company.id
-            };
-
-            const image = new FormData();
-            if (imageToUpload) {
-                image.append('logo', imageToUpload);
-            }
-
-            const result = await updateCompany(formData, image);
+            const result = await updateCompany(cleanData);
 
             if (result.success) {
                 toast.success(t('companyUpdated'));
                 setUser({ ...user, company: result.data });
-                router.push('/');
             } else {
                 toast.error(result.error || t('companyUpdateError'));
-                setIsLoading(false);
             }
+
         } catch (error) {
             toast.error(t('companyUpdateError'));
             console.error('Error updating company:', error);
-            setIsLoading(false);
         } finally {
             setIsSubmitting(false);
+            setIsLoading(false);
+
         }
     };
 
@@ -257,17 +304,11 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
                 initialFiles={company.logo?.url ? [company.logo.url] : []}
-                onRemoveImage={() => {
-                    setImageToUpload(null);
-                }}
+                onRemoveImage={handleRemoveImage}
                 onChange={(file) => {
-                    if (file instanceof File) {
-                        setImageToUpload(file);
-                    } else if (Array.isArray(file)) {
-                        setImageToUpload(file[0] || null);
-                    } else {
-                        setImageToUpload(null);
-                    }
+                    console.log('onChange', file);
+                    handleImageChange(file);
+
                 }}
             />
 
@@ -287,22 +328,33 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label className="font-semibold">{t('documentType')}</label>
-                    <Select
-                        value={documentType}
-                        onValueChange={value => {
-                            setValue('documentType', value as 'CPF' | 'CNPJ');
-                            clearErrors(['document']);
-                        }}
-                        disabled={isSubmitting}
-                    >
-                        <SelectTrigger className="w-full mt-1">
-                            <SelectValue placeholder={t('documentTypePlaceholder')} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="CPF">{t('cpf')}</SelectItem>
-                            <SelectItem value="CNPJ">{t('cnpj')}</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <Controller
+                        name="documentType"
+                        control={control}
+                        rules={{ required: t('documentType') + ' is required' }}
+                        render={({ field }) => (
+                            <Select
+                                value={field.value}
+                                onValueChange={value => {
+                                    field.onChange(value);
+                                    clearErrors(['document']);
+                                    setValue('document', '');
+                                }}
+                                disabled={isSubmitting}
+                            >
+                                <SelectTrigger className="w-full mt-1">
+                                    <SelectValue placeholder={t('documentTypePlaceholder')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="CPF">{t('cpf')}</SelectItem>
+                                    <SelectItem value="CNPJ">{t('cnpj')}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    {errors.documentType && (
+                        <p className="text-sm text-red-500 mt-1">{errors.documentType.message}</p>
+                    )}
                 </div>
                 {documentType === 'CPF' && (
                     <div>
@@ -320,13 +372,13 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                             maxLength={14}
                             disabled={isSubmitting}
                             onChange={e => {
-                                // Mask CPF
                                 let value = e.target.value.replace(/\D/g, '');
                                 if (value.length > 11) value = value.slice(0, 11);
                                 value = value.replace(/(\d{3})(\d)/, '$1.$2');
                                 value = value.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
                                 value = value.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
                                 e.target.value = value;
+                                setValue('document', value);
                             }}
                         />
                         {errors.document && (
@@ -350,7 +402,6 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                             maxLength={18}
                             disabled={isSubmitting}
                             onChange={e => {
-                                // Mask CNPJ
                                 let value = e.target.value.replace(/\D/g, '');
                                 if (value.length > 14) value = value.slice(0, 14);
                                 value = value.replace(/(\d{2})(\d)/, '$1.$2');
@@ -358,6 +409,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                                 value = value.replace(/(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4');
                                 value = value.replace(/(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
                                 e.target.value = value;
+                                setValue('document', value);
                             }}
                         />
                         {errors.document && (
@@ -496,6 +548,16 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 title={t('resetConfirmTitle')}
                 description={t('resetConfirmDescription')}
                 confirmLabel={t('resetConfirm')}
+                cancelLabel={t('cancel')}
+            />
+
+            <ConfirmDialog
+                open={showImageConfirm}
+                onConfirm={confirmImageChange}
+                onCancel={cancelImageChange}
+                title={t('imageChangeConfirmTitle')}
+                description={t('imageChangeConfirmDescription')}
+                confirmLabel={t('confirm')}
                 cancelLabel={t('cancel')}
             />
         </form>

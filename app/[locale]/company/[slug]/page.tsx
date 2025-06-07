@@ -1,5 +1,4 @@
 import ContainerApp from "@/components/Container-app";
-import { getTranslations } from "next-intl/server";
 import { EditCompanyForm } from "@/components/company/edit-company-form";
 import { fetchContentApi } from "@/components/actions/fetch-content-api";
 import { Company, CompanyMember } from "@/components/types/strapi";

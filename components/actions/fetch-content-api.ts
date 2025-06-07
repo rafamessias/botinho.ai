@@ -44,5 +44,10 @@ export async function fetchContentApi<T>(
     );
   }
 
+  // If the method is DELETE, return a boolean true
+  if (options?.method === 'DELETE') {
+    return { data: true } as T;
+  }
+
   return (await response.json()) as T;
 }

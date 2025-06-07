@@ -12,6 +12,7 @@ export interface StrapiResponse<T> {
 
 export interface StrapiImage {
     id: number;
+    documentId: string;
     name: string;
     alternativeText: string | null;
     caption: string | null;
@@ -47,6 +48,7 @@ interface ImageFormat {
 
 export interface User {
     id: number;
+    documentId: string;
     username: string;
     email: string;
     provider: string;
@@ -65,6 +67,7 @@ export interface User {
 
 export interface Company {
     id: number;
+    documentId: string;
     name: string;
     documentType: 'CPF' | 'CNPJ';
     document: string;
@@ -82,10 +85,10 @@ export interface Company {
 
 export interface CompanyMember {
     id: number;
+    documentId: string;
     company: Company;
     user: User;
     role: 'admin' | 'member';
-    documentId?: string;
     isAdmin: boolean;
     canPost: boolean;
     canApprove: boolean;
@@ -95,6 +98,7 @@ export interface CompanyMember {
 
 export interface Project {
     id: number;
+    documentId: string;
     name: string;
     description: string;
     address: string;
@@ -109,6 +113,7 @@ export interface Project {
 
 export interface ProjectUser {
     id: number;
+    documentId: string;
     project: Project;
     name: string;
     email: string;
@@ -119,6 +124,7 @@ export interface ProjectUser {
 
 export interface RDO {
     id: number;
+    documentId: string;
     user: User;
     project: Project;
     date: string;
@@ -133,6 +139,7 @@ export interface RDO {
 
 export interface Incident {
     id: number;
+    documentId: string;
     user: User;
     project: Project;
     title: string;
@@ -147,6 +154,7 @@ export interface Incident {
 
 export interface Comment {
     id: number;
+    documentId: string;
     user: User;
     content: string;
     rdo?: RDO;
@@ -157,6 +165,7 @@ export interface Comment {
 
 export interface Approval {
     id: number;
+    documentId: string;
     user: User;
     rdo: RDO;
     status: 'approved' | 'rejected';

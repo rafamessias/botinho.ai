@@ -80,7 +80,19 @@
         "reset": "Reset",
         "resetConfirmTitle": "Reset Changes",
         "resetConfirmDescription": "Are you sure you want to reset all changes? This will restore the form to its initial state.",
-        "resetConfirm": "Yes, reset changes"
+        "resetConfirm": "Yes, reset changes",
+        "imageChangeConfirmTitle": "Change Image",
+        "imageChangeConfirmDescription": "Are you sure you want to change the image? This will replace the current image with a new one.",
+        "imageChangeConfirm": "Yes, change image",
+        "imageChangeError": "Failed to change image",
+        "imageRemoveError": "Failed to remove image",
+        "confirm": "Confirm",
+        "logoRemoved": "Logo removed successfully",
+        "logoRemoveError": "Failed to remove logo",
+        "logoUpdated": "Logo updated successfully",
+        "logoUpdateError": "Failed to update logo",
+        "memberRemoved": "Member removed successfully",
+        "memberRemoveError": "Failed to remove member"
     },
     "error": {
         "notFound": {

@@ -50,6 +50,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     <ProjectCard
                         key={project.id}
                         id={project.id}
+                        documentId={project.documentId}
                         title={project.name}
                         description={project.description}
                         imageUrl={project.image?.url}

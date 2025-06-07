@@ -80,7 +80,19 @@
         "reset": "Resetar",
         "resetConfirmTitle": "Resetar Alterações",
         "resetConfirmDescription": "Tem certeza que deseja resetar todas as alterações? Isso restaurará o formulário ao seu estado inicial.",
-        "resetConfirm": "Sim, resetar alterações"
+        "resetConfirm": "Sim, resetar alterações",
+        "imageChangeConfirmTitle": "Alterar Logo",
+        "imageChangeConfirmDescription": "Tem certeza que deseja alterar a logo? Isso substituirá a logo atual por uma nova.",
+        "imageChangeConfirm": "Sim, alterar logo",
+        "imageChangeError": "Falha ao alterar logo",
+        "imageRemoveError": "Falha ao remover logo",
+        "confirm": "Confirmar",
+        "logoRemoved": "Logo removida com sucesso",
+        "logoRemoveError": "Falha ao remover logo",
+        "logoUpdated": "Logo atualizada com sucesso",
+        "logoUpdateError": "Falha ao atualizar logo",
+        "memberRemoved": "Membro removido com sucesso",
+        "memberRemoveError": "Falha ao remover membro"
     },
     "error": {
         "notFound": {

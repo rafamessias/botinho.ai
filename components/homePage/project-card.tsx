@@ -13,9 +13,10 @@ interface ProjectCardProps {
   imageUrl: string
   isActive?: boolean
   priority?: boolean
+  documentId: string
 }
 
-export default function ProjectCard({ id, title, description, imageUrl, isActive = true, priority = false }: ProjectCardProps) {
+export default function ProjectCard({ id, title, description, imageUrl, isActive = true, priority = false, documentId }: ProjectCardProps) {
 
   const image = imageUrl ? imageUrl : "/placeholder-image.webp"
 
@@ -52,10 +53,10 @@ export default function ProjectCard({ id, title, description, imageUrl, isActive
         <p className="text-sm text-muted-foreground">{description}</p>
       </CardContent>
       <CardFooter className="flex gap-2 px-6 pt-3">
-        <Link href={`/feed/${id}`} className="w-full">
+        <Link href={`/feed/${documentId}`} className="w-full">
           <Button className="w-full bg-primary hover:bg-primary/90">Ver Atualizações</Button>
         </Link>
-        <Link href={`/project/${id}`} >
+        <Link href={`/project/${documentId}`} >
           <Button variant="ghost" size="icon" className="h-10 w-10 border border-gray-300">
             <InfoIcon className="h-4 w-4" />
             <span className="sr-only">Informações</span>

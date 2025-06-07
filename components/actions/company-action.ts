@@ -5,6 +5,7 @@ import { User } from '@/components/shared/add-user-dialog';
 import { uploadFile } from '@/lib/strapi';
 import { fetchContentApi } from './fetch-content-api';
 import { getUserMeLoader } from '../services/get-user-me-loader';
+import { Company } from '../types/strapi';
 
 interface CreateCompanyData {
     companyName: string;
@@ -156,40 +157,28 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
     }
 }
 
-export async function updateCompany(data: any, image: FormData) {
+export async function updateCompany(data: any) {
     try {
-        const response = await fetch(`companies/${data.documentId}`, {
+
+        //remove documentId, id, createdAt, updatedAt, publishedAt, logo
+        const { documentId, id, createdAt, updatedAt, publishedAt, logo, ...companyData } = data;
+
+        const response: any = await fetchContentApi(`companies/${documentId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
+            body: {
+                data: companyData
             },
-            body: JSON.stringify(data),
         });
 
-        if (!response.ok) {
+        if (!response.data) {
             throw new Error('Failed to update company');
         }
 
-        const result = await response.json();
-
-        // If there's an image, upload it
-        if (image.has('companyLogo')) {
-            const imageResponse = await fetch('/api/company/logo', {
-                method: 'POST',
-                body: image,
-            });
-
-            if (!imageResponse.ok) {
-                throw new Error('Failed to upload company logo');
-            }
-
-            const imageResult = await imageResponse.json();
-            result.data.logo = imageResult.logo;
-        }
+        const company = response.data;
 
         return {
             success: true,
-            data: result.data
+            data: company
         };
     } catch (error) {
         console.error('Error updating company:', error);
