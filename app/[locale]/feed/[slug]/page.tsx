@@ -1,7 +1,7 @@
 import React from 'react';
 import ContainerApp from '@/components/Container-app';
 import RDOCard from '@/components/feedPage/RDOCard';
-import { RDO } from '@/types/strapi';
+import { RDO } from '@/components/types/strapi';
 
 // Mock data for demonstration
 const mockRDOs: RDO[] = [
