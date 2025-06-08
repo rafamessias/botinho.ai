@@ -31,8 +31,8 @@ export interface StrapiImage {
     url: string;
     previewUrl: string | null;
     provider: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 interface ImageFormat {
@@ -61,8 +61,8 @@ export interface User {
     company?: Company;
     type: 'companyUser' | 'projectUser';
     language: 'pt-BR' | 'en';
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Company {
@@ -79,8 +79,8 @@ export interface Company {
     users?: User[];
     members?: CompanyMember[];
     projects?: Project[];
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface CompanyMember {
@@ -92,8 +92,8 @@ export interface CompanyMember {
     isAdmin: boolean;
     canPost: boolean;
     canApprove: boolean;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Project {
@@ -107,8 +107,8 @@ export interface Project {
     users?: ProjectUser[];
     rdos?: RDO[];
     incidents?: Incident[];
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface ProjectUser {
@@ -118,8 +118,8 @@ export interface ProjectUser {
     name: string;
     email: string;
     phone: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface RDO {
@@ -127,14 +127,14 @@ export interface RDO {
     documentId: string;
     user: User;
     project: Project;
-    date: string;
+    date: Date;
     description: string;
-    image?: StrapiImage;
+    media?: StrapiImage[];
     status: 'pending' | 'approved' | 'rejected';
     comments?: Comment[];
     approvals?: Approval[];
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Incident {
@@ -144,12 +144,13 @@ export interface Incident {
     project: Project;
     title: string;
     description: string;
-    image?: StrapiImage;
+    media?: StrapiImage[];
     status: 'open' | 'in_progress' | 'resolved' | 'closed';
     priority: 'low' | 'medium' | 'high' | 'critical';
     comments?: Comment[];
-    createdAt: string;
-    updatedAt: string;
+    approvals?: Approval[];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Comment {
@@ -159,17 +160,28 @@ export interface Comment {
     content: string;
     rdo?: RDO;
     incident?: Incident;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Approval {
     id: number;
     documentId: string;
+    company?: Company;
+    project?: Project;
+    incident?: Incident;
+    rdo?: RDO;
     user: User;
-    rdo: RDO;
-    status: 'approved' | 'rejected';
-    comment?: string;
-    createdAt: string;
-    updatedAt: string;
+    action: 'approved' | 'rejected';
+    description?: string;
+    date: Date;
+    ip_address?: string;
+    latitude?: string;
+    longitude?: string;
+    device_type?: string;
+    time_zone?: string;
+    geo_location?: string;
+    createdAt: Date;
+    updatedAt: Date;
+
 } 
