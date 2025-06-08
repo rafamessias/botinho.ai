@@ -131,9 +131,9 @@ export interface RDO {
     description: string;
     media?: StrapiImage[];
     status: 'pending' | 'approved' | 'rejected';
-    wheatherMorning: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean };
-    wheatherAfternoon: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean };
-    wheatherNight: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean };
+    wheatherMorning: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean } | null;
+    wheatherAfternoon: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean } | null;
+    wheatherNight: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean } | null;
     comments?: Comment[];
     approvals?: Approval[];
     createdAt: Date;
