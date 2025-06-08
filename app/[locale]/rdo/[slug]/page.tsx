@@ -118,6 +118,9 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
                 createdAt: new Date("2024-03-20T10:00:00Z"),
                 updatedAt: new Date("2024-03-20T10:00:00Z")
             }],
+            wheatherMorning: { condition: 'clear', workable: true },
+            wheatherAfternoon: { condition: 'clear', workable: true },
+            wheatherNight: { condition: 'rainy', workable: false },
             comments: [
                 {
                     id: 1,

@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { StrapiImage } from '../types/strapi';
 
 interface CarouselMediaProps {
-    images: string[];
+    images: StrapiImage[];
 }
 
 const CarouselMedia: React.FC<CarouselMediaProps> = ({ images }) => {
@@ -38,7 +39,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images }) => {
                                 }`}
                         >
                             <Image
-                                src={image}
+                                src={image.url}
                                 alt="RDO"
                                 width={552}
                                 height={260}

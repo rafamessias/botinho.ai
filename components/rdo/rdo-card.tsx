@@ -64,7 +64,10 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
         <Card className="bg-white shadow-sm border border-gray-100 py-4 px-2 space-y-4">
             <CardHeader className="flex flex-row items-center justify-between space-y-4">
                 <div>
-                    <div className="text-xs text-muted-foreground">RDO <span className="font-bold">#{rdo.id}</span></div>
+                    <div className="text-xs">
+                        <span className="text-muted-foreground">RDO</span>
+                        <span className="font-bold text-primary">#{rdo.id}</span>
+                    </div>
                     <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
                         <Avatar className="h-6 w-6">
                             {rdo?.user?.avatar ? (
