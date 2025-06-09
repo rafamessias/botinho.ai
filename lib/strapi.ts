@@ -2,6 +2,8 @@
 import { getAuthToken } from "@/components/services/get-token";
 import { cookies } from "next/headers";
 import { fetchContentApi } from "@/components/actions/fetch-content-api";
+import { ApiResponse } from "@/components/types/strapi";
+import { User } from "@/components/types/strapi";
 const strapiUrl = process.env.STRAPI_URL;
 
 const config = {
@@ -83,11 +85,15 @@ export async function signIn(email: string, password: string) {
         const cookieStore = await cookies();
         cookieStore.set("jwt", responseData.jwt, config);
 
-        const user = await fetchContentApi(`users/me?populate=*`, {
+        const user: ApiResponse<User> = await fetchContentApi<User>(`users/me?populate=*`, {
             token: responseData.jwt
         })
 
-        return { responseData, user };
+        if (!user.success) {
+            throw new Error(user.error || "Failed to fetch user");
+        }
+
+        return { responseData, user: user.data };
     } catch (error) {
         console.error('Sign in error:', error);
         throw error;
@@ -120,9 +126,6 @@ export async function uploadFile(file: File, id: number, collection: string, fie
             },
             body: formData,
         });
-
-        //console.log('response', response);
-        //console.log("fileInfo", fileInfo);
 
         if (!response.ok) {
             const errorText = await response.text();

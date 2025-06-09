@@ -11,14 +11,13 @@ import { useUser } from "./UserProvider"
 import { useLoading } from "./LoadingProvider"
 import { useState } from "react"
 import { useEffect } from "react"
-import { useRouter } from "next/navigation"
 
 export default function Header() {
   const { user, setUser } = useUser();
   const { setIsLoading } = useLoading();
-  const router = useRouter();
   const [userName, setUserName] = useState('');
   const [companyId, setCompanyId] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (user) {

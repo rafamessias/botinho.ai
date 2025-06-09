@@ -4,10 +4,13 @@ import { cookies } from 'next/headers';
 import { uploadFile } from '@/lib/strapi';
 import { fetchContentApi } from './fetch-content-api';
 import { getUserMeLoader } from '../services/get-user-me-loader';
-import { Company, CompanyMemberDialog } from '@/components/types/strapi';
+import { ApiResponse, Company, CompanyMember, CompanyMemberDialog, User } from '@/components/types/strapi';
 
 
 export async function createCompany(data: Company, members: CompanyMemberDialog[], image: FormData) {
+
+    let companyRecordCreated: Company | null = null;
+
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -16,8 +19,16 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
             throw new Error('Not authenticated');
         }
 
+
+        const userMeLoader: any = await getUserMeLoader();
+        if (!userMeLoader.ok) {
+            throw new Error('Failed to get current user');
+        }
+
+        const currentUser: User = userMeLoader.data;
+
         // Create the company
-        const companyResponse: any = await fetchContentApi(`companies`, {
+        const companyResponse: ApiResponse<Company> = await fetchContentApi<Company>(`companies`, {
             method: 'POST',
             body: {
                 data: {
@@ -28,6 +39,7 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                     state: data.state,
                     city: data.city,
                     address: data.address,
+                    owner: currentUser.id
                 }
             }
         });
@@ -41,15 +53,14 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
         console.log(`Creating Company ${companyRecord.id} - Company created successfully`);
 
         // Update the current user with the company relationship
-        const currentUser: any = await getUserMeLoader();
-        const currentUserResponse: any = await fetchContentApi(`users/${currentUser.data.id}`, {
+        const currentUserResponse: ApiResponse<User> = await fetchContentApi<User>(`users/${currentUser.id}`, {
             method: 'PUT',
             body: {
                 company: companyRecord.id
             },
         });
 
-        if (!currentUserResponse.id) {
+        if (!currentUserResponse.data?.id) {
             throw new Error('Failed to update current user with company');
         }
 
@@ -57,28 +68,32 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
 
 
         // Add current user as company member - Admin role
-        const memberResponse: any = await fetchContentApi(`company-members`, {
+        const memberResponse: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members`, {
             method: 'POST',
             body: {
                 data: {
                     company: companyRecord.id,
-                    user: currentUser.data.id,
+                    user: currentUser.id,
                     role: 'admin',
                     isAdmin: true,
                     canPost: true,
-                    canApprove: true
+                    canApprove: true,
+                    isOwner: true
                 }
             }
         });
 
-        if (!memberResponse) {
+        if (!memberResponse.data) {
             throw new Error('Failed to add current user as company member');
         }
+
+        //save here, if it fails - catch will return the companyRecordCreated
+        companyRecordCreated = companyRecord;
 
         console.log(`Creating Company ${companyRecord.id} - Current user added as company member Admin successfully`);
 
         // First, upload the company logo if it exists
-        const logoFile = image.get('companyLogo');
+        const logoFile = image.get('logo');
         if (logoFile) {
             const uploadResponse = await uploadFile(logoFile as File, companyRecord.id, 'api::company.company', 'logo');
             if (!uploadResponse) {
@@ -93,7 +108,7 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
             const memberPromises = members.map(async (user) => {
                 // First, create or get the user
                 const pwd = Math.random().toString(36).slice(-8); // Generate random password
-                const userResponse: any = await fetchContentApi(`auth/local/register`, {
+                const userResponse: any = await fetchContentApi<User>(`auth/local/register`, {
                     method: 'POST',
                     body: {
                         username: user.email,
@@ -106,14 +121,15 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                     }
                 });
 
-                if (!userResponse?.user) {
-                    throw new Error(`Failed to create user: ${user.email}`);
+                if (!userResponse?.success || !userResponse.data) {
+                    console.error(`Failed to create user: ${user.email}`);
+                    return { success: false, error: `Failed to create user: ${user.email}` };
                 }
 
-                const userData = userResponse.user;
+                const userData: User = userResponse.data?.user;
 
                 // Then, add the user as a company member
-                const memberResponse: any = await fetchContentApi(`company-members`, {
+                const memberResponse: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members`, {
                     method: 'POST',
                     body: {
                         data: {
@@ -128,9 +144,12 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                 });
 
                 if (!memberResponse) {
-                    throw new Error(`Failed to add member: ${user.email}`);
+                    console.error(`Failed to add member: ${user.email}`);
+                    return { success: false, error: `Failed to add member: ${user.email}` };
                 }
+
                 console.log(`Creating Company ${companyRecord.id} - Member ${user.email} added successfully`);
+                return { success: true, data: memberResponse };
 
             });
 
@@ -140,7 +159,7 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
         return { success: true, data: companyRecord };
     } catch (error) {
         console.error('Error creating company:', error);
-        return { success: false, error: error instanceof Error ? error.message : 'An error occurred' };
+        return { success: false, error: error instanceof Error ? error.message : 'An error occurred', data: companyRecordCreated };
     }
 }
 

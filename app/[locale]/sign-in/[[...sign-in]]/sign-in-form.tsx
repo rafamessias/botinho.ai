@@ -47,6 +47,8 @@ export function SignInForm() {
             toast.error(message);
             if (message.includes("Your account email is not confirmed")) {
                 router.push('/sign-up/check-email');
+            } else if (message.includes("Invalid identifier or password")) {
+                toast.error("Invalid email or password");
             }
             setIsNavigating(false);
             setGlobalLoading(false);

@@ -6,6 +6,7 @@ import { Plus, Search } from "lucide-react"
 import { fetchContentApi } from "@/components/actions/fetch-content-api"
 import { getTranslations } from "next-intl/server"
 import ContainerApp from "@/components/Container-app"
+import { Project } from "@/components/types/strapi"
 export const dynamic = "force-dynamic";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -14,7 +15,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
     let allProjects: any;
     try {
-        allProjects = await fetchContentApi('projects?populate=*')
+        allProjects = await fetchContentApi<Project>('projects?populate=*')
+
     } catch (error) {
         console.error('Failed to fetch projects:', error);
         allProjects = { data: [] };

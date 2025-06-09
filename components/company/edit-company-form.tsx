@@ -195,7 +195,6 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     };
 
     const confirmImageChange = async () => {
-        console.log('confirmImageChange');
         if (!pendingImageChange) return;
 
         try {
@@ -308,7 +307,6 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 initialFiles={logo?.url ? [logo.url] : []}
                 onRemoveImage={handleRemoveImage}
                 onChange={(file) => {
-                    console.log('onChange', file);
                     handleImageChange(file);
 
                 }}
@@ -477,12 +475,12 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             </div>
 
             <div>
-                <label className="font-semibold">{t('companyAddress')}</label>
+                <label className="font-semibold">{t('address')}</label>
                 <textarea
-                    {...register('address', { required: t('companyAddress') + ' is required' })}
+                    {...register('address', { required: t('address') + ' is required' })}
                     className="w-full mt-1 rounded-md border px-3 py-2 text-sm"
                     rows={3}
-                    placeholder={t('companyAddressPlaceholder')}
+                    placeholder={t('addressPlaceholder')}
                     disabled={isSubmitting}
                 />
                 {errors.address && (

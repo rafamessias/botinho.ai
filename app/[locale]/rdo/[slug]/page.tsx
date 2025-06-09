@@ -6,7 +6,7 @@ import ContainerApp from '@/components/Container-app';
 
 export default async function RdoPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    console.log(slug);
+    //console.log(slug);
 
     let rdo: RDO = {} as RDO;
     try {

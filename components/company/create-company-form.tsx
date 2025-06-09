@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
-import { Company, CompanyMemberDialog } from '@/components/types/strapi';
+import { Company, CompanyMemberDialog, ApiResponse } from '@/components/types/strapi';
 
 export function CreateCompanyForm() {
     const t = useTranslations('company');
@@ -50,20 +50,27 @@ export function CreateCompanyForm() {
                 image.append('logo', data.logo);
             }
 
-            const result = await createCompany(cleanData, userMembers, image);
+            const result: ApiResponse<Company> = await createCompany(cleanData, userMembers, image);
 
             if (result.success) {
                 toast.success(t('companyCreated'));
                 setUser({ ...user, company: result.data });
-
                 router.push('/');
+
             } else {
                 toast.error(result.error || t('companyCreationError'));
+
+                if (result?.data) {
+                    setUser({ ...user, company: result.data });
+                    router.push('/');
+                }
+
                 setIsLoading(false);
             }
-        } catch (error) {
+        } catch (result: any) {
             toast.error(t('companyCreationError'));
-            console.error('Error creating company:', error);
+            console.error('Error creating company:', result?.error);
+
             setIsLoading(false);
         } finally {
             setIsSubmitting(false);
@@ -111,6 +118,7 @@ export function CreateCompanyForm() {
                         value={documentType}
                         onValueChange={value => {
                             setValue('documentType', value as 'CPF' | 'CNPJ');
+                            setValue('document', ''); 234
                             clearErrors(['document']);
                         }}
                         disabled={isSubmitting}
@@ -243,7 +251,7 @@ export function CreateCompanyForm() {
             </div>
 
             <div>
-                <label className="font-semibold">{t('companyAddress')}</label>
+                <label className="font-semibold">{t('address')}</label>
                 <textarea
                     {...register('address', { required: t('address') + ' is required' })}
                     className="w-full mt-1 rounded-md border px-3 py-2 text-sm"

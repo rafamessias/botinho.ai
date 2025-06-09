@@ -204,5 +204,18 @@ export interface Approval {
     geo_location?: string;
     createdAt?: Date;
     updatedAt?: Date;
+}
 
-} 
+export interface ApiResponse<T> {
+    success: boolean;
+    error?: string | null;
+    data?: T | null;
+    meta?: {
+        pagination?: {
+            page: number;
+            pageSize: number;
+            pageCount: number;
+            total: number;
+        };
+    } | null;
+}

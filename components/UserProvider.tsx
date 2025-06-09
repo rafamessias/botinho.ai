@@ -1,6 +1,8 @@
 'use client'
 import { createContext, useContext, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { getUserMe } from "@/components/actions/get-user-me-action";
+import { ApiResponse } from "./types/strapi";
+import { User } from "./types/strapi";
 
 type UserContextType = {
     user: any;
@@ -13,13 +15,18 @@ const UserContext = createContext<UserContextType>({
 });
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         // Fetch user from server action on mount
         (async () => {
-            const me = await getUserMe();
-            if (me) setUser(me as any);
+            const me: ApiResponse<User> = await getUserMe();
+            if (me.success) {
+                setUser(me.data as User);
+            } else {
+                console.error(me.error);
+                setUser(null);
+            }
         })();
     }, []);
 

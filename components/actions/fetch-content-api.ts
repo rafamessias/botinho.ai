@@ -1,8 +1,15 @@
 'use server';
 
 import { getAuthToken } from "@/components/services/get-token";
+import { ApiResponse } from "../types/strapi";
 
 const strapiUrl = process.env.STRAPI_URL;
+
+// Example usage with type specification:
+// const response = await fetchContentApi<Company>('companies', { method: 'GET' });
+// const response = await fetchContentApi<Incident>('incidents', { method: 'POST', body: incidentData });
+// const response = await fetchContentApi<Comment>('comments', { method: 'PUT', body: commentData });
+
 
 export async function fetchContentApi<T>(
   endpoint: string,
@@ -12,42 +19,56 @@ export async function fetchContentApi<T>(
     body?: any;
     revalidateSeconds?: number;
   }
-): Promise<T> {
-  const url = new URL(endpoint, `${strapiUrl}/api/`);
-  const token = options?.token || await getAuthToken();
+): Promise<ApiResponse<T>> {
 
-  // Default fetch options
-  const fetchOptions: RequestInit = {
-    method: options?.method || 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    next: options?.revalidateSeconds
-      ? { revalidate: options.revalidateSeconds }
-      : undefined,
-  };
+  try {
 
-  if (options?.body) {
-    fetchOptions.body = JSON.stringify(options.body);
+    const url = new URL(endpoint, `${strapiUrl}/api/`);
+    const token = options?.token || await getAuthToken();
+
+    // Default fetch options
+    const fetchOptions: RequestInit = {
+      method: options?.method || 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      next: options?.revalidateSeconds
+        ? { revalidate: options.revalidateSeconds }
+        : undefined,
+    };
+
+    if (options?.body) {
+      fetchOptions.body = JSON.stringify(options.body);
+    }
+
+    // console.log('fetchOptions', fetchOptions);
+    // console.log('strapiUrl', strapiUrl);
+    // console.log('url', url.toString());
+    const response = await fetch(url.toString(), fetchOptions);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return { success: false, data: null, meta: null, error: `fetchContentApi error: ${response.status} ${response.statusText} - ${errorText}` } as ApiResponse<T>;
+    }
+
+    // If the method is DELETE, return a boolean true
+    if (options?.method === 'DELETE') {
+      return { success: true, data: true } as ApiResponse<T>;
+    }
+
+    const getData = await response.json();
+    let data: T | null = null;
+    let meta: any = null;
+
+    if (getData.data) data = getData.data as T;
+    else data = getData as T;
+
+    if (getData.meta) meta = getData.meta;
+
+    return { success: true, data: data, meta: meta } as ApiResponse<T>;
+
+  } catch (error) {
+    return { success: false, data: null, meta: null, error: `fetchContentApi error: ${error}` } as ApiResponse<T>;
   }
-
-  // console.log('fetchOptions', fetchOptions);
-  // console.log('strapiUrl', strapiUrl);
-  // console.log('url', url.toString());
-  const response = await fetch(url.toString(), fetchOptions);
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      `fetchContentApi error: ${response.status} ${response.statusText} - ${errorText}`
-    );
-  }
-
-  // If the method is DELETE, return a boolean true
-  if (options?.method === 'DELETE') {
-    return { data: true } as T;
-  }
-
-  return (await response.json()) as T;
 }
