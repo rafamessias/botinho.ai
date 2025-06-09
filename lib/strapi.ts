@@ -94,13 +94,13 @@ export async function signIn(email: string, password: string) {
     }
 }
 
-export async function uploadFile(file: File, id: string, collection: string, field: string) {
+export async function uploadFile(file: File, id: number, collection: string, field: string) {
     try {
         // Create form data
         const formData = new FormData();
         formData.append('files', file);
         formData.append('ref', collection);
-        formData.append('refId', id);
+        formData.append('refId', id.toString());
         formData.append('field', field);
 
         //file info

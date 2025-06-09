@@ -11,8 +11,8 @@ export interface StrapiResponse<T> {
 }
 
 export interface StrapiImage {
-    id: number;
-    documentId: string;
+    id?: number;
+    documentId?: string;
     name: string;
     alternativeText: string | null;
     caption: string | null;
@@ -31,8 +31,8 @@ export interface StrapiImage {
     url: string;
     previewUrl: string | null;
     provider: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 interface ImageFormat {
@@ -47,27 +47,27 @@ interface ImageFormat {
 }
 
 export interface User {
-    id: number;
-    documentId: string;
+    id?: number;
+    documentId?: string;
     username: string;
     email: string;
-    provider: string;
-    confirmed: boolean;
-    blocked: boolean;
-    firstName: string;
-    lastName: string;
-    phone: string;
-    avatar?: StrapiImage;
-    company?: Company;
-    type: 'companyUser' | 'projectUser';
-    language: 'pt-BR' | 'en';
-    createdAt: Date;
-    updatedAt: Date;
+    provider?: string;
+    confirmed?: boolean;
+    blocked?: boolean;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    avatar?: StrapiImage | FileList | null;
+    company?: Company | number;
+    type?: 'companyUser' | 'projectUser';
+    language?: 'pt-BR' | 'en';
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface Company {
-    id: number;
-    documentId: string;
+    id?: number;
+    documentId?: string;
     name: string;
     documentType: 'CPF' | 'CNPJ';
     document: string;
@@ -75,106 +75,124 @@ export interface Company {
     state: string;
     city: string;
     address: string;
-    logo?: StrapiImage;
+    owner: User | number;
+    logo?: StrapiImage | FileList | null;
     users?: User[];
     members?: CompanyMember[];
     projects?: Project[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface CompanyMember {
-    id: number;
-    documentId: string;
-    company: Company;
-    user: User;
+    id?: number;
+    documentId?: string;
+    company: Company | number;
+    user: User | number;
     role: 'admin' | 'member';
     isAdmin: boolean;
     canPost: boolean;
     canApprove: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    isOwner: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface CompanyMemberDialog {
+    id?: number;
+    name: string;
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    phone: string;
+    avatar?: string;
+    documentId?: string;
+    user?: User;
+    isAdmin: boolean;
+    canPost: boolean;
+    canApprove: boolean;
+    isOwner?: boolean;
 }
 
 export interface Project {
-    id: number;
-    documentId: string;
+    id?: number;
+    documentId?: string;
     name: string;
     description: string;
     address: string;
-    image?: StrapiImage;
-    company: Company;
+    image?: StrapiImage | FileList | null;
+    company: Company | number;
     users?: ProjectUser[];
     rdos?: RDO[];
     incidents?: Incident[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface ProjectUser {
-    id: number;
-    documentId: string;
-    project: Project;
+    id?: number;
+    documentId?: string;
+    project: Project | number;
     name: string;
     email: string;
     phone: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface RDO {
-    id: number;
-    documentId: string;
-    user: User;
-    project: Project;
+    id?: number;
+    documentId?: string;
+    user: User | number;
+    project: Project | number;
     date: Date;
     description: string;
-    media?: StrapiImage[];
+    media?: StrapiImage[] | FileList | null;
     status: 'pending' | 'approved' | 'rejected';
     wheatherMorning: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean } | null;
     wheatherAfternoon: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean } | null;
     wheatherNight: { condition: 'clear' | 'cloudy' | 'rainy', workable: boolean } | null;
     comments?: Comment[];
     approvals?: Approval[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface Incident {
-    id: number;
-    documentId: string;
-    user: User;
-    project: Project;
+    id?: number;
+    documentId?: string;
+    user: User | number;
+    project: Project | number;
     title: string;
     description: string;
-    media?: StrapiImage[];
+    media?: StrapiImage[] | FileList | null;
     status: 'open' | 'in_progress' | 'resolved' | 'closed';
     priority: 'low' | 'medium' | 'high' | 'critical';
     comments?: Comment[];
     approvals?: Approval[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface Comment {
-    id: number;
-    documentId: string;
-    user: User;
+    id?: number;
+    documentId?: string;
+    user: User | number;
     content: string;
-    rdo?: RDO;
-    incident?: Incident;
-    createdAt: Date;
-    updatedAt: Date;
+    rdo?: RDO | number;
+    incident?: Incident | number;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface Approval {
-    id: number;
-    documentId: string;
-    company?: Company;
-    project?: Project;
-    incident?: Incident;
-    rdo?: RDO;
-    user: User;
+    id?: number;
+    documentId?: string;
+    company?: Company | number;
+    project?: Project | number;
+    incident?: Incident | number;
+    rdo?: RDO | number;
+    user: User | number;
     action: 'approved' | 'rejected';
     description?: string;
     date: Date;
@@ -184,7 +202,7 @@ export interface Approval {
     device_type?: string;
     time_zone?: string;
     geo_location?: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 
 } 

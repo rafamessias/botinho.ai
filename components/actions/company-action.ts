@@ -1,26 +1,13 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { User } from '@/components/shared/add-user-dialog';
 import { uploadFile } from '@/lib/strapi';
 import { fetchContentApi } from './fetch-content-api';
 import { getUserMeLoader } from '../services/get-user-me-loader';
-import { Company } from '../types/strapi';
+import { Company, CompanyMemberDialog } from '@/components/types/strapi';
 
-interface CreateCompanyData {
-    companyName: string;
-    documentType: 'CPF' | 'CNPJ';
-    cpf?: string;
-    cnpj?: string;
-    zipcode: string;
-    state: string;
-    city: string;
-    companyAddress: string;
-    companyLogo?: FileList;
-    users: User[];
-}
 
-export async function createCompany(data: CreateCompanyData, image: FormData) {
+export async function createCompany(data: Company, members: CompanyMemberDialog[], image: FormData) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -34,13 +21,13 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
             method: 'POST',
             body: {
                 data: {
-                    name: data.companyName,
+                    name: data.name,
                     documentType: data.documentType.toUpperCase(),
-                    document: data.documentType === 'CPF' ? data.cpf : data.cnpj,
-                    zipCode: data.zipcode,
+                    document: data.document,
+                    zipCode: data.zipCode,
                     state: data.state,
                     city: data.city,
-                    address: data.companyAddress,
+                    address: data.address,
                 }
             }
         });
@@ -102,8 +89,8 @@ export async function createCompany(data: CreateCompanyData, image: FormData) {
         }
 
         // Add users as company members
-        if (data.users.length > 0) {
-            const memberPromises = data.users.map(async (user) => {
+        if (members.length > 0) {
+            const memberPromises = members.map(async (user) => {
                 // First, create or get the user
                 const pwd = Math.random().toString(36).slice(-8); // Generate random password
                 const userResponse: any = await fetchContentApi(`auth/local/register`, {

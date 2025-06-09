@@ -1,20 +1,20 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, Shield, FileText, CheckCircle } from 'lucide-react';
+import { Pencil, Trash2, Shield, FileText, CheckCircle, Crown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { User } from './add-user-dialog';
+import { CompanyMemberDialog } from '@/components/types/strapi';
 import { ConfirmDialog } from './confirm-dialog';
 import { useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-interface UserItemProps extends User {
-    onEdit?: (user: User) => void;
+interface UserItemProps extends CompanyMemberDialog {
+    onEdit?: (user: CompanyMemberDialog) => void;
     onRemove?: () => void;
     disabled?: boolean;
 }
 
-export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, onEdit, onRemove, disabled }: UserItemProps) {
+export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, isOwner, onEdit, onRemove, disabled }: UserItemProps) {
     const t = useTranslations('shared.user');
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
@@ -38,7 +38,7 @@ export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, onE
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6 hover:bg-slate-200"
-                            onClick={() => onEdit({ name, email, phone, isAdmin, canPost, canApprove })}
+                            onClick={() => onEdit({ name, email, phone, isAdmin, canPost, canApprove, isOwner })}
                             title={t('edit')}
                             disabled={disabled}
                         >
@@ -61,6 +61,22 @@ export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, onE
                 </div>
                 <div className="flex gap-1 absolute -bottom-4 left-1 transform ">
                     <TooltipProvider>
+                        {isOwner && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <div
+                                        className="h-6 w-6 flex items-center justify-center text-amber-600 bg-white rounded-full border border-slate-200 shadow-sm"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <Crown className="h-3 w-3" />
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('permissions.isOwner')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        )}
+
                         {isAdmin && (
                             <Tooltip>
                                 <TooltipTrigger asChild>

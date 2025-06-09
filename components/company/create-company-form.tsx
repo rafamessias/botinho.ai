@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
-import { User } from '@/components/shared/add-user-dialog';
 import { Input } from '@/components/ui/input';
 import { useRef, useState, useEffect } from 'react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
@@ -13,19 +12,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
-
-interface CompanyFormValues {
-    companyName: string;
-    documentType: 'CPF' | 'CNPJ';
-    cpf?: string;
-    cnpj?: string;
-    zipcode: string;
-    state: string;
-    city: string;
-    companyAddress: string;
-    companyLogo?: FileList;
-    users: User[];
-}
+import { Company, CompanyMemberDialog } from '@/components/types/strapi';
 
 export function CreateCompanyForm() {
     const t = useTranslations('company');
@@ -33,41 +20,37 @@ export function CreateCompanyForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
-    const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<CompanyFormValues>({
+    const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<Company>({
         defaultValues: { documentType: 'CNPJ' }
     });
     const documentType = watch('documentType');
     const { setUser } = useUser();
     const { user } = useUser();
 
-    const onSubmit = async (data: CompanyFormValues) => {
+
+    const onSubmit = async (data: Company) => {
         try {
             setIsSubmitting(true);
             setIsLoading(true);
 
             // Remove masking from cpf, cnpj, and zipcode
-            const cleanData = {
+            const cleanData: Company = {
                 ...data,
-                cpf: data.cpf ? data.cpf.replace(/\D/g, '') : undefined,
-                cnpj: data.cnpj ? data.cnpj.replace(/\D/g, '') : undefined,
-                zipcode: data.zipcode.replace(/\D/g, '')
+                document: data.document ? data.document.replace(/\D/g, '') : '',
+                zipCode: data.zipCode.replace(/\D/g, '')
             };
 
             // Get users from the UserList component
-            const users = userListRef.current?.getUsers() || [];
-
-            // Combine form data with users
-            const formData = {
-                ...cleanData,
-                users,
-            };
+            const userMembers: CompanyMemberDialog[] = userListRef.current?.getUsers() || [];
 
             const image = new FormData();
-            if (data.companyLogo?.[0]) {
-                image.append('companyLogo', data.companyLogo[0]);
+            if (data.logo instanceof FileList && data.logo.length > 0) {
+                image.append('logo', data.logo[0]);
+            } else if (data.logo instanceof File) {
+                image.append('logo', data.logo);
             }
 
-            const result = await createCompany(formData, image);
+            const result = await createCompany(cleanData, userMembers, image);
 
             if (result.success) {
                 toast.success(t('companyCreated'));
@@ -103,7 +86,7 @@ export function CreateCompanyForm() {
                 register={register}
                 setValue={setValue}
                 type="logo"
-                name="companyLogo"
+                name="logo"
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
             />
@@ -111,13 +94,13 @@ export function CreateCompanyForm() {
             <div>
                 <label className="font-semibold">{t('companyName')}</label>
                 <Input
-                    {...register('companyName', { required: t('companyName') + ' is required' })}
+                    {...register('name', { required: t('companyName') + ' is required' })}
                     placeholder={t('companyNamePlaceholder')}
                     className="mt-1"
                     disabled={isSubmitting}
                 />
-                {errors.companyName && (
-                    <p className="text-sm text-red-500 mt-1">{errors.companyName.message}</p>
+                {errors.name && (
+                    <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
                 )}
             </div>
 
@@ -128,7 +111,7 @@ export function CreateCompanyForm() {
                         value={documentType}
                         onValueChange={value => {
                             setValue('documentType', value as 'CPF' | 'CNPJ');
-                            clearErrors(['cpf', 'cnpj']);
+                            clearErrors(['document']);
                         }}
                         disabled={isSubmitting}
                     >
@@ -145,7 +128,7 @@ export function CreateCompanyForm() {
                     <div>
                         <label className="font-semibold">{t('cpf')}</label>
                         <Input
-                            {...register('cpf', {
+                            {...register('document', {
                                 required: t('cpf') + ' is required',
                                 pattern: {
                                     value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
@@ -166,8 +149,8 @@ export function CreateCompanyForm() {
                                 e.target.value = value;
                             }}
                         />
-                        {errors.cpf && (
-                            <p className="text-sm text-red-500 mt-1">{errors.cpf.message}</p>
+                        {errors.document && (
+                            <p className="text-sm text-red-500 mt-1">{errors.document.message}</p>
                         )}
                     </div>
                 )}
@@ -175,7 +158,7 @@ export function CreateCompanyForm() {
                     <div>
                         <label className="font-semibold">{t('cnpj')}</label>
                         <Input
-                            {...register('cnpj', {
+                            {...register('document', {
                                 required: t('cnpj') + ' is required',
                                 pattern: {
                                     value: /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/,
@@ -197,8 +180,8 @@ export function CreateCompanyForm() {
                                 e.target.value = value;
                             }}
                         />
-                        {errors.cnpj && (
-                            <p className="text-sm text-red-500 mt-1">{errors.cnpj.message}</p>
+                        {errors.document && (
+                            <p className="text-sm text-red-500 mt-1">{errors.document.message}</p>
                         )}
                     </div>
                 )}
@@ -208,7 +191,7 @@ export function CreateCompanyForm() {
                 <div>
                     <label className="font-semibold">{t('zipcode')}</label>
                     <Input
-                        {...register('zipcode', {
+                        {...register('zipCode', {
                             required: t('zipcode') + ' is required',
                             pattern: {
                                 value: /^\d{5}-\d{3}$/,
@@ -227,8 +210,8 @@ export function CreateCompanyForm() {
                             e.target.value = value;
                         }}
                     />
-                    {errors.zipcode && (
-                        <p className="text-sm text-red-500 mt-1">{errors.zipcode.message}</p>
+                    {errors.zipCode && (
+                        <p className="text-sm text-red-500 mt-1">{errors.zipCode.message}</p>
                     )}
                 </div>
                 <div>
@@ -262,14 +245,14 @@ export function CreateCompanyForm() {
             <div>
                 <label className="font-semibold">{t('companyAddress')}</label>
                 <textarea
-                    {...register('companyAddress', { required: t('companyAddress') + ' is required' })}
+                    {...register('address', { required: t('address') + ' is required' })}
                     className="w-full mt-1 rounded-md border px-3 py-2 text-sm"
                     rows={3}
-                    placeholder={t('companyAddressPlaceholder')}
+                    placeholder={t('addressPlaceholder')}
                     disabled={isSubmitting}
                 />
-                {errors.companyAddress && (
-                    <p className="text-sm text-red-500 mt-1">{errors.companyAddress.message}</p>
+                {errors.address && (
+                    <p className="text-sm text-red-500 mt-1">{errors.address.message}</p>
                 )}
             </div>
 

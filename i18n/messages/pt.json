@@ -135,7 +135,8 @@
             "permissions": {
                 "isAdmin": "Administrador",
                 "canPost": "Pode Postar",
-                "canApprove": "Pode Aprovar"
+                "canApprove": "Pode Aprovar",
+                "isOwner": "Proprietário"
             }
         }
     },

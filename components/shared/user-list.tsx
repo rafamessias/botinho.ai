@@ -2,22 +2,23 @@
 
 import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { UserItem } from './user-item';
-import { AddUserDialog, User } from './add-user-dialog';
+import { AddUserDialog } from './add-user-dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { CompanyMemberDialog } from '@/components/types/strapi';
 
 export interface UserListRef {
-    getUsers: () => User[];
+    getUsers: () => CompanyMemberDialog[];
 }
 
 interface UserListProps {
-    onUsersChange?: (users: User[]) => void;
+    onUsersChange?: (users: CompanyMemberDialog[]) => void;
     disabled?: boolean;
-    initialUsers?: User[];
-    onAddUser?: (user: User) => void;
-    onEditUser?: (user: User) => void;
-    onRemoveUser?: (user: User) => void;
+    initialUsers?: CompanyMemberDialog[];
+    onAddUser?: (user: CompanyMemberDialog) => void;
+    onEditUser?: (user: CompanyMemberDialog) => void;
+    onRemoveUser?: (user: CompanyMemberDialog) => void;
 }
 
 export const UserList = forwardRef<UserListRef, UserListProps>(({
@@ -29,8 +30,8 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
     onRemoveUser
 }, ref) => {
     const t = useTranslations('shared.user');
-    const [users, setUsers] = useState<User[]>(initialUsers);
-    const [userToEdit, setUserToEdit] = useState<User | undefined>();
+    const [users, setUsers] = useState<CompanyMemberDialog[]>(initialUsers);
+    const [userToEdit, setUserToEdit] = useState<CompanyMemberDialog | undefined>();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     // Update users when initialUsers changes
@@ -44,7 +45,7 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
         getUsers: () => users
     }));
 
-    const handleAddUser = (newUser: User) => {
+    const handleAddUser = (newUser: CompanyMemberDialog) => {
         const updatedUsers = [...users, newUser];
         setUsers(updatedUsers);
         onUsersChange?.(updatedUsers);
@@ -53,7 +54,7 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
         setUserToEdit(undefined);
     };
 
-    const handleEditUser = (index: number, updatedUser: User) => {
+    const handleEditUser = (index: number, updatedUser: CompanyMemberDialog) => {
         const newUsers = [...users];
         newUsers[index] = updatedUser;
         setUsers(newUsers);
@@ -70,7 +71,7 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
         onUsersChange?.(newUsers);
     };
 
-    const handleEditClick = (user: User) => {
+    const handleEditClick = (user: CompanyMemberDialog) => {
         setUserToEdit(user);
         setIsDialogOpen(true);
     };

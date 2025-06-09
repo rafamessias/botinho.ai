@@ -1,7 +1,7 @@
 import ContainerApp from "@/components/Container-app";
 import { EditCompanyForm } from "@/components/company/edit-company-form";
 import { fetchContentApi } from "@/components/actions/fetch-content-api";
-import { Company, CompanyMember } from "@/components/types/strapi";
+import { Company, CompanyMemberDialog } from "@/components/types/strapi";
 import { RecordNotFound } from "@/components/shared/record-not-found";
 
 export default async function CompanyPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
@@ -9,7 +9,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
     //const t = await getTranslations({ locale, namespace: 'homepage' });
 
     let company: Company | null;
-    let companyMembers: CompanyMember[] | null;
+    let companyMembers: CompanyMemberDialog[] | null;
     try {
         //get company
         const companyRecord: any = await fetchContentApi(`companies/${slug}?populate=*`);

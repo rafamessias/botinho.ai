@@ -49,6 +49,22 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
                     state: "CA",
                     city: "Sample City",
                     address: "123 Business Ave",
+                    owner: {
+                        id: 1,
+                        documentId: "user-123",
+                        username: "john.doe",
+                        email: "john.doe@example.com",
+                        provider: "local",
+                        confirmed: true,
+                        blocked: false,
+                        firstName: "John",
+                        lastName: "Doe",
+                        phone: "+1234567890",
+                        type: "companyUser",
+                        language: "en",
+                        createdAt: new Date("2024-03-20T10:00:00Z"),
+                        updatedAt: new Date("2024-03-20T10:00:00Z")
+                    },
                     createdAt: new Date("2024-03-20T10:00:00Z"),
                     updatedAt: new Date("2024-03-20T10:00:00Z")
                 },

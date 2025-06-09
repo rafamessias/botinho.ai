@@ -15,19 +15,9 @@ import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { CompanyMemberDialog } from '@/components/types/strapi';
 
-export interface User {
-    name: string;
-    email: string;
-    phone: string;
-    avatar?: string;
-    documentId?: string;
-    isAdmin: boolean;
-    canPost: boolean;
-    canApprove: boolean;
-}
-
-interface AddUserFormValues extends User { }
+interface AddUserFormValues extends CompanyMemberDialog { }
 
 interface AddUserDialogProps {
     onAddUser?: (user: AddUserFormValues) => void;
@@ -63,12 +53,14 @@ export function AddUserDialog({
             isAdmin: false,
             canPost: false,
             canApprove: false,
+            isOwner: false,
         }
     });
 
     const isAdmin = watch('isAdmin');
     const canPost = watch('canPost');
     const canApprove = watch('canApprove');
+    const isOwner = watch('isOwner');
 
     const maskPhone = (value: string) => {
         const cleanValue = value.replace(/\D/g, '');
@@ -101,6 +93,7 @@ export function AddUserDialog({
                     isAdmin: false,
                     canPost: false,
                     canApprove: false,
+                    isOwner: false,
                 });
             }
         } else {
@@ -111,6 +104,7 @@ export function AddUserDialog({
                 isAdmin: false,
                 canPost: false,
                 canApprove: false,
+                isOwner: false,
             });
         }
     }, [open, userToEdit, reset]);
@@ -201,6 +195,17 @@ export function AddUserDialog({
                     </div>
 
                     <div className="space-y-4 pt-2">
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="isOwner" className="text-sm font-medium">
+                                {t('permissions.isOwner')}
+                            </Label>
+                            <Switch
+                                id="isOwner"
+                                checked={isOwner}
+                                disabled={true}
+                                className="opacity-50 cursor-not-allowed"
+                            />
+                        </div>
                         <div className="flex items-center justify-between">
                             <Label htmlFor="isAdmin" className="text-sm font-medium">
                                 {t('permissions.isAdmin')}

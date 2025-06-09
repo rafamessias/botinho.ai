@@ -7,7 +7,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { MessageCircle, CheckCircle, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
-import { RDO } from '../types/strapi';
+import { RDO, StrapiImage, User } from '../types/strapi';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
@@ -17,6 +17,9 @@ import { useState } from 'react';
 export function RdoCard({ rdo }: { rdo: RDO }) {
     const t = useTranslations('rdo.rdoCard');
     const [tab, setTab] = useState<'comments' | 'occurrences' | 'audit'>('occurrences');
+
+    const user = rdo.user as User;
+    const avatar = user.avatar as StrapiImage;
 
     // Mock data for weather, equipment, workforce, and occurrences
     const weather = [
@@ -70,13 +73,13 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                     </div>
                     <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
                         <Avatar className="h-6 w-6">
-                            {rdo?.user?.avatar ? (
-                                <AvatarImage src={rdo.user.avatar.url} alt={rdo.user.username} />
+                            {avatar ? (
+                                <AvatarImage src={avatar.url} alt={user.username} />
                             ) : (
-                                rdo?.user?.username?.slice(0, 2).toUpperCase()
+                                user.username?.slice(0, 2).toUpperCase()
                             )}
                         </Avatar>
-                        <span>Postado por <b>{rdo?.user?.username}</b></span>
+                        <span>Postado por <b>{user.username}</b></span>
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                         {format(new Date(rdo?.date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
@@ -113,7 +116,7 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                 {/* Atividades Executadas */}
                 <div >
                     {Array.isArray(rdo.media) && rdo.media.length > 0 && (
-                        <CarouselMedia images={rdo.media.map(img => img.url)} />
+                        <CarouselMedia images={rdo.media} />
                     )}
                     <div className="font-semibold text-sm mb-1 mt-4">Atividades Executadas</div>
                     <div className="text-sm text-gray-800 mb-2">{rdo.description}</div>

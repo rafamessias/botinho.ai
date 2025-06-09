@@ -12,10 +12,10 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
-import { Company, CompanyMember } from '@/components/types/strapi';
+import { Company, CompanyMember, StrapiImage, User } from '@/components/types/strapi';
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';
-import { User } from '@/components/shared/add-user-dialog';
+import { CompanyMemberDialog } from '@/components/types/strapi';
 import { fetchContentApi } from '../actions/fetch-content-api';
 import { Controller } from 'react-hook-form';
 import { uploadFile } from '@/lib/strapi';
@@ -32,7 +32,7 @@ function maskZipCode(value: string) {
     return value.replace(/^(\d{5})(\d{3})$/, "$1-$2");
 }
 
-export function EditCompanyForm({ company, companyMembers }: { company: Company, companyMembers: CompanyMember[] | null }) {
+export function EditCompanyForm({ company, companyMembers }: { company: Company, companyMembers: CompanyMemberDialog[] | null }) {
     const t = useTranslations('company');
     const router = useRouter();
     const { user, setUser } = useUser();
@@ -44,6 +44,8 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const [pendingImageChange, setPendingImageChange] = useState<File | null>(null);
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
+
+    const logo: StrapiImage = company.logo as StrapiImage;
 
     const getInitialValues = () => ({
         name: company.name,
@@ -57,7 +59,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
         state: company.state,
         city: company.city,
         address: company.address,
-        logo: company.logo,
+        logo: logo,
         documentId: company.documentId
     });
 
@@ -84,7 +86,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
         setShowResetConfirm(false);
     };
 
-    const handleAddCompanyMember = async (user: User) => {
+    const handleAddCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
             const response: any = await fetchContentApi('/api/company-members', {
@@ -121,7 +123,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
         }
     };
 
-    const handleEditCompanyMember = async (user: User) => {
+    const handleEditCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
             const response: any = await fetchContentApi(`/api/company-members/${user.documentId}`, {
@@ -157,7 +159,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
         }
     };
 
-    const handleRemoveCompanyMember = async (user: User) => {
+    const handleRemoveCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
             const response: any = await fetchContentApi(`/api/company-members/${user.documentId}`, {
@@ -199,8 +201,8 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
         try {
             setIsLoading(true);
             // Delete old file if exists
-            if (company.logo?.id) {
-                await fetchContentApi(`/api/upload/files/${company.logo.id}`, {
+            if (logo?.id) {
+                await fetchContentApi(`/api/upload/files/${logo.id}`, {
                     method: 'DELETE'
                 });
             }
@@ -208,7 +210,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             // Upload new file
             const uploadResponse = await uploadFile(
                 pendingImageChange,
-                company.id.toString(),
+                company.id as number,
                 'api::company.company',
                 'logo'
             );
@@ -238,8 +240,8 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
         try {
             setIsLoading(true);
             // Delete old file if exists
-            if (company.logo?.id) {
-                await fetchContentApi(`/api/upload/files/${company.logo.id}`, {
+            if (logo?.id) {
+                await fetchContentApi(`/api/upload/files/${logo.id}`, {
                     method: 'DELETE'
                 });
             }
@@ -303,7 +305,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 name="logo"
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
-                initialFiles={company.logo?.url ? [company.logo.url] : []}
+                initialFiles={logo?.url ? [logo.url] : []}
                 onRemoveImage={handleRemoveImage}
                 onChange={(file) => {
                     console.log('onChange', file);
@@ -527,14 +529,15 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 ref={userListRef}
                 disabled={isSubmitting}
                 initialUsers={companyMembers?.map(member => ({
-                    name: `${member.user.firstName} ${member.user.lastName}`,
-                    email: member.user.email,
-                    phone: member.user.phone || '',
-                    avatar: member.user.avatar?.url,
+                    name: `${member?.user?.firstName} ${member?.user?.lastName}`,
+                    email: member?.user?.email || '',
+                    phone: member?.user?.phone || '',
+                    avatar: member?.user?.avatar && 'url' in member.user.avatar ? member.user.avatar.url : '',
                     documentId: member.documentId,
                     isAdmin: member.isAdmin || false,
                     canPost: member.canPost || false,
-                    canApprove: member.canApprove || false
+                    canApprove: member.canApprove || false,
+                    isOwner: member.isOwner || false
                 })) || []}
                 onAddUser={handleAddCompanyMember}
                 onEditUser={handleEditCompanyMember}

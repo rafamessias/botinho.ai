@@ -3,7 +3,7 @@ import React from 'react';
 import CarouselMedia from './CarouselMedia';
 import { MessageSquare, EllipsisVertical, Sun, Cloud, CloudRain } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { RDO } from '../types/strapi';
+import { RDO, StrapiImage, User } from '../types/strapi';
 import { Button } from '../ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
@@ -21,9 +21,10 @@ const getWeatherIcon = (condition: string) => {
 };
 
 const RDOCard = ({ rdo }: { rdo: RDO }) => {
+    const user = rdo.user as User;
     return (
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-            <div className="flex items-center justify-between mb-1">
+            <div className="flex items-start justify-between mb-1">
                 <div className="flex flex-col gap-1">
                     <div className="text-xs flex items-center gap-1">
                         <span className="text-muted-foreground">RDO</span>
@@ -31,14 +32,14 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                     </div>
                     <div className="text-xs flex items-center gap-1">
                         <span className="text-muted-foreground">Postado por</span>
-                        <span className="font-bold text-gray-800">{rdo.user.firstName} {rdo.user.lastName}</span>
+                        <span className="font-bold text-gray-800">{user.firstName} {user.lastName}</span>
 
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-muted-foreground">
                         {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
                     </div>
                 </div>
-                <Button type="button" variant="ghost" className="text-gray-400 text-xl">
+                <Button type="button" variant="ghost" className="text-gray-900 text-xl">
                     <EllipsisVertical className="w-5 h-5" />
                 </Button>
             </div>
@@ -50,18 +51,20 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                 ].map((weather) => {
                     if (weather.weather !== null) {
                         return (
-                            <TooltipProvider>
-                                <Tooltip key={weather.period}>
+                            <TooltipProvider key={weather.period}>
+                                <Tooltip delayDuration={0}>
                                     <TooltipTrigger asChild>
-                                        <span
+                                        <Button
+                                            variant="ghost"
+                                            type="button"
                                             key={weather.period}
                                             className={`flex items-center gap-1 px-4 py-2 rounded-lg text-xs shadow-sm ${weather.weather.workable
-                                                ? 'bg-green-50 text-green-900'
-                                                : 'bg-red-50 text-red-900'
+                                                ? 'bg-gray-50 text-gray-900'
+                                                : 'bg-red-50 text-red-900 hover:bg-red-100 hover:text-red-900'
                                                 }`}
                                         >
                                             {weather.period} {getWeatherIcon(weather.weather.condition)}
-                                        </span>
+                                        </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
                                         <p>{weather.weather.workable ? 'Condições de trabalho adequadas' : 'Condições de trabalho inadequadas'}</p>
@@ -74,9 +77,9 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                 })}
             </div>
             <div className="text-sm mb-2 text-gray-800">
-                {rdo.description}
+                {rdo.description.length > 200 ? `${rdo.description.substring(0, 200)}...` : rdo.description}
             </div>
-            <CarouselMedia images={rdo.media || []} />
+            <CarouselMedia images={rdo.media as StrapiImage[] || []} />
             <div className="flex items-center justify-between text-xs text-gray-500">
                 <div className="flex gap-4">
                     <Link href={`/rdo/${rdo.documentId}`} className="text-blue-600 hover:text-blue-700 transition-colors">
