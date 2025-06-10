@@ -92,7 +92,9 @@
         "logoUpdated": "Logo atualizada com sucesso",
         "logoUpdateError": "Falha ao atualizar logo",
         "memberRemoved": "Membro removido com sucesso",
-        "memberRemoveError": "Falha ao remover membro"
+        "memberRemoveError": "Falha ao remover membro",
+        "memberAddError": "Falha ao adicionar membro",
+        "memberUpdateError": "Falha ao atualizar membro"
     },
     "error": {
         "notFound": {

@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, Dispatch, SetStateActio
 import { getUserMe } from "@/components/actions/get-user-me-action";
 import { ApiResponse } from "./types/strapi";
 import { User } from "./types/strapi";
+import { useLoading } from "./LoadingProvider";
 
 type UserContextType = {
     user: any;
@@ -16,10 +17,12 @@ const UserContext = createContext<UserContextType>({
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
+    const { setIsLoading } = useLoading();
 
     useEffect(() => {
         // Fetch user from server action on mount
         (async () => {
+            setIsLoading(true);
             const me: ApiResponse<User> = await getUserMe();
             if (me.success) {
                 setUser(me.data as User);
@@ -27,6 +30,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
                 console.error(me.error);
                 setUser(null);
             }
+            setIsLoading(false);
         })();
     }, []);
 

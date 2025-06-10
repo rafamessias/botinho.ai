@@ -16,9 +16,9 @@ interface UserListProps {
     onUsersChange?: (users: CompanyMemberDialog[]) => void;
     disabled?: boolean;
     initialUsers?: CompanyMemberDialog[];
-    onAddUser?: (user: CompanyMemberDialog) => void;
-    onEditUser?: (user: CompanyMemberDialog) => void;
-    onRemoveUser?: (user: CompanyMemberDialog) => void;
+    onAddUser?: (user: CompanyMemberDialog) => Promise<boolean>;
+    onEditUser?: (user: CompanyMemberDialog) => Promise<boolean>;
+    onRemoveUser?: (user: CompanyMemberDialog) => Promise<boolean>;
 }
 
 export const UserList = forwardRef<UserListRef, UserListProps>(({
@@ -45,28 +45,41 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
         getUsers: () => users
     }));
 
-    const handleAddUser = (newUser: CompanyMemberDialog) => {
+    const handleAddUser = async (newUser: CompanyMemberDialog) => {
+
+        if (onAddUser) {
+            const result: boolean = await onAddUser(newUser);
+            if (!result) return;
+        }
+
         const updatedUsers = [...users, newUser];
         setUsers(updatedUsers);
         onUsersChange?.(updatedUsers);
-        onAddUser?.(newUser);
         setIsDialogOpen(false);
         setUserToEdit(undefined);
     };
 
-    const handleEditUser = (index: number, updatedUser: CompanyMemberDialog) => {
+    const handleEditUser = async (index: number, updatedUser: CompanyMemberDialog) => {
+        if (onEditUser) {
+            const result: boolean = await onEditUser(updatedUser);
+            if (!result) return;
+        }
+
         const newUsers = [...users];
         newUsers[index] = updatedUser;
         setUsers(newUsers);
         onUsersChange?.(newUsers);
-        onEditUser?.(updatedUser);
         setUserToEdit(undefined);
         setIsDialogOpen(false);
     };
 
-    const handleRemoveUser = (index: number) => {
+    const handleRemoveUser = async (index: number) => {
+        if (onRemoveUser) {
+            const result: boolean = await onRemoveUser(users[index]);
+            if (!result) return;
+        }
+
         const newUsers = users.filter((_, i) => i !== index);
-        onRemoveUser?.(users[index]);
         setUsers(newUsers);
         onUsersChange?.(newUsers);
     };

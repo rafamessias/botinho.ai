@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
-import { Company, CompanyMember, StrapiImage, User } from '@/components/types/strapi';
+import { ApiResponse, Company, CompanyMember, StrapiImage, User } from '@/components/types/strapi';
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';
 import { CompanyMemberDialog } from '@/components/types/strapi';
@@ -89,18 +89,17 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleAddCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            const response: any = await fetchContentApi('/api/company-members', {
+            const response: ApiResponse<CompanyMemberDialog> = await fetchContentApi<CompanyMemberDialog>('/api/company-members', {
                 method: 'POST',
                 body: {
                     data: {
-                        companyId: company.id,
+                        company: company.id,
                         user: {
                             firstName: user.name.split(' ')[0],
                             lastName: user.name.split(' ').slice(1).join(' '),
                             email: user.email,
                             phone: user.phone,
                         },
-                        documentId: user.documentId,
                         isAdmin: user.isAdmin,
                         canPost: user.canPost,
                         canApprove: user.canApprove
@@ -108,12 +107,13 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 },
             });
 
-            if (!response.data) {
-                throw new Error('Failed to add company member');
+            if (!response.success) {
+                console.error('Error adding company member:', response.error);
+                toast.error(t('memberAddError'));
+                return false;
             }
 
-            const data = response.data;
-            return data;
+            return true;
         } catch (error) {
             console.error('Error adding company member:', error);
             toast.error(t('memberAddError'));
@@ -126,11 +126,10 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleEditCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            const response: any = await fetchContentApi(`/api/company-members/${user.documentId}`, {
+            const response: ApiResponse<CompanyMemberDialog> = await fetchContentApi<CompanyMemberDialog>(`/api/company-members/${user.documentId}`, {
                 method: 'PUT',
                 body: {
                     data: {
-                        companyId: company.id,
                         user: {
                             firstName: user.name.split(' ')[0],
                             lastName: user.name.split(' ').slice(1).join(' '),
@@ -144,12 +143,13 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 },
             });
 
-            if (!response.data) {
-                throw new Error('Failed to update company member');
+            if (!response.success) {
+                console.error('Error updating company member:', response.error);
+                toast.error(t('memberUpdateError'));
+                return false;
             }
 
-            const data = response.data;
-            return data;
+            return true;
         } catch (error) {
             console.error('Error updating company member:', error);
             toast.error(t('memberUpdateError'));
@@ -162,7 +162,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleRemoveCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            const response: any = await fetchContentApi(`/api/company-members/${user.documentId}`, {
+            const response: ApiResponse<CompanyMemberDialog> = await fetchContentApi<CompanyMemberDialog>(`/api/company-members/${user.documentId}`, {
                 method: 'DELETE',
                 body: {
                     data: {
@@ -171,12 +171,14 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 },
             });
 
-            if (!response.data) {
-                throw new Error('Failed to remove company member');
+            if (!response.success) {
+                console.error('Error removing company member:', response.error);
+                toast.error(t('memberRemoveError'));
+                return false;
             }
 
             toast.success(t('memberRemoved'));
-
+            return true;
         } catch (error) {
             console.error('Error removing company member:', error);
             toast.error(t('memberRemoveError'));
@@ -201,7 +203,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             setIsLoading(true);
             // Delete old file if exists
             if (logo?.id) {
-                await fetchContentApi(`/api/upload/files/${logo.id}`, {
+                await fetchContentApi<any>(`/api/upload/files/${logo.id}`, {
                     method: 'DELETE'
                 });
             }
@@ -240,7 +242,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             setIsLoading(true);
             // Delete old file if exists
             if (logo?.id) {
-                await fetchContentApi(`/api/upload/files/${logo.id}`, {
+                await fetchContentApi<any>(`/api/upload/files/${logo.id}`, {
                     method: 'DELETE'
                 });
             }

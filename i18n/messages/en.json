@@ -92,7 +92,9 @@
         "logoUpdated": "Logo updated successfully",
         "logoUpdateError": "Failed to update logo",
         "memberRemoved": "Member removed successfully",
-        "memberRemoveError": "Failed to remove member"
+        "memberRemoveError": "Failed to remove member",
+        "memberAddError": "Failed to add member",
+        "memberUpdateError": "Failed to update member"
     },
     "error": {
         "notFound": {
