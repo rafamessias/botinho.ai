@@ -75,7 +75,6 @@ export default async function RootLayout({
                                     </div>
                                 </main>
                                 <Toaster richColors closeButton />
-                                <LoadingOverlay />
                             </UserProvider>
                         </LoadingProvider>
                     </ThemeProvider>

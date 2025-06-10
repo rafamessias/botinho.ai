@@ -27,11 +27,9 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
 
     return (
         <ContainerApp>
-            <div className="max-w-[600px] mx-auto w-full px-6 py-6 bg-white rounded-lg shadow-md">
-                {company ? (<EditCompanyForm company={company} companyMembers={companyMembers} />) : (
-                    <RecordNotFound />
-                )}
-            </div>
+            {company ? (<EditCompanyForm company={company} companyMembers={companyMembers} />) : (
+                <RecordNotFound />
+            )}
         </ContainerApp>
     )
 }

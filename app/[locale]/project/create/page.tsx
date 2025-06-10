@@ -8,9 +8,7 @@ export default async function CreateProjectPage() {
 
     return (
         <ContainerApp>
-            <div className="max-w-[600px] mx-auto w-full px-6 py-12 bg-white rounded-lg shadow-md">
-                <CreateProjectForm projects={projects} />
-            </div>
+            <CreateProjectForm projects={projects} />
         </ContainerApp>
     );
 } 

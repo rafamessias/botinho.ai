@@ -298,7 +298,7 @@ export default async function FeedPage({ params }: { params: Promise<{ locale: s
     const rdos = mockRDOs;
 
     return (
-        <ContainerApp>
+        <ContainerApp form={false}>
             <div className="max-w-[600px] mx-auto w-full">
                 {/* Feed */}
                 <div className="flex-1 overflow-y-auto pb-20 space-y-10">

@@ -23,7 +23,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }
 
     return (
-        <ContainerApp>
+        <ContainerApp form={false}>
             <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative w-full ">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
