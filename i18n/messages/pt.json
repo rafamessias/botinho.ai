@@ -94,7 +94,9 @@
         "memberRemoved": "Membro removido com sucesso",
         "memberRemoveError": "Falha ao remover membro",
         "memberAddError": "Falha ao adicionar membro",
-        "memberUpdateError": "Falha ao atualizar membro"
+        "memberUpdateError": "Falha ao atualizar membro",
+        "memberAdded": "Membro adicionado com sucesso",
+        "memberUpdated": "Membro atualizado com sucesso"
     },
     "error": {
         "notFound": {

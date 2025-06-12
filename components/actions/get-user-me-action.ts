@@ -16,6 +16,9 @@ export async function getUserMe() {
     })
 
     if (!user.success) {
+        // Remove cookies
+        const cookieStore = await cookies();
+        cookieStore.delete("jwt");
         return { success: false, data: null, meta: null, error: "Failed to fetch user" } as ApiResponse<User>;
     }
 

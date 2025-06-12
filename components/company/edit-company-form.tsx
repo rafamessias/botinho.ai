@@ -7,12 +7,12 @@ import { UserList, UserListRef } from '@/components/shared/user-list';
 import { Input } from '@/components/ui/input';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { updateCompany } from '@/components/actions/company-action';
+import { updateCompany, createCompanyMember, updateCompanyMember, removeCompanyMember } from '@/components/actions/company-action';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
-import { ApiResponse, Company, CompanyMember, StrapiImage, User } from '@/components/types/strapi';
+import { Company, StrapiImage } from '@/components/types/strapi';
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';
 import { CompanyMemberDialog } from '@/components/types/strapi';
@@ -89,22 +89,17 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleAddCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            const response: ApiResponse<CompanyMemberDialog> = await fetchContentApi<CompanyMemberDialog>('/api/company-members', {
-                method: 'POST',
-                body: {
-                    data: {
-                        company: company.id,
-                        user: {
-                            firstName: user.name.split(' ')[0],
-                            lastName: user.name.split(' ').slice(1).join(' '),
-                            email: user.email,
-                            phone: user.phone,
-                        },
-                        isAdmin: user.isAdmin,
-                        canPost: user.canPost,
-                        canApprove: user.canApprove
-                    }
+            const response = await createCompanyMember({
+                companyId: company.id,
+                user: {
+                    firstName: user.name.split(' ')[0],
+                    lastName: user.name.split(' ').slice(1).join(' '),
+                    email: user.email,
+                    phone: user.phone,
                 },
+                isAdmin: user.isAdmin,
+                canPost: user.canPost,
+                canApprove: user.canApprove
             });
 
             if (!response.success) {
@@ -112,6 +107,8 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 toast.error(t('memberAddError'));
                 return false;
             }
+
+            toast.success(t('memberAdded'));
 
             return true;
         } catch (error) {
@@ -125,22 +122,13 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
 
     const handleEditCompanyMember = async (user: CompanyMemberDialog) => {
         try {
+            console.log("editing company member", user);
             setIsLoading(true);
-            const response: ApiResponse<CompanyMemberDialog> = await fetchContentApi<CompanyMemberDialog>(`/api/company-members/${user.documentId}`, {
-                method: 'PUT',
-                body: {
-                    data: {
-                        user: {
-                            firstName: user.name.split(' ')[0],
-                            lastName: user.name.split(' ').slice(1).join(' '),
-                            email: user.email,
-                            phone: user.phone,
-                        },
-                        isAdmin: user.isAdmin,
-                        canPost: user.canPost,
-                        canApprove: user.canApprove
-                    }
-                },
+            const response = await updateCompanyMember({
+                documentId: user.documentId,
+                isAdmin: user.isAdmin,
+                canPost: user.canPost,
+                canApprove: user.canApprove
             });
 
             if (!response.success) {
@@ -148,6 +136,8 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 toast.error(t('memberUpdateError'));
                 return false;
             }
+
+            toast.success(t('memberUpdated'));
 
             return true;
         } catch (error) {
@@ -162,14 +152,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleRemoveCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            const response: ApiResponse<CompanyMemberDialog> = await fetchContentApi<CompanyMemberDialog>(`/api/company-members/${user.documentId}`, {
-                method: 'DELETE',
-                body: {
-                    data: {
-                        companyId: company.id
-                    }
-                },
-            });
+            const response = await removeCompanyMember(user.documentId as string);
 
             if (!response.success) {
                 console.error('Error removing company member:', response.error);

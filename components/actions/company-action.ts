@@ -136,9 +136,9 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                             company: companyRecord.id,
                             user: userData.id,
                             role: 'member',
-                            isAdmin: false,
-                            canPost: true,
-                            canApprove: false
+                            isAdmin: user.isAdmin,
+                            canPost: user.canPost,
+                            canApprove: user.canApprove
                         }
                     }
                 });
@@ -193,4 +193,140 @@ export async function updateCompany(data: any) {
             error: 'Failed to update company'
         };
     }
-} 
+}
+
+export async function createCompanyMember(user: any) {
+    try {
+
+
+        const userMeLoader: any = await getUserMeLoader();
+        if (!userMeLoader.ok) {
+            throw new Error('Failed to get current user');
+        }
+
+        const currentUser: User = userMeLoader.data;
+
+        if (!currentUser.company) {
+            console.error('Current user does not have a company');
+            return { success: false, error: 'Current user does not have a company' };
+        }
+
+        // First, create or get the user
+        const pwd = Math.random().toString(36).slice(-8); // Generate random password
+        const userResponse: any = await fetchContentApi<User>(`auth/local/register`, {
+            method: 'POST',
+            body: {
+                username: user.user.email,
+                email: user.user.email,
+                password: pwd,
+                firstName: user.user.firstName,
+                lastName: user.user.lastName,
+                phone: user.user.phone,
+                company: currentUser.company
+            }
+        });
+
+        if (!userResponse?.success || !userResponse.data) {
+            console.error(`Failed to create user: ${user.user.email} - ${userResponse.error}`);
+            return { success: false, error: `Failed to create user: ${userResponse.error}` };
+        }
+
+        const userData: User = userResponse.data?.user;
+
+        const response: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>('company-members', {
+            method: 'POST',
+            body: {
+                data: {
+                    user: userData.id,
+                    role: 'member',
+                    isAdmin: user.isAdmin,
+                    canPost: user.canPost,
+                    canApprove: user.canApprove
+                }
+            },
+        });
+
+        if (!response.data) {
+            console.error(`Failed to create company member - ${response.error}`);
+            return {
+                success: false,
+                error: `Failed to create company member - ${response.error}`
+            };
+        }
+
+        return {
+            success: true,
+            data: { ...response.data, id: userData.id, documentId: userData.documentId }
+        };
+    } catch (error) {
+        console.error('Error creating company member:', error);
+        return {
+            success: false,
+            error: 'Failed to create company member'
+        };
+    }
+}
+
+export async function updateCompanyMember(data: any) {
+    try {
+        const { documentId, id, createdAt, updatedAt, publishedAt, ...memberData } = data;
+
+        const response: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members/${documentId}`, {
+            method: 'PUT',
+            body: {
+                data: {
+                    role: memberData.role,
+                    isAdmin: memberData.isAdmin,
+                    canPost: memberData.canPost,
+                    canApprove: memberData.canApprove
+                }
+            },
+        });
+
+        if (!response.data) {
+            console.error(`Failed to update company member - ${response.error}`);
+            return {
+                success: false,
+                error: `Failed to update company member - ${response.error}`
+            };
+        }
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        console.error('Error updating company member:', error);
+        return {
+            success: false,
+            error: 'Failed to update company member'
+        };
+    }
+}
+
+export async function removeCompanyMember(documentId: string) {
+    try {
+        const response: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members/${documentId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.data) {
+            console.error(`Failed to remove company member - ${response.error}`);
+            return {
+                success: false,
+                error: `Failed to remove company member - ${response.error}`
+            };
+        }
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        console.error('Error removing company member:', error);
+        return {
+            success: false,
+            error: 'Failed to remove company member'
+        };
+    }
+}

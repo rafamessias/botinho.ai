@@ -86,7 +86,7 @@ export function SignInForm() {
     }, [setGlobalLoading]);
 
     return (
-        <Card className="max-w-md py-12 px-6 grid gap-6 relative">
+        <Card className="max-w-md py-12 px-0 sm:px-6 grid gap-6 relative">
             {isNavigating && (
                 <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-4">

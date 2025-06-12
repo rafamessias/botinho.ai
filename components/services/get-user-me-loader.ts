@@ -1,12 +1,13 @@
+import { cookies } from "next/headers";
 import { getAuthToken } from "./get-token";
 
 export async function getUserMeLoader() {
-    const baseUrl = process.env.STRAPI_URL;
-
-    const url = new URL("/api/users/me?populate=*", baseUrl);
 
     const authToken = await getAuthToken();
     if (!authToken) return { ok: false, data: null, error: null };
+
+    const baseUrl = process.env.STRAPI_URL;
+    const url = new URL("/api/users/me?populate=*", baseUrl);
 
     try {
         const response = await fetch(url.href, {
@@ -17,10 +18,20 @@ export async function getUserMeLoader() {
             },
         });
         const data = await response.json();
-        if (data.error) return { ok: false, data: null, error: data.error };
+        if (data.error) {
+            console.error(data.error);
+            // Remove cookies
+            const cookieStore = await cookies();
+            cookieStore.delete("jwt");
+            return { ok: false, data: null, error: data.error };
+        }
+
         return { ok: true, data: data, error: null };
     } catch (error) {
         console.error(error);
+        // Remove cookies
+        const cookieStore = await cookies();
+        cookieStore.delete("jwt");
         return { ok: false, data: null, error: error };
     }
 }
