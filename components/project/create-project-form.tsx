@@ -8,6 +8,7 @@ import { uploadFile } from '@/lib/strapi';
 import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 interface ProjectFormValues {
     projectName: string;
@@ -17,6 +18,7 @@ interface ProjectFormValues {
 }
 
 export function CreateProjectForm({ projects }: { projects: any }) {
+    const t = useTranslations('project.create');
     const usersRef = useRef<UserListRef>(null);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -78,7 +80,7 @@ export function CreateProjectForm({ projects }: { projects: any }) {
                 });
             }
 
-            toast.success("Projeto criado com sucesso");
+            toast.success(t('success'));
             router.push(`/project/${newProject.id}`);
 
         } catch (error) {
@@ -92,46 +94,46 @@ export function CreateProjectForm({ projects }: { projects: any }) {
         <div className="relative">
             <form id="obra-form" className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
                 <h2 className="text-2xl font-semibold mb-2">
-                    Create Project
+                    {t('title')}
                 </h2>
                 <UploadPhoto
                     register={register}
                     setValue={setValue}
                     name="projectPhoto"
                     photoUrl="/placeholder-image.webp"
-                    label="Subir Foto"
-                    hint="Adicione uma foto (550px x 158px) para representar o Projeto"
+                    label={t('uploadPhoto.label')}
+                    hint={t('uploadPhoto.hint')}
                 />
 
                 <div>
-                    <label className="font-semibold text-base">Nome Projeto</label>
-                    <div className="text-xs text-muted-foreground mb-2">Qual seria o nome do Projeto</div>
+                    <label className="font-semibold text-base">{t('name.label')}</label>
+                    <div className="text-xs text-muted-foreground mb-2">{t('name.hint')}</div>
                     <input
-                        {...register('projectName', { required: 'O nome do projeto é obrigatório' })}
+                        {...register('projectName', { required: t('name.required') })}
                         className="w-full rounded-lg border px-3 py-2 text-sm"
-                        placeholder="Ex.: Construção Casa João"
+                        placeholder={t('name.placeholder')}
                     />
                     {errors.projectName && <span className="text-xs text-red-500">{errors.projectName.message}</span>}
                 </div>
 
                 <div>
-                    <label className="font-semibold text-base">Descrição do Projeto</label>
-                    <div className="text-xs text-muted-foreground mb-2">Adicione uma descrição detalhada do projeto</div>
+                    <label className="font-semibold text-base">{t('description.label')}</label>
+                    <div className="text-xs text-muted-foreground mb-2">{t('description.hint')}</div>
                     <textarea
-                        {...register('projectDescription', { required: 'A descrição do projeto é obrigatória' })}
+                        {...register('projectDescription', { required: t('description.required') })}
                         className="w-full rounded-lg border px-3 py-2 text-sm min-h-[100px]"
-                        placeholder="Descreva os detalhes do projeto..."
+                        placeholder={t('description.placeholder')}
                     />
                     {errors.projectDescription && <span className="text-xs text-red-500">{errors.projectDescription.message}</span>}
                 </div>
 
                 <div>
-                    <label className="font-semibold text-base">Endereço do Projeto</label>
-                    <div className="text-xs text-muted-foreground mb-2">Adicione o endereço que será efetuado o projeto</div>
+                    <label className="font-semibold text-base">{t('address.label')}</label>
+                    <div className="text-xs text-muted-foreground mb-2">{t('address.hint')}</div>
                     <textarea
-                        {...register('projectAddress', { required: 'O endereço do projeto é obrigatório' })}
+                        {...register('projectAddress', { required: t('address.required') })}
                         className="w-full rounded-lg border px-3 py-2 text-sm min-h-[100px]"
-                        placeholder={"Avenida Paulista 4550\nSão Paulo\nCEP 09000-000"}
+                        placeholder={t('address.placeholder')}
                     />
                     {errors.projectAddress && <span className="text-xs text-red-500">{errors.projectAddress.message}</span>}
                 </div>
@@ -144,7 +146,7 @@ export function CreateProjectForm({ projects }: { projects: any }) {
                         variant="outline"
                         fullWidth
                     >
-                        Cancelar
+                        {t('buttons.cancel')}
                     </Button>
                     <Button
                         type="submit"
@@ -153,7 +155,7 @@ export function CreateProjectForm({ projects }: { projects: any }) {
                         isLoading={isLoading}
                         onClick={handleSubmit(onSubmit)}
                     >
-                        Criar
+                        {t('buttons.create')}
                     </Button>
                 </div>
             </form>

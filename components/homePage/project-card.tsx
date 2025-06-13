@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Badge } from "@/components/ui/badge"
 import { InfoIcon } from "lucide-react"
 import { Link } from "@/i18n/navigation"
+import { useTranslations } from 'next-intl'
 
 interface ProjectCardProps {
   id: string
@@ -17,7 +18,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ id, title, description, imageUrl, isActive = true, priority = false, documentId }: ProjectCardProps) {
-
+  const t = useTranslations('homepage.projectCard')
   const image = imageUrl ? imageUrl : "/placeholder-image.webp"
 
   return (
@@ -38,11 +39,11 @@ export default function ProjectCard({ id, title, description, imageUrl, isActive
         />
         {isActive ? (
           <Badge className="absolute right-3 top-3 bg-emerald-100 text-emerald-900 px-3 py-1 text-sm font-medium hover:bg-emerald-100">
-            Ativo
+            {t('active')}
           </Badge>
         ) : (
           <Badge className="absolute right-3 top-3 bg-gray-100 text-gray-900 px-3 py-1 text-sm font-medium hover:bg-gray-100">
-            Inativo
+            {t('inactive')}
           </Badge>
         )}
       </div>
@@ -54,12 +55,12 @@ export default function ProjectCard({ id, title, description, imageUrl, isActive
       </CardContent>
       <CardFooter className="flex gap-2 px-6 pt-3">
         <Link href={`/feed/${documentId}`} className="w-full">
-          <Button className="w-full bg-primary hover:bg-primary/90">Ver Atualizações</Button>
+          <Button className="w-full bg-primary hover:bg-primary/90">{t('viewUpdates')}</Button>
         </Link>
         <Link href={`/project/${documentId}`} >
           <Button variant="ghost" size="icon" className="h-10 w-10 border border-gray-300">
             <InfoIcon className="h-4 w-4" />
-            <span className="sr-only">Informações</span>
+            <span className="sr-only">{t('information')}</span>
           </Button>
         </Link>
       </CardFooter>

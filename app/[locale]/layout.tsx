@@ -9,7 +9,6 @@ import { notFound } from 'next/navigation';
 import { Toaster } from '@/components/ui/sonner';
 import { UserProvider } from '@/components/UserProvider';
 import { LoadingProvider } from '@/components/LoadingProvider';
-import { LoadingOverlay } from '@/components/LoadingOverlay';
 import { TopProgress } from '@/components/RouteLoading';
 
 const inter = Inter({
@@ -47,7 +46,7 @@ export default async function RootLayout({
     params
 }: {
     children: React.ReactNode
-    params: { locale: string }
+    params: Promise<{ locale: string }>
 }) {
     const { locale } = await params;
     if (!hasLocale(routing.locales, locale)) {

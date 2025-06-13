@@ -16,8 +16,8 @@ interface UserListProps {
     onUsersChange?: (users: CompanyMemberDialog[]) => void;
     disabled?: boolean;
     initialUsers?: CompanyMemberDialog[];
-    onAddUser?: (user: CompanyMemberDialog) => Promise<boolean>;
-    onEditUser?: (user: CompanyMemberDialog) => Promise<boolean>;
+    onAddUser?: (user: CompanyMemberDialog) => Promise<CompanyMemberDialog | false>;
+    onEditUser?: (user: CompanyMemberDialog) => Promise<CompanyMemberDialog | false>;
     onRemoveUser?: (user: CompanyMemberDialog) => Promise<boolean>;
 }
 
@@ -46,13 +46,17 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
     }));
 
     const handleAddUser = async (newUser: CompanyMemberDialog) => {
-
+        let updatedUsers;
         if (onAddUser) {
-            const result: boolean = await onAddUser(newUser);
+            const result = await onAddUser(newUser);
             if (!result) return;
+
+            // Add the new user with the returned data
+            updatedUsers = [...users, result];
+        } else {
+            updatedUsers = [...users, newUser];
         }
 
-        const updatedUsers = [...users, newUser];
         setUsers(updatedUsers);
         onUsersChange?.(updatedUsers);
         setIsDialogOpen(false);
@@ -60,22 +64,44 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
     };
 
     const handleEditUser = async (index: number, updatedUser: CompanyMemberDialog) => {
+        console.log("editing user", updatedUser);
+        console.log("users", users);
         if (onEditUser) {
-            const result: boolean = await onEditUser(updatedUser);
-            if (!result) return;
-        }
+            // Preserve the documentId from the existing user
+            const existingUser = users[index];
+            const userWithDocumentId = {
+                ...updatedUser,
+                documentId: existingUser.documentId
+            };
 
-        const newUsers = [...users];
-        newUsers[index] = updatedUser;
-        setUsers(newUsers);
-        onUsersChange?.(newUsers);
-        setUserToEdit(undefined);
-        setIsDialogOpen(false);
+            const result = await onEditUser(userWithDocumentId);
+            if (!result) return;
+
+            // Update the user with the returned data
+            const newUsers = [...users];
+            newUsers[index] = result;
+            setUsers(newUsers);
+            onUsersChange?.(newUsers);
+            setUserToEdit(undefined);
+            setIsDialogOpen(false);
+        } else {
+            const newUsers = [...users];
+            newUsers[index] = updatedUser;
+            setUsers(newUsers);
+            onUsersChange?.(newUsers);
+            setUserToEdit(undefined);
+        }
     };
 
     const handleRemoveUser = async (index: number) => {
+        const userToRemove = users[index];
+        if (!userToRemove.documentId) {
+            console.error('Cannot remove user: missing documentId');
+            return;
+        }
+
         if (onRemoveUser) {
-            const result: boolean = await onRemoveUser(users[index]);
+            const result: boolean = await onRemoveUser(userToRemove);
             if (!result) return;
         }
 
@@ -85,8 +111,12 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
     };
 
     const handleEditClick = (user: CompanyMemberDialog) => {
-        setUserToEdit(user);
-        setIsDialogOpen(true);
+        // Find the complete user data from the users array
+        const completeUser = users.find(u => u.email === user.email);
+        if (completeUser) {
+            setUserToEdit(completeUser);
+            setIsDialogOpen(true);
+        }
     };
 
     return (

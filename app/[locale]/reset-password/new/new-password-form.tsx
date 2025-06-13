@@ -11,6 +11,8 @@ import { Logo } from '@/components/logo';
 import { setNewPasswordAction } from '@/components/actions/set-new-password-action';
 import { useRouter } from "@/i18n/navigation";
 import { useUser } from "@/components/UserProvider";
+import { useTranslations } from 'next-intl';
+
 interface NewPasswordFormValues {
     code: string;
     password: string;
@@ -18,6 +20,7 @@ interface NewPasswordFormValues {
 }
 
 export default function NewPasswordForm() {
+    const t = useTranslations('auth');
     const { register, handleSubmit, formState: { errors }, watch } = useForm<NewPasswordFormValues>();
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -60,39 +63,39 @@ export default function NewPasswordForm() {
             <Card className="w-full max-w-md py-12 px-6 grid gap-6">
                 <CardHeader className="space-y-1 flex flex-col items-center gap-5">
                     <Logo className="h-15 w-15 text-blue-700" />
-                    <CardTitle className="text-2xl font-bold text-center">Set New Password</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-center">{t('newPassword.title')}</CardTitle>
                     <CardDescription className="text-center">
-                        Enter the code from your email and your new password.
+                        {t('newPassword.description')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
                         <div className="space-y-2 hidden">
-                            <label htmlFor="code" className="font-semibold">Code</label>
+                            <label htmlFor="code" className="font-semibold">{t('newPassword.code')}</label>
                             <Input
                                 id="code"
                                 type="text"
-                                placeholder="Paste the code from your email"
+                                placeholder={t('newPassword.codePlaceholder')}
                                 value={code || ""}
                                 disabled
-                                {...register("code", { required: "Code is required" })}
+                                {...register("code", { required: t('newPassword.errors.codeRequired') })}
                             />
                             {errors.code && (
                                 <p className="text-sm text-red-500">{errors.code.message}</p>
                             )}
                         </div>
                         <div className="space-y-2">
-                            <label htmlFor="password" className="font-semibold">New Password</label>
+                            <label htmlFor="password" className="font-semibold">{t('newPassword.newPassword')}</label>
                             <div className="relative">
                                 <Input
                                     id="password"
                                     type={showPassword ? "text" : "password"}
-                                    placeholder="Enter new password"
+                                    placeholder={t('newPassword.newPasswordPlaceholder')}
                                     {...register("password", {
-                                        required: "Password is required",
+                                        required: t('newPassword.errors.passwordRequired'),
                                         minLength: {
                                             value: 6,
-                                            message: "Password must be at least 6 characters"
+                                            message: t('newPassword.errors.passwordMinLength')
                                         }
                                     })}
                                 />
@@ -115,15 +118,15 @@ export default function NewPasswordForm() {
                             )}
                         </div>
                         <div className="space-y-2">
-                            <label htmlFor="passwordConfirmation" className="font-semibold">Confirm Password</label>
+                            <label htmlFor="passwordConfirmation" className="font-semibold">{t('newPassword.confirmPassword')}</label>
                             <div className="relative">
                                 <Input
                                     id="passwordConfirmation"
                                     type={showPasswordConfirmation ? "text" : "password"}
-                                    placeholder="Confirm new password"
+                                    placeholder={t('newPassword.confirmPasswordPlaceholder')}
                                     {...register("passwordConfirmation", {
-                                        required: "Please confirm your password",
-                                        validate: value => value === password || "Passwords do not match"
+                                        required: t('newPassword.errors.confirmPasswordRequired'),
+                                        validate: value => value === password || t('newPassword.errors.passwordsDoNotMatch')
                                     })}
                                 />
                                 <Button
@@ -145,7 +148,7 @@ export default function NewPasswordForm() {
                             )}
                         </div>
                         <Button type="submit" className="w-full mt-4" disabled={isLoading}>
-                            {isLoading ? "Resetting..." : "Set New Password"}
+                            {isLoading ? t('newPassword.resetting') : t('newPassword.setNewPassword')}
                         </Button>
                     </form>
                 </CardContent>

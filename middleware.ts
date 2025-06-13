@@ -31,9 +31,19 @@ function isPublicRoute(path: string) {
 
 
 export default async function middleware(request: NextRequest) {
+    const { pathname, locale } = request.nextUrl;
+
+    // If the pathname doesn't start with a locale, add the default locale
+    if (!routing.locales.some(locale => pathname.startsWith(`/${locale}`))) {
+        console.log("pathname", pathname);
+        const defaultLocale = routing.defaultLocale;
+        const newUrl = new URL(request.url);
+        newUrl.pathname = `/${defaultLocale}${pathname}`;
+        return NextResponse.redirect(newUrl);
+    }
+
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
-    const { pathname, locale } = request.nextUrl;
 
     // Check auth first
     const user = await getUserMeLoader();

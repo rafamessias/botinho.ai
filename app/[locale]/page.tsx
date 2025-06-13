@@ -16,7 +16,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     let allProjects: any;
     try {
         allProjects = await fetchContentApi<Project>('projects?populate=*')
-
     } catch (error) {
         console.error('Failed to fetch projects:', error);
         allProjects = { data: [] };
@@ -60,7 +59,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     />
                 ))}
             </div>
-
         </ContainerApp>
     );
 } 

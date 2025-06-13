@@ -1,23 +1,26 @@
 "use client"
 
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, Globe } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Logo } from "@/components/logo"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "./ui/dropdown-menu"
 import { logoutAction } from "@/components/actions/logout-action"
 import { useUser } from "./UserProvider"
 import { useLoading } from "./LoadingProvider"
-import { useState } from "react"
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
+import { useLocale, useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const { user, setUser } = useUser();
   const { setIsLoading } = useLoading();
   const [userName, setUserName] = useState('');
   const [companyId, setCompanyId] = useState<string | null>(null);
-
+  const locale = useLocale();
+  const router = useRouter();
+  const t = useTranslations('header');
 
   useEffect(() => {
     if (user) {
@@ -31,6 +34,13 @@ export default function Header() {
     setUser(null); // Clear user context
     await logoutAction(); // Call logout action
     //router.push('/sign-in'); // Redirect to sign in page
+  };
+
+  const handleLanguageChange = (newLocale: string) => {
+    // Get the current path without the locale prefix
+    const path = window.location.pathname.replace(`/${locale}`, '');
+    // Navigate to the same path with the new locale
+    router.push(`/${newLocale}${path}`);
   };
 
   return user ? (
@@ -50,18 +60,18 @@ export default function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Plus className="h-4 w-4" />
-                  Criar
+                  {t('create')}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem className="cursor-pointer w-full">
-                  <Link href="/rdo/create" className="w-full">Criar RDO</Link>
+                  <Link href="/rdo/create" className="w-full">{t('createRDO')}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer w-full">
-                  <Link href="/project/create" className="w-full">Criar Projeto</Link>
+                  <Link href="/project/create" className="w-full">{t('createProject')}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer w-full">
-                  <Link href="/incident/create" className="w-full">Criar Incidente</Link>
+                  <Link href="/incident/create" className="w-full">{t('createIncident')}</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -82,15 +92,25 @@ export default function Header() {
               {user.company && (
                 <>
                   <DropdownMenuItem className="cursor-pointer w-full">
-                    <Link href="/profile" className="w-full">Profile</Link>
+                    <Link href="/profile" className="w-full">{t('profile')}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer w-full">
-                    <Link href={`/company/${companyId}`} className="w-full">Company</Link>
+                    <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>
                   </DropdownMenuItem>
                 </>
               )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer w-full" onClick={() => handleLanguageChange('en')}>
+                <Globe className="h-4 w-4 mr-2" />
+                {t('english')}
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer w-full" onClick={() => handleLanguageChange('pt-BR')}>
+                <Globe className="h-4 w-4 mr-2" />
+                {t('portuguese')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer w-full" onClick={handleLogout}>
-                Logoff
+                {t('logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

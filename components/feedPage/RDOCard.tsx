@@ -7,6 +7,8 @@ import { RDO, StrapiImage, User } from '@/components/types/strapi';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { useTranslations } from 'next-intl';
+
 const getWeatherIcon = (condition: string) => {
     switch (condition) {
         case 'clear':
@@ -21,6 +23,7 @@ const getWeatherIcon = (condition: string) => {
 };
 
 const RDOCard = ({ rdo }: { rdo: RDO }) => {
+    const t = useTranslations('rdo.rdoCard');
     const user = rdo.user as User;
     return (
         <Card className="p-6 space-y-4">
@@ -32,7 +35,7 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                             <span className="font-bold text-gray-800">#{rdo.id}</span>
                         </div>
                         <div className="text-xs flex items-center gap-1">
-                            <span className="text-muted-foreground">Postado por</span>
+                            <span className="text-muted-foreground">{t('postedBy')}</span>
                             <span className="font-bold text-gray-800">{user.firstName} {user.lastName}</span>
                         </div>
                         <div className="text-xs text-muted-foreground">
@@ -45,9 +48,9 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                 </div>
                 <div className="flex gap-2">
                     {[
-                        { period: 'Manhã', weather: rdo.wheatherMorning },
-                        { period: 'Tarde', weather: rdo.wheatherAfternoon },
-                        { period: 'Noite', weather: rdo.wheatherNight }
+                        { period: t('morning'), weather: rdo.wheatherMorning },
+                        { period: t('afternoon'), weather: rdo.wheatherAfternoon },
+                        { period: t('night'), weather: rdo.wheatherNight }
                     ].map((weather) => {
                         if (weather.weather !== null) {
                             return (
@@ -67,7 +70,7 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{weather.weather.workable ? 'Condições de trabalho adequadas' : 'Condições de trabalho inadequadas'}</p>
+                                            <p>{weather.weather.workable ? t('workableConditions') : t('unworkableConditions')}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
@@ -78,7 +81,6 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                 </div>
             </CardHeader>
             <CardContent className="p-0">
-
                 <div className="text-sm mb-2 text-gray-800">
                     {rdo.description.length > 200 ? `${rdo.description.substring(0, 200)}...` : rdo.description}
                 </div>
@@ -89,7 +91,7 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                     <div className="flex gap-4">
                         <Link href={`/rdo/${rdo.documentId}`} className="text-blue-600 hover:text-blue-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
-                                Detalhes
+                                {t('details')}
                             </Button>
                         </Link>
                         <Link href={`/rdo/${rdo.documentId}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">

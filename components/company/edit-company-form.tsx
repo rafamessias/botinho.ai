@@ -102,7 +102,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 canApprove: user.canApprove
             });
 
-            if (!response.success) {
+            if (!response.success || !response.data) {
                 console.error('Error adding company member:', response.error);
                 toast.error(t('memberAddError'));
                 return false;
@@ -110,7 +110,12 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
 
             toast.success(t('memberAdded'));
 
-            return true;
+            // Return the updated user data
+            return {
+                ...user,
+                id: response.data.id,
+                documentId: response.data.documentId
+            };
         } catch (error) {
             console.error('Error adding company member:', error);
             toast.error(t('memberAddError'));
@@ -131,7 +136,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 canApprove: user.canApprove
             });
 
-            if (!response.success) {
+            if (!response.success || !response.data) {
                 console.error('Error updating company member:', response.error);
                 toast.error(t('memberUpdateError'));
                 return false;
@@ -139,7 +144,12 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
 
             toast.success(t('memberUpdated'));
 
-            return true;
+            // Return the updated user data
+            return {
+                ...user,
+                id: response.data.id,
+                documentId: response.data.documentId
+            };
         } catch (error) {
             console.error('Error updating company member:', error);
             toast.error(t('memberUpdateError'));
@@ -152,7 +162,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
     const handleRemoveCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            const response = await removeCompanyMember(user.documentId as string);
+            const response = await removeCompanyMember(user.documentId as string, user.user?.id as number);
 
             if (!response.success) {
                 console.error('Error removing company member:', response.error);
@@ -516,6 +526,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                     email: member?.user?.email || '',
                     phone: member?.user?.phone || '',
                     avatar: member?.user?.avatar && 'url' in member.user.avatar ? member.user.avatar.url : '',
+                    user: member.user,
                     documentId: member.documentId,
                     isAdmin: member.isAdmin || false,
                     canPost: member.canPost || false,

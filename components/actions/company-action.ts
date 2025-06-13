@@ -304,8 +304,9 @@ export async function updateCompanyMember(data: any) {
     }
 }
 
-export async function removeCompanyMember(documentId: string) {
+export async function removeCompanyMember(documentId: string, userId: number) {
     try {
+
         const response: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members/${documentId}`, {
             method: 'DELETE'
         });
@@ -317,6 +318,25 @@ export async function removeCompanyMember(documentId: string) {
                 error: `Failed to remove company member - ${response.error}`
             };
         }
+
+        console.log(`Removing company member - ${response.data.id}`);
+
+        // Delete the associated user
+        /*
+        const userResponse: ApiResponse<User> = await fetchContentApi<User>(`users/${userId}`, {
+            method: 'DELETE'
+        });
+
+        if (!userResponse.data) {
+            console.error(`Failed to remove user - ${userResponse.error}`);
+            return {
+                success: false,
+                error: `Failed to remove user - ${userResponse.error}`
+            };
+        }
+
+        console.log(`Removing user - ${userResponse.data.id}`);
+        */
 
         return {
             success: true,

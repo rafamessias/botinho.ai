@@ -1,0 +1,283 @@
+{
+    "rdo": {
+        "rdo": "RDO",
+        "postedBy": "Postado por",
+        "morning": "Manhã",
+        "afternoon": "Tarde",
+        "night": "Noite",
+        "waitingApproval": "Esperando Aprovação",
+        "comments": "Comentários",
+        "approvals": "Aprovações",
+        "rdoCard": {
+            "postedBy": "Postado por",
+            "date": "Data",
+            "status": "Status",
+            "morning": "Manhã",
+            "afternoon": "Tarde",
+            "night": "Noite",
+            "waitingApproval": "Esperando Aprovação",
+            "details": "Detalhes",
+            "comments": "Comentários",
+            "workableConditions": "Condições de trabalho adequadas",
+            "unworkableConditions": "Condições de trabalho inadequadas",
+            "approved": "Aprovado",
+            "rejected": "Rejeitado",
+            "weather": {
+                "title": "Condição Climática",
+                "clear": "Claro, praticável",
+                "cloudy": "Nublado, praticável",
+                "rainy": "Chuvoso, impraticável"
+            },
+            "activities": {
+                "title": "Atividades Executadas"
+            },
+            "equipment": {
+                "title": "Equipamentos Utilizados"
+            },
+            "workforce": {
+                "title": "Mão de Obra"
+            },
+            "actions": {
+                "reject": "Rejeitar",
+                "approve": "Aprovar"
+            },
+            "tabs": {
+                "comments": "Comentários",
+                "occurrences": "Ocorrências",
+                "audit": "Auditoria de Aprovação",
+                "newOccurrence": "Nova Ocorrência",
+                "notImplemented": {
+                    "comments": "Comentários não implementados",
+                    "audit": "Auditoria de aprovação não implementada"
+                }
+            }
+        },
+        "bottomNav": {
+            "progress": "Andamento",
+            "occurrences": "Ocorrências",
+            "project": "Projeto",
+            "projectList": "Lista Projetos"
+        }
+    },
+    "homepage": {
+        "navigation": {
+            "progress": "Andamento",
+            "occurrences": "Ocorrências",
+            "project": "Projeto",
+            "projectList": "Lista Projetos"
+        },
+        "home": {
+            "searchProjects": "Buscar projetos...",
+            "allProjects": "Todos os Projetos",
+            "activeProjects": "Projetos Ativos",
+            "inactiveProjects": "Projetos Inativos",
+            "newProject": "Novo Projeto"
+        },
+        "projectCard": {
+            "active": "Ativo",
+            "inactive": "Inativo",
+            "viewUpdates": "Ver Atualizações",
+            "information": "Informações"
+        }
+    },
+    "auth": {
+        "signIn": "Entrar",
+        "signUp": "Cadastrar",
+        "redirecting": "Redirecionando...",
+        "enterCredentials": "Digite suas credenciais para acessar sua conta",
+        "email": "Email",
+        "password": "Senha",
+        "forgotPassword": "Esqueceu a senha?",
+        "orContinueWith": "Ou continue com",
+        "noAccount": "Não tem uma conta?",
+        "createAccount": "Crie sua conta para começar",
+        "firstName": "Nome",
+        "lastName": "Sobrenome",
+        "phoneNumber": "Telefone",
+        "confirmPassword": "Confirmar Senha",
+        "agreeToTerms": "Eu concordo com os",
+        "termsAndConditions": "Termos e Condições",
+        "and": "e",
+        "privacyPolicy": "Política de Privacidade",
+        "alreadyHaveAccount": "Já tem uma conta?",
+        "google": "Google",
+        "checkEmail": {
+            "title": "Verifique seu Email",
+            "description": "Enviamos um email de verificação para {email}. Por favor, verifique sua caixa de entrada e siga as instruções para verificar sua conta.",
+            "noEmail": "Não recebeu o email?",
+            "requestAnother": "Você pode solicitar outro email de verificação em:",
+            "seconds": "segundos",
+            "resend": "Reenviar Email de Verificação",
+            "sending": "Enviando..."
+        },
+        "success": {
+            "title": "Email Verificado com Sucesso!",
+            "description": "Seu email foi verificado. Você será redirecionado para a página de login em {countdown} segundos.",
+            "notRedirected": "Se você não for redirecionado automaticamente,",
+            "clickHere": "clique aqui"
+        },
+        "newPassword": {
+            "title": "Definir Nova Senha",
+            "description": "Digite o código do seu email e sua nova senha.",
+            "code": "Código",
+            "codePlaceholder": "Cole o código do seu email",
+            "newPassword": "Nova Senha",
+            "newPasswordPlaceholder": "Digite a nova senha",
+            "confirmPassword": "Confirmar Senha",
+            "confirmPasswordPlaceholder": "Confirme a nova senha",
+            "resetting": "Redefinindo...",
+            "setNewPassword": "Definir Nova Senha",
+            "errors": {
+                "codeRequired": "Código é obrigatório",
+                "passwordRequired": "Senha é obrigatória",
+                "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
+                "confirmPasswordRequired": "Por favor, confirme sua senha",
+                "passwordsDoNotMatch": "As senhas não coincidem"
+            }
+        }
+    },
+    "company": {
+        "createTitle": "Criar Empresa",
+        "editTitle": "Editar Empresa",
+        "uploadLogo": "Subir Logo",
+        "uploadLogoHint": "Adicione um logo para sua empresa",
+        "companyName": "Nome da Empresa",
+        "companyNamePlaceholder": "Ex.: João Construção e Reforma",
+        "documentType": "Tipo de Documento",
+        "documentTypePlaceholder": "Selecione o tipo de documento",
+        "cpf": "CPF",
+        "cpfPlaceholder": "Ex.: 000.000.000-00",
+        "cnpj": "CNPJ",
+        "cnpjPlaceholder": "Ex.: 00.000.000/0001-00",
+        "zipcode": "CEP",
+        "zipcodePlaceholder": "Ex.: 00000-000",
+        "state": "Estado",
+        "statePlaceholder": "Ex.: SP",
+        "city": "Cidade",
+        "cityPlaceholder": "Ex.: São Paulo",
+        "address": "Endereço da Empresa",
+        "addressPlaceholder": "Avenida Paulista 4550",
+        "companyTeam": "Equipe da Empresa",
+        "companyTeamHint": "Adicione sua equipe para trabalhar na plataforma",
+        "addTeam": "Adicionar",
+        "cancel": "Cancelar",
+        "create": "Criar Empresa",
+        "update": "Atualizar Empresa",
+        "updating": "Atualizando...",
+        "creating": "Criando...",
+        "companyCreated": "Empresa criada com sucesso",
+        "companyCreationError": "Falha ao criar empresa",
+        "companyUpdated": "Empresa atualizada com sucesso",
+        "companyUpdateError": "Falha ao atualizar empresa",
+        "reset": "Resetar",
+        "resetConfirmTitle": "Resetar Alterações",
+        "resetConfirmDescription": "Tem certeza que deseja resetar todas as alterações? Isso restaurará o formulário ao seu estado inicial.",
+        "resetConfirm": "Sim, resetar alterações",
+        "imageChangeConfirmTitle": "Alterar Logo",
+        "imageChangeConfirmDescription": "Tem certeza que deseja alterar a logo? Isso substituirá a logo atual por uma nova.",
+        "imageChangeConfirm": "Sim, alterar logo",
+        "imageChangeError": "Falha ao alterar logo",
+        "imageRemoveError": "Falha ao remover logo",
+        "confirm": "Confirmar",
+        "logoRemoved": "Logo removida com sucesso",
+        "logoRemoveError": "Falha ao remover logo",
+        "logoUpdated": "Logo atualizada com sucesso",
+        "logoUpdateError": "Falha ao atualizar logo",
+        "memberRemoved": "Membro removido com sucesso",
+        "memberRemoveError": "Falha ao remover membro",
+        "memberAddError": "Falha ao adicionar membro",
+        "memberUpdateError": "Falha ao atualizar membro",
+        "memberAdded": "Membro adicionado com sucesso",
+        "memberUpdated": "Membro atualizado com sucesso"
+    },
+    "error": {
+        "notFound": {
+            "code": "404",
+            "title": "Página não encontrada",
+            "message": "A página que você está procurando não existe.",
+            "button": "Voltar para a Home"
+        }
+    },
+    "shared": {
+        "user": {
+            "title": "Usuários",
+            "description": "Adicione ou edite informações do usuário",
+            "addTitle": "Adicionar Usuário",
+            "editTitle": "Editar Usuário",
+            "addButton": "Adicionar Usuário",
+            "empty": "Nenhum usuário adicionado ainda",
+            "name": "Nome",
+            "namePlaceholder": "Digite o nome do usuário",
+            "nameRequired": "Nome é obrigatório",
+            "email": "Email",
+            "emailPlaceholder": "Digite o email do usuário",
+            "emailRequired": "Email é obrigatório",
+            "emailInvalid": "Por favor, digite um email válido",
+            "phone": "Telefone",
+            "phonePlaceholder": "(00) 00000-0000",
+            "phoneRequired": "Telefone é obrigatório",
+            "phoneInvalid": "Por favor, digite um número de telefone válido",
+            "add": "Adicionar",
+            "save": "Salvar",
+            "cancel": "Cancelar",
+            "edit": "Editar usuário",
+            "remove": "Remover usuário",
+            "removeConfirm": {
+                "title": "Remover Usuário",
+                "description": "Tem certeza que deseja remover o usuário {name}?",
+                "confirm": "Remover",
+                "cancel": "Cancelar"
+            },
+            "permissions": {
+                "isAdmin": "Administrador",
+                "canPost": "Pode Postar",
+                "canApprove": "Pode Aprovar",
+                "isOwner": "Proprietário"
+            }
+        }
+    },
+    "header": {
+        "redirecting": "Redirecionando...",
+        "create": "Criar",
+        "createRDO": "Criar RDO",
+        "createProject": "Criar Projeto",
+        "createIncident": "Criar Incidente",
+        "profile": "Perfil",
+        "company": "Empresa",
+        "english": "Inglês",
+        "portuguese": "Português",
+        "logout": "Sair"
+    },
+    "project": {
+        "create": {
+            "title": "Criar Projeto",
+            "uploadPhoto": {
+                "label": "Subir Foto",
+                "hint": "Adicione uma foto (550px x 158px) para representar o Projeto"
+            },
+            "name": {
+                "label": "Nome Projeto",
+                "hint": "Qual seria o nome do Projeto",
+                "placeholder": "Ex.: Construção Casa João",
+                "required": "O nome do projeto é obrigatório"
+            },
+            "description": {
+                "label": "Descrição do Projeto",
+                "hint": "Adicione uma descrição detalhada do projeto",
+                "placeholder": "Descreva os detalhes do projeto...",
+                "required": "A descrição do projeto é obrigatória"
+            },
+            "address": {
+                "label": "Endereço do Projeto",
+                "hint": "Adicione o endereço que será efetuado o projeto",
+                "placeholder": "Avenida Paulista 4550\nSão Paulo\nCEP 09000-000",
+                "required": "O endereço do projeto é obrigatório"
+            },
+            "buttons": {
+                "cancel": "Cancelar",
+                "create": "Criar"
+            },
+            "success": "Projeto criado com sucesso"
+        }
+    }
+}

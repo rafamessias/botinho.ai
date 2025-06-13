@@ -7,8 +7,10 @@ import { Logo } from '@/components/logo';
 import { toast } from "sonner";
 import { sendEmailConfirmationAction } from '@/components/actions/send-email-confirmation';
 import { useUser } from '@/components/UserProvider';
+import { useTranslations } from 'next-intl';
 
 export default function SignUpCheckEmailPage() {
+    const t = useTranslations('auth');
     const [countdown, setCountdown] = useState(60);
     const [isResending, setIsResending] = useState(false);
     const { user } = useUser();
@@ -47,22 +49,22 @@ export default function SignUpCheckEmailPage() {
                 <CardHeader className="space-y-1 flex flex-col items-center gap-5">
                     <Logo className="h-15 w-15 text-blue-700" />
                     <CardTitle className="text-2xl font-bold text-center">
-                        Check Your Email
+                        {t('checkEmail.title')}
                     </CardTitle>
                     <CardDescription className="text-center">
-                        We've sent a verification email to {user?.email}. Please check your inbox and follow the instructions to verify your account.
+                        {t('checkEmail.description', { email: user?.email })}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center gap-4">
                     <div className="text-center">
                         <p className="text-sm text-muted-foreground mb-2">
-                            Didn't receive the email?
+                            {t('checkEmail.noEmail')}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                            You can request another verification email in:
+                            {t('checkEmail.requestAnother')}
                         </p>
                         <p className="text-2xl font-bold text-blue-700 mt-2">
-                            {countdown} seconds
+                            {countdown} {t('checkEmail.seconds')}
                         </p>
                     </div>
                     <Button
@@ -70,7 +72,7 @@ export default function SignUpCheckEmailPage() {
                         disabled={countdown > 0 || isResending}
                         className="w-full"
                     >
-                        {isResending ? "Sending..." : "Resend Verification Email"}
+                        {isResending ? t('checkEmail.sending') : t('checkEmail.resend')}
                     </Button>
                 </CardContent>
             </Card>

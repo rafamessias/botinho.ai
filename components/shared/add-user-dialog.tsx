@@ -138,6 +138,8 @@ export function AddUserDialog({
                         <Input
                             {...register('name', { required: t('nameRequired') })}
                             placeholder={t('namePlaceholder')}
+                            readOnly={!!userToEdit?.documentId}
+                            className={userToEdit?.documentId ? 'bg-gray-100' : ''}
                         />
                         {errors.name && (
                             <span className="text-xs text-red-500">{errors.name.message}</span>
@@ -155,6 +157,8 @@ export function AddUserDialog({
                             })}
                             type="email"
                             placeholder={t('emailPlaceholder')}
+                            readOnly={!!userToEdit?.documentId}
+                            className={userToEdit?.documentId ? 'bg-gray-100' : ''}
                         />
                         {errors.email && (
                             <span className="text-xs text-red-500">{errors.email.message}</span>
@@ -188,6 +192,8 @@ export function AddUserDialog({
                             })}
                             maxLength={15}
                             placeholder={t('phonePlaceholder')}
+                            readOnly={!!userToEdit?.documentId}
+                            className={userToEdit?.documentId ? 'bg-gray-100' : ''}
                         />
                         {errors.phone && (
                             <span className="text-xs text-red-500">{errors.phone.message}</span>

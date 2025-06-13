@@ -23,9 +23,9 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
 
     // Mock data for weather, equipment, workforce, and occurrences
     const weather = [
-        { label: 'Manhã', icon: '☀️', desc: 'Claro, praticável', active: true, color: 'bg-white border border-gray-200 text-gray-700' },
-        { label: 'Tarde', icon: '⛅', desc: 'Nublado, praticável', active: false, color: 'bg-white border border-gray-200 text-gray-700' },
-        { label: 'Noite', icon: '🌧️', desc: 'Chuvoso, impraticável', active: false, color: 'bg-rose-100 border border-rose-200 text-rose-600' },
+        { label: t('morning'), icon: '☀️', desc: t('weather.clear'), active: true, color: 'bg-white border border-gray-200 text-gray-700' },
+        { label: t('afternoon'), icon: '⛅', desc: t('weather.cloudy'), active: false, color: 'bg-white border border-gray-200 text-gray-700' },
+        { label: t('night'), icon: '🌧️', desc: t('weather.rainy'), active: false, color: 'bg-rose-100 border border-rose-200 text-rose-600' },
     ];
     const equipment = ['Caminhão Basculante', 'Betoneira'];
     const workforce = [
@@ -79,7 +79,7 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                                 user.username?.slice(0, 2).toUpperCase()
                             )}
                         </Avatar>
-                        <span>Postado por <b>{user.username}</b></span>
+                        <span>{t('postedBy')} <b>{user.username}</b></span>
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                         {format(new Date(rdo?.date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
@@ -92,7 +92,7 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                         rdo.status === 'rejected' && 'bg-red-100 text-red-700',
                         rdo.status === 'pending' && 'bg-gray-100 text-gray-700')
                     }>
-                        Esperando Aprovação
+                        {getStatusLabel(rdo.status)}
                     </Badge>
                     <Button variant="ghost" size="icon" className="h-8 w-8">
                         <MoreVertical className="h-4 w-4" />
@@ -102,7 +102,7 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
             <CardContent className="space-y-6">
                 {/* Condição Climática */}
                 <div>
-                    <div className="font-semibold text-sm mb-1">Condição Climática</div>
+                    <div className="font-semibold text-sm mb-1">{t('weather.title')}</div>
                     <div className="flex gap-2">
                         {weather.map((w, i) => (
                             <div key={i} className={cn('flex flex-col items-center px-3 py-2 rounded-lg', w.color)}>
@@ -118,44 +118,44 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                     {Array.isArray(rdo.media) && rdo.media.length > 0 && (
                         <CarouselMedia images={rdo.media} />
                     )}
-                    <div className="font-semibold text-sm mb-1 mt-4">Atividades Executadas</div>
+                    <div className="font-semibold text-sm mb-1 mt-4">{t('activities.title')}</div>
                     <div className="text-sm text-gray-800 mb-2">{rdo.description}</div>
 
                 </div>
                 {/* Equipamentos Utilizados */}
                 <div>
-                    <div className="font-semibold text-sm mb-1">Equipamentos Utilizados</div>
+                    <div className="font-semibold text-sm mb-1">{t('equipment.title')}</div>
                     <div className="text-sm text-gray-800">{equipment.join(', ')}</div>
                 </div>
                 {/* Mão de Obra */}
                 <div>
-                    <div className="font-semibold text-sm mb-1">Mão de Obra</div>
+                    <div className="font-semibold text-sm mb-1">{t('workforce.title')}</div>
                     <div className="text-sm text-gray-800">{workforce.map((w, i) => <div key={i}>{w}</div>)}</div>
                 </div>
                 {/* Aprovar/Rejeitar */}
                 <div className="flex gap-2 mt-2">
-                    <Button variant="outline" className="flex-1 border-gray-300">Rejeitar</Button>
-                    <Button className="flex-1">Aprovar</Button>
+                    <Button variant="outline" className="flex-1 border-gray-300">{t('actions.reject')}</Button>
+                    <Button className="flex-1">{t('actions.approve')}</Button>
                 </div>
                 {/* Tabs for Comentários/Ocorrências/Audit */}
                 <div className="bg-gray-50 rounded-xl px-2 pt-2 pb-4">
                     <Tabs value={tab} onValueChange={(value) => setTab(value as 'comments' | 'occurrences' | 'audit')} className="w-full">
                         <TabsList className="w-full flex bg-transparent gap-2 mb-2">
                             <TabsTrigger value="comments" className="flex-1 flex items-center justify-center gap-1">
-                                <MessageCircle className="h-4 w-4" /> Comentários <span className="ml-1 bg-rose-100 text-rose-600 rounded-full px-2 text-xs">{rdo.comments?.length || 0}</span>
+                                <MessageCircle className="h-4 w-4" /> {t('tabs.comments')} <span className="ml-1 bg-rose-100 text-rose-600 rounded-full px-2 text-xs">{rdo.comments?.length || 0}</span>
                             </TabsTrigger>
                             <TabsTrigger value="occurrences" className="flex-1 flex items-center justify-center gap-1">
-                                <span className="font-medium">Ocorrências</span> <span className="ml-1 bg-rose-100 text-rose-600 rounded-full px-2 text-xs">9</span>
+                                <span className="font-medium">{t('tabs.occurrences')}</span> <span className="ml-1 bg-rose-100 text-rose-600 rounded-full px-2 text-xs">9</span>
                             </TabsTrigger>
                             <TabsTrigger value="audit" className="flex-1 flex items-center justify-center gap-1">
-                                <span className="font-medium">Auditoria de Aprovação</span>
+                                <span className="font-medium">{t('tabs.audit')}</span>
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="comments">
-                            <div className="text-center text-gray-400 py-4">Comentários não implementados</div>
+                            <div className="text-center text-gray-400 py-4">{t('tabs.notImplemented.comments')}</div>
                         </TabsContent>
                         <TabsContent value="occurrences">
-                            <Button className="w-full mb-2">Nova Ocorrência</Button>
+                            <Button className="w-full mb-2">{t('tabs.newOccurrence')}</Button>
                             <div className="space-y-2">
                                 {occurrences.map((o) => (
                                     <div key={o.id} className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-100">
@@ -170,7 +170,7 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                             </div>
                         </TabsContent>
                         <TabsContent value="audit">
-                            <div className="text-center text-gray-400 py-4">Auditoria de aprovação não implementada</div>
+                            <div className="text-center text-gray-400 py-4">{t('tabs.notImplemented.audit')}</div>
                         </TabsContent>
                     </Tabs>
                 </div>

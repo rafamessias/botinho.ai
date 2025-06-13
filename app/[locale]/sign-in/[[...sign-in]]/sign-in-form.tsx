@@ -14,7 +14,7 @@ import { signIn } from '@/lib/strapi';
 import { useRouter } from '@/i18n/navigation';
 import { useUser } from '@/components/UserProvider';
 import { useLoading } from '@/components/LoadingProvider';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 interface SignInFormValues {
     email: string;
@@ -101,13 +101,13 @@ export function SignInForm() {
                     {t('signIn')}
                 </CardTitle>
                 <CardDescription className="text-center">
-                    Enter your credentials to access your account
+                    {t('enterCredentials')}
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">
                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">{t('email')}</Label>
                         <Input
                             id="email"
                             type="email"
@@ -126,7 +126,7 @@ export function SignInForm() {
                         )}
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
+                        <Label htmlFor="password">{t('password')}</Label>
                         <div className="relative">
                             <Input
                                 id="password"
@@ -163,7 +163,7 @@ export function SignInForm() {
                                 href={emailValue ? `/reset-password?email=${encodeURIComponent(emailValue)}` : '/reset-password'}
                                 className={`text-sm text-blue-700 hover:underline ${(isLoading || isNavigating) ? 'pointer-events-none opacity-50' : ''}`}
                             >
-                                Forgot password?
+                                {t('forgotPassword')}
                             </Link>
                         </div>
                     </div>
@@ -184,7 +184,7 @@ export function SignInForm() {
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
                         <span className="bg-background px-2 text-muted-foreground">
-                            Or continue with
+                            {t('orContinueWith')}
                         </span>
                     </div>
                 </div>
@@ -210,7 +210,7 @@ export function SignInForm() {
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
                 <div className="text-sm text-center text-muted-foreground">
-                    Don't have an account?{' '}
+                    {t('noAccount')}{' '}
                     <Link
                         href="/sign-up"
                         className={`text-primary hover:underline ${(isLoading || isNavigating) ? 'pointer-events-none opacity-50' : ''}`}

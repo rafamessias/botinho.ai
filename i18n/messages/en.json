@@ -15,7 +15,42 @@
             "morning": "Morning",
             "afternoon": "Afternoon",
             "night": "Night",
-            "waitingApproval": "Waiting Approval"
+            "waitingApproval": "Waiting Approval",
+            "details": "Details",
+            "comments": "Comments",
+            "workableConditions": "Suitable working conditions",
+            "unworkableConditions": "Unsuitable working conditions",
+            "approved": "Approved",
+            "rejected": "Rejected",
+            "weather": {
+                "title": "Weather Condition",
+                "clear": "Clear, workable",
+                "cloudy": "Cloudy, workable",
+                "rainy": "Rainy, unworkable"
+            },
+            "activities": {
+                "title": "Executed Activities"
+            },
+            "equipment": {
+                "title": "Equipment Used"
+            },
+            "workforce": {
+                "title": "Workforce"
+            },
+            "actions": {
+                "reject": "Reject",
+                "approve": "Approve"
+            },
+            "tabs": {
+                "comments": "Comments",
+                "occurrences": "Occurrences",
+                "audit": "Approval Audit",
+                "newOccurrence": "New Occurrence",
+                "notImplemented": {
+                    "comments": "Comments not implemented",
+                    "audit": "Approval audit not implemented"
+                }
+            }
         },
         "bottomNav": {
             "progress": "Progress",
@@ -37,12 +72,69 @@
             "occurrences": "Occurrences",
             "project": "Project",
             "projectList": "Project List"
+        },
+        "projectCard": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "viewUpdates": "View Updates",
+            "information": "Information"
         }
     },
     "auth": {
         "signIn": "Sign In",
         "signUp": "Sign Up",
-        "redirecting": "Redirecting..."
+        "redirecting": "Redirecting...",
+        "enterCredentials": "Enter your credentials to access your account",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "orContinueWith": "Or continue with",
+        "noAccount": "Don't have an account?",
+        "createAccount": "Create your account to get started",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phoneNumber": "Phone Number",
+        "confirmPassword": "Confirm Password",
+        "agreeToTerms": "I agree to the",
+        "termsAndConditions": "Terms and Conditions",
+        "and": "and",
+        "privacyPolicy": "Privacy Policy",
+        "alreadyHaveAccount": "Already have an account?",
+        "google": "Google",
+        "checkEmail": {
+            "title": "Check Your Email",
+            "description": "We've sent a verification email to {email}. Please check your inbox and follow the instructions to verify your account.",
+            "noEmail": "Didn't receive the email?",
+            "requestAnother": "You can request another verification email in:",
+            "seconds": "seconds",
+            "resend": "Resend Verification Email",
+            "sending": "Sending..."
+        },
+        "success": {
+            "title": "Email Verified Successfully!",
+            "description": "Your email has been verified. You will be redirected to the login page in {countdown} seconds.",
+            "notRedirected": "If you are not redirected automatically,",
+            "clickHere": "click here"
+        },
+        "newPassword": {
+            "title": "Set New Password",
+            "description": "Enter the code from your email and your new password.",
+            "code": "Code",
+            "codePlaceholder": "Paste the code from your email",
+            "newPassword": "New Password",
+            "newPasswordPlaceholder": "Enter new password",
+            "confirmPassword": "Confirm Password",
+            "confirmPasswordPlaceholder": "Confirm new password",
+            "resetting": "Resetting...",
+            "setNewPassword": "Set New Password",
+            "errors": {
+                "codeRequired": "Code is required",
+                "passwordRequired": "Password is required",
+                "passwordMinLength": "Password must be at least 6 characters",
+                "confirmPasswordRequired": "Please confirm your password",
+                "passwordsDoNotMatch": "Passwords do not match"
+            }
+        }
     },
     "company": {
         "createTitle": "Create Company",
@@ -145,6 +237,47 @@
         }
     },
     "header": {
-        "redirecting": "Redirecting..."
+        "redirecting": "Redirecting...",
+        "create": "Create",
+        "createRDO": "Create RDO",
+        "createProject": "Create Project",
+        "createIncident": "Create Incident",
+        "profile": "Profile",
+        "company": "Company",
+        "english": "English",
+        "portuguese": "Portuguese",
+        "logout": "Logout"
+    },
+    "project": {
+        "create": {
+            "title": "Create Project",
+            "uploadPhoto": {
+                "label": "Upload Photo",
+                "hint": "Add a photo (550px x 158px) to represent the Project"
+            },
+            "name": {
+                "label": "Project Name",
+                "hint": "What would be the name of the Project",
+                "placeholder": "Ex.: John's House Construction",
+                "required": "Project name is required"
+            },
+            "description": {
+                "label": "Project Description",
+                "hint": "Add a detailed description of the project",
+                "placeholder": "Describe the project details...",
+                "required": "Project description is required"
+            },
+            "address": {
+                "label": "Project Address",
+                "hint": "Add the address where the project will be executed",
+                "placeholder": "Paulista Avenue 4550\nSão Paulo\nZIP 09000-000",
+                "required": "Project address is required"
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "create": "Create"
+            },
+            "success": "Project created successfully"
+        }
     }
 }

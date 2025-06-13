@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Logo } from '@/components/logo';
 import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function EmailVerificationSuccessPage() {
+    const t = useTranslations('auth');
     const [countdown, setCountdown] = useState(10);
     const router = useRouter();
 
@@ -26,21 +28,21 @@ export default function EmailVerificationSuccessPage() {
                 <CardHeader className="space-y-1 flex flex-col items-center gap-5">
                     <Logo className="h-15 w-15 text-blue-700" />
                     <CardTitle className="text-2xl font-bold text-center">
-                        Email Verified Successfully!
+                        {t('success.title')}
                     </CardTitle>
                     <CardDescription className="text-center">
-                        Your email has been verified. You will be redirected to the login page in {countdown} seconds.
+                        {t('success.description', { countdown })}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center gap-4">
                     <div className="text-center">
                         <p className="text-sm text-muted-foreground">
-                            If you are not redirected automatically,{' '}
+                            {t('success.notRedirected')}{' '}
                             <button
                                 onClick={() => router.push('/sign-in')}
                                 className="text-blue-700 hover:underline"
                             >
-                                click here
+                                {t('success.clickHere')}
                             </button>
                         </p>
                     </div>

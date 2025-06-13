@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { Logo } from '@/components/logo';
 import { registerUserAction, googleSignUpAction } from '@/components/actions/auth-actions';
 import { useUser } from '@/components/UserProvider';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 interface SignUpFormValues {
     firstName: string;
@@ -100,14 +100,14 @@ export default function SignUpForm() {
                     {t('signUp')}
                 </CardTitle>
                 <CardDescription className="text-center">
-                    Create your account to get started
+                    {t('createAccount')}
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">
                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="firstName">First Name</Label>
+                            <Label htmlFor="firstName">{t('firstName')}</Label>
                             <Input
                                 id="firstName"
                                 disabled={isLoading || isNavigating}
@@ -120,7 +120,7 @@ export default function SignUpForm() {
                             )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="lastName">Last Name</Label>
+                            <Label htmlFor="lastName">{t('lastName')}</Label>
                             <Input
                                 id="lastName"
                                 disabled={isLoading || isNavigating}
@@ -134,7 +134,7 @@ export default function SignUpForm() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">{t('email')}</Label>
                         <Input
                             id="email"
                             type="email"
@@ -153,7 +153,7 @@ export default function SignUpForm() {
                         )}
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="phone">Phone Number</Label>
+                        <Label htmlFor="phone">{t('phoneNumber')}</Label>
                         <Input
                             id="phone"
                             type="tel"
@@ -189,7 +189,7 @@ export default function SignUpForm() {
                         )}
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
+                        <Label htmlFor="password">{t('password')}</Label>
                         <div className="relative">
                             <Input
                                 id="password"
@@ -223,7 +223,7 @@ export default function SignUpForm() {
                         )}
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">Confirm Password</Label>
+                        <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
                         <div className="relative">
                             <Input
                                 id="confirmPassword"
@@ -262,21 +262,21 @@ export default function SignUpForm() {
                             className="border rounded cursor-pointer"
                         />
                         <label htmlFor="agree" className="text-sm">
-                            I agree to the{' '}
+                            {t('agreeToTerms')}{' '}
                             <Link
                                 href="/terms"
                                 className={`text-blue-700 hover:underline ${(isLoading || isNavigating) ? 'pointer-events-none opacity-50' : ''}`}
                                 target="_blank"
                             >
-                                Terms and Conditions
+                                {t('termsAndConditions')}
                             </Link>{' '}
-                            and{' '}
+                            {t('and')}{' '}
                             <Link
                                 href="/privacy"
                                 className={`text-blue-700 hover:underline ${(isLoading || isNavigating) ? 'pointer-events-none opacity-50' : ''}`}
                                 target="_blank"
                             >
-                                Privacy Policy
+                                {t('privacyPolicy')}
                             </Link>
                         </label>
                     </div>
@@ -300,7 +300,7 @@ export default function SignUpForm() {
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
                         <span className="bg-background px-2 text-muted-foreground">
-                            Or continue with
+                            {t('orContinueWith')}
                         </span>
                     </div>
                 </div>
@@ -321,12 +321,12 @@ export default function SignUpForm() {
                             />
                         </svg>
                     )}
-                    Google
+                    {t('google')}
                 </Button>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
                 <div className="text-sm text-center text-muted-foreground">
-                    Already have an account?{' '}
+                    {t('alreadyHaveAccount')}{' '}
                     <Link
                         href="/sign-in"
                         className={`text-primary hover:underline ${(isLoading || isNavigating) ? 'pointer-events-none opacity-50' : ''}`}
