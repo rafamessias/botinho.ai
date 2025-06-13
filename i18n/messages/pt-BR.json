@@ -134,6 +134,28 @@
                 "confirmPasswordRequired": "Por favor, confirme sua senha",
                 "passwordsDoNotMatch": "As senhas não coincidem"
             }
+        },
+        "resetPassword": {
+            "title": "Redefinir Senha",
+            "description": "Digite seu email para receber um link de redefinição de senha.",
+            "email": {
+                "label": "Email",
+                "placeholder": "nome@exemplo.com",
+                "required": "Email é obrigatório",
+                "invalid": "Email inválido"
+            },
+            "buttons": {
+                "sending": "Enviando...",
+                "sendResetLink": "Enviar Link de Redefinição"
+            },
+            "backToSignIn": "Voltar para Entrar",
+            "success": "Link de redefinição de senha enviado com sucesso",
+            "error": "Falha ao enviar link de redefinição de senha"
+        },
+        "language": {
+            "title": "Idioma",
+            "english": "Inglês",
+            "portuguese": "Português"
         }
     },
     "company": {
@@ -239,9 +261,9 @@
     "header": {
         "redirecting": "Redirecionando...",
         "create": "Criar",
-        "createRDO": "Criar RDO",
-        "createProject": "Criar Projeto",
-        "createIncident": "Criar Incidente",
+        "createRDO": "RDO",
+        "createProject": "Projeto",
+        "createIncident": "Incidente",
         "profile": "Perfil",
         "company": "Empresa",
         "english": "Inglês",

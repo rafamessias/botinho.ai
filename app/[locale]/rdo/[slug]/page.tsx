@@ -1,6 +1,4 @@
 import { RdoCard } from '@/components/rdo/rdo-card';
-import { getTranslations } from 'next-intl/server';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
 import { RDO } from '@/components/types/strapi';
 import ContainerApp from '@/components/Container-app';
 

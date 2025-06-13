@@ -12,6 +12,7 @@ import { useLoading } from "./LoadingProvider"
 import { useState, useEffect } from "react"
 import { useLocale, useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
+import { LanguageSwitch } from "./language-switch"
 
 export default function Header() {
   const { user, setUser } = useUser();
@@ -100,13 +101,8 @@ export default function Header() {
                 </>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer w-full" onClick={() => handleLanguageChange('en')}>
-                <Globe className="h-4 w-4 mr-2" />
-                {t('english')}
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer w-full" onClick={() => handleLanguageChange('pt-BR')}>
-                <Globe className="h-4 w-4 mr-2" />
-                {t('portuguese')}
+              <DropdownMenuItem className="cursor-pointer w-full" >
+                <LanguageSwitch />
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer w-full" onClick={handleLogout}>

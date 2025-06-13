@@ -11,19 +11,28 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from '@/components/logo';
 import { signIn } from '@/lib/strapi';
-import { useRouter } from '@/i18n/navigation';
+import { usePathname } from '@/i18n/navigation';
 import { useUser } from '@/components/UserProvider';
 import { useLoading } from '@/components/LoadingProvider';
 import { Link } from '@/i18n/navigation';
+import { LanguageSwitch } from '@/components/language-switch';
+import { useRouter } from 'next/navigation'
+
 
 interface SignInFormValues {
     email: string;
     password: string;
 }
 
-export function SignInForm() {
+export function SignInForm({
+    locale
+}: {
+    locale: string
+}) {
+
     const t = useTranslations('auth');
     const router = useRouter();
+    const pathname = usePathname();
     const [isLoading, setIsLoading] = useState(false);
     const [isNavigating, setIsNavigating] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -76,7 +85,8 @@ export function SignInForm() {
         // Clean up user context when component mounts
         setUser(null);
         setGlobalLoading(false);
-    }, [setUser, setGlobalLoading]);
+
+    }, [setUser, setGlobalLoading, pathname]);
 
     // Clean up loading state when component unmounts
     useEffect(() => {
@@ -96,6 +106,9 @@ export function SignInForm() {
                 </div>
             )}
             <CardHeader className="flex flex-col items-center gap-5">
+                <div className="absolute top-4 right-4">
+                    <LanguageSwitch disabled={isLoading || isNavigating} />
+                </div>
                 <Logo className="h-15 w-15 text-blue-700" />
                 <CardTitle className="text-2xl font-bold text-center">
                     {t('signIn')}

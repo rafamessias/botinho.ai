@@ -14,6 +14,7 @@ import { Logo } from '@/components/logo';
 import { registerUserAction, googleSignUpAction } from '@/components/actions/auth-actions';
 import { useUser } from '@/components/UserProvider';
 import { Link } from '@/i18n/navigation';
+import { LanguageSwitch } from '@/components/language-switch';
 
 interface SignUpFormValues {
     firstName: string;
@@ -95,6 +96,9 @@ export default function SignUpForm() {
                 </div>
             )}
             <CardHeader className="flex flex-col items-center gap-5">
+                <div className="absolute top-4 right-4">
+                    <LanguageSwitch disabled={isLoading || isNavigating} />
+                </div>
                 <Logo className="h-15 w-15 text-blue-700" />
                 <CardTitle className="text-2xl font-bold text-center">
                     {t('signUp')}

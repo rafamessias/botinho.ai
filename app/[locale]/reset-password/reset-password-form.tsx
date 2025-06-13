@@ -10,8 +10,10 @@ import { Link } from '@/i18n/navigation';
 import { Logo } from '@/components/logo';
 import { forgotPasswordAction } from '@/components/actions/forgot-password-action';
 import { useUser } from "@/components/UserProvider";
+import { useTranslations } from 'next-intl';
 
 export default function ResetPasswordForm() {
+    const t = useTranslations('auth.resetPassword');
     const searchParams = useSearchParams();
     const emailParam = searchParams.get('email') || '';
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<{ email: string }>({
@@ -32,10 +34,10 @@ export default function ResetPasswordForm() {
         try {
             const result = await forgotPasswordAction(data.email);
             if (result.success) {
-                toast.success(result.message);
+                toast.success(t('success'));
                 setIsSuccess(true);
             } else {
-                toast.error(result.error);
+                toast.error(t('error'));
             }
         } catch (error) {
             toast.error(error instanceof Error ? error.message : String(error));
@@ -49,25 +51,25 @@ export default function ResetPasswordForm() {
             <Card className="w-full max-w-md py-12 px-6 grid gap-6">
                 <CardHeader className="space-y-1 flex flex-col items-center gap-5">
                     <Logo className="h-15 w-15 text-blue-700" />
-                    <CardTitle className="text-2xl font-bold text-center">Reset Password</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-center">{t('title')}</CardTitle>
                     <CardDescription className="text-center">
-                        Enter your email to receive a password reset link.
+                        {t('description')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
                         <div className="space-y-2">
-                            <label htmlFor="email" className="font-semibold">Email</label>
+                            <label htmlFor="email" className="font-semibold">{t('email.label')}</label>
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="name@example.com"
+                                placeholder={t('email.placeholder')}
                                 disabled={isSuccess}
                                 {...register("email", {
-                                    required: "Email is required",
+                                    required: t('email.required'),
                                     pattern: {
                                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                        message: "Invalid email address"
+                                        message: t('email.invalid')
                                     }
                                 })}
                             />
@@ -76,12 +78,12 @@ export default function ResetPasswordForm() {
                             )}
                         </div>
                         <Button type="submit" className="w-full" disabled={isLoading || isSuccess}>
-                            {isLoading ? "Sending..." : "Send Reset Link"}
+                            {isLoading ? t('buttons.sending') : t('buttons.sendResetLink')}
                         </Button>
                     </form>
                     <div className="mt-6 text-center">
                         <Link href="/sign-in" className="text-blue-700 hover:underline">
-                            &larr; Back to Sign In
+                            &larr; {t('backToSignIn')}
                         </Link>
                     </div>
                 </CardContent>

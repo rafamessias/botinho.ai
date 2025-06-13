@@ -134,6 +134,28 @@
                 "confirmPasswordRequired": "Please confirm your password",
                 "passwordsDoNotMatch": "Passwords do not match"
             }
+        },
+        "resetPassword": {
+            "title": "Reset Password",
+            "description": "Enter your email to receive a password reset link.",
+            "email": {
+                "label": "Email",
+                "placeholder": "name@example.com",
+                "required": "Email is required",
+                "invalid": "Invalid email address"
+            },
+            "buttons": {
+                "sending": "Sending...",
+                "sendResetLink": "Send Reset Link"
+            },
+            "backToSignIn": "Back to Sign In",
+            "success": "Password reset link sent successfully",
+            "error": "Failed to send password reset link"
+        },
+        "language": {
+            "title": "Language",
+            "english": "English",
+            "portuguese": "Portuguese"
         }
     },
     "company": {
@@ -239,9 +261,9 @@
     "header": {
         "redirecting": "Redirecting...",
         "create": "Create",
-        "createRDO": "Create RDO",
-        "createProject": "Create Project",
-        "createIncident": "Create Incident",
+        "createRDO": "RDO",
+        "createProject": "Project",
+        "createIncident": "Incident",
         "profile": "Profile",
         "company": "Company",
         "english": "English",
