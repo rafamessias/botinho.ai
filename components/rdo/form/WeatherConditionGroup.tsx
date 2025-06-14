@@ -24,7 +24,7 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                 {periods.map(period => (
                     <div key={period.key} className="flex flex-col sm:flex-row items-center mb-2 gap-4">
                         <div className={`text-xs flex justify-start items-center gap-1 sm:min-w-[100px]`}>
-                            {t(`periods.${period.key.toLowerCase()}`)}
+                            {t(`periods.${period.key}`)}
                         </div>
                         <div className="flex gap-2">
                             <Select

@@ -335,9 +335,9 @@
         "weather": {
             "label": "Weather Condition",
             "periods": {
-                "wheathermorning": "Morning",
-                "wheatherafternoon": "Afternoon",
-                "wheathernight": "Night"
+                "weatherMorning": "Morning",
+                "weatherAfternoon": "Afternoon",
+                "weatherNight": "Night"
             },
             "conditions": {
                 "clear": "Clear",

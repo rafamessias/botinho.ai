@@ -335,9 +335,9 @@
         "weather": {
             "label": "Condição Climática",
             "periods": {
-                "morning": "Manhã",
-                "afternoon": "Tarde",
-                "night": "Noite"
+                "wheatherMorning": "Manhã",
+                "wheatherAfternoon": "Tarde",
+                "wheatherNight": "Noite"
             },
             "conditions": {
                 "clear": "Claro",

@@ -26,7 +26,6 @@ export function ProjectSelect({ value, onChange, projects }: {
     projects: Project[]
 }) {
     const [open, setOpen] = React.useState(false);
-    const [search, setSearch] = React.useState(value?.name);
     const t = useTranslations('form.project');
 
     return (
@@ -41,7 +40,7 @@ export function ProjectSelect({ value, onChange, projects }: {
                         aria-expanded={open}
                         className="w-full justify-between bg-white"
                     >
-                        {search || t('placeholder')}
+                        {`${value?.id} - ${value?.name}` || t('placeholder')}
                         <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
@@ -50,16 +49,16 @@ export function ProjectSelect({ value, onChange, projects }: {
                         <CommandInput placeholder={t('searchPlaceholder')} className="h-9" />
                         <CommandList>
                             <CommandEmpty>{t('noResults')}</CommandEmpty>
-                            <CommandGroup>
+                            <CommandGroup className="max-h-[300px] overflow-y-auto">
                                 {projects.map((project) => (
                                     <CommandItem
                                         key={project.id}
-                                        value={project.id as String}
+                                        value={`${project.name}__${project.id}`}
+                                        data-id={project.id}
                                         onSelect={(currentValue) => {
-                                            console.log(currentValue);
-                                            const selected = projects.find(p => p.id === currentValue);
+                                            const [_name, id] = currentValue.split('__');
+                                            const selected = projects.find(p => String(p.id) === id);
                                             if (selected) {
-                                                setSearch(currentValue);
                                                 onChange(selected);
                                                 setOpen(false);
                                             }
@@ -69,7 +68,7 @@ export function ProjectSelect({ value, onChange, projects }: {
                                             value?.id === project.id && "bg-accent"
                                         )}
                                     >
-                                        {project.name}
+                                        {project.id} - {project.name}
                                         <Check
                                             className={cn(
                                                 "ml-auto w-4 h-4",
