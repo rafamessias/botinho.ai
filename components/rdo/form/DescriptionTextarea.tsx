@@ -1,13 +1,16 @@
 "use client";
 import { Textarea } from '@/components/ui/textarea';
+import { useTranslations } from 'next-intl';
 
 export function DescriptionTextarea({ value, onChange }: { value: string, onChange: (v: string) => void }) {
+    const t = useTranslations('form.description');
+
     return (
         <div>
-            <label className="block text-sm font-medium mb-1">Conte o que foi feito</label>
-            <span className="block text-xs text-muted-foreground mb-2">Adicione o que foi feito nessa RDO</span>
+            <label className="block text-sm font-medium mb-1">{t('label')}</label>
+            <span className="block text-xs text-muted-foreground mb-2">{t('hint')}</span>
             <Textarea
-                placeholder="Executamos a seguinte parte da obra..."
+                placeholder={t('placeholder')}
                 value={value}
                 onChange={e => onChange(e.target.value)}
             />

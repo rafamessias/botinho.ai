@@ -301,5 +301,70 @@
             },
             "success": "Project created successfully"
         }
+    },
+    "form": {
+        "title": "Create RDO",
+        "project": {
+            "label": "Project",
+            "hint": "This RDO will be linked to the project",
+            "placeholder": "Select project",
+            "searchPlaceholder": "Search project...",
+            "noResults": "No projects found."
+        },
+        "date": {
+            "label": "RDO Date",
+            "hint": "What date will this RDO be for",
+            "placeholder": "dd/mm/yyyy",
+            "selectDate": "Select date"
+        },
+        "labor": {
+            "label": "Labor",
+            "hint": "Add the labor used",
+            "placeholder": "We executed the following part of the work..."
+        },
+        "equipment": {
+            "label": "Equipment Used",
+            "hint": "Add the equipment used",
+            "placeholder": "We executed the following part of the work..."
+        },
+        "description": {
+            "label": "Tell us what was done",
+            "hint": "Add what was done in this RDO",
+            "placeholder": "We executed the following part of the work..."
+        },
+        "weather": {
+            "label": "Weather Condition",
+            "periods": {
+                "wheathermorning": "Morning",
+                "wheatherafternoon": "Afternoon",
+                "wheathernight": "Night"
+            },
+            "conditions": {
+                "clear": "Clear",
+                "cloudy": "Cloudy",
+                "rainy": "Rainy"
+            },
+            "workable": {
+                "true": "Workable",
+                "false": "Unworkable"
+            }
+        },
+        "status": {
+            "label": "RDO Status",
+            "hint": "Modify the RDO Status here",
+            "placeholder": "Select status"
+        },
+        "files": {
+            "label": "Upload Photos, Videos and Documents",
+            "hint": "Add photos and videos to your post to update the Work",
+            "clickToAdd": "Click to add photos or videos",
+            "addMore": "Add more",
+            "removeImage": {
+                "title": "Remove image",
+                "description": "Are you sure you want to remove this image?",
+                "confirm": "Remove",
+                "cancel": "Cancel"
+            }
+        }
     }
 }

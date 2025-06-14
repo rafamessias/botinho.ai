@@ -301,5 +301,70 @@
             },
             "success": "Projeto criado com sucesso"
         }
+    },
+    "form": {
+        "title": "Criar RDO",
+        "project": {
+            "label": "Projeto",
+            "hint": "Essa RDO ficará vinculada ao projeto",
+            "placeholder": "Selecione o projeto",
+            "searchPlaceholder": "Buscar projeto...",
+            "noResults": "Nenhum projeto encontrado."
+        },
+        "date": {
+            "label": "Data do RDO",
+            "hint": "Qual data será esse RDO",
+            "placeholder": "dd/mm/aaaa",
+            "selectDate": "Selecionar data"
+        },
+        "labor": {
+            "label": "Mão de Obra",
+            "hint": "Adicione a mão de obra utilizada",
+            "placeholder": "Executamos a seguinte parte da obra..."
+        },
+        "equipment": {
+            "label": "Equipamentos Utilizados",
+            "hint": "Adicione os equipamentos utilizados",
+            "placeholder": "Executamos a seguinte parte da obra..."
+        },
+        "description": {
+            "label": "Conte o que foi feito",
+            "hint": "Adicione o que foi feito nessa RDO",
+            "placeholder": "Executamos a seguinte parte da obra..."
+        },
+        "weather": {
+            "label": "Condição Climática",
+            "periods": {
+                "morning": "Manhã",
+                "afternoon": "Tarde",
+                "night": "Noite"
+            },
+            "conditions": {
+                "clear": "Claro",
+                "cloudy": "Nublado",
+                "rainy": "Chuvoso"
+            },
+            "workable": {
+                "true": "Praticável",
+                "false": "Impraticável"
+            }
+        },
+        "status": {
+            "label": "Status do RDO",
+            "hint": "Modifique o Status do RDO aqui",
+            "placeholder": "Selecione o status"
+        },
+        "files": {
+            "label": "Subir Fotos, Vídeos e documentos",
+            "hint": "Adicione fotos e vídeos no seu posta para atualizar a Obra",
+            "clickToAdd": "Clique para adicionar fotos ou vídeos",
+            "addMore": "Adicionar mais",
+            "removeImage": {
+                "title": "Remover imagem",
+                "description": "Tem certeza que deseja remover esta imagem?",
+                "confirm": "Remover",
+                "cancel": "Cancelar"
+            }
+        }
     }
 }

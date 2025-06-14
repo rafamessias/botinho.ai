@@ -16,6 +16,9 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Project } from "@/components/types/strapi";
+import { useTranslations } from 'next-intl';
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 export function ProjectSelect({ value, onChange, projects }: {
     value: Project,
@@ -23,41 +26,56 @@ export function ProjectSelect({ value, onChange, projects }: {
     projects: Project[]
 }) {
     const [open, setOpen] = React.useState(false);
+    const [search, setSearch] = React.useState(value?.name);
+    const t = useTranslations('form.project');
 
     return (
         <div>
-            <label className="block text-sm font-medium mb-1">Projeto</label>
-            <span className="block text-xs text-muted-foreground mb-2">Essa RDO ficará vinculada ao projeto</span>
+            <label className="block text-sm font-medium mb-1">{t('label')}</label>
+            <span className="block text-xs text-muted-foreground mb-2">{t('hint')}</span>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="w-full justify-between"
+                        className="w-full justify-between bg-white"
                     >
-                        {value
-                            ? projects.find((p) => p.id === value.id)?.name
-                            : "Selecione o projeto"}
+                        {search || t('placeholder')}
                         <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0">
                     <Command>
-                        <CommandInput placeholder="Buscar projeto..." className="h-9" />
+                        <CommandInput placeholder={t('searchPlaceholder')} className="h-9" />
                         <CommandList>
-                            <CommandEmpty>Nenhum projeto encontrado.</CommandEmpty>
+                            <CommandEmpty>{t('noResults')}</CommandEmpty>
                             <CommandGroup>
                                 {projects.map((project) => (
                                     <CommandItem
                                         key={project.id}
-                                        data-value={project.name}
-                                        onSelect={() => {
-                                            onChange(project);
-                                            setOpen(false);
+                                        value={project.id as String}
+                                        onSelect={(currentValue) => {
+                                            console.log(currentValue);
+                                            const selected = projects.find(p => p.id === currentValue);
+                                            if (selected) {
+                                                setSearch(currentValue);
+                                                onChange(selected);
+                                                setOpen(false);
+                                            }
                                         }}
+                                        className={cn(
+                                            "cursor-pointer",
+                                            value?.id === project.id && "bg-accent"
+                                        )}
                                     >
                                         {project.name}
+                                        <Check
+                                            className={cn(
+                                                "ml-auto w-4 h-4",
+                                                value?.id === project.id ? "opacity-100" : "opacity-0"
+                                            )}
+                                        />
                                     </CommandItem>
                                 ))}
                             </CommandGroup>

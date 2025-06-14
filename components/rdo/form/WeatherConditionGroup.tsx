@@ -1,75 +1,82 @@
 "use client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sun, Cloud, Moon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { WeatherOption } from '@/components/types/strapi';
 
 const periods = [
-    { key: 'morning', label: 'Manhã', icon: <Sun className="inline w-4 h-4" /> },
-    { key: 'afternoon', label: 'Tarde', icon: <Cloud className="inline w-4 h-4" /> },
-    { key: 'night', label: 'Noite', icon: <Moon className="inline w-4 h-4 text-red-500" /> },
-];
-
-const weatherOptions = [
-    { value: 'clear', label: 'Claro' },
-    { value: 'cloudy', label: 'Nublado' },
-    { value: 'rainy', label: 'Chuvoso' },
-];
-
-const practicabilityOptions = [
-    { value: 'practicable', label: 'Praticável' },
-    { value: 'impracticable', label: 'Impraticável' },
-];
+    { key: 'wheatherMorning', icon: <Sun className="inline w-4 h-4" /> },
+    { key: 'wheatherAfternoon', icon: <Cloud className="inline w-4 h-4" /> },
+    { key: 'wheatherNight', icon: <Moon className="inline w-4 h-4 " /> },
+] as const;
 
 export function WeatherConditionGroup({ weather, setWeather }: {
-    weather: any, setWeather: (w: any) => void
+    weather: WeatherOption, setWeather: (w: WeatherOption) => void
 }) {
+    const t = useTranslations('form.weather');
+    const weatherConditions = ['clear', 'cloudy', 'rainy'];
+    const workableOptions = [true, false];
+
     return (
         <div>
-            <label className="block text-sm font-medium mb-2">Condição Climática</label>
+            <label className="block text-sm font-medium mb-2">{t('label')}</label>
             <div className="flex flex-col gap-2">
                 {periods.map(period => (
-                    <div key={period.key} className="flex items-center gap-2">
-                        <span className={`text-xs flex items-center gap-1 ${period.key === 'night' ? 'text-red-500' : ''}`}>
-                            {period.icon} {period.label}
-                        </span>
-                        <Select
-                            value={weather[period.key].condition}
-                            onValueChange={val =>
-                                setWeather((w: any) => ({
-                                    ...w,
-                                    [period.key]: { ...w[period.key], condition: val }
-                                }))
-                            }
-                        >
-                            <SelectTrigger className="w-24">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {weatherOptions.map(opt => (
-                                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <Select
-                            value={weather[period.key].practicability}
-                            onValueChange={val =>
-                                setWeather((w: any) => ({
-                                    ...w,
-                                    [period.key]: { ...w[period.key], practicability: val }
-                                }))
-                            }
-                        >
-                            <SelectTrigger className="w-28">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {practicabilityOptions.map(opt => (
-                                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                    <div key={period.key} className="flex flex-col sm:flex-row items-center mb-2 gap-4">
+                        <div className={`text-xs flex justify-start items-center gap-1 sm:min-w-[100px]`}>
+                            {t(`periods.${period.key.toLowerCase()}`)}
+                        </div>
+                        <div className="flex gap-2">
+                            <Select
+                                value={weather[period.key]?.condition || ''}
+                                onValueChange={val =>
+                                    setWeather({
+                                        ...weather,
+                                        [period.key]: {
+                                            ...weather[period.key],
+                                            condition: val as 'clear' | 'cloudy' | 'rainy' | null
+                                        }
+                                    })
+                                }
+                            >
+                                <SelectTrigger className="w-[130px]">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {weatherConditions.map(condition => (
+                                        <SelectItem key={condition} value={condition}>
+                                            {t(`conditions.${condition}`)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Select
+                                value={weather[period.key]?.workable?.toString() || ''}
+                                onValueChange={val =>
+                                    setWeather({
+                                        ...weather,
+                                        [period.key]: {
+                                            ...weather[period.key],
+                                            workable: val === 'true'
+                                        }
+                                    })
+                                }
+                            >
+                                <SelectTrigger className="w-[130px]">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {workableOptions.map(workable => (
+                                        <SelectItem key={workable.toString()} value={workable.toString()}>
+                                            {t(`workable.${workable}`)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                 ))}
             </div>
         </div>
     );
-} 
+}

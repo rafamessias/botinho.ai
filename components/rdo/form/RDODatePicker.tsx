@@ -13,6 +13,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTranslations } from 'next-intl';
 
 function formatDate(date: Date | undefined) {
     if (!date) return "";
@@ -31,6 +32,7 @@ export function RDODatePicker({ value, onChange }: { value: string, onChange: (v
     );
     const [month, setMonth] = React.useState<Date | undefined>(date);
     const [inputValue, setInputValue] = React.useState<string>(formatDate(date));
+    const t = useTranslations('form.date');
 
     React.useEffect(() => {
         setInputValue(formatDate(date));
@@ -58,15 +60,15 @@ export function RDODatePicker({ value, onChange }: { value: string, onChange: (v
     };
 
     return (
-        <div className="flex flex-col gap-2">
-            <label className="block text-sm font-medium">Data do RDO</label>
-            <span className="block text-xs text-muted-foreground mb-2">Qual data será esse RDO</span>
+        <div className="flex flex-col">
+            <label className="block text-sm font-medium mb-1">{t('label')}</label>
+            <span className="block text-xs text-muted-foreground mb-2">{t('hint')}</span>
             <div className="relative flex gap-2">
                 <Input
                     id="rdo-date"
                     value={inputValue}
-                    placeholder="dd/mm/aaaa"
-                    className="bg-background pr-10"
+                    placeholder={t('placeholder')}
+                    className="bg-white pr-10"
                     onChange={handleInputChange}
                     onKeyDown={(e) => {
                         if (e.key === "ArrowDown") {
@@ -84,7 +86,7 @@ export function RDODatePicker({ value, onChange }: { value: string, onChange: (v
                             tabIndex={-1}
                         >
                             <CalendarIcon className="size-3.5" />
-                            <span className="sr-only">Selecionar data</span>
+                            <span className="sr-only">{t('selectDate')}</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent
