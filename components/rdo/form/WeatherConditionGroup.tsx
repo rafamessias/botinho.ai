@@ -26,7 +26,7 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                         <div className={`text-xs flex justify-start items-center gap-1 sm:min-w-[100px]`}>
                             {t(`periods.${period.key}`)}
                         </div>
-                        <div className="flex gap-2">
+                        <div className="w-full flex flex-1 justify-between sm:justify-start sm:gap-2">
                             <Select
                                 value={weather[period.key]?.condition || ''}
                                 onValueChange={val =>

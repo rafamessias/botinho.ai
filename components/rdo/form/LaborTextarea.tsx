@@ -12,6 +12,7 @@ export function LaborTextarea({ value, onChange }: { value: string, onChange: (v
             <Textarea
                 placeholder={t('placeholder')}
                 value={value}
+                className="h-[130px]"
                 onChange={e => onChange(e.target.value)}
             />
         </div>

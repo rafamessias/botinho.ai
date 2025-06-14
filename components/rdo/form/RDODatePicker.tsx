@@ -64,31 +64,37 @@ export function RDODatePicker({ value, onChange }: { value: string, onChange: (v
             <label className="block text-sm font-medium mb-1">{t('label')}</label>
             <span className="block text-xs text-muted-foreground mb-2">{t('hint')}</span>
             <div className="relative flex gap-2">
-                <Input
-                    id="rdo-date"
-                    value={inputValue}
-                    placeholder={t('placeholder')}
-                    className="bg-white pr-10"
-                    onChange={handleInputChange}
-                    onKeyDown={(e) => {
-                        if (e.key === "ArrowDown") {
-                            e.preventDefault();
-                            setOpen(true);
-                        }
-                    }}
-                />
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <Button
-                            id="date-picker"
-                            variant="ghost"
-                            className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
-                            tabIndex={-1}
-                        >
-                            <CalendarIcon className="size-3.5" />
-                            <span className="sr-only">{t('selectDate')}</span>
-                        </Button>
+
+                        <div className="w-full relative">
+                            <Input
+                                id="rdo-date"
+                                value={inputValue}
+                                placeholder={t('placeholder')}
+                                className="bg-white pr-10 w-full"
+                                readOnly
+                                onKeyDown={(e) => {
+                                    if (e.key === "ArrowDown") {
+                                        e.preventDefault();
+                                        setOpen(true);
+                                    }
+                                }}
+                            />
+                            <Button
+                                id="date-picker"
+                                variant="ghost"
+                                className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
+                                tabIndex={-1}
+                            >
+                                <CalendarIcon className="size-3.5" />
+                                <span className="sr-only">{t('selectDate')}</span>
+                            </Button>
+                        </div>
+
                     </PopoverTrigger>
+
+
                     <PopoverContent
                         className="w-auto overflow-hidden p-0"
                         align="end"

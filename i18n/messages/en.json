@@ -309,13 +309,15 @@
             "hint": "This RDO will be linked to the project",
             "placeholder": "Select project",
             "searchPlaceholder": "Search project...",
-            "noResults": "No projects found."
+            "noResults": "No projects found.",
+            "required": "Project is required."
         },
         "date": {
             "label": "RDO Date",
             "hint": "What date will this RDO be for",
             "placeholder": "dd/mm/yyyy",
-            "selectDate": "Select date"
+            "selectDate": "Select date",
+            "required": "Date is required."
         },
         "labor": {
             "label": "Labor",
@@ -330,7 +332,9 @@
         "description": {
             "label": "Tell us what was done",
             "hint": "Add what was done in this RDO",
-            "placeholder": "We executed the following part of the work..."
+            "placeholder": "We executed the following part of the work...",
+            "required": "Description is required.",
+            "minLength": "Description must be at least 10 characters."
         },
         "weather": {
             "label": "Weather Condition",
@@ -365,6 +369,17 @@
                 "confirm": "Remove",
                 "cancel": "Cancel"
             }
+        }
+    },
+    "uploadPhoto": {
+        "clickToAdd": "Click to add photos or videos",
+        "clickToAddLogo": "Click to add a logo",
+        "clickToAddPhoto": "Click to add a photo",
+        "removeImage": {
+            "title": "Remove image",
+            "description": "Are you sure you want to remove this image?",
+            "confirm": "Remove",
+            "cancel": "Cancel"
         }
     }
 }

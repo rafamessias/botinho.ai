@@ -19,6 +19,7 @@ import { Project } from "@/components/types/strapi";
 import { useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 export function ProjectSelect({ value, onChange, projects }: {
     value: Project,
@@ -50,25 +51,28 @@ export function ProjectSelect({ value, onChange, projects }: {
                         <CommandList>
                             <CommandEmpty>{t('noResults')}</CommandEmpty>
                             <CommandGroup className="max-h-[300px] overflow-y-auto">
+
                                 {projects.map((project) => (
                                     <CommandItem
                                         key={project.id}
-                                        value={`${project.name}__${project.id}`}
-                                        data-id={project.id}
+                                        value={`${project.id}__${project.name}`}
                                         onSelect={(currentValue) => {
-                                            const [_name, id] = currentValue.split('__');
+
+                                            const [id, _name] = currentValue.split('__');
                                             const selected = projects.find(p => String(p.id) === id);
                                             if (selected) {
                                                 onChange(selected);
                                                 setOpen(false);
                                             }
                                         }}
+
                                         className={cn(
                                             "cursor-pointer",
                                             value?.id === project.id && "bg-accent"
                                         )}
                                     >
                                         {project.id} - {project.name}
+
                                         <Check
                                             className={cn(
                                                 "ml-auto w-4 h-4",

@@ -309,13 +309,15 @@
             "hint": "Essa RDO ficará vinculada ao projeto",
             "placeholder": "Selecione o projeto",
             "searchPlaceholder": "Buscar projeto...",
-            "noResults": "Nenhum projeto encontrado."
+            "noResults": "Nenhum projeto encontrado.",
+            "required": "Projeto é obrigatório."
         },
         "date": {
             "label": "Data do RDO",
             "hint": "Qual data será esse RDO",
             "placeholder": "dd/mm/aaaa",
-            "selectDate": "Selecionar data"
+            "selectDate": "Selecionar data",
+            "required": "Data é obrigatória."
         },
         "labor": {
             "label": "Mão de Obra",
@@ -330,7 +332,9 @@
         "description": {
             "label": "Conte o que foi feito",
             "hint": "Adicione o que foi feito nessa RDO",
-            "placeholder": "Executamos a seguinte parte da obra..."
+            "placeholder": "Executamos a seguinte parte da obra...",
+            "required": "Descrição é obrigatória.",
+            "minLength": "A descrição deve ter pelo menos 10 caracteres."
         },
         "weather": {
             "label": "Condição Climática",
@@ -356,7 +360,7 @@
         },
         "files": {
             "label": "Subir Fotos, Vídeos e documentos",
-            "hint": "Adicione fotos e vídeos no seu posta para atualizar a Obra",
+            "hint": "Adicione fotos e vídeos no seu post para atualizar a Obra",
             "clickToAdd": "Clique para adicionar fotos ou vídeos",
             "addMore": "Adicionar mais",
             "removeImage": {
@@ -365,6 +369,17 @@
                 "confirm": "Remover",
                 "cancel": "Cancelar"
             }
+        }
+    },
+    "uploadPhoto": {
+        "clickToAdd": "Clique para adicionar fotos ou vídeos",
+        "clickToAddLogo": "Clique para adicionar um logo",
+        "clickToAddPhoto": "Clique para adicionar uma foto",
+        "removeImage": {
+            "title": "Remover imagem",
+            "description": "Tem certeza que deseja remover esta imagem?",
+            "confirm": "Remover",
+            "cancel": "Cancelar"
         }
     }
 }

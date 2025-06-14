@@ -39,17 +39,18 @@ export default function CreateRDOForm({ projects }: { projects: Project[] }) {
         defaultValues: {
             project: projects[0],
             status: rdoStatuses[0].value,
-            date: '',
+            date: new Date().toISOString(),
             weather: {
-                wheatherMorning: { condition: null, workable: true },
-                wheatherAfternoon: { condition: null, workable: true },
-                wheatherNight: { condition: null, workable: true },
+                wheatherMorning: { condition: null, workable: null },
+                wheatherAfternoon: { condition: null, workable: null },
+                wheatherNight: { condition: null, workable: null },
             },
             description: '',
             equipment: '',
             labor: '',
             files: [],
-        }
+        },
+        mode: 'onBlur',
     });
 
     const handleCancel = () => {
@@ -75,12 +76,18 @@ export default function CreateRDOForm({ projects }: { projects: Project[] }) {
                 <Controller
                     name="project"
                     control={control}
+                    rules={{ required: t('project.required') }}
                     render={({ field }) => (
-                        <ProjectSelect
-                            value={field.value}
-                            onChange={field.onChange}
-                            projects={projects}
-                        />
+                        <div>
+                            <ProjectSelect
+                                value={field.value}
+                                onChange={field.onChange}
+                                projects={projects}
+                            />
+                            {errors.project && (
+                                <span className="text-red-500 text-xs mt-1">{errors.project.message as string}</span>
+                            )}
+                        </div>
                     )}
                 />
 
@@ -100,11 +107,17 @@ export default function CreateRDOForm({ projects }: { projects: Project[] }) {
                     <Controller
                         name="date"
                         control={control}
+                        rules={{ required: t('date.required') }}
                         render={({ field }) => (
-                            <RDODatePicker
-                                value={field.value}
-                                onChange={field.onChange}
-                            />
+                            <div>
+                                <RDODatePicker
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                />
+                                {errors.date && (
+                                    <span className="text-red-500 text-xs mt-1">{errors.date.message as string}</span>
+                                )}
+                            </div>
                         )}
                     />
                 </div>
@@ -123,11 +136,17 @@ export default function CreateRDOForm({ projects }: { projects: Project[] }) {
                 <Controller
                     name="description"
                     control={control}
+                    rules={{ required: t('description.required'), minLength: { value: 10, message: t('description.minLength') } }}
                     render={({ field }) => (
-                        <DescriptionTextarea
-                            value={field.value}
-                            onChange={field.onChange}
-                        />
+                        <div>
+                            <DescriptionTextarea
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+                            {errors.description && (
+                                <span className="text-red-500 text-xs mt-1">{errors.description.message as string}</span>
+                            )}
+                        </div>
                     )}
                 />
 

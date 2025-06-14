@@ -12,6 +12,7 @@ export function DescriptionTextarea({ value, onChange }: { value: string, onChan
             <Textarea
                 placeholder={t('placeholder')}
                 value={value}
+                className="h-[130px]"
                 onChange={e => onChange(e.target.value)}
             />
         </div>

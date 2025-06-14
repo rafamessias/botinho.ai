@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useRef, useState, useEffect } from 'react';
 import { UseFormRegister, FieldValues, Path, UseFormSetValue } from 'react-hook-form';
 import { ConfirmDialog } from './confirm-dialog';
+import { useTranslations } from 'next-intl';
 
 interface UploadPhotoProps<T extends FieldValues> {
     register: UseFormRegister<T>;
@@ -70,6 +71,7 @@ export function UploadPhoto<T extends FieldValues>({
     initialFiles = [],
     onRemoveImage,
 }: UploadPhotoProps<T>) {
+    const t = useTranslations('uploadPhoto');
     const [previewUrls, setPreviewUrls] = useState<string[]>(currentImage ? [currentImage] : []);
     const [carouselFiles, setCarouselFiles] = useState<File[]>([]);
     const [carouselIndex, setCarouselIndex] = useState(0);
@@ -240,7 +242,7 @@ export function UploadPhoto<T extends FieldValues>({
                         </>
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                            Click to add photos or videos
+                            {isCarousel ? t('clickToAdd') : isLogo ? t('clickToAddLogo') : t('clickToAddPhoto')}
                         </div>
                     )
                 ) : previewUrls.length > 0 ? (
@@ -256,7 +258,7 @@ export function UploadPhoto<T extends FieldValues>({
                     </>
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                        Click to add a {isLogo ? 'logo' : 'photo'}
+                        {isCarousel ? t('clickToAdd') : isLogo ? t('clickToAddLogo') : t('clickToAddPhoto')}
                     </div>
                 )}
             </div>
@@ -272,7 +274,7 @@ export function UploadPhoto<T extends FieldValues>({
                         className="absolute right-0 -top-10 mt-2 text-sm py-1 px-2 rounded-lg border border-gray-300 text-blue-700"
                         onClick={() => inputRef.current?.click()}
                     >
-                        Add more
+                        {t('clickToAdd')}
                     </button>
                 </div>
             )}
@@ -280,10 +282,10 @@ export function UploadPhoto<T extends FieldValues>({
                 open={dialogOpen}
                 onConfirm={confirmRemove}
                 onCancel={cancelRemove}
-                title="Remover imagem"
-                description="Tem certeza que deseja remover esta imagem?"
-                confirmLabel="Remover"
-                cancelLabel="Cancelar"
+                title={t('removeImage.title')}
+                description={t('removeImage.description')}
+                confirmLabel={t('removeImage.confirm')}
+                cancelLabel={t('removeImage.cancel')}
                 confirmVariant="primary"
             />
         </div>
