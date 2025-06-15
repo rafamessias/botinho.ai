@@ -147,13 +147,14 @@ export interface RDO {
     project: Project | number;
     date: Date;
     description: string;
+    equipmentUsed: string;
+    workforce: string;
     media?: StrapiImage[] | FileList | null;
-    status: 'pending' | 'approved' | 'rejected';
-    wheatherMorning: RDOWeather | null;
-    wheatherAfternoon: RDOWeather | null;
-    wheatherNight: RDOWeather | null;
-    comments?: Comment[];
-    approvals?: Approval[];
+    rdoStatus: 'draft' | 'pendingApproval' | 'approved' | 'rejected';
+    weatherMorning: RDOWeather | RDOWeather[] | null;
+    weatherAfternoon: RDOWeather | RDOWeather[] | null;
+    weatherNight: RDOWeather | RDOWeather[] | null;
+    commentCount?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -165,9 +166,9 @@ export interface RDOWeather {
 
 //used for the weather condition group
 export type WeatherOption = {
-    wheatherMorning: RDOWeather | null;
-    wheatherAfternoon: RDOWeather | null;
-    wheatherNight: RDOWeather | null;
+    weatherMorning: RDOWeather | RDOWeather[] | null;
+    weatherAfternoon: RDOWeather | RDOWeather[] | null;
+    weatherNight: RDOWeather | RDOWeather[] | null;
 };
 
 export interface Incident {

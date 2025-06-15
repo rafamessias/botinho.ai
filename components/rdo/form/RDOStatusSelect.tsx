@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 export function RDOStatusSelect({ value, onChange, statuses }: {
     value: string, onChange: (v: string) => void, statuses: { value: string, label: string }[]
 }) {
-    const t = useTranslations('form.status');
+    const t = useTranslations('formRDO.status');
 
     return (
         <div className="flex flex-col w-full">

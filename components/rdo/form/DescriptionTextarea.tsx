@@ -3,7 +3,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useTranslations } from 'next-intl';
 
 export function DescriptionTextarea({ value, onChange }: { value: string, onChange: (v: string) => void }) {
-    const t = useTranslations('form.description');
+    const t = useTranslations('formRDO.description');
 
     return (
         <div>

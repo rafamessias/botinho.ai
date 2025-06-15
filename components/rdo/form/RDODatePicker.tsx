@@ -32,7 +32,7 @@ export function RDODatePicker({ value, onChange }: { value: string, onChange: (v
     );
     const [month, setMonth] = React.useState<Date | undefined>(date);
     const [inputValue, setInputValue] = React.useState<string>(formatDate(date));
-    const t = useTranslations('form.date');
+    const t = useTranslations('formRDO.date');
 
     React.useEffect(() => {
         setInputValue(formatDate(date));

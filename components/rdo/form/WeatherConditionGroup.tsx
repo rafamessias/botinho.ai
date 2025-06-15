@@ -5,15 +5,15 @@ import { useTranslations } from 'next-intl';
 import { WeatherOption } from '@/components/types/strapi';
 
 const periods = [
-    { key: 'wheatherMorning', icon: <Sun className="inline w-4 h-4" /> },
-    { key: 'wheatherAfternoon', icon: <Cloud className="inline w-4 h-4" /> },
-    { key: 'wheatherNight', icon: <Moon className="inline w-4 h-4 " /> },
+    { key: 'weatherMorning', icon: <Sun className="inline w-4 h-4" /> },
+    { key: 'weatherAfternoon', icon: <Cloud className="inline w-4 h-4" /> },
+    { key: 'weatherNight', icon: <Moon className="inline w-4 h-4 " /> },
 ] as const;
 
 export function WeatherConditionGroup({ weather, setWeather }: {
     weather: WeatherOption, setWeather: (w: WeatherOption) => void
 }) {
-    const t = useTranslations('form.weather');
+    const t = useTranslations('formRDO.weather');
     const weatherConditions = ['clear', 'cloudy', 'rainy'];
     const workableOptions = [true, false];
 
@@ -28,12 +28,16 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                         </div>
                         <div className="w-full flex flex-1 justify-between sm:justify-start sm:gap-2">
                             <Select
-                                value={weather[period.key]?.condition || ''}
+                                value={(() => {
+                                    const weatherData = weather[period.key];
+                                    if (!weatherData) return '';
+                                    return Array.isArray(weatherData) ? (weatherData as any[])[0]?.condition || '' : (weatherData as any).condition || '';
+                                })()}
                                 onValueChange={val =>
                                     setWeather({
                                         ...weather,
                                         [period.key]: {
-                                            ...weather[period.key],
+                                            ...(Array.isArray(weather[period.key]) ? (weather[period.key] as any[])[0] || {} : (weather[period.key] as any) || {}),
                                             condition: val as 'clear' | 'cloudy' | 'rainy' | null
                                         }
                                     })
@@ -51,12 +55,16 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                                 </SelectContent>
                             </Select>
                             <Select
-                                value={weather[period.key]?.workable?.toString() || ''}
+                                value={(() => {
+                                    const weatherData = weather[period.key];
+                                    if (!weatherData) return '';
+                                    return Array.isArray(weatherData) ? (weatherData as any[])[0]?.workable?.toString() || '' : (weatherData as any).workable?.toString() || '';
+                                })()}
                                 onValueChange={val =>
                                     setWeather({
                                         ...weather,
                                         [period.key]: {
-                                            ...weather[period.key],
+                                            ...(Array.isArray(weather[period.key]) ? (weather[period.key] as any[])[0] || {} : (weather[period.key] as any) || {}),
                                             workable: val === 'true'
                                         }
                                     })

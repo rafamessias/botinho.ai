@@ -27,7 +27,7 @@ export function ProjectSelect({ value, onChange, projects }: {
     projects: Project[]
 }) {
     const [open, setOpen] = React.useState(false);
-    const t = useTranslations('form.project');
+    const t = useTranslations('formRDO.project');
 
     return (
         <div>
@@ -46,11 +46,11 @@ export function ProjectSelect({ value, onChange, projects }: {
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0">
-                    <Command>
+                    <Command className="max-w-[632px] min-w-[278px]">
                         <CommandInput placeholder={t('searchPlaceholder')} className="h-9" />
                         <CommandList>
                             <CommandEmpty>{t('noResults')}</CommandEmpty>
-                            <CommandGroup className="max-h-[300px] overflow-y-auto">
+                            <CommandGroup className="max-h-[300px] overflow-y-auto w-full">
 
                                 {projects.map((project) => (
                                     <CommandItem

@@ -8,15 +8,18 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { useTranslations } from 'next-intl';
+import { Badge } from '../ui/badge';
 
-const getWeatherIcon = (condition: string) => {
+const getWeatherIcon = (condition: string | null) => {
+    if (!condition) return null;
+
     switch (condition) {
         case 'clear':
-            return <Sun className="w-4 h-4" />;
+            return <Sun className="w-2 h-2" />;
         case 'cloudy':
-            return <Cloud className="w-4 h-4" />;
+            return <Cloud className="w-2 h-2" />;
         case 'rainy':
-            return <CloudRain className="w-4 h-4" />;
+            return <CloudRain className="w-2 h-2" />;
         default:
             return null;
     }
@@ -48,29 +51,29 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                 </div>
                 <div className="flex gap-2">
                     {[
-                        { period: t('morning'), weather: rdo.wheatherMorning },
-                        { period: t('afternoon'), weather: rdo.wheatherAfternoon },
-                        { period: t('night'), weather: rdo.wheatherNight }
+                        { period: t('morning'), weather: rdo.weatherMorning },
+                        { period: t('afternoon'), weather: rdo.weatherAfternoon },
+                        { period: t('night'), weather: rdo.weatherNight }
                     ].map((weather) => {
-                        if (weather.weather !== null) {
+                        const weatherData = Array.isArray(weather.weather) ? weather.weather[0] : weather.weather;
+
+                        if (weatherData !== null && weatherData.condition !== null) {
                             return (
                                 <TooltipProvider key={weather.period}>
                                     <Tooltip delayDuration={0}>
                                         <TooltipTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                type="button"
+                                            <Badge
+                                                variant='outline'
                                                 key={weather.period}
-                                                className={`flex items-center gap-1 px-4 py-2 rounded-lg text-xs shadow-sm ${weather.weather.workable
-                                                    ? 'bg-gray-50 text-gray-900'
-                                                    : 'bg-red-50 text-red-900 hover:bg-red-100 hover:text-red-900'
+                                                className={`flex items-center gap-1 rounded-lg text-xs shadow-sm cursor-default ${!weatherData.workable
+                                                    && 'bg-red-50 text-red-900 hover:bg-red-100 hover:text-red-900'
                                                     }`}
                                             >
-                                                {weather.period} {getWeatherIcon(weather.weather.condition)}
-                                            </Button>
+                                                {weather.period} {getWeatherIcon(weatherData.condition)}
+                                            </Badge>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{weather.weather.workable ? t('workableConditions') : t('unworkableConditions')}</p>
+                                            <p>{weatherData.workable ? t('workableConditions') : t('unworkableConditions')}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
@@ -81,7 +84,7 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                 </div>
             </CardHeader>
             <CardContent className="p-0">
-                <div className="text-sm mb-2 text-gray-800">
+                <div className="text-sm mb-4 text-gray-800">
                     {rdo.description.length > 200 ? `${rdo.description.substring(0, 200)}...` : rdo.description}
                 </div>
                 <CarouselMedia images={rdo.media as StrapiImage[] || []} />
@@ -96,11 +99,11 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                         </Link>
                         <Link href={`/rdo/${rdo.documentId}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
-                                <MessageSquare className="w-4 h-4" /> {rdo.comments?.length || 0}
+                                <MessageSquare className="w-4 h-4" /> {rdo.commentCount || 0}
                             </Button>
                         </Link>
                     </div>
-                    <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full">{rdo.status}</span>
+                    <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full">{rdo.rdoStatus}</span>
                 </div>
             </CardFooter>
         </Card>

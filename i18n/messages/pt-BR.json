@@ -24,9 +24,11 @@
             "rejected": "Rejeitado",
             "weather": {
                 "title": "Condição Climática",
-                "clear": "Claro, praticável",
-                "cloudy": "Nublado, praticável",
-                "rainy": "Chuvoso, impraticável"
+                "clear": "Claro",
+                "cloudy": "Nublado",
+                "rainy": "Chuvoso",
+                "true": "Praticável",
+                "false": "Impraticável"
             },
             "activities": {
                 "title": "Atividades Executadas"
@@ -44,11 +46,11 @@
             "tabs": {
                 "comments": "Comentários",
                 "occurrences": "Ocorrências",
-                "audit": "Auditoria de Aprovação",
+                "audit": "Aprovação",
                 "newOccurrence": "Nova Ocorrência",
                 "notImplemented": {
-                    "comments": "Comentários não implementados",
-                    "audit": "Auditoria de aprovação não implementada"
+                    "comments": "Sem comentários",
+                    "audit": "Sem histórico de aprovação"
                 }
             }
         },
@@ -302,7 +304,7 @@
             "success": "Projeto criado com sucesso"
         }
     },
-    "form": {
+    "formRDO": {
         "title": "Criar RDO",
         "project": {
             "label": "Projeto",
@@ -339,9 +341,9 @@
         "weather": {
             "label": "Condição Climática",
             "periods": {
-                "wheatherMorning": "Manhã",
-                "wheatherAfternoon": "Tarde",
-                "wheatherNight": "Noite"
+                "weatherMorning": "Manhã",
+                "weatherAfternoon": "Tarde",
+                "weatherNight": "Noite"
             },
             "conditions": {
                 "clear": "Claro",
@@ -369,7 +371,9 @@
                 "confirm": "Remover",
                 "cancel": "Cancelar"
             }
-        }
+        },
+        "success": "RDO criada com sucesso",
+        "error": "Falha ao criar RDO"
     },
     "uploadPhoto": {
         "clickToAdd": "Clique para adicionar fotos ou vídeos",
@@ -380,6 +384,13 @@
             "description": "Tem certeza que deseja remover esta imagem?",
             "confirm": "Remover",
             "cancel": "Cancelar"
+        }
+    },
+    "feed": {
+        "empty": {
+            "title": "Nenhuma RDO encontrada",
+            "description": "Não há RDOs disponíveis para este projeto ainda.",
+            "createButton": "Criar RDO"
         }
     }
 }

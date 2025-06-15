@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 
 export function FileUploadBox({ onFiles }: { onFiles: (files: File[]) => void }) {
     const { register, setValue } = useForm();
-    const t = useTranslations('form.files');
+    const t = useTranslations('formRDO.files');
 
     return (
         <UploadPhoto

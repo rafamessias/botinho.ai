@@ -3,7 +3,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useTranslations } from 'next-intl';
 
 export function LaborTextarea({ value, onChange }: { value: string, onChange: (v: string) => void }) {
-    const t = useTranslations('form.labor');
+    const t = useTranslations('formRDO.labor');
 
     return (
         <div>

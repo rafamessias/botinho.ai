@@ -24,9 +24,11 @@
             "rejected": "Rejected",
             "weather": {
                 "title": "Weather Condition",
-                "clear": "Clear, workable",
-                "cloudy": "Cloudy, workable",
-                "rainy": "Rainy, unworkable"
+                "clear": "Clear",
+                "cloudy": "Cloudy",
+                "rainy": "Rainy",
+                "true": "Workable",
+                "false": "Unworkable"
             },
             "activities": {
                 "title": "Executed Activities"
@@ -44,11 +46,11 @@
             "tabs": {
                 "comments": "Comments",
                 "occurrences": "Occurrences",
-                "audit": "Approval Audit",
+                "audit": "Approval",
                 "newOccurrence": "New Occurrence",
                 "notImplemented": {
-                    "comments": "Comments not implemented",
-                    "audit": "Approval audit not implemented"
+                    "comments": "No comments",
+                    "audit": "No approval history"
                 }
             }
         },
@@ -302,7 +304,7 @@
             "success": "Project created successfully"
         }
     },
-    "form": {
+    "formRDO": {
         "title": "Create RDO",
         "project": {
             "label": "Project",
@@ -369,7 +371,9 @@
                 "confirm": "Remove",
                 "cancel": "Cancel"
             }
-        }
+        },
+        "success": "RDO created successfully",
+        "error": "Failed to create RDO"
     },
     "uploadPhoto": {
         "clickToAdd": "Click to add photos or videos",
@@ -380,6 +384,13 @@
             "description": "Are you sure you want to remove this image?",
             "confirm": "Remove",
             "cancel": "Cancel"
+        }
+    },
+    "feed": {
+        "empty": {
+            "title": "No RDOs found",
+            "description": "There are no RDOs available for this project yet.",
+            "createButton": "Create RDO"
         }
     }
 }

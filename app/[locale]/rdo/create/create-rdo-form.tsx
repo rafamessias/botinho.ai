@@ -12,6 +12,9 @@ import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
 import { Project, WeatherOption } from '@/components/types/strapi';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { createRDO } from '@/components/actions/rdo-action';
+import { toast } from 'sonner';
+import { useLoading } from '@/components/LoadingProvider';
 
 const rdoStatuses = [
     { value: 'draft', label: 'Rascunho' },
@@ -28,22 +31,24 @@ type FormData = {
     files: File[];
 };
 
-export default function CreateRDOForm({ projects }: { projects: Project[] }) {
+export default function CreateRDOForm({ projects, selectedProject }: { projects: Project[], selectedProject: Project | null }) {
     const router = useRouter();
-    const t = useTranslations('form');
+    const t = useTranslations('formRDO');
+    const { setIsLoading } = useLoading();
+
     const {
         control,
         handleSubmit,
         formState: { isSubmitting, errors }
     } = useForm<FormData>({
         defaultValues: {
-            project: projects[0],
+            project: selectedProject || projects[0],
             status: rdoStatuses[0].value,
             date: new Date().toISOString(),
             weather: {
-                wheatherMorning: { condition: null, workable: null },
-                wheatherAfternoon: { condition: null, workable: null },
-                wheatherNight: { condition: null, workable: null },
+                weatherMorning: { condition: null, workable: null },
+                weatherAfternoon: { condition: null, workable: null },
+                weatherNight: { condition: null, workable: null },
             },
             description: '',
             equipment: '',
@@ -59,12 +64,20 @@ export default function CreateRDOForm({ projects }: { projects: Project[] }) {
 
     const onSubmit = async (data: FormData) => {
         try {
-            console.log('Form data:', data);
-            // Implement your submit logic here
-            // await createRDO(data);
-            //router.push('/rdo'); // Redirect after successful submission
+            setIsLoading(true);
+            const response = await createRDO(data);
+
+            if (response.success) {
+                toast.success(t('success'));
+                router.push(`/rdo/${response.data?.documentId}`);
+            } else {
+                toast.error(response.error || t('error'));
+            }
         } catch (error) {
             console.error('Error submitting form:', error);
+            toast.error(t('error'));
+        } finally {
+            setIsLoading(false);
         }
     };
 

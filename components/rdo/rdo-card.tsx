@@ -3,11 +3,10 @@
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { MessageCircle, CheckCircle, MoreVertical } from 'lucide-react';
+import { MessageCircle, MoreVertical, Cloud, Sun, CloudRain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
-import { RDO, StrapiImage, User } from '../types/strapi';
+import { RDO, User } from '../types/strapi';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
@@ -19,44 +18,49 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
     const [tab, setTab] = useState<'comments' | 'occurrences' | 'audit'>('occurrences');
 
     const user = rdo.user as User;
-    const avatar = user.avatar as StrapiImage;
 
     // Mock data for weather, equipment, workforce, and occurrences
-    const weather = [
-        { label: t('morning'), icon: '☀️', desc: t('weather.clear'), active: true, color: 'bg-white border border-gray-200 text-gray-700' },
-        { label: t('afternoon'), icon: '⛅', desc: t('weather.cloudy'), active: false, color: 'bg-white border border-gray-200 text-gray-700' },
-        { label: t('night'), icon: '🌧️', desc: t('weather.rainy'), active: false, color: 'bg-rose-100 border border-rose-200 text-rose-600' },
-    ];
-    const equipment = ['Caminhão Basculante', 'Betoneira'];
-    const workforce = [
-        '2 Ajudantes',
-        '1 Mestre de Obra',
-        '1 Engenheiro',
-    ];
+    const getWeatherIcon = (condition: string | null) => {
+        if (!condition) return null;
+
+        switch (condition) {
+            case 'clear':
+                return <Sun className="w-4 h-4" />;
+            case 'cloudy':
+                return <Cloud className="w-4 h-4" />;
+            case 'rainy':
+                return <CloudRain className="w-4 h-4" />;
+            default:
+                return null;
+        }
+    };
+
+    const equipment = rdo.equipmentUsed;
+    const workforce = rdo.workforce;
     const occurrences = [
         { id: 5, status: 'Aberto', title: 'Tamanho da piscina não está baten..', icon: '🚚', color: 'bg-gray-100', statusColor: 'bg-gray-100 text-gray-700' },
         { id: 4, status: 'Andamento', title: 'Nisi reprehenderi', icon: '👟', color: 'bg-rose-100', statusColor: 'bg-rose-100 text-rose-700' },
         { id: 3, status: 'Fechado', title: 'Product name', icon: '🔧', color: 'bg-sky-100', statusColor: 'bg-sky-100 text-sky-700' },
     ];
 
-    const getStatusType = (status: RDO['status']) => {
+    const getStatusType = (status: RDO['rdoStatus']) => {
         switch (status) {
             case 'rejected':
                 return 'danger';
-            case 'pending':
+            case 'pendingApproval':
                 return 'warning';
             default:
                 return undefined;
         }
     };
 
-    const getStatusLabel = (status: RDO['status']) => {
+    const getStatusLabel = (status: RDO['rdoStatus']) => {
         switch (status) {
             case 'approved':
                 return t('approved');
             case 'rejected':
                 return t('rejected');
-            case 'pending':
+            case 'pendingApproval':
                 return t('waitingApproval');
             default:
                 return status;
@@ -65,51 +69,66 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
 
     return (
         <Card className="bg-white shadow-sm border border-gray-100 py-4 px-2 space-y-4">
-            <CardHeader className="flex flex-row items-center justify-between space-y-4">
+            <CardHeader className="flex flex-row items-start justify-between">
                 <div>
                     <div className="text-xs">
-                        <span className="text-muted-foreground">RDO</span>
-                        <span className="font-bold text-primary">#{rdo.id}</span>
+                        <span className="text-muted-foreground mr-1">RDO</span>
+                        <span className="font-bold text-gray-800">#{rdo.id}</span>
                     </div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                        <Avatar className="h-6 w-6">
-                            {avatar ? (
-                                <AvatarImage src={avatar.url} alt={user.username} />
-                            ) : (
-                                user.username?.slice(0, 2).toUpperCase()
-                            )}
-                        </Avatar>
-                        <span>{t('postedBy')} <b>{user.username}</b></span>
+                    <div className="text-xs mt-1 flex items-center gap-1">
+                        <span className="text-muted-foreground">{t('postedBy')}</span>
+                        <span className="font-bold text-gray-800"> {user.firstName} {user.lastName}</span>
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                         {format(new Date(rdo?.date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                     </div>
                 </div>
-                <div className="flex flex-col items-end gap-2">
+                <div className="flex">
                     <Badge className={cn(
                         'rounded-full px-3 py-1 text-xs font-medium',
-                        rdo.status === 'approved' && 'bg-green-100 text-green-700',
-                        rdo.status === 'rejected' && 'bg-red-100 text-red-700',
-                        rdo.status === 'pending' && 'bg-gray-100 text-gray-700')
+                        rdo.rdoStatus === 'approved' && 'bg-green-100 text-green-700',
+                        rdo.rdoStatus === 'rejected' && 'bg-red-100 text-red-700',
+                        rdo.rdoStatus === 'pendingApproval' && 'bg-gray-100 text-gray-700')
                     }>
-                        {getStatusLabel(rdo.status)}
+                        {getStatusLabel(rdo.rdoStatus)}
                     </Badge>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical className="h-4 w-4" />
-                    </Button>
+
                 </div>
             </CardHeader>
             <CardContent className="space-y-6">
                 {/* Condição Climática */}
                 <div>
-                    <div className="font-semibold text-sm mb-1">{t('weather.title')}</div>
-                    <div className="flex gap-2">
-                        {weather.map((w, i) => (
-                            <div key={i} className={cn('flex flex-col items-center px-3 py-2 rounded-lg', w.color)}>
-                                <span className="text-xs font-medium flex items-center gap-1">{w.label} <span>{w.icon}</span></span>
-                                <span className="text-[11px] text-gray-500">{w.desc}</span>
-                            </div>
-                        ))}
+                    <div className="font-semibold text-sm mb-4">{t('weather.title')}</div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                        {[
+                            { period: t('morning'), weather: rdo.weatherMorning },
+                            { period: t('afternoon'), weather: rdo.weatherAfternoon },
+                            { period: t('night'), weather: rdo.weatherNight }
+                        ].map((weather) => {
+                            const weatherData = Array.isArray(weather.weather) ? weather.weather[0] : weather.weather;
+
+                            if (weatherData !== null && weatherData.condition !== null) {
+                                return (
+
+                                    <Badge
+                                        variant='outline'
+                                        key={weather.period}
+                                        className={`flex flex-col items-center gap-1 rounded-lg text-xs shadow-sm cursor-default ${!weatherData.workable
+                                            && 'bg-red-50 text-red-900 hover:bg-red-100 hover:text-red-900'
+                                            }`}
+                                    >
+                                        <div className='flex items-center gap-1'>
+                                            {weather.period} {getWeatherIcon(weatherData.condition)}
+                                        </div>
+                                        <div className={`text-[10px] text-muted-foreground ${!weatherData.workable && 'text-red-900'}`}>
+                                            {t(`weather.${weatherData.condition}`)} - {t(`weather.${weatherData.workable}`)}
+                                        </div>
+                                    </Badge>
+
+                                );
+                            }
+                            return null;
+                        })}
                     </div>
                 </div>
 
@@ -125,12 +144,12 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                 {/* Equipamentos Utilizados */}
                 <div>
                     <div className="font-semibold text-sm mb-1">{t('equipment.title')}</div>
-                    <div className="text-sm text-gray-800">{equipment.join(', ')}</div>
+                    <div className="text-sm text-gray-800">{equipment}</div>
                 </div>
                 {/* Mão de Obra */}
                 <div>
                     <div className="font-semibold text-sm mb-1">{t('workforce.title')}</div>
-                    <div className="text-sm text-gray-800">{workforce.map((w, i) => <div key={i}>{w}</div>)}</div>
+                    <div className="text-sm text-gray-800">{workforce}</div>
                 </div>
                 {/* Aprovar/Rejeitar */}
                 <div className="flex gap-2 mt-2">
@@ -138,11 +157,11 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                     <Button className="flex-1">{t('actions.approve')}</Button>
                 </div>
                 {/* Tabs for Comentários/Ocorrências/Audit */}
-                <div className="bg-gray-50 rounded-xl px-2 pt-2 pb-4">
+                <div className="rounded-xl px-2 pt-2 pb-4">
                     <Tabs value={tab} onValueChange={(value) => setTab(value as 'comments' | 'occurrences' | 'audit')} className="w-full">
                         <TabsList className="w-full flex bg-transparent gap-2 mb-2">
                             <TabsTrigger value="comments" className="flex-1 flex items-center justify-center gap-1">
-                                <MessageCircle className="h-4 w-4" /> {t('tabs.comments')} <span className="ml-1 bg-rose-100 text-rose-600 rounded-full px-2 text-xs">{rdo.comments?.length || 0}</span>
+                                <MessageCircle className="h-4 w-4" /> {t('tabs.comments')} <span className="ml-1 bg-rose-100 text-rose-600 rounded-full px-2 text-xs">{rdo.commentCount || 0}</span>
                             </TabsTrigger>
                             <TabsTrigger value="occurrences" className="flex-1 flex items-center justify-center gap-1">
                                 <span className="font-medium">{t('tabs.occurrences')}</span> <span className="ml-1 bg-rose-100 text-rose-600 rounded-full px-2 text-xs">9</span>
@@ -155,7 +174,6 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                             <div className="text-center text-gray-400 py-4">{t('tabs.notImplemented.comments')}</div>
                         </TabsContent>
                         <TabsContent value="occurrences">
-                            <Button className="w-full mb-2">{t('tabs.newOccurrence')}</Button>
                             <div className="space-y-2">
                                 {occurrences.map((o) => (
                                     <div key={o.id} className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-100">
