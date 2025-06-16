@@ -2,7 +2,7 @@
 
 import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
-import { Plus, Globe } from "lucide-react"
+import { Plus, Globe, ArrowLeft } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Logo } from "@/components/logo"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "./ui/dropdown-menu"
@@ -114,4 +114,20 @@ export default function Header() {
       </div>
     </header>
   ) : null
+}
+
+export function SubHeader({ title, showBackButton = false }: { title: string, showBackButton?: boolean }) {
+  const router = useRouter();
+  return (
+    <div className="w-full h-16 bg-muted border-b flex justify-start items-center py-2">
+      <div className="container max-w-[1280px] flex justify-start items-center">
+        {showBackButton && (
+          <Button variant="ghost" size="icon" onClick={() => router.back()} className="h-8 w-8">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        )}
+        <h2 className="text-lg font-normal">{title}</h2>
+      </div>
+    </div>
+  );
 }

@@ -1,14 +1,18 @@
+import { SubHeader } from "./header";
 import { LoadingOverlay } from "./LoadingOverlay";
 
 
-const ContainerApp = ({ children, form = true }: { children: React.ReactNode, form?: boolean }) => {
+const ContainerApp = ({ children, form = true, title = "", showBackButton = false }: { children: React.ReactNode, form?: boolean, title?: string, showBackButton?: boolean }) => {
     return (
-        <div className="py-12">
-            <div className={`relative mx-auto w-full ${form ? 'max-w-[680px]  px-6 py-6 bg-white rounded-lg shadow-md' : ''}`}>
-                <LoadingOverlay />
-                {children}
+        <>
+            {title && <SubHeader title={title} showBackButton={showBackButton} />}
+            <div className="container max-w-[1280px] py-12">
+                <div className={`relative mx-auto w-full ${form ? 'max-w-[680px]  px-6 py-6 bg-white rounded-lg shadow-md' : ''}`}>
+                    <LoadingOverlay />
+                    {children}
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

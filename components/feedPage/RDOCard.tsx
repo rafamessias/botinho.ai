@@ -3,6 +3,7 @@ import React from 'react';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
 import { MessageSquare, EllipsisVertical, Sun, Cloud, CloudRain } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { RDO, StrapiImage, User } from '@/components/types/strapi';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -28,7 +29,9 @@ const getWeatherIcon = (condition: string | null) => {
 
 const RDOCard = ({ rdo }: { rdo: RDO }) => {
 
-    const pathname = window.location.pathname;
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
     const t = useTranslations('rdo.rdoCard');
     const user = rdo.user as User;
@@ -96,12 +99,12 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
             <CardFooter className="p-0">
                 <div className="flex items-center justify-between text-xs text-gray-500 w-full">
                     <div className="flex gap-4">
-                        <Link href={`/rdo/${rdo.documentId}?goback=${pathname}`} className="text-blue-600 hover:text-blue-700 transition-colors">
+                        <Link href={`/rdo/${rdo.documentId}?goback=${currentUrl}`} className="text-blue-600 hover:text-blue-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 {t('details')}
                             </Button>
                         </Link>
-                        <Link href={`/rdo/${rdo.documentId}?goback=${pathname}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
+                        <Link href={`/rdo/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 <MessageSquare className="w-4 h-4" /> {rdo.commentCount || 0}
                             </Button>

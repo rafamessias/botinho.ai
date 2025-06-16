@@ -1,8 +1,11 @@
 import { CreateCompanyForm } from '@/components/company/create-company-form';
 import ContainerApp from '@/components/Container-app';
-export default function CreateCompanyPage() {
+import { getTranslations } from 'next-intl/server';
+
+export default async function CreateCompanyPage() {
+    const t = await getTranslations('company');
     return (
-        <ContainerApp>
+        <ContainerApp title={t('title')} showBackButton={true}>
             <CreateCompanyForm />
         </ContainerApp>
     );

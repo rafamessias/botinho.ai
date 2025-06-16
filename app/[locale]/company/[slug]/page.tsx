@@ -3,10 +3,10 @@ import { EditCompanyForm } from "@/components/company/edit-company-form";
 import { fetchContentApi } from "@/components/actions/fetch-content-api";
 import { Company, CompanyMemberDialog } from "@/components/types/strapi";
 import { RecordNotFound } from "@/components/shared/record-not-found";
-
+import { getTranslations } from "next-intl/server";
 export default async function CompanyPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
     const { locale, slug } = await params;
-    //const t = await getTranslations({ locale, namespace: 'homepage' });
+    const t = await getTranslations({ locale, namespace: 'company' });
 
     let company: Company | null;
     let companyMembers: CompanyMemberDialog[] | null;
@@ -26,7 +26,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
     }
 
     return (
-        <ContainerApp>
+        <ContainerApp title={t('editTitle')} showBackButton={true}>
             {company ? (<EditCompanyForm company={company} companyMembers={companyMembers} />) : (
                 <RecordNotFound />
             )}

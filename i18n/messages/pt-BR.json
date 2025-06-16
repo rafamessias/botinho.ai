@@ -1,6 +1,7 @@
 {
     "rdo": {
         "rdo": "RDO",
+        "title": "Criar RDO",
         "postedBy": "Postado por",
         "morning": "Manhã",
         "afternoon": "Tarde",
@@ -75,7 +76,8 @@
             "allProjects": "Todos os Projetos",
             "activeProjects": "Projetos Ativos",
             "inactiveProjects": "Projetos Inativos",
-            "newProject": "Novo Projeto"
+            "newProject": "Novo Projeto",
+            "projects": "Projetos"
         },
         "projectCard": {
             "active": "Ativo",
@@ -277,6 +279,7 @@
     "project": {
         "create": {
             "title": "Criar Projeto",
+            "editTitle": "Editar Projeto",
             "uploadPhoto": {
                 "label": "Subir Foto",
                 "hint": "Adicione uma foto (550px x 158px) para representar o Projeto"

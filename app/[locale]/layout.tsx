@@ -69,9 +69,7 @@ export default async function RootLayout({
                                 <TopProgress />
                                 <main className="w-full h-dvh">
                                     <Header />
-                                    <div className="container max-w-[1280px]">
-                                        {children}
-                                    </div>
+                                    {children}
                                 </main>
                                 <Toaster richColors closeButton />
                             </UserProvider>

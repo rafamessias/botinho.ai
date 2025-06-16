@@ -1,6 +1,7 @@
 {
     "rdo": {
         "rdo": "RDO",
+        "title": "Create RDO",
         "postedBy": "Posted by",
         "morning": "Morning",
         "afternoon": "Afternoon",
@@ -68,7 +69,8 @@
             "allProjects": "All Projects",
             "activeProjects": "Active Projects",
             "inactiveProjects": "Inactive Projects",
-            "newProject": "New Project"
+            "newProject": "New Project",
+            "projects": "Projects"
         },
         "navigation": {
             "progress": "Progress",
@@ -276,6 +278,7 @@
     "project": {
         "create": {
             "title": "Create Project",
+            "editTitle": "Edit Project",
             "uploadPhoto": {
                 "label": "Upload Photo",
                 "hint": "Add a photo (550px x 158px) to represent the Project"

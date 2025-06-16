@@ -13,11 +13,14 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
     const t = await getTranslations('feed');
     // In a real app, fetch RDOs using projectId
     let rdos: RDO[] = [];
-
+    let projectName: string = '';
     try {
         const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${slug}&sort=createdAt:desc`);
         if (rdosResult.success && rdosResult.data) {
             rdos = rdosResult.data;
+            if (typeof rdos[0].project === 'object') {
+                projectName = rdos[0].project.name;
+            }
         }
     } catch (error) {
         console.error('Error fetching RDOs:', error);
@@ -25,7 +28,7 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
 
 
     return (
-        <ContainerApp form={false}>
+        <ContainerApp form={false} title={`${projectName}`} showBackButton={true}>
             <div className="max-w-[600px] mx-auto w-full">
                 {/* Feed */}
                 <div className="flex-1 overflow-y-auto pb-20 space-y-10">

@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Cloud, Sun, CloudRain, ArrowLeft } from 'lucide-react';
+import { Cloud, Sun, CloudRain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
 import { RDO, User } from '../types/strapi';
@@ -14,7 +14,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { approveRDO, rejectRDO } from '../actions/rdo-action';
 import { useLoading } from '../LoadingProvider';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 
@@ -23,8 +23,6 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
     const [tab, setTab] = useState<'comments' | 'audit'>('comments');
     const { setIsLoading } = useLoading();
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const goback = searchParams.get('goback');
 
     const user = rdo.user as User;
 
@@ -109,18 +107,8 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
 
     return (
         <>
-            {goback && (
-                <Button
-                    variant="secondary"
-                    size="icon"
-                    className="h-8 w-8 mb-2"
-                    onClick={() => router.push(goback)}
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                </Button>
-            )}
-            <Card className="bg-white shadow-sm border border-gray-100 py-4 px-2 space-y-4">
-                <CardHeader className="flex flex-row items-start justify-between">
+            <Card className="bg-white shadow-sm border border-gray-100 p-6 space-y-4">
+                <CardHeader className="flex flex-row items-start p-0 justify-between">
                     <div className="flex items-start gap-4">
                         <div>
                             <div className="text-xs">
@@ -153,7 +141,7 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
 
                     </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 p-0">
                     {/* Condição Climática */}
                     <div>
                         <div className="font-semibold text-sm mb-4">{t('weather.title')}</div>

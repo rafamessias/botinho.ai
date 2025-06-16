@@ -2,9 +2,9 @@ import ContainerApp from "@/components/Container-app";
 import CreateRDOForm from "./create-rdo-form";
 import { fetchContentApi } from "@/components/actions/fetch-content-api";
 import { Project } from "@/components/types/strapi";
-
-export default async function CreateRDOPage({ searchParams }: { searchParams: Promise<{ project: string }> }) {
-    const { project } = await searchParams;
+import { getTranslations } from "next-intl/server";
+export default async function CreateRDOPage({ searchParams }: { searchParams: Promise<{ project: string, locale: string }> }) {
+    const { project, locale } = await searchParams;
     let selectedProject: Project | null = null;
 
     const projectsResponse = await fetchContentApi<Project[]>('projects');
@@ -17,8 +17,10 @@ export default async function CreateRDOPage({ searchParams }: { searchParams: Pr
         }
     }
 
+    const t = await getTranslations({ locale, namespace: 'rdo' });
+
     return (
-        <ContainerApp>
+        <ContainerApp title={t('title')} showBackButton={true}>
             <CreateRDOForm projects={projects} selectedProject={selectedProject} />
         </ContainerApp>
     );
