@@ -16,7 +16,7 @@ import { useUser } from '@/components/UserProvider';
 import { useLoading } from '@/components/LoadingProvider';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitch } from '@/components/language-switch';
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 
 interface SignInFormValues {
@@ -29,6 +29,9 @@ export function SignInForm({
 }: {
     locale: string
 }) {
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get('redirect');
+
 
     const t = useTranslations('auth');
     const router = useRouter();
@@ -50,7 +53,11 @@ export function SignInForm({
             setUser(response.user);
             setIsNavigating(true);
             toast.success("You have been signed in successfully.");
-            router.push('/');
+            if (redirect) {
+                router.push(redirect);
+            } else {
+                router.push('/');
+            }
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
             toast.error(message);

@@ -83,4 +83,78 @@ export async function createRDO(data: RDOData) {
             error: error instanceof Error ? error.message : 'An error occurred'
         };
     }
+}
+
+export async function approveRDO(rdoId: number) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        const response: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos/${rdoId}`, {
+            method: 'PUT',
+            body: {
+                data: {
+                    rdoStatus: 'approved'
+                }
+            }
+        });
+
+        if (!response.data?.id) {
+            console.error('Error approving RDO');
+            return {
+                success: false,
+                error: 'Error approving RDO',
+                data: null
+            };
+        }
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error approving RDO:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred'
+        };
+    }
+}
+
+export async function rejectRDO(rdoId: number) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        const response: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos/${rdoId}`, {
+            method: 'PUT',
+            body: {
+                data: {
+                    rdoStatus: 'rejected'
+                }
+            }
+        });
+
+        if (!response.data?.id) {
+            console.error('Error rejecting RDO');
+            return {
+                success: false,
+                error: 'Error rejecting RDO',
+                data: null
+            };
+        }
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error rejecting RDO:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred'
+        };
+    }
 } 

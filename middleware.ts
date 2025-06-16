@@ -75,7 +75,7 @@ export default async function middleware(request: NextRequest) {
     // If user is not logged in and trying to access protected routes, redirect to sign in
     if (!user.ok && !isPublicRoute(pathname)) {
         console.log('User is not logged in and trying to access protected routes, redirecting to sign in');
-        const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}/sign-in`);
+        const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}/sign-in?redirect=${pathname}`);
         console.log('Redirecting to:', redirectUrl.toString());
         return NextResponse.redirect(redirectUrl);
     }

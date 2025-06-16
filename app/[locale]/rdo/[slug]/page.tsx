@@ -11,9 +11,9 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
     try {
         const rdosFetch: any = await fetchContentApi<RDO>(`rdos/${slug}?populate=*`);
         rdo = rdosFetch.data || {};
-        console.log(rdo);
 
     } catch (error) {
+        rdo = {} as RDO;
         console.error('Failed to fetch projects:', error);
     }
 

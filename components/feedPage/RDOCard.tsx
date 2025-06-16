@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { useTranslations } from 'next-intl';
 import { Badge } from '../ui/badge';
+import { cn } from '@/lib/utils';
 
 const getWeatherIcon = (condition: string | null) => {
     if (!condition) return null;
@@ -26,6 +27,9 @@ const getWeatherIcon = (condition: string | null) => {
 };
 
 const RDOCard = ({ rdo }: { rdo: RDO }) => {
+
+    const pathname = window.location.pathname;
+
     const t = useTranslations('rdo.rdoCard');
     const user = rdo.user as User;
     return (
@@ -92,18 +96,24 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
             <CardFooter className="p-0">
                 <div className="flex items-center justify-between text-xs text-gray-500 w-full">
                     <div className="flex gap-4">
-                        <Link href={`/rdo/${rdo.documentId}`} className="text-blue-600 hover:text-blue-700 transition-colors">
+                        <Link href={`/rdo/${rdo.documentId}?goback=${pathname}`} className="text-blue-600 hover:text-blue-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 {t('details')}
                             </Button>
                         </Link>
-                        <Link href={`/rdo/${rdo.documentId}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
+                        <Link href={`/rdo/${rdo.documentId}?goback=${pathname}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 <MessageSquare className="w-4 h-4" /> {rdo.commentCount || 0}
                             </Button>
                         </Link>
                     </div>
-                    <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full">{rdo.rdoStatus}</span>
+                    <Badge className={cn(
+                        'rounded-full px-3 py-1 text-xs font-medium',
+                        rdo.rdoStatus === 'approved' && 'bg-green-100 text-green-700',
+                        rdo.rdoStatus === 'rejected' && 'bg-red-100 text-red-700',
+                        rdo.rdoStatus === 'pendingApproval' && 'bg-blue-100 text-blue-700',
+                        rdo.rdoStatus === 'draft' && 'bg-gray-100 text-gray-700')
+                    }>{t(rdo.rdoStatus)}</Badge>
                 </div>
             </CardFooter>
         </Card>
