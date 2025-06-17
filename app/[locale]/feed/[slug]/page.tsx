@@ -1,6 +1,6 @@
 import React from 'react';
 import ContainerApp from '@/components/Container-app';
-import RDOCard from '@/components/feedPage/RDOCard';
+import FeedRDOCard from '@/components/feedPage/FeedRDOCard';
 import { RDO } from '@/components/types/strapi';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
         const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${slug}&sort=createdAt:desc`);
         if (rdosResult.success && rdosResult.data) {
             rdos = rdosResult.data;
-            if (typeof rdos[0].project === 'object') {
+            if (rdos.length > 0 && typeof rdos[0].project === 'object') {
                 projectName = rdos[0].project.name;
             }
         }
@@ -33,7 +33,7 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
                 {/* Feed */}
                 <div className="flex-1 overflow-y-auto pb-20 space-y-10">
                     {rdos.length > 0 ? rdos.map((rdo) => (
-                        <RDOCard key={rdo.id} rdo={rdo} />
+                        <FeedRDOCard key={rdo.id} rdo={rdo} />
                     )) : (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
                             <div className="text-muted-foreground text-lg mb-2">{t('empty.title')}</div>

@@ -1,12 +1,12 @@
 import { RdoCard } from '@/components/rdo/rdo-card';
-import { RDO } from '@/components/types/strapi';
+import { Approval, Comment, RDO, RDOWithCommentsAndAudit } from '@/components/types/strapi';
 import ContainerApp from '@/components/Container-app';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
 
 export default async function RdoPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
-    let rdo: RDO = {} as RDO;
+    let rdo: RDOWithCommentsAndAudit = {} as RDOWithCommentsAndAudit;
     let projectName: string = '';
     try {
         const rdosFetch: any = await fetchContentApi<RDO>(`rdos/${slug}?populate=*`);
@@ -14,8 +14,21 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
         if (typeof rdo.project === 'object') {
             projectName = rdo.project?.name || '';
         }
+
+        const commentsFetch: any = await fetchContentApi<Comment[]>(`comments?filters[rdo][$eq]=${rdo.id}`);
+        const comments = commentsFetch.data || [];
+
+        const auditFetch: any = await fetchContentApi<Approval[]>(`approval-audits?populate[user][fields][0]=firstName&populate[user][fields][1]=lastName&filters[rdo][$eq]=${rdo.id}&sort[0]=date:desc`);
+        const audit = auditFetch.data || [];
+
+        rdo = {
+            ...rdo,
+            comments,
+            audit
+        };
+
     } catch (error) {
-        rdo = {} as RDO;
+        rdo = {} as RDOWithCommentsAndAudit;
         console.error('Failed to fetch projects:', error);
     }
 

@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { uploadFile } from '@/lib/strapi';
 import { fetchContentApi } from './fetch-content-api';
-import { ApiResponse, Project, RDO, WeatherOption } from '@/components/types/strapi';
+import { ApiResponse, Approval, Project, RDO, WeatherOption } from '@/components/types/strapi';
 
 interface RDOData {
     project: Project;
@@ -85,7 +85,7 @@ export async function createRDO(data: RDOData) {
     }
 }
 
-export async function approveRDO(rdoId: number) {
+export async function updateRDOStatus(rdoId: string, status: 'Approved' | 'Rejected', auditData?: Approval) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -98,60 +98,28 @@ export async function approveRDO(rdoId: number) {
             method: 'PUT',
             body: {
                 data: {
-                    rdoStatus: 'approved'
+                    rdoStatus: status,
+                    audit: {
+                        ...{ ...auditData, action: status },
+                        rdo: rdoId,
+                        date: new Date().toISOString()
+                    }
                 }
             }
         });
 
         if (!response.data?.id) {
-            console.error('Error approving RDO');
+            console.error(`Error updating RDO: ${response.error}`);
             return {
                 success: false,
-                error: 'Error approving RDO',
+                error: `Error updating RDO: ${response.error}`,
                 data: null
             };
         }
 
         return { success: true, data: response.data };
     } catch (error) {
-        console.error('Error approving RDO:', error);
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An error occurred'
-        };
-    }
-}
-
-export async function rejectRDO(rdoId: number) {
-    try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
-
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
-
-        const response: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos/${rdoId}`, {
-            method: 'PUT',
-            body: {
-                data: {
-                    rdoStatus: 'rejected'
-                }
-            }
-        });
-
-        if (!response.data?.id) {
-            console.error('Error rejecting RDO');
-            return {
-                success: false,
-                error: 'Error rejecting RDO',
-                data: null
-            };
-        }
-
-        return { success: true, data: response.data };
-    } catch (error) {
-        console.error('Error rejecting RDO:', error);
+        console.error(`Error ${status}ing RDO:`, error);
         return {
             success: false,
             error: error instanceof Error ? error.message : 'An error occurred'

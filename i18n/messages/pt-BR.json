@@ -24,7 +24,9 @@
             "workableConditions": "Condições de trabalho adequadas",
             "unworkableConditions": "Condições de trabalho inadequadas",
             "approved": "Aprovado",
+            "Approved": "Aprovado",
             "rejected": "Rejeitado",
+            "Rejected": "Rejeitado",
             "weather": {
                 "title": "Condição Climática",
                 "clear": "Claro",
@@ -44,12 +46,18 @@
             },
             "actions": {
                 "reject": "Rejeitar",
-                "approve": "Aprovar"
+                "approve": "Aprovar",
+                "Approved": "Aprovado",
+                "Rejected": "Rejeitado",
+                "UpdatedSuccess": "RDO atualizado com sucesso",
+                "UpdatedError": "Erro ao atualizar RDO"
             },
             "tabs": {
                 "comments": "Comentários",
+                "noComments": "Sem comentários",
                 "occurrences": "Ocorrências",
                 "audit": "Aprovação",
+                "noAudit": "Sem histórico de aprovação",
                 "newOccurrence": "Nova Ocorrência",
                 "notImplemented": {
                     "comments": "Sem comentários",

@@ -1,9 +1,9 @@
 'use client'
 import React from 'react';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
-import { MessageSquare, EllipsisVertical, Sun, Cloud, CloudRain } from 'lucide-react';
+import { MessageSquare, EllipsisVertical, Sun, Cloud, CloudRain, X, Check } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { RDO, StrapiImage, User } from '@/components/types/strapi';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -11,7 +11,10 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { useTranslations } from 'next-intl';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
-
+import { updateRDOStatus } from '@/components/actions/rdo-action';
+import { useLoading } from '@/components/LoadingProvider';
+import { toast } from 'sonner';
+import { getClientInfo } from '@/components/approval/approval-audit';
 const getWeatherIcon = (condition: string | null) => {
     if (!condition) return null;
 
@@ -27,14 +30,37 @@ const getWeatherIcon = (condition: string | null) => {
     }
 };
 
-const RDOCard = ({ rdo }: { rdo: RDO }) => {
-
+const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const { setIsLoading } = useLoading();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
     const t = useTranslations('rdo.rdoCard');
     const user = rdo.user as User;
+
+    const handleStatusUpdate = async (status: 'Approved' | 'Rejected') => {
+        if (!rdo.documentId) return;
+
+        try {
+            setIsLoading(true);
+            const clientInfo = await getClientInfo();
+            const response = await updateRDOStatus(rdo.documentId, status, clientInfo);
+            if (response.success) {
+                toast.success(t(`actions.UpdatedSuccess`));
+                router.refresh();
+            } else {
+                toast.error(response.error || t(`actions.UpdatedError`));
+            }
+        } catch (error) {
+            console.error('Error updating RDO status:', error);
+            toast.error(t(`actions.UpdatedError`));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <Card className="p-6 space-y-4">
             <CardHeader className="p-0">
@@ -96,7 +122,7 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                 </div>
                 <CarouselMedia images={rdo.media as StrapiImage[] || []} />
             </CardContent>
-            <CardFooter className="p-0">
+            <CardFooter className="p-0 flex flex-col gap-2">
                 <div className="flex items-center justify-between text-xs text-gray-500 w-full">
                     <div className="flex gap-4">
                         <Link href={`/rdo/${rdo.documentId}?goback=${currentUrl}`} className="text-blue-600 hover:text-blue-700 transition-colors">
@@ -118,9 +144,33 @@ const RDOCard = ({ rdo }: { rdo: RDO }) => {
                         rdo.rdoStatus === 'draft' && 'bg-gray-100 text-gray-700')
                     }>{t(rdo.rdoStatus)}</Badge>
                 </div>
+                <div className="flex items-center justify-end w-full gap-2">
+                    {rdo.rdoStatus === 'draft' && (
+                        <>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className=" transition-colors"
+                                onClick={() => handleStatusUpdate('Rejected')}
+                            >
+                                <X className="w-4 h-4 mr-1" />
+                                {t('actions.reject')}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="border-emerald-200 text-emerald-600 hover:bg-emerald-50/50 hover:text-emerald-700 transition-colors"
+                                onClick={() => handleStatusUpdate('Approved')}
+                            >
+                                <Check className="w-4 h-4 mr-1" />
+                                {t('actions.approve')}
+                            </Button>
+                        </>
+                    )}
+                </div>
             </CardFooter>
         </Card>
     );
 };
 
-export default RDOCard; 
+export default FeedRDOCard; 

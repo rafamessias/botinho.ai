@@ -6,19 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Cloud, Sun, CloudRain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
-import { RDO, User } from '../types/strapi';
+import { RDO, RDOWithCommentsAndAudit, User } from '../types/strapi';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useState } from 'react';
-import { approveRDO, rejectRDO } from '../actions/rdo-action';
+import { updateRDOStatus } from '../actions/rdo-action';
 import { useLoading } from '../LoadingProvider';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
+import { getClientInfo } from '@/components/approval/approval-audit';
 
-export function RdoCard({ rdo }: { rdo: RDO }) {
+export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const t = useTranslations('rdo.rdoCard');
     const [tab, setTab] = useState<'comments' | 'audit'>('comments');
     const { setIsLoading } = useLoading();
@@ -29,14 +30,17 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
     const projectDocumentId = typeof rdo.project === 'object' ? rdo.project.documentId : '';
 
+    console.log(rdo);
+
     const handleApprove = async () => {
-        if (!rdo.id) {
+        if (!rdo.documentId) {
             toast.error(t('actions.approveError'));
             return;
         }
         try {
             setIsLoading(true);
-            const response = await approveRDO(rdo.id);
+            const clientInfo = await getClientInfo();
+            const response = await updateRDOStatus(rdo.documentId || '', 'Approved', clientInfo);
             if (response.success) {
                 toast.success(t('actions.approveSuccess'));
                 router.refresh();
@@ -51,13 +55,14 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
     };
 
     const handleReject = async () => {
-        if (!rdo.id) {
+        if (!rdo.documentId) {
             toast.error(t('actions.rejectError'));
             return;
         }
         try {
             setIsLoading(true);
-            const response = await rejectRDO(rdo.id);
+            const clientInfo = await getClientInfo();
+            const response = await updateRDOStatus(rdo.documentId || '', 'Rejected', clientInfo);
             if (response.success) {
                 toast.success(t('actions.rejectSuccess'));
                 router.refresh();
@@ -218,7 +223,7 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                     </div>
                     {/* Tabs for Comentários/Ocorrências/Audit */}
                     <div className="rounded-xl px-2 pt-2 pb-4">
-                        <Tabs value={tab} onValueChange={(value) => setTab(value as 'comments' | 'audit')} className="w-full">
+                        <Tabs defaultValue="comments" value={tab} onValueChange={(value) => setTab(value as 'comments' | 'audit')} className="w-full">
                             <TabsList className="w-full flex bg-transparent gap-2 mb-2">
                                 <TabsTrigger value="comments" className="flex-1 flex items-center justify-center gap-1">
                                     {t('tabs.comments')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{rdo.commentCount || 0}</span>
@@ -227,12 +232,54 @@ export function RdoCard({ rdo }: { rdo: RDO }) {
                                     <span className="font-medium">{t('tabs.audit')}</span>
                                 </TabsTrigger>
                             </TabsList>
-                            <TabsContent value="comments">
-                                <div className="text-center text-gray-400 py-4">{t('tabs.notImplemented.comments')}</div>
+                            <TabsContent value="comments" className="mt-2">
+                                {Array.isArray(rdo.comments) && rdo.comments.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {rdo.comments.map((comment, index) => (
+                                            <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="font-medium text-sm">
+                                                        {typeof comment.user === 'object' ? comment.user.username : 'Unknown'}
+                                                    </span>
+                                                    <span className="text-xs text-gray-500">
+                                                        {format(new Date(comment.createdAt || ''), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-gray-700">{comment.content}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center text-gray-400 py-4">{t('tabs.noComments')}</div>
+                                )}
                             </TabsContent>
-
-                            <TabsContent value="audit">
-                                <div className="text-center text-gray-400 py-4">{t('tabs.notImplemented.audit')}</div>
+                            <TabsContent value="audit" className="mt-2">
+                                {Array.isArray(rdo.audit) && rdo.audit.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {rdo.audit.map((audit, index) => (
+                                            <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <Badge variant={audit.action === 'Approved' ? 'default' : 'destructive'}>
+                                                            {audit.action}
+                                                        </Badge>
+                                                        <span className="text-xs text-gray-500">
+                                                            {format(new Date(audit.date || ''), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="text-[10px] text-gray-600 space-y-1">
+                                                    <p>  {typeof audit.user === 'object' ? audit?.user?.firstName + ' ' + audit?.user?.lastName : ''}</p>
+                                                    <p><span className="font-medium">IP:</span> {audit.ip_address}</p>
+                                                    <p><span className="font-medium">Location:</span> {audit.geo_location}</p>
+                                                    <p><span className="font-medium">Device:</span> {audit.device_type}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center text-gray-400 py-4">{t('tabs.noAudit')}</div>
+                                )}
                             </TabsContent>
                         </Tabs>
                     </div>

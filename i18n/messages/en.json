@@ -23,7 +23,9 @@
             "workableConditions": "Suitable working conditions",
             "unworkableConditions": "Unsuitable working conditions",
             "approved": "Approved",
+            "Approved": "Approved",
             "rejected": "Rejected",
+            "Rejected": "Rejected",
             "weather": {
                 "title": "Weather Condition",
                 "clear": "Clear",
@@ -43,12 +45,18 @@
             },
             "actions": {
                 "reject": "Reject",
-                "approve": "Approve"
+                "approve": "Approve",
+                "Approved": "Approved",
+                "Rejected": "Rejected",
+                "UpdatedSuccess": "RDO updated successfully",
+                "UpdatedError": "Error updating RDO"
             },
             "tabs": {
                 "comments": "Comments",
+                "noComments": "No comments",
                 "occurrences": "Occurrences",
                 "audit": "Approval",
+                "noAudit": "No approval history",
                 "newOccurrence": "New Occurrence",
                 "notImplemented": {
                     "comments": "No comments",

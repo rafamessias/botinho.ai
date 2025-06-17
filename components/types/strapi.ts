@@ -171,6 +171,12 @@ export type WeatherOption = {
     weatherNight: RDOWeather | RDOWeather[] | null;
 };
 
+
+export type RDOWithCommentsAndAudit = RDO & {
+    comments?: Comment[];
+    audit?: Approval[];
+};
+
 export interface Incident {
     id?: number;
     documentId?: string;
@@ -205,10 +211,10 @@ export interface Approval {
     project?: Project | number;
     incident?: Incident | number;
     rdo?: RDO | number;
-    user: User | number;
-    action: 'approved' | 'rejected';
+    user?: User | number;
+    action?: 'Approved' | 'Rejected';
     description?: string;
-    date: Date;
+    date?: Date;
     ip_address?: string;
     latitude?: string;
     longitude?: string;
