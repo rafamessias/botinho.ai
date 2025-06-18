@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers"
 import { fetchContentApi } from "./fetch-content-api";
-import { User, ApiResponse } from "../types/strapi";
+import { User, ApiResponse, CompanyMember } from "../types/strapi";
 export async function getUserMe() {
     const cookieStore = await cookies();
     const jwt = cookieStore.get("jwt");
@@ -15,12 +15,22 @@ export async function getUserMe() {
         token: jwt.value
     })
 
-    if (!user.success) {
+    if (!user.success || !user.data) {
         // Remove cookies
         const cookieStore = await cookies();
         cookieStore.delete("jwt");
         return { success: false, data: null, meta: null, error: "Failed to fetch user" } as ApiResponse<User>;
     }
 
-    return { success: true, data: user.data, meta: user.meta } as ApiResponse<User>;
+    let userData: User = user.data;
+
+    if (user.data?.type === "companyUser") {
+        const companyMember = await fetchContentApi<CompanyMember[]>(`company-members?filters[user][id][$eq]=${user.data.id}`);
+
+        if (companyMember.success && companyMember.data) {
+            userData.companyMember = companyMember.data[0];
+        }
+    }
+
+    return { success: true, data: userData, meta: user.meta } as ApiResponse<User>;
 }

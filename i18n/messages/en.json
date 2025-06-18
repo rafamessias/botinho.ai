@@ -26,6 +26,9 @@
             "Approved": "Approved",
             "rejected": "Rejected",
             "Rejected": "Rejected",
+            "edit": "Edit",
+            "share": "Share",
+            "linkCopied": "Link copied to clipboard",
             "weather": {
                 "title": "Weather Condition",
                 "clear": "Clear",
@@ -49,7 +52,9 @@
                 "Approved": "Approved",
                 "Rejected": "Rejected",
                 "UpdatedSuccess": "RDO updated successfully",
-                "UpdatedError": "Error updating RDO"
+                "UpdatedError": "Error updating RDO",
+                "save": "Save",
+                "cancel": "Cancel"
             },
             "tabs": {
                 "comments": "Comments",
@@ -370,7 +375,13 @@
         "status": {
             "label": "RDO Status",
             "hint": "Modify the RDO Status here",
-            "placeholder": "Select status"
+            "placeholder": "Select status",
+            "statusCombobox": {
+                "draft": "Draft",
+                "pendingApproval": "Pending Approval",
+                "Approved": "Approved",
+                "Rejected": "Rejected"
+            }
         },
         "files": {
             "label": "Upload Photos, Videos and Documents",

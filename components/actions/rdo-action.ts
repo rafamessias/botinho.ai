@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { uploadFile } from '@/lib/strapi';
 import { fetchContentApi } from './fetch-content-api';
-import { ApiResponse, Approval, Project, RDO, WeatherOption } from '@/components/types/strapi';
+import { ApiResponse, Approval, Project, RDO, WeatherOption, RDOWeather } from '@/components/types/strapi';
 
 interface RDOData {
     project: Project;
@@ -120,6 +120,48 @@ export async function updateRDOStatus(rdoId: string, status: 'Approved' | 'Rejec
         return { success: true, data: response.data };
     } catch (error) {
         console.error(`Error ${status}ing RDO:`, error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred'
+        };
+    }
+}
+
+export async function updateRDO(rdoId: string, data: RDO) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        const response: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos/${rdoId}`, {
+            method: 'PUT',
+            body: {
+                data: {
+                    description: data.description,
+                    equipmentUsed: data.equipmentUsed,
+                    workforce: data.workforce,
+                    weatherMorning: [data.weatherMorning],
+                    weatherAfternoon: [data.weatherAfternoon],
+                    weatherNight: [data.weatherNight],
+                }
+            }
+        });
+
+        if (!response.data?.id) {
+            console.error('Error updating RDO');
+            return {
+                success: false,
+                error: 'Error updating RDO',
+                data: null
+            };
+        }
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error updating RDO:', error);
         return {
             success: false,
             error: error instanceof Error ? error.message : 'An error occurred'

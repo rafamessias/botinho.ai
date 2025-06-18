@@ -27,6 +27,9 @@
             "Approved": "Aprovado",
             "rejected": "Rejeitado",
             "Rejected": "Rejeitado",
+            "edit": "Editar",
+            "share": "Compartilhar",
+            "linkCopied": "Link copiado para a área de transferência",
             "weather": {
                 "title": "Condição Climática",
                 "clear": "Claro",
@@ -50,7 +53,9 @@
                 "Approved": "Aprovado",
                 "Rejected": "Rejeitado",
                 "UpdatedSuccess": "RDO atualizado com sucesso",
-                "UpdatedError": "Erro ao atualizar RDO"
+                "UpdatedError": "Erro ao atualizar RDO",
+                "save": "Salvar",
+                "cancel": "Cancelar"
             },
             "tabs": {
                 "comments": "Comentários",
@@ -371,7 +376,13 @@
         "status": {
             "label": "Status do RDO",
             "hint": "Modifique o Status do RDO aqui",
-            "placeholder": "Selecione o status"
+            "placeholder": "Selecione o status",
+            "statusCombobox": {
+                "draft": "Rascunho",
+                "pendingApproval": "Aguardando Aprovação",
+                "Approved": "Aprovado",
+                "Rejected": "Rejeitado"
+            }
         },
         "files": {
             "label": "Subir Fotos, Vídeos e documentos",

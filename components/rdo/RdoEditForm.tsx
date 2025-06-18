@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import { useForm, Controller } from 'react-hook-form';
 import { ProjectSelect } from '@/components/rdo/form/ProjectSelect';
 import { RDOStatusSelect } from '@/components/rdo/form/RDOStatusSelect';
@@ -9,19 +10,22 @@ import { FileUploadBox } from '@/components/rdo/form/FileUploadBox';
 import { EquipmentTextarea } from '@/components/rdo/form/EquipmentTextarea';
 import { LaborTextarea } from '@/components/rdo/form/LaborTextarea';
 import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
-import { Project, WeatherOption } from '@/components/types/strapi';
+import { RDO, WeatherOption, RDOStatus, Project } from '@/components/types/strapi';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { createRDO } from '@/components/actions/rdo-action';
+import { updateRDO } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 
 const rdoStatuses = [
     'draft',
+    'pendingApproval',
+    'Approved',
+    'Rejected'
 ];
 
 type FormData = {
-    project: Project;
+    project: any;
     status: string;
     date: string;
     weather: WeatherOption;
@@ -31,28 +35,28 @@ type FormData = {
     files: File[];
 };
 
-export default function CreateRDOForm({ projects, selectedProject }: { projects: Project[], selectedProject: Project | null }) {
+export function RdoEditForm({ rdo }: { rdo: RDO }) {
     const router = useRouter();
     const t = useTranslations('formRDO');
     const { setIsLoading } = useLoading();
-
+    console.log(rdo);
     const {
         control,
         handleSubmit,
         formState: { isSubmitting, errors }
     } = useForm<FormData>({
         defaultValues: {
-            project: selectedProject || projects[0],
-            status: rdoStatuses[0],
-            date: new Date().toISOString(),
+            project: rdo.project,
+            status: rdo.rdoStatus,
+            date: new Date(rdo.date).toISOString(),
             weather: {
-                weatherMorning: { condition: null, workable: null },
-                weatherAfternoon: { condition: null, workable: null },
-                weatherNight: { condition: null, workable: null },
+                weatherMorning: rdo.weatherMorning,
+                weatherAfternoon: rdo.weatherAfternoon,
+                weatherNight: rdo.weatherNight,
             },
-            description: '',
-            equipment: '',
-            labor: '',
+            description: rdo.description || '',
+            equipment: rdo.equipmentUsed || '',
+            labor: rdo.workforce || '',
             files: [],
         },
         mode: 'onBlur',
@@ -63,13 +67,27 @@ export default function CreateRDOForm({ projects, selectedProject }: { projects:
     };
 
     const onSubmit = async (data: FormData) => {
+        if (!rdo.documentId) {
+            toast.error(t('error'));
+            return;
+        }
+
         try {
             setIsLoading(true);
-            const response = await createRDO(data);
+            const response = await updateRDO(rdo.documentId, {
+                ...data,
+                equipmentUsed: data.equipment,
+                workforce: data.labor,
+                rdoStatus: data.status as RDOStatus,
+                weatherMorning: data.weather.weatherMorning,
+                weatherAfternoon: data.weather.weatherAfternoon,
+                weatherNight: data.weather.weatherNight,
+                date: new Date(data.date)
+            });
 
             if (response.success) {
                 toast.success(t('success'));
-                router.push(`/rdo/${response.data?.documentId}`);
+                router.push(`/rdo/${rdo.documentId}`);
             } else {
                 toast.error(response.error || t('error'));
             }
@@ -83,7 +101,6 @@ export default function CreateRDOForm({ projects, selectedProject }: { projects:
 
     return (
         <form className="flex flex-col gap-4 mx-auto" onSubmit={handleSubmit(onSubmit)}>
-
             <div className="flex flex-col gap-8">
                 <Controller
                     name="project"
@@ -94,7 +111,7 @@ export default function CreateRDOForm({ projects, selectedProject }: { projects:
                             <ProjectSelect
                                 value={field.value}
                                 onChange={field.onChange}
-                                projects={projects}
+                                projects={[rdo.project as Project]}
                             />
                             {errors.project && (
                                 <span className="text-red-500 text-xs mt-1">{errors.project.message as string}</span>

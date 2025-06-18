@@ -59,6 +59,7 @@ export interface User {
     phone?: string;
     avatar?: StrapiImage | FileList | null;
     company?: Company | number;
+    companyMember?: CompanyMember | null;
     type?: 'companyUser' | 'projectUser';
     language?: 'pt-BR' | 'en';
     createdAt?: Date;
@@ -143,14 +144,14 @@ export interface ProjectUser {
 export interface RDO {
     id?: number;
     documentId?: string;
-    user: User | number;
-    project: Project | number;
+    user?: User | number;
+    project?: Project | number;
     date: Date;
     description: string;
     equipmentUsed: string;
     workforce: string;
     media?: StrapiImage[] | FileList | null;
-    rdoStatus: 'draft' | 'pendingApproval' | 'approved' | 'rejected';
+    rdoStatus: RDOStatus;
     weatherMorning: RDOWeather | RDOWeather[] | null;
     weatherAfternoon: RDOWeather | RDOWeather[] | null;
     weatherNight: RDOWeather | RDOWeather[] | null;
@@ -158,6 +159,8 @@ export interface RDO {
     createdAt?: Date;
     updatedAt?: Date;
 }
+
+export type RDOStatus = 'draft' | 'pendingApproval' | 'Approved' | 'Rejected';
 
 export interface RDOWeather {
     condition: 'clear' | 'cloudy' | 'rainy' | null;

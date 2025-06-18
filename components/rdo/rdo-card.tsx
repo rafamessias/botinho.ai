@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Cloud, Sun, CloudRain } from 'lucide-react';
+import { Cloud, Sun, CloudRain, EllipsisVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
 import { RDO, RDOWithCommentsAndAudit, User } from '../types/strapi';
@@ -29,8 +29,6 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
 
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
     const projectDocumentId = typeof rdo.project === 'object' ? rdo.project.documentId : '';
-
-    console.log(rdo);
 
     const handleApprove = async () => {
         if (!rdo.documentId) {
@@ -101,9 +99,9 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                 return t('draft');
             case 'pendingApproval':
                 return t('pendingApproval');
-            case 'approved':
+            case 'Approved':
                 return t('approved');
-            case 'rejected':
+            case 'Rejected':
                 return t('rejected');
             default:
                 return status;
@@ -133,11 +131,16 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             </div>
                         </div>
                     </div>
-                    <div className="flex">
+                    <div className="flex flex-col gap-2">
+                        <div className="flex justify-end items-center gap-2">
+                            <Button type="button" variant="ghost" className="text-gray-900 text-xl">
+                                <EllipsisVertical className="w-5 h-5" />
+                            </Button>
+                        </div>
                         <Badge className={cn(
                             'rounded-full px-3 py-1 text-xs font-medium',
-                            rdo.rdoStatus === 'approved' && 'bg-green-100 text-green-700',
-                            rdo.rdoStatus === 'rejected' && 'bg-red-100 text-red-700',
+                            rdo.rdoStatus === 'Approved' && 'bg-green-100 text-green-700',
+                            rdo.rdoStatus === 'Rejected' && 'bg-red-100 text-red-700',
                             rdo.rdoStatus === 'pendingApproval' && 'bg-blue-100 text-blue-700',
                             rdo.rdoStatus === 'draft' && 'bg-gray-100 text-gray-700')
                         }>

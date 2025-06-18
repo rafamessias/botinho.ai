@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
-import { MessageSquare, EllipsisVertical, Sun, Cloud, CloudRain, X, Check } from 'lucide-react';
+import { MessageSquare, EllipsisVertical, Sun, Cloud, CloudRain, X, Check, Share2, Pencil } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { RDO, StrapiImage, User } from '@/components/types/strapi';
@@ -15,6 +15,7 @@ import { updateRDOStatus } from '@/components/actions/rdo-action';
 import { useLoading } from '@/components/LoadingProvider';
 import { toast } from 'sonner';
 import { getClientInfo } from '@/components/approval/approval-audit';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 const getWeatherIcon = (condition: string | null) => {
     if (!condition) return null;
 
@@ -78,9 +79,32 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                             {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
                         </div>
                     </div>
-                    <Button type="button" variant="ghost" className="text-gray-900 text-xl">
-                        <EllipsisVertical className="w-5 h-5" />
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button type="button" variant="ghost" className="text-gray-900 text-xl">
+                                <EllipsisVertical className="w-5 h-5" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                                <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex flex-1 items-center gap-2">
+                                    <Button variant="ghost" className="flex flex-1 items-center gap-2 w-full justify-start">
+                                        <Pencil className="w-4 h-4" />
+                                        {t('edit')}
+                                    </Button>
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Button variant="ghost" className="flex flex-1 items-center gap-2 w-full justify-start" onClick={() => {
+                                    navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.documentId}`);
+                                    toast.success(t('linkCopied'));
+                                }}>
+                                    <Share2 className="w-4 h-4" />
+                                    {t('share')}
+                                </Button>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
                 <div className="flex gap-2">
                     {[
@@ -125,12 +149,12 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
             <CardFooter className="p-0 flex flex-col gap-2">
                 <div className="flex items-center justify-between text-xs text-gray-500 w-full">
                     <div className="flex gap-4">
-                        <Link href={`/rdo/${rdo.documentId}?goback=${currentUrl}`} className="text-blue-600 hover:text-blue-700 transition-colors">
+                        <Link href={`/rdo/view/${rdo.documentId}?goback=${currentUrl}`} className="text-blue-600 hover:text-blue-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 {t('details')}
                             </Button>
                         </Link>
-                        <Link href={`/rdo/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
+                        <Link href={`/rdo/view/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 <MessageSquare className="w-4 h-4" /> {rdo.commentCount || 0}
                             </Button>
@@ -138,8 +162,8 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                     </div>
                     <Badge className={cn(
                         'rounded-full px-3 py-1 text-xs font-medium',
-                        rdo.rdoStatus === 'approved' && 'bg-green-100 text-green-700',
-                        rdo.rdoStatus === 'rejected' && 'bg-red-100 text-red-700',
+                        rdo.rdoStatus === 'Approved' && 'bg-green-100 text-green-700',
+                        rdo.rdoStatus === 'Rejected' && 'bg-red-100 text-red-700',
                         rdo.rdoStatus === 'pendingApproval' && 'bg-blue-100 text-blue-700',
                         rdo.rdoStatus === 'draft' && 'bg-gray-100 text-gray-700')
                     }>{t(rdo.rdoStatus)}</Badge>

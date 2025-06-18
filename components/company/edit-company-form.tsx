@@ -289,9 +289,6 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
 
     return (
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-            <h2 className="text-2xl font-semibold mb-2">
-                {t('editTitle')}
-            </h2>
             <UploadPhoto
                 register={register}
                 setValue={setValue}

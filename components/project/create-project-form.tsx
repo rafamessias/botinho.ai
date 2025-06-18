@@ -93,9 +93,7 @@ export function CreateProjectForm({ projects }: { projects: any }) {
     return (
         <div className="relative">
             <form id="obra-form" className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
-                <h2 className="text-2xl font-semibold mb-2">
-                    {t('title')}
-                </h2>
+
                 <UploadPhoto
                     register={register}
                     setValue={setValue}

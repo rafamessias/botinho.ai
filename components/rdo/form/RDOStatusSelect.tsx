@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useTranslations } from 'next-intl';
 
 export function RDOStatusSelect({ value, onChange, statuses }: {
-    value: string, onChange: (v: string) => void, statuses: { value: string, label: string }[]
+    value: string, onChange: (v: string) => void, statuses: string[]
 }) {
     const t = useTranslations('formRDO.status');
 
@@ -17,7 +17,7 @@ export function RDOStatusSelect({ value, onChange, statuses }: {
                 </SelectTrigger>
                 <SelectContent>
                     {statuses.map((s) => (
-                        <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                        <SelectItem key={s} value={s}>{t(`statusCombobox.${s}`)}</SelectItem>
                     ))}
                 </SelectContent>
             </Select>
