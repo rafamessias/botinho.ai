@@ -42,20 +42,29 @@ export async function signUp(data: SignUpData) {
         const responseData = await response.json();
 
         if (!responseData.user) {
-            throw new Error(
-                responseData.error?.message ||
-                responseData.error?.details?.errors?.[0]?.message ||
-                'Failed to sign up'
-            );
+            return {
+                success: false,
+                error: responseData.error?.message ||
+                    responseData.error?.details?.errors?.[0]?.message ||
+                    'Failed to sign up',
+                data: null
+            }
         }
 
         //const cookieStore = await cookies();
         //cookieStore.set("jwt", responseData.jwt, config);
 
-        return responseData;
+        return {
+            success: true,
+            data: responseData
+        }
     } catch (error) {
         console.error('Sign up error:', error);
-        throw error;
+        return {
+            success: false,
+            error: error,
+            data: null
+        }
     }
 }
 
@@ -75,11 +84,13 @@ export async function signIn(email: string, password: string) {
         const responseData = await response.json();
 
         if (!response.ok) {
-            throw new Error(
-                responseData.error?.message ||
-                responseData.error?.details?.errors?.[0]?.message ||
-                'Failed to sign in'
-            );
+            return {
+                success: false,
+                error: responseData.error?.message ||
+                    responseData.error?.details?.errors?.[0]?.message ||
+                    'Failed to sign in',
+                data: null
+            }
         }
 
         const cookieStore = await cookies();
@@ -90,13 +101,26 @@ export async function signIn(email: string, password: string) {
         })
 
         if (!user.success) {
-            throw new Error(user.error || "Failed to fetch user");
+            return {
+                success: false,
+                error: user.error || "Failed to fetch user",
+                data: null
+            }
         }
 
-        return { responseData, user: user.data };
+        return {
+            success: true,
+            responseData,
+            user: user.data
+        }
+
     } catch (error) {
         console.error('Sign in error:', error);
-        throw error;
+        return {
+            success: false,
+            error: error,
+            data: null
+        }
     }
 }
 
@@ -130,13 +154,24 @@ export async function uploadFile(file: File, id: number, collection: string, fie
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Upload failed:', errorText);
-            throw new Error('Failed to upload file');
+            return {
+                success: false,
+                error: 'Failed to upload file',
+                data: null
+            }
         }
 
         const data = await response.json();
-        return data;
+        return {
+            success: true,
+            data: data
+        }
     } catch (error) {
         console.error('Error uploading file:', error);
-        throw error;
+        return {
+            success: false,
+            error: error,
+            data: null
+        }
     }
 }
