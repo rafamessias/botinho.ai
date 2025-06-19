@@ -283,6 +283,7 @@
         "createProject": "Project",
         "createIncident": "Incident",
         "profile": "Profile",
+        "subscription": "Subscription",
         "company": "Company",
         "english": "English",
         "portuguese": "Portuguese",
@@ -415,5 +416,69 @@
             "description": "There are no RDOs available for this project yet.",
             "createButton": "Create RDO"
         }
+    },
+    "incident": {
+        "title": "Post Incident",
+        "project": {
+            "label": "Project",
+            "hint": "This Incident will be linked to the project"
+        },
+        "status": {
+            "label": "Incident Status",
+            "hint": "Modify the Incident Status here",
+            "draft": "Draft",
+            "open": "Open",
+            "wip": "In Progress",
+            "closed": "Closed"
+        },
+        "description": {
+            "label": "Incident Description",
+            "hint": "Describe what happened in the field below",
+            "placeholder": "Discrepancy between the project and the execution of the pool..."
+        },
+        "files": {
+            "label": "Upload Photos, Videos and Documents",
+            "hint": "If necessary, add photos, videos and documents",
+            "clickToAdd": "Click to add files"
+        },
+        "actions": {
+            "cancel": "Cancel",
+            "submit": "Submit"
+        },
+        "success": "Incident submitted successfully!",
+        "error": "Failed to submit incident"
+    },
+    "profile": {
+        "title": "My profile",
+        "avatar": {
+            "label": "Profile photo",
+            "hint": "Add a profile photo"
+        },
+        "name": {
+            "label": "Name",
+            "placeholder": "Enter your name",
+            "required": "Name is required"
+        },
+        "phone": {
+            "label": "Phone",
+            "placeholder": "123-456-7890"
+        },
+        "email": {
+            "label": "Email",
+            "placeholder": "example@email.com",
+            "required": "Email is required"
+        },
+        "birthday": {
+            "label": "Birthday",
+            "placeholder": "Set birthday"
+        },
+        "notifyRDO": {
+            "label": "Receive new RDO notification"
+        },
+        "actions": {
+            "cancel": "Cancel",
+            "submit": "Save changes"
+        },
+        "success": "Profile updated successfully"
     }
 }

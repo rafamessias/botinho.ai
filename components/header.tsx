@@ -98,6 +98,9 @@ export default function Header() {
                   <DropdownMenuItem className="cursor-pointer w-full">
                     <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer w-full">
+                    <Link href={`/subscription`} className="w-full">{t('subscription')}</Link>
+                  </DropdownMenuItem>
                 </>
               )}
               <DropdownMenuSeparator />

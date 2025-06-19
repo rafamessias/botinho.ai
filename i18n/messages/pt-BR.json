@@ -284,6 +284,7 @@
         "createProject": "Projeto",
         "createIncident": "Incidente",
         "profile": "Perfil",
+        "subscription": "Assinatura",
         "company": "Empresa",
         "english": "Inglês",
         "portuguese": "Português",
@@ -416,5 +417,69 @@
             "description": "Não há RDOs disponíveis para este projeto ainda.",
             "createButton": "Criar RDO"
         }
+    },
+    "incident": {
+        "title": "Criar Ocorrência",
+        "project": {
+            "label": "Projeto",
+            "hint": "Esta ocorrência será vinculada ao projeto"
+        },
+        "status": {
+            "label": "Status do Incidente",
+            "hint": "Modifique o Status do Incidente aqui",
+            "draft": "Rascunho",
+            "open": "Aberto",
+            "wip": "Em Andamento",
+            "closed": "Fechado"
+        },
+        "description": {
+            "label": "Descrição da Ocorrência",
+            "hint": "Descreva o que aconteceu no campo abaixo",
+            "placeholder": "Discrepância entre o projeto e a execução da piscina..."
+        },
+        "files": {
+            "label": "Subir Fotos, Vídeos e documentos",
+            "hint": "Caso necessário, adicione fotos, vídeos e documentos",
+            "clickToAdd": "Clique para adicionar arquivos"
+        },
+        "actions": {
+            "cancel": "Cancelar",
+            "submit": "Enviar"
+        },
+        "success": "Incidente enviado com sucesso!",
+        "error": "Falha ao enviar incidente"
+    },
+    "profile": {
+        "title": "Meu perfil",
+        "avatar": {
+            "label": "Foto de perfil",
+            "hint": "Adicione uma foto de perfil"
+        },
+        "name": {
+            "label": "Nome",
+            "placeholder": "Digite seu nome",
+            "required": "Nome é obrigatório"
+        },
+        "phone": {
+            "label": "Telefone",
+            "placeholder": "123-456-7890"
+        },
+        "email": {
+            "label": "Email",
+            "placeholder": "exemplo@email.com",
+            "required": "Email é obrigatório"
+        },
+        "birthday": {
+            "label": "Data de nascimento",
+            "placeholder": "Definir data de nascimento"
+        },
+        "notifyRDO": {
+            "label": "Receber notificação de novo RDO"
+        },
+        "actions": {
+            "cancel": "Cancelar",
+            "submit": "Salvar alterações"
+        },
+        "success": "Perfil atualizado com sucesso"
     }
 }
