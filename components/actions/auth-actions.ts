@@ -14,7 +14,7 @@ export async function registerUserAction(formData: FormData) {
             password: data.password as string,
         });
 
-        if (response.user) {
+        if (response.success) {
             return { success: true, user: response.user };
         } else {
             return { success: false, error: response.error || "No User Found" };

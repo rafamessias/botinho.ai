@@ -47,7 +47,7 @@ export async function signUp(data: SignUpData) {
                 error: responseData.error?.message ||
                     responseData.error?.details?.errors?.[0]?.message ||
                     'Failed to sign up',
-                data: null
+                user: null
             }
         }
 
@@ -56,14 +56,14 @@ export async function signUp(data: SignUpData) {
 
         return {
             success: true,
-            data: responseData
+            user: responseData.user
         }
     } catch (error) {
         console.error('Sign up error:', error);
         return {
             success: false,
             error: error,
-            data: null
+            user: null
         }
     }
 }
@@ -89,7 +89,7 @@ export async function signIn(email: string, password: string) {
                 error: responseData.error?.message ||
                     responseData.error?.details?.errors?.[0]?.message ||
                     'Failed to sign in',
-                data: null
+                user: null
             }
         }
 
@@ -104,7 +104,7 @@ export async function signIn(email: string, password: string) {
             return {
                 success: false,
                 error: user.error || "Failed to fetch user",
-                data: null
+                user: null
             }
         }
 
@@ -119,7 +119,7 @@ export async function signIn(email: string, password: string) {
         return {
             success: false,
             error: error,
-            data: null
+            user: null
         }
     }
 }
