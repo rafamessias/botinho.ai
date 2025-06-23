@@ -390,6 +390,8 @@
             "clickToAdd": "Click to add photos or videos",
             "addMore": "Add more",
             "removeImage": {
+                "success": "Image removed successfully",
+                "error": "Failed to remove image",
                 "title": "Remove image",
                 "description": "Are you sure you want to remove this image?",
                 "confirm": "Remove",

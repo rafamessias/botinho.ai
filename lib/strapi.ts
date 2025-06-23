@@ -143,17 +143,13 @@ export async function uploadFile(file: File, id: number, collection: string, fie
         formData.append('fileInfo', JSON.stringify(fileInfo));
 
         // Upload file
-        const response = await fetch(`${strapiUrl}/api/upload`, {
+        const response = await fetchContentApi(`upload`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${await getAuthToken()}`,
-            },
             body: formData,
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Upload failed:', errorText);
+        if (!response.success) {
+            console.error('Upload failed:', response.error);
             return {
                 success: false,
                 error: 'Failed to upload file',
@@ -161,10 +157,9 @@ export async function uploadFile(file: File, id: number, collection: string, fie
             }
         }
 
-        const data = await response.json();
         return {
             success: true,
-            data: data
+            data: response.data
         }
     } catch (error) {
         console.error('Error uploading file:', error);

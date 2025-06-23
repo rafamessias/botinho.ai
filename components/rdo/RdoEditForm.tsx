@@ -10,12 +10,13 @@ import { FileUploadBox } from '@/components/rdo/form/FileUploadBox';
 import { EquipmentTextarea } from '@/components/rdo/form/EquipmentTextarea';
 import { LaborTextarea } from '@/components/rdo/form/LaborTextarea';
 import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
-import { RDO, WeatherOption, RDOStatus, Project } from '@/components/types/strapi';
+import { RDO, WeatherOption, RDOStatus, Project, StrapiImage } from '@/components/types/strapi';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { updateRDO } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
+import { fetchContentApi } from '../actions/fetch-content-api';
 
 const rdoStatuses = [
     'draft',
@@ -97,6 +98,27 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const onRemoveImage = async (fileOrUrl: string | File | number) => {
+
+        try {
+            setIsLoading(true);
+            // Delete old file if exists
+            if (fileOrUrl) {
+                await fetchContentApi<any>(`upload/files/${fileOrUrl}`, {
+                    method: 'DELETE',
+                    revalidateTag: `rdo:${rdo.documentId}`
+                });
+            }
+            toast.success(t('files.removeImage.success'));
+        } catch (error) {
+            console.error('Error removing image:', error);
+            toast.error(error instanceof Error ? error.message : t('files.removeImage.error'));
+        } finally {
+            setIsLoading(false);
+        }
+
     };
 
     return (
@@ -184,7 +206,9 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
                     control={control}
                     render={({ field }) => (
                         <FileUploadBox
+                            initialFiles={rdo.media as StrapiImage[] || []}
                             onFiles={field.onChange}
+                            onRemoveImage={onRemoveImage}
                         />
                     )}
                 />

@@ -2,6 +2,7 @@
 
 import { getAuthToken } from "@/components/services/get-token";
 import { ApiResponse } from "../types/strapi";
+import { revalidateTag } from "next/cache";
 
 const strapiUrl = process.env.STRAPI_URL;
 
@@ -17,7 +18,11 @@ export async function fetchContentApi<T>(
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
     token?: string;
     body?: any;
-    revalidateSeconds?: number;
+    next?: {
+      revalidate?: number;
+      tags?: string[];
+    };
+    revalidateTag?: string | string[];
   }
 ): Promise<ApiResponse<T>> {
 
@@ -33,9 +38,7 @@ export async function fetchContentApi<T>(
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      next: options?.revalidateSeconds
-        ? { revalidate: options.revalidateSeconds }
-        : undefined,
+      next: options?.next || {}
     };
 
     if (options?.body) {
@@ -51,6 +54,15 @@ export async function fetchContentApi<T>(
       const errorText = await response.text();
       return { success: false, data: null, meta: null, error: `fetchContentApi error: ${response.status} ${response.statusText} - ${errorText}` } as ApiResponse<T>;
     }
+
+    // Revalidate AFTER a successful mutation
+    if (fetchOptions.method === 'POST' || fetchOptions.method === 'PUT' || fetchOptions.method === 'DELETE') {
+      if (options?.revalidateTag) {
+        const tags = Array.isArray(options.revalidateTag) ? options.revalidateTag : [options.revalidateTag];
+        tags.forEach(tag => revalidateTag(tag));
+      }
+    }
+
 
     // If the method is DELETE, return a boolean true
     if (options?.method === 'DELETE') {

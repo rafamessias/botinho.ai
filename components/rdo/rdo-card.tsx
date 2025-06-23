@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Cloud, Sun, CloudRain, EllipsisVertical } from 'lucide-react';
+import { Cloud, Sun, CloudRain, EllipsisVertical, Share2, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
 import { RDO, RDOWithCommentsAndAudit, User } from '../types/strapi';
@@ -14,21 +14,25 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { updateRDOStatus } from '../actions/rdo-action';
 import { useLoading } from '../LoadingProvider';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { getClientInfo } from '@/components/approval/approval-audit';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const t = useTranslations('rdo.rdoCard');
     const [tab, setTab] = useState<'comments' | 'audit'>('comments');
     const { setIsLoading } = useLoading();
     const router = useRouter();
-
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     const user = rdo.user as User;
 
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
     const projectDocumentId = typeof rdo.project === 'object' ? rdo.project.documentId : '';
+
+    const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
     const handleApprove = async () => {
         if (!rdo.documentId) {
@@ -132,10 +136,33 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                         </div>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <div className="flex justify-end items-center gap-2">
-                            <Button type="button" variant="ghost" className="text-gray-900 text-xl">
-                                <EllipsisVertical className="w-5 h-5" />
-                            </Button>
+                        <div className="flex justify-end items-center gap-2 bg-white">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button type="button" variant="ghost" className="text-gray-900 text-xl">
+                                        <EllipsisVertical className="w-5 h-5" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="z-auto">
+                                    <DropdownMenuItem>
+                                        <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex flex-1 items-center gap-2">
+                                            <Button variant="ghost" className="flex flex-1 items-center gap-2 w-full justify-start">
+                                                <Pencil className="w-4 h-4" />
+                                                {t('edit')}
+                                            </Button>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Button variant="ghost" className="flex flex-1 items-center gap-2 w-full justify-start" onClick={() => {
+                                            navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.documentId}`);
+                                            toast.success(t('linkCopied'));
+                                        }}>
+                                            <Share2 className="w-4 h-4" />
+                                            {t('share')}
+                                        </Button>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         <Badge className={cn(
                             'rounded-full px-3 py-1 text-xs font-medium',

@@ -12,11 +12,21 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
     let companyMembers: CompanyMemberDialog[] | null;
     try {
         //get company
-        const companyRecord: any = await fetchContentApi(`companies/${slug}?populate=*`);
+        const companyRecord: any = await fetchContentApi(`companies/${slug}?populate=*`, {
+            next: {
+                revalidate: 300,
+                tags: [`company`]
+            }
+        });
         company = companyRecord?.data;
 
         //get company members
-        const companyMembersRecord: any = await fetchContentApi(`company-members?populate=*&filters[company][$eq]=${company?.id}`);
+        const companyMembersRecord: any = await fetchContentApi(`company-members?populate=*&filters[company][$eq]=${company?.id}`, {
+            next: {
+                revalidate: 300,
+                tags: [`company-members`]
+            }
+        });
 
         companyMembers = companyMembersRecord?.data;
     } catch (error) {

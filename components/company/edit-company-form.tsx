@@ -196,7 +196,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             setIsLoading(true);
             // Delete old file if exists
             if (logo?.id) {
-                await fetchContentApi<any>(`/api/upload/files/${logo.id}`, {
+                await fetchContentApi<any>(`upload/files/${logo.id}`, {
                     method: 'DELETE'
                 });
             }
@@ -235,7 +235,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             setIsLoading(true);
             // Delete old file if exists
             if (logo?.id) {
-                await fetchContentApi<any>(`/api/upload/files/${logo.id}`, {
+                await fetchContentApi<any>(`upload/files/${logo.id}`, {
                     method: 'DELETE'
                 });
             }

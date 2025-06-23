@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { UseFormRegister, FieldValues, Path, UseFormSetValue } from 'react-hook-form';
 import { ConfirmDialog } from './confirm-dialog';
 import { useTranslations } from 'next-intl';
+import { StrapiImage } from '@/components/types/strapi';
 
 interface UploadPhotoProps<T extends FieldValues> {
     register: UseFormRegister<T>;
@@ -15,11 +16,12 @@ interface UploadPhotoProps<T extends FieldValues> {
     onChange?: (file: File | File[] | null) => void;
     type?: 'logo' | 'photo' | 'carousel';
     currentImage?: string;
-    initialFiles?: (string | File | StrapiFiles)[];
-    onRemoveImage?: (fileOrUrl: string | File) => void;
+    initialFiles?: (string | File | StrapiFiles | StrapiImage)[];
+    onRemoveImage?: (fileOrUrl: string | File | number) => void;
 }
 
-interface StrapiFiles {
+export interface StrapiFiles {
+    id: number;
     alternativeText: string | null;
     caption: string | null;
     createdAt: string;
@@ -77,7 +79,7 @@ export function UploadPhoto<T extends FieldValues>({
     const [carouselIndex, setCarouselIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [pendingRemove, setPendingRemove] = useState<{ fileOrUrl: string | File; index?: number } | null>(null);
+    const [pendingRemove, setPendingRemove] = useState<{ fileOrUrl: string | File | number; index?: number } | null>(null);
 
     //console.log('initialFiles', initialFiles);
 
@@ -125,16 +127,16 @@ export function UploadPhoto<T extends FieldValues>({
 
     const openRemoveDialog = (e: React.MouseEvent, index?: number) => {
         e.stopPropagation();
-        let fileOrUrl: string | File;
+        let fileOrUrl: string | File | number;
         if (isCarousel && typeof index === 'number') {
             const file = initialFiles[index];
             if (typeof file === 'string') fileOrUrl = file;
-            else if ((file as StrapiFiles)?.url) fileOrUrl = (file as StrapiFiles).url;
+            else if ((file as StrapiFiles)?.id) fileOrUrl = (file as StrapiFiles).id;
             else fileOrUrl = file as File;
         } else {
             const file = initialFiles[0];
             if (typeof file === 'string') fileOrUrl = file;
-            else if ((file as StrapiFiles)?.url) fileOrUrl = (file as StrapiFiles).url;
+            else if ((file as StrapiFiles)?.id) fileOrUrl = (file as StrapiFiles).id;
             else fileOrUrl = file as File;
         }
         setPendingRemove({ fileOrUrl, index });
@@ -241,7 +243,7 @@ export function UploadPhoto<T extends FieldValues>({
                             </button>
                         </>
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                        <div className="w-full h-full px-4 flex items-center justify-center text-muted-foreground">
                             {isCarousel ? t('clickToAdd') : isLogo ? t('clickToAddLogo') : t('clickToAddPhoto')}
                         </div>
                     )
@@ -257,7 +259,7 @@ export function UploadPhoto<T extends FieldValues>({
                         </button>
                     </>
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                    <div className="w-full h-full px-4 flex items-center justify-center text-muted-foreground">
                         {isCarousel ? t('clickToAdd') : isLogo ? t('clickToAddLogo') : t('clickToAddPhoto')}
                     </div>
                 )}
@@ -271,7 +273,7 @@ export function UploadPhoto<T extends FieldValues>({
                 <div className="flex justify-end relative">
                     <button
                         type="button"
-                        className="absolute right-0 -top-10 mt-2 text-sm py-1 px-2 rounded-lg border border-gray-300 text-blue-700"
+                        className="relative sm:absolute right-0 sm:-top-10 mt-2 text-sm py-1 px-2 rounded-lg border border-gray-300 text-blue-700"
                         onClick={() => inputRef.current?.click()}
                     >
                         {t('clickToAdd')}

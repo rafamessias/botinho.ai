@@ -15,7 +15,12 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
     let rdos: RDO[] = [];
     let projectName: string = '';
     try {
-        const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${slug}&sort=createdAt:desc`);
+        const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${slug}&sort=createdAt:desc`, {
+            next: {
+                revalidate: 300,
+                tags: [`rdos`]
+            }
+        });
         if (rdosResult.success && rdosResult.data) {
             rdos = rdosResult.data;
             if (rdos.length > 0 && typeof rdos[0].project === 'object') {

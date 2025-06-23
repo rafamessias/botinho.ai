@@ -7,7 +7,12 @@ export default async function CreateRDOPage({ searchParams }: { searchParams: Pr
     const { project, locale } = await searchParams;
     let selectedProject: Project | null = null;
 
-    const projectsResponse = await fetchContentApi<Project[]>('projects');
+    const projectsResponse = await fetchContentApi<Project[]>('projects', {
+        next: {
+            revalidate: 300,
+            tags: [`projects`]
+        }
+    });
     let projects: Project[] = [];
     if (projectsResponse.success && projectsResponse.data) {
         projects = projectsResponse.data;

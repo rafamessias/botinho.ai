@@ -9,16 +9,31 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
     let rdo: RDOWithCommentsAndAudit = {} as RDOWithCommentsAndAudit;
     let projectName: string = '';
     try {
-        const rdosFetch: any = await fetchContentApi<RDO>(`rdos/${slug}?populate=*`);
+        const rdosFetch: any = await fetchContentApi<RDO>(`rdos/${slug}?populate=*`, {
+            next: {
+                revalidate: 300,
+                tags: [`rdo:${slug}`]
+            }
+        });
         rdo = rdosFetch.data || {};
         if (typeof rdo.project === 'object') {
             projectName = rdo.project?.name || '';
         }
 
-        const commentsFetch: any = await fetchContentApi<Comment[]>(`comments?filters[rdo][$eq]=${rdo.id}`);
+        const commentsFetch: any = await fetchContentApi<Comment[]>(`comments?filters[rdo][$eq]=${rdo.id}`, {
+            next: {
+                revalidate: 300,
+                tags: [`comments:${slug}`]
+            }
+        });
         const comments = commentsFetch.data || [];
 
-        const auditFetch: any = await fetchContentApi<Approval[]>(`approval-audits?populate[user][fields][0]=firstName&populate[user][fields][1]=lastName&filters[rdo][$eq]=${rdo.id}&sort[0]=date:desc`);
+        const auditFetch: any = await fetchContentApi<Approval[]>(`approval-audits?populate[user][fields][0]=firstName&populate[user][fields][1]=lastName&filters[rdo][$eq]=${rdo.id}&sort[0]=date:desc`, {
+            next: {
+                revalidate: 300,
+                tags: [`approval-audits:${slug}`]
+            }
+        });
         const audit = auditFetch.data || [];
 
         rdo = {

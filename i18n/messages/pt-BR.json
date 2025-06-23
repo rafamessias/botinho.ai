@@ -391,6 +391,8 @@
             "clickToAdd": "Clique para adicionar fotos ou vídeos",
             "addMore": "Adicionar mais",
             "removeImage": {
+                "success": "Imagem removida com sucesso",
+                "error": "Falha ao remover imagem",
                 "title": "Remover imagem",
                 "description": "Tem certeza que deseja remover esta imagem?",
                 "confirm": "Remover",
