@@ -321,6 +321,22 @@
                 "create": "Criar"
             },
             "success": "Projeto criado com sucesso"
+        },
+        "view": {
+            "title": "Detalhes do Projeto",
+            "name": "Nome do Projeto",
+            "description": "Descrição",
+            "address": "Endereço",
+            "tabs": {
+                "rdos": "RDOs",
+                "incidents": "Ocorrências",
+                "media": "Mídia",
+                "users": "Usuários",
+                "noRdos": "Nenhum RDO para este projeto ainda.",
+                "noIncidents": "Nenhuma ocorrência para este projeto ainda.",
+                "noMedia": "Nenhuma mídia para este projeto ainda.",
+                "noUsers": "Nenhum usuário atribuído a este projeto ainda."
+            }
         }
     },
     "formRDO": {

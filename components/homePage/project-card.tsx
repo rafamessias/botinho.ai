@@ -57,7 +57,7 @@ export default function ProjectCard({ id, title, description, imageUrl, isActive
         <Link href={`/feed/${id}`} className="w-full">
           <Button className="w-full bg-primary hover:bg-primary/90">{t('viewUpdates')}</Button>
         </Link>
-        <Link href={`/project/${documentId}`} >
+        <Link href={`/project/view/${documentId}`} >
           <Button variant="ghost" size="icon" className="h-10 w-10 border border-gray-300">
             <InfoIcon className="h-4 w-4" />
             <span className="sr-only">{t('information')}</span>

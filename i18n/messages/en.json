@@ -320,6 +320,22 @@
                 "create": "Create"
             },
             "success": "Project created successfully"
+        },
+        "view": {
+            "title": "Project Details",
+            "name": "Project Name",
+            "description": "Description",
+            "address": "Address",
+            "tabs": {
+                "rdos": "RDOs",
+                "incidents": "Incidents",
+                "media": "Media",
+                "users": "Users",
+                "noRdos": "No RDOs for this project yet.",
+                "noIncidents": "No incidents for this project yet.",
+                "noMedia": "No media for this project yet.",
+                "noUsers": "No users assigned to this project yet."
+            }
         }
     },
     "formRDO": {

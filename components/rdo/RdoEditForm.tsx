@@ -16,7 +16,7 @@ import { useTranslations } from 'next-intl';
 import { updateRDO } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
-import { fetchContentApi } from '../actions/fetch-content-api';
+import { fetchContentApi } from '@/components/actions/fetch-content-api';
 
 const rdoStatuses = [
     'draft',
