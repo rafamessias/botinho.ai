@@ -140,12 +140,7 @@ export async function updateRDO(rdoId: string, data: RDO) {
             method: 'PUT',
             body: {
                 data: {
-                    description: data.description,
-                    equipmentUsed: data.equipmentUsed,
-                    workforce: data.workforce,
-                    weatherMorning: [data.weatherMorning],
-                    weatherAfternoon: [data.weatherAfternoon],
-                    weatherNight: [data.weatherNight],
+                    ...data
                 }
             }
         });

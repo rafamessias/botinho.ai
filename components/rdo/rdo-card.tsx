@@ -128,7 +128,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             </div>
                             <div className="text-xs mt-1 flex items-center gap-1">
                                 <span className="text-muted-foreground">{t('project')}</span>
-                                <Link href={`/project/${projectDocumentId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
+                                <Link href={`/project/view/${projectDocumentId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
                             </div>
                             <div className="text-xs text-gray-400 mt-1">
                                 {format(new Date(rdo?.date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}

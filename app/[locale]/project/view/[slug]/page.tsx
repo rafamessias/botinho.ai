@@ -14,7 +14,7 @@ export default async function ProjectViewPage({ params }: { params: Promise<{ sl
         }
     });
 
-    console.log(projectResponse);
+    //console.log(projectResponse);
 
     if (!projectResponse.success || !projectResponse.data) {
         notFound();

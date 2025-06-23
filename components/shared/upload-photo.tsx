@@ -191,7 +191,7 @@ export function UploadPhoto<T extends FieldValues>({
         : 'w-full flex flex-col gap-2';
     const previewClass = isLogo
         ? 'relative w-[160px] h-[160px] rounded-xl overflow-hidden border border-dashed border-gray-300 mt-2 cursor-pointer bg-gray-100'
-        : 'relative w-full h-40 rounded-xl overflow-hidden border border-dashed border-gray-300 mt-2 cursor-pointer bg-gray-100';
+        : 'relative w-full h-[300px] rounded-xl overflow-hidden border border-dashed border-gray-300 mt-2 cursor-pointer bg-gray-100';
 
     return (
         <div className={containerClass}>

@@ -68,27 +68,30 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
     };
 
     const onSubmit = async (data: FormData) => {
+
         if (!rdo.documentId) {
             toast.error(t('error'));
             return;
         }
 
+        const rdoData = {
+            description: data.description,
+            equipmentUsed: data.equipment,
+            workforce: data.labor,
+            rdoStatus: data.status as RDOStatus,
+            weatherMorning: data.weather.weatherMorning,
+            weatherAfternoon: data.weather.weatherAfternoon,
+            weatherNight: data.weather.weatherNight,
+            date: new Date(data.date)
+        }
+
         try {
             setIsLoading(true);
-            const response = await updateRDO(rdo.documentId, {
-                ...data,
-                equipmentUsed: data.equipment,
-                workforce: data.labor,
-                rdoStatus: data.status as RDOStatus,
-                weatherMorning: data.weather.weatherMorning,
-                weatherAfternoon: data.weather.weatherAfternoon,
-                weatherNight: data.weather.weatherNight,
-                date: new Date(data.date)
-            });
+            const response = await updateRDO(rdo.documentId, rdoData);
 
             if (response.success) {
                 toast.success(t('success'));
-                router.push(`/rdo/${rdo.documentId}`);
+                //router.push(`/rdo/view/${rdo.documentId}`);
             } else {
                 toast.error(response.error || t('error'));
             }
