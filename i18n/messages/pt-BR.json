@@ -406,6 +406,7 @@
             "hint": "Adicione fotos e vídeos no seu post para atualizar a Obra",
             "clickToAdd": "Clique para adicionar fotos ou vídeos",
             "addMore": "Adicionar mais",
+            "uploadError": "Falha ao enviar arquivos",
             "removeImage": {
                 "success": "Imagem removida com sucesso",
                 "error": "Falha ao remover imagem",
@@ -414,6 +415,10 @@
                 "confirm": "Remover",
                 "cancel": "Cancelar"
             }
+        },
+        "update": {
+            "success": "RDO atualizada com sucesso",
+            "error": "Falha ao atualizar RDO"
         },
         "success": "RDO criada com sucesso",
         "error": "Falha ao criar RDO"

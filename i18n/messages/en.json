@@ -405,6 +405,7 @@
             "hint": "Add photos and videos to your post to update the Work",
             "clickToAdd": "Click to add photos or videos",
             "addMore": "Add more",
+            "uploadError": "Failed to upload files",
             "removeImage": {
                 "success": "Image removed successfully",
                 "error": "Failed to remove image",
@@ -413,6 +414,10 @@
                 "confirm": "Remove",
                 "cancel": "Cancel"
             }
+        },
+        "update": {
+            "success": "RDO updated successfully",
+            "error": "Failed to update RDO"
         },
         "success": "RDO created successfully",
         "error": "Failed to create RDO"

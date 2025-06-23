@@ -13,7 +13,7 @@ import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
 import { RDO, WeatherOption, RDOStatus, Project, StrapiImage } from '@/components/types/strapi';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { updateRDO } from '@/components/actions/rdo-action';
+import { updateRDO, uploadRdoAttachments } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
@@ -90,14 +90,29 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
             const response = await updateRDO(rdo.documentId, rdoData);
 
             if (response.success) {
-                toast.success(t('success'));
-                //router.push(`/rdo/view/${rdo.documentId}`);
+                if (data.files && data.files.length > 0 && rdo.id) {
+                    const filesToUpload = data.files.filter((file): file is File => file instanceof File);
+                    if (filesToUpload.length === 0) {
+                        toast.success(t('update.success'));
+                        router.refresh();
+                        return;
+                    }
+                    data.files = filesToUpload;
+                    const uploadResponse = await uploadRdoAttachments(rdo.id, rdo.documentId as string, data.files);
+
+                    if (!uploadResponse.success) {
+                        toast.error(uploadResponse.error || t('files.uploadError'));
+                        // Decide if we should stop here or continue
+                    }
+                }
+                toast.success(t('update.success'));
+                router.refresh();
             } else {
-                toast.error(response.error || t('error'));
+                toast.error(response.error || t('update.error'));
             }
         } catch (error) {
             console.error('Error submitting form:', error);
-            toast.error(t('error'));
+            toast.error(t('update.error'));
         } finally {
             setIsLoading(false);
         }
@@ -212,6 +227,7 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
                             initialFiles={rdo.media as StrapiImage[] || []}
                             onFiles={field.onChange}
                             onRemoveImage={onRemoveImage}
+
                         />
                     )}
                 />

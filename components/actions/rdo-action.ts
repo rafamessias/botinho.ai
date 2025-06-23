@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { uploadFile } from '@/lib/strapi';
 import { fetchContentApi } from './fetch-content-api';
 import { ApiResponse, Approval, Project, RDO, WeatherOption, RDOWeather } from '@/components/types/strapi';
+import { revalidateTag } from 'next/cache';
 
 interface RDOData {
     project: Project;
@@ -105,7 +106,8 @@ export async function updateRDOStatus(rdoId: string, status: 'Approved' | 'Rejec
                         date: new Date().toISOString()
                     }
                 }
-            }
+            },
+            revalidateTag: `rdo:${rdoId}`
         });
 
         if (!response.data?.id) {
@@ -142,7 +144,8 @@ export async function updateRDO(rdoId: string, data: RDO) {
                 data: {
                     ...data
                 }
-            }
+            },
+            revalidateTag: `rdo:${rdoId}`
         });
 
         if (!response.data?.id) {
@@ -160,6 +163,45 @@ export async function updateRDO(rdoId: string, data: RDO) {
         return {
             success: false,
             error: error instanceof Error ? error.message : 'An error occurred'
+        };
+    }
+}
+
+export async function uploadRdoAttachments(rdoId: number, documentId: string, files: File[]) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        if (!files || files.length === 0) {
+            return { success: true, data: [] };
+        }
+
+        const uploadPromises = files.map(async (file) => {
+            const uploadResponse = await uploadFile(
+                file,
+                rdoId,
+                'api::rdo.rdo',
+                'media'
+            );
+            if (!uploadResponse) {
+                throw new Error(`Failed to upload file: ${file.name}`);
+            }
+            return uploadResponse;
+        });
+
+        const uploadedFiles = await Promise.all(uploadPromises);
+        revalidateTag(`rdo:${documentId}`);
+
+        return { success: true, data: uploadedFiles };
+    } catch (error) {
+        console.error('Error uploading files:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred while uploading files'
         };
     }
 } 
