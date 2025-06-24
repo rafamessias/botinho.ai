@@ -121,6 +121,7 @@ export interface Project {
     name: string;
     description: string;
     address: string;
+    projectStatus: ProjectStatus;
     image?: StrapiImage | FileList | null;
     company: Company | number;
     users?: ProjectUser[];
@@ -129,6 +130,8 @@ export interface Project {
     createdAt?: Date;
     updatedAt?: Date;
 }
+
+export type ProjectStatus = 'active' | 'wip' | 'finished' | 'stoped' | 'deactivated';
 
 export interface ProjectUser {
     id?: number;

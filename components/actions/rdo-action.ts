@@ -148,11 +148,11 @@ export async function updateRDO(rdoId: string, data: RDO) {
             revalidateTag: `rdo:${rdoId}`
         });
 
-        if (!response.data?.id) {
-            console.error('Error updating RDO');
+        if (!response.success) {
+            console.error(`Error updating RDO: ${response.error}`);
             return {
                 success: false,
-                error: 'Error updating RDO',
+                error: `Error updating RDO: ${response.error}`,
                 data: null
             };
         }
@@ -204,4 +204,43 @@ export async function uploadRdoAttachments(rdoId: number, documentId: string, fi
             error: error instanceof Error ? error.message : 'An error occurred while uploading files'
         };
     }
-} 
+}
+
+export async function removeRdoAttachments(fileIds: number[], documentId: string) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        if (!fileIds || fileIds.length === 0) {
+            return { success: true, data: [] };
+        }
+
+        const deletePromises = fileIds.map(async (fileId) => {
+            const response = await fetchContentApi<any>(`upload/files/${fileId}`, {
+                method: 'DELETE',
+                revalidateTag: `rdo:${documentId}`
+            });
+
+            if (!response.success) {
+                console.error(`Failed to delete file with ID: ${fileId}`);
+                return { success: false, error: `Failed to delete file with ID: ${fileId}` };
+            }
+            return response.data;
+        });
+
+        const deletedFiles = await Promise.all(deletePromises);
+        revalidateTag(`rdo:${documentId}`);
+
+        return { success: true, data: deletedFiles };
+    } catch (error) {
+        console.error('Error removing files:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred while removing files'
+        };
+    }
+}

@@ -6,19 +6,22 @@ import { Plus, Search } from "lucide-react"
 import { fetchContentApi } from "@/components/actions/fetch-content-api"
 import { getTranslations } from "next-intl/server"
 import ContainerApp from "@/components/Container-app"
-import { Project } from "@/components/types/strapi"
+import { Project, StrapiImage } from "@/components/types/strapi"
 export const dynamic = "force-dynamic";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
     const t = await getTranslations({ locale, namespace: 'homepage' });
 
-    let allProjects: any;
+    let allProjects: Project[] = [];
     try {
-        allProjects = await fetchContentApi<Project>('projects?populate=*')
+        const response = await fetchContentApi<Project[]>('projects?populate=*')
+        if (response.success && response.data) {
+            allProjects = response.data;
+        }
     } catch (error) {
         console.error('Failed to fetch projects:', error);
-        allProjects = { data: [] };
+        allProjects = [];
     }
 
     return (
@@ -47,17 +50,24 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-                {allProjects.data.map((project: any) => (
-                    <ProjectCard
-                        key={project.id}
-                        id={project.id}
-                        documentId={project.documentId}
-                        title={project.name}
-                        description={project.description}
-                        imageUrl={project.image?.url}
-                        isActive={project.projectStatus === "active"}
-                    />
-                ))}
+                {allProjects.map((project: Project) => {
+                    let projectImage: StrapiImage | null = null;
+                    if (project.image) {
+                        projectImage = project.image as StrapiImage;
+                    }
+
+                    return (
+                        <ProjectCard
+                            key={project.id}
+                            id={project.id?.toString() || ''}
+                            documentId={project.documentId || ''}
+                            title={project.name}
+                            description={project.description}
+                            imageUrl={projectImage?.url || ''}
+                            isActive={project.projectStatus === "active"}
+                        />
+                    )
+                })}
             </div>
         </ContainerApp>
     );

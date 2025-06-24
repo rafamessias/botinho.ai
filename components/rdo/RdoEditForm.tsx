@@ -13,10 +13,11 @@ import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
 import { RDO, WeatherOption, RDOStatus, Project, StrapiImage } from '@/components/types/strapi';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { updateRDO, uploadRdoAttachments } from '@/components/actions/rdo-action';
+import { removeRdoAttachments, updateRDO, uploadRdoAttachments } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
+import { useState } from 'react';
 
 const rdoStatuses = [
     'draft',
@@ -40,6 +41,8 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
     const router = useRouter();
     const t = useTranslations('formRDO');
     const { setIsLoading } = useLoading();
+    const [filesToBeRemoved, setFilesToBeRemoved] = useState<number[]>([]);
+
     console.log(rdo);
     const {
         control,
@@ -87,8 +90,9 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
 
         try {
             setIsLoading(true);
+            console.log(rdoData);
             const response = await updateRDO(rdo.documentId, rdoData);
-
+            console.log(response);
             if (response.success) {
                 if (data.files && data.files.length > 0 && rdo.id) {
                     const filesToUpload = data.files.filter((file): file is File => file instanceof File);
@@ -105,6 +109,11 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
                         // Decide if we should stop here or continue
                     }
                 }
+
+                if (filesToBeRemoved.length > 0) {
+                    await removeRdoAttachments(filesToBeRemoved, rdo.documentId as string);
+                }
+
                 toast.success(t('update.success'));
                 router.refresh();
             } else {
@@ -119,24 +128,8 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
     };
 
     const onRemoveImage = async (fileOrUrl: string | File | number) => {
-
-        try {
-            setIsLoading(true);
-            // Delete old file if exists
-            if (fileOrUrl) {
-                await fetchContentApi<any>(`upload/files/${fileOrUrl}`, {
-                    method: 'DELETE',
-                    revalidateTag: `rdo:${rdo.documentId}`
-                });
-            }
-            toast.success(t('files.removeImage.success'));
-        } catch (error) {
-            console.error('Error removing image:', error);
-            toast.error(error instanceof Error ? error.message : t('files.removeImage.error'));
-        } finally {
-            setIsLoading(false);
-        }
-
+        setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl as number]);
+        console.log(fileOrUrl);
     };
 
     return (

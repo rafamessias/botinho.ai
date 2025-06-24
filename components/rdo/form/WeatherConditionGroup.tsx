@@ -36,10 +36,10 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                                 onValueChange={val =>
                                     setWeather({
                                         ...weather,
-                                        [period.key]: {
+                                        [period.key]: [{
                                             ...(Array.isArray(weather[period.key]) ? (weather[period.key] as any[])[0] || {} : (weather[period.key] as any) || {}),
                                             condition: val as 'clear' | 'cloudy' | 'rainy' | null
-                                        }
+                                        }]
                                     })
                                 }
                             >
@@ -63,10 +63,10 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                                 onValueChange={val =>
                                     setWeather({
                                         ...weather,
-                                        [period.key]: {
+                                        [period.key]: [{
                                             ...(Array.isArray(weather[period.key]) ? (weather[period.key] as any[])[0] || {} : (weather[period.key] as any) || {}),
                                             workable: val === 'true'
-                                        }
+                                        }]
                                     })
                                 }
                             >

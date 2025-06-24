@@ -76,6 +76,7 @@ export function UploadPhoto<T extends FieldValues>({
     const t = useTranslations('uploadPhoto');
     const [previewUrls, setPreviewUrls] = useState<string[]>(currentImage ? [currentImage] : []);
     const [carouselFiles, setCarouselFiles] = useState<File[]>([]);
+    const [existingFiles, setExistingFiles] = useState<(string | File | StrapiFiles | StrapiImage)[]>([]);
     const [carouselIndex, setCarouselIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -92,6 +93,7 @@ export function UploadPhoto<T extends FieldValues>({
                 return URL.createObjectURL(file as File);
             });
             setPreviewUrls(urls);
+            setExistingFiles(initialFiles);
             setCarouselFiles(initialFiles.filter(f => f instanceof File) as File[]);
         }
     }, [initialFiles]);
@@ -110,17 +112,23 @@ export function UploadPhoto<T extends FieldValues>({
             setPreviewUrls(prev => [...prev, ...urls]);
             setCarouselFiles(prev => [...prev, ...fileArr]);
             setCarouselIndex(prev => prev);
-            setValue(name, fileArr as any);
-            onChange?.([...carouselFiles, ...fileArr]);
+
+            // Combine existing files with new files for form state
+            const allFiles = [...existingFiles, ...fileArr];
+            setValue(name, allFiles as any);
+            // Only pass File objects to onChange
+            const fileObjects = allFiles.filter(f => f instanceof File) as File[];
+            onChange?.(fileObjects);
         } else {
             const file = files[0];
             if (file) {
                 const imageUrl = URL.createObjectURL(file);
                 setPreviewUrls([imageUrl]);
                 setCarouselFiles([file]);
+                setExistingFiles([]);
                 setCarouselIndex(0);
-                setValue(name, files as any);
-                onChange?.(file);
+                setValue(name, [file] as any);
+                onChange?.([file]);
             }
         }
     };
@@ -128,17 +136,19 @@ export function UploadPhoto<T extends FieldValues>({
     const openRemoveDialog = (e: React.MouseEvent, index?: number) => {
         e.stopPropagation();
         let fileOrUrl: string | File | number;
-        if (isCarousel && typeof index === 'number') {
-            const file = initialFiles[index];
-            if (typeof file === 'string') fileOrUrl = file;
-            else if ((file as StrapiFiles)?.id) fileOrUrl = (file as StrapiFiles).id;
-            else fileOrUrl = file as File;
+
+        // Get the file from the combined array of existing + new files
+        const allFiles = [...existingFiles, ...carouselFiles];
+        const file = allFiles[index || 0];
+
+        if (typeof file === 'string') {
+            fileOrUrl = file;
+        } else if ((file as StrapiFiles)?.id) {
+            fileOrUrl = (file as StrapiFiles).id;
         } else {
-            const file = initialFiles[0];
-            if (typeof file === 'string') fileOrUrl = file;
-            else if ((file as StrapiFiles)?.id) fileOrUrl = (file as StrapiFiles).id;
-            else fileOrUrl = file as File;
+            fileOrUrl = file as File;
         }
+
         setPendingRemove({ fileOrUrl, index });
         setDialogOpen(true);
     };
@@ -153,15 +163,24 @@ export function UploadPhoto<T extends FieldValues>({
         if (isCarousel && typeof index === 'number') {
             const newPreviews = previewUrls.filter((_, i) => i !== index);
             const newFiles = carouselFiles.filter((_, i) => i !== index);
+            const newExistingFiles = existingFiles.filter((_, i) => i !== index);
+
             setPreviewUrls(newPreviews);
             setCarouselFiles(newFiles);
+            setExistingFiles(newExistingFiles);
             setCarouselIndex(0);
             if (inputRef.current) inputRef.current.value = '';
-            setValue(name, newFiles as any);
-            onChange?.(newFiles.length ? newFiles : null);
+
+            // Update form state with remaining files
+            const allFiles = [...newExistingFiles, ...newFiles];
+            setValue(name, allFiles as any);
+            // Only pass File objects to onChange
+            const fileObjects = allFiles.filter(f => f instanceof File) as File[];
+            onChange?.(fileObjects.length ? fileObjects : null);
         } else {
             setPreviewUrls([]);
             setCarouselFiles([]);
+            setExistingFiles([]);
             setCarouselIndex(0);
             if (inputRef.current) inputRef.current.value = '';
             setValue(name, undefined as any);
