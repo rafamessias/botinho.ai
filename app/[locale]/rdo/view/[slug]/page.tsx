@@ -5,7 +5,7 @@ import { fetchContentApi } from '@/components/actions/fetch-content-api';
 
 export default async function RdoPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-
+    console.log('slug', slug);
     let rdo: RDOWithCommentsAndAudit = {} as RDOWithCommentsAndAudit;
     let projectName: string = '';
     try {

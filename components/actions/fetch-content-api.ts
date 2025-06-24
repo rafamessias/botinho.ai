@@ -35,17 +35,19 @@ export async function fetchContentApi<T>(
     const fetchOptions: RequestInit = {
       method: options?.method || 'GET',
       headers: {
-        'Content-Type': 'application/json',
+        ...(endpoint !== 'upload' && { 'Content-Type': 'application/json' }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       next: options?.next || {}
     };
 
-    if (options?.body) {
+    if (options?.body && endpoint !== 'upload') {
       fetchOptions.body = JSON.stringify(options.body);
+    } else {
+      //for upload, we need to pass the body as a FormData object
+      fetchOptions.body = options?.body;
     }
 
-    // console.log('fetchOptions', fetchOptions);
     // console.log('strapiUrl', strapiUrl);
     // console.log('url', url.toString());
     const response = await fetch(url.toString(), fetchOptions);

@@ -92,6 +92,11 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
             const response = await updateRDO(rdo.documentId, rdoData);
             console.log(response);
             if (response.success) {
+
+                if (filesToBeRemoved.length > 0) {
+                    await removeRdoAttachments(filesToBeRemoved, rdo.documentId as string);
+                }
+
                 if (data.files && data.files.length > 0 && rdo.id) {
                     const filesToUpload = data.files.filter((file): file is File => file instanceof File);
                     if (filesToUpload.length === 0) {
@@ -99,17 +104,13 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
                         router.refresh();
                         return;
                     }
-                    data.files = filesToUpload;
-                    const uploadResponse = await uploadRdoAttachments(rdo.id, rdo.documentId as string, data.files);
+
+                    const uploadResponse = await uploadRdoAttachments(rdo.id, rdo.documentId as string, filesToUpload);
 
                     if (!uploadResponse.success) {
                         toast.error(uploadResponse.error || t('files.uploadError'));
                         // Decide if we should stop here or continue
                     }
-                }
-
-                if (filesToBeRemoved.length > 0) {
-                    await removeRdoAttachments(filesToBeRemoved, rdo.documentId as string);
                 }
 
                 toast.success(t('update.success'));
