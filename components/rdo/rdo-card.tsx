@@ -18,7 +18,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { getClientInfo } from '@/components/approval/approval-audit';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const t = useTranslations('rdo.rdoCard');
@@ -115,66 +115,75 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     return (
         <>
             <Card className="bg-white shadow-sm border border-gray-100 p-6 space-y-4">
-                <CardHeader className="flex flex-row items-start p-0 justify-between">
-                    <div className="flex items-start gap-4">
-                        <div>
-                            <div className="text-xs">
-                                <span className="text-muted-foreground mr-1">RDO</span>
-                                <span className="font-bold text-gray-800">#{rdo.id}</span>
-                            </div>
-                            <div className="text-xs mt-1 flex items-center gap-1">
-                                <span className="text-muted-foreground">{t('postedBy')}</span>
-                                <span className="font-bold text-gray-800"> {user.firstName} {user.lastName}</span>
-                            </div>
-                            <div className="text-xs mt-1 flex items-center gap-1">
-                                <span className="text-muted-foreground">{t('project')}</span>
-                                <Link href={`/project/view/${projectDocumentId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
-                            </div>
-                            <div className="text-xs text-gray-400 mt-1">
-                                {format(new Date(rdo?.date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <div className="flex justify-end items-center gap-2 bg-white">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button type="button" variant="ghost" className="text-gray-900 text-xl">
-                                        <EllipsisVertical className="w-5 h-5" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="z-auto">
-                                    <DropdownMenuItem>
-                                        <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex flex-1 items-center gap-2">
-                                            <Button variant="ghost" className="flex flex-1 items-center gap-2 w-full justify-start">
-                                                <Pencil className="w-4 h-4" />
-                                                {t('edit')}
-                                            </Button>
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <Button variant="ghost" className="flex flex-1 items-center gap-2 w-full justify-start" onClick={() => {
-                                            navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.documentId}`);
-                                            toast.success(t('linkCopied'));
-                                        }}>
-                                            <Share2 className="w-4 h-4" />
-                                            {t('share')}
+                <CardHeader className="flex flex-col w-full items-start p-0 justify-between">
+                    <div className="w-full flex justify-end items-center gap-2 -mt-2 mb-2 bg-white">
+                        <TooltipProvider>
+                            <Tooltip delayDuration={0}>
+                                <TooltipTrigger asChild>
+                                    <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                        <Button variant="ghost" className="flex items-center gap-2 justify-start">
+                                            <Pencil className="w-4 h-4" />
                                         </Button>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-                        <Badge className={cn(
-                            'rounded-full px-3 py-1 text-xs font-medium',
-                            rdo.rdoStatus === 'Approved' && 'bg-green-100 text-green-700',
-                            rdo.rdoStatus === 'Rejected' && 'bg-red-100 text-red-700',
-                            rdo.rdoStatus === 'pendingApproval' && 'bg-blue-100 text-blue-700',
-                            rdo.rdoStatus === 'draft' && 'bg-gray-100 text-gray-700')
-                        }>
-                            {getStatusLabel(rdo.rdoStatus)}
-                        </Badge>
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('edit')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                            <Tooltip delayDuration={0}>
+                                <TooltipTrigger asChild>
+                                    <Button variant="ghost" className="flex items-center gap-2 justify-start" onClick={() => {
+                                        navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.documentId}`);
+                                        toast.success(t('linkCopied'));
+                                    }}>
+                                        <Share2 className="w-4 h-4" />
+
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('share')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
 
                     </div>
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 w-full">
+                        <div className="flex items-start order-2 sm:order-1 gap-4">
+                            <div>
+                                <div className="text-xs">
+                                    <span className="text-muted-foreground mr-1">RDO</span>
+                                    <span className="font-bold text-gray-800">#{rdo.id}</span>
+                                </div>
+                                <div className="text-xs mt-1 flex items-center gap-1">
+                                    <span className="text-muted-foreground">{t('postedBy')}</span>
+                                    <span className="font-bold text-gray-800"> {user.firstName} {user.lastName}</span>
+                                </div>
+                                <div className="text-xs mt-1 flex items-center gap-1">
+                                    <span className="text-muted-foreground">{t('project')}</span>
+                                    <Link href={`/project/view/${projectDocumentId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
+                                </div>
+                                <div className="text-xs text-muted-foreground mt-1">
+                                    {format(new Date(rdo?.date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col order-1 sm:order-2 gap-2">
+
+                            <Badge className={cn(
+                                'rounded-full px-3 py-1 text-xs font-medium',
+                                rdo.rdoStatus === 'Approved' && 'bg-green-100 text-green-700',
+                                rdo.rdoStatus === 'Rejected' && 'bg-red-100 text-red-700',
+                                rdo.rdoStatus === 'pendingApproval' && 'bg-blue-100 text-blue-700',
+                                rdo.rdoStatus === 'draft' && 'bg-gray-100 text-gray-700')
+                            }>
+                                {getStatusLabel(rdo.rdoStatus)}
+                            </Badge>
+
+                        </div>
+                    </div>
+
                 </CardHeader>
                 <CardContent className="space-y-6 p-0">
                     {/* Condição Climática */}

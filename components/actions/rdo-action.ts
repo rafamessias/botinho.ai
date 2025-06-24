@@ -17,6 +17,35 @@ interface RDOData {
     files: File[];
 }
 
+// Helper function to remove id fields from weather data for Strapi v5 repeatable components
+function removeWeatherIds(data: RDO): RDO {
+    let cleanedData = { ...data };
+
+    // Remove id fields from weather arrays if they exist
+    if (cleanedData.weatherMorning && Array.isArray(cleanedData.weatherMorning)) {
+        cleanedData.weatherMorning = cleanedData.weatherMorning.map(weather => {
+            const { id, ...weatherWithoutId } = weather as any;
+            return weatherWithoutId;
+        });
+    }
+
+    if (cleanedData.weatherAfternoon && Array.isArray(cleanedData.weatherAfternoon)) {
+        cleanedData.weatherAfternoon = cleanedData.weatherAfternoon.map(weather => {
+            const { id, ...weatherWithoutId } = weather as any;
+            return weatherWithoutId;
+        });
+    }
+
+    if (cleanedData.weatherNight && Array.isArray(cleanedData.weatherNight)) {
+        cleanedData.weatherNight = cleanedData.weatherNight.map(weather => {
+            const { id, ...weatherWithoutId } = weather as any;
+            return weatherWithoutId;
+        });
+    }
+
+    return cleanedData;
+}
+
 export async function createRDO(data: RDOData) {
     try {
         const cookieStore = await cookies();
@@ -138,11 +167,14 @@ export async function updateRDO(rdoId: string, data: RDO) {
             throw new Error('Not authenticated');
         }
 
+        // Remove id fields from weather data for Strapi v5 repeatable components
+        const cleanedData = removeWeatherIds(data);
+
         const response: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos/${rdoId}`, {
             method: 'PUT',
             body: {
                 data: {
-                    ...data
+                    ...cleanedData
                 }
             },
             revalidateTag: `rdo:${rdoId}`

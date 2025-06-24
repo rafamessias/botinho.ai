@@ -49,14 +49,14 @@ export default function SignUpForm() {
             if (result.success) {
                 setUser(result.user);
                 setIsNavigating(true);
-                toast.success("You have been signed in successfully.");
+                toast.success(t('signUpSuccess'));
                 router.push('/sign-up/check-email');
             } else {
                 console.error(result);
                 toast.error(result.error);
             }
         } catch (error) {
-            toast.error("Something went wrong. Please try again.");
+            toast.error(t('signUpError'));
         } finally {
             setIsLoading(false);
         }
@@ -68,13 +68,13 @@ export default function SignUpForm() {
             const result = await googleSignUpAction();
             if (result.success) {
                 setIsNavigating(true);
-                toast.success("You have been signed in with Google successfully.");
+                toast.success(t('googleSignUpSuccess'));
                 router.push('/');
             } else {
                 toast.error(result.error);
             }
         } catch (error) {
-            toast.error("Something went wrong. Please try again.");
+            toast.error(t('signUpError'));
         } finally {
             setIsLoading(false);
         }
@@ -116,7 +116,7 @@ export default function SignUpForm() {
                                 id="firstName"
                                 disabled={isLoading || isNavigating}
                                 {...register('firstName', {
-                                    required: 'First name is required'
+                                    required: t('firstNameRequired')
                                 })}
                             />
                             {errors.firstName && (
@@ -129,7 +129,7 @@ export default function SignUpForm() {
                                 id="lastName"
                                 disabled={isLoading || isNavigating}
                                 {...register('lastName', {
-                                    required: 'Last name is required'
+                                    required: t('lastNameRequired')
                                 })}
                             />
                             {errors.lastName && (
@@ -142,13 +142,13 @@ export default function SignUpForm() {
                         <Input
                             id="email"
                             type="email"
-                            placeholder="name@example.com"
+                            placeholder={t('emailPlaceholder')}
                             disabled={isLoading || isNavigating}
                             {...register('email', {
-                                required: 'Email is required',
+                                required: t('emailRequired'),
                                 pattern: {
                                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: 'Invalid email address'
+                                    message: t('emailInvalid')
                                 }
                             })}
                         />
@@ -163,10 +163,10 @@ export default function SignUpForm() {
                             type="tel"
                             disabled={isLoading || isNavigating}
                             {...register('phone', {
-                                required: 'Telefone é obrigatório',
+                                required: t('phoneRequired'),
                                 pattern: {
                                     value: /^\(\d{2}\) \d{5}-\d{4}$/,
-                                    message: 'Formato inválido. Use (99) 99999-9999'
+                                    message: t('phoneInvalid')
                                 },
                                 onChange: (e) => {
                                     const value = e.target.value.replace(/\D/g, '');
@@ -186,7 +186,7 @@ export default function SignUpForm() {
                                 }
                             })}
                             maxLength={15}
-                            placeholder="(xx) xxxxx-xxxx"
+                            placeholder={t('phonePlaceholder')}
                         />
                         {errors.phone && (
                             <p className="text-sm text-red-500">{errors.phone.message}</p>
@@ -200,10 +200,10 @@ export default function SignUpForm() {
                                 type={showPassword ? "text" : "password"}
                                 disabled={isLoading || isNavigating}
                                 {...register('password', {
-                                    required: 'Password is required',
+                                    required: t('passwordRequired'),
                                     minLength: {
                                         value: 6,
-                                        message: 'Password must be at least 6 characters'
+                                        message: t('passwordMinLength')
                                     }
                                 })}
                             />
@@ -234,8 +234,8 @@ export default function SignUpForm() {
                                 type={showConfirmPassword ? "text" : "password"}
                                 disabled={isLoading || isNavigating}
                                 {...register('confirmPassword', {
-                                    required: 'Please confirm your password',
-                                    validate: value => value === password || 'Passwords do not match'
+                                    required: t('confirmPasswordRequired'),
+                                    validate: value => value === password || t('passwordsDoNotMatch')
                                 })}
                             />
                             <Button
@@ -262,7 +262,7 @@ export default function SignUpForm() {
                             id="agree"
                             type="checkbox"
                             disabled={isLoading || isNavigating}
-                            {...register('agree', { required: 'You must agree to the terms and privacy policy' })}
+                            {...register('agree', { required: t('agreeRequired') })}
                             className="border rounded cursor-pointer"
                         />
                         <label htmlFor="agree" className="text-sm">

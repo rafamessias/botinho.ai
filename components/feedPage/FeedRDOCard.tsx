@@ -65,7 +65,39 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
     return (
         <Card className="p-6 space-y-4">
             <CardHeader className="p-0">
-                <div className="flex items-start justify-between mb-1">
+                <div className="w-full flex justify-end items-center gap-2 -mt-2 bg-white">
+                    <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                            <TooltipTrigger asChild>
+                                <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                    <Button variant="ghost" className="flex items-center gap-2 justify-start">
+                                        <Pencil className="w-4 h-4" />
+                                    </Button>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{t('edit')}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                            <TooltipTrigger asChild>
+                                <Button variant="ghost" className="flex items-center gap-2 justify-start" onClick={() => {
+                                    navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.documentId}`);
+                                    toast.success(t('linkCopied'));
+                                }}>
+                                    <Share2 className="w-4 h-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{t('share')}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
+                <div className="flex items-start justify-between mb-2">
+
                     <div className="flex flex-col gap-1">
                         <div className="text-xs flex items-center gap-1">
                             <span className="text-muted-foreground">RDO</span>
@@ -79,32 +111,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                             {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
                         </div>
                     </div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button type="button" variant="ghost" className="text-gray-900 text-xl">
-                                <EllipsisVertical className="w-5 h-5" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                                <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex flex-1 items-center gap-2">
-                                    <Button variant="ghost" className="flex flex-1 items-center gap-2 w-full justify-start">
-                                        <Pencil className="w-4 h-4" />
-                                        {t('edit')}
-                                    </Button>
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Button variant="ghost" className="flex flex-1 items-center gap-2 w-full justify-start" onClick={() => {
-                                    navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.documentId}`);
-                                    toast.success(t('linkCopied'));
-                                }}>
-                                    <Share2 className="w-4 h-4" />
-                                    {t('share')}
-                                </Button>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+
                 </div>
                 <div className="flex gap-2">
                     {[

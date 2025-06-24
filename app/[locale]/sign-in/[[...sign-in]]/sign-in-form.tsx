@@ -50,21 +50,36 @@ export function SignInForm({
         setGlobalLoading(true);
         try {
             const response = await signIn(data.email.toLowerCase(), data.password);
-            setUser(response.user);
-            setIsNavigating(true);
-            toast.success("You have been signed in successfully.");
-            if (redirect) {
-                router.push(redirect);
+            if (response.success) {
+                setUser(response.user);
+                setIsNavigating(true);
+                toast.success(t('signInSuccess'));
+
+                if (redirect) {
+                    router.push(redirect);
+                } else {
+                    router.push('/');
+                }
             } else {
-                router.push('/');
+                const message = response.error || t('signInError');
+                if (message.includes("Your account email is not confirmed")) {
+                    router.push('/sign-up/check-email');
+                } else if (message.includes("Invalid identifier or password")) {
+                    toast.error(t('invalidCredentials'));
+                } else {
+                    toast.error(message);
+                }
+
             }
+
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
-            toast.error(message);
             if (message.includes("Your account email is not confirmed")) {
                 router.push('/sign-up/check-email');
             } else if (message.includes("Invalid identifier or password")) {
-                toast.error("Invalid email or password");
+                toast.error(t('invalidCredentials'));
+            } else {
+                toast.error(message);
             }
             setIsNavigating(false);
             setGlobalLoading(false);
@@ -78,7 +93,7 @@ export function SignInForm({
         setGlobalLoading(true);
         try {
             // TODO: Implement Google sign in logic
-            toast.success("You have been signed in with Google successfully.");
+            toast.success(t('googleSignInSuccess'));
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
             toast.error(message);
@@ -131,13 +146,13 @@ export function SignInForm({
                         <Input
                             id="email"
                             type="email"
-                            placeholder="name@example.com"
+                            placeholder={t('emailPlaceholder')}
                             disabled={isLoading || isNavigating}
                             {...register('email', {
-                                required: 'Email is required',
+                                required: t('emailRequired'),
                                 pattern: {
                                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: 'Invalid email address'
+                                    message: t('emailInvalid')
                                 }
                             })}
                         />
@@ -153,10 +168,10 @@ export function SignInForm({
                                 type={showPassword ? "text" : "password"}
                                 disabled={isLoading || isNavigating}
                                 {...register('password', {
-                                    required: 'Password is required',
+                                    required: t('passwordRequired'),
                                     minLength: {
                                         value: 6,
-                                        message: 'Password must be at least 6 characters'
+                                        message: t('passwordMinLength')
                                     }
                                 })}
                             />

@@ -16,7 +16,6 @@ import { useTranslations } from 'next-intl';
 import { removeRdoAttachments, updateRDO, uploadRdoAttachments } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
 import { useState } from 'react';
 
 const rdoStatuses = [
@@ -43,7 +42,7 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
     const { setIsLoading } = useLoading();
     const [filesToBeRemoved, setFilesToBeRemoved] = useState<number[]>([]);
 
-    console.log(rdo);
+    //console.log(rdo);
     const {
         control,
         handleSubmit,
@@ -90,7 +89,6 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
 
         try {
             setIsLoading(true);
-            console.log(rdoData);
             const response = await updateRDO(rdo.documentId, rdoData);
             console.log(response);
             if (response.success) {
