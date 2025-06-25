@@ -38,7 +38,7 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
         register,
     } = useForm<FormData>({
         defaultValues: {
-            project: projects[0].id,
+            project: projects.length > 0 ? projects[0].id : undefined,
             status: statusOptions[0],
             description: '',
             files: [],
@@ -70,7 +70,7 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
                 render={({ field }) => (
                     <div>
                         <ProjectSelect
-                            value={projects.find(p => p.id === field.value) || projects[0]}
+                            value={projects.find(p => p.id === field.value) || projects[0] || null}
                             onChange={(project) => field.onChange(project.id)}
                             projects={projects}
                         />
