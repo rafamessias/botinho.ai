@@ -111,7 +111,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images }) => {
             </div>
 
             <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-                <DialogContent className="absolute max-w-[90vw] max-h-[90vh] px-2 py-4 border-none">
+                <DialogContent className="max-w-[90vw] max-h-[90vh] px-2 py-4 border-none">
                     <DialogHeader className='absolute top-0 right-0'>
                         <DialogTitle>
                         </DialogTitle>

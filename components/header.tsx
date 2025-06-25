@@ -5,20 +5,22 @@ import { Button } from "@/components/ui/button"
 import { Plus, Globe, ArrowLeft } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Logo } from "@/components/logo"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "./ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { logoutAction } from "@/components/actions/logout-action"
-import { useUser } from "./UserProvider"
-import { useLoading } from "./LoadingProvider"
+import { useUser } from "@/components/UserProvider"
+import { useLoading } from "@/components/LoadingProvider"
 import { useState, useEffect } from "react"
 import { useLocale, useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { LanguageSwitch } from "./language-switch"
+import { LanguageSwitch } from "@/components/language-switch"
 
 export default function Header() {
   const { user, setUser } = useUser();
   const { setIsLoading } = useLoading();
   const [userName, setUserName] = useState('');
   const [companyId, setCompanyId] = useState<string | null>(null);
+  const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations('header');
@@ -57,7 +59,7 @@ export default function Header() {
         </div>
         <div className="flex items-center gap-4">
           {user.company && (
-            <DropdownMenu>
+            <DropdownMenu open={createDropdownOpen} onOpenChange={setCreateDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Plus className="h-4 w-4" />
@@ -65,19 +67,19 @@ export default function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem className="cursor-pointer w-full">
+                <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setCreateDropdownOpen(false)}>
                   <Link href="/rdo/create" className="w-full">{t('createRDO')}</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer w-full">
+                <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setCreateDropdownOpen(false)}>
                   <Link href="/project/create" className="w-full">{t('createProject')}</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer w-full">
+                <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setCreateDropdownOpen(false)}>
                   <Link href="/incident/create" className="w-full">{t('createIncident')}</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          <DropdownMenu>
+          <DropdownMenu open={userDropdownOpen} onOpenChange={setUserDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full h-10 w-10">
                 <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
@@ -92,19 +94,19 @@ export default function Header() {
             <DropdownMenuContent align="end">
               {user.company && (
                 <>
-                  <DropdownMenuItem className="cursor-pointer w-full">
+                  <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
                     <Link href="/profile" className="w-full">{t('profile')}</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer w-full">
+                  <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
                     <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer w-full">
+                  <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
                     <Link href={`/subscription`} className="w-full">{t('subscription')}</Link>
                   </DropdownMenuItem>
                 </>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer w-full" >
+              <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
                 <LanguageSwitch />
               </DropdownMenuItem>
               <DropdownMenuSeparator />
