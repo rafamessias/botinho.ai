@@ -55,6 +55,10 @@ export async function createRDO(data: RDOData) {
             throw new Error('Not authenticated');
         }
 
+        const weatherMorning = Array.isArray(data.weather.weatherMorning) ? data.weather.weatherMorning : [data.weather.weatherMorning];
+        const weatherAfternoon = Array.isArray(data.weather.weatherAfternoon) ? data.weather.weatherAfternoon : [data.weather.weatherAfternoon];
+        const weatherNight = Array.isArray(data.weather.weatherNight) ? data.weather.weatherNight : [data.weather.weatherNight];
+
         // Create the RDO
         const rdoResponse: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos`, {
             method: 'POST',
@@ -64,9 +68,9 @@ export async function createRDO(data: RDOData) {
                     projectDocumentId: data.project.documentId,
                     //rdoStatus: data.status,
                     date: data.date,
-                    weatherMorning: [data.weather.weatherMorning],
-                    weatherAfternoon: [data.weather.weatherAfternoon],
-                    weatherNight: [data.weather.weatherNight],
+                    weatherMorning: weatherMorning,
+                    weatherAfternoon: weatherAfternoon,
+                    weatherNight: weatherNight,
                     description: data.description,
                     equipmentUsed: data.equipment,
                     workforce: data.labor,
@@ -74,16 +78,16 @@ export async function createRDO(data: RDOData) {
             }
         });
 
-        if (!rdoResponse.data?.id) {
-            console.error('Error creating RDO');
+        if (!rdoResponse.success) {
+            console.error(`Error creating RDO: ${rdoResponse.error}`);
             return {
                 success: false,
-                error: 'Error creating RDO',
+                error: `Error creating RDO: ${rdoResponse.error}`,
                 data: null
             };
         }
 
-        console.log(`Creating RDO ${rdoResponse.data.id} - RDO created successfully`);
+        console.log(`Creating RDO ${rdoResponse.data?.id} - RDO created successfully`);
 
         // Upload files if they exist
         if (data.files.length > 0) {
@@ -104,10 +108,11 @@ export async function createRDO(data: RDOData) {
             console.log(`Uploading ${data.files.length} files successfully`);
             await Promise.all(uploadPromises);
         }
+        revalidateTag(`rdos`);
 
         return { success: true, data: rdoResponse.data };
     } catch (error) {
-        console.error('Error creating RDO:', error);
+        console.error(`Error creating RDO: ${error}`);
         return {
             success: false,
             error: error instanceof Error ? error.message : 'An error occurred'
@@ -136,7 +141,7 @@ export async function updateRDOStatus(rdoId: string, status: 'Approved' | 'Rejec
                     }
                 }
             },
-            revalidateTag: `rdo:${rdoId}`
+            revalidateTag: [`rdos:${rdoId}`, `rdos`]
         });
 
         if (!response.data?.id) {
@@ -177,7 +182,7 @@ export async function updateRDO(rdoId: string, data: RDO) {
                     ...cleanedData
                 }
             },
-            revalidateTag: `rdo:${rdoId}`
+            revalidateTag: [`rdos:${rdoId}`, `rdos`]
         });
 
         if (!response.success) {
@@ -226,7 +231,8 @@ export async function uploadRdoAttachments(rdoId: number, documentId: string, fi
         });
 
         const uploadedFiles = await Promise.all(uploadPromises);
-        revalidateTag(`rdo:${documentId}`);
+        revalidateTag(`rdos:${documentId}`);
+        revalidateTag(`rdos`);
 
         return { success: true, data: uploadedFiles };
     } catch (error) {
@@ -254,7 +260,7 @@ export async function removeRdoAttachments(fileIds: number[], documentId: string
         const deletePromises = fileIds.map(async (fileId) => {
             const response = await fetchContentApi<any>(`upload/files/${fileId}`, {
                 method: 'DELETE',
-                revalidateTag: `rdo:${documentId}`
+                revalidateTag: `rdos:${documentId}`
             });
 
             if (!response.success) {
@@ -265,7 +271,8 @@ export async function removeRdoAttachments(fileIds: number[], documentId: string
         });
 
         const deletedFiles = await Promise.all(deletePromises);
-        revalidateTag(`rdo:${documentId}`);
+        revalidateTag(`rdos:${documentId}`);
+        revalidateTag(`rdos`);
 
         return { success: true, data: deletedFiles };
     } catch (error) {

@@ -48,7 +48,7 @@ export default function ProjectCard({ id, title, description, imageUrl, isActive
         )}
       </div>
       <CardHeader className="px-6 pt-3">
-        <CardTitle className="text-xl font-medium">{title}</CardTitle>
+        <CardTitle className="text-xl font-medium">{id} - {title}</CardTitle>
       </CardHeader>
       <CardContent className="px-6">
         <p className="text-sm text-muted-foreground">{description}</p>

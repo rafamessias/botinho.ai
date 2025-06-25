@@ -166,7 +166,7 @@ export interface RDO {
 export type RDOStatus = 'draft' | 'pendingApproval' | 'Approved' | 'Rejected';
 
 export interface RDOWeather {
-    condition: 'clear' | 'cloudy' | 'rainy' | null;
+    condition: 'clear' | 'cloudy' | 'rainy' | 'null' | null;
     workable: boolean | null;
 }
 

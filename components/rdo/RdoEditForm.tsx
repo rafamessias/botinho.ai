@@ -127,8 +127,7 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
     };
 
     const onRemoveImage = async (fileOrUrl: string | File | number) => {
-        setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl as number]);
-        console.log(fileOrUrl);
+        if (typeof fileOrUrl === 'number') setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl as number]);
     };
 
     return (

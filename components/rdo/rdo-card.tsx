@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Cloud, Sun, CloudRain, EllipsisVertical, Share2, Pencil } from 'lucide-react';
+import { Cloud, Sun, CloudRain, Share2, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
 import { RDO, RDOWithCommentsAndAudit, User } from '../types/strapi';
@@ -196,8 +196,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                                 { period: t('night'), weather: rdo.weatherNight }
                             ].map((weather) => {
                                 const weatherData = Array.isArray(weather.weather) ? weather.weather[0] : weather.weather;
-
-                                if (weatherData !== null && weatherData.condition !== null) {
+                                if (weatherData !== null && weatherData.condition !== null && weatherData.condition !== "null") {
                                     return (
 
                                         <Badge

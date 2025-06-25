@@ -39,7 +39,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
     const t = useTranslations('rdo.rdoCard');
-    const user = rdo.user as User;
+    const user: User | { firstName: string, lastName: string } = rdo.user as User | { firstName: "", lastName: "" };
 
     const handleStatusUpdate = async (status: 'Approved' | 'Rejected') => {
         if (!rdo.documentId) return;
@@ -105,7 +105,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                         </div>
                         <div className="text-xs flex items-center gap-1">
                             <span className="text-muted-foreground">{t('postedBy')}</span>
-                            <span className="font-bold text-gray-800">{user.firstName} {user.lastName}</span>
+                            <span className="font-bold text-gray-800">{user?.firstName} {user?.lastName}</span>
                         </div>
                         <div className="text-xs text-muted-foreground">
                             {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
@@ -121,7 +121,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                     ].map((weather) => {
                         const weatherData = Array.isArray(weather.weather) ? weather.weather[0] : weather.weather;
 
-                        if (weatherData !== null && weatherData.condition !== null) {
+                        if (weatherData !== null && weatherData.condition !== null && weatherData.condition !== "null") {
                             return (
                                 <TooltipProvider key={weather.period}>
                                     <Tooltip delayDuration={0}>

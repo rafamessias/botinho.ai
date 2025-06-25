@@ -65,11 +65,12 @@ export default function CreateRDOForm({ projects, selectedProject }: { projects:
     const onSubmit = async (data: FormData) => {
         try {
             setIsLoading(true);
+
             const response = await createRDO(data);
 
             if (response.success) {
                 toast.success(t('success'));
-                router.push(`/rdo/${response.data?.documentId}`);
+                router.push(`/rdo/view/${response.data?.documentId}`);
             } else {
                 toast.error(response.error || t('error'));
             }

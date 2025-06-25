@@ -109,15 +109,22 @@ export function UploadPhoto<T extends FieldValues>({
         if (isCarousel) {
             const fileArr = Array.from(files);
             const urls = fileArr.map(file => URL.createObjectURL(file));
-            setPreviewUrls(prev => [...prev, ...urls]);
-            setCarouselFiles(prev => [...prev, ...fileArr]);
+
+            // Update state with new values
+            const newPreviewUrls = [...previewUrls, ...urls];
+            const newCarouselFiles = [...carouselFiles, ...fileArr];
+
+            setPreviewUrls(newPreviewUrls);
+            setCarouselFiles(newCarouselFiles);
             setCarouselIndex(prev => prev);
 
             // Combine existing files with new files for form state
             const allFiles = [...existingFiles, ...fileArr];
-            setValue(name, allFiles as any);
-            // Only pass File objects to onChange
-            const fileObjects = allFiles.filter(f => f instanceof File) as File[];
+            setValue(name, newCarouselFiles as any);
+
+            // Pass ALL File objects to onChange using the updated state
+            const fileObjects = newCarouselFiles.filter(f => f instanceof File) as File[];
+
             onChange?.(fileObjects);
         } else {
             const file = files[0];

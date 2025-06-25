@@ -47,6 +47,9 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem key="null" value="null" className="min-h-8">
+                                        {" "}
+                                    </SelectItem>
                                     {weatherConditions.map(condition => (
                                         <SelectItem key={condition} value={condition}>
                                             {t(`conditions.${condition}`)}
@@ -65,7 +68,7 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                                         ...weather,
                                         [period.key]: [{
                                             ...(Array.isArray(weather[period.key]) ? (weather[period.key] as any[])[0] || {} : (weather[period.key] as any) || {}),
-                                            workable: val === 'true'
+                                            workable: val === 'null' ? null : val === 'true'
                                         }]
                                     })
                                 }
@@ -74,6 +77,9 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem key="null" value="null" className="min-h-8">
+                                        {" "}
+                                    </SelectItem>
                                     {workableOptions.map(workable => (
                                         <SelectItem key={workable.toString()} value={workable.toString()}>
                                             {t(`workable.${workable}`)}

@@ -8,7 +8,12 @@ export default async function EditRdoPage({ params }: { params: Promise<{ slug: 
 
     let rdo: RDO = {} as RDO;
     try {
-        const rdoFetch: any = await fetchContentApi<RDO>(`rdos/${slug}?populate=*`);
+        const rdoFetch: any = await fetchContentApi<RDO>(`rdos/${slug}?populate=*`, {
+            next: {
+                revalidate: 0,
+                tags: [`rdos:${slug}`]
+            }
+        });
         rdo = rdoFetch.data || {};
     } catch (error) {
         console.error('Failed to fetch RDO:', error);
