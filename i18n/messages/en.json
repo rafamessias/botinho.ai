@@ -341,11 +341,43 @@
             },
             "success": "Project created successfully"
         },
+        "edit": {
+            "title": "Edit Project",
+            "uploadPhoto": {
+                "label": "Upload Photo",
+                "hint": "Add a photo (550px x 158px) to represent the Project"
+            },
+            "name": {
+                "label": "Project Name",
+                "hint": "What would be the name of the Project",
+                "placeholder": "Ex.: John's House Construction",
+                "required": "Project name is required"
+            },
+            "description": {
+                "label": "Project Description",
+                "hint": "Add a detailed description of the project",
+                "placeholder": "Describe the project details...",
+                "required": "Project description is required"
+            },
+            "address": {
+                "label": "Project Address",
+                "hint": "Add the address where the project will be executed",
+                "placeholder": "Paulista Avenue 4550\nSão Paulo\nZIP 09000-000",
+                "required": "Project address is required"
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "update": "Update"
+            },
+            "success": "Project updated successfully",
+            "error": "Failed to update project"
+        },
         "view": {
             "title": "Project Details",
             "name": "Project Name",
             "description": "Description",
             "address": "Address",
+            "edit": "Edit Project",
             "tabs": {
                 "rdos": "RDOs",
                 "incidents": "Incidents",

@@ -36,9 +36,9 @@ export function ConfirmDialog({
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
-                <DialogFooter className="flex gap-2">
-                    <Button variant="outline" onClick={onCancel} type="button" className="w-full py-2 px-4">{cancelLabel}</Button>
-                    <Button variant={confirmVariant} onClick={onConfirm} type="button" className="w-full py-2 px-4">{confirmLabel}</Button>
+                <DialogFooter className="flex gap-2 ">
+                    <Button variant="outline" onClick={onCancel} type="button" className=" flex-1 py-2 px-4">{cancelLabel}</Button>
+                    <Button variant={confirmVariant} onClick={onConfirm} type="button" className=" flex-1  py-2 px-4">{confirmLabel}</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

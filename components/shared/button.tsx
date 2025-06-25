@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes } from 'react';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button as UIButton, buttonVariants } from '@/components/ui/button';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     isLoading?: boolean;
@@ -19,18 +20,16 @@ export function Button({
     onClick = () => { },
     ...props
 }: ButtonProps) {
-    const baseStyles = 'py-2 rounded-lg font-medium transition-colors';
-    const variantStyles = {
-        primary: 'bg-primary text-white hover:bg-primary/80 disabled:bg-primary/50',
-        secondary: 'bg-secondary text-white hover:bg-secondary/80 disabled:bg-secondary/50',
-        outline: 'border text-primary font-medium bg-white hover:bg-gray-100 border-gray-200 disabled:bg-gray-50 disabled:text-gray-400'
-    };
+    const variantMapping = {
+        primary: 'default',
+        secondary: 'secondary',
+        outline: 'outline'
+    } as const;
 
     return (
-        <button
+        <UIButton
+            variant={variantMapping[variant]}
             className={cn(
-                baseStyles,
-                variantStyles[variant],
                 fullWidth ? 'w-full' : '',
                 className,
                 'relative'
@@ -40,13 +39,9 @@ export function Button({
             {...props}
         >
             {children}
-            {isLoading && document.getElementById('obra-form') && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-                    <div className="bg-white p-4 rounded-lg">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    </div>
-                </div>
+            {isLoading && (
+                <Loader2 className="h-4 w-4 animate-spin" />
             )}
-        </button>
+        </UIButton>
     );
-} 
+}

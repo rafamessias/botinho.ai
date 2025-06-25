@@ -15,7 +15,7 @@ import { updateRDOStatus } from '@/components/actions/rdo-action';
 import { useLoading } from '@/components/LoadingProvider';
 import { toast } from 'sonner';
 import { getClientInfo } from '@/components/approval/approval-audit';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+
 const getWeatherIcon = (condition: string | null) => {
     if (!condition) return null;
 
@@ -190,7 +190,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="border-emerald-200 text-emerald-600 hover:bg-emerald-50/50 hover:text-emerald-700 transition-colors"
+                                className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors"
                                 onClick={() => handleStatusUpdate('Approved')}
                             >
                                 <Check className="w-4 h-4 mr-1" />

@@ -486,7 +486,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                         type="button"
                         variant="outline"
                         onClick={handleReset}
-                        className="py-2 px-4 rounded-lg"
+                        className="px-4 rounded-lg"
                         disabled={isSubmitting}
                     >
                         {t('reset')}
@@ -496,7 +496,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                         type="button"
                         variant="outline"
                         onClick={() => router.push('/')}
-                        className="py-2 px-4 rounded-lg"
+                        className="px-4 rounded-lg"
                         disabled={isSubmitting}
                     >
                         {t('cancel')}
@@ -504,7 +504,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 )}
                 <Button
                     type="submit"
-                    className="py-2 px-4 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
+                    className="px-4 rounded-lg bg-blue-700 text-white font-semibold disabled:opacity-50"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? t('updating') : t('update')}

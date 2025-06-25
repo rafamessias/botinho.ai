@@ -7,7 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, File, Construction, Image as ImageIcon } from 'lucide-react';
+import { User, File, Construction, Image as ImageIcon, Pencil } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
+import { Button } from '@/components/ui/button';
+import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/components/ui/tooltip';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
     if (!value) return null;
@@ -22,6 +26,10 @@ function InfoField({ label, value }: { label: string; value: string | undefined 
 export default function ProjectView({ project }: { project: Project }) {
     const t = useTranslations('project.view');
     const [tab, setTab] = useState('rdos');
+
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
     const dummyRdos = [
         { id: 1, title: 'RDO #001', date: '2023-10-26', status: 'Approved' },
@@ -47,6 +55,23 @@ export default function ProjectView({ project }: { project: Project }) {
 
     return (
         <div className="flex flex-col gap-8">
+            <div className="relative w-full flex justify-end items-center gap-2 -mt-2 bg-white">
+                <TooltipProvider >
+                    <Tooltip delayDuration={0}>
+                        <TooltipTrigger asChild>
+                            <Link href={`/project/edit/${project.documentId}?goback=${currentUrl}`} className="absolute right-0 -top-2 flex items-center gap-2">
+                                <Button variant="ghost" className="flex items-center gap-2 justify-start">
+                                    <Pencil className="w-4 h-4" />
+                                </Button>
+                            </Link>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{t('edit')}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
+
             {project.image && (
                 <div className="relative w-full h-48 rounded-lg overflow-hidden">
                     <Image
@@ -64,8 +89,8 @@ export default function ProjectView({ project }: { project: Project }) {
             </div>
 
             <div className="rounded-xl">
-                <Tabs value={tab} onValueChange={setTab} className="w-fullt">
-                    <TabsList className="grid w-full grid-cols-4 bg-transparent">
+                <Tabs value={tab} onValueChange={setTab} className="w-full relative" orientation="horizontal">
+                    <TabsList className="absolute flex flex-row justify-stretch w-full bg-transparent overflow-x-auto">
                         <TabsTrigger value="rdos" className="flex items-center gap-2">
                             <Construction className="w-4 h-4" /> {t('tabs.rdos')}
                         </TabsTrigger>
@@ -80,7 +105,7 @@ export default function ProjectView({ project }: { project: Project }) {
                         </TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="rdos" className="mt-4">
+                    <TabsContent value="rdos" className="mt-10">
                         <div className="space-y-4">
                             {dummyRdos.length > 0 ? (
                                 dummyRdos.map(rdo => (
@@ -100,7 +125,7 @@ export default function ProjectView({ project }: { project: Project }) {
                         </div>
                     </TabsContent>
 
-                    <TabsContent value="incidents" className="mt-4">
+                    <TabsContent value="incidents" className="mt-10">
                         <div className="space-y-4">
                             {dummyIncidents.length > 0 ? (
                                 dummyIncidents.map(incident => (
@@ -117,7 +142,7 @@ export default function ProjectView({ project }: { project: Project }) {
                         </div>
                     </TabsContent>
 
-                    <TabsContent value="media" className="mt-4">
+                    <TabsContent value="media" className="mt-10">
                         {dummyMedia.length > 0 ? (
                             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
                                 {dummyMedia.map(media => (
@@ -131,7 +156,7 @@ export default function ProjectView({ project }: { project: Project }) {
                         )}
                     </TabsContent>
 
-                    <TabsContent value="users" className="mt-4">
+                    <TabsContent value="users" className="mt-10">
                         <div className="space-y-4">
                             {dummyUsers.length > 0 ? (
                                 dummyUsers.map(user => (

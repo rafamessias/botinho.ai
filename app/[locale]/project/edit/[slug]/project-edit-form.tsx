@@ -1,14 +1,16 @@
 'use client';
+
 import { useForm } from 'react-hook-form';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
 import { uploadFile } from '@/lib/strapi';
 import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { Project, StrapiImage, ProjectUser } from '@/components/types/strapi';
 
 interface ProjectFormValues {
     projectName: string;
@@ -17,19 +19,31 @@ interface ProjectFormValues {
     projectPhoto?: FileList;
 }
 
-export function CreateProjectForm({ projects }: { projects: any }) {
-    const t = useTranslations('project.create');
+export default function ProjectEditForm({ project }: { project: Project }) {
+    const t = useTranslations('project.edit');
     const usersRef = useRef<UserListRef>(null);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProjectFormValues>({
         defaultValues: {
-            projectName: '',
-            projectDescription: '',
-            projectAddress: '',
+            projectName: project.name || '',
+            projectDescription: project.description || '',
+            projectAddress: project.address || '',
         }
     });
+
+    // Convert project users to the format expected by UserList
+    const initialUsers = project.users ? project.users.map((user: ProjectUser) => ({
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        documentId: user.documentId,
+        isAdmin: false,
+        canPost: false,
+        canApprove: false,
+        isOwner: false,
+    })) : [];
 
     const onSubmit = async (data: ProjectFormValues) => {
         setIsLoading(true);
@@ -38,69 +52,88 @@ export function CreateProjectForm({ projects }: { projects: any }) {
         const { projectPhoto, ...projectData } = data;
 
         try {
-            const newProjectResponse: any = await fetchContentApi('projects', {
-                method: 'POST',
+            // Update project
+            const updateProjectResponse: any = await fetchContentApi(`projects/${project.documentId}`, {
+                method: 'PUT',
                 body: {
                     data: {
                         name: projectData.projectName,
                         description: projectData.projectDescription,
                         address: projectData.projectAddress,
                     }
-                }
+                },
+                revalidateTag: [`project:${project.documentId}`, 'projects']
             });
 
-            if (!newProjectResponse) {
-                throw new Error('Failed to create project');
+            if (!updateProjectResponse.success) {
+                throw new Error('Failed to update project');
             }
-
-            const newProject = newProjectResponse.data;
 
             // Upload project photo if exists
             if (projectPhoto && projectPhoto[0]) {
                 await uploadFile(
                     projectPhoto[0],
-                    newProject.id,
+                    project.id || 0,
                     'api::project.project',
                     'image'
                 );
             }
 
-            // Create project users for each owner
+            // Update project users
+            // First, delete existing project users
+            if (project.users) {
+                for (const user of project.users) {
+                    await fetchContentApi(`project-users/${user.id}`, {
+                        method: 'DELETE',
+                        revalidateTag: [`project:${project.documentId}`, 'projects']
+                    });
+                }
+            }
+
+            // Then create new project users
             for (const user of users) {
                 await fetchContentApi('project-users', {
                     method: 'POST',
                     body: {
                         data: {
-                            project: newProject.id,
+                            project: project.id,
                             name: user.name,
                             email: user.email,
                             phone: user.phone,
                         }
-                    }
+                    },
+                    revalidateTag: [`project:${project.documentId}`, 'projects']
                 });
             }
 
             toast.success(t('success'));
-            router.push(`/project/${newProject.id}`);
+            router.push(`/project/view/${project.documentId}`);
 
         } catch (error) {
-            console.error('Failed to create project:', error);
+            console.error('Failed to update project:', error);
+            toast.error(t('error'));
         } finally {
             setIsLoading(false);
         }
     };
 
+    const handleCancel = () => {
+        router.back();
+    };
+
     return (
         <div className="relative">
-            <form id="obra-form" className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
+            <form id="project-edit-form" className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
 
                 <UploadPhoto
                     register={register}
                     setValue={setValue}
                     name="projectPhoto"
-                    photoUrl="/placeholder-image.webp"
+                    photoUrl={(project.image as StrapiImage)?.url || "/placeholder-image.webp"}
                     label={t('uploadPhoto.label')}
                     hint={t('uploadPhoto.hint')}
+                    currentImage={(project.image as StrapiImage)?.url}
+                    initialFiles={project.image ? [project.image as StrapiImage] : []}
                 />
 
                 <div>
@@ -136,24 +169,23 @@ export function CreateProjectForm({ projects }: { projects: any }) {
                     {errors.projectAddress && <span className="text-xs text-red-500">{errors.projectAddress.message}</span>}
                 </div>
 
-                <UserList ref={usersRef} />
+                <UserList ref={usersRef} initialUsers={initialUsers} />
 
                 <div className="flex justify-end gap-4 mt-4">
                     <Button
                         type="button"
                         variant="outline"
-
+                        onClick={handleCancel}
                     >
                         {t('buttons.cancel')}
                     </Button>
                     <Button
                         type="submit"
                         variant="primary"
-
                         isLoading={isLoading}
                         onClick={handleSubmit(onSubmit)}
                     >
-                        {t('buttons.create')}
+                        {t('buttons.update')}
                     </Button>
                 </div>
             </form>

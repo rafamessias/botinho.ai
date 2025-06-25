@@ -342,11 +342,43 @@
             },
             "success": "Projeto criado com sucesso"
         },
+        "edit": {
+            "title": "Editar Projeto",
+            "uploadPhoto": {
+                "label": "Subir Foto",
+                "hint": "Adicione uma foto (550px x 158px) para representar o Projeto"
+            },
+            "name": {
+                "label": "Nome Projeto",
+                "hint": "Qual seria o nome do Projeto",
+                "placeholder": "Ex.: Construção Casa João",
+                "required": "O nome do projeto é obrigatório"
+            },
+            "description": {
+                "label": "Descrição do Projeto",
+                "hint": "Adicione uma descrição detalhada do projeto",
+                "placeholder": "Descreva os detalhes do projeto...",
+                "required": "A descrição do projeto é obrigatória"
+            },
+            "address": {
+                "label": "Endereço do Projeto",
+                "hint": "Adicione o endereço que será efetuado o projeto",
+                "placeholder": "Avenida Paulista 4550\nSão Paulo\nCEP 09000-000",
+                "required": "O endereço do projeto é obrigatório"
+            },
+            "buttons": {
+                "cancel": "Cancelar",
+                "update": "Atualizar"
+            },
+            "success": "Projeto atualizado com sucesso",
+            "error": "Falha ao atualizar projeto"
+        },
         "view": {
             "title": "Detalhes do Projeto",
             "name": "Nome do Projeto",
             "description": "Descrição",
             "address": "Endereço",
+            "edit": "Editar Projeto",
             "tabs": {
                 "rdos": "RDOs",
                 "incidents": "Ocorrências",

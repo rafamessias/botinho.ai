@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Cloud, Sun, CloudRain, Share2, Pencil } from 'lucide-react';
+import { Cloud, Sun, CloudRain, Share2, Pencil, X, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
 import { RDO, RDOWithCommentsAndAudit, User } from '../types/strapi';
@@ -189,7 +189,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                     {/* Condição Climática */}
                     <div>
                         <div className="font-semibold text-sm mb-4">{t('weather.title')}</div>
-                        <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex flex-row gap-2 overflow-x-auto">
                             {[
                                 { period: t('morning'), weather: rdo.weatherMorning },
                                 { period: t('afternoon'), weather: rdo.weatherAfternoon },
@@ -202,7 +202,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                                         <Badge
                                             variant='outline'
                                             key={weather.period}
-                                            className={`flex flex-col items-center gap-1 rounded-lg text-xs shadow-sm cursor-default ${!weatherData.workable
+                                            className={`flex flex-col py-2 items-center gap-1 rounded-lg text-xs shadow-sm cursor-default ${!weatherData.workable
                                                 && 'bg-red-50 text-red-900 hover:bg-red-100 hover:text-red-900'
                                                 }`}
                                         >
@@ -241,19 +241,23 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                         <div className="text-sm text-gray-800">{workforce}</div>
                     </div>
                     {/* Aprovar/Rejeitar */}
-                    <div className="flex justify-end gap-2">
-                        {rdo.rdoStatus === 'pendingApproval' && (
+                    <div className="flex w-full sm:justify-end gap-2">
+                        {rdo.rdoStatus === 'draft' && (
                             <>
                                 <Button
                                     variant="outline"
-                                    className="border-gray-300"
+                                    className="border-gray-300 flex-1 sm:flex-none"
                                     onClick={handleReject}
                                 >
+                                    <X className="w-4 h-4 mr-1" />
                                     {t('actions.reject')}
                                 </Button>
                                 <Button
+                                    variant="outline"
+                                    className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors flex-1 sm:flex-none"
                                     onClick={handleApprove}
                                 >
+                                    <Check className="w-4 h-4 mr-1" />
                                     {t('actions.approve')}
                                 </Button>
                             </>
@@ -262,7 +266,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                     {/* Tabs for Comentários/Ocorrências/Audit */}
                     <div className="rounded-xl px-2 pt-2 pb-4">
                         <Tabs defaultValue="comments" value={tab} onValueChange={(value) => setTab(value as 'comments' | 'audit')} className="w-full">
-                            <TabsList className="w-full flex bg-transparent gap-2 mb-2">
+                            <TabsList className="w-full flex bg-transparent gap-2 mb-2 overflow-x-auto">
                                 <TabsTrigger value="comments" className="flex-1 flex items-center justify-center gap-1">
                                     {t('tabs.comments')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{rdo.commentCount || 0}</span>
                                 </TabsTrigger>
