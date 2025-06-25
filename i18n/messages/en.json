@@ -378,6 +378,15 @@
             "description": "Description",
             "address": "Address",
             "edit": "Edit Project",
+            "postedBy": "Posted by",
+            "rdoStatus": {
+                "draft": "Draft",
+                "pendingApproval": "Pending Approval",
+                "approved": "Approved",
+                "rejected": "Rejected"
+            },
+            "moreImage": "more image",
+            "moreImages": "more images",
             "tabs": {
                 "rdos": "RDOs",
                 "incidents": "Incidents",

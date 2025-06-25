@@ -1,17 +1,19 @@
 'use client';
 
-import { Project, StrapiImage } from '@/components/types/strapi';
+import { Project, StrapiImage, RDO, User } from '@/components/types/strapi';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, File, Construction, Image as ImageIcon, Pencil } from 'lucide-react';
+import { User as UserIcon, File, Construction, Image as ImageIcon, Pencil, EyeIcon, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/components/ui/tooltip';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
     if (!value) return null;
@@ -23,18 +25,13 @@ function InfoField({ label, value }: { label: string; value: string | undefined 
     );
 }
 
-export default function ProjectView({ project }: { project: Project }) {
+export default function ProjectView({ project, rdos }: { project: Project; rdos: RDO[] }) {
     const t = useTranslations('project.view');
     const [tab, setTab] = useState('rdos');
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
-
-    const dummyRdos = [
-        { id: 1, title: 'RDO #001', date: '2023-10-26', status: 'Approved' },
-        { id: 2, title: 'RDO #002', date: '2023-10-27', status: 'Pending' },
-    ];
 
     const dummyIncidents = [
         { id: 1, title: 'Material delivery delay', status: 'Open' },
@@ -53,13 +50,57 @@ export default function ProjectView({ project }: { project: Project }) {
         { id: 2, name: 'Jane Smith', role: 'Architect' },
     ];
 
+    const getStatusLabel = (status: RDO['rdoStatus']) => {
+        switch (status) {
+            case 'draft':
+                return t('rdoStatus.draft');
+            case 'pendingApproval':
+                return t('rdoStatus.pendingApproval');
+            case 'Approved':
+                return t('rdoStatus.approved');
+            case 'Rejected':
+                return t('rdoStatus.rejected');
+            default:
+                return status;
+        }
+    };
+
+    const getStatusVariant = (status: RDO['rdoStatus']) => {
+        switch (status) {
+            case 'Approved':
+                return 'default';
+            case 'Rejected':
+                return 'destructive';
+            case 'pendingApproval':
+                return 'secondary';
+            case 'draft':
+                return 'outline';
+            default:
+                return 'outline';
+        }
+    };
+
     return (
         <div className="flex flex-col gap-8">
-            <div className="relative w-full flex justify-end items-center gap-2 -mt-2 bg-white">
+            <div className="absolute top-0 left-0 w-full h-48 rounded-t-lg overflow-hidden">
+                {project.image ? (
+                    <Image
+                        src={(project.image as StrapiImage).url}
+                        alt={project.name}
+                        layout="fill"
+                        objectFit="cover"
+                    />
+                ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <ImageIcon className="w-12 h-12 text-gray-400" />
+                    </div>
+                )}
+            </div>
+            <div className=" w-full flex justify-end items-center gap-2 mt-[198px]">
                 <TooltipProvider >
                     <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
-                            <Link href={`/project/edit/${project.documentId}?goback=${currentUrl}`} className="absolute right-0 -top-2 flex items-center gap-2">
+                            <Link href={`/project/edit/${project.documentId}?goback=${currentUrl}`} className="absolute flex items-center gap-2">
                                 <Button variant="ghost" className="flex items-center gap-2 justify-start">
                                     <Pencil className="w-4 h-4" />
                                 </Button>
@@ -72,17 +113,7 @@ export default function ProjectView({ project }: { project: Project }) {
                 </TooltipProvider>
             </div>
 
-            {project.image && (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden">
-                    <Image
-                        src={(project.image as StrapiImage).url}
-                        alt={project.name}
-                        layout="fill"
-                        objectFit="cover"
-                    />
-                </div>
-            )}
-            <div className="flex flex-col gap-6 p-4 bg-white rounded-lg ">
+            <div className="flex flex-col gap-6 px-4 pb-4 bg-white rounded-lg ">
                 <InfoField label={t('name')} value={project.name} />
                 <InfoField label={t('description')} value={project.description} />
                 <InfoField label={t('address')} value={project.address} />
@@ -101,24 +132,81 @@ export default function ProjectView({ project }: { project: Project }) {
                             <ImageIcon className="w-4 h-4" /> {t('tabs.media')}
                         </TabsTrigger>
                         <TabsTrigger value="users" className="flex items-center gap-2">
-                            <User className="w-4 h-4" /> {t('tabs.users')}
+                            <UserIcon className="w-4 h-4" /> {t('tabs.users')}
                         </TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="rdos" className="mt-10">
+                    <TabsContent value="rdos" className="mt-14">
                         <div className="space-y-4">
-                            {dummyRdos.length > 0 ? (
-                                dummyRdos.map(rdo => (
-                                    <Card key={rdo.id}>
-                                        <CardContent className="p-4 flex justify-between items-center">
-                                            <div>
-                                                <p className="font-semibold">{rdo.title}</p>
-                                                <p className="text-sm text-gray-500">{rdo.date}</p>
-                                            </div>
-                                            <Badge>{rdo.status}</Badge>
-                                        </CardContent>
-                                    </Card>
-                                ))
+                            {rdos.length > 0 ? (
+                                rdos.map(rdo => {
+                                    const user = rdo.user as User;
+                                    const media = rdo.media as StrapiImage[];
+                                    const firstImage = media && media.length > 0 ? media[0] : null;
+
+                                    return (
+                                        <Card key={rdo.id} className="border border-gray-100 px-2 py-1 hover:shadow-md transition-shadow">
+                                            <CardContent className="p-4">
+                                                <div className="flex items-start gap-4">
+
+                                                    {/* RDO info */}
+                                                    <div className="relative flex-1 min-w-0">
+                                                        <div className="flex items-start justify-between mb-2">
+                                                            <div className="flex-1 min-w-0">
+                                                                <h3 className="font-semibold text-base">RDO #{rdo.id}</h3>
+                                                                <p className="text-xs text-muted-foreground">
+                                                                    {t('postedBy')} {user?.firstName} {user?.lastName}
+                                                                </p>
+                                                                <p className="text-xs text-muted-foreground">
+                                                                    {format(new Date(rdo.date), "dd/MM/yyyy", { locale: ptBR })}
+                                                                </p>
+                                                            </div>
+                                                            <Badge variant={getStatusVariant(rdo.rdoStatus)}>
+                                                                {getStatusLabel(rdo.rdoStatus)}
+                                                            </Badge>
+                                                        </div>
+
+                                                        {/* Description preview */}
+                                                        {rdo.description && (
+                                                            <p className="text-sm py-2 text-gray-700 line-clamp-2">
+                                                                {rdo.description}
+                                                            </p>
+                                                        )}
+
+                                                        {/* Media thumbnails */}
+                                                        {media && media.length > 0 && (
+                                                            <div className="mt-2 flex items-center gap-1">
+                                                                {media.slice(0, 5).map((image, index) => (
+                                                                    <div key={index} className="relative w-8 h-8 rounded overflow-hidden">
+                                                                        <Image
+                                                                            src={image.url}
+                                                                            alt={`Media ${index + 1}`}
+                                                                            fill
+                                                                            className="object-cover"
+                                                                        />
+                                                                    </div>
+                                                                ))}
+                                                                {media.length > 5 && (
+                                                                    <span className="text-xs text-gray-500 ml-1">
+                                                                        +{media.length - 5}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        )}
+
+                                                        <div className="absolute right-0 bottom-0 flex justify-end items-center gap-2">
+                                                            <Link href={`/rdo/view/${rdo.documentId}`}>
+                                                                <Button variant="outline" size="icon">
+                                                                    <ArrowRight className="w-4 h-4" />
+                                                                </Button>
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    );
+                                })
                             ) : (
                                 <div className="text-center text-gray-400 py-4">{t('tabs.noRdos')}</div>
                             )}

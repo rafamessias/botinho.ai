@@ -379,6 +379,15 @@
             "description": "Descrição",
             "address": "Endereço",
             "edit": "Editar Projeto",
+            "postedBy": "Postado por",
+            "rdoStatus": {
+                "draft": "Rascunho",
+                "pendingApproval": "Aguardando Aprovação",
+                "approved": "Aprovado",
+                "rejected": "Rejeitado"
+            },
+            "moreImage": "imagem adicional",
+            "moreImages": "imagens adicionais",
             "tabs": {
                 "rdos": "RDOs",
                 "incidents": "Ocorrências",

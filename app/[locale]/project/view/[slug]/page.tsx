@@ -1,7 +1,7 @@
 import ContainerApp from '@/components/Container-app';
 import { getTranslations } from 'next-intl/server';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
-import { Project } from '@/components/types/strapi';
+import { Project, RDO } from '@/components/types/strapi';
 import { notFound } from 'next/navigation';
 import ProjectView from './project-view';
 
@@ -21,9 +21,18 @@ export default async function ProjectViewPage({ params }: { params: Promise<{ sl
     }
     const project = projectResponse.data;
 
+    // Fetch RDOs for this project
+    const rdosResponse = await fetchContentApi<RDO[]>(`rdos?filters[project][documentId][$eq]=${slug}&populate[0]=user&populate[1]=media&sort[0]=date:desc&sort[1]=id:desc`, {
+        next: {
+            tags: [`project:rdos:${slug}`]
+        }
+    });
+
+    const rdos = rdosResponse.success && rdosResponse.data ? rdosResponse.data : [];
+
     return (
         <ContainerApp title={project.name} showBackButton={true}>
-            <ProjectView project={project} />
+            <ProjectView project={project} rdos={rdos} />
         </ContainerApp>
     );
 }
