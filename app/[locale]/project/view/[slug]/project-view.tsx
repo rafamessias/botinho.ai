@@ -7,13 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User as UserIcon, File, Construction, Image as ImageIcon, Pencil, EyeIcon, ArrowRight } from 'lucide-react';
+import { User as UserIcon, File, Image as ImageIcon, Pencil, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/components/ui/tooltip';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
     if (!value) return null;
@@ -123,16 +121,16 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
                 <Tabs value={tab} onValueChange={setTab} className="w-full relative" orientation="horizontal">
                     <TabsList className="absolute flex flex-row justify-stretch w-full bg-transparent overflow-x-auto">
                         <TabsTrigger value="rdos" className="flex items-center gap-2">
-                            <Construction className="w-4 h-4" /> {t('tabs.rdos')}
+                            {t('tabs.rdos')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{project.rdoCount || 0}</span>
                         </TabsTrigger>
                         <TabsTrigger value="incidents" className="flex items-center gap-2">
-                            <File className="w-4 h-4" /> {t('tabs.incidents')}
+                            {t('tabs.incidents')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{project.incidentCount || 0}</span>
                         </TabsTrigger>
                         <TabsTrigger value="media" className="flex items-center gap-2">
-                            <ImageIcon className="w-4 h-4" /> {t('tabs.media')}
+                            {t('tabs.media')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{project.photoCount || 0}</span>
                         </TabsTrigger>
                         <TabsTrigger value="users" className="flex items-center gap-2">
-                            <UserIcon className="w-4 h-4" /> {t('tabs.users')}
+                            {t('tabs.users')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{0}</span>
                         </TabsTrigger>
                     </TabsList>
 
@@ -158,7 +156,7 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
                                                                     {t('postedBy')} {user?.firstName} {user?.lastName}
                                                                 </p>
                                                                 <p className="text-xs text-muted-foreground">
-                                                                    {format(new Date(rdo.date), "dd/MM/yyyy", { locale: ptBR })}
+                                                                    {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
                                                                 </p>
                                                             </div>
                                                             <Badge variant={getStatusVariant(rdo.rdoStatus)}>

@@ -15,7 +15,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
     let allProjects: Project[] = [];
     try {
-        const response = await fetchContentApi<Project[]>('projects?populate=*')
+        const response = await fetchContentApi<Project[]>('projects?populate=*&sort=id:desc')
         if (response.success && response.data) {
             allProjects = response.data;
         }

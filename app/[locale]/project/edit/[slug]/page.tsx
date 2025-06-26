@@ -16,7 +16,7 @@ export default async function ProjectEditPage({ params }: ProjectEditPageProps) 
 
     try {
         // Fetch project data
-        const projectResponse = await fetchContentApi<Project>(`projects/${slug}`, {
+        const projectResponse = await fetchContentApi<Project>(`projects/${slug}?populate=*`, {
             next: {
                 revalidate: 300,
                 tags: [`project:${slug}`]

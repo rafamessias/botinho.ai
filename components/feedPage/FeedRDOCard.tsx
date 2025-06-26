@@ -64,8 +64,8 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
 
     return (
         <Card className="p-6 space-y-4">
-            <CardHeader className="p-0">
-                <div className="w-full flex justify-end items-center gap-2 -mt-2 bg-white">
+            <CardHeader className="p-0 relative">
+                <div className="absolute top-0 right-0 w-full flex justify-end items-center gap-2 -mt-2">
                     <TooltipProvider>
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>

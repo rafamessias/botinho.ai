@@ -371,7 +371,10 @@
                 "update": "Atualizar"
             },
             "success": "Projeto atualizado com sucesso",
-            "error": "Falha ao atualizar projeto"
+            "error": "Falha ao atualizar projeto",
+            "files": {
+                "uploadError": "Falha ao enviar arquivos"
+            }
         },
         "view": {
             "title": "Detalhes do Projeto",
@@ -506,7 +509,8 @@
         "title": "Criar Ocorrência",
         "project": {
             "label": "Projeto",
-            "hint": "Esta ocorrência será vinculada ao projeto"
+            "hint": "Esta ocorrência será vinculada ao projeto",
+            "required": "Projeto é obrigatório"
         },
         "status": {
             "label": "Status do Incidente",
@@ -519,7 +523,8 @@
         "description": {
             "label": "Descrição da Ocorrência",
             "hint": "Descreva o que aconteceu no campo abaixo",
-            "placeholder": "Discrepância entre o projeto e a execução da piscina..."
+            "placeholder": "Discrepância entre o projeto e a execução da piscina...",
+            "required": "Descrição é obrigatória"
         },
         "files": {
             "label": "Subir Fotos, Vídeos e documentos",
@@ -531,7 +536,28 @@
             "submit": "Enviar"
         },
         "success": "Incidente enviado com sucesso!",
-        "error": "Falha ao enviar incidente"
+        "error": "Falha ao enviar incidente",
+        "view": {
+            "description": "Descrição",
+            "reportedBy": "Reportado por",
+            "project": "Projeto",
+            "edit": "Editar Incidente",
+            "media": "Mídia",
+            "comments": "Comentários",
+            "noComments": "Nenhum comentário ainda",
+            "status": {
+                "open": "Aberto",
+                "inProgress": "Em Andamento",
+                "resolved": "Resolvido",
+                "closed": "Fechado"
+            },
+            "priority": {
+                "low": "Baixa",
+                "medium": "Média",
+                "high": "Alta",
+                "critical": "Crítica"
+            }
+        }
     },
     "profile": {
         "title": "Meu perfil",

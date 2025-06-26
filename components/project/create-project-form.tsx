@@ -9,7 +9,7 @@ import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-
+import { useLoading } from '@/components/LoadingProvider';
 interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
@@ -20,7 +20,7 @@ interface ProjectFormValues {
 export function CreateProjectForm({ projects }: { projects: any }) {
     const t = useTranslations('project.create');
     const usersRef = useRef<UserListRef>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const { setIsLoading } = useLoading();
     const router = useRouter();
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProjectFormValues>({
@@ -149,8 +149,6 @@ export function CreateProjectForm({ projects }: { projects: any }) {
                     <Button
                         type="submit"
                         variant="primary"
-
-                        isLoading={isLoading}
                         onClick={handleSubmit(onSubmit)}
                     >
                         {t('buttons.create')}

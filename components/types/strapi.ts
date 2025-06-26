@@ -122,6 +122,9 @@ export interface Project {
     description: string;
     address: string;
     projectStatus: ProjectStatus;
+    rdoCount?: number;
+    incidentCount?: number;
+    photoCount?: number;
     image?: StrapiImage | FileList | null;
     company: Company | number;
     users?: ProjectUser[];
@@ -186,13 +189,15 @@ export type RDOWithCommentsAndAudit = RDO & {
 export interface Incident {
     id?: number;
     documentId?: string;
-    user: User | number;
+    user?: User | number;
     project: Project | number;
-    title: string;
+    company?: Company | number;
     description: string;
     media?: StrapiImage[] | FileList | null;
-    status: 'open' | 'in_progress' | 'resolved' | 'closed';
-    priority: 'low' | 'medium' | 'high' | 'critical';
+    incidentStatus: 'draft' | 'open' | 'wip' | 'closed';
+    priority?: number;
+    commentCount?: number;
+    date?: Date;
     comments?: Comment[];
     approvals?: Approval[];
     createdAt?: Date;

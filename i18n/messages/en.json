@@ -370,7 +370,10 @@
                 "update": "Update"
             },
             "success": "Project updated successfully",
-            "error": "Failed to update project"
+            "error": "Failed to update project",
+            "files": {
+                "uploadError": "Failed to upload files"
+            }
         },
         "view": {
             "title": "Project Details",
@@ -505,7 +508,8 @@
         "title": "Post Incident",
         "project": {
             "label": "Project",
-            "hint": "This Incident will be linked to the project"
+            "hint": "This Incident will be linked to the project",
+            "required": "Project is required"
         },
         "status": {
             "label": "Incident Status",
@@ -518,7 +522,8 @@
         "description": {
             "label": "Incident Description",
             "hint": "Describe what happened in the field below",
-            "placeholder": "Discrepancy between the project and the execution of the pool..."
+            "placeholder": "Discrepancy between the project and the execution of the pool...",
+            "required": "Description is required"
         },
         "files": {
             "label": "Upload Photos, Videos and Documents",
@@ -530,7 +535,28 @@
             "submit": "Submit"
         },
         "success": "Incident submitted successfully!",
-        "error": "Failed to submit incident"
+        "error": "Failed to submit incident",
+        "view": {
+            "description": "Description",
+            "reportedBy": "Reported by",
+            "project": "Project",
+            "edit": "Edit Incident",
+            "media": "Media",
+            "comments": "Comments",
+            "noComments": "No comments yet",
+            "status": {
+                "open": "Open",
+                "inProgress": "In Progress",
+                "resolved": "Resolved",
+                "closed": "Closed"
+            },
+            "priority": {
+                "low": "Low",
+                "medium": "Medium",
+                "high": "High",
+                "critical": "Critical"
+            }
+        }
     },
     "profile": {
         "title": "My profile",

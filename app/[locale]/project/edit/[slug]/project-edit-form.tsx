@@ -3,15 +3,14 @@
 import { useForm } from 'react-hook-form';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
-import { useRef, useState, useEffect } from 'react';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
-import { uploadFile } from '@/lib/strapi';
+import { useRef, useState } from 'react';
+import { updateProject, uploadProjectAttachments, removeProjectAttachments, updateProjectUsers } from '@/components/actions/project-action';
 import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { Project, StrapiImage, ProjectUser } from '@/components/types/strapi';
-
+import { useLoading } from '@/components/LoadingProvider';
 interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
@@ -22,7 +21,8 @@ interface ProjectFormValues {
 export default function ProjectEditForm({ project }: { project: Project }) {
     const t = useTranslations('project.edit');
     const usersRef = useRef<UserListRef>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const { setIsLoading } = useLoading();
+    const [filesToBeRemoved, setFilesToBeRemoved] = useState<number[]>([]);
     const router = useRouter();
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProjectFormValues>({
@@ -46,64 +46,56 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     })) : [];
 
     const onSubmit = async (data: ProjectFormValues) => {
+        if (!project.documentId) {
+            toast.error(t('error'));
+            return;
+        }
+
         setIsLoading(true);
         const users = usersRef.current?.getUsers() || [];
 
         const { projectPhoto, ...projectData } = data;
 
         try {
-            // Update project
-            const updateProjectResponse: any = await fetchContentApi(`projects/${project.documentId}`, {
-                method: 'PUT',
-                body: {
-                    data: {
-                        name: projectData.projectName,
-                        description: projectData.projectDescription,
-                        address: projectData.projectAddress,
-                    }
-                },
-                revalidateTag: [`project:${project.documentId}`, 'projects']
+            // Update project basic data
+            const updateResponse = await updateProject(project.documentId, {
+                name: projectData.projectName,
+                description: projectData.projectDescription,
+                address: projectData.projectAddress,
             });
 
-            if (!updateProjectResponse.success) {
-                throw new Error('Failed to update project');
+            if (!updateResponse.success) {
+                toast.error(updateResponse.error || t('error'));
+                return;
             }
 
-            // Upload project photo if exists
-            if (projectPhoto && projectPhoto[0]) {
-                await uploadFile(
-                    projectPhoto[0],
-                    project.id || 0,
-                    'api::project.project',
-                    'image'
-                );
+            // Handle file removals
+            if (filesToBeRemoved.length > 0) {
+                await removeProjectAttachments(filesToBeRemoved, project.documentId);
             }
 
-            // Update project users
-            // First, delete existing project users
-            if (project.users) {
-                for (const user of project.users) {
-                    await fetchContentApi(`project-users/${user.id}`, {
-                        method: 'DELETE',
-                        revalidateTag: [`project:${project.documentId}`, 'projects']
-                    });
+            // Handle new file uploads
+            if (projectPhoto && projectPhoto.length > 0 && project.id) {
+                const filesToUpload = Array.from(projectPhoto).filter((file): file is File => file instanceof File);
+
+                if (filesToUpload.length > 0) {
+                    const uploadResponse = await uploadProjectAttachments(project.id, project.documentId, filesToUpload);
+
+                    if (!uploadResponse.success) {
+                        toast.error(uploadResponse.error || t('files.uploadError'));
+                        // Continue with the process even if file upload fails
+                    }
                 }
             }
 
-            // Then create new project users
-            for (const user of users) {
-                await fetchContentApi('project-users', {
-                    method: 'POST',
-                    body: {
-                        data: {
-                            project: project.id,
-                            name: user.name,
-                            email: user.email,
-                            phone: user.phone,
-                        }
-                    },
-                    revalidateTag: [`project:${project.documentId}`, 'projects']
-                });
+            // Update project users
+            if (project.id) {
+                const usersResponse = await updateProjectUsers(project.id, project.documentId, users);
+
+                if (!usersResponse.success) {
+                    console.error('Failed to update project users:', usersResponse.error);
+                    // Continue with the process even if user update fails
+                }
             }
 
             toast.success(t('success'));
@@ -121,6 +113,12 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         router.back();
     };
 
+    const onRemoveImage = async (fileOrUrl: string | File | number) => {
+        if (typeof fileOrUrl === 'number') {
+            setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl as number]);
+        }
+    };
+
     return (
         <div className="relative">
             <form id="project-edit-form" className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
@@ -134,6 +132,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     hint={t('uploadPhoto.hint')}
                     currentImage={(project.image as StrapiImage)?.url}
                     initialFiles={project.image ? [project.image as StrapiImage] : []}
+                    onRemoveImage={onRemoveImage}
                 />
 
                 <div>
@@ -182,7 +181,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     <Button
                         type="submit"
                         variant="primary"
-                        isLoading={isLoading}
+
                         onClick={handleSubmit(onSubmit)}
                     >
                         {t('buttons.update')}
