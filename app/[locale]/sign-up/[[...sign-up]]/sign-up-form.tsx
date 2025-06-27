@@ -26,7 +26,7 @@ interface SignUpFormValues {
     agree: boolean;
 }
 
-export default function SignUpForm() {
+export default function SignUpForm({ params }: { params: { locale: string } }) {
     const t = useTranslations('auth');
     const { setUser } = useUser();
     const router = useRouter();
@@ -34,6 +34,7 @@ export default function SignUpForm() {
     const [isNavigating, setIsNavigating] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const { locale } = params;
 
     const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<SignUpFormValues>();
     const password = watch('password');
@@ -44,6 +45,9 @@ export default function SignUpForm() {
         try {
             const formData = new FormData();
             Object.entries(data).forEach(([key, value]) => formData.append(key, value));
+            //add locale to form data
+            formData.append('language', locale);
+
             const result = await registerUserAction(formData);
 
             if (result.success) {

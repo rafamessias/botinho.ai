@@ -12,7 +12,11 @@ export async function getUserMe() {
     }
 
     const user: ApiResponse<User> = await fetchContentApi<User>(`users/me?populate=*`, {
-        token: jwt.value
+        token: jwt.value,
+        next: {
+            revalidate: 300,
+            tags: ['me']
+        }
     })
 
     if (!user.success || !user.data) {

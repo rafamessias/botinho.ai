@@ -19,7 +19,8 @@ const inter = Inter({
     weight: ['400', '500', '600', '700'],
 })
 
-export async function generateMetadata({ params }: { params: { locale: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
     const title = "Obraguru";
     const description = "Obraguru - RDO";
 

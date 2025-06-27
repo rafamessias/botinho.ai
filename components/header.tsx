@@ -83,7 +83,13 @@ export default function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full h-10 w-10">
                 <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                  {userName ? (
+                  {user.avatar && typeof user.avatar === 'object' && 'formats' in user.avatar ? (
+                    <img
+                      src={user.avatar.formats.thumbnail.url}
+                      alt={userName || 'User avatar'}
+                      className="h-10 w-10 rounded-full object-cover"
+                    />
+                  ) : userName ? (
                     <span className="text-sm font-medium">{userName}</span>
                   ) : (
                     <span className="text-sm font-medium">OG</span>
@@ -107,7 +113,7 @@ export default function Header() {
               )}
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                <LanguageSwitch />
+                <LanguageSwitch userId={user.id?.toString()} />
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer w-full" onClick={handleLogout}>

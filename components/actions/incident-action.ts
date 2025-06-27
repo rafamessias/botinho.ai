@@ -195,4 +195,55 @@ export async function removeIncidentAttachments(fileIds: number[], documentId: s
             data: null
         };
     }
+}
+
+export async function updateIncidentStatus(documentId: string, status: 'open' | 'wip' | 'closed', clientInfo?: any) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        // Create approval record for audit trail
+        if (clientInfo) {
+            await fetchContentApi<any>(`approvals`, {
+                method: 'POST',
+                body: {
+                    data: {
+                        incident: documentId,
+                        action: status === 'closed' ? 'Approved' : 'Rejected',
+                        description: `Status updated to ${status}`,
+                        ip_address: clientInfo.ip_address,
+                        latitude: clientInfo.latitude,
+                        longitude: clientInfo.longitude,
+                        device_type: clientInfo.device_type,
+                        time_zone: clientInfo.time_zone,
+                        geo_location: clientInfo.geo_location,
+                    }
+                }
+            });
+        }
+
+        const response = await updateIncident(documentId, { incidentStatus: status });
+
+        if (!response.success) {
+            console.error(`Error updating incident status: ${response.error}`);
+            return {
+                success: false,
+                error: `Error updating incident status: ${response.error}`,
+                data: null
+            };
+        }
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error updating incident status:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred',
+            data: null
+        };
+    }
 } 

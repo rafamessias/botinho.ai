@@ -6,19 +6,9 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
     const { locale } = await searchParams;
     const t = await getTranslations({ locale, namespace: 'profile' });
 
-    // TODO: Replace with real user fetch
-    const user = {
-        name: 'James Harrid',
-        phone: '123-456-7890',
-        email: 'example@email.com',
-        birthday: '',
-        avatar: '',
-        notifyRDO: true,
-    };
-
     return (
         <ContainerApp title={t('title')} showBackButton={true}>
-            <ProfileForm user={user} />
+            <ProfileForm />
         </ContainerApp>
     );
 } 

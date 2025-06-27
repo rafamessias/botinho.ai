@@ -17,7 +17,7 @@ interface ProjectFormValues {
     projectPhoto?: FileList;
 }
 
-export function CreateProjectForm({ projects }: { projects: any }) {
+export function CreateProjectForm() {
     const t = useTranslations('project.create');
     const usersRef = useRef<UserListRef>(null);
     const { setIsLoading } = useLoading();
@@ -81,7 +81,7 @@ export function CreateProjectForm({ projects }: { projects: any }) {
             }
 
             toast.success(t('success'));
-            router.push(`/project/${newProject.id}`);
+            router.push(`/project/view/${newProject.documentId}`);
 
         } catch (error) {
             console.error('Failed to create project:', error);

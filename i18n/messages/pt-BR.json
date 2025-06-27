@@ -9,6 +9,11 @@
         "pendingApproval": "Aguardando Aprovação",
         "comments": "Comentários",
         "approvals": "Aprovações",
+        "empty": {
+            "title": "Nenhum projeto encontrado",
+            "description": "Você precisa criar um projeto antes de criar um RDO.",
+            "createButton": "Criar Projeto"
+        },
         "rdoCard": {
             "postedBy": "Postado por",
             "project": "Projeto",
@@ -90,7 +95,13 @@
             "activeProjects": "Projetos Ativos",
             "inactiveProjects": "Projetos Inativos",
             "newProject": "Novo Projeto",
-            "projects": "Projetos"
+            "projects": "Projetos",
+            "empty": {
+                "noProjects": "Nenhum projeto encontrado",
+                "noResults": "Nenhum projeto corresponde à sua busca",
+                "getStarted": "Comece criando seu primeiro projeto",
+                "adjustSearch": "Tente ajustar seus critérios de busca ou filtro"
+            }
         },
         "projectCard": {
             "active": "Ativo",
@@ -515,10 +526,26 @@
             "title": "Nenhuma RDO encontrada",
             "description": "Não há RDOs disponíveis para este projeto ainda.",
             "createButton": "Criar RDO"
+        },
+        "tabs": {
+            "rdos": "RDOs",
+            "incidents": "Ocorrências"
+        },
+        "incidents": {
+            "empty": {
+                "title": "Nenhuma ocorrência encontrada",
+                "description": "Não há ocorrências disponíveis para este projeto ainda.",
+                "createButton": "Criar Ocorrência"
+            }
         }
     },
     "incident": {
-        "title": "Criar Ocorrência",
+        "title": "Postar Incidente",
+        "empty": {
+            "title": "Nenhum projeto encontrado",
+            "description": "Você precisa criar um projeto antes de criar uma Ocorrência.",
+            "createButton": "Criar Projeto"
+        },
         "project": {
             "label": "Projeto",
             "hint": "Esta ocorrência será vinculada ao projeto",
@@ -585,6 +612,35 @@
                 "high": "Alta",
                 "critical": "Crítica"
             }
+        },
+        "incidentCard": {
+            "title": "Ocorrência",
+            "reportedBy": "Reportada por",
+            "edit": "Editar",
+            "share": "Compartilhar",
+            "linkCopied": "Link copiado para a área de transferência",
+            "details": "Detalhes",
+            "draft": "Rascunho",
+            "open": "Aberto",
+            "wip": "Em Andamento",
+            "closed": "Fechado",
+            "priority": {
+                "1": "Alta",
+                "2": "Média",
+                "3": "Baixa",
+                "description": {
+                    "1": "Ocorrência de alta prioridade que requer atenção imediata",
+                    "2": "Ocorrência de média prioridade que requer atenção em breve",
+                    "3": "Ocorrência de baixa prioridade que pode ser tratada posteriormente"
+                }
+            },
+            "actions": {
+                "open": "Abrir",
+                "wip": "Em Andamento",
+                "close": "Fechar",
+                "UpdatedSuccess": "Ocorrência atualizada com sucesso",
+                "UpdatedError": "Erro ao atualizar ocorrência"
+            }
         }
     },
     "profile": {
@@ -617,6 +673,12 @@
         "actions": {
             "cancel": "Cancelar",
             "submit": "Salvar alterações"
+        },
+        "language": {
+            "label": "Idioma",
+            "placeholder": "Selecione o idioma",
+            "en": "Inglês",
+            "ptbr": "Português"
         },
         "success": "Perfil atualizado com sucesso"
     }

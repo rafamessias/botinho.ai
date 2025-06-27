@@ -55,7 +55,11 @@ export function SignInForm({
                 setIsNavigating(true);
                 toast.success(t('signInSuccess'));
 
-                if (redirect) {
+                const userLocale = response.user?.language;
+
+                if (userLocale && userLocale !== locale) {
+                    router.push(`/${userLocale}${redirect || '/'}`);
+                } else if (redirect) {
                     router.push(redirect);
                 } else {
                     router.push('/');

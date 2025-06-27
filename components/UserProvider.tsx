@@ -34,6 +34,20 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             const me: ApiResponse<User> = await getUserMe();
             if (me.success) {
                 setUser(me.data as User);
+
+                if (me.data?.language && typeof window !== 'undefined') {
+                    const currentPath = window.location.pathname;
+                    const pathSegments = currentPath.split('/');
+                    const currentLocale = pathSegments[1];
+
+                    if (currentLocale !== me.data.language) {
+                        // Replace the current locale with the user's preferred locale
+                        pathSegments[1] = me.data.language;
+                        const newPath = pathSegments.join('/');
+                        window.location.href = newPath;
+                    }
+                }
+
             } else {
                 //console.error(me.error);
                 setUser(null);

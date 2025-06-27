@@ -57,7 +57,7 @@ export interface User {
     firstName?: string;
     lastName?: string;
     phone?: string;
-    avatar?: StrapiImage | FileList | null;
+    avatar?: StrapiImage | FileList | File | null;
     company?: Company | number;
     companyMember?: CompanyMember | null;
     type?: 'companyUser' | 'projectUser';
@@ -77,7 +77,7 @@ export interface Company {
     city: string;
     address: string;
     owner: User | number;
-    logo?: StrapiImage | FileList | null;
+    logo?: StrapiImage | FileList | File | null;
     users?: User[];
     members?: CompanyMember[];
     projects?: Project[];

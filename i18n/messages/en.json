@@ -8,6 +8,11 @@
         "night": "Night",
         "comments": "Comments",
         "approvals": "Approvals",
+        "empty": {
+            "title": "No projects found",
+            "description": "You need to create a project before creating an RDO.",
+            "createButton": "Create Project"
+        },
         "rdoCard": {
             "postedBy": "Posted by",
             "date": "Date",
@@ -83,7 +88,13 @@
             "activeProjects": "Active Projects",
             "inactiveProjects": "Inactive Projects",
             "newProject": "New Project",
-            "projects": "Projects"
+            "projects": "Projects",
+            "empty": {
+                "noProjects": "No projects found",
+                "noResults": "No projects match your search",
+                "getStarted": "Get started by creating your first project",
+                "adjustSearch": "Try adjusting your search or filter criteria"
+            }
         },
         "navigation": {
             "progress": "Progress",
@@ -514,10 +525,26 @@
             "title": "No RDOs found",
             "description": "There are no RDOs available for this project yet.",
             "createButton": "Create RDO"
+        },
+        "tabs": {
+            "rdos": "RDOs",
+            "incidents": "Incidents"
+        },
+        "incidents": {
+            "empty": {
+                "title": "No incidents found",
+                "description": "There are no incidents available for this project yet.",
+                "createButton": "Create Incident"
+            }
         }
     },
     "incident": {
         "title": "Post Incident",
+        "empty": {
+            "title": "No projects found",
+            "description": "You need to create a project before creating an incident.",
+            "createButton": "Create Project"
+        },
         "project": {
             "label": "Project",
             "hint": "This Incident will be linked to the project",
@@ -584,6 +611,35 @@
                 "high": "High",
                 "critical": "Critical"
             }
+        },
+        "incidentCard": {
+            "title": "Incident",
+            "reportedBy": "Reported by",
+            "edit": "Edit",
+            "share": "Share",
+            "linkCopied": "Link copied to clipboard",
+            "details": "Details",
+            "draft": "Draft",
+            "open": "Open",
+            "wip": "In Progress",
+            "closed": "Closed",
+            "priority": {
+                "1": "High",
+                "2": "Medium",
+                "3": "Low",
+                "description": {
+                    "1": "High priority incident requiring immediate attention",
+                    "2": "Medium priority incident requiring attention soon",
+                    "3": "Low priority incident that can be addressed later"
+                }
+            },
+            "actions": {
+                "open": "Open",
+                "wip": "In Progress",
+                "close": "Close",
+                "UpdatedSuccess": "Incident updated successfully",
+                "UpdatedError": "Error updating incident"
+            }
         }
     },
     "profile": {
@@ -616,6 +672,12 @@
         "actions": {
             "cancel": "Cancel",
             "submit": "Save changes"
+        },
+        "language": {
+            "label": "Language",
+            "placeholder": "Select language",
+            "en": "English",
+            "ptbr": "Portuguese"
         },
         "success": "Profile updated successfully"
     }

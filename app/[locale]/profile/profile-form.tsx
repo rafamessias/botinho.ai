@@ -6,34 +6,30 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { UploadPhoto } from '@/components/shared/upload-photo';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { RDODatePicker } from '@/components/rdo/form/RDODatePicker';
-
-interface ProfileFormProps {
-    user: {
-        name: string;
-        phone: string;
-        email: string;
-        birthday: string;
-        avatar: string;
-        notifyRDO: boolean;
-    };
-}
+import { useUser } from '@/components/UserProvider';
+import { SelectItem, Select, SelectValue, SelectContent } from '@/components/ui/select';
+import { SelectTrigger } from '@/components/ui/select';
+import { fetchContentApi } from '@/components/actions/fetch-content-api';
+import { uploadFile } from '@/lib/strapi';
+import { useLoading } from '@/components/LoadingProvider';
+import { User, StrapiImage } from '@/components/types/strapi';
 
 type FormData = {
     name: string;
     phone: string;
     email: string;
-    birthday: string;
-    avatar: File[];
+    language: string;
+    avatar: File[] | null;
     notifyRDO: boolean;
 };
 
-export default function ProfileForm({ user }: ProfileFormProps) {
+export default function ProfileForm() {
     const router = useRouter();
     const t = useTranslations('profile');
-    const [avatar, setAvatar] = useState<File[]>([]);
+    const { user, setUser } = useUser();
+    const { setIsLoading } = useLoading();
 
     const {
         control,
@@ -41,31 +37,140 @@ export default function ProfileForm({ user }: ProfileFormProps) {
         formState: { isSubmitting, errors },
         setValue,
         register,
+        reset,
     } = useForm<FormData>({
         defaultValues: {
-            name: user.name,
-            phone: user.phone,
-            email: user.email,
-            birthday: user.birthday,
-            avatar: [],
-            notifyRDO: user.notifyRDO,
+            name: '',
+            phone: '',
+            email: '',
+            language: '',
+            avatar: null,
+            notifyRDO: false,
         },
         mode: 'onBlur',
     });
 
+    // Update form when user data is available
+    useEffect(() => {
+        if (user) {
+            reset({
+                name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+                phone: user.phone || '',
+                email: user.email || '',
+                language: user.language || '',
+                avatar: user.avatar ? [user.avatar] : null,
+                notifyRDO: false,
+            });
+        }
+    }, [user, reset]);
+
     const onSubmit = async (data: FormData) => {
-        // TODO: Implement profile update logic
-        toast.success(t('success'));
-        // router.push('/');
+        if (!user?.id) {
+            toast.error('User not found');
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // Split name into firstName and lastName
+            const nameParts = data.name.trim().split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+
+            // Prepare user update data
+            const updateData: any = {
+                firstName,
+                lastName,
+                phone: data.phone,
+                language: data.language,
+            };
+
+            // Update user data
+            const response = await fetchContentApi(`users/${user.id}`, {
+                method: 'PUT',
+                body: updateData,
+                next: {
+                    revalidate: 0,
+                    tags: ['me']
+                },
+                revalidateTag: ['me']
+            });
+
+            if (!response.success || response.error) {
+                console.error('Failed to update user:', response.error);
+                toast.error(response.error || 'Failed to update profile');
+                return;
+            }
+
+            let updateUserData: User = response.data as User;
+
+
+            // Handle avatar upload if a new avatar is selected
+            if (data.avatar && data.avatar.length > 0 && user.id) {
+                const avatarFile = data.avatar[0];
+                if (avatarFile instanceof File) {
+                    const uploadResponse = await uploadFile(
+                        avatarFile,
+                        user.id,
+                        'plugin::users-permissions.user',
+                        'avatar'
+                    );
+
+                    if (!uploadResponse.success) {
+                        console.error('Failed to upload avatar:', uploadResponse.error);
+                        // Don't fail the entire update if avatar upload fails
+                        toast.warning('Profile updated but avatar upload failed');
+                    } else {
+                        if (uploadResponse.data && Array.isArray(uploadResponse.data) && uploadResponse.data.length > 0) {
+                            updateUserData.avatar = uploadResponse.data[0] as StrapiImage;
+                        }
+                    }
+                }
+            } else if (user.avatar && data.avatar && data.avatar.length === 0) {
+                // Delete old avatar if exists
+                const deleteResponse = await fetchContentApi<any>(`upload/files/${user.avatar.id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!deleteResponse.success || deleteResponse.error) {
+                    console.error('Failed to delete avatar:', deleteResponse.error);
+                } else {
+                    console.log('Avatar deleted successfully');
+                }
+            }
+
+            // Update user context with new data
+            if (updateUserData) setUser(updateUserData);
+
+            toast.success(t('success'));
+            router.refresh();
+
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            toast.error(t('error'));
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleAvatarChange = (file: File | File[] | null) => {
         if (file) {
             const fileList = Array.isArray(file) ? file : [file];
-            setAvatar(fileList);
             setValue('avatar', fileList);
+        } else {
+            setValue('avatar', []);
         }
     };
+
+    // Show loading state while user is being fetched
+    if (!user) {
+        return (
+            <div className="flex items-center justify-center h-32">
+                <div className="h-8 w-8 rounded-full bg-primary animate-pulse" />
+            </div>
+        );
+    }
 
     return (
         <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
@@ -82,7 +187,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
                             label={t('avatar.label')}
                             hint={t('avatar.hint')}
                             type="logo"
-                            currentImage={user.avatar}
+                            currentImage={typeof user.avatar === 'object' && user.avatar && 'url' in user.avatar ? user.avatar.url : undefined}
                             onChange={handleAvatarChange}
                         />
                     )}
@@ -112,38 +217,67 @@ export default function ProfileForm({ user }: ProfileFormProps) {
                     name="phone"
                     control={control}
                     render={({ field }) => (
-                        <Input placeholder={t('phone.placeholder')} {...field} />
+                        <Input
+                            placeholder={t('phone.placeholder')}
+                            {...field}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                if (value.length > 11) {
+                                    e.target.value = e.target.value.slice(0, 11);
+                                    return;
+                                }
+                                const masked = value.replace(
+                                    /^(\d{2})(\d{5})(\d{4})?/,
+                                    (_: any, ddd: string, first: string, last: string) => {
+                                        if (last) return `(${ddd}) ${first}-${last}`;
+                                        if (first) return `(${ddd}) ${first}`;
+                                        return `(${ddd}`;
+                                    }
+                                );
+                                field.onChange(masked);
+                            }}
+                            maxLength={15}
+                        />
                     )}
                 />
             </div>
 
-            {/* Email */}
+            {/* Email - Read Only */}
             <div>
                 <label className="block font-semibold mb-1">{t('email.label')}</label>
                 <Controller
                     name="email"
                     control={control}
-                    rules={{ required: t('email.required') }}
                     render={({ field }) => (
-                        <Input placeholder={t('email.placeholder')} {...field} />
+                        <Input
+                            placeholder={t('email.placeholder')}
+                            {...field}
+                            readOnly
+                            className="bg-gray-100 cursor-not-allowed"
+                        />
                     )}
                 />
-                {errors.email && (
-                    <span className="text-red-500 text-xs mt-1">{errors.email.message as string}</span>
-                )}
             </div>
 
-            {/* Birthday */}
+            {/* Language */}
             <div>
-                <label className="block font-semibold mb-1">{t('birthday.label')}</label>
+                <label className="block font-semibold mb-1">{t('language.label')}</label>
                 <Controller
-                    name="birthday"
+                    name="language"
                     control={control}
                     render={({ field }) => (
-                        <RDODatePicker
+                        <Select
                             value={field.value}
-                            onChange={field.onChange}
-                        />
+                            onValueChange={field.onChange}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder={t('language.placeholder')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="en">🇺🇸 {t('language.en')}</SelectItem>
+                                <SelectItem value="pt-BR">🇧🇷 {t('language.ptbr')}</SelectItem>
+                            </SelectContent>
+                        </Select>
                     )}
                 />
             </div>
