@@ -575,9 +575,9 @@
             "noComments": "Nenhum comentário ainda",
             "status": {
                 "open": "Aberto",
-                "inProgress": "Em Andamento",
-                "resolved": "Resolvido",
-                "closed": "Fechado"
+                "wip": "Em Andamento",
+                "closed": "Fechado",
+                "draft": "Rascunho"
             },
             "priority": {
                 "low": "Baixa",

@@ -92,6 +92,8 @@ export default function ActivityCard({
                                             src={image.url}
                                             alt={`Media ${index + 1}`}
                                             fill
+                                            sizes="32px"
+                                            priority={true}
                                             className="object-cover"
                                         />
                                     </div>

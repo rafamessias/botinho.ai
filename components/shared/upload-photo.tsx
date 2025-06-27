@@ -241,7 +241,7 @@ export function UploadPhoto<T extends FieldValues>({
                 {isCarousel ? (
                     previewUrls.length > 0 ? (
                         <>
-                            <Image src={previewUrls[carouselIndex]} alt={label} fill className="object-cover" />
+                            <Image src={previewUrls[carouselIndex]} alt={label} fill sizes="298px" priority={true} className="object-cover" />
                             {previewUrls.length > 1 && (
                                 <>
                                     <button

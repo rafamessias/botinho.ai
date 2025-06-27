@@ -573,9 +573,9 @@
             "comments": "Comments",
             "noComments": "No comments yet",
             "status": {
+                "draft": "Draft",
                 "open": "Open",
-                "inProgress": "In Progress",
-                "resolved": "Resolved",
+                "wip": "In Progress",
                 "closed": "Closed"
             },
             "priority": {

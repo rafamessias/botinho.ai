@@ -5,15 +5,12 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { User as UserIcon, File, Image as ImageIcon, Pencil, ArrowRight } from 'lucide-react';
+import { Image as ImageIcon, Pencil } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/components/ui/tooltip';
 import { usePathname, useSearchParams } from 'next/navigation';
 import ActivityCard from '@/components/shared/activity-card';
-import MediaCard from '@/components/shared/media-card';
 import UserCard from '@/components/shared/user-card';
 
 function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
@@ -28,23 +25,12 @@ function InfoField({ label, value }: { label: string; value: string | undefined 
 
 export default function ProjectView({ project, rdos, incidents, projectUsers }: { project: Project; rdos: RDO[]; incidents?: Incident[]; projectUsers?: User[] }) {
     const t = useTranslations('project.view');
+    const tIncident = useTranslations('incident');
     const [tab, setTab] = useState('rdos');
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
-
-    const dummyMedia = [
-        { id: 1, url: 'https://via.placeholder.com/150', type: 'image' },
-        { id: 2, url: 'https://via.placeholder.com/150', type: 'image' },
-        { id: 3, url: 'https://via.placeholder.com/150', type: 'image' },
-        { id: 4, url: 'https://via.placeholder.com/150', type: 'image' },
-    ];
-
-    const dummyUsers = [
-        { id: 1, name: 'John Doe', role: 'Engineer' },
-        { id: 2, name: 'Jane Smith', role: 'Architect' },
-    ];
 
     const getRDOStatusLabel = (status: RDO['rdoStatus']) => {
         switch (status) {
@@ -77,16 +63,7 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
     };
 
     const getIncidentStatusLabel = (status: string) => {
-        switch (status) {
-            case 'open':
-                return 'Open';
-            case 'wip':
-                return 'In Progress';
-            case 'closed':
-                return 'Closed';
-            default:
-                return status;
-        }
+        return tIncident(`status.${status}`);
     };
 
     const getIncidentStatusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
@@ -139,8 +116,10 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
                     <Image
                         src={(project.image as StrapiImage).url}
                         alt={project.name}
-                        layout="fill"
-                        objectFit="cover"
+                        fill
+                        sizes="200px"
+                        priority={true}
+                        className="object-cover"
                     />
                 ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">

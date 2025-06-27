@@ -2,10 +2,9 @@
 
 import { Incident, StrapiImage, User, Project } from '@/components/types/strapi';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User as UserIcon, File, Image as ImageIcon, Pencil, ArrowRight, Calendar, MapPin, Share2 } from 'lucide-react';
+import { Pencil, Share2 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/components/ui/tooltip';
@@ -29,26 +28,19 @@ export default function IncidentView({ incident }: { incident: Incident }) {
     const projectDocumentId = typeof incident.project === 'object' && incident.project ? incident.project.documentId : '';
 
     const getStatusLabel = (status: string) => {
-        switch (status) {
-            case 'open':
-                return t('status.open');
-            case 'wip':
-                return t('status.inProgress');
-            case 'closed':
-                return t('status.closed');
-            default:
-                return status;
-        }
+        return t(`status.${status}`);
     };
 
     const getStatusVariant = (status: string) => {
         switch (status) {
+            case 'draft':
+                return 'outline';
             case 'open':
-                return 'destructive';
+                return 'outline';
             case 'wip':
                 return 'secondary';
             case 'closed':
-                return 'outline';
+                return 'default';
             default:
                 return 'outline';
         }
