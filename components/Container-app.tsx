@@ -6,7 +6,7 @@ const ContainerApp = ({ children, form = true, title = "", showBackButton = fals
     return (
         <>
             {title && <SubHeader title={title} showBackButton={showBackButton} />}
-            <div className="container max-w-[1280px] py-12">
+            <div className="container max-w-[1280px] pb-12 pt-6 sm:pt-12">
                 <div className={`relative mx-auto w-full ${form ? 'max-w-[680px]  px-6 py-6 bg-white rounded-lg shadow-md' : ''}`}>
                     <LoadingOverlay />
                     {children}
