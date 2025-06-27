@@ -302,7 +302,7 @@
         "create": "Criar",
         "createRDO": "RDO",
         "createProject": "Projeto",
-        "createIncident": "Incidente",
+        "createIncident": "Ocorrência",
         "profile": "Perfil",
         "subscription": "Assinatura",
         "company": "Empresa",
@@ -378,7 +378,7 @@
         },
         "view": {
             "title": "Detalhes do Projeto",
-            "name": "Nome do Projeto",
+            "name": "Projeto",
             "description": "Descrição",
             "address": "Endereço",
             "edit": "Editar Projeto",
@@ -400,6 +400,18 @@
                 "noIncidents": "Nenhuma ocorrência para este projeto ainda.",
                 "noMedia": "Nenhuma mídia para este projeto ainda.",
                 "noUsers": "Nenhum usuário atribuído a este projeto ainda."
+            },
+            "userCard": {
+                "noRole": "Sem Função",
+                "role": {
+                    "admin": "Administrador",
+                    "manager": "Gerente",
+                    "engineer": "Engenheiro",
+                    "architect": "Arquiteto",
+                    "supervisor": "Supervisor",
+                    "worker": "Operário"
+                },
+                "memberSince": "Membro desde"
             }
         }
     },
@@ -513,12 +525,20 @@
             "required": "Projeto é obrigatório"
         },
         "status": {
-            "label": "Status do Incidente",
-            "hint": "Modifique o Status do Incidente aqui",
+            "label": "Status da Ocorrência",
+            "hint": "Modifique o Status da Ocorrência aqui",
             "draft": "Rascunho",
             "open": "Aberto",
             "wip": "Em Andamento",
             "closed": "Fechado"
+        },
+        "priority": {
+            "label": "Prioridade",
+            "hint": "Defina o nível de prioridade da ocorrência",
+            "low": "Baixa",
+            "medium": "Média",
+            "high": "Alta",
+            "critical": "Crítica"
         },
         "description": {
             "label": "Descrição da Ocorrência",
@@ -529,19 +549,27 @@
         "files": {
             "label": "Subir Fotos, Vídeos e documentos",
             "hint": "Caso necessário, adicione fotos, vídeos e documentos",
-            "clickToAdd": "Clique para adicionar arquivos"
+            "clickToAdd": "Clique para adicionar arquivos",
+            "uploadError": "Falha ao enviar arquivos"
         },
         "actions": {
             "cancel": "Cancelar",
-            "submit": "Enviar"
+            "submit": "Enviar",
+            "update": "Atualizar",
+            "updating": "Atualizando..."
         },
-        "success": "Incidente enviado com sucesso!",
-        "error": "Falha ao enviar incidente",
+        "success": "Ocorrência enviada com sucesso!",
+        "error": "Falha ao enviar Ocorrência",
+        "update": {
+            "success": "Ocorrência atualizada com sucesso!",
+            "error": "Falha ao atualizar ocorrência"
+        },
         "view": {
+            "title": "Ocorrência",
             "description": "Descrição",
-            "reportedBy": "Reportado por",
+            "reportedBy": "Reportada por",
             "project": "Projeto",
-            "edit": "Editar Incidente",
+            "edit": "Editar Ocorrência",
             "media": "Mídia",
             "comments": "Comentários",
             "noComments": "Nenhum comentário ainda",

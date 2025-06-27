@@ -124,14 +124,14 @@ export default function Header() {
 export function SubHeader({ title, showBackButton = false }: { title: string, showBackButton?: boolean }) {
   const router = useRouter();
   return (
-    <div className="w-full h-16 bg-muted border-b flex justify-start items-center py-2">
+    <div className="w-full h-12 sm:h-16 bg-muted border-b flex justify-start items-center py-2">
       <div className="container max-w-[1280px] flex justify-start items-center">
         {showBackButton && (
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="h-8 w-8">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         )}
-        <h2 className="text-lg font-normal">{title}</h2>
+        <h2 className="text-base sm:text-lg font-normal">{title}</h2>
       </div>
     </div>
   );

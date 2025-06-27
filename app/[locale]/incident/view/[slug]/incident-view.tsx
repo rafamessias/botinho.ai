@@ -87,7 +87,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
     return (
         <Card className="p-0 bg-transparent shadow-none hover:shadow-none">
             <CardHeader className="flex flex-col w-full items-start p-0 justify-between">
-                <div className="w-full flex justify-end items-center gap-2 -mt-2">
+                <div className="w-full flex justify-end items-center gap-2">
                     <TooltipProvider>
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>
@@ -122,7 +122,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                     <div className="flex items-start order-2 sm:order-1 gap-4">
                         <div>
                             <div className="text-xs">
-                                <span className="text-muted-foreground mr-1">Incident</span>
+                                <span className="text-muted-foreground mr-1">{t('title')}</span>
                                 <span className="font-bold text-gray-800">#{incident.id}</span>
                             </div>
                             <div className="text-xs mt-1 flex items-center gap-1">
@@ -152,19 +152,19 @@ export default function IncidentView({ incident }: { incident: Incident }) {
             <CardContent className="space-y-6 p-0">
                 {/* Media Gallery */}
                 {Array.isArray(media) && media.length > 0 && (
-                    <div>
+                    <div className="mt-6">
                         <CarouselMedia images={media} />
                     </div>
                 )}
 
                 {/* Incident Description */}
                 <div>
-                    <div className="font-semibold text-sm mb-1">{t('description')}</div>
+                    <div className="font-semibold text-sm mt-6 mb-1">{t('description')}</div>
                     <div className="text-sm text-gray-800">{incident.description}</div>
                 </div>
 
                 {/* Comments section (placeholder) */}
-                <div className="rounded-xl px-2 pt-2 pb-4">
+                <div className="rounded-xl pt-2 pb-4">
                     <div className="font-semibold text-sm mb-4">{t('comments')}</div>
                     <div className="text-center text-gray-400 py-8">
                         {t('noComments')}

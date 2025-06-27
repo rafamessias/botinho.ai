@@ -1,6 +1,6 @@
 'use client';
 
-import { Project, StrapiImage, RDO, User } from '@/components/types/strapi';
+import { Project, StrapiImage, RDO, User, Incident } from '@/components/types/strapi';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,6 +12,9 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/components/ui/tooltip';
 import { usePathname, useSearchParams } from 'next/navigation';
+import ActivityCard from '@/components/shared/activity-card';
+import MediaCard from '@/components/shared/media-card';
+import UserCard from '@/components/shared/user-card';
 
 function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
     if (!value) return null;
@@ -23,18 +26,13 @@ function InfoField({ label, value }: { label: string; value: string | undefined 
     );
 }
 
-export default function ProjectView({ project, rdos }: { project: Project; rdos: RDO[] }) {
+export default function ProjectView({ project, rdos, incidents, projectUsers }: { project: Project; rdos: RDO[]; incidents?: Incident[]; projectUsers?: User[] }) {
     const t = useTranslations('project.view');
     const [tab, setTab] = useState('rdos');
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
-
-    const dummyIncidents = [
-        { id: 1, title: 'Material delivery delay', status: 'Open' },
-        { id: 2, title: 'Safety violation', status: 'Closed' },
-    ];
 
     const dummyMedia = [
         { id: 1, url: 'https://via.placeholder.com/150', type: 'image' },
@@ -48,7 +46,7 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
         { id: 2, name: 'Jane Smith', role: 'Architect' },
     ];
 
-    const getStatusLabel = (status: RDO['rdoStatus']) => {
+    const getRDOStatusLabel = (status: RDO['rdoStatus']) => {
         switch (status) {
             case 'draft':
                 return t('rdoStatus.draft');
@@ -63,7 +61,7 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
         }
     };
 
-    const getStatusVariant = (status: RDO['rdoStatus']) => {
+    const getRDOStatusVariant = (status: RDO['rdoStatus']): "default" | "secondary" | "destructive" | "outline" => {
         switch (status) {
             case 'Approved':
                 return 'default';
@@ -73,6 +71,62 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
                 return 'secondary';
             case 'draft':
                 return 'outline';
+            default:
+                return 'outline';
+        }
+    };
+
+    const getIncidentStatusLabel = (status: string) => {
+        switch (status) {
+            case 'open':
+                return 'Open';
+            case 'wip':
+                return 'In Progress';
+            case 'closed':
+                return 'Closed';
+            default:
+                return status;
+        }
+    };
+
+    const getIncidentStatusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
+        switch (status) {
+            case 'open':
+                return 'destructive';
+            case 'wip':
+                return 'secondary';
+            case 'closed':
+                return 'outline';
+            default:
+                return 'outline';
+        }
+    };
+
+    const getIncidentPriorityLabel = (priority: string) => {
+        switch (priority) {
+            case 'low':
+                return 'Low';
+            case 'medium':
+                return 'Medium';
+            case 'high':
+                return 'High';
+            case 'critical':
+                return 'Critical';
+            default:
+                return priority;
+        }
+    };
+
+    const getIncidentPriorityVariant = (priority: string): "default" | "secondary" | "destructive" | "outline" => {
+        switch (priority) {
+            case 'low':
+                return 'outline';
+            case 'medium':
+                return 'secondary';
+            case 'high':
+                return 'destructive';
+            case 'critical':
+                return 'destructive';
             default:
                 return 'outline';
         }
@@ -112,7 +166,7 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
             </div>
 
             <div className="flex flex-col gap-6 px-4 pb-4 bg-white rounded-lg ">
-                <InfoField label={t('name')} value={project.name} />
+                <InfoField label={t('name')} value={`#${project.id} - ${project.name}`} />
                 <InfoField label={t('description')} value={project.description} />
                 <InfoField label={t('address')} value={project.address} />
             </div>
@@ -126,11 +180,13 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
                         <TabsTrigger value="incidents" className="flex items-center gap-2">
                             {t('tabs.incidents')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{project.incidentCount || 0}</span>
                         </TabsTrigger>
+                        {/*
                         <TabsTrigger value="media" className="flex items-center gap-2">
                             {t('tabs.media')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{project.photoCount || 0}</span>
                         </TabsTrigger>
+                        */}
                         <TabsTrigger value="users" className="flex items-center gap-2">
-                            {t('tabs.users')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{0}</span>
+                            {t('tabs.users')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{projectUsers?.length || 0}</span>
                         </TabsTrigger>
                     </TabsList>
 
@@ -140,69 +196,23 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
                                 rdos.map(rdo => {
                                     const user = rdo.user as User;
                                     const media = rdo.media as StrapiImage[];
-                                    const firstImage = media && media.length > 0 ? media[0] : null;
 
                                     return (
-                                        <Card key={rdo.id} className="border border-gray-100 px-2 py-1 hover:shadow-md transition-shadow">
-                                            <CardContent className="p-4">
-                                                <div className="flex items-start gap-4">
-
-                                                    {/* RDO info */}
-                                                    <div className="relative flex-1 min-w-0">
-                                                        <div className="flex items-start justify-between mb-2">
-                                                            <div className="flex-1 min-w-0">
-                                                                <h3 className="font-semibold text-base">RDO #{rdo.id}</h3>
-                                                                <p className="text-xs text-muted-foreground">
-                                                                    {t('postedBy')} {user?.firstName} {user?.lastName}
-                                                                </p>
-                                                                <p className="text-xs text-muted-foreground">
-                                                                    {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
-                                                                </p>
-                                                            </div>
-                                                            <Badge variant={getStatusVariant(rdo.rdoStatus)}>
-                                                                {getStatusLabel(rdo.rdoStatus)}
-                                                            </Badge>
-                                                        </div>
-
-                                                        {/* Description preview */}
-                                                        {rdo.description && (
-                                                            <p className="text-sm py-2 text-gray-700 line-clamp-2">
-                                                                {rdo.description}
-                                                            </p>
-                                                        )}
-
-                                                        {/* Media thumbnails */}
-                                                        {media && media.length > 0 && (
-                                                            <div className="mt-2 flex items-center gap-1">
-                                                                {media.slice(0, 5).map((image, index) => (
-                                                                    <div key={index} className="relative w-8 h-8 rounded overflow-hidden">
-                                                                        <Image
-                                                                            src={image.url}
-                                                                            alt={`Media ${index + 1}`}
-                                                                            fill
-                                                                            className="object-cover"
-                                                                        />
-                                                                    </div>
-                                                                ))}
-                                                                {media.length > 5 && (
-                                                                    <span className="text-xs text-gray-500 ml-1">
-                                                                        +{media.length - 5}
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        )}
-
-                                                        <div className="absolute right-0 bottom-0 flex justify-end items-center gap-2">
-                                                            <Link href={`/rdo/view/${rdo.documentId}`}>
-                                                                <Button variant="outline" size="icon">
-                                                                    <ArrowRight className="w-4 h-4" />
-                                                                </Button>
-                                                            </Link>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
+                                        <ActivityCard
+                                            key={rdo.id}
+                                            id={rdo.id || 0}
+                                            documentId={rdo.documentId || ''}
+                                            type="rdo"
+                                            title="RDO"
+                                            description={rdo.description}
+                                            date={new Date(rdo.date)}
+                                            status={rdo.rdoStatus}
+                                            user={user}
+                                            media={media}
+                                            getStatusLabel={getRDOStatusLabel}
+                                            getStatusVariant={getRDOStatusVariant}
+                                            t={t}
+                                        />
                                     );
                                 })
                             ) : (
@@ -211,47 +221,57 @@ export default function ProjectView({ project, rdos }: { project: Project; rdos:
                         </div>
                     </TabsContent>
 
-                    <TabsContent value="incidents" className="mt-10">
+                    <TabsContent value="incidents" className="mt-14">
                         <div className="space-y-4">
-                            {dummyIncidents.length > 0 ? (
-                                dummyIncidents.map(incident => (
-                                    <Card key={incident.id}>
-                                        <CardContent className="p-4 flex justify-between items-center">
-                                            <p className="font-semibold">{incident.title}</p>
-                                            <Badge>{incident.status}</Badge>
-                                        </CardContent>
-                                    </Card>
-                                ))
+                            {incidents && incidents.length > 0 ? (
+                                incidents.map(incident => {
+                                    const user = incident.user as User;
+                                    const media = incident.media as StrapiImage[];
+
+                                    return (
+                                        <ActivityCard
+                                            key={incident.id}
+                                            id={incident.id || 0}
+                                            documentId={incident.documentId || ''}
+                                            type="incident"
+                                            title=""
+                                            description={incident.description}
+                                            date={new Date(incident.createdAt || '')}
+                                            status={incident.incidentStatus}
+                                            priority={incident.priority}
+                                            user={user}
+                                            media={media}
+                                            getStatusLabel={getIncidentStatusLabel}
+                                            getStatusVariant={getIncidentStatusVariant}
+                                            getPriorityLabel={getIncidentPriorityLabel}
+                                            getPriorityVariant={getIncidentPriorityVariant}
+                                            t={t}
+                                        />
+                                    );
+                                })
                             ) : (
                                 <div className="text-center text-gray-400 py-4">{t('tabs.noIncidents')}</div>
                             )}
                         </div>
                     </TabsContent>
-
+                    {/* 
                     <TabsContent value="media" className="mt-10">
-                        {dummyMedia.length > 0 ? (
-                            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
-                                {dummyMedia.map(media => (
-                                    <div key={media.id} className="relative aspect-square">
-                                        <Image src={media.url} alt="media" layout="fill" className="rounded-lg object-cover" />
-                                    </div>
+                        {projectMedia && projectMedia.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {projectMedia.map(media => (
+                                    <MediaCard key={media.id} media={media} t={t} />
                                 ))}
                             </div>
                         ) : (
                             <div className="text-center text-gray-400 py-4">{t('tabs.noMedia')}</div>
                         )}
                     </TabsContent>
-
-                    <TabsContent value="users" className="mt-10">
+*/}
+                    <TabsContent value="users" className="mt-14">
                         <div className="space-y-4">
-                            {dummyUsers.length > 0 ? (
-                                dummyUsers.map(user => (
-                                    <Card key={user.id}>
-                                        <CardContent className="p-4">
-                                            <p className="font-semibold">{user.name}</p>
-                                            <p className="text-sm text-gray-500">{user.role}</p>
-                                        </CardContent>
-                                    </Card>
+                            {projectUsers && projectUsers.length > 0 ? (
+                                projectUsers.map(user => (
+                                    <UserCard key={user.id} user={user} t={t} />
                                 ))
                             ) : (
                                 <div className="text-center text-gray-400 py-4">{t('tabs.noUsers')}</div>

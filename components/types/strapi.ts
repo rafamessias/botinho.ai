@@ -193,7 +193,7 @@ export interface Incident {
     project: Project | number;
     company?: Company | number;
     description: string;
-    media?: StrapiImage[] | FileList | null;
+    media?: StrapiImage[] | File[] | null;
     incidentStatus: 'draft' | 'open' | 'wip' | 'closed';
     priority?: number;
     commentCount?: number;

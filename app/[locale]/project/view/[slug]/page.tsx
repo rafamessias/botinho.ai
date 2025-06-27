@@ -1,7 +1,6 @@
 import ContainerApp from '@/components/Container-app';
-import { getTranslations } from 'next-intl/server';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
-import { Project, RDO } from '@/components/types/strapi';
+import { Incident, Project, RDO, User } from '@/components/types/strapi';
 import { notFound } from 'next/navigation';
 import ProjectView from './project-view';
 
@@ -30,9 +29,27 @@ export default async function ProjectViewPage({ params }: { params: Promise<{ sl
 
     const rdos = rdosResponse.success && rdosResponse.data ? rdosResponse.data : [];
 
+    // Fetch incidents for this project
+    const incidentsResponse = await fetchContentApi<Incident[]>(`incidents?filters[project][documentId][$eq]=${slug}&populate[0]=user&populate[1]=media&sort[0]=date:desc&sort[1]=id:desc`, {
+        next: {
+            tags: [`project:incidents:${slug}`]
+        }
+    });
+
+    const incidents = incidentsResponse.success && incidentsResponse.data ? incidentsResponse.data : [];
+
+    // Fetch project users
+    const usersResponse = await fetchContentApi<User[]>(`project-users?filters[project][documentId][$eq]=${slug}&populate[0]=user&sort[0]=createdAt:desc`, {
+        next: {
+            tags: [`project:users:${slug}`]
+        }
+    });
+
+    const projectUsers = usersResponse.success && usersResponse.data ? usersResponse.data : [];
+
     return (
         <ContainerApp title={project.name} showBackButton={true}>
-            <ProjectView project={project} rdos={rdos} />
+            <ProjectView project={project} rdos={rdos} incidents={incidents} projectUsers={projectUsers} />
         </ContainerApp>
     );
 }

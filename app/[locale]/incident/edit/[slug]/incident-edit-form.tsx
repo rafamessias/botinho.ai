@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
@@ -8,10 +8,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { ProjectSelect } from '@/components/rdo/form/ProjectSelect';
-import { Project } from '@/components/types/strapi';
+import { Project, Incident, StrapiImage } from '@/components/types/strapi';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { useLoading } from '@/components/LoadingProvider';
-import { createIncident } from '@/components/actions/incident-action';
+import { updateIncident, uploadIncidentAttachments, removeIncidentAttachments } from '@/components/actions/incident-action';
+import { useState } from 'react';
 
 const statusOptions = [
     'draft',
@@ -20,17 +21,19 @@ const statusOptions = [
     'closed'
 ];
 
+
 type FormData = {
     project: Project;
-    incidentStatus: string;
+    incidentStatus: 'draft' | 'open' | 'wip' | 'closed';
     description: string;
     media: File[] | null;
 };
 
-export default function CreateIncidentForm({ projects }: { projects: Project[] }) {
+export default function IncidentEditForm({ incident }: { incident: Incident }) {
     const router = useRouter();
     const t = useTranslations('incident');
     const { setIsLoading } = useLoading();
+    const [filesToBeRemoved, setFilesToBeRemoved] = useState<number[]>([]);
 
     const {
         control,
@@ -40,29 +43,54 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
         register,
     } = useForm<FormData>({
         defaultValues: {
-            project: projects.length > 0 ? projects[0] : undefined,
-            incidentStatus: statusOptions[0],
-            description: '',
+            project: incident.project as Project,
+            incidentStatus: incident.incidentStatus,
+            description: incident.description || '',
             media: null,
         },
         mode: 'onBlur',
     });
 
     const onSubmit = async (data: FormData) => {
+        if (!incident.documentId) {
+            toast.error(t('error'));
+            return;
+        }
+
+        const incidentData = {
+            incidentStatus: data.incidentStatus as 'draft' | 'open' | 'wip' | 'closed',
+            description: data.description,
+        };
+
         try {
             setIsLoading(true);
-
-            const response = await createIncident(data as any);
+            const response = await updateIncident(incident.documentId, incidentData);
 
             if (response.success) {
-                toast.success(t('success'));
-                router.push(`/incident/view/${response.data?.documentId}`);
+                // Remove files if any
+                if (filesToBeRemoved.length > 0) {
+                    await removeIncidentAttachments(filesToBeRemoved, incident.documentId);
+                }
+
+                // Upload new files if any
+                if (data.media && data.media.length > 0 && incident.id) {
+                    const filesToUpload = data.media.filter((file): file is File => file instanceof File);
+                    if (filesToUpload.length > 0) {
+                        const uploadResponse = await uploadIncidentAttachments(incident.id, incident.documentId, filesToUpload);
+                        if (!uploadResponse.success) {
+                            toast.error(uploadResponse.error || t('files.uploadError'));
+                        }
+                    }
+                }
+
+                toast.success(t('update.success'));
+                router.refresh();
             } else {
-                toast.error(response.error || t('error'));
+                toast.error(response.error || t('update.error'));
             }
         } catch (error) {
             console.error('Error submitting form:', error);
-            toast.error(t('error'));
+            toast.error(t('update.error'));
         } finally {
             setIsLoading(false);
         }
@@ -70,6 +98,12 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
 
     const handleCancel = () => {
         router.back();
+    };
+
+    const onRemoveImage = async (fileOrUrl: string | File | number) => {
+        if (typeof fileOrUrl === 'number') {
+            setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl]);
+        }
     };
 
     return (
@@ -84,7 +118,7 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
                         <ProjectSelect
                             value={field.value}
                             onChange={field.onChange}
-                            projects={projects}
+                            projects={[incident.project as Project]}
                         />
                         {errors.project && (
                             <span className="text-red-500 text-xs mt-1">{errors.project.message as string}</span>
@@ -93,26 +127,28 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
                 )}
             />
 
-            {/* Incident Status */}
-            <div>
-                <label className="block font-semibold mb-1">{t('status.label')}</label>
-                <span className="block text-xs text-gray-400 mb-2">{t('status.hint')}</span>
-                <Controller
-                    name="incidentStatus"
-                    control={control}
-                    render={({ field }) => (
-                        <Select value={field.value} onValueChange={field.onChange}>
-                            <SelectTrigger className="w-full">
-                                <SelectValue>{t(`status.${field.value}`)}</SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                                {statusOptions.map(status => (
-                                    <SelectItem key={status} value={status}>{t(`status.${status}`)}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-                />
+            <div className="flex w-full gap-6">
+                {/* Incident Status */}
+                <div className="w-full">
+                    <label className="block font-semibold mb-1">{t('status.label')}</label>
+                    <span className="block text-xs text-gray-400 mb-2">{t('status.hint')}</span>
+                    <Controller
+                        name="incidentStatus"
+                        control={control}
+                        render={({ field }) => (
+                            <Select value={field.value} onValueChange={field.onChange}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue>{t(`status.${field.value}`)}</SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {statusOptions.map(status => (
+                                        <SelectItem key={status} value={status}>{t(`status.${status}`)}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                </div>
             </div>
 
             {/* Incident Description */}
@@ -145,6 +181,8 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
                     label={t('files.label')}
                     hint={t('files.hint')}
                     type="carousel"
+                    initialFiles={incident.media as StrapiImage[] || []}
+                    onRemoveImage={onRemoveImage}
                     onChange={(files) => {
                         if (files) {
                             setValue('media', Array.isArray(files) ? files : [files]);
@@ -159,7 +197,7 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
                     {t('actions.cancel')}
                 </Button>
                 <Button type="submit" disabled={isSubmitting}>
-                    {t('actions.submit')}
+                    {isSubmitting ? t('actions.updating') : t('actions.update')}
                 </Button>
             </div>
         </form>

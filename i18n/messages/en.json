@@ -377,7 +377,7 @@
         },
         "view": {
             "title": "Project Details",
-            "name": "Project Name",
+            "name": "Project",
             "description": "Description",
             "address": "Address",
             "edit": "Edit Project",
@@ -399,6 +399,18 @@
                 "noIncidents": "No incidents for this project yet.",
                 "noMedia": "No media for this project yet.",
                 "noUsers": "No users assigned to this project yet."
+            },
+            "userCard": {
+                "noRole": "No Role",
+                "role": {
+                    "admin": "Administrator",
+                    "manager": "Manager",
+                    "engineer": "Engineer",
+                    "architect": "Architect",
+                    "supervisor": "Supervisor",
+                    "worker": "Worker"
+                },
+                "memberSince": "Member since"
             }
         }
     },
@@ -519,6 +531,14 @@
             "wip": "In Progress",
             "closed": "Closed"
         },
+        "priority": {
+            "label": "Priority",
+            "hint": "Set the incident priority level",
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High",
+            "critical": "Critical"
+        },
         "description": {
             "label": "Incident Description",
             "hint": "Describe what happened in the field below",
@@ -528,15 +548,23 @@
         "files": {
             "label": "Upload Photos, Videos and Documents",
             "hint": "If necessary, add photos, videos and documents",
-            "clickToAdd": "Click to add files"
+            "clickToAdd": "Click to add files",
+            "uploadError": "Failed to upload files"
         },
         "actions": {
             "cancel": "Cancel",
-            "submit": "Submit"
+            "submit": "Submit",
+            "update": "Update",
+            "updating": "Updating..."
         },
         "success": "Incident submitted successfully!",
         "error": "Failed to submit incident",
+        "update": {
+            "success": "Incident updated successfully!",
+            "error": "Failed to update incident"
+        },
         "view": {
+            "title": "Incident",
             "description": "Description",
             "reportedBy": "Reported by",
             "project": "Project",

@@ -42,11 +42,11 @@ export async function createIncident(data: Incident) {
         console.log(`Creating incident ${incidentResponse.data?.id} - Incident created successfully`);
 
         // Upload files if they exist
-        if (data.media && data.media instanceof FileList) {
-            const files = Array.from(data.media);
+        if (data.media) {
+            const files = Array.isArray(data.media) ? data.media : [data.media];
             const uploadPromises = files.map(async (file) => {
                 const uploadResponse = await uploadFile(
-                    file,
+                    file as File,
                     incidentResponse.data?.id || 0,
                     'api::incident.incident',
                     'media'
