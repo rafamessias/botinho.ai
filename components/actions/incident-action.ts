@@ -27,7 +27,8 @@ export async function createIncident(data: Incident) {
                     incidentStatus: data.incidentStatus,
                     description: data.description,
                 }
-            }
+            },
+            revalidateTag: [`project:${project.id}`, `incidents`]
         });
 
         if (!incidentResponse.success) {
@@ -63,7 +64,7 @@ export async function createIncident(data: Incident) {
         }
 
         revalidateTag(`incidents`);
-        revalidateTag(`project:${project.documentId}`);
+        revalidateTag(`project:${project.id}`);
 
         return { success: true, data: incidentResponse.data };
     } catch (error) {

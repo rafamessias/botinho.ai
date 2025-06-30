@@ -305,6 +305,21 @@
                 "canApprove": "Can Approve",
                 "isOwner": "Owner"
             }
+        },
+        "comments": {
+            "addComment": "Add Comment",
+            "commentPlaceholder": "Write your comment here...",
+            "comments": "Comments",
+            "noComments": "No comments yet",
+            "commentAdded": "Comment added successfully",
+            "commentAddError": "Failed to add comment",
+            "commentUpdated": "Comment updated successfully",
+            "commentUpdateError": "Failed to update comment",
+            "commentDeleted": "Comment deleted successfully",
+            "commentDeleteError": "Failed to delete comment",
+            "deleteConfirm": "Are you sure you want to delete this comment?",
+            "save": "Save",
+            "cancel": "Cancel"
         }
     },
     "header": {

@@ -75,7 +75,8 @@ export async function createRDO(data: RDOData) {
                     equipmentUsed: data.equipment,
                     workforce: data.labor,
                 }
-            }
+            },
+            revalidateTag: [`project:${data.project.id}`, `rdos`]
         });
 
         if (!rdoResponse.success) {

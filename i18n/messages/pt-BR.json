@@ -306,6 +306,21 @@
                 "canApprove": "Pode Aprovar",
                 "isOwner": "Proprietário"
             }
+        },
+        "comments": {
+            "addComment": "Adicionar Comentário",
+            "commentPlaceholder": "Escreva seu comentário aqui...",
+            "comments": "Comentários",
+            "noComments": "Nenhum comentário ainda",
+            "commentAdded": "Comentário adicionado com sucesso",
+            "commentAddError": "Falha ao adicionar comentário",
+            "commentUpdated": "Comentário atualizado com sucesso",
+            "commentUpdateError": "Falha ao atualizar comentário",
+            "commentDeleted": "Comentário removido com sucesso",
+            "commentDeleteError": "Falha ao remover comentário",
+            "deleteConfirm": "Tem certeza que deseja remover este comentário?",
+            "save": "Salvar",
+            "cancel": "Cancelar"
         }
     },
     "header": {

@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
+import { CommentsSection } from '@/components/shared/comments-section';
 
 export default function IncidentView({ incident }: { incident: Incident }) {
     const t = useTranslations('incident.view');
@@ -155,12 +156,12 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                     <div className="text-sm text-gray-800">{incident.description}</div>
                 </div>
 
-                {/* Comments section (placeholder) */}
+                {/* Comments section */}
                 <div className="rounded-xl pt-2 pb-4">
-                    <div className="font-semibold text-sm mb-4">{t('comments')}</div>
-                    <div className="text-center text-gray-400 py-8">
-                        {t('noComments')}
-                    </div>
+                    <CommentsSection
+                        incidentId={incident.id}
+                        initialComments={incident.comments || []}
+                    />
                 </div>
             </CardContent>
         </Card>

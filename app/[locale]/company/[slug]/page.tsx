@@ -21,7 +21,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
         company = companyRecord?.data;
 
         //get company members
-        const companyMembersRecord: any = await fetchContentApi(`company-members?populate=*&filters[company][$eq]=${company?.id}`, {
+        const companyMembersRecord: any = await fetchContentApi(`company-members?populate=*&filters[company][$eq]=${company?.id}&sort=createdAt:desc`, {
             next: {
                 revalidate: 300,
                 tags: [`company-members:${slug}`]

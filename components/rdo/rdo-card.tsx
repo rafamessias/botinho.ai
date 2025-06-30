@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { getClientInfo } from '@/components/approval/approval-audit';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { CommentsSection } from '@/components/shared/comments-section';
 
 export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const t = useTranslations('rdo.rdoCard');
@@ -114,7 +115,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
 
     return (
         <>
-            <Card className="bg-white shadow-sm border border-gray-100 p-6 space-y-4">
+            <Card className="p-0 bg-transparent shadow-none hover:shadow-none">
                 <CardHeader className=" flex flex-col w-full items-start p-0 justify-between">
                     <div className="w-full flex justify-end items-center gap-2 -mt-2">
                         <TooltipProvider>
@@ -275,25 +276,10 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                                 </TabsTrigger>
                             </TabsList>
                             <TabsContent value="comments" className="mt-2">
-                                {Array.isArray(rdo.comments) && rdo.comments.length > 0 ? (
-                                    <div className="space-y-4">
-                                        {rdo.comments.map((comment, index) => (
-                                            <div key={index} className="bg-gray-50 p-3 rounded-lg">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <span className="font-medium text-sm">
-                                                        {typeof comment.user === 'object' ? comment.user.username : 'Unknown'}
-                                                    </span>
-                                                    <span className="text-xs text-gray-500">
-                                                        {format(new Date(comment.createdAt || ''), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
-                                                    </span>
-                                                </div>
-                                                <p className="text-sm text-gray-700">{comment.content}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="text-center text-gray-400 py-4">{t('tabs.noComments')}</div>
-                                )}
+                                <CommentsSection
+                                    rdoId={rdo.id}
+                                    initialComments={rdo.comments || []}
+                                />
                             </TabsContent>
                             <TabsContent value="audit" className="mt-2">
                                 {Array.isArray(rdo.audit) && rdo.audit.length > 0 ? (

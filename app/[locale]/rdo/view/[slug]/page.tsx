@@ -49,8 +49,8 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
 
     return (
 
-        <ContainerApp form={false} title={`#${rdo.id} - ${projectName}`} showBackButton={true}>
-            <div className="max-w-[600px] mx-auto w-full">
+        <ContainerApp title={`#${rdo.id} - ${projectName}`} showBackButton={true}>
+            <div className=" mx-auto w-full">
                 <RdoCard rdo={rdo} />
             </div>
 

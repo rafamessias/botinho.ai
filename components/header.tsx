@@ -35,15 +35,13 @@ export default function Header() {
   const handleLogout = async () => {
     setIsLoading(true); // Set loading state to true
     setUser(null); // Clear user context
-    await logoutAction(); // Call logout action
-    //router.push('/sign-in'); // Redirect to sign in page
-  };
+    const response = await logoutAction(); // Call logout action
 
-  const handleLanguageChange = (newLocale: string) => {
-    // Get the current path without the locale prefix
-    const path = window.location.pathname.replace(`/${locale}`, '');
-    // Navigate to the same path with the new locale
-    router.push(`/${newLocale}${path}`);
+
+    if (response.success) {
+      router.push('/sign-in'); // Redirect to sign in page
+    }
+    setIsLoading(false); // Set loading state to false
   };
 
   return user ? (
