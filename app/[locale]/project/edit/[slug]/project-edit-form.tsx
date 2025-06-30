@@ -4,13 +4,15 @@ import { useForm } from 'react-hook-form';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
 import { useRef, useState } from 'react';
-import { updateProject, uploadProjectAttachments, removeProjectAttachments, updateProjectUsers } from '@/components/actions/project-action';
+import { updateProject, uploadProjectAttachments, removeProjectAttachments, createProjectUser, updateProjectUser, removeProjectUser } from '@/components/actions/project-action';
 import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { Project, StrapiImage, ProjectUser } from '@/components/types/strapi';
 import { useLoading } from '@/components/LoadingProvider';
+import { CompanyMemberDialog } from '@/components/types/strapi';
+
 interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
@@ -36,8 +38,6 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         }
     });
 
-    console.log(project);
-
     // Convert project users to the format expected by UserList
     const initialUsers = project.users ? project.users.map((user: ProjectUser) => ({
         name: user.name,
@@ -46,9 +46,99 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         documentId: user.documentId,
         isAdmin: false,
         canPost: false,
-        canApprove: false,
+        canApprove: user.canApprove || false,
         isOwner: false,
     })) : [];
+
+    const handleAddProjectUser = async (user: CompanyMemberDialog) => {
+        try {
+            setIsLoading(true);
+            const response: any = await createProjectUser(project.id as number, {
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                canApprove: user.canApprove,
+            });
+
+            if (!response.success || !response.data) {
+                console.error('Error adding project user:', response.error);
+                toast.error(t('userAddError'));
+                return false;
+            }
+
+            toast.success(t('userAdded'));
+
+            // Return the updated user data
+            return {
+                ...user,
+                id: response.data?.id,
+                documentId: response.data?.documentId
+            };
+        } catch (error) {
+            console.error('Error adding project user:', error);
+            toast.error(t('userAddError'));
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleEditProjectUser = async (user: CompanyMemberDialog) => {
+        try {
+            console.log("editing project user", user);
+            setIsLoading(true);
+            const response: any = await updateProjectUser(project.id as number, user.documentId as string, {
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                canApprove: user.canApprove,
+            });
+
+            if (!response.success || !response.data) {
+                console.error('Error updating project user:', response.error);
+                toast.error(t('userUpdateError'));
+                return false;
+            }
+
+            toast.success(t('userUpdated'));
+
+
+            // Return the updated user data
+            return {
+                ...user,
+                id: response.data?.id,
+                documentId: response.data?.documentId
+            };
+        } catch (error) {
+            console.error('Error updating project user:', error);
+            toast.error(t('userUpdateError'));
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleRemoveProjectUser = async (user: CompanyMemberDialog) => {
+        try {
+            setIsLoading(true);
+            const response: any = await removeProjectUser(project.id as number, user.documentId as string);
+
+            if (!response.success) {
+                console.error('Error removing project user:', response.error);
+                toast.error(t('userRemoveError'));
+                return false;
+            }
+
+            toast.success(t('userRemoved'));
+            return true;
+        } catch (error) {
+            console.error('Error removing project user:', error);
+            toast.error(t('userRemoveError'));
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const onSubmit = async (data: ProjectFormValues) => {
         if (!project.documentId) {
@@ -56,12 +146,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             return;
         }
 
-        //console.log(data);
-        //return;
-
         setIsLoading(true);
-        const users = usersRef.current?.getUsers() || [];
-
         const { projectPhoto, ...projectData } = data;
 
         try {
@@ -98,16 +183,6 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             }
             */
 
-            // Update project users
-            if (project.id) {
-                const usersResponse = await updateProjectUsers(project.id, project.documentId, users);
-
-                if (!usersResponse.success) {
-                    console.error('Failed to update project users:', usersResponse.error);
-                    // Continue with the process even if user update fails
-                }
-            }
-
             toast.success(t('success'));
             router.push(`/project/view/${project.documentId}`);
 
@@ -129,9 +204,10 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         }
     };
 
-    const onChange = (file: File) => {
-        console.log(file);
-        setValue('projectPhoto', file);
+    const onChange = (file: File | File[] | null) => {
+        if (file) {
+            // setValue('projectPhoto', file);
+        }
     };
 
     return (
@@ -191,6 +267,9 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     showIsAdmin={false}
                     showCanPost={false}
                     showCanApprove={true}
+                    onAddUser={handleAddProjectUser}
+                    onEditUser={handleEditProjectUser}
+                    onRemoveUser={handleRemoveProjectUser}
                 />
 
                 <div className="flex justify-end gap-4 mt-4">

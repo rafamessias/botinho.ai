@@ -196,4 +196,121 @@ export async function updateProjectUsers(projectId: number, documentId: string, 
             error: error instanceof Error ? error.message : 'An error occurred while updating project users'
         };
     }
+}
+
+export async function createProjectUser(projectId: number, user: any) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        const response = await fetchContentApi('project-users', {
+            method: 'POST',
+            body: {
+                data: {
+                    project: projectId,
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                    canApprove: user.canApprove || false,
+                }
+            },
+            revalidateTag: [`project:users:${projectId}`]
+        });
+
+        if (!response.success || !response.data) {
+            console.error('Error creating project user:', response.error);
+            return {
+                success: false,
+                error: response.error || 'Failed to create project user',
+                data: null
+            };
+        }
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error creating project user:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred',
+            data: null
+        };
+    }
+}
+
+export async function updateProjectUser(projectId: number, documentId: string, user: any) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        const response = await fetchContentApi(`project-users/${documentId}`, {
+            method: 'PUT',
+            body: {
+                data: {
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                    canApprove: user.canApprove || false,
+                }
+            },
+            revalidateTag: [`project:users:${projectId}`]
+        });
+
+        if (!response.success || !response.data) {
+            console.error('Error updating project user:', response.error);
+            return {
+                success: false,
+                error: response.error || 'Failed to update project user',
+                data: null
+            };
+        }
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error updating project user:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred',
+            data: null
+        };
+    }
+}
+
+export async function removeProjectUser(projectId: number, documentId: string) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('jwt')?.value;
+
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+
+        const response = await fetchContentApi(`project-users/${documentId}`, {
+            method: 'DELETE',
+            revalidateTag: [`project:users:${projectId}`]
+        });
+
+        if (!response.success) {
+            console.error('Error removing project user:', response.error);
+            return {
+                success: false,
+                error: response.error || 'Failed to remove project user'
+            };
+        }
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error removing project user:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred'
+        };
+    }
 } 

@@ -16,7 +16,7 @@ interface UserCardProps {
 export default function UserCard({ user, t }: UserCardProps) {
     // Handle both direct user objects and project-users with nested user
     const userData = user.user || user;
-    const role = user.role || (user as any).role;
+    const role = user.canApprove || (user as any).canApprove;
 
     const getInitials = (firstName?: string, lastName?: string) => {
         const first = firstName?.charAt(0) || '';
@@ -26,45 +26,15 @@ export default function UserCard({ user, t }: UserCardProps) {
 
     const getRoleLabel = (role?: string) => {
         if (!role) return t('userCard.noRole');
-
-        switch (role.toLowerCase()) {
-            case 'admin':
-                return t('userCard.role.admin');
-            case 'manager':
-                return t('userCard.role.manager');
-            case 'engineer':
-                return t('userCard.role.engineer');
-            case 'architect':
-                return t('userCard.role.architect');
-            case 'supervisor':
-                return t('userCard.role.supervisor');
-            case 'worker':
-                return t('userCard.role.worker');
-            default:
-                return role;
-        }
+        return t('userCard.role.canApprove');
     };
 
     const getRoleVariant = (role?: string) => {
         if (!role) return 'outline';
+        return 'default';
 
-        switch (role.toLowerCase()) {
-            case 'admin':
-                return 'destructive';
-            case 'manager':
-                return 'default';
-            case 'engineer':
-                return 'secondary';
-            case 'architect':
-                return 'secondary';
-            case 'supervisor':
-                return 'outline';
-            case 'worker':
-                return 'outline';
-            default:
-                return 'outline';
-        }
-    };
+    }
+
 
     return (
         <Card className="border border-gray-100 px-2 py-1 hover:shadow-md transition-shadow">
@@ -113,5 +83,5 @@ export default function UserCard({ user, t }: UserCardProps) {
                 </div>
             </CardContent>
         </Card>
-    );
-} 
+    )
+}; 

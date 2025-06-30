@@ -385,7 +385,13 @@
             "error": "Falha ao atualizar projeto",
             "files": {
                 "uploadError": "Falha ao enviar arquivos"
-            }
+            },
+            "userAddError": "Falha ao adicionar usuário ao projeto",
+            "userAdded": "Usuário adicionado ao projeto com sucesso",
+            "userUpdateError": "Falha ao atualizar usuário do projeto",
+            "userUpdated": "Usuário do projeto atualizado com sucesso",
+            "userRemoveError": "Falha ao remover usuário do projeto",
+            "userRemoved": "Usuário removido do projeto com sucesso"
         },
         "view": {
             "title": "Detalhes do Projeto",
@@ -416,11 +422,7 @@
                 "noRole": "Sem Função",
                 "role": {
                     "admin": "Administrador",
-                    "manager": "Gerente",
-                    "engineer": "Engenheiro",
-                    "architect": "Arquiteto",
-                    "supervisor": "Supervisor",
-                    "worker": "Operário"
+                    "canApprove": "Pode Aprovar"
                 },
                 "memberSince": "Membro desde"
             }

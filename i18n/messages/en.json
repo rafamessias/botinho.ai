@@ -384,7 +384,13 @@
             "error": "Failed to update project",
             "files": {
                 "uploadError": "Failed to upload files"
-            }
+            },
+            "userAddError": "Failed to add user to project",
+            "userAdded": "User added to project successfully",
+            "userUpdateError": "Failed to update project user",
+            "userUpdated": "Project user updated successfully",
+            "userRemoveError": "Failed to remove user from project",
+            "userRemoved": "User removed from project successfully"
         },
         "view": {
             "title": "Project Details",
@@ -415,11 +421,7 @@
                 "noRole": "No Role",
                 "role": {
                     "admin": "Administrator",
-                    "manager": "Manager",
-                    "engineer": "Engineer",
-                    "architect": "Architect",
-                    "supervisor": "Supervisor",
-                    "worker": "Worker"
+                    "canApprove": "Can Approve"
                 },
                 "memberSince": "Member since"
             }

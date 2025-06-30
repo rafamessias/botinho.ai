@@ -32,7 +32,7 @@ export default async function ProjectEditPage({ params }: ProjectEditPageProps) 
         const projectUsersResponse = await fetchContentApi<ProjectUser[]>(`project-users?filters[project][id][$eq]=${project.id}&populate=*`, {
             next: {
                 revalidate: 300,
-                tags: [`project:${slug}`]
+                tags: [`project:users:${project.id}`]
             }
         });
 
