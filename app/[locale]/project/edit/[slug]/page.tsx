@@ -1,6 +1,6 @@
 import ContainerApp from "@/components/Container-app";
 import { fetchContentApi } from "@/components/actions/fetch-content-api";
-import { Project } from "@/components/types/strapi";
+import { Project, ProjectUser } from "@/components/types/strapi";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import ProjectEditForm from "./project-edit-form";
@@ -27,6 +27,19 @@ export default async function ProjectEditPage({ params }: ProjectEditPageProps) 
             notFound();
         }
         project = projectResponse.data;
+
+        // Fetch project users
+        const projectUsersResponse = await fetchContentApi<ProjectUser[]>(`project-users?filters[project][id][$eq]=${project.id}&populate=*`, {
+            next: {
+                revalidate: 300,
+                tags: [`project:${slug}`]
+            }
+        });
+
+        if (projectUsersResponse.success && projectUsersResponse.data) {
+            project.users = projectUsersResponse.data;
+        }
+
     } catch (error) {
         console.error(error);
         notFound();

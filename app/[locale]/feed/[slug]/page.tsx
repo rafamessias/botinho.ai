@@ -34,7 +34,7 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
         }
 
         // Fetch RDOs
-        const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${slug}&sort=date:desc&sort=id:desc`, {
+        const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${project?.id}&sort=date:desc&sort=id:desc`, {
             next: {
                 revalidate: 300,
                 tags: [`rdos`]
@@ -45,7 +45,7 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
         }
 
         // Fetch incidents
-        const incidentsResult = await fetchContentApi<Incident[]>(`incidents?populate=*&filters[project][$eq]=${slug}&sort=date:desc&sort=id:desc`, {
+        const incidentsResult = await fetchContentApi<Incident[]>(`incidents?populate=*&filters[project][$eq]=${project?.id}&sort=date:desc&sort=id:desc`, {
             next: {
                 revalidate: 300,
                 tags: [`incidents`]

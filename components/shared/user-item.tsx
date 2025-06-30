@@ -12,9 +12,28 @@ interface UserItemProps extends CompanyMemberDialog {
     onEdit?: (user: CompanyMemberDialog) => void;
     onRemove?: () => void;
     disabled?: boolean;
+    showOwner?: boolean;
+    showIsAdmin?: boolean;
+    showCanPost?: boolean;
+    showCanApprove?: boolean;
 }
 
-export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, isOwner, onEdit, onRemove, disabled }: UserItemProps) {
+export function UserItem({
+    name,
+    email,
+    phone,
+    isAdmin,
+    canPost,
+    canApprove,
+    isOwner,
+    onEdit,
+    onRemove,
+    disabled,
+    showOwner = true,
+    showIsAdmin = true,
+    showCanPost = true,
+    showCanApprove = true
+}: UserItemProps) {
     const t = useTranslations('shared.user');
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
@@ -61,7 +80,7 @@ export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, isO
                 </div>
                 <div className="flex gap-1 absolute -bottom-4 left-1 transform ">
                     <TooltipProvider>
-                        {isOwner && (
+                        {showOwner && isOwner && (
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div
@@ -77,7 +96,7 @@ export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, isO
                             </Tooltip>
                         )}
 
-                        {isAdmin && (
+                        {showIsAdmin && isAdmin && (
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div
@@ -92,7 +111,7 @@ export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, isO
                                 </TooltipContent>
                             </Tooltip>
                         )}
-                        {canPost && (
+                        {showCanPost && canPost && (
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div
@@ -107,7 +126,7 @@ export function UserItem({ name, email, phone, isAdmin, canPost, canApprove, isO
                                 </TooltipContent>
                             </Tooltip>
                         )}
-                        {canApprove && (
+                        {showCanApprove && canApprove && (
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div

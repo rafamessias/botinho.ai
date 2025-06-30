@@ -169,6 +169,7 @@ export async function updateProjectUsers(projectId: number, documentId: string, 
                             name: user.name,
                             email: user.email,
                             phone: user.phone,
+                            canApprove: user.canApprove,
                         }
                     },
                     revalidateTag: [`project:${documentId}`, 'projects']

@@ -28,6 +28,10 @@ interface AddUserDialogProps {
     trigger?: React.ReactNode;
     title?: string;
     description?: string;
+    showOwner?: boolean;
+    showIsAdmin?: boolean;
+    showCanPost?: boolean;
+    showCanApprove?: boolean;
 }
 
 export function AddUserDialog({
@@ -38,7 +42,11 @@ export function AddUserDialog({
     onOpenChange,
     trigger,
     title,
-    description
+    description,
+    showOwner = true,
+    showIsAdmin = true,
+    showCanPost = true,
+    showCanApprove = true
 }: AddUserDialogProps) {
     const t = useTranslations('shared.user');
     const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -201,47 +209,55 @@ export function AddUserDialog({
                     </div>
 
                     <div className="space-y-4 pt-2">
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="isOwner" className="text-sm font-medium">
-                                {t('permissions.isOwner')}
-                            </Label>
-                            <Switch
-                                id="isOwner"
-                                checked={isOwner}
-                                disabled={true}
-                                className="opacity-50 cursor-not-allowed"
-                            />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="isAdmin" className="text-sm font-medium">
-                                {t('permissions.isAdmin')}
-                            </Label>
-                            <Switch
-                                id="isAdmin"
-                                checked={isAdmin}
-                                onCheckedChange={(checked) => setValue('isAdmin', checked)}
-                            />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="canPost" className="text-sm font-medium">
-                                {t('permissions.canPost')}
-                            </Label>
-                            <Switch
-                                id="canPost"
-                                checked={canPost}
-                                onCheckedChange={(checked) => setValue('canPost', checked)}
-                            />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="canApprove" className="text-sm font-medium">
-                                {t('permissions.canApprove')}
-                            </Label>
-                            <Switch
-                                id="canApprove"
-                                checked={canApprove}
-                                onCheckedChange={(checked) => setValue('canApprove', checked)}
-                            />
-                        </div>
+                        {showOwner && (
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="isOwner" className="text-sm font-medium">
+                                    {t('permissions.isOwner')}
+                                </Label>
+                                <Switch
+                                    id="isOwner"
+                                    checked={isOwner}
+                                    disabled={true}
+                                    className="opacity-50 cursor-not-allowed"
+                                />
+                            </div>
+                        )}
+                        {showIsAdmin && (
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="isAdmin" className="text-sm font-medium">
+                                    {t('permissions.isAdmin')}
+                                </Label>
+                                <Switch
+                                    id="isAdmin"
+                                    checked={isAdmin}
+                                    onCheckedChange={(checked) => setValue('isAdmin', checked)}
+                                />
+                            </div>
+                        )}
+                        {showCanPost && (
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="canPost" className="text-sm font-medium">
+                                    {t('permissions.canPost')}
+                                </Label>
+                                <Switch
+                                    id="canPost"
+                                    checked={canPost}
+                                    onCheckedChange={(checked) => setValue('canPost', checked)}
+                                />
+                            </div>
+                        )}
+                        {showCanApprove && (
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="canApprove" className="text-sm font-medium">
+                                    {t('permissions.canApprove')}
+                                </Label>
+                                <Switch
+                                    id="canApprove"
+                                    checked={canApprove}
+                                    onCheckedChange={(checked) => setValue('canApprove', checked)}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex justify-end gap-2">

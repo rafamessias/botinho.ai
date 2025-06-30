@@ -19,6 +19,10 @@ interface UserListProps {
     onAddUser?: (user: CompanyMemberDialog) => Promise<CompanyMemberDialog | false>;
     onEditUser?: (user: CompanyMemberDialog) => Promise<CompanyMemberDialog | false>;
     onRemoveUser?: (user: CompanyMemberDialog) => Promise<boolean>;
+    showOwner?: boolean;
+    showIsAdmin?: boolean;
+    showCanPost?: boolean;
+    showCanApprove?: boolean;
 }
 
 export const UserList = forwardRef<UserListRef, UserListProps>(({
@@ -27,7 +31,11 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
     initialUsers = [],
     onAddUser,
     onEditUser,
-    onRemoveUser
+    onRemoveUser,
+    showOwner = true,
+    showIsAdmin = true,
+    showCanPost = true,
+    showCanApprove = true
 }, ref) => {
     const t = useTranslations('shared.user');
     const [users, setUsers] = useState<CompanyMemberDialog[]>(initialUsers);
@@ -136,6 +144,10 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
                     }}
                     title={t('title')}
                     description={t('description')}
+                    showOwner={showOwner}
+                    showIsAdmin={showIsAdmin}
+                    showCanPost={showCanPost}
+                    showCanApprove={showCanApprove}
                     trigger={
                         <Button
                             size="sm"
@@ -161,6 +173,10 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
                         {...user}
                         onEdit={disabled ? undefined : handleEditClick}
                         onRemove={disabled ? undefined : () => handleRemoveUser(index)}
+                        showOwner={showOwner}
+                        showIsAdmin={showIsAdmin}
+                        showCanPost={showCanPost}
+                        showCanApprove={showCanApprove}
                     />
                 ))}
                 {users.length === 0 && (

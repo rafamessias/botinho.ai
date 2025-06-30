@@ -15,7 +15,8 @@ interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
     projectAddress: string;
-    projectPhoto?: FileList;
+    projectPhoto?: string | FileList | File | StrapiImage;
+    projectUsers?: ProjectUser[];
 }
 
 export default function ProjectEditForm({ project }: { project: Project }) {
@@ -30,8 +31,12 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             projectName: project.name || '',
             projectDescription: project.description || '',
             projectAddress: project.address || '',
+            projectPhoto: project.image || {},
+            projectUsers: project.users || [],
         }
     });
+
+    console.log(project);
 
     // Convert project users to the format expected by UserList
     const initialUsers = project.users ? project.users.map((user: ProjectUser) => ({
@@ -50,6 +55,9 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             toast.error(t('error'));
             return;
         }
+
+        //console.log(data);
+        //return;
 
         setIsLoading(true);
         const users = usersRef.current?.getUsers() || [];
@@ -75,6 +83,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             }
 
             // Handle new file uploads
+            /*
             if (projectPhoto && projectPhoto.length > 0 && project.id) {
                 const filesToUpload = Array.from(projectPhoto).filter((file): file is File => file instanceof File);
 
@@ -87,6 +96,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     }
                 }
             }
+            */
 
             // Update project users
             if (project.id) {
@@ -119,6 +129,11 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         }
     };
 
+    const onChange = (file: File) => {
+        console.log(file);
+        setValue('projectPhoto', file);
+    };
+
     return (
         <div className="relative">
             <form id="project-edit-form" className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
@@ -133,6 +148,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     currentImage={(project.image as StrapiImage)?.url}
                     initialFiles={project.image ? [project.image as StrapiImage] : []}
                     onRemoveImage={onRemoveImage}
+
                 />
 
                 <div>
@@ -168,7 +184,14 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     {errors.projectAddress && <span className="text-xs text-red-500">{errors.projectAddress.message}</span>}
                 </div>
 
-                <UserList ref={usersRef} initialUsers={initialUsers} />
+                <UserList
+                    ref={usersRef}
+                    initialUsers={initialUsers}
+                    showOwner={false}
+                    showIsAdmin={false}
+                    showCanPost={false}
+                    showCanApprove={true}
+                />
 
                 <div className="flex justify-end gap-4 mt-4">
                     <Button

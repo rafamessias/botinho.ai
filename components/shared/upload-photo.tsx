@@ -275,7 +275,7 @@ export function UploadPhoto<T extends FieldValues>({
                     )
                 ) : previewUrls.length > 0 ? (
                     <>
-                        <Image src={previewUrls[0]} alt={label} fill className="object-cover" />
+                        <Image src={previewUrls[0]} alt={label} sizes={isLogo ? '158px' : '100%'} fill className="object-cover" />
                         <button
                             className="absolute top-2 right-2 bg-white rounded-full p-2 shadow hover:shadow-md"
                             onClick={openRemoveDialog}

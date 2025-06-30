@@ -54,7 +54,7 @@ export default function ProjectCard({ id, title, description, imageUrl, isActive
         <p className="text-sm text-muted-foreground">{description}</p>
       </CardContent>
       <CardFooter className="flex gap-2 px-6 pt-3">
-        <Link href={`/feed/${id}`} className="w-full">
+        <Link href={`/feed/${documentId}`} className="w-full">
           <Button className="w-full bg-primary hover:bg-primary/90">{t('viewUpdates')}</Button>
         </Link>
         <Link href={`/project/view/${documentId}`} >

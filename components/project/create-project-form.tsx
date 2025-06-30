@@ -136,7 +136,13 @@ export function CreateProjectForm() {
                     {errors.projectAddress && <span className="text-xs text-red-500">{errors.projectAddress.message}</span>}
                 </div>
 
-                <UserList ref={usersRef} />
+                <UserList
+                    ref={usersRef}
+                    showOwner={false}
+                    showIsAdmin={false}
+                    showCanPost={false}
+                    showCanApprove={true}
+                />
 
                 <div className="flex justify-end gap-4 mt-4">
                     <Button

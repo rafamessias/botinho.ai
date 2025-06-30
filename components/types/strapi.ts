@@ -143,6 +143,10 @@ export interface ProjectUser {
     name: string;
     email: string;
     phone: string;
+    canApprove?: boolean;
+    canPost?: boolean;
+    isAdmin?: boolean;
+    isOwner?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }
