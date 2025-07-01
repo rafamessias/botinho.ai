@@ -20,7 +20,7 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
             projectName = rdo.project?.name || '';
         }
 
-        const commentsFetch: any = await fetchContentApi<Comment[]>(`comments?filters[rdo][$eq]=${rdo.id}`, {
+        const commentsFetch: any = await fetchContentApi<Comment[]>(`comments?populate=*&filters[rdo][$eq]=${rdo.id}&sort[0]=createdAt:desc`, {
             next: {
                 revalidate: 300,
                 tags: [`comments:${slug}`]

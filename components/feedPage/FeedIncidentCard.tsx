@@ -175,13 +175,11 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                                 {t('details')}
                             </Button>
                         </Link>
-                        {/* 
                         <Link href={`/incident/view/${incident.documentId}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 <MessageSquare className="w-4 h-4" /> {incident.commentCount || 0}
                             </Button>
                         </Link>
-                        */}
                     </div>
                     <Badge
                         variant={getStatusVariant(incident.incidentStatus)}

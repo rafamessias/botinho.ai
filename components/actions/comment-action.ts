@@ -9,6 +9,7 @@ export async function createComment(data: {
     content: string;
     rdoId?: number;
     incidentId?: number;
+    projectId?: number;
 }) {
     try {
         const cookieStore = await cookies();
@@ -30,16 +31,20 @@ export async function createComment(data: {
             commentData.incident = data.incidentId;
         }
 
+        if (data.projectId) {
+            commentData.project = data.projectId;
+        }
+
         const response: ApiResponse<Comment> = await fetchContentApi<Comment>('comments', {
             method: 'POST',
             body: {
                 data: commentData
             },
             revalidateTag: [
-                data.rdoId ? `comments:rdo:${data.rdoId}` : '',
-                data.incidentId ? `comments:incident:${data.incidentId}` : '',
-                'comments'
-            ].filter(Boolean)
+                data.rdoId ? [`comments:rdo:${data.rdoId}`, `rdos:${data.rdoId}`] : [],
+                data.incidentId ? [`comments:incident:${data.incidentId}`, `incidents:${data.incidentId}`] : [],
+                ['comments']
+            ].flat()
         });
 
         if (!response.success || !response.data) {
@@ -142,7 +147,7 @@ export async function getComments(rdoId?: number, incidentId?: number) {
             throw new Error('Not authenticated');
         }
 
-        let endpoint = 'comments?populate[user][fields][0]=firstName&populate[user][fields][1]=lastName&populate[user][fields][2]=username&sort[0]=createdAt:desc';
+        let endpoint = 'comments?populate=*&sort[0]=createdAt:desc';
 
         if (rdoId) {
             endpoint += `&filters[rdo][$eq]=${rdoId}`;

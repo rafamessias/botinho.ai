@@ -161,13 +161,13 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                                 {t('details')}
                             </Button>
                         </Link>
-                        {/* 
+
                         <Link href={`/rdo/view/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 <MessageSquare className="w-4 h-4" /> {rdo.commentCount || 0}
                             </Button>
                         </Link>
-                        */}
+
                     </div>
                     <Badge className={cn(
                         'rounded-full px-3 py-1 text-xs font-medium',

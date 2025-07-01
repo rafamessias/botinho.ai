@@ -32,6 +32,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
 
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
     const projectDocumentId = typeof rdo.project === 'object' ? rdo.project.documentId : '';
+    const projectId = (typeof rdo.project === 'object' ? rdo.project.id : null) || null;
 
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
@@ -279,6 +280,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                                 <CommentsSection
                                     rdoId={rdo.id}
                                     initialComments={rdo.comments || []}
+                                    projectId={projectId}
                                 />
                             </TabsContent>
                             <TabsContent value="audit" className="mt-2">

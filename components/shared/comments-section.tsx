@@ -12,15 +12,17 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Pencil, Trash2, Send, X, Check } from 'lucide-react';
 import { useUser } from '@/components/UserProvider';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface CommentsSectionProps {
+    projectId: number | null;
     rdoId?: number;
     incidentId?: number;
     initialComments?: Comment[];
     className?: string;
 }
 
-export function CommentsSection({ rdoId, incidentId, initialComments = [], className = '' }: CommentsSectionProps) {
+export function CommentsSection({ rdoId, incidentId, initialComments = [], className = '', projectId }: CommentsSectionProps) {
     const t = useTranslations('shared.comments');
     const { user } = useUser();
     const { setIsLoading } = useLoading();
@@ -29,6 +31,8 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
     const [editingComment, setEditingComment] = useState<string | null>(null);
     const [editContent, setEditContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [commentToDelete, setCommentToDelete] = useState<Comment | null>(null);
 
     // Fetch comments on mount if no initial comments provided
     useEffect(() => {
@@ -61,7 +65,8 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
             const response = await createComment({
                 content: newComment.trim(),
                 rdoId,
-                incidentId
+                incidentId,
+                projectId: projectId || undefined
             });
 
             if (response.success && response.data) {
@@ -104,16 +109,18 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
         }
     };
 
-    const handleDeleteComment = async (commentId: string) => {
-        if (!confirm(t('deleteConfirm'))) return;
+    const handleDeleteComment = async () => {
+        if (!commentToDelete?.documentId) return;
 
         try {
             setIsSubmitting(true);
-            const response = await deleteComment(commentId);
+            const response = await deleteComment(commentToDelete.documentId);
 
             if (response.success) {
-                setComments(prev => prev.filter(comment => comment.documentId !== commentId));
+                setComments(prev => prev.filter(comment => comment.documentId !== commentToDelete.documentId));
                 toast.success(t('commentDeleted'));
+                setDeleteDialogOpen(false);
+                setCommentToDelete(null);
             } else {
                 toast.error(response.error || t('commentDeleteError'));
             }
@@ -123,6 +130,16 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const openDeleteDialog = (comment: Comment) => {
+        setCommentToDelete(comment);
+        setDeleteDialogOpen(true);
+    };
+
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false);
+        setCommentToDelete(null);
     };
 
     const startEditing = (comment: Comment) => {
@@ -142,34 +159,27 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
     };
 
     const getUserDisplayName = (comment: Comment) => {
-        const commentUser = typeof comment.user === 'object' ? comment.user : null;
-        if (!commentUser) return 'Unknown User';
-
-        if (commentUser.firstName && commentUser.lastName) {
-            return `${commentUser.firstName} ${commentUser.lastName}`;
-        }
-
-        return commentUser.username || 'Unknown User';
+        return comment.userName || 'Unknown User';
     };
 
     return (
         <div className={`space-y-4 ${className}`}>
             {/* Add Comment Form */}
-            <div className="relative space-y-3">
+            <div className="space-y-3">
                 <div className="font-semibold text-sm">{t('addComment')}</div>
-                <div className="flex gap-2">
+                <div className="relative">
                     <Textarea
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                         placeholder={t('commentPlaceholder')}
-                        className="flex-1 min-h-[80px] resize-none"
+                        className="flex-1 min-h-[80px] resize-none pr-12"
                         disabled={isSubmitting}
                     />
                     <Button
                         onClick={handleSubmitComment}
                         disabled={!newComment.trim() || isSubmitting}
                         size="sm"
-                        className="absolute right-1 bottom-1"
+                        className="absolute right-2 bottom-2 h-8 w-8 p-0"
                     >
                         <Send className="w-4 h-4" />
                     </Button>
@@ -243,7 +253,7 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
-                                                        onClick={() => handleDeleteComment(comment.documentId!)}
+                                                        onClick={() => openDeleteDialog(comment)}
                                                         disabled={isSubmitting}
                                                         className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
                                                     >
@@ -262,6 +272,34 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
                     </div>
                 )}
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t('deleteConfirmTitle')}</DialogTitle>
+                        <DialogDescription>
+                            {t('deleteConfirmDescription')}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={closeDeleteDialog}
+                            disabled={isSubmitting}
+                        >
+                            {t('cancel')}
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={handleDeleteComment}
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? t('deleting') : t('delete')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 } 

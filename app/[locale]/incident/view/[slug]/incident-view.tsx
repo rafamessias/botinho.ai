@@ -27,6 +27,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
 
     const projectName = typeof incident.project === 'object' && incident.project ? incident.project.name : '';
     const projectDocumentId = typeof incident.project === 'object' && incident.project ? incident.project.documentId : '';
+    const projectId = (typeof incident.project === 'object' && incident.project ? incident.project.id : null) || null;
 
     const getStatusLabel = (status: string) => {
         return t(`status.${status}`);
@@ -161,6 +162,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                     <CommentsSection
                         incidentId={incident.id}
                         initialComments={incident.comments || []}
+                        projectId={projectId}
                     />
                 </div>
             </CardContent>

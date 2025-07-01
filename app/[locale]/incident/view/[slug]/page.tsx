@@ -29,6 +29,21 @@ export default async function IncidentViewPage({ params }: IncidentViewPageProps
         }
 
         incident = incidentResponse.data;
+
+
+        const commentsFetch: any = await fetchContentApi<Comment[]>(`comments?populate=*&filters[incident][$eq]=${incident.id}&sort[0]=createdAt:desc`, {
+            next: {
+                revalidate: 300,
+                tags: [`comments:${slug}`]
+            }
+        });
+        const comments = commentsFetch.data || [];
+
+        incident = {
+            ...incident,
+            comments
+        };
+
     } catch (error) {
         console.error('Error fetching incident:', error);
     }

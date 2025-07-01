@@ -319,6 +319,10 @@
             "commentDeleted": "Comentário removido com sucesso",
             "commentDeleteError": "Falha ao remover comentário",
             "deleteConfirm": "Tem certeza que deseja remover este comentário?",
+            "deleteConfirmTitle": "Remover Comentário",
+            "deleteConfirmDescription": "Tem certeza que deseja remover este comentário? Esta ação não pode ser desfeita.",
+            "delete": "Remover",
+            "deleting": "Removendo...",
             "save": "Salvar",
             "cancel": "Cancelar"
         }

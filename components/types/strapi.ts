@@ -215,6 +215,9 @@ export interface Comment {
     content: string;
     rdo?: RDO | number;
     incident?: Incident | number;
+    project?: Project | number;
+    userName?: string;
+    userEmail?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
