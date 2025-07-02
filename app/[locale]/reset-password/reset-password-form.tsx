@@ -37,6 +37,7 @@ export default function ResetPasswordForm() {
                 toast.success(t('success'));
                 setIsSuccess(true);
             } else {
+                console.log(result.error)
                 toast.error(t('error'));
             }
         } catch (error) {

@@ -70,6 +70,9 @@ export async function fetchContentApi<T>(
     }
 
     const getData = await response.json();
+
+    if (endpoint === 'auth/reset-password') console.log(getData);
+
     let data: T | null = null;
     let meta: any = null;
 

@@ -10,7 +10,7 @@ export async function sendEmailConfirmationAction(email: string) {
             body: { email: email },
         });
 
-        if (res.ok) {
+        if (res.success) {
             return {
                 success: true,
                 message: "Verification email has been sent. Please check your inbox."

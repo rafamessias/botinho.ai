@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { uploadFile } from '@/lib/strapi';
 import { fetchContentApi } from './fetch-content-api';
-import { ApiResponse, Project } from '@/components/types/strapi';
+import { ApiResponse, Project, User } from '@/components/types/strapi';
 import { revalidateTag } from 'next/cache';
 
 interface ProjectData {
@@ -11,6 +11,80 @@ interface ProjectData {
     description: string;
     address: string;
     files?: File[];
+}
+
+interface UserRegistrationData {
+    email: string;
+    name: string;
+    phone: string;
+    type: string;
+    company: string;
+}
+
+async function registerUserWithConflictHandling(userData: UserRegistrationData) {
+    try {
+
+        // Split name into firstName and lastName
+        const nameParts = userData.name.trim().split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+
+        // First, check if user already exists
+        const existingUserResponse = await fetchContentApi<User[]>(`users?filters[email][$eq]=${userData.email}`, {
+            method: 'GET'
+        });
+
+        if (existingUserResponse.success && existingUserResponse.data && existingUserResponse.data.length > 0) {
+            // User already exists, return the existing user
+            const existingUser = existingUserResponse.data[0];
+            console.log('User already exists:', existingUser.email);
+            return {
+                success: true,
+                data: existingUser,
+                message: 'User already exists'
+            };
+        }
+
+        // User doesn't exist, create new user
+        const pwd = Math.random().toString(36).slice(-8); // Generate random password
+        const newUserResponse: any = await fetchContentApi<User>(`auth/local/register`, {
+            method: 'POST',
+            body: {
+                username: userData.email,
+                email: userData.email,
+                password: pwd,
+                firstName: userData.name.split(' ')[0],
+                lastName: userData.name.split(' ').slice(1).join(' '),
+                phone: userData.phone,
+                company: userData.company,
+                type: userData.type
+            }
+        });
+
+        if (!newUserResponse.success || !newUserResponse.data) {
+            console.error('Error creating user:', newUserResponse.error);
+            return {
+                success: false,
+                error: newUserResponse.error || 'Failed to create user',
+                data: null
+            };
+        }
+
+        console.log('New user created:', newUserResponse.data.email);
+        return {
+            success: true,
+            data: newUserResponse.data,
+            message: 'User created successfully'
+        };
+
+    } catch (error) {
+        console.error('Error in registerUserWithConflictHandling:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred',
+            data: null
+        };
+    }
 }
 
 export async function updateProject(projectId: string, data: ProjectData) {
@@ -207,6 +281,22 @@ export async function createProjectUser(projectId: number, user: any) {
             throw new Error('Not authenticated');
         }
 
+        const userData = await registerUserWithConflictHandling({
+            email: user.email,
+            name: user.name,
+            phone: user.phone,
+            type: 'projectUser',
+            company: user.company
+        });
+
+        if (!userData.success) {
+            return {
+                success: false,
+                error: userData.error || 'Failed to create project user',
+                data: null
+            };
+        }
+
         const response = await fetchContentApi('project-users', {
             method: 'POST',
             body: {
@@ -215,6 +305,7 @@ export async function createProjectUser(projectId: number, user: any) {
                     name: user.name,
                     email: user.email,
                     phone: user.phone,
+                    user: userData.data.id,
                     canApprove: user.canApprove || false,
                 }
             },

@@ -104,7 +104,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
 
             if (!response.success || !response.data) {
                 console.error('Error adding company member:', response.error);
-                toast.error(t('memberAddError'));
+                toast.error(`${t('memberAddError')} - ${response.error}`);
                 return false;
             }
 
@@ -118,7 +118,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             };
         } catch (error) {
             console.error('Error adding company member:', error);
-            toast.error(t('memberAddError'));
+            toast.error(`${t('memberAddError')} - ${error}`);
             throw error;
         } finally {
             setIsLoading(false);
@@ -138,7 +138,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
 
             if (!response.success || !response.data) {
                 console.error('Error updating company member:', response.error);
-                toast.error(t('memberUpdateError'));
+                toast.error(`${t('memberUpdateError')} - ${response.error}`);
                 return false;
             }
 
@@ -152,7 +152,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             };
         } catch (error) {
             console.error('Error updating company member:', error);
-            toast.error(t('memberUpdateError'));
+            toast.error(`${t('memberUpdateError')} - ${error}`);
             throw error;
         } finally {
             setIsLoading(false);
@@ -166,7 +166,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
 
             if (!response.success) {
                 console.error('Error removing company member:', response.error);
-                toast.error(t('memberRemoveError'));
+                toast.error(`${t('memberRemoveError')} - ${response.error}`);
                 return false;
             }
 
@@ -174,7 +174,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             return true;
         } catch (error) {
             console.error('Error removing company member:', error);
-            toast.error(t('memberRemoveError'));
+            toast.error(`${t('memberRemoveError')} - ${error}`);
             throw error;
         } finally {
             setIsLoading(false);
@@ -217,7 +217,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             toast.success(t('logoUpdated'));
         } catch (error) {
             console.error('Error updating logo:', error);
-            toast.error(t('logoUpdateError'));
+            toast.error(`${t('logoUpdateError')} - ${error}`);
         } finally {
             setIsLoading(false);
             setShowImageConfirm(false);
@@ -243,7 +243,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             toast.success(t('logoRemoved'));
         } catch (error) {
             console.error('Error removing logo:', error);
-            toast.error(error instanceof Error ? error.message : t('logoRemoveError'));
+            toast.error(`${t('logoRemoveError')} - ${error instanceof Error ? error.message : t('logoRemoveError')}`);
         } finally {
             setIsLoading(false);
         }
@@ -271,7 +271,7 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             }
 
         } catch (error) {
-            toast.error(t('companyUpdateError'));
+            toast.error(`${t('companyUpdateError')} - ${error}`);
             console.error('Error updating company:', error);
         } finally {
             setIsSubmitting(false);

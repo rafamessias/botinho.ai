@@ -7,14 +7,12 @@ export async function setNewPasswordAction(code: string, password: string, passw
     try {
         const res: any = await fetchContentApi('auth/reset-password', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: { code, password, passwordConfirmation },
         });
 
-
-        if (res.jwt) {
+        if (res.success) {
             const cookieStore = await cookies();
-            cookieStore.set('jwt', res.jwt, {
+            cookieStore.set('jwt', res.data?.jwt, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
@@ -23,14 +21,14 @@ export async function setNewPasswordAction(code: string, password: string, passw
             });
 
             const user = await fetchContentApi(`users/me?populate=*`, {
-                token: res.jwt
+                token: res.data?.jwt
             })
 
-            return { success: true, message: "Your password has been reset. You can now sign in.", user };
+            return { success: true, message: "Your password has been reset. You can now sign in.", user: user?.data };
         } else {
-            return { success: false, error: res.error?.message || "Failed to reset password." };
+            return { success: false, error: res.error?.message || "Failed to reset password.", user: null };
         }
     } catch (error) {
-        return { success: false, error: error instanceof Error ? error.message : String(error) };
+        return { success: false, error: error instanceof Error ? error.message : String(error), user: null };
     }
 }

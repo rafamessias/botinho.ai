@@ -53,11 +53,13 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     const handleAddProjectUser = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
+            const companyId = typeof project.company === 'number' ? project.company : project.company?.id;
             const response: any = await createProjectUser(project.id as number, {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
                 canApprove: user.canApprove,
+                company: companyId
             });
 
             if (!response.success || !response.data) {

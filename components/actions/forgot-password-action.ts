@@ -7,11 +7,10 @@ export async function forgotPasswordAction(email: string) {
 
         const res: any = await fetchContentApi('auth/forgot-password', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: { email: email },
         });
         //const result = await res.json();
-        if (res.ok) {
+        if (res.success) {
             return { success: true, message: "If your email exists, you will receive a password reset link." };
         } else {
             return { success: false, error: res.error?.message || "Failed to send reset email." };

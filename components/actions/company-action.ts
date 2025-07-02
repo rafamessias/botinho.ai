@@ -126,7 +126,30 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                     return { success: false, error: `Failed to create user: ${user.email}` };
                 }
 
-                const userData: User = userResponse.data?.user;
+                let userData: User;
+
+                if (!userResponse?.success || !userResponse.data) {
+                    // Check if the error is due to email/username already taken
+                    if (userResponse.error?.includes('Email') || userResponse.error?.includes('Username')) {
+                        // Try to get the existing user by email
+                        const existingUserResponse: any = await fetchContentApi<User>(`users?filters[email][$eq]=${user.email}`, {
+                            method: 'GET'
+                        });
+
+                        if (existingUserResponse?.success && existingUserResponse.data?.length > 0) {
+                            userData = existingUserResponse.data[0];
+                            console.log(`User already exists: ${user.email} - Using existing user ID: ${userData.id}`);
+                        } else {
+                            console.error(`Failed to create user: ${user.email} - ${userResponse.error}`);
+                            return { success: false, error: `Failed to create user: ${userResponse.error}` };
+                        }
+                    } else {
+                        console.error(`Failed to create user: ${user.email} - ${userResponse.error}`);
+                        return { success: false, error: `Failed to create user: ${userResponse.error}` };
+                    }
+                } else {
+                    userData = userResponse.data?.user;
+                }
 
                 // Then, add the user as a company member
                 const memberResponse: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members`, {
@@ -226,12 +249,44 @@ export async function createCompanyMember(user: any) {
             }
         });
 
+        let userData: User;
+
         if (!userResponse?.success || !userResponse.data) {
-            console.error(`Failed to create user: ${user.user.email} - ${userResponse.error}`);
-            return { success: false, error: `Failed to create user: ${userResponse.error}` };
+            // Check if the error is due to email/username already taken
+            if (userResponse.error?.includes('Email') || userResponse.error?.includes('Username')) {
+                // Try to get the existing user by email
+                const existingUserResponse: any = await fetchContentApi<User>(`users?filters[email][$eq]=${user.user.email}`, {
+                    method: 'GET'
+                });
+
+                if (existingUserResponse?.success && existingUserResponse.data?.length > 0) {
+                    userData = existingUserResponse.data[0];
+                    console.log(`User already exists: ${user.user.email} - Using existing user ID: ${userData.id}`);
+                } else {
+                    console.error(`Failed to create user: ${user.user.email} - ${userResponse.error}`);
+                    return { success: false, error: `Failed to create user: ${userResponse.error}` };
+                }
+            } else {
+                console.error(`Failed to create user: ${user.user.email} - ${userResponse.error}`);
+                return { success: false, error: `Failed to create user: ${userResponse.error}` };
+            }
+        } else {
+            userData = userResponse.data?.user;
         }
 
-        const userData: User = userResponse.data?.user;
+        // Check if user is already a member of the company
+        const existingMemberResponse: any = await fetchContentApi<CompanyMember>(`company-members?filters[user][id][$eq]=${userData.id}&filters[company][id][$eq]=${currentUser.company}`, {
+            method: 'GET'
+        });
+
+        if (existingMemberResponse?.success && existingMemberResponse.data?.length > 0) {
+            console.log(`User ${user.user.email} is already a member of the company`);
+            return {
+                success: false,
+                error: 'User is already a member of this company',
+                data: existingMemberResponse.data[0]
+            };
+        }
 
         const response: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>('company-members', {
             method: 'POST',

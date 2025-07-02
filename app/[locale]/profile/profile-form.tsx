@@ -20,7 +20,7 @@ type FormData = {
     name: string;
     phone: string;
     email: string;
-    language: string;
+    language: 'en' | 'pt-BR';
     avatar: File[] | null;
     notifyRDO: boolean;
 };
@@ -40,11 +40,11 @@ export default function ProfileForm() {
         reset,
     } = useForm<FormData>({
         defaultValues: {
-            name: '',
-            phone: '',
-            email: '',
-            language: '',
-            avatar: null,
+            name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
+            phone: user?.phone || '',
+            email: user?.email || '',
+            language: user?.language || 'en',
+            avatar: user?.avatar ? [user.avatar] : null,
             notifyRDO: false,
         },
         mode: 'onBlur',
@@ -57,7 +57,7 @@ export default function ProfileForm() {
                 name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
                 phone: user.phone || '',
                 email: user.email || '',
-                language: user.language || '',
+                language: user.language || 'en',
                 avatar: user.avatar ? [user.avatar] : null,
                 notifyRDO: false,
             });

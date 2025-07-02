@@ -10,7 +10,7 @@ import { logoutAction } from "@/components/actions/logout-action"
 import { useUser } from "@/components/UserProvider"
 import { useLoading } from "@/components/LoadingProvider"
 import { useState, useEffect } from "react"
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { LanguageSwitch } from "@/components/language-switch"
 
@@ -21,7 +21,6 @@ export default function Header() {
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const locale = useLocale();
   const router = useRouter();
   const t = useTranslations('header');
 
