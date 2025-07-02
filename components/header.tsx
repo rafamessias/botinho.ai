@@ -24,6 +24,9 @@ export default function Header() {
   const router = useRouter();
   const t = useTranslations('header');
 
+  // Check if user is a project user
+  const isProjectUser = user?.type === 'projectUser';
+
   useEffect(() => {
     if (user) {
       setUserName(user.firstName.charAt(0) + user.lastName.charAt(0));
@@ -55,7 +58,8 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          {user.company && (
+          {/* Only show create button for non-project users */}
+          {user.company && !isProjectUser && (
             <DropdownMenu open={createDropdownOpen} onOpenChange={setCreateDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -95,17 +99,22 @@ export default function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              {/* Only show profile, company, and subscription for non-project users */}
               {user.company && (
                 <>
                   <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
                     <Link href="/profile" className="w-full">{t('profile')}</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                    <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                    <Link href={`/subscription`} className="w-full">{t('subscription')}</Link>
-                  </DropdownMenuItem>
+                  {!isProjectUser && (
+                    <>
+                      <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
+                        <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
+                        <Link href={`/subscription`} className="w-full">{t('subscription')}</Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                 </>
               )}
               <DropdownMenuSeparator />

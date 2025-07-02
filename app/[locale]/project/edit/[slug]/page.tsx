@@ -4,6 +4,7 @@ import { Project, ProjectUser } from "@/components/types/strapi";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import ProjectEditForm from "./project-edit-form";
+import { RestrictProjectUsers } from "@/components/shared/restrict-project-users";
 
 interface ProjectEditPageProps {
     params: Promise<{ slug: string; locale: string }>;
@@ -48,8 +49,10 @@ export default async function ProjectEditPage({ params }: ProjectEditPageProps) 
     const t = await getTranslations({ locale, namespace: 'project' });
 
     return (
-        <ContainerApp title={project.name} showBackButton={true}>
-            <ProjectEditForm project={project} />
-        </ContainerApp>
+        <RestrictProjectUsers>
+            <ContainerApp title={project.name} showBackButton={true}>
+                <ProjectEditForm project={project} />
+            </ContainerApp>
+        </RestrictProjectUsers>
     );
 } 

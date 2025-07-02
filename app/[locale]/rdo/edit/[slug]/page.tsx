@@ -2,6 +2,7 @@ import { RdoEditForm } from '@/components/rdo/RdoEditForm';
 import { RDO } from '@/components/types/strapi';
 import ContainerApp from '@/components/Container-app';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
+import { RestrictProjectUsers } from '@/components/shared/restrict-project-users';
 
 export default async function EditRdoPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -20,8 +21,10 @@ export default async function EditRdoPage({ params }: { params: Promise<{ slug: 
     }
 
     return (
-        <ContainerApp title={`Edit RDO #${rdo.id}`} showBackButton={true}>
-            <RdoEditForm rdo={rdo} />
-        </ContainerApp>
+        <RestrictProjectUsers>
+            <ContainerApp title={`Edit RDO #${rdo.id}`} showBackButton={true}>
+                <RdoEditForm rdo={rdo} />
+            </ContainerApp>
+        </RestrictProjectUsers>
     );
 }

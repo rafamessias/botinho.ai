@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
 import { Project } from '@/components/types/strapi';
 import { EmptyState } from '@/components/shared/empty-state';
+import { RestrictProjectUsers } from '@/components/shared/restrict-project-users';
 
 export default async function IncidentCreatePage({ searchParams }: { searchParams: Promise<{ locale: string }> }) {
     const { locale } = await searchParams;
@@ -23,20 +24,24 @@ export default async function IncidentCreatePage({ searchParams }: { searchParam
     // Show empty state if no projects are available
     if (projects.length === 0) {
         return (
-            <ContainerApp title={t('title')} showBackButton={true}>
-                <EmptyState
-                    title={t('empty.title')}
-                    description={t('empty.description')}
-                    buttonLabel={t('empty.createButton')}
-                    buttonHref="/project/create"
-                />
-            </ContainerApp>
+            <RestrictProjectUsers>
+                <ContainerApp title={t('title')} showBackButton={true}>
+                    <EmptyState
+                        title={t('empty.title')}
+                        description={t('empty.description')}
+                        buttonLabel={t('empty.createButton')}
+                        buttonHref="/project/create"
+                    />
+                </ContainerApp>
+            </RestrictProjectUsers>
         );
     }
 
     return (
-        <ContainerApp title={t('title')} showBackButton={true}>
-            <CreateIncidentForm projects={projects} />
-        </ContainerApp>
+        <RestrictProjectUsers>
+            <ContainerApp title={t('title')} showBackButton={true}>
+                <CreateIncidentForm projects={projects} />
+            </ContainerApp>
+        </RestrictProjectUsers>
     );
 } 

@@ -4,6 +4,7 @@ import { Incident } from '@/components/types/strapi';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import IncidentEditForm from './incident-edit-form';
+import { RestrictProjectUsers } from '@/components/shared/restrict-project-users';
 
 interface IncidentEditPageProps {
     params: Promise<{ slug: string; locale: string }>;
@@ -38,8 +39,10 @@ export default async function IncidentEditPage({ params }: IncidentEditPageProps
     }
 
     return (
-        <ContainerApp title={`${t('view.edit')} #${incident.id}`} showBackButton={true}>
-            <IncidentEditForm incident={incident} />
-        </ContainerApp>
+        <RestrictProjectUsers>
+            <ContainerApp title={`${t('view.edit')} #${incident.id}`} showBackButton={true}>
+                <IncidentEditForm incident={incident} />
+            </ContainerApp>
+        </RestrictProjectUsers>
     );
 } 
