@@ -118,7 +118,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
         <>
             <Card className="p-0 bg-transparent shadow-none hover:shadow-none">
                 <CardHeader className=" flex flex-col w-full items-start p-0 justify-between">
-                    <div className="w-full flex justify-end items-center gap-2 -mt-2">
+                    <div className="w-full flex justify-end items-center gap-2 ">
                         <TooltipProvider>
                             <Tooltip delayDuration={0}>
                                 <TooltipTrigger asChild>
