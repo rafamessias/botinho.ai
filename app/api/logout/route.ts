@@ -9,6 +9,7 @@ export async function POST() {
     cookieStore.set('jwt', '', {
         expires: new Date(0),
         path: '/',
+        domain: process.env.HOST || 'localhost',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
