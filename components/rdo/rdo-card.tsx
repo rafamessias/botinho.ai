@@ -20,6 +20,7 @@ import { Link } from '@/i18n/navigation';
 import { getClientInfo } from '@/components/approval/approval-audit';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { CommentsSection } from '@/components/shared/comments-section';
+import { useUser } from '@/components/UserProvider';
 
 export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const t = useTranslations('rdo.rdoCard');
@@ -29,6 +30,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const user = rdo.user as User;
+    const { user: userAuth } = useUser();
 
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
     const projectDocumentId = typeof rdo.project === 'object' ? rdo.project.documentId : '';
@@ -119,20 +121,22 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
             <Card className="p-0 bg-transparent shadow-none hover:shadow-none">
                 <CardHeader className=" flex flex-col w-full items-start p-0 justify-between">
                     <div className="w-full flex justify-end items-center gap-2 ">
-                        <TooltipProvider>
-                            <Tooltip delayDuration={0}>
-                                <TooltipTrigger asChild>
-                                    <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
-                                        <Button variant="ghost" className="flex items-center gap-2 justify-start">
-                                            <Pencil className="w-4 h-4" />
-                                        </Button>
-                                    </Link>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{t('edit')}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+                        {userAuth?.type === 'companyUser' && (
+                            <TooltipProvider>
+                                <Tooltip delayDuration={0}>
+                                    <TooltipTrigger asChild>
+                                        <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                            <Button variant="ghost" className="flex items-center gap-2 justify-start">
+                                                <Pencil className="w-4 h-4" />
+                                            </Button>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{t('edit')}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        )}
                         <TooltipProvider>
                             <Tooltip delayDuration={0}>
                                 <TooltipTrigger asChild>
@@ -167,7 +171,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                                     <Link href={`/project/view/${projectDocumentId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
                                 </div>
                                 <div className="text-xs text-muted-foreground mt-1">
-                                    {format(new Date(rdo?.date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                                    {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
                                 </div>
                             </div>
                         </div>
@@ -187,7 +191,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                     </div>
 
                 </CardHeader>
-                <CardContent className="space-y-6 p-0">
+                <CardContent className="space-y-6 p-0 mt-4">
                     {/* Condição Climática */}
                     <div>
                         <div className="font-semibold text-sm mb-4">{t('weather.title')}</div>
@@ -278,6 +282,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             </TabsList>
                             <TabsContent value="comments" className="mt-2">
                                 <CommentsSection
+                                    rdoDocumentId={rdo.documentId}
                                     rdoId={rdo.id}
                                     initialComments={rdo.comments || []}
                                     projectId={projectId}

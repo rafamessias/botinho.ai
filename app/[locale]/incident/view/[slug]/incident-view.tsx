@@ -14,12 +14,14 @@ import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
 import { CommentsSection } from '@/components/shared/comments-section';
+import { useUser } from '@/components/UserProvider';
 
 export default function IncidentView({ incident }: { incident: Incident }) {
     const t = useTranslations('incident.view');
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
+    const { user: userAuth } = useUser();
 
     const user = incident.user as User;
     const project = incident.project as Project;
@@ -82,20 +84,22 @@ export default function IncidentView({ incident }: { incident: Incident }) {
         <Card className="p-0 bg-transparent shadow-none hover:shadow-none">
             <CardHeader className="flex flex-col w-full items-start p-0 justify-between">
                 <div className="w-full flex justify-end items-center gap-2">
-                    <TooltipProvider>
-                        <Tooltip delayDuration={0}>
-                            <TooltipTrigger asChild>
-                                <Link href={`/incident/edit/${incident.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
-                                    <Button variant="ghost" className="flex items-center gap-2 justify-start">
-                                        <Pencil className="w-4 h-4" />
-                                    </Button>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{t('edit')}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    {userAuth?.type === 'companyUser' && (
+                        <TooltipProvider>
+                            <Tooltip delayDuration={0}>
+                                <TooltipTrigger asChild>
+                                    <Link href={`/incident/edit/${incident.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                        <Button variant="ghost" className="flex items-center gap-2 justify-start">
+                                            <Pencil className="w-4 h-4" />
+                                        </Button>
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('edit')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )}
                     <TooltipProvider>
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>
@@ -160,6 +164,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                 {/* Comments section */}
                 <div className="rounded-xl pt-2 pb-4">
                     <CommentsSection
+                        incidentDocumentId={incident.documentId}
                         incidentId={incident.id}
                         initialComments={incident.comments || []}
                         projectId={projectId}

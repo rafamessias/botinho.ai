@@ -99,24 +99,22 @@ export default function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {/* Only show profile, company, and subscription for non-project users */}
-              {user.company && (
+
+              <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
+                <Link href="/profile" className="w-full">{t('profile')}</Link>
+              </DropdownMenuItem>
+              {!isProjectUser && (
                 <>
                   <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                    <Link href="/profile" className="w-full">{t('profile')}</Link>
+                    <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>
                   </DropdownMenuItem>
-                  {!isProjectUser && (
-                    <>
-                      <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                        <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                        <Link href={`/subscription`} className="w-full">{t('subscription')}</Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
+                  <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
+                    <Link href={`/subscription`} className="w-full">{t('subscription')}</Link>
+                  </DropdownMenuItem>
                 </>
               )}
+
+
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
                 <LanguageSwitch userId={user.id?.toString()} />

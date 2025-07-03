@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
-import { MessageSquare, EllipsisVertical, Sun, Cloud, CloudRain, X, Check, Share2, Pencil } from 'lucide-react';
+import { MessageSquare, Sun, Cloud, CloudRain, X, Check, Share2, Pencil } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { RDO, StrapiImage, User } from '@/components/types/strapi';
@@ -15,6 +15,7 @@ import { updateRDOStatus } from '@/components/actions/rdo-action';
 import { useLoading } from '@/components/LoadingProvider';
 import { toast } from 'sonner';
 import { getClientInfo } from '@/components/approval/approval-audit';
+import { useUser } from '../UserProvider';
 
 const getWeatherIcon = (condition: string | null) => {
     if (!condition) return null;
@@ -35,6 +36,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { user: userAuth } = useUser();
     const { setIsLoading } = useLoading();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
@@ -66,20 +68,22 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
         <Card className="p-6 space-y-4">
             <CardHeader className="p-0 relative">
                 <div className="absolute top-0 right-0 w-full flex justify-end items-center gap-2 -mt-2">
-                    <TooltipProvider>
-                        <Tooltip delayDuration={0}>
-                            <TooltipTrigger asChild>
-                                <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
-                                    <Button variant="ghost" className="flex items-center gap-2 justify-start">
-                                        <Pencil className="w-4 h-4" />
-                                    </Button>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{t('edit')}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    {userAuth?.type === 'companyUser' && (
+                        <TooltipProvider>
+                            <Tooltip delayDuration={0}>
+                                <TooltipTrigger asChild>
+                                    <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                        <Button variant="ghost" className="flex items-center gap-2 justify-start">
+                                            <Pencil className="w-4 h-4" />
+                                        </Button>
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{t('edit')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )}
                     <TooltipProvider>
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>

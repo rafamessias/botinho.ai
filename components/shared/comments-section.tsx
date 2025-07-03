@@ -15,6 +15,8 @@ import { useUser } from '@/components/UserProvider';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface CommentsSectionProps {
+    rdoDocumentId?: string;
+    incidentDocumentId?: string;
     projectId: number | null;
     rdoId?: number;
     incidentId?: number;
@@ -22,7 +24,7 @@ interface CommentsSectionProps {
     className?: string;
 }
 
-export function CommentsSection({ rdoId, incidentId, initialComments = [], className = '', projectId }: CommentsSectionProps) {
+export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, incidentId, initialComments = [], className = '', projectId }: CommentsSectionProps) {
     const t = useTranslations('shared.comments');
     const { user } = useUser();
     const { setIsLoading } = useLoading();
@@ -64,6 +66,8 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
             setIsSubmitting(true);
             const response = await createComment({
                 content: newComment.trim(),
+                rdoDocumentId,
+                incidentDocumentId,
                 rdoId,
                 incidentId,
                 projectId: projectId || undefined
@@ -114,7 +118,7 @@ export function CommentsSection({ rdoId, incidentId, initialComments = [], class
 
         try {
             setIsSubmitting(true);
-            const response = await deleteComment(commentToDelete.documentId);
+            const response = await deleteComment(commentToDelete.documentId, rdoDocumentId, incidentDocumentId);
 
             if (response.success) {
                 setComments(prev => prev.filter(comment => comment.documentId !== commentToDelete.documentId));

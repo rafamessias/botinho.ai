@@ -7,6 +7,8 @@ import { revalidateTag } from 'next/cache';
 
 export async function createComment(data: {
     content: string;
+    rdoDocumentId?: string;
+    incidentDocumentId?: string;
     rdoId?: number;
     incidentId?: number;
     projectId?: number;
@@ -35,16 +37,16 @@ export async function createComment(data: {
             commentData.project = data.projectId;
         }
 
+        let revalidateTags = ['comments'];
+        revalidateTags = data.rdoDocumentId ? [...revalidateTags, `comments:${data.rdoDocumentId}`, `rdos:${data.rdoDocumentId}`] : revalidateTags;
+        revalidateTags = data.incidentDocumentId ? [...revalidateTags, `comments:${data.incidentDocumentId}`, `incidents:${data.incidentDocumentId}`] : revalidateTags;
+
         const response: ApiResponse<Comment> = await fetchContentApi<Comment>('comments', {
             method: 'POST',
             body: {
                 data: commentData
             },
-            revalidateTag: [
-                data.rdoId ? [`comments:rdo:${data.rdoId}`, `rdos:${data.rdoId}`] : [],
-                data.incidentId ? [`comments:incident:${data.incidentId}`, `incidents:${data.incidentId}`] : [],
-                ['comments']
-            ].flat()
+            revalidateTag: revalidateTags
         });
 
         if (!response.success || !response.data) {
@@ -106,7 +108,7 @@ export async function updateComment(commentId: string, content: string) {
     }
 }
 
-export async function deleteComment(commentId: string) {
+export async function deleteComment(commentId: string, rdoDocumentId?: string, incidentDocumentId?: string) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -115,9 +117,13 @@ export async function deleteComment(commentId: string) {
             throw new Error('Not authenticated');
         }
 
+        let revalidateTags = ['comments'];
+        revalidateTags = rdoDocumentId ? [...revalidateTags, `comments:${rdoDocumentId}`, `rdos:${rdoDocumentId}`] : revalidateTags;
+        revalidateTags = incidentDocumentId ? [...revalidateTags, `comments:${incidentDocumentId}`, `incidents:${incidentDocumentId}`] : revalidateTags;
+
         const response: ApiResponse<boolean> = await fetchContentApi<boolean>(`comments/${commentId}`, {
             method: 'DELETE',
-            revalidateTag: ['comments']
+            revalidateTag: revalidateTags
         });
 
         if (!response.success) {
