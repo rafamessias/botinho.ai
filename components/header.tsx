@@ -37,7 +37,7 @@ export default function Header() {
   const handleLogout = async () => {
     setIsLoading(true); // Set loading state to true
     setUser(null); // Clear user context
-    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+    await fetch('/api/logout', { method: 'POST', credentials: 'include', cache: 'no-store' });
     router.push('/sign-in'); // Redirect to sign in page
     setIsLoading(false); // Set loading state to false
   };

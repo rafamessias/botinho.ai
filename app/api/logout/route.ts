@@ -1,4 +1,6 @@
 // app/api/logout/route.ts
+export const runtime = 'nodejs';
+
 import { cookies } from 'next/headers';
 
 export async function POST() {
