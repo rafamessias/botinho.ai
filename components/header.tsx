@@ -39,8 +39,7 @@ export default function Header() {
     setUser(null); // Clear user context
     const response = await logoutAction(); // Call logout action
 
-
-    if (response.success) {
+    if (response.status === 200) {
       router.push('/sign-in'); // Redirect to sign in page
     }
     setIsLoading(false); // Set loading state to false
