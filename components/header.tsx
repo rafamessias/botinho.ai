@@ -37,11 +37,8 @@ export default function Header() {
   const handleLogout = async () => {
     setIsLoading(true); // Set loading state to true
     setUser(null); // Clear user context
-    const response = await logoutAction(); // Call logout action
-
-    if (response.status === 200) {
-      router.push('/sign-in'); // Redirect to sign in page
-    }
+    await fetch('/api/logout', { method: 'POST' });
+    router.push('/sign-in'); // Redirect to sign in page
     setIsLoading(false); // Set loading state to false
   };
 

@@ -33,6 +33,11 @@ function isPublicRoute(path: string) {
 export default async function middleware(request: NextRequest) {
     const { pathname, locale } = request.nextUrl;
 
+    //If the pathname starts with /api, return the response
+    if (pathname.startsWith('/api')) {
+        return NextResponse.next();
+    }
+
     // If the pathname doesn't start with a locale, add the default locale
     if (!routing.locales.some(locale => pathname.startsWith(`/${locale}`))) {
         console.log("pathname", pathname);

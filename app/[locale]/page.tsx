@@ -23,7 +23,8 @@ export default async function Page({ params }: PageProps) {
         });
 
         if (response.success && response.data) {
-            projects = response.data;
+            // Serialize the data to ensure it's safe to pass to client components
+            projects = JSON.parse(JSON.stringify(response.data));
         }
     } catch (error) {
         console.error('Failed to fetch projects:', error);
