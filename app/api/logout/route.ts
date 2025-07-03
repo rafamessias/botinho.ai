@@ -16,9 +16,6 @@ export async function POST() {
     });
 
     return new Response('ok', {
-        status: 200,
-        headers: {
-            'Set-Cookie': 'jwt=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax; Secure',
-        },
+        status: 200
     });
 }
