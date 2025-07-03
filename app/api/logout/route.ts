@@ -14,10 +14,10 @@ export async function POST() {
         sameSite: 'lax',
     });
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response('ok', {
         status: 200,
         headers: {
-            'Content-Type': 'application/json',
+            'Set-Cookie': 'jwt=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax; Secure',
         },
     });
 }
