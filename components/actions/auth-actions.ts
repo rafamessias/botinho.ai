@@ -12,6 +12,7 @@ export async function registerUserAction(formData: FormData) {
             email: data.email as string,
             phone: data.phone as string,
             password: data.password as string,
+            language: data.language as string,
         });
 
         if (response.success) {

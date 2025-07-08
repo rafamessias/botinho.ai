@@ -7,7 +7,7 @@ export default async function CreateCompanyPage() {
     const t = await getTranslations('company');
     return (
         <RestrictProjectUsers>
-            <ContainerApp title={t('title')} showBackButton={true}>
+            <ContainerApp title={t('createTitle')} showBackButton={true}>
                 <CreateCompanyForm />
             </ContainerApp>
         </RestrictProjectUsers>

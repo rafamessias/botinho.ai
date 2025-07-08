@@ -20,6 +20,7 @@ interface SignUpData {
     email: string;
     phone: string;
     password: string;
+    language: string;
 }
 
 export async function signUp(data: SignUpData) {
@@ -36,6 +37,8 @@ export async function signUp(data: SignUpData) {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 phone: data.phone,
+                language: data.language,
+                type: 'companyUser'
             }),
         });
 
