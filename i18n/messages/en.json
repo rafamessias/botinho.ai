@@ -700,6 +700,19 @@
             "en": "English",
             "ptbr": "Portuguese"
         },
-        "success": "Profile updated successfully"
+        "success": "Profile updated successfully",
+        "delete": {
+            "button": "Delete Profile",
+            "title": "Delete Profile",
+            "description": "This action cannot be undone. This will permanently delete your profile and remove you from all projects and companies.",
+            "confirmLabel": "Delete Profile",
+            "cancelLabel": "Cancel",
+            "nameConfirmation": "Please type your full name to confirm deletion",
+            "namePlaceholder": "Enter your full name",
+            "nameRequired": "Please enter your full name to confirm deletion",
+            "nameMismatch": "Name does not match. Please enter your full name exactly as shown.",
+            "success": "Profile deleted successfully",
+            "error": "Failed to delete profile"
+        }
     }
 }

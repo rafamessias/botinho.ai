@@ -23,7 +23,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
     const { user: userAuth } = useUser();
 
-    const user = incident.user as User;
+    const userName = incident.userName;
     const project = incident.project as Project;
     const media = incident.media as StrapiImage[];
 
@@ -125,7 +125,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                             </div>
                             <div className="text-xs mt-1 flex items-center gap-1">
                                 <span className="text-muted-foreground">{t('reportedBy')}</span>
-                                <span className="font-bold text-gray-800"> {user?.firstName} {user?.lastName}</span>
+                                <span className="font-bold text-gray-800"> {userName}</span>
                             </div>
                             <div className="text-xs mt-1 flex items-center gap-1">
                                 <span className="text-muted-foreground">{t('project')}</span>

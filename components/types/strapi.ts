@@ -155,6 +155,7 @@ export interface RDO {
     id?: number;
     documentId?: string;
     user?: User | number;
+    userName?: string;
     project?: Project | number;
     date: Date;
     description: string;
@@ -194,6 +195,7 @@ export interface Incident {
     id?: number;
     documentId?: string;
     user?: User | number;
+    userName?: string;
     project: Project | number;
     company?: Company | number;
     description: string;
@@ -230,6 +232,7 @@ export interface Approval {
     incident?: Incident | number;
     rdo?: RDO | number;
     user?: User | number;
+    userName?: string;
     action?: 'Approved' | 'Rejected';
     description?: string;
     date?: Date;

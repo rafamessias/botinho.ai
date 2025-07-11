@@ -701,6 +701,19 @@
             "en": "Inglês",
             "ptbr": "Português"
         },
-        "success": "Perfil atualizado com sucesso"
+        "success": "Perfil atualizado com sucesso",
+        "delete": {
+            "button": "Excluir Perfil",
+            "title": "Excluir Perfil",
+            "description": "Esta ação não pode ser desfeita. Isso excluirá permanentemente seu perfil e o removerá de todos os projetos e empresas.",
+            "confirmLabel": "Excluir Perfil",
+            "cancelLabel": "Cancelar",
+            "nameConfirmation": "Digite seu nome completo para confirmar a exclusão",
+            "namePlaceholder": "Digite seu nome completo",
+            "nameRequired": "Digite seu nome completo para confirmar a exclusão",
+            "nameMismatch": "Nome não confere. Digite seu nome completo exatamente como mostrado.",
+            "success": "Perfil excluído com sucesso",
+            "error": "Falha ao excluir perfil"
+        }
     }
 }

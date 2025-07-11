@@ -64,7 +64,7 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
     const incidentCount = project?.incidentCount || incidents.length;
 
     return (
-        <ContainerApp form={false} title={`${projectName}`} showBackButton={true}>
+        <ContainerApp form={false} title={`${projectName}`} showBackButton={true} editButton={`/project/edit/${slug}`}>
             <div className="max-w-[600px] mx-auto w-full">
                 {/* Feed */}
                 <div className="flex-1 overflow-y-auto pb-20 space-y-10">

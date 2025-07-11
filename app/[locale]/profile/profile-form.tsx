@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { UploadPhoto } from '@/components/shared/upload-photo';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useUser } from '@/components/UserProvider';
 import { SelectItem, Select, SelectValue, SelectContent } from '@/components/ui/select';
@@ -15,6 +15,9 @@ import { fetchContentApi } from '@/components/actions/fetch-content-api';
 import { uploadFile } from '@/lib/strapi';
 import { useLoading } from '@/components/LoadingProvider';
 import { User, StrapiImage } from '@/components/types/strapi';
+import { deleteProfileAction } from '@/components/actions/delete-profile-action';
+import { DeleteProfileDialog } from '@/components/shared/delete-profile-dialog';
+import { Trash2 } from 'lucide-react';
 
 type FormData = {
     name: string;
@@ -30,6 +33,8 @@ export default function ProfileForm() {
     const t = useTranslations('profile');
     const { user, setUser } = useUser();
     const { setIsLoading } = useLoading();
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const {
         control,
@@ -163,6 +168,37 @@ export default function ProfileForm() {
         }
     };
 
+    const handleDeleteProfile = async () => {
+        if (!user?.id) {
+            toast.error('User not found');
+            return;
+        }
+
+        setIsDeleting(true);
+        setIsLoading(true);
+
+        try {
+            const result = await deleteProfileAction();
+
+            if (result.success) {
+                toast.success(t('delete.success'));
+                setUser(null);
+                router.push('/sign-in');
+            } else {
+                toast.error(result.error || t('delete.error'));
+            }
+        } catch (error) {
+            console.error('Error deleting profile:', error);
+            toast.error(t('delete.error'));
+        } finally {
+            setIsDeleting(false);
+            setIsLoading(false);
+        }
+    };
+
+    // Check if user is a company owner (cannot delete profile)
+    const isCompanyOwner = user?.companyMember?.isOwner;
+
     // Show loading state while user is being fetched
     if (!user) {
         return (
@@ -173,136 +209,172 @@ export default function ProfileForm() {
     }
 
     return (
-        <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-            {/* Avatar Upload */}
-            <div className="flex gap-2">
-                <Controller
-                    name="avatar"
-                    control={control}
-                    render={({ field }) => (
-                        <UploadPhoto
-                            register={register}
-                            setValue={setValue}
-                            name="avatar"
-                            label={t('avatar.label')}
-                            hint={t('avatar.hint')}
-                            type="logo"
-                            currentImage={typeof user.avatar === 'object' && user.avatar && 'url' in user.avatar ? user.avatar.url : undefined}
-                            onChange={handleAvatarChange}
-                        />
-                    )}
-                />
-            </div>
+        <>
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+                {/* Avatar Upload */}
+                <div className="flex gap-2">
+                    <Controller
+                        name="avatar"
+                        control={control}
+                        render={({ field }) => (
+                            <UploadPhoto
+                                register={register}
+                                setValue={setValue}
+                                name="avatar"
+                                label={t('avatar.label')}
+                                hint={t('avatar.hint')}
+                                type="logo"
+                                currentImage={typeof user.avatar === 'object' && user.avatar && 'url' in user.avatar ? user.avatar.url : undefined}
+                                onChange={handleAvatarChange}
+                            />
+                        )}
+                    />
+                </div>
 
-            {/* Name */}
-            <div>
-                <label className="block font-semibold mb-1">{t('name.label')}</label>
-                <Controller
-                    name="name"
-                    control={control}
-                    rules={{ required: t('name.required') }}
-                    render={({ field }) => (
-                        <Input placeholder={t('name.placeholder')} {...field} />
+                {/* Name */}
+                <div>
+                    <label className="block font-semibold mb-1">{t('name.label')}</label>
+                    <Controller
+                        name="name"
+                        control={control}
+                        rules={{ required: t('name.required') }}
+                        render={({ field }) => (
+                            <Input placeholder={t('name.placeholder')} {...field} />
+                        )}
+                    />
+                    {errors.name && (
+                        <span className="text-red-500 text-xs mt-1">{errors.name.message as string}</span>
                     )}
-                />
-                {errors.name && (
-                    <span className="text-red-500 text-xs mt-1">{errors.name.message as string}</span>
-                )}
-            </div>
+                </div>
 
-            {/* Phone */}
-            <div>
-                <label className="block font-semibold mb-1">{t('phone.label')}</label>
-                <Controller
-                    name="phone"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            placeholder={t('phone.placeholder')}
-                            {...field}
-                            onChange={(e) => {
-                                const value = e.target.value.replace(/\D/g, '');
-                                if (value.length > 11) {
-                                    e.target.value = e.target.value.slice(0, 11);
-                                    return;
-                                }
-                                const masked = value.replace(
-                                    /^(\d{2})(\d{5})(\d{4})?/,
-                                    (_: any, ddd: string, first: string, last: string) => {
-                                        if (last) return `(${ddd}) ${first}-${last}`;
-                                        if (first) return `(${ddd}) ${first}`;
-                                        return `(${ddd}`;
+                {/* Phone */}
+                <div>
+                    <label className="block font-semibold mb-1">{t('phone.label')}</label>
+                    <Controller
+                        name="phone"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                placeholder={t('phone.placeholder')}
+                                {...field}
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, '');
+                                    if (value.length > 11) {
+                                        e.target.value = e.target.value.slice(0, 11);
+                                        return;
                                     }
-                                );
-                                field.onChange(masked);
-                            }}
-                            maxLength={15}
-                        />
-                    )}
-                />
-            </div>
+                                    const masked = value.replace(
+                                        /^(\d{2})(\d{5})(\d{4})?/,
+                                        (_: any, ddd: string, first: string, last: string) => {
+                                            if (last) return `(${ddd}) ${first}-${last}`;
+                                            if (first) return `(${ddd}) ${first}`;
+                                            return `(${ddd}`;
+                                        }
+                                    );
+                                    field.onChange(masked);
+                                }}
+                                maxLength={15}
+                            />
+                        )}
+                    />
+                </div>
 
-            {/* Email - Read Only */}
-            <div>
-                <label className="block font-semibold mb-1">{t('email.label')}</label>
-                <Controller
-                    name="email"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            placeholder={t('email.placeholder')}
-                            {...field}
-                            readOnly
-                            className="bg-gray-100 cursor-not-allowed"
-                        />
-                    )}
-                />
-            </div>
+                {/* Email - Read Only */}
+                <div>
+                    <label className="block font-semibold mb-1">{t('email.label')}</label>
+                    <Controller
+                        name="email"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                placeholder={t('email.placeholder')}
+                                {...field}
+                                readOnly
+                                className="bg-gray-100 cursor-not-allowed"
+                            />
+                        )}
+                    />
+                </div>
 
-            {/* Language */}
-            <div>
-                <label className="block font-semibold mb-1">{t('language.label')}</label>
-                <Controller
-                    name="language"
-                    control={control}
-                    render={({ field }) => (
-                        <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder={t('language.placeholder')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="en">🇺🇸 {t('language.en')}</SelectItem>
-                                <SelectItem value="pt-BR">🇧🇷 {t('language.ptbr')}</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    )}
-                />
-            </div>
+                {/* Language */}
+                <div>
+                    <label className="block font-semibold mb-1">{t('language.label')}</label>
+                    <Controller
+                        name="language"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t('language.placeholder')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="en">🇺🇸 {t('language.en')}</SelectItem>
+                                    <SelectItem value="pt-BR">🇧🇷 {t('language.ptbr')}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                </div>
 
-            {/* RDO Notification Toggle */}
-            <div className="flex items-center justify-between">
-                <label className="font-semibold" htmlFor="notifyRDO">{t('notifyRDO.label')}</label>
-                <Controller
-                    name="notifyRDO"
-                    control={control}
-                    render={({ field }) => (
-                        <Switch id="notifyRDO" checked={field.value} onCheckedChange={field.onChange} />
-                    )}
-                />
-            </div>
+                {/* RDO Notification Toggle */}
+                <div className="flex items-center justify-between">
+                    <label className="font-semibold" htmlFor="notifyRDO">{t('notifyRDO.label')}</label>
+                    <Controller
+                        name="notifyRDO"
+                        control={control}
+                        render={({ field }) => (
+                            <Switch id="notifyRDO" checked={field.value} onCheckedChange={field.onChange} />
+                        )}
+                    />
+                </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-2 mt-4">
-                <Button type="button" variant="outline" onClick={() => router.back()}>
-                    {t('actions.cancel')}
-                </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                    {t('actions.submit')}
-                </Button>
-            </div>
-        </form>
+                {/* Action Buttons */}
+                <div className="flex justify-end gap-2 mt-4">
+                    <Button type="button" variant="outline" onClick={() => router.back()}>
+                        {t('actions.cancel')}
+                    </Button>
+                    <Button type="submit" disabled={isSubmitting}>
+                        {t('actions.submit')}
+                    </Button>
+                </div>
+
+                {/* Delete Profile Button - Only show for non-company owners */}
+                {!isCompanyOwner && (
+                    <div className="border-t pt-6 mt-6">
+                        <div className="text-center">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setShowDeleteDialog(true)}
+                                className="text-destructive border-destructive hover:bg-destructive hover:text-white"
+                                disabled={isDeleting}
+                            >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                {t('delete.button')}
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </form>
+
+            {/* Delete Profile Dialog */}
+            <DeleteProfileDialog
+                open={showDeleteDialog}
+                onConfirm={handleDeleteProfile}
+                onCancel={() => setShowDeleteDialog(false)}
+                title={t('delete.title')}
+                description={t('delete.description')}
+                confirmLabel={t('delete.confirmLabel')}
+                cancelLabel={t('delete.cancelLabel')}
+                nameConfirmation={t('delete.nameConfirmation')}
+                namePlaceholder={t('delete.namePlaceholder')}
+                nameRequired={t('delete.nameRequired')}
+                nameMismatch={t('delete.nameMismatch')}
+                expectedName={`${user.firstName || ''} ${user.lastName || ''}`.trim()}
+            />
+        </>
     );
 } 

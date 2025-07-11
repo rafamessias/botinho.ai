@@ -48,8 +48,10 @@ export function SignInForm({
     const onSubmit = async (data: SignInFormValues) => {
         setIsLoading(true);
         setGlobalLoading(true);
+
         try {
             const response = await signIn(data.email.toLowerCase(), data.password);
+
             if (response.success) {
                 setUser(response.user);
                 setIsNavigating(true);

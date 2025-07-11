@@ -2,11 +2,10 @@
 
 import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
-import { Plus, Globe, ArrowLeft } from "lucide-react"
+import { Plus, Globe, ArrowLeft, Eye, Pencil } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Logo } from "@/components/logo"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
-import { logoutAction } from "@/components/actions/logout-action"
 import { useUser } from "@/components/UserProvider"
 import { useLoading } from "@/components/LoadingProvider"
 import { useState, useEffect } from "react"
@@ -127,8 +126,11 @@ export default function Header() {
   ) : null
 }
 
-export function SubHeader({ title, showBackButton = false }: { title: string, showBackButton?: boolean }) {
+export function SubHeader({ title, showBackButton = false, editButton = "" }: { title: string, showBackButton?: boolean, editButton?: string }) {
   const router = useRouter();
+  const { user } = useUser();
+  const isProjectUser = user?.type === 'projectUser';
+
   return (
     <div className="w-full h-12 sm:h-16 bg-muted border-b flex justify-start items-center py-2">
       <div className="container max-w-[1280px] flex justify-start items-center">
@@ -138,6 +140,18 @@ export function SubHeader({ title, showBackButton = false }: { title: string, sh
           </Button>
         )}
         <h2 className="text-base sm:text-lg font-normal">{title}</h2>
+        {editButton && (
+          <>
+            <Button variant="ghost" size="icon" onClick={() => router.push(editButton.replace('/edit/', '/view/'))} className="h-8 w-8">
+              <Eye className="h-4 w-4" />
+            </Button>
+            {!isProjectUser && (
+              <Button variant="ghost" size="icon" onClick={() => router.push(editButton)} className="h-8 w-8">
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

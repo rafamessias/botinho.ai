@@ -41,7 +41,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
     const { user: userAuth } = useUser();
 
     const t = useTranslations('incident.incidentCard');
-    const user: User | { firstName: string, lastName: string } = incident.user as User | { firstName: "", lastName: "" };
+    const userName = incident.userName;
 
     const handleStatusUpdate = async (status: 'open' | 'wip' | 'closed') => {
         if (!incident.documentId) return;
@@ -138,7 +138,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                         </div>
                         <div className="text-xs flex items-center gap-1">
                             <span className="text-muted-foreground">{t('reportedBy')}</span>
-                            <span className="font-bold text-gray-800">{user?.firstName} {user?.lastName}</span>
+                            <span className="font-bold text-gray-800">{userName}</span>
                         </div>
                         <div className="text-xs text-muted-foreground">
                             {new Date(incident.date || '').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}

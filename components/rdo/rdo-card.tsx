@@ -29,7 +29,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const user = rdo.user as User;
+    const userName = rdo.userName;
     const { user: userAuth } = useUser();
 
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
@@ -164,7 +164,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                                 </div>
                                 <div className="text-xs mt-1 flex items-center gap-1">
                                     <span className="text-muted-foreground">{t('postedBy')}</span>
-                                    <span className="font-bold text-gray-800"> {user.firstName} {user.lastName}</span>
+                                    <span className="font-bold text-gray-800"> {userName}</span>
                                 </div>
                                 <div className="text-xs mt-1 flex items-center gap-1">
                                     <span className="text-muted-foreground">{t('project')}</span>

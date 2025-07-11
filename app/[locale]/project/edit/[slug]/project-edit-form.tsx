@@ -28,7 +28,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     const [filesToBeRemoved, setFilesToBeRemoved] = useState<number[]>([]);
     const router = useRouter();
 
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProjectFormValues>({
+    const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm<ProjectFormValues>({
         defaultValues: {
             projectName: project.name || '',
             projectDescription: project.description || '',
@@ -39,7 +39,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     });
 
     // Convert project users to the format expected by UserList
-    const initialUsers = project.users ? project.users.map((user: ProjectUser) => ({
+    let initialUsers = project.users ? project.users.map((user: ProjectUser) => ({
         name: user.name,
         email: user.email,
         phone: user.phone,
@@ -54,7 +54,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         try {
             setIsLoading(true);
             const companyId = typeof project.company === 'number' ? project.company : project.company?.id;
-            const response: any = await createProjectUser(project.id as number, {
+            const response: any = await createProjectUser(project.id as number, project.name, {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
@@ -123,13 +123,18 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     const handleRemoveProjectUser = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            const response: any = await removeProjectUser(project.id as number, user.documentId as string);
+            if (user.documentId) {
+                const response: any = await removeProjectUser(project.id as number, user.documentId as string);
 
-            if (!response.success) {
-                console.error('Error removing project user:', response.error);
-                toast.error(t('userRemoveError'));
-                return false;
+                if (!response.success) {
+                    console.error('Error removing project user:', response.error);
+                    toast.error(t('userRemoveError'));
+                    return false;
+                }
             }
+            console.log("user", user);
+            initialUsers = initialUsers.filter((u: any) => u.email !== user.email);
+            console.log("initialUsers", initialUsers);
 
             toast.success(t('userRemoved'));
             return true;

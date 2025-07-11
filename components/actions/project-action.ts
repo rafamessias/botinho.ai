@@ -19,7 +19,13 @@ interface UserRegistrationData {
     phone: string;
     type: string;
     company: string;
+    projectId?: number;
+    projectName?: string;
+    companyName?: string;
 }
+
+const PROJECT_USER_ROLE = 4;
+const COMPANY_USER_ROLE = 3;
 
 async function registerUserWithConflictHandling(userData: UserRegistrationData) {
     try {
@@ -46,7 +52,12 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
         }
 
         // User doesn't exist, create new user
-        const pwd = Math.random().toString(36).slice(-8); // Generate random password
+        // Generate a random 16-character password including punctuation, numbers, lowercase and uppercase letters
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+        let pwd = '';
+        for (let i = 0; i < 16; i++) {
+            pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
         const newUserResponse: any = await fetchContentApi<User>(`auth/local/register`, {
             method: 'POST',
             body: {
@@ -57,7 +68,16 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
                 lastName: userData.name.split(' ').slice(1).join(' '),
                 phone: userData.phone,
                 company: userData.company,
-                type: userData.type
+                type: userData.type,
+                ...(userData?.projectId && {
+                    projectId: userData?.projectId,
+                    projectName: userData?.projectName,
+                    role: PROJECT_USER_ROLE
+                }),
+                ...(userData?.companyName && {
+                    companyName: userData?.companyName,
+                    role: COMPANY_USER_ROLE
+                })
             }
         });
 
@@ -70,10 +90,12 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
             };
         }
 
-        console.log('New user created:', newUserResponse.data.email);
+        const user = newUserResponse.data.user;
+
+        console.log('New user created:', user.email);
         return {
             success: true,
-            data: newUserResponse.data,
+            data: user,
             message: 'User created successfully'
         };
 
@@ -272,7 +294,7 @@ export async function updateProjectUsers(projectId: number, documentId: string, 
     }
 }
 
-export async function createProjectUser(projectId: number, user: any) {
+export async function createProjectUser(projectId: number, projectName: string, user: any) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -281,12 +303,14 @@ export async function createProjectUser(projectId: number, user: any) {
             throw new Error('Not authenticated');
         }
 
-        const userData = await registerUserWithConflictHandling({
+        const userData: any = await registerUserWithConflictHandling({
             email: user.email,
             name: user.name,
             phone: user.phone,
             type: 'projectUser',
-            company: user.company
+            company: user.company,
+            projectId: projectId,
+            projectName: projectName
         });
 
         if (!userData.success) {
