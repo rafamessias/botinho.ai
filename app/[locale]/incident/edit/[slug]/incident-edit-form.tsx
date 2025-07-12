@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { ProjectSelect } from '@/components/rdo/form/ProjectSelect';
+import { RDODatePicker } from '@/components/rdo/form/RDODatePicker';
 import { Project, Incident, StrapiImage } from '@/components/types/strapi';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { useLoading } from '@/components/LoadingProvider';
@@ -25,6 +26,7 @@ const statusOptions = [
 type FormData = {
     project: Project;
     incidentStatus: 'draft' | 'open' | 'wip' | 'closed';
+    date: string;
     description: string;
     media: File[] | null;
 };
@@ -45,6 +47,7 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
         defaultValues: {
             project: incident.project as Project,
             incidentStatus: incident.incidentStatus,
+            date: new Date(incident.date || '').toISOString(),
             description: incident.description || '',
             media: null,
         },
@@ -59,6 +62,7 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
 
         const incidentData = {
             incidentStatus: data.incidentStatus as 'draft' | 'open' | 'wip' | 'closed',
+            date: new Date(data.date),
             description: data.description,
         };
 
@@ -106,6 +110,11 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
         }
     };
 
+    // Prevent calendar icon (or any button inside the form) from submitting the form
+    // by setting type="button" on all non-submit buttons.
+    // If RDODatePicker renders a button for the calendar icon, we need to ensure it uses type="button".
+    // Since we can't change RDODatePicker here, we can wrap it in a div and stop propagation on click for safety.
+
     return (
         <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
             {/* Project */}
@@ -150,6 +159,29 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
                     />
                 </div>
             </div>
+
+            {/* Date */}
+            <Controller
+                name="date"
+                control={control}
+                rules={{ required: t('date.required') }}
+                render={({ field }) => (
+                    <div
+                        // Prevent any button inside RDODatePicker from submitting the form
+                        onClick={e => {
+                            e.preventDefault();
+                        }}
+                    >
+                        <RDODatePicker
+                            value={field.value}
+                            onChange={field.onChange}
+                        />
+                        {errors.date && (
+                            <span className="text-red-500 text-xs mt-1">{errors.date.message as string}</span>
+                        )}
+                    </div>
+                )}
+            />
 
             {/* Incident Description */}
             <div>

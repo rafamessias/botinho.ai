@@ -12,6 +12,7 @@ import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/comp
 import { usePathname, useSearchParams } from 'next/navigation';
 import ActivityCard from '@/components/shared/activity-card';
 import UserCard from '@/components/shared/user-card';
+import { useUser } from '@/components/UserProvider';
 
 function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
     if (!value) return null;
@@ -27,10 +28,24 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
     const t = useTranslations('project.view');
     const tIncident = useTranslations('incident');
     const [tab, setTab] = useState('rdos');
-
+    const { user, isCompanyUser } = useUser();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
+
+    const rdoTotal = () => {
+        if (user?.companyMember) {
+            return Number(project.rdoCount || 0) + Number(project.rdoCountDraft || 0);
+        }
+        return Number(project.rdoCount || 0);
+    }
+
+    const incidentTotal = () => {
+        if (user?.companyMember) {
+            return Number(project.incidentCount || 0) + Number(project.incidentCountDraft || 0);
+        }
+        return Number(project.incidentCount || 0);
+    }
 
     const getRDOStatusLabel = (status: RDO['rdoStatus']) => {
         switch (status) {
@@ -127,24 +142,26 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
                     </div>
                 )}
             </div>
-            <div className=" w-full flex justify-end items-center gap-2 mt-[198px]">
-                <TooltipProvider >
-                    <Tooltip delayDuration={0}>
-                        <TooltipTrigger asChild>
-                            <Link href={`/project/edit/${project.documentId}?goback=${currentUrl}`} className="absolute flex items-center gap-2">
-                                <Button variant="ghost" className="flex items-center gap-2 justify-start">
-                                    <Pencil className="w-4 h-4" />
-                                </Button>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>{t('edit')}</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div>
+            {isCompanyUser && (
+                <div className=" w-full flex justify-end items-center gap-2 mt-[198px]">
+                    <TooltipProvider >
+                        <Tooltip delayDuration={0}>
+                            <TooltipTrigger asChild>
+                                <Link href={`/project/edit/${project.documentId}?goback=${currentUrl}`} className="absolute flex items-center gap-2">
+                                    <Button variant="ghost" className="flex items-center gap-2 justify-start">
+                                        <Pencil className="w-4 h-4" />
+                                    </Button>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{t('edit')}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
+            )}
 
-            <div className="flex flex-col gap-6 px-4 pb-4 bg-white rounded-lg ">
+            <div className={`flex flex-col gap-6 px-4 pb-4 bg-white rounded-lg ${isCompanyUser ? '' : 'mt-[198px]'}`}>
                 <InfoField label={t('name')} value={`#${project.id} - ${project.name}`} />
                 <InfoField label={t('description')} value={project.description} />
                 <InfoField label={t('address')} value={project.address} />
@@ -154,10 +171,10 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
                 <Tabs value={tab} onValueChange={setTab} className="w-full relative" orientation="horizontal">
                     <TabsList className="absolute flex flex-row justify-stretch w-full bg-transparent overflow-x-auto">
                         <TabsTrigger value="rdos" className="flex items-center gap-2">
-                            {t('tabs.rdos')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{project.rdoCount || 0}</span>
+                            {t('tabs.rdos')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{rdoTotal()}</span>
                         </TabsTrigger>
                         <TabsTrigger value="incidents" className="flex items-center gap-2">
-                            {t('tabs.incidents')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{project.incidentCount || 0}</span>
+                            {t('tabs.incidents')} <span className="ml-1 bg-gray-100 text-gray-600 rounded-full px-2 text-xs">{incidentTotal()}</span>
                         </TabsTrigger>
                         {/*
                         <TabsTrigger value="media" className="flex items-center gap-2">

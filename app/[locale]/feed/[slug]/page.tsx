@@ -2,7 +2,7 @@ import React from 'react';
 import ContainerApp from '@/components/Container-app';
 import FeedRDOCard from '@/components/feedPage/FeedRDOCard';
 import FeedIncidentCard from '@/components/feedPage/FeedIncidentCard';
-import { Incident, RDO, Project } from '@/components/types/strapi';
+import { Incident, RDO, Project, ApiResponse, User } from '@/components/types/strapi';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -10,6 +10,8 @@ import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tabs } from '@/components/ui/tabs';
+import { useUser } from '@/components/UserProvider';
+import { getUserMe } from '@/components/actions/get-user-me-action';
 
 export default async function FeedPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -19,8 +21,15 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
     let project: Project | null = null;
     let rdos: RDO[] = [];
     let incidents: Incident[] = [];
+    let user: User | null = null;
 
     try {
+
+        //get user info
+        const me: ApiResponse<User> = await getUserMe();
+        if (me.success) user = me.data as User;
+
+
         // Fetch project data
         const projectResult = await fetchContentApi<Project>(`projects/${slug}?populate=*`, {
             next: {
@@ -60,8 +69,20 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
     }
 
     const projectName = project?.name || '';
-    const rdoCount = project?.rdoCount || rdos.length;
-    const incidentCount = project?.incidentCount || incidents.length;
+
+    const rdoCount = () => {
+        if (user?.companyMember) {
+            return Number(project?.rdoCount || 0) + Number(project?.rdoCountDraft || 0);
+        }
+        return Number(project?.rdoCount || 0);
+    }
+
+    const incidentCount = () => {
+        if (user?.companyMember) {
+            return Number(project?.incidentCount || 0) + Number(project?.incidentCountDraft || 0);
+        }
+        return Number(project?.incidentCount || 0);
+    }
 
     return (
         <ContainerApp form={false} title={`${projectName}`} showBackButton={true} editButton={`/project/edit/${slug}`}>
@@ -71,10 +92,10 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
                     <Tabs defaultValue="rdos" className="w-full">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="rdos">
-                                {t('tabs.rdos')} <span className="ml-1 bg-gray-200 text-gray-600 rounded-full px-2 text-xs">{rdoCount}</span>
+                                {t('tabs.rdos')} <span className="ml-1 bg-gray-200 text-gray-600 rounded-full px-2 text-xs">{rdoCount()}</span>
                             </TabsTrigger>
                             <TabsTrigger value="incidents">
-                                {t('tabs.incidents')} <span className="ml-1 bg-gray-200 text-gray-600 rounded-full px-2 text-xs">{incidentCount}</span>
+                                {t('tabs.incidents')} <span className="ml-1 bg-gray-200 text-gray-600 rounded-full px-2 text-xs">{incidentCount()}</span>
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="rdos" className="space-y-10">

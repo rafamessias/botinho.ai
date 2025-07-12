@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers"
 import { fetchContentApi } from "./fetch-content-api";
-import { User, ApiResponse, CompanyMember } from "../types/strapi";
+import { User, ApiResponse, CompanyMember, ProjectUser } from "../types/strapi";
 export async function getUserMe() {
     const cookieStore = await cookies();
     const jwt = cookieStore.get("jwt");
@@ -28,11 +28,17 @@ export async function getUserMe() {
 
     let userData: User = user.data;
 
-    if (user.data?.type === "companyUser") {
-        const companyMember = await fetchContentApi<CompanyMember[]>(`company-members?filters[user][id][$eq]=${user.data.id}`);
+    if (userData.type === "companyUser") {
+        const companyMember = await fetchContentApi<CompanyMember[]>(`company-members?filters[user][id][$eq]=${userData.id}`);
 
         if (companyMember.success && companyMember.data) {
             userData.companyMember = companyMember.data[0];
+        }
+    } else if (userData.type === "projectUser") {
+        const projectUser = await fetchContentApi<ProjectUser[]>(`project-users?populate[0]=project&filters[email][$eq]=${userData.email}`);
+
+        if (projectUser.success && projectUser.data) {
+            userData.projectUser = projectUser.data;
         }
     }
 

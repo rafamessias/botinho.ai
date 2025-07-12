@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { ProjectSelect } from '@/components/rdo/form/ProjectSelect';
+import { RDODatePicker } from '@/components/rdo/form/RDODatePicker';
 import { Project } from '@/components/types/strapi';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { useLoading } from '@/components/LoadingProvider';
@@ -23,14 +24,17 @@ const statusOptions = [
 type FormData = {
     project: Project;
     incidentStatus: string;
+    date: string;
     description: string;
     media: File[] | null;
 };
 
-export default function CreateIncidentForm({ projects }: { projects: Project[] }) {
+export default function CreateIncidentForm({ projects, project }: { projects: Project[], project: string }) {
     const router = useRouter();
     const t = useTranslations('incident');
     const { setIsLoading } = useLoading();
+
+    const initialProject = project ? (projects.filter((p: Project) => p.documentId === project)[0] || projects[0]) : projects[0];
 
     const {
         control,
@@ -40,8 +44,9 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
         register,
     } = useForm<FormData>({
         defaultValues: {
-            project: projects.length > 0 ? projects[0] : undefined,
+            project: initialProject,
             incidentStatus: statusOptions[0],
+            date: new Date().toISOString(),
             description: '',
             media: null,
         },
@@ -114,6 +119,24 @@ export default function CreateIncidentForm({ projects }: { projects: Project[] }
                     )}
                 />
             </div>
+
+            {/* Date */}
+            <Controller
+                name="date"
+                control={control}
+                rules={{ required: t('date.required') }}
+                render={({ field }) => (
+                    <div>
+                        <RDODatePicker
+                            value={field.value}
+                            onChange={field.onChange}
+                        />
+                        {errors.date && (
+                            <span className="text-red-500 text-xs mt-1">{errors.date.message as string}</span>
+                        )}
+                    </div>
+                )}
+            />
 
             {/* Incident Description */}
             <div>

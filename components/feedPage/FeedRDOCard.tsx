@@ -15,7 +15,7 @@ import { updateRDOStatus } from '@/components/actions/rdo-action';
 import { useLoading } from '@/components/LoadingProvider';
 import { toast } from 'sonner';
 import { getClientInfo } from '@/components/approval/approval-audit';
-import { useUser } from '../UserProvider';
+import { useUser } from '@/components/UserProvider';
 
 const getWeatherIcon = (condition: string | null) => {
     if (!condition) return null;
@@ -36,14 +36,16 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const { user: userAuth } = useUser();
     const { setIsLoading } = useLoading();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
     const t = useTranslations('rdo.rdoCard');
     const userName = rdo.userName;
+    const projectId = (typeof rdo.project === 'object' ? rdo.project.id : rdo.project) as number || 0;
 
-    const handleStatusUpdate = async (status: 'Approved' | 'Rejected') => {
+    const { isCompanyUser, companyMemberCanApprove, projectUserCanApprove } = useUser();
+
+    const handleStatusUpdate = async (status: 'pendingApproval' | 'Approved' | 'Rejected') => {
         if (!rdo.documentId) return;
 
         try {
@@ -68,7 +70,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
         <Card className="p-6 space-y-4">
             <CardHeader className="p-0 relative">
                 <div className="absolute top-0 right-0 w-full flex justify-end items-center gap-2 -mt-2">
-                    {userAuth?.type === 'companyUser' && (
+                    {isCompanyUser && (
                         <TooltipProvider>
                             <Tooltip delayDuration={0}>
                                 <TooltipTrigger asChild>
@@ -182,7 +184,20 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                     }>{t(rdo.rdoStatus)}</Badge>
                 </div>
                 <div className="flex items-center justify-end w-full gap-2">
-                    {rdo.rdoStatus === 'draft' && (
+                    {(rdo.rdoStatus === 'draft' || rdo.rdoStatus === 'Rejected') && companyMemberCanApprove && (
+                        <>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors"
+                                onClick={() => handleStatusUpdate('pendingApproval')}
+                            >
+                                <Check className="w-4 h-4 mr-1" />
+                                {t('actions.approve')}
+                            </Button>
+                        </>
+                    )}
+                    {(rdo.rdoStatus === 'pendingApproval' && projectUserCanApprove(projectId)) && (
                         <>
                             <Button
                                 variant="outline"

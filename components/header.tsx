@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation'
 import { LanguageSwitch } from "@/components/language-switch"
 
 export default function Header() {
-  const { user, setUser } = useUser();
+  const { user, setUser, companyMemberCanPost, companyMemberIsAdmin } = useUser();
   const { setIsLoading } = useLoading();
   const [userName, setUserName] = useState('');
   const [companyId, setCompanyId] = useState<string | null>(null);
@@ -54,7 +54,7 @@ export default function Header() {
         </div>
         <div className="flex items-center gap-4">
           {/* Only show create button for non-project users */}
-          {user.company && !isProjectUser && (
+          {companyMemberCanPost && !isProjectUser && (
             <DropdownMenu open={createDropdownOpen} onOpenChange={setCreateDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -98,7 +98,7 @@ export default function Header() {
               <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
                 <Link href="/profile" className="w-full">{t('profile')}</Link>
               </DropdownMenuItem>
-              {!isProjectUser && (
+              {!isProjectUser && companyMemberIsAdmin && (
                 <>
                   <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
                     <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>

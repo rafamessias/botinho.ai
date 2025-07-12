@@ -6,8 +6,8 @@ import { Project } from '@/components/types/strapi';
 import { EmptyState } from '@/components/shared/empty-state';
 import { RestrictProjectUsers } from '@/components/shared/restrict-project-users';
 
-export default async function IncidentCreatePage({ searchParams }: { searchParams: Promise<{ locale: string }> }) {
-    const { locale } = await searchParams;
+export default async function IncidentCreatePage({ searchParams }: { searchParams: Promise<{ locale: string, project: string }> }) {
+    const { locale, project } = await searchParams;
     const t = await getTranslations({ locale, namespace: 'incident' });
 
     const projectsResponse = await fetchContentApi<Project[]>('projects?filters[projectStatus][$in][0]=active&filters[projectStatus][$in][1]=wip', {
@@ -40,7 +40,7 @@ export default async function IncidentCreatePage({ searchParams }: { searchParam
     return (
         <RestrictProjectUsers>
             <ContainerApp title={t('title')} showBackButton={true}>
-                <CreateIncidentForm projects={projects} />
+                <CreateIncidentForm projects={projects} project={project} />
             </ContainerApp>
         </RestrictProjectUsers>
     );

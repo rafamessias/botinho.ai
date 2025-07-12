@@ -4,24 +4,29 @@ import { Incident, StrapiImage, User, Project } from '@/components/types/strapi'
 import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Share2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Clock, Pencil, Share2 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/components/ui/tooltip';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
 import { CommentsSection } from '@/components/shared/comments-section';
 import { useUser } from '@/components/UserProvider';
+import { updateIncidentStatus } from '@/components/actions/incident-action';
+import { getClientInfo } from '@/components/approval/approval-audit';
+import { useLoading } from '@/components/LoadingProvider';
 
 export default function IncidentView({ incident }: { incident: Incident }) {
     const t = useTranslations('incident.view');
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
-    const { user: userAuth } = useUser();
+    const { user: userAuth, isCompanyUser } = useUser();
+    const router = useRouter();
+    const { setIsLoading } = useLoading();
 
     const userName = incident.userName;
     const project = incident.project as Project;
@@ -30,6 +35,27 @@ export default function IncidentView({ incident }: { incident: Incident }) {
     const projectName = typeof incident.project === 'object' && incident.project ? incident.project.name : '';
     const projectDocumentId = typeof incident.project === 'object' && incident.project ? incident.project.documentId : '';
     const projectId = (typeof incident.project === 'object' && incident.project ? incident.project.id : null) || null;
+
+    const handleStatusUpdate = async (status: 'open' | 'wip' | 'closed' | 'draft') => {
+        if (!incident.documentId) return;
+
+        try {
+            setIsLoading(true);
+            const clientInfo = await getClientInfo();
+            const response = await updateIncidentStatus(incident.documentId, status, clientInfo);
+            if (response.success) {
+                toast.success(t(`actions.UpdatedSuccess`));
+                router.refresh();
+            } else {
+                toast.error(response.error || t(`actions.UpdatedError`));
+            }
+        } catch (error) {
+            console.error('Error updating incident status:', error);
+            toast.error(t(`actions.UpdatedError`));
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const getStatusLabel = (status: string) => {
         return t(`status.${status}`);
@@ -45,36 +71,6 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                 return 'secondary';
             case 'closed':
                 return 'default';
-            default:
-                return 'outline';
-        }
-    };
-
-    const getPriorityLabel = (priority: string) => {
-        switch (priority) {
-            case 'low':
-                return t('priority.low');
-            case 'medium':
-                return t('priority.medium');
-            case 'high':
-                return t('priority.high');
-            case 'critical':
-                return t('priority.critical');
-            default:
-                return priority;
-        }
-    };
-
-    const getPriorityVariant = (priority: string) => {
-        switch (priority) {
-            case 'low':
-                return 'outline';
-            case 'medium':
-                return 'secondary';
-            case 'high':
-                return 'destructive';
-            case 'critical':
-                return 'destructive';
             default:
                 return 'outline';
         }
@@ -134,7 +130,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                                 )}
                             </div>
                             <div className="text-xs text-muted-foreground mt-1">
-                                {format(new Date(incident.createdAt || ''), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                                {format(new Date(incident.date as string), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                             </div>
                         </div>
                     </div>
@@ -160,6 +156,66 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                     <div className="font-semibold text-sm mt-6 mb-1">{t('description')}</div>
                     <div className="text-sm text-gray-800">{incident.description}</div>
                 </div>
+
+                <div className="flex items-center justify-end w-full gap-2">
+                    {incident.incidentStatus === 'draft' && isCompanyUser && (
+                        <>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="border-red-200 text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition-colors"
+                                onClick={() => handleStatusUpdate('open')}
+                            >
+                                <AlertTriangle className="w-4 h-4 mr-1" />
+                                {t('actions.open')}
+                            </Button>
+
+                        </>
+                    )}
+                    {incident.incidentStatus === 'open' && isCompanyUser && (
+                        <>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleStatusUpdate('draft')}
+                            >
+                                <AlertTriangle className="w-4 h-4 mr-1" />
+                                {t('actions.draft')}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors"
+                                onClick={() => handleStatusUpdate('wip')}
+                            >
+                                <Clock className="w-4 h-4 mr-1" />
+                                {t('actions.wip')}
+                            </Button>
+                        </>
+                    )}
+                    {incident.incidentStatus === 'wip' && isCompanyUser && (
+                        <>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleStatusUpdate('draft')}
+                            >
+                                <AlertTriangle className="w-4 h-4 mr-1" />
+                                {t('actions.draft')}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors"
+                                onClick={() => handleStatusUpdate('closed')}
+                            >
+                                <CheckCircle className="w-4 h-4 mr-1" />
+                                {t('actions.close')}
+                            </Button>
+                        </>
+                    )}
+                </div>
+
 
                 {/* Comments section */}
                 <div className="rounded-xl pt-2 pb-4">

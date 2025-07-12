@@ -8,12 +8,20 @@ import { toast } from "sonner";
 import { sendEmailConfirmationAction } from '@/components/actions/send-email-confirmation';
 import { useUser } from '@/components/UserProvider';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
+
+const initialCountdown = 1;
 
 export default function SignUpCheckEmailPage() {
     const t = useTranslations('auth');
-    const [countdown, setCountdown] = useState(60);
+    const [countdown, setCountdown] = useState(initialCountdown);
     const [isResending, setIsResending] = useState(false);
     const { user } = useUser();
+    // Get email param from URL using Next.js features
+
+    const searchParams = typeof window !== 'undefined' ? useSearchParams() : null;
+    const emailFromUrl = searchParams ? searchParams.get('email') : null;
+
 
     useEffect(() => {
         if (countdown > 0) {
@@ -25,14 +33,15 @@ export default function SignUpCheckEmailPage() {
     }, [countdown]);
 
     const handleResendEmail = async () => {
-        if (!user?.email) return;
+        if (!user?.email && !emailFromUrl) return;
 
         setIsResending(true);
         try {
-            const result = await sendEmailConfirmationAction(user.email);
+            const result = await sendEmailConfirmationAction(user?.email || emailFromUrl);
+            console.log("result", result);
             if (result.success) {
                 toast.success(result.message);
-                setCountdown(60);
+                setCountdown(initialCountdown);
             } else {
                 toast.error(result.error);
             }

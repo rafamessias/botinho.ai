@@ -480,6 +480,21 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 )}
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="font-semibold">{t('activeProjectCount') || 'Active Projects'}</label>
+                    <div className="mt-1 px-3 py-2 text-sm bg-gray-50 border rounded-md text-gray-700">
+                        {company.activeProjectCount || 0}
+                    </div>
+                </div>
+                <div>
+                    <label className="font-semibold">{t('projectCount') || 'Total Projects'}</label>
+                    <div className="mt-1 px-3 py-2 text-sm bg-gray-50 border rounded-md text-gray-700">
+                        {company.projectCount || 0}
+                    </div>
+                </div>
+            </div>
+
             <div className="flex justify-end gap-4 mt-8">
                 {hasChanges ? (
                     <Button

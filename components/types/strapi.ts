@@ -60,6 +60,7 @@ export interface User {
     avatar?: StrapiImage | FileList | File | null;
     company?: Company | number;
     companyMember?: CompanyMember | null;
+    projectUser?: ProjectUser[];
     type?: 'companyUser' | 'projectUser';
     language?: 'pt-BR' | 'en';
     createdAt?: Date;
@@ -81,6 +82,8 @@ export interface Company {
     users?: User[];
     members?: CompanyMember[];
     projects?: Project[];
+    activeProjectCount?: number;
+    projectCount?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -123,7 +126,9 @@ export interface Project {
     address: string;
     projectStatus: ProjectStatus;
     rdoCount?: number;
+    rdoCountDraft?: number;
     incidentCount?: number;
+    incidentCountDraft?: number;
     photoCount?: number;
     image?: StrapiImage | FileList | null;
     company: Company | number;
@@ -140,13 +145,13 @@ export interface ProjectUser {
     id?: number;
     documentId?: string;
     project: Project | number;
+    projectUserStatus?: string;
+    company?: Company | number;
+    user?: User | number;
     name: string;
     email: string;
     phone: string;
     canApprove?: boolean;
-    canPost?: boolean;
-    isAdmin?: boolean;
-    isOwner?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -203,7 +208,7 @@ export interface Incident {
     incidentStatus: 'draft' | 'open' | 'wip' | 'closed';
     priority?: number;
     commentCount?: number;
-    date?: Date;
+    date?: Date | string;
     comments?: Comment[];
     approvals?: Approval[];
     createdAt?: Date;

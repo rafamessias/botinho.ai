@@ -28,48 +28,39 @@ export async function deleteProfileAction() {
         }
 
         // 1. Remove user from all company memberships
-
-        const companyMembersResponse = await fetchContentApi<CompanyMember[]>(`company-members?filters[userId][$eq]=${user.id}`, {
-            method: 'GET'
-        });
-
-        if (companyMembersResponse.success && companyMembersResponse.data) {
-            for (const member of companyMembersResponse.data) {
-                await fetchContentApi(`company-members/${member.documentId}`, {
-                    method: 'DELETE'
+        /*
+                const companyMembersResponse = await fetchContentApi<CompanyMember[]>(`company-members?filters[userId][$eq]=${user.id}`, {
+                    method: 'GET'
                 });
-            }
-        }
-
-        // 2. Remove user from all project users (filter by email since ProjectUser has email field)
-        const projectUsersResponse = await fetchContentApi<ProjectUser[]>(`project-users?filters[email][$eq]=${user.email}`, {
-            method: 'GET'
-        });
-
-        if (projectUsersResponse.success && projectUsersResponse.data) {
-            for (const projectUser of projectUsersResponse.data) {
-                await fetchContentApi(`project-users/${projectUser.documentId}`, {
-                    method: 'DELETE'
-                });
-            }
-        }
-
-        // 3. Delete the user record
-        const deactivationTimestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        const deactivatedValue = `${user.email}_deactivated_${deactivationTimestamp}`;
-
-        console.log("deactivatedValue", deactivatedValue);
-
-        console.log("user.documentId", user.documentId);
-        const deleteUserResponse = await fetchContentApi(`users/${user.documentId}`, {
-            method: 'PUT',
-            body: {
-                data: {
-                    blocked: true,
-                    email: deactivatedValue
+        
+                if (companyMembersResponse.success && companyMembersResponse.data) {
+                    for (const member of companyMembersResponse.data) {
+                        await fetchContentApi(`company-members/${member.documentId}`, {
+                            method: 'DELETE'
+                        });
+                    }
                 }
-            }
+        
+                // 2. Remove user from all project users (filter by email since ProjectUser has email field)
+                const projectUsersResponse = await fetchContentApi<ProjectUser[]>(`project-users?filters[email][$eq]=${user.email}`, {
+                    method: 'GET'
+                });
+        
+                if (projectUsersResponse.success && projectUsersResponse.data) {
+                    for (const projectUser of projectUsersResponse.data) {
+                        await fetchContentApi(`project-users/${projectUser.documentId}`, {
+                            method: 'DELETE'
+                        });
+                    }
+                }
+        */
+        // 3. Delete the user record
+        console.log("user.id", user.id);
+        const deleteUserResponse = await fetchContentApi(`handle-user/${user.id}`, {
+            method: 'DELETE'
         });
+
+        console.log("deleteUserResponse", deleteUserResponse);
 
         if (!deleteUserResponse.success) {
             console.log(`error deleting user`, deleteUserResponse?.error);

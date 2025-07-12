@@ -87,7 +87,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
 
     const handleEditProjectUser = async (user: CompanyMemberDialog) => {
         try {
-            console.log("editing project user", user);
+
             setIsLoading(true);
             const response: any = await updateProjectUser(project.id as number, user.documentId as string, {
                 name: user.name,
@@ -132,9 +132,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     return false;
                 }
             }
-            console.log("user", user);
             initialUsers = initialUsers.filter((u: any) => u.email !== user.email);
-            console.log("initialUsers", initialUsers);
 
             toast.success(t('userRemoved'));
             return true;

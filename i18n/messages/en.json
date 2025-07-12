@@ -157,7 +157,8 @@
             "requestAnother": "You can request another verification email in:",
             "seconds": "seconds",
             "resend": "Resend Verification Email",
-            "sending": "Sending..."
+            "sending": "Sending new verification email...",
+            "error": "Failed to send new verification email."
         },
         "success": {
             "title": "Email Verified Successfully!",
@@ -228,6 +229,8 @@
         "cityPlaceholder": "e.g. São Paulo",
         "address": "Address",
         "addressPlaceholder": "Avenida Paulista 4550",
+        "activeProjectCount": "Active Projects",
+        "projectCount": "Total Projects",
         "companyTeam": "Company Team",
         "companyTeamHint": "Add your team to work on the platform",
         "addTeam": "Add",
@@ -587,6 +590,13 @@
             "high": "High",
             "critical": "Critical"
         },
+        "date": {
+            "label": "Incident Date",
+            "hint": "What date will this incident be for",
+            "placeholder": "dd/mm/yyyy",
+            "selectDate": "Select date",
+            "required": "Date is required."
+        },
         "description": {
             "label": "Incident Description",
             "hint": "Describe what happened in the field below",
@@ -603,7 +613,8 @@
             "cancel": "Cancel",
             "submit": "Submit",
             "update": "Update",
-            "updating": "Updating..."
+            "updating": "Updating...",
+            "draft": "Draft"
         },
         "success": "Incident submitted successfully!",
         "error": "Failed to submit incident",
@@ -631,6 +642,14 @@
                 "medium": "Medium",
                 "high": "High",
                 "critical": "Critical"
+            },
+            "actions": {
+                "open": "Open",
+                "wip": "In Progress",
+                "close": "Close",
+                "draft": "Draft",
+                "UpdatedSuccess": "Incident updated successfully",
+                "UpdatedError": "Error updating incident"
             }
         },
         "incidentCard": {
@@ -659,7 +678,8 @@
                 "wip": "In Progress",
                 "close": "Close",
                 "UpdatedSuccess": "Incident updated successfully",
-                "UpdatedError": "Error updating incident"
+                "UpdatedError": "Error updating incident",
+                "draft": "Draft"
             }
         }
     },

@@ -158,7 +158,8 @@
             "requestAnother": "Você pode solicitar outro email de verificação em:",
             "seconds": "segundos",
             "resend": "Reenviar Email de Verificação",
-            "sending": "Enviando..."
+            "sending": "Enviando novo email de verificação...",
+            "error": "Falha ao enviar novo email de verificação."
         },
         "success": {
             "title": "Email Verificado com Sucesso!",
@@ -229,6 +230,8 @@
         "cityPlaceholder": "Ex.: São Paulo",
         "address": "Endereço da Empresa",
         "addressPlaceholder": "Avenida Paulista 4550",
+        "activeProjectCount": "Projetos Ativos",
+        "projectCount": "Total de Projetos",
         "companyTeam": "Equipe da Empresa",
         "companyTeamHint": "Adicione sua equipe para trabalhar na plataforma",
         "addTeam": "Adicionar",
@@ -588,6 +591,13 @@
             "high": "Alta",
             "critical": "Crítica"
         },
+        "date": {
+            "label": "Data da Ocorrência",
+            "hint": "Qual a data da ocorrência",
+            "placeholder": "dd/mm/yyyy",
+            "selectDate": "Selecionar data",
+            "required": "Data é obrigatória."
+        },
         "description": {
             "label": "Descrição da Ocorrência",
             "hint": "Descreva o que aconteceu no campo abaixo",
@@ -604,7 +614,8 @@
             "cancel": "Cancelar",
             "submit": "Enviar",
             "update": "Atualizar",
-            "updating": "Atualizando..."
+            "updating": "Atualizando...",
+            "draft": "Rascunho"
         },
         "success": "Ocorrência enviada com sucesso!",
         "error": "Falha ao enviar Ocorrência",
@@ -632,6 +643,21 @@
                 "medium": "Média",
                 "high": "Alta",
                 "critical": "Crítica"
+            },
+            "date": {
+                "label": "Data da Ocorrência",
+                "hint": "Qual a data da ocorrência",
+                "placeholder": "dd/mm/yyyy",
+                "selectDate": "Selecionar data",
+                "required": "Data é obrigatória."
+            },
+            "actions": {
+                "open": "Abrir",
+                "wip": "Em Andamento",
+                "close": "Fechar",
+                "draft": "Rascunho",
+                "UpdatedSuccess": "Ocorrência atualizada com sucesso",
+                "UpdatedError": "Erro ao atualizar ocorrência"
             }
         },
         "incidentCard": {
@@ -660,7 +686,8 @@
                 "wip": "Em Andamento",
                 "close": "Fechar",
                 "UpdatedSuccess": "Ocorrência atualizada com sucesso",
-                "UpdatedError": "Erro ao atualizar ocorrência"
+                "UpdatedError": "Erro ao atualizar ocorrência",
+                "draft": "Rascunho"
             }
         }
     },

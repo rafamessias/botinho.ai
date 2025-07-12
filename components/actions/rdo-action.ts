@@ -76,7 +76,7 @@ export async function createRDO(data: RDOData) {
                     workforce: data.labor,
                 }
             },
-            revalidateTag: [`project:${data.project.id}`, `rdos`]
+            revalidateTag: [`project:${data.project.documentId}`, `rdos`]
         });
 
         if (!rdoResponse.success) {
@@ -121,7 +121,7 @@ export async function createRDO(data: RDOData) {
     }
 }
 
-export async function updateRDOStatus(rdoId: string, status: 'Approved' | 'Rejected', auditData?: Approval) {
+export async function updateRDOStatus(rdoId: string, status: 'pendingApproval' | 'Approved' | 'Rejected', auditData?: Approval) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;

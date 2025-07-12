@@ -34,7 +34,10 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
 
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
     const projectDocumentId = typeof rdo.project === 'object' ? rdo.project.documentId : '';
-    const projectId = (typeof rdo.project === 'object' ? rdo.project.id : null) || null;
+    const projectId = (typeof rdo.project === 'object' ? rdo.project.id : 0) || 0;
+
+    const { companyMemberCanApprove, projectUserCanApprove } = useUser();
+
 
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
@@ -45,8 +48,9 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
         }
         try {
             setIsLoading(true);
+            const approvalStatus = rdo.rdoStatus === 'draft' || rdo.rdoStatus === 'Rejected' ? 'pendingApproval' : 'Approved';
             const clientInfo = await getClientInfo();
-            const response = await updateRDOStatus(rdo.documentId || '', 'Approved', clientInfo);
+            const response = await updateRDOStatus(rdo.documentId || '', approvalStatus, clientInfo);
             if (response.success) {
                 toast.success(t('actions.approveSuccess'));
                 router.refresh();
@@ -67,8 +71,9 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
         }
         try {
             setIsLoading(true);
+            const rejectionStatus = rdo.rdoStatus === 'pendingApproval' ? 'Rejected' : 'pendingApproval';
             const clientInfo = await getClientInfo();
-            const response = await updateRDOStatus(rdo.documentId || '', 'Rejected', clientInfo);
+            const response = await updateRDOStatus(rdo.documentId || '', rejectionStatus, clientInfo);
             if (response.success) {
                 toast.success(t('actions.rejectSuccess'));
                 router.refresh();
@@ -248,7 +253,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                     </div>
                     {/* Aprovar/Rejeitar */}
                     <div className="flex w-full sm:justify-end gap-2">
-                        {rdo.rdoStatus === 'draft' && (
+                        {rdo.rdoStatus === 'pendingApproval' && projectUserCanApprove(projectId) && (
                             <>
                                 <Button
                                     variant="outline"
@@ -258,6 +263,19 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                                     <X className="w-4 h-4 mr-1" />
                                     {t('actions.reject')}
                                 </Button>
+                                <Button
+                                    variant="outline"
+                                    className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors flex-1 sm:flex-none"
+                                    onClick={handleApprove}
+                                >
+                                    <Check className="w-4 h-4 mr-1" />
+                                    {t('actions.approve')}
+                                </Button>
+                            </>
+                        )}
+
+                        {(rdo.rdoStatus === 'Rejected' || rdo.rdoStatus === 'draft') && companyMemberCanApprove && (
+                            <>
                                 <Button
                                     variant="outline"
                                     className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors flex-1 sm:flex-none"

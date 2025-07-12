@@ -69,8 +69,12 @@ export function SignInForm({
             } else {
                 const message = response.error || t('signInError');
                 if (message.includes("Your account email is not confirmed")) {
-                    router.push('/sign-up/check-email');
+                    router.push(`/sign-up/check-email?email=${data.email}`);
                 } else if (message.includes("Invalid identifier or password")) {
+                    toast.error(t('invalidCredentials'));
+                } else if (message.includes("Your account has been blocked by an administrator")) {
+                    toast.error(t('invalidCredentials'));
+                } else if (message.includes("Internal Server Error")) {
                     toast.error(t('invalidCredentials'));
                 } else {
                     toast.error(message);
@@ -83,6 +87,10 @@ export function SignInForm({
             if (message.includes("Your account email is not confirmed")) {
                 router.push('/sign-up/check-email');
             } else if (message.includes("Invalid identifier or password")) {
+                toast.error(t('invalidCredentials'));
+            } else if (message.includes("Your account has been blocked by an administrator")) {
+                toast.error(t('invalidCredentials'));
+            } else if (message.includes("Internal Server Error")) {
                 toast.error(t('invalidCredentials'));
             } else {
                 toast.error(message);

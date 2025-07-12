@@ -38,12 +38,12 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
     const router = useRouter();
     const { setIsLoading } = useLoading();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
-    const { user: userAuth } = useUser();
+    const { user: userAuth, isCompanyUser } = useUser();
 
     const t = useTranslations('incident.incidentCard');
     const userName = incident.userName;
 
-    const handleStatusUpdate = async (status: 'open' | 'wip' | 'closed') => {
+    const handleStatusUpdate = async (status: 'open' | 'wip' | 'closed' | 'draft') => {
         if (!incident.documentId) return;
 
         try {
@@ -199,7 +199,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                     </Badge>
                 </div>
                 <div className="flex items-center justify-end w-full gap-2">
-                    {incident.incidentStatus === 'draft' && (
+                    {incident.incidentStatus === 'draft' && isCompanyUser && (
                         <>
                             <Button
                                 variant="outline"
@@ -210,36 +210,39 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                                 <AlertTriangle className="w-4 h-4 mr-1" />
                                 {t('actions.open')}
                             </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors"
-                                onClick={() => handleStatusUpdate('wip')}
-                            >
-                                <Clock className="w-4 h-4 mr-1" />
-                                {t('actions.wip')}
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors"
-                                onClick={() => handleStatusUpdate('closed')}
-                            >
-                                <CheckCircle className="w-4 h-4 mr-1" />
-                                {t('actions.close')}
-                            </Button>
+
                         </>
                     )}
-                    {incident.incidentStatus === 'open' && (
+                    {incident.incidentStatus === 'open' && isCompanyUser && (
                         <>
                             <Button
                                 variant="outline"
                                 size="sm"
+                                onClick={() => handleStatusUpdate('draft')}
+                            >
+                                <AlertTriangle className="w-4 h-4 mr-1" />
+                                {t('actions.draft')}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 className="border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors"
                                 onClick={() => handleStatusUpdate('wip')}
                             >
                                 <Clock className="w-4 h-4 mr-1" />
                                 {t('actions.wip')}
+                            </Button>
+                        </>
+                    )}
+                    {incident.incidentStatus === 'wip' && isCompanyUser && (
+                        <>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleStatusUpdate('draft')}
+                            >
+                                <AlertTriangle className="w-4 h-4 mr-1" />
+                                {t('actions.draft')}
                             </Button>
                             <Button
                                 variant="outline"
@@ -251,17 +254,6 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                                 {t('actions.close')}
                             </Button>
                         </>
-                    )}
-                    {incident.incidentStatus === 'wip' && (
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors"
-                            onClick={() => handleStatusUpdate('closed')}
-                        >
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            {t('actions.close')}
-                        </Button>
                     )}
                 </div>
             </CardFooter>

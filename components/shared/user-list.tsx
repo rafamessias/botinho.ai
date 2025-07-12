@@ -72,8 +72,7 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
     };
 
     const handleEditUser = async (index: number, updatedUser: CompanyMemberDialog) => {
-        console.log("editing user", updatedUser);
-        console.log("users", users);
+
         if (onEditUser) {
             // Preserve the documentId from the existing user
             const existingUser = users[index];

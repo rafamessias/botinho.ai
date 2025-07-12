@@ -84,9 +84,11 @@ export async function signIn(email: string, password: string) {
             }),
         });
 
-        const responseData = await response.json();
+        const responseData: any = await response.json();
 
-        if (!response.ok) {
+        console.log("responseData", responseData);
+
+        if (responseData.error) {
             return {
                 success: false,
                 error: responseData.error?.message ||

@@ -1,8 +1,10 @@
-'use server';
+"use server";
 
 import { fetchContentApi } from "./fetch-content-api";
+import { getTranslations } from "next-intl/server";
 
 export async function sendEmailConfirmationAction(email: string) {
+    const t = await getTranslations('auth');
     try {
         const res: any = await fetchContentApi('auth/send-email-confirmation', {
             method: "POST",
@@ -13,12 +15,12 @@ export async function sendEmailConfirmationAction(email: string) {
         if (res.success) {
             return {
                 success: true,
-                message: "Verification email has been sent. Please check your inbox."
+                message: t('checkEmail.sending')
             };
         } else {
             return {
                 success: false,
-                error: res.error?.message || "Failed to send verification email."
+                error: res.error?.message || t('checkEmail.error')
             };
         }
     } catch (error) {

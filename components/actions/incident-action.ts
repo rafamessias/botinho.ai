@@ -24,11 +24,12 @@ export async function createIncident(data: Incident) {
                 data: {
                     project: project.id,
                     projectDocumentId: project.documentId,
+                    date: data.date,
                     incidentStatus: data.incidentStatus,
                     description: data.description,
                 }
             },
-            revalidateTag: [`project:${project.id}`, `incidents`]
+            revalidateTag: [`project:${project.documentId}`, `incidents`]
         });
 
         if (!incidentResponse.success) {
@@ -64,7 +65,7 @@ export async function createIncident(data: Incident) {
         }
 
         revalidateTag(`incidents`);
-        revalidateTag(`project:${project.id}`);
+        revalidateTag(`project:${project.documentId}`);
 
         return { success: true, data: incidentResponse.data };
     } catch (error) {
@@ -198,7 +199,7 @@ export async function removeIncidentAttachments(fileIds: number[], documentId: s
     }
 }
 
-export async function updateIncidentStatus(documentId: string, status: 'open' | 'wip' | 'closed', clientInfo?: any) {
+export async function updateIncidentStatus(documentId: string, status: 'draft' | 'open' | 'wip' | 'closed', clientInfo?: any) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -214,7 +215,7 @@ export async function updateIncidentStatus(documentId: string, status: 'open' | 
                 body: {
                     data: {
                         incident: documentId,
-                        action: status === 'closed' ? 'Approved' : 'Rejected',
+                        action: status,
                         description: `Status updated to ${status}`,
                         ip_address: clientInfo.ip_address,
                         latitude: clientInfo.latitude,
