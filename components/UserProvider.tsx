@@ -8,6 +8,7 @@ import { User } from "./types/strapi";
 type UserContextType = {
     user: any;
     setUser: Dispatch<SetStateAction<any>>;
+    setLoading: Dispatch<SetStateAction<boolean>>;
     isCompanyUser: boolean;
     companyMemberCanApprove: boolean;
     companyMemberCanPost: boolean;
@@ -26,6 +27,7 @@ const LoadingLayer = () => (
 const UserContext = createContext<UserContextType>({
     user: null,
     setUser: () => { },
+    setLoading: () => { },
     isCompanyUser: false,
     companyMemberCanApprove: false,
     companyMemberCanPost: false,
@@ -63,42 +65,49 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
                         window.location.href = newPath;
                     }
                 }
-                setIsCompanyUser(userData?.companyMember ? true : false);
 
-                setCompanyMemberCanApprove(userData?.companyMember ? (
+                // Calculate all permissions synchronously
+                const isCompanyUser = userData?.companyMember ? true : false;
+                const companyMemberCanApprove = userData?.companyMember ? (
                     userData?.companyMember.canApprove ||
                     userData?.companyMember.isAdmin ||
                     userData?.companyMember.isOwner
-                ) : false);
-
-                setCompanyMemberCanPost(userData?.companyMember ? (
+                ) : false;
+                const companyMemberCanPost = userData?.companyMember ? (
                     userData?.companyMember.canPost ||
                     userData?.companyMember.isAdmin ||
                     userData?.companyMember.isOwner
-                ) : false);
-
-                setCompanyMemberIsAdmin(userData?.companyMember ? (
+                ) : false;
+                const companyMemberIsAdmin = userData?.companyMember ? (
                     userData?.companyMember.isAdmin ||
                     userData?.companyMember.isOwner
-                ) : false);
-
-                setProjectUserCanApprove((projectId: number) => {
+                ) : false;
+                const projectUserCanApprove = (projectId: number) => {
                     return userData?.projectUser ?
                         userData?.projectUser.some((pu: any) =>
                             pu.canApprove === true && pu.project.id === projectId
                         ) : false;
-                });
+                };
+
+                // Set all states at once
+                setIsCompanyUser(isCompanyUser);
+                setCompanyMemberCanApprove(companyMemberCanApprove);
+                setCompanyMemberCanPost(companyMemberCanPost);
+                setCompanyMemberIsAdmin(companyMemberIsAdmin);
+                setProjectUserCanApprove(projectUserCanApprove);
 
             } else {
                 //console.error(me.error);
                 setUser(null);
             }
+
+            // Only set loading to false after all permissions are calculated and set
             setLoading(false);
         })();
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, setUser, isCompanyUser, companyMemberCanApprove, companyMemberCanPost, companyMemberIsAdmin, projectUserCanApprove }}>
+        <UserContext.Provider value={{ user, setUser, setLoading, isCompanyUser, companyMemberCanApprove, companyMemberCanPost, companyMemberIsAdmin, projectUserCanApprove }}>
             {loading && <LoadingLayer />}
             {children}
         </UserContext.Provider>

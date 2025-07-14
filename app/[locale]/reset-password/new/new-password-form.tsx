@@ -21,7 +21,7 @@ interface NewPasswordFormValues {
 
 export default function NewPasswordForm() {
     const t = useTranslations('auth');
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<NewPasswordFormValues>();
+    const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<NewPasswordFormValues>();
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
@@ -29,8 +29,18 @@ export default function NewPasswordForm() {
     const router = useRouter();
     const { setUser } = useUser();
 
-    const searchParams = new URLSearchParams(window.location.search);
-    const code = searchParams.get('code');
+    // Use useEffect to safely access window and set code in form
+    useEffect(() => {
+        // Clean up user context when component mounts
+        setUser(null);
+
+        // Get token from URL and set as code in form
+        if (typeof window !== "undefined") {
+            const searchParams = new URLSearchParams(window.location.search);
+            const code = searchParams.get('token') || "";
+            setValue("code", code);
+        }
+    }, [setUser, setValue]);
 
     const onSubmit = async (data: NewPasswordFormValues) => {
         setIsLoading(true);
@@ -44,19 +54,16 @@ export default function NewPasswordForm() {
                 router.push('/');
                 router.refresh();
             } else {
+                console.log(result);
                 toast.error(result.error);
             }
         } catch (error) {
+            console.log(error);
             toast.error(error instanceof Error ? error.message : String(error));
         } finally {
             setIsLoading(false);
         }
     };
-
-    useEffect(() => {
-        // Clean up user context when component mounts
-        setUser(null);
-    }, [setUser]);
 
     return (
         <div className="flex items-center justify-center min-h-screen">
@@ -76,7 +83,6 @@ export default function NewPasswordForm() {
                                 id="code"
                                 type="text"
                                 placeholder={t('newPassword.codePlaceholder')}
-                                value={code || ""}
                                 disabled
                                 {...register("code", { required: t('newPassword.errors.codeRequired') })}
                             />

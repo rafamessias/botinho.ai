@@ -31,7 +31,7 @@ type FormData = {
 export default function ProfileForm() {
     const router = useRouter();
     const t = useTranslations('profile');
-    const { user, setUser } = useUser();
+    const { user, setUser, setLoading } = useUser();
     const { setIsLoading } = useLoading();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -75,7 +75,7 @@ export default function ProfileForm() {
             return;
         }
 
-        setIsLoading(true);
+        setLoading(true);
 
         try {
             // Split name into firstName and lastName
@@ -155,7 +155,7 @@ export default function ProfileForm() {
             console.error('Error updating profile:', error);
             toast.error(t('error'));
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
@@ -175,7 +175,7 @@ export default function ProfileForm() {
         }
 
         setIsDeleting(true);
-        setIsLoading(true);
+        setLoading(true);
 
         try {
             const result = await deleteProfileAction();
@@ -192,7 +192,7 @@ export default function ProfileForm() {
             toast.error(t('delete.error'));
         } finally {
             setIsDeleting(false);
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 

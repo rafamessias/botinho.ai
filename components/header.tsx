@@ -7,7 +7,6 @@ import { useTheme } from "next-themes"
 import { Logo } from "@/components/logo"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { useUser } from "@/components/UserProvider"
-import { useLoading } from "@/components/LoadingProvider"
 import { useState, useEffect } from "react"
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
@@ -15,7 +14,7 @@ import { LanguageSwitch } from "@/components/language-switch"
 
 export default function Header() {
   const { user, setUser, companyMemberCanPost, companyMemberIsAdmin } = useUser();
-  const { setIsLoading } = useLoading();
+  const { setLoading } = useUser();
   const [userName, setUserName] = useState('');
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
@@ -34,11 +33,11 @@ export default function Header() {
   }, [user]);
 
   const handleLogout = async () => {
-    setIsLoading(true); // Set loading state to true
+    setLoading(true); // Set loading state to true
     setUser(null); // Clear user context
     await fetch('/api/logout', { method: 'POST', credentials: 'include', cache: 'no-store' });
     router.push('/sign-in'); // Redirect to sign in page
-    setIsLoading(false); // Set loading state to false
+    //setLoading(false); // Set loading state to false
   };
 
   return user ? (

@@ -26,9 +26,11 @@ export async function setNewPasswordAction(code: string, password: string, passw
 
             return { success: true, message: "Your password has been reset. You can now sign in.", user: user?.data };
         } else {
+            console.log(res);
             return { success: false, error: res.error?.message || "Failed to reset password.", user: null };
         }
     } catch (error) {
+        console.log(error);
         return { success: false, error: error instanceof Error ? error.message : String(error), user: null };
     }
 }

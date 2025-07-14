@@ -39,16 +39,17 @@ export function SignInForm({
     const [isLoading, setIsLoading] = useState(false);
     const [isNavigating, setIsNavigating] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const { setUser } = useUser();
+    const { setUser, setLoading } = useUser();
     const { setIsLoading: setGlobalLoading } = useLoading();
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm<SignInFormValues>();
     const emailValue = watch('email');
 
     const onSubmit = async (data: SignInFormValues) => {
-        setIsLoading(true);
-        setGlobalLoading(true);
+        //setIsLoading(true);
+        //setGlobalLoading(true);
 
+        setLoading(true);
         try {
             const response = await signIn(data.email.toLowerCase(), data.password);
 
@@ -95,16 +96,19 @@ export function SignInForm({
             } else {
                 toast.error(message);
             }
-            setIsNavigating(false);
-            setGlobalLoading(false);
+            //setIsNavigating(false);
+            //setGlobalLoading(false);
+            setLoading(false);
         } finally {
-            setIsLoading(false);
+            //setIsLoading(false);
+            setLoading(false);
         }
     };
 
     const handleGoogleSignIn = async () => {
-        setIsLoading(true);
-        setGlobalLoading(true);
+        //setIsLoading(true);
+        //setGlobalLoading(true);
+        setLoading(true);
         try {
             // TODO: Implement Google sign in logic
             toast.success(t('googleSignInSuccess'));
@@ -112,24 +116,27 @@ export function SignInForm({
             const message = error instanceof Error ? error.message : String(error);
             toast.error(message);
         } finally {
-            setIsLoading(false);
-            setGlobalLoading(false);
+            //setIsLoading(false);
+            //setGlobalLoading(false);
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         // Clean up user context when component mounts
         setUser(null);
-        setGlobalLoading(false);
+        //setGlobalLoading(false);
+        setLoading(false);
 
-    }, [setUser, setGlobalLoading, pathname]);
+    }, [setUser, setLoading, pathname]);
 
     // Clean up loading state when component unmounts
     useEffect(() => {
         return () => {
-            setGlobalLoading(false);
+            setLoading(false);
+            //setGlobalLoading(false);
         };
-    }, [setGlobalLoading]);
+    }, [setLoading]);
 
     return (
         <Card className="max-w-md py-12 px-0 sm:px-6 grid gap-6 relative">
