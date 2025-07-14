@@ -51,8 +51,9 @@ export async function fetchContentApi<T>(
     const response = await fetch(url.toString(), fetchOptions);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      return { success: false, data: null, meta: null, error: `fetchContentApi error: ${response.status} ${response.statusText} - ${errorText}` } as ApiResponse<T>;
+      const errorText = await response.json();
+      console.log(`fetchContentApi error: ${JSON.stringify(errorText)}`);
+      return { success: false, data: null, meta: null, error: errorText.error.message } as ApiResponse<T>;
     }
 
     // Revalidate AFTER a successful mutation

@@ -6,6 +6,8 @@ import { fetchContentApi } from './fetch-content-api';
 import { getUserMeLoader } from '../services/get-user-me-loader';
 import { ApiResponse, Company, CompanyMember, CompanyMemberDialog, User } from '@/components/types/strapi';
 
+const COMPANY_USER_ROLE = 3;
+
 
 export async function createCompany(data: Company, members: CompanyMemberDialog[], image: FormData) {
 
@@ -235,7 +237,11 @@ export async function createCompanyMember(user: any) {
         }
 
         // First, create or get the user
-        const pwd = Math.random().toString(36).slice(-8); // Generate random password
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+        let pwd = '';
+        for (let i = 0; i < 16; i++) {
+            pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
         const userResponse: any = await fetchContentApi<User>(`auth/local/register`, {
             method: 'POST',
             body: {
@@ -245,16 +251,21 @@ export async function createCompanyMember(user: any) {
                 firstName: user.user.firstName,
                 lastName: user.user.lastName,
                 phone: user.user.phone,
-                company: currentUser.company
+                company: currentUser.company,
+                type: 'companyUser',
+                companyName: user.companyName,
+                role: COMPANY_USER_ROLE
             }
         });
 
         let userData: User;
 
         if (!userResponse?.success || !userResponse.data) {
+            console.log(userResponse);
             // Check if the error is due to email/username already taken
             if (userResponse.error?.includes('Email') || userResponse.error?.includes('Username')) {
                 // Try to get the existing user by email
+                return userResponse;
                 const existingUserResponse: any = await fetchContentApi<User>(`users?filters[email][$eq]=${user.user.email}`, {
                     method: 'GET'
                 });
@@ -366,7 +377,7 @@ export async function removeCompanyMember(documentId: string, userId: number) {
             method: 'DELETE'
         });
 
-        if (!response.data) {
+        if (!response.success && !response.data) {
             console.error(`Failed to remove company member - ${response.error}`);
             return {
                 success: false,
@@ -374,7 +385,7 @@ export async function removeCompanyMember(documentId: string, userId: number) {
             };
         }
 
-        console.log(`Removing company member - ${response.data.id}`);
+        console.log(`Removing company member - ${response.data?.id}`);
 
         // Delete the associated user
         /*

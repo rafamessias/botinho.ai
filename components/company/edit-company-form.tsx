@@ -99,7 +99,8 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 },
                 isAdmin: user.isAdmin,
                 canPost: user.canPost,
-                canApprove: user.canApprove
+                canApprove: user.canApprove,
+                companyName: company.name
             });
 
             if (!response.success || !response.data) {
