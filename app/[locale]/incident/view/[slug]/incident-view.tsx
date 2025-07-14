@@ -130,7 +130,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                                 )}
                             </div>
                             <div className="text-xs text-muted-foreground mt-1">
-                                {format(new Date(incident.date as string), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                                {incident.date ? format(new Date(incident.date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR }) : ''}
                             </div>
                         </div>
                     </div>

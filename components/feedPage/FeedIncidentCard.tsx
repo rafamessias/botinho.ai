@@ -141,7 +141,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                             <span className="font-bold text-gray-800">{userName}</span>
                         </div>
                         <div className="text-xs text-muted-foreground">
-                            {new Date(incident.date || '').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
+                            {incident.date ? new Date(incident.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }) : ''}
                         </div>
                     </div>
                 </div>

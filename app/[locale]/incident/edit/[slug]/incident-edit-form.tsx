@@ -47,7 +47,7 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
         defaultValues: {
             project: incident.project as Project,
             incidentStatus: incident.incidentStatus,
-            date: new Date(incident.date || '').toISOString(),
+            date: incident.date ? new Date(incident.date).toISOString() : '',
             description: incident.description || '',
             media: null,
         },
