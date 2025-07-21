@@ -6,6 +6,9 @@ export default async function ProfilePage({ searchParams }: { searchParams: Prom
     const { locale } = await searchParams;
     const t = await getTranslations({ locale, namespace: 'profile' });
 
+    // TEMPORARY: Add delay to test loading skeleton
+    //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
+
     return (
         <ContainerApp title={t('title')} showBackButton={true}>
             <ProfileForm />

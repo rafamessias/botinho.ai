@@ -8,6 +8,9 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
     const { locale, slug } = await params;
     const t = await getTranslations({ locale, namespace: 'company' });
 
+    // TEMPORARY: Add delay to test loading skeleton
+    //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
+
     let company: Company | null;
     let companyMembers: CompanyMemberDialog[] | null;
     try {

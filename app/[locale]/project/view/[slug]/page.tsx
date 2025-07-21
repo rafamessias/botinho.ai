@@ -7,6 +7,9 @@ import ProjectView from './project-view';
 export default async function ProjectViewPage({ params }: { params: Promise<{ slug: string, locale: string }> }) {
     const { slug } = await params;
 
+    // TEMPORARY: Add delay to test loading skeleton
+    //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
+
     const projectResponse = await fetchContentApi<Project>(`projects/${slug}?populate=*`, {
         next: {
             tags: [`project:${slug}`]

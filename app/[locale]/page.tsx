@@ -12,6 +12,9 @@ export default async function Page({ params }: PageProps) {
     const { locale } = await params;
     const t = await getTranslations({ locale, namespace: 'homepage' });
 
+    // TEMPORARY: Add delay to test loading skeleton
+    //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
+
     // Fetch projects on the server side
     let projects: Project[] = [];
     try {

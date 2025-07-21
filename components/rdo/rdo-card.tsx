@@ -124,8 +124,8 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     return (
         <>
             <Card className="p-0 bg-transparent shadow-none hover:shadow-none !rounded-none sm:!rounded-xl">
-                <CardHeader className=" flex flex-col w-full items-start p-0 justify-between">
-                    <div className="w-full flex justify-end items-center gap-2 ">
+                <CardHeader className="relative sm:static flex flex-col w-full items-start p-0 justify-between">
+                    <div className="absolute sm:static top-0 right-0 w-full flex justify-end items-center gap-2 -mt-2">
                         {userAuth?.type === 'companyUser' && (
                             <TooltipProvider>
                                 <Tooltip delayDuration={0}>

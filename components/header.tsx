@@ -2,8 +2,8 @@
 
 import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
-import { Plus, Globe, ArrowLeft, Eye, Pencil } from "lucide-react"
-import { useTheme } from "next-themes"
+import { Plus, ArrowLeft, Eye, Pencil } from "lucide-react"
+//import { useTheme } from "next-themes"
 import { Logo } from "@/components/logo"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { useUser } from "@/components/UserProvider"
@@ -19,6 +19,8 @@ export default function Header() {
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const router = useRouter();
   const t = useTranslations('header');
 
@@ -32,16 +34,36 @@ export default function Header() {
     }
   }, [user]);
 
+  // Scroll handler for header visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 64) {
+        // Scrolling down and past header height
+        setIsHeaderVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up
+        setIsHeaderVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   const handleLogout = async () => {
-    setLoading(true); // Set loading state to true
-    setUser(null); // Clear user context
+    setLoading(true);
+    setUser(null);
     await fetch('/api/logout', { method: 'POST', credentials: 'include', cache: 'no-store' });
-    router.push('/sign-in'); // Redirect to sign in page
-    //setLoading(false); // Set loading state to false
+    router.push('/sign-in');
   };
 
   return user ? (
-    <header className="sticky top-0 z-50 w-full border-b bg-header">
+    <header className={`sticky top-0 z-50 w-full border-b bg-header transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
       <div className="container max-w-[1280px] flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
@@ -129,9 +151,32 @@ export function SubHeader({ title, showBackButton = false, editButton = "" }: { 
   const router = useRouter();
   const { user } = useUser();
   const isProjectUser = user?.type === 'projectUser';
+  const [isMainHeaderVisible, setIsMainHeaderVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  // Scroll handler for SubHeader positioning only
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Only control positioning based on main header visibility
+      if (currentScrollY > lastScrollY && currentScrollY > 64) {
+        // Scrolling down and past header height - main header will be hidden
+        setIsMainHeaderVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - main header will be visible
+        setIsMainHeaderVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   return (
-    <div className="w-full h-12 sm:h-16 bg-muted border-b flex justify-start items-center py-2">
+    <div className={`w-full h-12 sm:h-16 bg-muted border-b flex justify-start items-center py-2 sticky top-16 z-40 transition-transform duration-300 ${!isMainHeaderVisible ? '-translate-y-16' : 'translate-y-0'}`}>
       <div className="container max-w-[1280px] flex justify-start items-center">
         {showBackButton && (
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="h-8 w-8">

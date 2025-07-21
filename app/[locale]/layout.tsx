@@ -54,9 +54,10 @@ export default async function RootLayout({
         notFound();
     }
 
+
     return (
         <html lang={locale} suppressHydrationWarning={true}>
-            <body className={`${inter.className} bg-background h-dvh`} suppressHydrationWarning={true}>
+            <body className={`${inter.className} bg-background`} suppressHydrationWarning={true}>
                 <DynamicIntlProvider>
                     <ThemeProvider
                         attribute="class"
@@ -68,7 +69,7 @@ export default async function RootLayout({
                         <LoadingProvider>
                             <UserProvider>
                                 <TopProgress />
-                                <main className="w-full h-dvh">
+                                <main className="w-full">
                                     <Header />
                                     {children}
                                 </main>

@@ -13,6 +13,9 @@ export default async function IncidentViewPage({ params }: IncidentViewPageProps
     const { slug, locale } = await params;
     const t = await getTranslations('incident');
 
+    // TEMPORARY: Add delay to test loading skeleton
+    //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
+
     let incident: Incident | null = null;
 
     try {
@@ -53,7 +56,7 @@ export default async function IncidentViewPage({ params }: IncidentViewPageProps
     }
 
     return (
-        <ContainerApp title={`${t('title')} #${incident.id}`} showBackButton={true}>
+        <ContainerApp title={`${t('title')} #${incident.id}`} showBackButton={true} className="!px-0 sm:!px-8" divClassName="!rounded-none sm:!rounded-xl !shadow-none sm:!shadow-md border border-gray-100 sm:!border-none">
             <IncidentView incident={incident} />
         </ContainerApp>
     );

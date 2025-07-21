@@ -19,10 +19,7 @@ const FeedCardSkeleton = () => (
                         <Skeleton className="h-3 w-24" />
                     </div>
                 </div>
-                <div className="flex gap-2">
-                    <Skeleton className="h-6 w-16 rounded-full" />
-                    <Skeleton className="h-6 w-20 rounded-full" />
-                </div>
+
             </div>
         </CardHeader>
         <CardContent className="p-0 space-y-4">
@@ -62,8 +59,8 @@ const FeedCardSkeleton = () => (
 
 export default function FeedLoading() {
     return (
-        <div className="max-w-[600px] mx-auto w-full">
-            <div className="flex-1 overflow-y-auto pb-20 space-y-10">
+        <div className="max-w-[600px] mx-auto w-full pt-5">
+            <div className="flex-1 pb-20 space-y-10">
                 <Tabs defaultValue="rdos" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="rdos" disabled>

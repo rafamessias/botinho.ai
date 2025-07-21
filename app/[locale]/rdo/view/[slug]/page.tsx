@@ -6,6 +6,9 @@ import { fetchContentApi } from '@/components/actions/fetch-content-api';
 export default async function RdoPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
+    // TEMPORARY: Add delay to test loading skeleton
+    //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
+
     let rdo: RDOWithCommentsAndAudit = {} as RDOWithCommentsAndAudit;
     let projectName: string = '';
     try {
@@ -49,7 +52,7 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
 
     return (
 
-        <ContainerApp title={`#${rdo.id} - ${projectName}`} showBackButton={true} className="!px-0 sm:!px-8">
+        <ContainerApp title={`#${rdo.id} - ${projectName}`} showBackButton={true} className="!px-0 sm:!px-8" divClassName="!rounded-none sm:!rounded-xl !shadow-none sm:!shadow-md border border-gray-100 sm:!border-none">
             <div className=" mx-auto w-full ">
                 <RdoCard rdo={rdo} />
             </div>

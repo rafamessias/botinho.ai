@@ -10,12 +10,14 @@ import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tabs } from '@/components/ui/tabs';
-import { useUser } from '@/components/UserProvider';
 import { getUserMe } from '@/components/actions/get-user-me-action';
 
 export default async function FeedPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const t = await getTranslations('feed');
+
+    // TEMPORARY: Add delay to test loading skeleton
+    //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
 
     // Fetch project data first
     let project: Project | null = null;
@@ -92,9 +94,9 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
             editButton={`/project/edit/${slug}`}
             className="!px-0 sm:!px-8"
         >
-            <div className="max-w-[600px] mx-auto w-full">
+            <div className="max-w-[616px] mx-auto w-full">
                 {/* Feed */}
-                <div className="flex-1 overflow-y-auto pb-20 space-y-10">
+                <div className="flex-1 pb-20 sm:px-4">
                     <Tabs defaultValue="rdos" className="w-full">
                         <TabsList className="grid w-full grid-cols-2 !rounded-none sm:!rounded-lg !px-4 sm:!px-1">
                             <TabsTrigger value="rdos">
@@ -104,7 +106,7 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
                                 {t('tabs.incidents')} <span className="ml-1 bg-gray-200 text-gray-600 rounded-full px-2 text-xs">{incidentCount()}</span>
                             </TabsTrigger>
                         </TabsList>
-                        <TabsContent value="rdos" className="space-y-10">
+                        <TabsContent value="rdos" className="space-y-4 sm:space-y-10">
                             {rdos.length > 0 ? rdos.map((rdo) => (
                                 <FeedRDOCard key={rdo.id} rdo={rdo} />
                             )) : (
@@ -120,7 +122,7 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
                                 </div>
                             )}
                         </TabsContent>
-                        <TabsContent value="incidents" className="space-y-10">
+                        <TabsContent value="incidents" className="space-y-4 sm:space-y-10">
                             {incidents.length > 0 ? incidents.map((incident) => (
                                 <FeedIncidentCard key={incident.id} incident={incident} />
                             )) : (
