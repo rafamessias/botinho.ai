@@ -18,7 +18,7 @@ export default function HomepageLoading() {
                 </div>
 
                 <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-                    {Array.from({ length: 6 }).map((_, index) => (
+                    {Array.from({ length: 2 }).map((_, index) => (
                         <Card key={index} className="overflow-hidden pb-6 shadow-sm">
                             {/* Project Image */}
                             <div className="relative h-48">

@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation'
 import { LanguageSwitch } from "@/components/language-switch"
 
 export default function Header() {
-  const { user, setUser, companyMemberCanPost, companyMemberIsAdmin } = useUser();
+  const { user, setUser, companyMemberCanPost, companyMemberIsAdmin, loading } = useUser();
   const { setLoading } = useUser();
   const [userName, setUserName] = useState('');
   const [companyId, setCompanyId] = useState<string | null>(null);
@@ -60,6 +60,27 @@ export default function Header() {
     await fetch('/api/logout', { method: 'POST', credentials: 'include', cache: 'no-store' });
     router.push('/sign-in');
   };
+
+  // Don't render header content while loading
+  if (loading) {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b bg-header">
+        <div className="container max-w-[1280px] flex h-16 items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-blue-700 text-white">
+                <Logo className="h-10 w-10 text-blue-700" />
+              </div>
+              <span className="text-lg font-semibold">Obraguru</span>
+            </Link>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return user ? (
     <header className={`sticky top-0 z-50 w-full border-b bg-header transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
@@ -149,7 +170,7 @@ export default function Header() {
 
 export function SubHeader({ title, showBackButton = false, editButton = "" }: { title: string, showBackButton?: boolean, editButton?: string }) {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const isProjectUser = user?.type === 'projectUser';
   const [isMainHeaderVisible, setIsMainHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -174,6 +195,17 @@ export function SubHeader({ title, showBackButton = false, editButton = "" }: { 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
+
+  // Don't render subheader while loading
+  if (loading) {
+    return (
+      <div className="w-full h-12 sm:h-16 bg-muted border-b flex justify-start items-center py-2 sticky top-16 z-40">
+        <div className="container max-w-[1280px] flex justify-start items-center">
+          <div className="h-6 w-32 bg-muted animate-pulse rounded" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`w-full h-12 sm:h-16 bg-muted border-b flex justify-start items-center py-2 sticky top-16 z-40 transition-transform duration-300 ${!isMainHeaderVisible ? '-translate-y-16' : 'translate-y-0'}`}>

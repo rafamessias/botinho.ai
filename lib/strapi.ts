@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { fetchContentApi } from "@/components/actions/fetch-content-api";
 import { ApiResponse } from "@/components/types/strapi";
 import { User } from "@/components/types/strapi";
+import { CompanyMember } from "@/components/types/strapi";
+import { ProjectUser } from "@/components/types/strapi";
 const strapiUrl = process.env.STRAPI_URL;
 
 const config = {
@@ -113,10 +115,31 @@ export async function signIn(email: string, password: string) {
             }
         }
 
+        let userData: User = user.data as User;
+
+        // Fetch additional user data (companyMember or projectUser)
+        if (userData.type === "companyUser") {
+            const companyMember = await fetchContentApi<CompanyMember[]>(`company-members?filters[user][id][$eq]=${userData.id}`, {
+                token: responseData.jwt
+            });
+
+            if (companyMember.success && companyMember.data) {
+                userData.companyMember = companyMember.data[0];
+            }
+        } else if (userData.type === "projectUser") {
+            const projectUser = await fetchContentApi<ProjectUser[]>(`project-users?populate[0]=project&filters[email][$eq]=${userData.email}`, {
+                token: responseData.jwt
+            });
+
+            if (projectUser.success && projectUser.data) {
+                userData.projectUser = projectUser.data;
+            }
+        }
+
         return {
             success: true,
             responseData,
-            user: user.data
+            user: userData
         }
 
     } catch (error) {
