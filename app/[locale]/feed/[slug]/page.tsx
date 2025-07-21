@@ -85,12 +85,18 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
     }
 
     return (
-        <ContainerApp form={false} title={`${projectName}`} showBackButton={true} editButton={`/project/edit/${slug}`}>
+        <ContainerApp
+            form={false}
+            title={`${projectName}`}
+            showBackButton={true}
+            editButton={`/project/edit/${slug}`}
+            className="!px-0 sm:!px-8"
+        >
             <div className="max-w-[600px] mx-auto w-full">
                 {/* Feed */}
                 <div className="flex-1 overflow-y-auto pb-20 space-y-10">
                     <Tabs defaultValue="rdos" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
+                        <TabsList className="grid w-full grid-cols-2 !rounded-none sm:!rounded-lg !px-4 sm:!px-1">
                             <TabsTrigger value="rdos">
                                 {t('tabs.rdos')} <span className="ml-1 bg-gray-200 text-gray-600 rounded-full px-2 text-xs">{rdoCount()}</span>
                             </TabsTrigger>

@@ -86,7 +86,7 @@ export async function signIn(email: string, password: string) {
 
         const responseData: any = await response.json();
 
-        console.log("responseData", responseData);
+        //console.log("responseData", responseData);
 
         if (responseData.error) {
             return {
