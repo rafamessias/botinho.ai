@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
 import { MessageSquare, Sun, Cloud, CloudRain, X, Check, Share2, Pencil } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
@@ -44,6 +44,13 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
     const projectId = (typeof rdo.project === 'object' ? rdo.project.id : rdo.project) as number || 0;
 
     const { isCompanyUser, companyMemberCanApprove, projectUserCanApprove } = useUser();
+    const [pUCanApprove, setPUCanApprove] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (projectUserCanApprove) {
+            setPUCanApprove(projectUserCanApprove(projectId));
+        }
+    }, [projectUserCanApprove, projectId]);
 
     const handleStatusUpdate = async (status: 'pendingApproval' | 'Approved' | 'Rejected') => {
         if (!rdo.documentId) return;
@@ -197,7 +204,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                             </Button>
                         </>
                     )}
-                    {(rdo.rdoStatus === 'pendingApproval' && projectUserCanApprove(projectId)) && (
+                    {(rdo.rdoStatus === 'pendingApproval' && pUCanApprove) && (
                         <>
                             <Button
                                 variant="outline"

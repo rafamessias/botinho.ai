@@ -11,7 +11,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { updateRDOStatus } from '../actions/rdo-action';
 import { useLoading } from '../LoadingProvider';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -31,12 +31,19 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const searchParams = useSearchParams();
     const userName = rdo.userName;
     const { user: userAuth } = useUser();
+    const [pUCanApprove, setPUCanApprove] = useState<boolean>(false);
 
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
     const projectDocumentId = typeof rdo.project === 'object' ? rdo.project.documentId : '';
     const projectId = (typeof rdo.project === 'object' ? rdo.project.id : 0) || 0;
 
     const { companyMemberCanApprove, projectUserCanApprove } = useUser();
+
+    useEffect(() => {
+        if (projectUserCanApprove) {
+            setPUCanApprove(projectUserCanApprove(projectId));
+        }
+    }, [projectUserCanApprove, projectId]);
 
 
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
@@ -253,7 +260,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                     </div>
                     {/* Aprovar/Rejeitar */}
                     <div className="flex w-full sm:justify-end gap-2">
-                        {rdo.rdoStatus === 'pendingApproval' && projectUserCanApprove(projectId) && (
+                        {rdo.rdoStatus === 'pendingApproval' && pUCanApprove && (
                             <>
                                 <Button
                                     variant="outline"
