@@ -89,6 +89,7 @@
             "inactiveProjects": "Inactive Projects",
             "newProject": "New Project",
             "projects": "Projects",
+            "clearSearch": "Clear search",
             "empty": {
                 "noProjects": "No projects found",
                 "noResults": "No projects match your search",
@@ -437,7 +438,8 @@
                 "noRdos": "No RDOs for this project yet.",
                 "noIncidents": "No incidents for this project yet.",
                 "noMedia": "No media for this project yet.",
-                "noUsers": "No users assigned to this project yet."
+                "noUsers": "No users assigned to this project yet.",
+                "endMessage": "You have seen all items"
             },
             "userCard": {
                 "noRole": "No Role",
@@ -554,6 +556,7 @@
             "rdos": "RDOs",
             "incidents": "Incidents"
         },
+        "endMessage": "You have seen all items",
         "incidents": {
             "empty": {
                 "title": "No incidents found",

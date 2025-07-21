@@ -15,10 +15,10 @@ export default async function Page({ params }: PageProps) {
     // TEMPORARY: Add delay to test loading skeleton
     //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
 
-    // Fetch projects on the server side
+    // Fetch active projects on the server side by default
     let projects: Project[] = [];
     try {
-        const response = await fetchContentApi<Project[]>('projects?populate=*&sort=id:desc', {
+        const response = await fetchContentApi<Project[]>('projects?populate=*&filters[active][$eq]=true&sort=id:desc', {
             next: {
                 revalidate: 300, // Cache for 5 minutes
                 tags: ['projects']

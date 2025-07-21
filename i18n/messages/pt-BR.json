@@ -96,6 +96,7 @@
             "inactiveProjects": "Projetos Inativos",
             "newProject": "Novo Projeto",
             "projects": "Projetos",
+            "clearSearch": "Limpar busca",
             "empty": {
                 "noProjects": "Nenhum projeto encontrado",
                 "noResults": "Nenhum projeto corresponde à sua busca",
@@ -438,7 +439,8 @@
                 "noRdos": "Nenhum RDO para este projeto ainda.",
                 "noIncidents": "Nenhuma ocorrência para este projeto ainda.",
                 "noMedia": "Nenhuma mídia para este projeto ainda.",
-                "noUsers": "Nenhum usuário atribuído a este projeto ainda."
+                "noUsers": "Nenhum usuário atribuído a este projeto ainda.",
+                "endMessage": "Você viu todos os itens"
             },
             "userCard": {
                 "noRole": "Sem Função",
@@ -555,6 +557,7 @@
             "rdos": "RDOs",
             "incidents": "Ocorrências"
         },
+        "endMessage": "Você viu todos os itens",
         "incidents": {
             "empty": {
                 "title": "Nenhuma ocorrência encontrada",

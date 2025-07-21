@@ -1,20 +1,13 @@
 import React from 'react';
 import ContainerApp from '@/components/Container-app';
-import FeedRDOCard from '@/components/feedPage/FeedRDOCard';
-import FeedIncidentCard from '@/components/feedPage/FeedIncidentCard';
 import { Incident, RDO, Project, ApiResponse, User } from '@/components/types/strapi';
 import { fetchContentApi } from '@/components/actions/fetch-content-api';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { Link } from '@/i18n/navigation';
-import { getTranslations } from 'next-intl/server';
-import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tabs } from '@/components/ui/tabs';
 import { getUserMe } from '@/components/actions/get-user-me-action';
+import FeedWithInfiniteScroll from '@/components/feedPage/FeedWithInfiniteScroll';
 
 export default async function FeedPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    const t = await getTranslations('feed');
+    const pageSize = Number(process.env.NEXT_PUBLIC_ITEMS_PER_PAGE) || 10;
 
     // TEMPORARY: Add delay to test loading skeleton
     //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
@@ -26,11 +19,9 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
     let user: User | null = null;
 
     try {
-
         //get user info
         const me: ApiResponse<User> = await getUserMe();
         if (me.success) user = me.data as User;
-
 
         // Fetch project data
         const projectResult = await fetchContentApi<Project>(`projects/${slug}?populate=*`, {
@@ -44,8 +35,8 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
             project = projectResult.data;
         }
 
-        // Fetch RDOs
-        const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${project?.id}&sort=date:desc&sort=id:desc`, {
+        // Fetch initial RDOs with pagination
+        const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${project?.id}&sort=date:desc&sort=id:desc&pagination[page]=1&pagination[pageSize]=${pageSize}`, {
             next: {
                 revalidate: 300,
                 tags: [`rdos`]
@@ -55,8 +46,8 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
             rdos = rdosResult.data;
         }
 
-        // Fetch incidents
-        const incidentsResult = await fetchContentApi<Incident[]>(`incidents?populate=*&filters[project][$eq]=${project?.id}&sort=date:desc&sort=id:desc`, {
+        // Fetch initial incidents with pagination
+        const incidentsResult = await fetchContentApi<Incident[]>(`incidents?populate=*&filters[project][$eq]=${project?.id}&sort=date:desc&sort=id:desc&pagination[page]=1&pagination[pageSize]=${pageSize}`, {
             next: {
                 revalidate: 300,
                 tags: [`incidents`]
@@ -70,77 +61,38 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
         console.error('Error fetching data:', error);
     }
 
-    const projectName = project?.name || '';
-
-    const rdoCount = () => {
-        if (user?.companyMember) {
-            return Number(project?.rdoCount || 0) + Number(project?.rdoCountDraft || 0);
-        }
-        return Number(project?.rdoCount || 0);
-    }
-
-    const incidentCount = () => {
-        if (user?.companyMember) {
-            return Number(project?.incidentCount || 0) + Number(project?.incidentCountDraft || 0);
-        }
-        return Number(project?.incidentCount || 0);
+    if (!project) {
+        return (
+            <ContainerApp
+                form={false}
+                title="Project not found"
+                showBackButton={true}
+                className="!px-0 sm:!px-8"
+            >
+                <div className="max-w-[616px] mx-auto w-full">
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                        <div className="text-muted-foreground text-lg mb-2">Project not found</div>
+                    </div>
+                </div>
+            </ContainerApp>
+        );
     }
 
     return (
         <ContainerApp
             form={false}
-            title={`${projectName}`}
+            title={`${project.name}`}
             showBackButton={true}
             editButton={`/project/edit/${slug}`}
             className="!px-0 sm:!px-8"
         >
-            <div className="max-w-[616px] mx-auto w-full">
-                {/* Feed */}
-                <div className="flex-1 pb-20 sm:px-4">
-                    <Tabs defaultValue="rdos" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2 !rounded-none sm:!rounded-lg !px-4 sm:!px-1">
-                            <TabsTrigger value="rdos">
-                                {t('tabs.rdos')} <span className="ml-1 bg-gray-200 text-gray-600 rounded-full px-2 text-xs">{rdoCount()}</span>
-                            </TabsTrigger>
-                            <TabsTrigger value="incidents">
-                                {t('tabs.incidents')} <span className="ml-1 bg-gray-200 text-gray-600 rounded-full px-2 text-xs">{incidentCount()}</span>
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="rdos" className="space-y-4 sm:space-y-10">
-                            {rdos.length > 0 ? rdos.map((rdo) => (
-                                <FeedRDOCard key={rdo.id} rdo={rdo} />
-                            )) : (
-                                <div className="flex flex-col items-center justify-center py-12 text-center">
-                                    <div className="text-muted-foreground text-lg mb-2">{t('empty.title')}</div>
-                                    <p className="text-sm text-muted-foreground/70 mb-4">{t('empty.description')}</p>
-                                    <Link href={`/rdo/create?project=${slug}`}>
-                                        <Button className="bg-primary hover:bg-primary/80">
-                                            <Plus className="h-4 w-4 mr-2" />
-                                            {t('empty.createButton')}
-                                        </Button>
-                                    </Link>
-                                </div>
-                            )}
-                        </TabsContent>
-                        <TabsContent value="incidents" className="space-y-4 sm:space-y-10">
-                            {incidents.length > 0 ? incidents.map((incident) => (
-                                <FeedIncidentCard key={incident.id} incident={incident} />
-                            )) : (
-                                <div className="flex flex-col items-center justify-center py-12 text-center">
-                                    <div className="text-muted-foreground text-lg mb-2">{t('incidents.empty.title')}</div>
-                                    <p className="text-sm text-muted-foreground/70 mb-4">{t('incidents.empty.description')}</p>
-                                    <Link href={`/incident/create?project=${slug}`}>
-                                        <Button className="bg-primary hover:bg-primary/80">
-                                            <Plus className="h-4 w-4 mr-2" />
-                                            {t('incidents.empty.createButton')}
-                                        </Button>
-                                    </Link>
-                                </div>
-                            )}
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </div>
+            <FeedWithInfiniteScroll
+                project={project}
+                user={user}
+                initialRdos={rdos}
+                initialIncidents={incidents}
+                projectSlug={slug}
+            />
         </ContainerApp>
     );
 };
