@@ -23,7 +23,6 @@ interface FeedWithInfiniteScrollProps {
 }
 
 const ITEMS_PER_PAGE = Number(process.env.NEXT_PUBLIC_ITEMS_PER_PAGE) || 10;
-console.log(ITEMS_PER_PAGE)
 
 export default function FeedWithInfiniteScroll({
     project,

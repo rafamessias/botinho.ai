@@ -245,18 +245,48 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             <CarouselMedia images={rdo.media} />
                         )}
                         <div className="font-semibold text-sm mb-1 mt-4">{t('activities.title')}</div>
-                        <div className="text-sm text-gray-800 mb-2">{rdo.description}</div>
+                        <div className="text-sm text-gray-800 mb-2">
+                            {(rdo.description.length > 200 ? `${rdo.description.substring(0, 200)}...` : rdo.description)
+                                .split('\n')
+                                .map((line, idx) => (
+                                    <span key={idx}>
+                                        {line}
+                                        <br />
+                                    </span>
+                                ))
+                            }
+                        </div>
 
                     </div>
                     {/* Equipamentos Utilizados */}
                     <div>
                         <div className="font-semibold text-sm mb-1">{t('equipment.title')}</div>
-                        <div className="text-sm text-gray-800">{equipment}</div>
+                        <div className="text-sm text-gray-800">
+                            {(equipment.length > 200 ? `${equipment.substring(0, 200)}...` : equipment)
+                                .split('\n')
+                                .map((line, idx) => (
+                                    <span key={idx}>
+                                        {line}
+                                        <br />
+                                    </span>
+                                ))
+                            }
+                        </div>
                     </div>
                     {/* Mão de Obra */}
                     <div>
                         <div className="font-semibold text-sm mb-1">{t('workforce.title')}</div>
-                        <div className="text-sm text-gray-800">{workforce}</div>
+                        <div className="text-sm text-gray-800">
+                            {(workforce.length > 200 ? `${workforce.substring(0, 200)}...` : workforce)
+                                .split('\n')
+                                .map((line, idx) => (
+                                    <span key={idx}>
+                                        {line}
+                                        <br />
+                                    </span>
+                                ))
+                            }
+                        </div>
                     </div>
                     {/* Aprovar/Rejeitar */}
                     <div className="flex w-full sm:justify-end gap-2">

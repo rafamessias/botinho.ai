@@ -7,9 +7,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 interface CarouselMediaProps {
     images: StrapiImage[];
+    className?: string;
 }
 
-const CarouselMedia: React.FC<CarouselMediaProps> = ({ images }) => {
+const CarouselMedia: React.FC<CarouselMediaProps> = ({ images, className }) => {
     const [current, setCurrent] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -42,7 +43,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images }) => {
         <>
             <div className="w-full mb-2">
                 <div
-                    className="w-full h-[260px] bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden relative border border-gray-200 cursor-pointer"
+                    className={`w-full h-[260px] bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden relative border border-gray-200 cursor-pointer ${className}`}
                     onClick={openFullscreen}
                 >
                     <div className="w-full h-full relative">
@@ -65,27 +66,32 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images }) => {
                     </div>
                     {images.length > 1 && (
                         <>
-                            <button
-                                type="button"
-                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all z-10"
+                            <button className='absolute left-0 top-0 h-full flex items-center justify-center w-10'
+                                type='button'
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handlePrev();
                                 }}
                                 disabled={isAnimating}
                             >
-                                <ChevronLeft className="w-4 h-4" />
+                                <div
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all z-10"
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </div>
                             </button>
                             <button
                                 type="button"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all z-10"
+                                className="absolute right-0 top-0 h-full flex items-center justify-center w-10"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleNext();
                                 }}
                                 disabled={isAnimating}
                             >
-                                <ChevronRight className="w-4 h-4" />
+                                <div className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all z-10">
+                                    <ChevronRight className="w-4 h-4" />
+                                </div>
                             </button>
                         </>
                     )}
@@ -111,47 +117,51 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images }) => {
             </div>
 
             <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-                <DialogContent className="max-w-[90vw] max-h-[90vh] px-2 py-4 border-none">
+                <DialogContent className="!max-w-[680px] !max-h-[680px] px-0 m-0 py-4 border-none">
                     <DialogHeader className='absolute top-0 right-0'>
                         <DialogTitle>
                         </DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <div className="relative w-full h-full rounded-lg">
+                    <div className="relative top-6 w-full h-full rounded-lg">
 
-                        <div className="relative w-full h-full rounded-lg">
+                        <div className="relative w-full h-full ">
                             <Image
                                 src={images[current].url}
                                 alt="RDO"
                                 width={1920}
                                 height={1080}
-                                className="w-full h-full object-contain rounded-lg"
+                                className="w-full h-full object-contain"
                             />
                         </div>
                         {images.length > 1 && (
                             <>
                                 <button
                                     type="button"
-                                    className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
+                                    className="absolute left-0 top-1/2 -translate-y-1/2 h-full w-12 flex items-center justify-center"
                                     onClick={handlePrev}
                                     disabled={isAnimating}
                                 >
-                                    <ChevronLeft className="w-6 h-6" />
+                                    <div className='w-10 h-10 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors'>
+                                        <ChevronLeft className="w-6 h-6" />
+                                    </div>
                                 </button>
                                 <button
                                     type="button"
-                                    className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-12 flex items-center justify-center"
                                     onClick={handleNext}
                                     disabled={isAnimating}
                                 >
-                                    <ChevronRight className="w-6 h-6" />
+                                    <div className='w-10 h-10 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors'>
+                                        <ChevronRight className="w-6 h-6" />
+                                    </div>
                                 </button>
                             </>
                         )}
                     </div>
                     <DialogFooter className='flex !justify-center'>
                         {/* Carousel dots */}
-                        <div className="flex justify-center mt-1">
+                        <div className="flex justify-center mt-6">
                             {images.map((_, idx) => (
                                 <span
                                     key={idx}

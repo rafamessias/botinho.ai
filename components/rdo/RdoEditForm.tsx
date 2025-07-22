@@ -90,7 +90,6 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
         try {
             setIsLoading(true);
             const response = await updateRDO(rdo.documentId, rdoData);
-            console.log(response);
             if (response.success) {
 
                 if (filesToBeRemoved.length > 0) {

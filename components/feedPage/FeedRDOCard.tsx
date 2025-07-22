@@ -162,9 +162,19 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
             </CardHeader>
             <CardContent className="p-0">
                 <div className="text-sm mb-4 text-gray-800">
-                    {rdo.description.length > 200 ? `${rdo.description.substring(0, 200)}...` : rdo.description}
+                    {(rdo.description.length > 200 ? `${rdo.description.substring(0, 200)}...` : rdo.description)
+                        .split('\n')
+                        .map((line, idx) => (
+                            <span key={idx}>
+                                {line}
+                                <br />
+                            </span>
+                        ))
+                    }
                 </div>
-                <CarouselMedia images={rdo.media as StrapiImage[] || []} />
+                <div className="-mx-6 sm:mx-0">
+                    <CarouselMedia images={rdo.media as StrapiImage[] || []} className='rounded-none sm:rounded-lg border-none sm:border' />
+                </div>
             </CardContent>
             <CardFooter className="p-0 flex flex-col gap-2">
                 <div className="flex items-center justify-between text-xs text-gray-500 w-full">

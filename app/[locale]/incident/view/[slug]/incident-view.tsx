@@ -154,7 +154,17 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                 {/* Incident Description */}
                 <div>
                     <div className="font-semibold text-sm mt-6 mb-1">{t('description')}</div>
-                    <div className="text-sm text-gray-800">{incident.description}</div>
+                    <div className="text-sm text-gray-800">
+                        {(incident.description.length > 200 ? `${incident.description.substring(0, 200)}...` : incident.description)
+                            .split('\n')
+                            .map((line, idx) => (
+                                <span key={idx}>
+                                    {line}
+                                    <br />
+                                </span>
+                            ))
+                        }
+                    </div>
                 </div>
 
                 <div className="flex items-center justify-end w-full gap-2">
