@@ -254,7 +254,8 @@ export async function createCompanyMember(user: any) {
                 company: currentUser.company,
                 type: 'companyUser',
                 companyName: user.companyName,
-                role: COMPANY_USER_ROLE
+                role: COMPANY_USER_ROLE,
+                language: user.language
             }
         });
 
@@ -322,7 +323,7 @@ export async function createCompanyMember(user: any) {
 
         return {
             success: true,
-            data: { ...response.data, id: userData.id, documentId: userData.documentId }
+            data: { ...response.data, id: userData.id, userDocumentId: userData.documentId }
         };
     } catch (error) {
         console.error('Error creating company member:', error);

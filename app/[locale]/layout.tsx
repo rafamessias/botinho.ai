@@ -57,7 +57,7 @@ export default async function RootLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning={true}>
-            <body className={`${inter.className} bg-background`} suppressHydrationWarning={true}>
+            <body className={`${inter.className} bg-background relative`} suppressHydrationWarning={true}>
                 <DynamicIntlProvider>
                     <ThemeProvider
                         attribute="class"

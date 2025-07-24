@@ -32,7 +32,7 @@ function maskZipCode(value: string) {
     return value.replace(/^(\d{5})(\d{3})$/, "$1-$2");
 }
 
-export function EditCompanyForm({ company, companyMembers }: { company: Company, companyMembers: CompanyMemberDialog[] | null }) {
+export function EditCompanyForm({ company, companyMembers, locale }: { company: Company, companyMembers: CompanyMemberDialog[] | null, locale: string }) {
     const t = useTranslations('company');
     const router = useRouter();
     const { user, setUser } = useUser();
@@ -100,7 +100,8 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
                 isAdmin: user.isAdmin,
                 canPost: user.canPost,
                 canApprove: user.canApprove,
-                companyName: company.name
+                companyName: company.name,
+                language: locale
             });
 
             if (!response.success || !response.data) {
@@ -115,7 +116,8 @@ export function EditCompanyForm({ company, companyMembers }: { company: Company,
             return {
                 ...user,
                 id: response.data.id,
-                documentId: response.data.documentId
+                documentId: response.data.documentId,
+                userDocumentId: response.data.userDocumentId
             };
         } catch (error) {
             console.error('Error adding company member:', error);

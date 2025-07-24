@@ -111,6 +111,7 @@ export interface CompanyMemberDialog {
     phone: string;
     avatar?: string;
     documentId?: string;
+    userDocumentId?: string;
     user?: User;
     isAdmin: boolean;
     canPost: boolean;

@@ -40,7 +40,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
 
     return (
         <ContainerApp title={t('editTitle')} showBackButton={true}>
-            {company ? (<EditCompanyForm company={company} companyMembers={companyMembers} />) : (
+            {company ? (<EditCompanyForm company={company} companyMembers={companyMembers} locale={locale} />) : (
                 <RecordNotFound />
             )}
         </ContainerApp>

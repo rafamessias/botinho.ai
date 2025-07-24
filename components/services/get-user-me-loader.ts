@@ -7,7 +7,8 @@ export async function getUserMeLoader() {
     if (!authToken) return { ok: false, data: null, error: null };
 
     const baseUrl = process.env.STRAPI_URL;
-    const url = new URL("/api/users/me?populate=*", baseUrl);
+    //Get the user me (id and documentId) with the company (id and documentId)
+    const url = new URL(`/api/users/me?fields[0]=id&populate[company][fields][0]=id`, baseUrl);
 
     try {
         const response = await fetch(url.href, {
