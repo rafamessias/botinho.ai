@@ -757,5 +757,18 @@
             "success": "Profile deleted successfully",
             "error": "Failed to delete profile"
         }
+    },
+    "pwa": {
+        "installPrompt": {
+            "title": "Install Obraguru",
+            "description": "Add to your device for quick access",
+            "installButton": "Install",
+            "dismissButton": "Dismiss"
+        }
+    },
+    "offline": {
+        "title": "You are offline",
+        "description": "It looks like you are not connected to the internet. Check your connection and try again.",
+        "retry": "Try again"
     }
 }

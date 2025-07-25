@@ -765,5 +765,18 @@
             "success": "Perfil excluído com sucesso",
             "error": "Falha ao excluir perfil"
         }
+    },
+    "pwa": {
+        "installPrompt": {
+            "title": "Instalar Obraguru",
+            "description": "Adicione ao seu dispositivo para acesso rápido",
+            "installButton": "Instalar",
+            "dismissButton": "Fechar"
+        }
+    },
+    "offline": {
+        "title": "Você está offline",
+        "description": "Parece que você não tem conexão com a internet. Verifique sua conexão e tente novamente.",
+        "retry": "Tentar novamente"
     }
 }

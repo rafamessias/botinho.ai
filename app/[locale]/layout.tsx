@@ -10,6 +10,8 @@ import { Toaster } from '@/components/ui/sonner';
 import { UserProvider } from '@/components/UserProvider';
 import { LoadingProvider } from '@/components/LoadingProvider';
 import { TopProgress } from '@/components/RouteLoading';
+import PWAInstallPrompt from '@/components/pwa-install-prompt';
+import PWAStatus from '@/components/pwa-status';
 
 const inter = Inter({
     subsets: ["latin"],
@@ -31,10 +33,24 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         description: description,
         icons: {
             icon: '/favicon.ico',
+            apple: '/apple-touch-icon.png',
+        },
+        manifest: '/site.webmanifest',
+        appleWebApp: {
+            capable: true,
+            statusBarStyle: 'default',
+            title: title,
         },
         openGraph: {
             title: title,
         }
+    }
+}
+
+export async function generateViewport({ params }: { params: Promise<{ locale: string }> }) {
+    return {
+        themeColor: '#000000',
+        viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
     }
 }
 
@@ -74,6 +90,8 @@ export default async function RootLayout({
                                     {children}
                                 </main>
                                 <Toaster richColors closeButton />
+                                <PWAInstallPrompt />
+                                <PWAStatus />
                             </UserProvider>
                         </LoadingProvider>
                     </ThemeProvider>
