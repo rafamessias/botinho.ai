@@ -108,6 +108,7 @@
             "active": "Ativo",
             "inactive": "Inativo",
             "viewUpdates": "Ver Atualizações",
+            "viewDetails": "Ver Detalhes",
             "information": "Informações"
         }
     },
@@ -400,6 +401,18 @@
                 "placeholder": "Avenida Paulista 4550\nSão Paulo\nCEP 09000-000",
                 "required": "O endereço do projeto é obrigatório"
             },
+            "status": {
+                "label": "Status do Projeto",
+                "hint": "Selecione o status atual do projeto",
+                "placeholder": "Selecionar status do projeto",
+                "searchPlaceholder": "Buscar status...",
+                "noResults": "Nenhum status encontrado.",
+                "active": "Ativo",
+                "wip": "Em Andamento",
+                "finished": "Finalizado",
+                "stopped": "Parado",
+                "deactivated": "Desativado"
+            },
             "buttons": {
                 "cancel": "Cancelar",
                 "update": "Atualizar"
@@ -415,6 +428,13 @@
             "userUpdated": "Usuário do projeto atualizado com sucesso",
             "userRemoveError": "Falha ao remover usuário do projeto",
             "userRemoved": "Usuário removido do projeto com sucesso"
+        },
+        "status": {
+            "active": "Ativo",
+            "wip": "Em Andamento",
+            "finished": "Finalizado",
+            "stopped": "Parado",
+            "deactivated": "Desativado"
         },
         "view": {
             "title": "Detalhes do Projeto",

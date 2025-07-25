@@ -179,7 +179,7 @@ export default function HomePage({ initialProjects }: HomePageProps) {
                                     title={project.name}
                                     description={project.description}
                                     imageUrl={projectImage?.url || ''}
-                                    isActive={project.projectStatus === "active"}
+                                    isActive={project.active}
                                 />
                             )
                         })}

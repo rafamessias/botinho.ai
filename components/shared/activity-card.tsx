@@ -18,6 +18,7 @@ interface ActivityCardProps {
     status: string;
     priority?: string | number;
     user: User;
+    userName?: string;
     media?: StrapiImage[];
     getStatusLabel: (status: any) => string;
     getStatusVariant: (status: any) => "default" | "secondary" | "destructive" | "outline";
@@ -36,6 +37,7 @@ export default function ActivityCard({
     status,
     priority,
     user,
+    userName,
     media,
     getStatusLabel,
     getStatusVariant,
@@ -51,10 +53,12 @@ export default function ActivityCard({
                     <div className="relative flex-1 min-w-0">
                         <div className="flex items-start justify-between mb-2">
                             <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-base">{title} #{id}</h3>
-                                <p className="text-xs text-muted-foreground">
-                                    {t('postedBy')} {user?.firstName} {user?.lastName}
-                                </p>
+                                <div className="text-xs text-muted-foreground">
+                                    {title} <span className="font-semibold text-gray-700">#{id}</span>
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                    {t('postedBy')} <span className="font-semibold text-gray-700">{userName}</span>
+                                </div>
                                 <p className="text-xs text-muted-foreground">
                                     {date.toLocaleDateString('pt-BR', {
                                         weekday: 'long',

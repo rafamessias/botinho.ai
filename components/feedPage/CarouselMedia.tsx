@@ -66,7 +66,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images, className }) => {
                     </div>
                     {images.length > 1 && (
                         <>
-                            <button className='absolute left-0 top-0 h-full flex items-center justify-center w-10'
+                            <button className='absolute left-0 top-0 h-full flex items-center justify-center w-20'
                                 type='button'
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -82,7 +82,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images, className }) => {
                             </button>
                             <button
                                 type="button"
-                                className="absolute right-0 top-0 h-full flex items-center justify-center w-10"
+                                className="absolute right-0 top-0 h-full flex items-center justify-center w-20"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleNext();
@@ -138,7 +138,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images, className }) => {
                             <>
                                 <button
                                     type="button"
-                                    className="absolute left-0 top-1/2 -translate-y-1/2 h-full w-12 flex items-center justify-center"
+                                    className="absolute left-0 top-1/2 -translate-y-1/2 h-full w-20 flex items-center justify-center"
                                     onClick={handlePrev}
                                     disabled={isAnimating}
                                 >
@@ -148,7 +148,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images, className }) => {
                                 </button>
                                 <button
                                     type="button"
-                                    className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-12 flex items-center justify-center"
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-20 flex items-center justify-center"
                                     onClick={handleNext}
                                     disabled={isAnimating}
                                 >

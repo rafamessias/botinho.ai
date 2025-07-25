@@ -10,6 +10,7 @@ interface ProjectData {
     name: string;
     description: string;
     address: string;
+    projectStatus?: string;
     files?: File[];
 }
 
@@ -125,6 +126,7 @@ export async function updateProject(projectId: string, data: ProjectData) {
                     name: data.name,
                     description: data.description,
                     address: data.address,
+                    projectStatus: data.projectStatus,
                 }
             },
             revalidateTag: [`project:${projectId}`, 'projects']

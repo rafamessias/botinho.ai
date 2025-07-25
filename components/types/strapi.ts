@@ -122,6 +122,7 @@ export interface CompanyMemberDialog {
 export interface Project {
     id?: number;
     documentId?: string;
+    active: boolean;
     name: string;
     description: string;
     address: string;
@@ -140,7 +141,7 @@ export interface Project {
     updatedAt?: Date;
 }
 
-export type ProjectStatus = 'active' | 'wip' | 'finished' | 'stoped' | 'deactivated';
+export type ProjectStatus = 'active' | 'wip' | 'finished' | 'stopped' | 'deactivated';
 
 export interface ProjectUser {
     id?: number;

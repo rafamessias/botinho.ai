@@ -9,14 +9,17 @@ import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { Project, StrapiImage, ProjectUser } from '@/components/types/strapi';
+import { Project, StrapiImage, ProjectUser, ProjectStatus } from '@/components/types/strapi';
 import { useLoading } from '@/components/LoadingProvider';
 import { CompanyMemberDialog } from '@/components/types/strapi';
+import { ProjectStatusCombobox } from '@/components/shared/project-status-combobox';
+import { ProjectStatusBadge } from '@/components/shared/project-status-badge';
 
 interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
     projectAddress: string;
+    projectStatus: ProjectStatus;
     projectPhoto?: string | FileList | File | StrapiImage;
     projectUsers?: ProjectUser[];
 }
@@ -28,15 +31,18 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     const [filesToBeRemoved, setFilesToBeRemoved] = useState<number[]>([]);
     const router = useRouter();
 
-    const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm<ProjectFormValues>({
+    const { register, handleSubmit, formState: { errors }, setValue, getValues, watch } = useForm<ProjectFormValues>({
         defaultValues: {
             projectName: project.name || '',
             projectDescription: project.description || '',
             projectAddress: project.address || '',
+            projectStatus: project.projectStatus || 'active',
             projectPhoto: project.image || {},
             projectUsers: project.users || [],
         }
     });
+
+    const currentStatus = watch('projectStatus');
 
     // Convert project users to the format expected by UserList
     let initialUsers = project.users ? project.users.map((user: ProjectUser) => ({
@@ -160,6 +166,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                 name: projectData.projectName,
                 description: projectData.projectDescription,
                 address: projectData.projectAddress,
+                projectStatus: projectData.projectStatus,
             });
 
             if (!updateResponse.success) {
@@ -232,9 +239,29 @@ export default function ProjectEditForm({ project }: { project: Project }) {
 
                 />
 
+
+                <div className="flex justify-between">
+                    <div className="flex">
+                        <ProjectStatusCombobox
+                            value={currentStatus}
+                            onChange={(value) => setValue('projectStatus', value)}
+                            label={t('status.label')}
+                            hint={t('status.hint')}
+                            placeholder={t('status.placeholder')}
+                        />
+                    </div>
+                    <div className="flex items-start justify-end">
+                        <ProjectStatusBadge status={currentStatus} showIcon={false} />
+                    </div>
+                </div>
+
                 <div>
-                    <label className="font-semibold text-base">{t('name.label')}</label>
+                    <div className="flex justify-between">
+                        <label className="font-semibold text-base">{t('name.label')}</label>
+
+                    </div>
                     <div className="text-xs text-muted-foreground mb-2">{t('name.hint')}</div>
+
                     <input
                         {...register('projectName', { required: t('name.required') })}
                         className="w-full rounded-lg border px-3 py-2 text-sm"

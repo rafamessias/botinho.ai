@@ -61,6 +61,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
             const response = await updateRDOStatus(rdo.documentId, status, clientInfo);
             if (response.success) {
                 toast.success(t(`actions.UpdatedSuccess`));
+                rdo.rdoStatus = status;
                 router.refresh();
             } else {
                 toast.error(response.error || t(`actions.UpdatedError`));

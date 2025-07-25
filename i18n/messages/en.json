@@ -107,6 +107,7 @@
             "active": "Active",
             "inactive": "Inactive",
             "viewUpdates": "View Updates",
+            "viewDetails": "View Details",
             "information": "Information"
         }
     },
@@ -399,6 +400,18 @@
                 "placeholder": "Paulista Avenue 4550\nSão Paulo\nZIP 09000-000",
                 "required": "Project address is required"
             },
+            "status": {
+                "label": "Project Status",
+                "hint": "Select the current status of the project",
+                "placeholder": "Select project status",
+                "searchPlaceholder": "Search status...",
+                "noResults": "No status found.",
+                "active": "Active",
+                "wip": "Work in Progress",
+                "finished": "Finished",
+                "stopped": "Stopped",
+                "deactivated": "Deactivated"
+            },
             "buttons": {
                 "cancel": "Cancel",
                 "update": "Update"
@@ -414,6 +427,13 @@
             "userUpdated": "Project user updated successfully",
             "userRemoveError": "Failed to remove user from project",
             "userRemoved": "User removed from project successfully"
+        },
+        "status": {
+            "active": "Active",
+            "wip": "Work in Progress",
+            "finished": "Finished",
+            "stopped": "Stopped",
+            "deactivated": "Deactivated"
         },
         "view": {
             "title": "Project Details",

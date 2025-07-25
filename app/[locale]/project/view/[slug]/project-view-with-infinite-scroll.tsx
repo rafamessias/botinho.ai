@@ -16,6 +16,7 @@ import UserCard from '@/components/shared/user-card';
 import { useUser } from '@/components/UserProvider';
 import { Loader2 } from 'lucide-react';
 import { getPaginatedProjectRdos, getPaginatedProjectIncidents } from '@/components/actions/project-actions';
+import { ProjectStatusBadge } from '@/components/shared/project-status-badge';
 
 interface ProjectViewWithInfiniteScrollProps {
     project: Project;
@@ -351,7 +352,10 @@ export default function ProjectViewWithInfiniteScroll({
             )}
 
             <div className={`flex flex-col gap-6 px-4 pb-4 bg-white rounded-lg ${isCompanyUser ? '' : 'mt-[198px]'}`}>
-                <InfoField label={t('name')} value={`#${project.id} - ${project.name}`} />
+                <div className="flex items-start justify-between">
+                    <InfoField label={t('name')} value={`#${project.id} - ${project.name}`} />
+                    <ProjectStatusBadge status={project.projectStatus} showIcon={false} />
+                </div>
                 <InfoField label={t('description')} value={project.description} />
                 <InfoField label={t('address')} value={project.address} />
             </div>
@@ -403,6 +407,7 @@ export default function ProjectViewWithInfiniteScroll({
                                             date={new Date(rdo.date)}
                                             status={rdo.rdoStatus}
                                             user={user}
+                                            userName={rdo?.userName}
                                             media={media}
                                             getStatusLabel={getRDOStatusLabel}
                                             getStatusVariant={getRDOStatusVariant}
@@ -450,6 +455,7 @@ export default function ProjectViewWithInfiniteScroll({
                                             status={incident.incidentStatus}
                                             priority={incident.priority}
                                             user={user}
+                                            userName={incident?.userName}
                                             media={media}
                                             getStatusLabel={getIncidentStatusLabel}
                                             getStatusVariant={getIncidentStatusVariant}

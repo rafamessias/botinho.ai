@@ -52,6 +52,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
             const response = await updateIncidentStatus(incident.documentId, status, clientInfo);
             if (response.success) {
                 toast.success(t(`actions.UpdatedSuccess`));
+                incident.incidentStatus = status;
                 router.refresh();
             } else {
                 toast.error(response.error || t(`actions.UpdatedError`));

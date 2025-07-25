@@ -13,6 +13,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import ActivityCard from '@/components/shared/activity-card';
 import UserCard from '@/components/shared/user-card';
 import { useUser } from '@/components/UserProvider';
+import { ProjectStatusBadge } from '@/components/shared/project-status-badge';
 
 function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
     if (!value) return null;
@@ -162,7 +163,10 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
             )}
 
             <div className={`flex flex-col gap-6 px-4 pb-4 bg-white rounded-lg ${isCompanyUser ? '' : 'mt-[198px]'}`}>
-                <InfoField label={t('name')} value={`#${project.id} - ${project.name}`} />
+                <div className="flex items-center justify-between">
+                    <InfoField label={t('name')} value={`#${project.id} - ${project.name}`} />
+                    <ProjectStatusBadge status={project.projectStatus} showIcon={true} />
+                </div>
                 <InfoField label={t('description')} value={project.description} />
                 <InfoField label={t('address')} value={project.address} />
             </div>
@@ -192,6 +196,7 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
                                 rdos.map(rdo => {
                                     const user = rdo.user as User;
                                     const media = rdo.media as StrapiImage[];
+                                    console.log('rdo', rdo);
 
                                     return (
                                         <ActivityCard
@@ -204,6 +209,7 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
                                             date={new Date(rdo.date)}
                                             status={rdo.rdoStatus}
                                             user={user}
+                                            userName={rdo?.userName}
                                             media={media}
                                             getStatusLabel={getRDOStatusLabel}
                                             getStatusVariant={getRDOStatusVariant}
@@ -223,6 +229,7 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
                                 incidents.map(incident => {
                                     const user = incident.user as User;
                                     const media = incident.media as StrapiImage[];
+                                    console.log('incident', incident);
 
                                     return (
                                         <ActivityCard
@@ -236,6 +243,7 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
                                             status={incident.incidentStatus}
                                             priority={incident.priority}
                                             user={user}
+                                            userName={incident?.userName}
                                             media={media}
                                             getStatusLabel={getIncidentStatusLabel}
                                             getStatusVariant={getIncidentStatusVariant}
