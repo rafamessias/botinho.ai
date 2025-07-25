@@ -771,7 +771,9 @@
             "title": "Instalar Obraguru",
             "description": "Adicione ao seu dispositivo para acesso rápido",
             "installButton": "Instalar",
-            "dismissButton": "Fechar"
+            "dismissButton": "Fechar",
+            "iosTitle": "Adicionar à Tela Inicial",
+            "iosDescription": "Toque no botão compartilhar e selecione 'Adicionar à Tela Inicial'"
         }
     },
     "offline": {

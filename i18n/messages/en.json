@@ -763,7 +763,9 @@
             "title": "Install Obraguru",
             "description": "Add to your device for quick access",
             "installButton": "Install",
-            "dismissButton": "Dismiss"
+            "dismissButton": "Dismiss",
+            "iosTitle": "Add to Home Screen",
+            "iosDescription": "Tap the share button and select 'Add to Home Screen'"
         }
     },
     "offline": {

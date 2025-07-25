@@ -43,6 +43,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         },
         openGraph: {
             title: title,
+        },
+        other: {
+            'apple-mobile-web-app-capable': 'yes',
+            'apple-mobile-web-app-status-bar-style': 'default',
+            'apple-mobile-web-app-title': title,
+            'mobile-web-app-capable': 'yes',
+            'application-name': title,
+            'msapplication-TileColor': '#000000',
+            'msapplication-config': '/browserconfig.xml',
         }
     }
 }
