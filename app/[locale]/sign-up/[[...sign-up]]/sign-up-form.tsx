@@ -11,10 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from '@/components/logo';
-import { registerUserAction, googleSignUpAction } from '@/components/actions/auth-actions';
+import { signUpAction } from '@/components/actions/auth-actions';
 import { useUser } from '@/components/UserProvider';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitch } from '@/components/language-switch';
+import { signIn } from 'next-auth/react';
 
 interface SignUpFormValues {
     firstName: string;
@@ -45,20 +46,25 @@ export default function SignUpForm({ params }: { params: { locale: string } }) {
         try {
             const formData = new FormData();
             Object.entries(data).forEach(([key, value]) => formData.append(key, value));
-            //add locale to form data
             formData.append('language', locale);
 
-            const result = await registerUserAction(formData);
+            const result = await signUpAction(formData);
 
             if (result.success) {
-                setUser(result.user);
                 setIsNavigating(true);
                 toast.success(t('signUpSuccess'));
+                setUser(data)
+                // Redirect to sign-in page after successful signup
                 router.push('/sign-up/check-email');
             } else {
-                console.error(result);
-                toast.error(result.error);
+
+                if (result.error === "User already exists") {
+                    toast.error(t('userAlreadyExists'));
+                } else {
+                    toast.error(t('signUpError'));
+                }
             }
+
         } catch (error) {
             toast.error(t('signUpError'));
         } finally {
@@ -69,13 +75,17 @@ export default function SignUpForm({ params }: { params: { locale: string } }) {
     const handleGoogleSignUp = async () => {
         setIsLoading(true);
         try {
-            const result = await googleSignUpAction();
-            if (result.success) {
-                setIsNavigating(true);
-                toast.success(t('googleSignUpSuccess'));
-                router.push('/');
+            // Use NextAuth Google provider directly
+            const result = await signIn("google", {
+                callbackUrl: '/company/create',
+                redirect: false,
+            });
+
+            if (result?.error) {
+                toast.error(t('googleSignUpError'));
             } else {
-                toast.error(result.error);
+                setIsNavigating(true);
+                // The redirect will be handled by NextAuth
             }
         } catch (error) {
             toast.error(t('signUpError'));

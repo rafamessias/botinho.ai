@@ -10,13 +10,14 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from '@/components/logo';
-import { signIn } from '@/lib/strapi';
+import { getGoogleOAuthUrl, signIn } from '@/lib/strapi';
 import { usePathname } from '@/i18n/navigation';
 import { useUser } from '@/components/UserProvider';
 import { useLoading } from '@/components/LoadingProvider';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitch } from '@/components/language-switch';
 import { useRouter, useSearchParams } from 'next/navigation'
+import { signIn as nextAuthSignIn } from 'next-auth/react';
 
 
 interface SignInFormValues {
@@ -40,35 +41,23 @@ export function SignInForm({
     const [isNavigating, setIsNavigating] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const { setUser, setLoading } = useUser();
-    const { setIsLoading: setGlobalLoading } = useLoading();
+    const [googleUrl, setGoogleUrl] = useState('');
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm<SignInFormValues>();
     const emailValue = watch('email');
 
     const onSubmit = async (data: SignInFormValues) => {
-        //setIsLoading(true);
-        //setGlobalLoading(true);
 
         setLoading(true);
         try {
-            const response = await signIn(data.email.toLowerCase(), data.password);
+            const result = await nextAuthSignIn("credentials", {
+                email: data.email.toLowerCase(),
+                password: data.password,
+                redirect: false,
+            });
 
-            if (response.success) {
-                setUser(response.user);
-                setIsNavigating(true);
-                toast.success(t('signInSuccess'));
-
-                const userLocale = response.user?.language;
-
-                if (userLocale && userLocale !== locale) {
-                    router.push(`/${userLocale}${redirect || '/'}`);
-                } else if (redirect) {
-                    router.push(redirect);
-                } else {
-                    router.push('/');
-                }
-            } else {
-                const message = response.error || t('signInError');
+            if (result?.error) {
+                const message = result.error;
                 if (message.includes("Your account email is not confirmed")) {
                     router.push(`/sign-up/check-email?email=${data.email}`);
                 } else if (message.includes("Invalid identifier or password")) {
@@ -80,7 +69,23 @@ export function SignInForm({
                 } else {
                     toast.error(message);
                 }
+            } else {
+                // get user from prisma
+                console.log(result);
+                setUser({ id: 'authenticated', email: data.email } as any);
+                setIsNavigating(true);
+                toast.success(t('signInSuccess'));
 
+                //get locale
+                const userLocale = "en" //result?.user?.language;
+
+                if (userLocale && userLocale !== locale) {
+                    router.push(`/${userLocale}${redirect || '/'}`);
+                } else if (redirect) {
+                    router.push(redirect);
+                } else {
+                    router.push('/');
+                }
             }
 
         } catch (error) {
@@ -96,28 +101,8 @@ export function SignInForm({
             } else {
                 toast.error(message);
             }
-            //setIsNavigating(false);
-            //setGlobalLoading(false);
             setLoading(false);
         } finally {
-            //setIsLoading(false);
-            setLoading(false);
-        }
-    };
-
-    const handleGoogleSignIn = async () => {
-        //setIsLoading(true);
-        //setGlobalLoading(true);
-        setLoading(true);
-        try {
-            // TODO: Implement Google sign in logic
-            toast.success(t('googleSignInSuccess'));
-        } catch (error) {
-            const message = error instanceof Error ? error.message : String(error);
-            toast.error(message);
-        } finally {
-            //setIsLoading(false);
-            //setGlobalLoading(false);
             setLoading(false);
         }
     };
@@ -127,7 +112,11 @@ export function SignInForm({
         setUser(null);
         //setGlobalLoading(false);
         setLoading(false);
-
+        const getGoogleUrl = async () => {
+            const googleUrl = await getGoogleOAuthUrl();
+            setGoogleUrl(googleUrl);
+        }
+        getGoogleUrl();
     }, [setUser, setLoading, pathname]);
 
     // Clean up loading state when component unmounts
@@ -244,25 +233,26 @@ export function SignInForm({
                         </span>
                     </div>
                 </div>
-                <Button
-                    variant="outline"
-                    type="button"
-                    className="w-full"
-                    onClick={handleGoogleSignIn}
-                    disabled={isLoading || isNavigating}
-                >
-                    {isLoading ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                        <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                            <path
-                                fill="currentColor"
-                                d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                            />
-                        </svg>
-                    )}
-                    Google
-                </Button>
+                <Link href={googleUrl} className="w-full">
+                    <Button
+                        variant="outline"
+                        type="button"
+                        className="w-full"
+                        disabled={isLoading || isNavigating}
+                    >
+                        {isLoading ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+                                <path
+                                    fill="currentColor"
+                                    d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                                />
+                            </svg>
+                        )}
+                        Google
+                    </Button>
+                </Link>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
                 <div className="text-sm text-center text-muted-foreground">

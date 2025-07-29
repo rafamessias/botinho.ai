@@ -11,7 +11,7 @@ import { UserProvider } from '@/components/UserProvider';
 import { LoadingProvider } from '@/components/LoadingProvider';
 import { TopProgress } from '@/components/RouteLoading';
 import PWAInstallPrompt from '@/components/pwa-install-prompt';
-import PWAStatus from '@/components/pwa-status';
+import AuthSessionProvider from '@/components/providers/session-provider';
 
 const inter = Inter({
     subsets: ["latin"],
@@ -92,16 +92,17 @@ export default async function RootLayout({
                         storageKey="obraguru-theme"
                     >
                         <LoadingProvider>
-                            <UserProvider>
-                                <TopProgress />
-                                <main className="w-full">
-                                    <Header />
-                                    {children}
-                                </main>
-                                <Toaster richColors closeButton />
-                                <PWAInstallPrompt />
-                                <PWAStatus />
-                            </UserProvider>
+                            <AuthSessionProvider>
+                                <UserProvider>
+                                    <TopProgress />
+                                    <main className="w-full">
+                                        <Header />
+                                        {children}
+                                    </main>
+                                    <Toaster richColors closeButton />
+                                    <PWAInstallPrompt />
+                                </UserProvider>
+                            </AuthSessionProvider>
                         </LoadingProvider>
                     </ThemeProvider>
                 </DynamicIntlProvider>

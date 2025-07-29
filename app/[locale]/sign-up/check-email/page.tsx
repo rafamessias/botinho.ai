@@ -10,7 +10,7 @@ import { useUser } from '@/components/UserProvider';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
-const initialCountdown = 1;
+const initialCountdown = 60;
 
 export default function SignUpCheckEmailPage() {
     const t = useTranslations('auth');

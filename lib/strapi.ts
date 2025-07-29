@@ -152,6 +152,10 @@ export async function signIn(email: string, password: string) {
     }
 }
 
+export async function getGoogleOAuthUrl() {
+    return `${strapiUrl}/api/connect/google`;
+}
+
 export async function uploadFile(file: File, id: number, collection: string, field: string) {
     try {
         // Create form data

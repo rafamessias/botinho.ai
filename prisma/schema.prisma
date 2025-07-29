@@ -1,0 +1,387 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  companyUser
+  projectUser
+}
+
+enum Language {
+  en
+  pt_BR
+}
+
+enum ProjectStatus {
+  active
+  wip
+  finished
+  stopped
+  deactivated
+}
+
+enum RDOStatus {
+  draft
+  pendingApproval
+  approved
+  rejected
+}
+
+enum WeatherCondition {
+  clear
+  cloudy
+  rainy
+}
+
+enum IncidentStatus {
+  draft
+  open
+  wip
+  closed
+}
+
+enum Action {
+  approved
+  rejected
+}
+
+enum CompanyMemberStatus {
+  invited
+  accepted
+}
+
+enum Provider {
+  google
+  local
+}
+
+enum ProjectUserStatus {
+  invited
+  accepted
+}
+
+model ApprovalAudit {
+  id            Int      @id @default(autoincrement())
+  action        Action
+  description   String?
+  date          DateTime
+  ip_address    String?
+  latitude      String?
+  longitude     String?
+  device_type   String?
+  time_zone     String?
+  geo_location  String?
+  document_hash String
+  userName      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  companyId Int
+  company   Company @relation("CompanyApprovalAudits", fields: [companyId], references: [id])
+
+  projectId Int?
+  project   Project? @relation("ProjectApprovalAudits", fields: [projectId], references: [id])
+
+  incidentId Int?
+  incident   Incident? @relation("IncidentApprovalAudits", fields: [incidentId], references: [id])
+
+  rdoId Int?
+  rdo   RDO? @relation("RDOApprovalAudits", fields: [rdoId], references: [id])
+
+  userId Int
+  user   User @relation("UserApprovalAudits", fields: [userId], references: [id])
+
+  @@map("approval_audits")
+}
+
+model RDO {
+  id            Int       @id @default(autoincrement())
+  date          DateTime
+  rdoStatus     RDOStatus
+  description   String
+  equipmentUsed String
+  workforce     String
+  createdBy     String
+  commentCount  Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Weather fields as embedded objects
+  weatherMorningCondition   WeatherCondition?
+  weatherMorningWorkable    Boolean?
+  weatherAfternoonCondition WeatherCondition?
+  weatherAfternoonWorkable  Boolean?
+  weatherNightCondition     WeatherCondition?
+  weatherNightWorkable      Boolean?
+
+  // Relations
+  companyId Int
+  company   Company @relation("CompanyRDOS", fields: [companyId], references: [id])
+
+  userId Int
+  user   User @relation("UserRDOS", fields: [userId], references: [id])
+
+  projectId Int
+  project   Project @relation("ProjectRDOS", fields: [projectId], references: [id])
+
+  // Media relation
+  media File[] @relation("RDOMedia")
+
+  // Comments relation
+  comments Comment[] @relation("RDOComments")
+
+  // Approval audits relation
+  approvalAudits ApprovalAudit[] @relation("RDOApprovalAudits")
+
+  @@map("rdos")
+}
+
+model User {
+  id                 Int      @id @default(autoincrement())
+  email              String   @unique
+  provider           Provider @default(local)
+  password           String?
+  resetPasswordToken String?
+  confirmationToken  String?
+  confirmed          Boolean?
+  blocked            Boolean?
+  phone              String?  @unique
+  type               UserType
+  firstName          String
+  lastName           String?
+  language           Language
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  avatar   File? @relation("UserAvatar", fields: [avatarId], references: [id])
+  avatarId Int?
+
+  rdos           RDO[]           @relation("UserRDOS")
+  incidents      Incident[]      @relation("UserIncidents")
+  comments       Comment[]       @relation("UserComments")
+  approvalAudits ApprovalAudit[] @relation("UserApprovalAudits")
+  companyMembers CompanyMember[] @relation("UserCompanyMembers")
+  projectUsers   ProjectUser[]   @relation("UserProjectUsers")
+
+  // Company relations - choose ONE pattern:
+  // Option 1: One-to-Many (User belongs to one Company)
+  company   Company? @relation("UserCompany", fields: [companyId], references: [id])
+  companyId Int?
+
+  // Company owner relation
+  ownedCompanies Company[] @relation("CompanyOwner")
+
+  @@map("users")
+}
+
+model Project {
+  id                 Int           @id @default(autoincrement())
+  name               String
+  description        String?
+  address            String?
+  projectStatus      ProjectStatus
+  latitude           Float?
+  longitude          Float?
+  city               String?
+  addressState       String?
+  active             Boolean       @default(true)
+  rdoCount           Int           @default(0)
+  incidentCount      Int           @default(0)
+  photoCount         Int           @default(0)
+  rdoCountDraft      Int           @default(0)
+  incidentCountDraft Int           @default(0)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  // Relations
+  companyId Int
+  company   Company @relation("CompanyProjects", fields: [companyId], references: [id])
+
+  imageId Int?
+  image   File? @relation("ProjectImage", fields: [imageId], references: [id])
+
+  rdos           RDO[]           @relation("ProjectRDOS")
+  incidents      Incident[]      @relation("ProjectIncidents")
+  comments       Comment[]       @relation("ProjectComments")
+  approvalAudits ApprovalAudit[] @relation("ProjectApprovalAudits")
+  users          ProjectUser[]   @relation("ProjectUsers")
+
+  @@map("projects")
+}
+
+// Update Company model to include projects relation
+model Company {
+  id                 Int      @id @default(autoincrement())
+  name               String
+  documentType       String
+  document           String
+  zipCode            String
+  state              String
+  city               String
+  address            String
+  activeProjectCount Int      @default(0)
+  projectCount       Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  ownerId Int
+  owner   User @relation("CompanyOwner", fields: [ownerId], references: [id])
+
+  logoId Int?
+  logo   File? @relation("CompanyLogo", fields: [logoId], references: [id])
+
+  coverImageId Int?
+  coverImage   File? @relation("CompanyCover", fields: [coverImageId], references: [id])
+
+  projects       Project[]       @relation("CompanyProjects")
+  rdos           RDO[]           @relation("CompanyRDOS")
+  incidents      Incident[]      @relation("CompanyIncidents")
+  comments       Comment[]       @relation("CompanyComments")
+  approvalAudits ApprovalAudit[] @relation("CompanyApprovalAudits")
+  members        CompanyMember[] @relation("CompanyMembers")
+  projectUsers   ProjectUser[]   @relation("CompanyProjectUsers")
+
+  // Users relation (one-to-many)
+  users User[] @relation("UserCompany")
+
+  @@map("companies")
+}
+
+// Update File model to include project image relation
+model File {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  mimeType  String?
+  size      Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  avatarFor        User[]     @relation("UserAvatar")
+  logoFor          Company[]  @relation("CompanyLogo")
+  coverFor         Company[]  @relation("CompanyCover")
+  imageFor         Project[]  @relation("ProjectImage")
+  mediaFor         RDO[]      @relation("RDOMedia")
+  incidentMediaFor Incident[]
+
+  @@map("files")
+}
+
+model Incident {
+  id             Int            @id @default(autoincrement())
+  date           DateTime
+  incidentStatus IncidentStatus
+  priority       Int
+  description    String
+  commentCount   Int            @default(0)
+  createdBy      String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  // Relations
+  projectId Int
+  project   Project @relation("ProjectIncidents", fields: [projectId], references: [id])
+
+  userId Int
+  user   User @relation("UserIncidents", fields: [userId], references: [id])
+
+  companyId Int
+  company   Company @relation("CompanyIncidents", fields: [companyId], references: [id])
+
+  // Media relation
+  media File[]
+
+  // Comments relation
+  comments Comment[] @relation("IncidentComments")
+
+  // Approval audits relation
+  approvalAudits ApprovalAudit[] @relation("IncidentApprovalAudits")
+
+  @@map("incidents")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  userName  String
+  userEmail String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userId Int
+  user   User @relation("UserComments", fields: [userId], references: [id])
+
+  projectId Int?
+  project   Project? @relation("ProjectComments", fields: [projectId], references: [id])
+
+  rdoId Int?
+  rdo   RDO? @relation("RDOComments", fields: [rdoId], references: [id])
+
+  incidentId Int?
+  incident   Incident? @relation("IncidentComments", fields: [incidentId], references: [id])
+
+  companyId Int
+  company   Company @relation("CompanyComments", fields: [companyId], references: [id])
+
+  @@map("comments")
+}
+
+model CompanyMember {
+  id                  Int                 @id @default(autoincrement())
+  isAdmin             Boolean
+  canPost             Boolean
+  canApprove          Boolean
+  isOwner             Boolean
+  companyMemberStatus CompanyMemberStatus
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  // Relations
+  userId Int
+  user   User @relation("UserCompanyMembers", fields: [userId], references: [id])
+
+  companyId Int
+  company   Company @relation("CompanyMembers", fields: [companyId], references: [id])
+
+  @@map("company_members")
+}
+
+model ProjectUser {
+  id                Int               @id @default(autoincrement())
+  name              String
+  email             String
+  phone             String
+  projectUserStatus ProjectUserStatus
+  canApprove        Boolean
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  // Relations
+  projectId Int
+  project   Project @relation("ProjectUsers", fields: [projectId], references: [id])
+
+  userId Int?
+  user   User? @relation("UserProjectUsers", fields: [userId], references: [id])
+
+  companyId Int
+  company   Company @relation("CompanyProjectUsers", fields: [companyId], references: [id])
+
+  @@map("project_users")
+}

@@ -11,6 +11,7 @@ import { useState, useEffect } from "react"
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { LanguageSwitch } from "@/components/language-switch"
+import { signOut } from "next-auth/react"
 
 export default function Header() {
   const { user, setUser, companyMemberCanPost, companyMemberIsAdmin, loading } = useUser();
@@ -57,7 +58,7 @@ export default function Header() {
   const handleLogout = async () => {
     setLoading(true);
     setUser(null);
-    await fetch('/api/logout', { method: 'POST', credentials: 'include', cache: 'no-store' });
+    await signOut();
     router.push('/sign-in');
   };
 

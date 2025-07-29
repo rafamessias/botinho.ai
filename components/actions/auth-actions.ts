@@ -1,44 +1,83 @@
-"use server";
+"use server"
 
-import { signUp, signIn } from '@/lib/strapi';
+import { Language } from "@/lib/generated/prisma"
+import { prisma } from "@/prisma/lib/prisma"
+import bcrypt from "bcryptjs"
+import { redirect } from "next/navigation"
 
+export async function signUpAction(formData: FormData) {
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
+    const firstName = formData.get("firstName") as string
+    const lastName = formData.get("lastName") as string
+    const phone = formData.get("phone") as string
+    const language = formData.get("language") as string === "pt-BR" ? "pt_BR" : "en"
 
-export async function registerUserAction(formData: FormData) {
-    const data = Object.fromEntries(formData.entries());
+    if (!email || !password || !firstName || !lastName) {
+        return { success: false, error: "Missing required fields" }
+    }
+
     try {
-        const response = await signUp({
-            firstName: data.firstName as string,
-            lastName: data.lastName as string,
-            email: data.email as string,
-            phone: data.phone as string,
-            password: data.password as string,
-            language: data.language as string,
-        });
+        // Check if user already exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email }
+        })
 
-        if (response.success) {
-            return { success: true, user: response.user };
-        } else {
-            return { success: false, error: response.error || "No User Found" };
+        if (existingUser) {
+            return { success: false, error: "User already exists" }
         }
-    } catch (error: any) {
-        return { success: false, error: error.message || "Unknown error" };
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 12)
+
+        // Create user
+        const user = await prisma.user.create({
+            data: {
+                email,
+                password: hashedPassword,
+                firstName,
+                lastName,
+                phone,
+                language: language as Language,
+                type: 'companyUser',
+                provider: 'local',
+                confirmed: false,
+            }
+        })
+
+        return { success: true, user }
+    } catch (error) {
+        console.error("Sign up error:", error)
+        return { success: false, error: "Sign up error" }
     }
 }
 
 export async function signInAction(formData: FormData) {
-    const data = Object.fromEntries(formData.entries());
-    try {
-        const response = await signIn(data.email as string, data.password as string);
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
 
-        // You can return the response or a redirect instruction
-        return { success: true, user: response.user };
-    } catch (error: any) {
-        return { success: false, error: error.message || "Unknown error" };
+    if (!email || !password) {
+        return { success: false, error: "Missing credentials" }
     }
-}
 
-export async function googleSignUpAction() {
-    // Implement your Google sign-up logic here
-    // This is a placeholder
-    return { success: false, error: "Not implemented" };
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email }
+        })
+
+        if (!user || !user.password) {
+            return { success: false, error: "Invalid credentials" }
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+
+        if (!isPasswordValid) {
+            return { success: false, error: "Invalid credentials" }
+        }
+
+        return { success: true, user }
+    } catch (error) {
+        console.error("Sign in error:", error)
+        return { success: false, error: "Sign in error" }
+    }
 }

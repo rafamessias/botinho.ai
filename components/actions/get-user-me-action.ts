@@ -1,45 +1,86 @@
 "use server"
 
-import { cookies } from "next/headers"
-import { fetchContentApi } from "./fetch-content-api";
-import { User, ApiResponse, CompanyMember, ProjectUser } from "../types/strapi";
+import { auth } from "@/app/auth"
+import { prisma } from "@/prisma/lib/prisma"
+
 export async function getUserMe() {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt");
+    try {
+        // Get the current session from NextAuth
+        const session = await auth()
 
-    if (!jwt) {
-        return { success: false, data: null, meta: null, error: "No JWT found" } as ApiResponse<User>;
-    }
-
-    const user: ApiResponse<User> = await fetchContentApi<User>(`users/me?populate=*`, {
-        next: {
-            revalidate: 300,
-            tags: ['me']
+        if (!session?.user?.email) {
+            return {
+                success: false,
+                data: null,
+                meta: null,
+                error: "No authenticated user found"
+            }
         }
-    })
 
-    if (!user.success || !user.data) {
-        // Remove cookies
-        const cookieStore = await cookies();
-        cookieStore.delete("jwt");
-        return { success: false, data: null, meta: null, error: "Failed to fetch user" } as ApiResponse<User>;
-    }
+        // Fetch user from Prisma with all relations
+        const user = await prisma.user.findUnique({
+            where: {
+                email: session.user.email
+            },
+            include: {
+                company: true,
+                avatar: true,
+                companyMembers: {
+                    include: {
+                        company: true
+                    }
+                },
+                projectUsers: {
+                    include: {
+                        project: true,
+                        company: true
+                    }
+                }
+            }
+        })
 
-    let userData: User = user.data;
-
-    if (userData.type === "companyUser") {
-        const companyMember = await fetchContentApi<CompanyMember[]>(`company-members?filters[user][id][$eq]=${userData.id}`);
-
-        if (companyMember.success && companyMember.data) {
-            userData.companyMember = companyMember.data[0];
+        if (!user) {
+            return {
+                success: false,
+                data: null,
+                meta: null,
+                error: "User not found"
+            }
         }
-    } else if (userData.type === "projectUser") {
-        const projectUser = await fetchContentApi<ProjectUser[]>(`project-users?populate[0]=project&filters[email][$eq]=${userData.email}`);
 
-        if (projectUser.success && projectUser.data) {
-            userData.projectUser = projectUser.data;
+        // Transform the data to match the expected format
+        const userData: any = {
+            id: user.id,
+            email: user.email,
+            provider: user.provider,
+            confirmed: user.confirmed,
+            blocked: user.blocked,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            type: user.type,
+            language: user.language === "pt_BR" ? "pt-BR" : "en",
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            avatar: user.avatar,
+            company: user.company,
+            companyMember: user.companyMembers?.[0] || null,
+            projectUser: user.projectUsers || []
+        }
+
+        return {
+            success: true,
+            data: userData,
+            meta: null
+        }
+
+    } catch (error) {
+        console.error("Error fetching user:", error)
+        return {
+            success: false,
+            data: null,
+            meta: null,
+            error: "Failed to fetch user"
         }
     }
-
-    return { success: true, data: userData, meta: user.meta } as ApiResponse<User>;
 }

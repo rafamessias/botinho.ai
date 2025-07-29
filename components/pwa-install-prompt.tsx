@@ -19,15 +19,15 @@ export default function PWAInstallPrompt() {
             const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
             setIsIOS(isIOSDevice);
 
-            console.log('PWA Debug - User Agent:', userAgent);
-            console.log('PWA Debug - Is iOS:', isIOSDevice);
+            //console.log('PWA Debug - User Agent:', userAgent);
+            //console.log('PWA Debug - Is iOS:', isIOSDevice);
 
             // Check if prompt was dismissed in this session
             const hasDismissedInSession = sessionStorage.getItem('pwa-prompt-dismissed');
             const hasShownIOSPrompt = sessionStorage.getItem('ios-pwa-prompt-shown');
 
-            console.log('PWA Debug - Has dismissed in session:', !!hasDismissedInSession);
-            console.log('PWA Debug - Has shown iOS prompt in session:', !!hasShownIOSPrompt);
+            //console.log('PWA Debug - Has dismissed in session:', !!hasDismissedInSession);
+            //console.log('PWA Debug - Has shown iOS prompt in session:', !!hasShownIOSPrompt);
 
             // Show iOS prompt after a delay if user hasn't dismissed it in this session
             if (isIOSDevice && !hasShownIOSPrompt) {
@@ -41,12 +41,12 @@ export default function PWAInstallPrompt() {
         detectIOS();
 
         const handler = (e: any) => {
-            console.log('PWA Debug - beforeinstallprompt event fired');
+            //console.log('PWA Debug - beforeinstallprompt event fired');
 
             // Check if prompt was dismissed in this session
             const hasDismissedInSession = sessionStorage.getItem('pwa-prompt-dismissed');
             if (hasDismissedInSession) {
-                console.log('PWA Debug - Prompt dismissed in this session, not showing');
+                //console.log('PWA Debug - Prompt dismissed in this session, not showing');
                 return;
             }
 
@@ -73,7 +73,7 @@ export default function PWAInstallPrompt() {
                         url: window.location.href,
                     });
                 } catch (error) {
-                    console.log('Share cancelled or failed');
+                    //console.log('Share cancelled or failed');
                 }
             }
             // Mark iOS prompt as shown for this session
@@ -84,11 +84,11 @@ export default function PWAInstallPrompt() {
             const { outcome } = await deferredPrompt.userChoice;
 
             if (outcome === 'accepted') {
-                console.log('User accepted the install prompt');
+                //console.log('User accepted the install prompt');
                 // Mark as dismissed for this session when user installs
                 sessionStorage.setItem('pwa-prompt-dismissed', 'true');
             } else {
-                console.log('User dismissed the install prompt');
+                //console.log('User dismissed the install prompt');
                 // Mark as dismissed for this session when user dismisses
                 sessionStorage.setItem('pwa-prompt-dismissed', 'true');
             }
@@ -103,14 +103,14 @@ export default function PWAInstallPrompt() {
         setDeferredPrompt(null);
         // Mark as dismissed for this session
         sessionStorage.setItem('pwa-prompt-dismissed', 'true');
-        console.log('PWA Debug - Prompt dismissed by user');
+        //console.log('PWA Debug - Prompt dismissed by user');
     };
 
     const handleIOSDismiss = () => {
         setShowIOSPrompt(false);
         // Mark iOS prompt as shown for this session
         sessionStorage.setItem('ios-pwa-prompt-shown', 'true');
-        console.log('PWA Debug - iOS prompt dismissed by user');
+        //console.log('PWA Debug - iOS prompt dismissed by user');
     };
 
     // iOS-specific install prompt

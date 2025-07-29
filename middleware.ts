@@ -1,8 +1,8 @@
 import createMiddleware from 'next-intl/middleware';
-import type { NextRequest } from "next/server";
-import { getUserMeLoader } from '@/components/services/get-user-me-loader';
 import { NextResponse } from 'next/server';
 import { routing } from './i18n/routing';
+import { NextRequest } from 'next/server';
+import { auth } from '@/app/auth';
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -19,8 +19,9 @@ const publicRoutes = routing.locales.flatMap(locale => [
     `/sign-up/success`,
     `/${locale}/sign-up/check-email`,
     `/sign-up/check-email`,
+    `/${locale}/auth/google/callback`,
+    `/auth/google/callback`,
 ]);
-
 
 function isPublicRoute(path: string) {
     return publicRoutes.some(publicRoute =>
@@ -29,11 +30,11 @@ function isPublicRoute(path: string) {
     );
 }
 
-
+// Main middleware function
 export default async function middleware(request: NextRequest) {
-    const { pathname, locale } = request.nextUrl;
+    const { pathname } = request.nextUrl;
 
-    //If the pathname starts with /api, return the response
+    // Handle API routes separately
     if (pathname.startsWith('/api')) {
         return NextResponse.next();
     }
@@ -50,28 +51,32 @@ export default async function middleware(request: NextRequest) {
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
 
-    // Check auth first
-    const user = await getUserMeLoader();
+    // Get user from NextAuth
+    const session = await auth();
+    const user = session ? { ok: true, data: session.user } : { ok: false, data: null };
 
     // If user is logged in and trying to access public routes, redirect to home
     if (user.ok) {
         if (isPublicRoute(pathname)) {
             console.log('User is logged in and trying to access public routes, redirecting to home');
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}`);
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}`);
             console.log('Redirecting to:', redirectUrl.toString());
             return NextResponse.redirect(redirectUrl);
         }
 
-        if (!user.data.company && !pathname.includes('/company/create')) {
+        // Check if user has company
+        const hasCompany = session?.user?.company || false;
+
+        if (!hasCompany && !pathname.includes('/company/create')) {
             console.log('User is logged in and trying to access protected routes without setup a Company, redirecting to company/create');
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}/company/create`);
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}/company/create`);
             console.log('Redirecting to:', redirectUrl.toString());
             return NextResponse.redirect(redirectUrl);
         }
 
-        if (user.data.company && pathname.includes('/company/create')) {
+        if (hasCompany && pathname.includes('/company/create')) {
             console.log('User is logged in and trying to access company/create, redirecting to home');
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}`);
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}`);
             console.log('Redirecting to:', redirectUrl.toString());
             return NextResponse.redirect(redirectUrl);
         }
@@ -80,7 +85,7 @@ export default async function middleware(request: NextRequest) {
     // If user is not logged in and trying to access protected routes, redirect to sign in
     if (!user.ok && !isPublicRoute(pathname)) {
         console.log('User is not logged in and trying to access protected routes, redirecting to sign in');
-        const redirectUrl = new URL(`${request.nextUrl.origin}/${locale || routing.defaultLocale}/sign-in?redirect=${pathname}`);
+        const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}/sign-in?redirect=${pathname}`);
         console.log('Redirecting to:', redirectUrl.toString());
         return NextResponse.redirect(redirectUrl);
     }
