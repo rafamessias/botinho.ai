@@ -18,6 +18,7 @@ import { Link } from '@/i18n/navigation';
 import { LanguageSwitch } from '@/components/language-switch';
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn as nextAuthSignIn } from 'next-auth/react';
+import { getUserMe } from '@/components/actions/get-user-me-action';
 
 
 interface SignInFormValues {
@@ -56,11 +57,13 @@ export function SignInForm({
                 redirect: false,
             });
 
+            console.log(result);
+
             if (result?.error) {
                 const message = result.error;
                 if (message.includes("Your account email is not confirmed")) {
                     router.push(`/sign-up/check-email?email=${data.email}`);
-                } else if (message.includes("Invalid identifier or password")) {
+                } else if (message.includes("CredentialsSignin")) {
                     toast.error(t('invalidCredentials'));
                 } else if (message.includes("Your account has been blocked by an administrator")) {
                     toast.error(t('invalidCredentials'));
@@ -70,21 +73,24 @@ export function SignInForm({
                     toast.error(message);
                 }
             } else {
+
                 // get user from prisma
-                console.log(result);
-                setUser({ id: 'authenticated', email: data.email } as any);
-                setIsNavigating(true);
-                toast.success(t('signInSuccess'));
+                const user = await getUserMe();
+                if (user.success) {
+                    setUser(user.data);
+                    setIsNavigating(true);
+                    toast.success(t('signInSuccess'));
 
-                //get locale
-                const userLocale = "en" //result?.user?.language;
+                    //get locale
+                    const userLocale = "en" //result?.user?.language;
 
-                if (userLocale && userLocale !== locale) {
-                    router.push(`/${userLocale}${redirect || '/'}`);
-                } else if (redirect) {
-                    router.push(redirect);
-                } else {
-                    router.push('/');
+                    if (userLocale && userLocale !== locale) {
+                        router.push(`/${userLocale}${redirect || '/'}`);
+                    } else if (redirect) {
+                        router.push(redirect);
+                    } else {
+                        router.push('/');
+                    }
                 }
             }
 

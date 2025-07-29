@@ -80,8 +80,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         id: user.id.toString(),
                         email: user.email,
                         name: `${user.firstName} ${user.lastName}`,
-                        image: null,
                         company: user.company,
+                        language: user.language === "pt_BR" ? "pt-BR" : "en",
                     }
                 } catch (error) {
                     console.error("Auth error:", error)

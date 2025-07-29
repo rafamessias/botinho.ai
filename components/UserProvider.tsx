@@ -1,8 +1,9 @@
 'use client'
-import { createContext, useContext, useState, useEffect, Dispatch, SetStateAction } from "react";
+import { createContext, useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
 import { getUserMe } from "@/components/actions/get-user-me-action";
-import { ApiResponse } from "./types/strapi";
-import { User } from "./types/strapi";
+import { ApiResponse, User } from "@/components/types/prisma";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 
 
 type UserContextType = {
@@ -25,26 +26,19 @@ const LoadingLayer = () => (
     </div>
 )
 
-const UserContext = createContext<UserContextType>({
-    user: null,
-    setUser: () => { },
-    setLoading: () => { },
-    loading: false,
-    isCompanyUser: false,
-    companyMemberCanApprove: false,
-    companyMemberCanPost: false,
-    companyMemberIsAdmin: false,
-    projectUserCanApprove: () => false,
-});
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [isCompanyUser, setIsCompanyUser] = useState<boolean>(false);
-    const [companyMemberCanApprove, setCompanyMemberCanApprove] = useState<boolean>(false);
-    const [companyMemberCanPost, setCompanyMemberCanPost] = useState<boolean>(false);
-    const [companyMemberIsAdmin, setCompanyMemberIsAdmin] = useState<boolean>(false);
+    const [loading, setLoading] = useState(true);
+    const [isCompanyUser, setIsCompanyUser] = useState(false);
+    const [companyMemberCanApprove, setCompanyMemberCanApprove] = useState(false);
+    const [companyMemberCanPost, setCompanyMemberCanPost] = useState(false);
+    const [companyMemberIsAdmin, setCompanyMemberIsAdmin] = useState(false);
     const [projectUserCanApprove, setProjectUserCanApprove] = useState<(projectId: number) => boolean>(() => () => false);
+    const [hasRedirected, setHasRedirected] = useState(false);
+    const router = useRouter();
+    const locale = useLocale();
 
     useEffect(() => {
         // Fetch user from server action on mount
@@ -52,21 +46,24 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             setLoading(true);
 
             let me: ApiResponse<User> | null = await getUserMe();
-
+            console.log(me);
             if (me && me.success) {
                 setUser(me.data as User);
                 const userData = me.data as User;
 
-                if (userData?.language && typeof window !== 'undefined') {
+                // Only redirect once and only if we haven't redirected yet
+                if (userData?.language && !hasRedirected && typeof window !== 'undefined') {
                     const currentPath = window.location.pathname;
                     const pathSegments = currentPath.split('/');
                     const currentLocale = pathSegments[1];
 
                     if (currentLocale !== userData.language) {
+                        setHasRedirected(true);
                         // Replace the current locale with the user's preferred locale
                         pathSegments[1] = userData.language;
                         const newPath = pathSegments.join('/');
-                        window.location.href = newPath;
+                        router.push(newPath);
+                        return; // Exit early to prevent setting permissions
                     }
                 }
 
@@ -107,68 +104,35 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
                 setLoading(false);
             }
         })();
-    }, []);
+    }, [router, hasRedirected]);
 
+    // Remove the second useEffect that was causing duplicate redirects
 
-    useEffect(() => {
-        if (!user) return;
-
-        const userData = user as User;
-
-        if (userData?.language && typeof window !== 'undefined') {
-            const currentPath = window.location.pathname;
-            const pathSegments = currentPath.split('/');
-            const currentLocale = pathSegments[1];
-
-            if (currentLocale !== userData.language) {
-                // Replace the current locale with the user's preferred locale
-                pathSegments[1] = userData.language;
-                const newPath = pathSegments.join('/');
-                window.location.href = newPath;
-            }
-        }
-
-        // Calculate all permissions synchronously
-        const isCompanyUser = userData?.companyMember ? true : false;
-        const companyMemberCanApprove = userData?.companyMember ? (
-            userData?.companyMember.canApprove ||
-            userData?.companyMember.isAdmin ||
-            userData?.companyMember.isOwner
-        ) : false;
-        const companyMemberCanPost = userData?.companyMember ? (
-            userData?.companyMember.canPost ||
-            userData?.companyMember.isAdmin ||
-            userData?.companyMember.isOwner
-        ) : false;
-        const companyMemberIsAdmin = userData?.companyMember ? (
-            userData?.companyMember.isAdmin ||
-            userData?.companyMember.isOwner
-        ) : false;
-        const projectUserCanApprove = (projectId: number) => {
-            return userData?.projectUser ?
-                userData?.projectUser.some((pu: any) =>
-                    pu.canApprove === true && pu.project.id === projectId
-                ) : false;
-        };
-
-        // Set all states at once
-        setIsCompanyUser(isCompanyUser);
-        setCompanyMemberCanApprove(companyMemberCanApprove);
-        setCompanyMemberCanPost(companyMemberCanPost);
-        setCompanyMemberIsAdmin(companyMemberIsAdmin);
-        setProjectUserCanApprove(projectUserCanApprove);
-        setLoading(false);
-
-    }, [user]);
+    if (loading) {
+        return <LoadingLayer />;
+    }
 
     return (
-        <UserContext.Provider value={{ user, setUser, setLoading, loading, isCompanyUser, companyMemberCanApprove, companyMemberCanPost, companyMemberIsAdmin, projectUserCanApprove }}>
-            {loading && <LoadingLayer />}
+        <UserContext.Provider value={{
+            user,
+            setUser,
+            setLoading,
+            loading,
+            isCompanyUser,
+            companyMemberCanApprove,
+            companyMemberCanPost,
+            companyMemberIsAdmin,
+            projectUserCanApprove,
+        }}>
             {children}
         </UserContext.Provider>
     );
 }
 
 export function useUser() {
-    return useContext(UserContext);
+    const context = useContext(UserContext);
+    if (context === undefined) {
+        throw new Error('useUser must be used within a UserProvider');
+    }
+    return context;
 } 

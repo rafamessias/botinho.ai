@@ -72,6 +72,11 @@ enum ProjectUserStatus {
   accepted
 }
 
+enum DocumentType {
+  cpf
+  cnpj
+}
+
 model ApprovalAudit {
   id            Int      @id @default(autoincrement())
   action        Action
@@ -225,18 +230,18 @@ model Project {
 
 // Update Company model to include projects relation
 model Company {
-  id                 Int      @id @default(autoincrement())
+  id                 Int          @id @default(autoincrement())
   name               String
-  documentType       String
+  documentType       DocumentType
   document           String
   zipCode            String
   state              String
   city               String
   address            String
-  activeProjectCount Int      @default(0)
-  projectCount       Int      @default(0)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  activeProjectCount Int          @default(0)
+  projectCount       Int          @default(0)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 
   // Relations
   ownerId Int

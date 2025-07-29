@@ -6,6 +6,10 @@ import { auth } from '@/app/auth';
 
 const intlMiddleware = createMiddleware(routing);
 
+// Cache for session results
+const sessionCache = new Map<string, any>();
+const CACHE_DURATION = 5000; // 5 seconds
+
 const publicRoutes = routing.locales.flatMap(locale => [
     `/${locale}/sign-in`,
     `/sign-in`,
@@ -34,14 +38,43 @@ function isPublicRoute(path: string) {
 export default async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // Handle API routes separately
+    // Early returns for static assets and API routes
     if (pathname.startsWith('/api')) {
         return NextResponse.next();
     }
 
+    // Skip static files - ADD webmanifest to the list
+    if (pathname.match(/\.(ico|png|jpg|jpeg|gif|webp|svg|css|js|woff|woff2|ttf|eot|webmanifest|json|xml)$/)) {
+        return NextResponse.next();
+    }
+
+    // Skip Next.js internal routes
+    if (pathname.startsWith('/_next/')) {
+        return NextResponse.next();
+    }
+
+    // Skip favicon and other browser requests
+    if (pathname.includes('favicon') || pathname.includes('.well-known')) {
+        return NextResponse.next();
+    }
+
+    // Skip PWA and manifest files specifically
+    if (pathname.includes('site.webmanifest') ||
+        pathname.includes('manifest.json') ||
+        pathname.includes('browserconfig.xml') ||
+        pathname.includes('robots.txt') ||
+        pathname.includes('sitemap.xml')) {
+        return NextResponse.next();
+    }
+
+    // Check if the pathname already starts with a valid locale
+    const hasValidLocale = routing.locales.some(locale => {
+        const localePattern = new RegExp(`^/${locale}(/|$)`);
+        return localePattern.test(pathname);
+    });
+
     // If the pathname doesn't start with a locale, add the default locale
-    if (!routing.locales.some(locale => pathname.startsWith(`/${locale}`))) {
-        console.log("pathname", pathname);
+    if (!hasValidLocale) {
         const defaultLocale = routing.defaultLocale;
         const newUrl = new URL(request.url);
         newUrl.pathname = `/${defaultLocale}${pathname}`;
@@ -51,16 +84,24 @@ export default async function middleware(request: NextRequest) {
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
 
-    // Get user from NextAuth
-    const session = await auth();
-    const user = session ? { ok: true, data: session.user } : { ok: false, data: null };
+    // Get user from NextAuth with caching
+    let session;
+    const cacheKey = request.headers.get('authorization') || 'no-auth';
+    const cached = sessionCache.get(cacheKey);
+
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        session = cached.session;
+    } else {
+        session = await auth();
+        sessionCache.set(cacheKey, { session, timestamp: Date.now() });
+    }
+
+    const user = session ? { ok: true, user: session.user } : { ok: false, user: null };
 
     // If user is logged in and trying to access public routes, redirect to home
     if (user.ok) {
         if (isPublicRoute(pathname)) {
-            console.log('User is logged in and trying to access public routes, redirecting to home');
             const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}`);
-            console.log('Redirecting to:', redirectUrl.toString());
             return NextResponse.redirect(redirectUrl);
         }
 
@@ -68,25 +109,19 @@ export default async function middleware(request: NextRequest) {
         const hasCompany = session?.user?.company || false;
 
         if (!hasCompany && !pathname.includes('/company/create')) {
-            console.log('User is logged in and trying to access protected routes without setup a Company, redirecting to company/create');
             const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}/company/create`);
-            console.log('Redirecting to:', redirectUrl.toString());
             return NextResponse.redirect(redirectUrl);
         }
 
         if (hasCompany && pathname.includes('/company/create')) {
-            console.log('User is logged in and trying to access company/create, redirecting to home');
             const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}`);
-            console.log('Redirecting to:', redirectUrl.toString());
             return NextResponse.redirect(redirectUrl);
         }
     }
 
     // If user is not logged in and trying to access protected routes, redirect to sign in
     if (!user.ok && !isPublicRoute(pathname)) {
-        console.log('User is not logged in and trying to access protected routes, redirecting to sign in');
         const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}/sign-in?redirect=${pathname}`);
-        console.log('Redirecting to:', redirectUrl.toString());
         return NextResponse.redirect(redirectUrl);
     }
 
@@ -96,9 +131,9 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        // Skip Next.js internals and all static files
-        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|robots.txt)).*)',
-        // Handle locale routes
+        // Only match page routes, not static files or API routes
+        '/((?!api|_next/static|_next/image|favicon.ico|site.webmanifest|manifest.json|browserconfig.xml|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|eot|webmanifest|json|xml)).*)',
+        // Handle locale routes specifically
         '/(en|pt-BR)/:path*',
     ],
 };

@@ -16,6 +16,7 @@ import { useUser } from '@/components/UserProvider';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitch } from '@/components/language-switch';
 import { signIn } from 'next-auth/react';
+import { getUserMe } from '@/components/actions/get-user-me-action';
 
 interface SignUpFormValues {
     firstName: string;
@@ -53,7 +54,10 @@ export default function SignUpForm({ params }: { params: { locale: string } }) {
             if (result.success) {
                 setIsNavigating(true);
                 toast.success(t('signUpSuccess'));
-                setUser(data)
+                const user = await getUserMe();
+                if (user.success) {
+                    setUser(user.data);
+                }
                 // Redirect to sign-in page after successful signup
                 router.push('/sign-up/check-email');
             } else {
