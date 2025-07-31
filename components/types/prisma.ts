@@ -21,7 +21,7 @@ export interface User {
     lastName?: string;
     phone?: string;
     avatar?: FileImage | FileList | File | null;
-    company?: Company | number;
+    company?: Company | number | null;
     companyMember?: CompanyMember | null;
     projectUser?: ProjectUser[];
     type?: UserType;

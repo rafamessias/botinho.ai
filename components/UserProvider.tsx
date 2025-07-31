@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
 import { getUserMe } from "@/components/actions/get-user-me-action";
 import { ApiResponse, User } from "@/components/types/prisma";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 
 
@@ -39,6 +39,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const [hasRedirected, setHasRedirected] = useState(false);
     const router = useRouter();
     const locale = useLocale();
+    const pathname = usePathname()
 
     useEffect(() => {
         // Fetch user from server action on mount
@@ -46,22 +47,19 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             setLoading(true);
 
             let me: ApiResponse<User> | null = await getUserMe();
-            console.log(me);
+
             if (me && me.success) {
                 setUser(me.data as User);
                 const userData = me.data as User;
 
                 // Only redirect once and only if we haven't redirected yet
                 if (userData?.language && !hasRedirected && typeof window !== 'undefined') {
-                    const currentPath = window.location.pathname;
-                    const pathSegments = currentPath.split('/');
-                    const currentLocale = pathSegments[1];
+                    const currentLocale = locale
 
                     if (currentLocale !== userData.language) {
                         setHasRedirected(true);
                         // Replace the current locale with the user's preferred locale
-                        pathSegments[1] = userData.language;
-                        const newPath = pathSegments.join('/');
+                        const newPath = `${userData.language}${pathname}`;
                         router.push(newPath);
                         return; // Exit early to prevent setting permissions
                     }

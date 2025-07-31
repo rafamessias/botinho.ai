@@ -3,7 +3,11 @@
 import { Language } from "@/lib/generated/prisma"
 import { prisma } from "@/prisma/lib/prisma"
 import bcrypt from "bcryptjs"
-import { redirect } from "next/navigation"
+import WelcomeEmail from "@/emails/WelcomeEmail"
+import resend from "@/lib/resend"
+
+const baseUrl = process.env.HOST;
+const fromEmail = process.env.FROM_EMAIL || "Obraguru <contact@obra.guru>";
 
 export async function signUpAction(formData: FormData) {
     const email = formData.get("email") as string
@@ -30,6 +34,10 @@ export async function signUpAction(formData: FormData) {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 12)
 
+        // INSERT_YOUR_CODE
+        // Generate a random confirmation token using crypto
+        const confirmationToken = (await import('crypto')).randomBytes(32).toString('hex');
+
         // Create user
         const user = await prisma.user.create({
             data: {
@@ -42,8 +50,22 @@ export async function signUpAction(formData: FormData) {
                 type: 'companyUser',
                 provider: 'local',
                 confirmed: false,
+                confirmationToken,
             }
         })
+
+        // send welcome email
+        const { data, error } = await resend.emails.send({
+            from: fromEmail,
+            to: [user.email],
+            subject: user.language === 'pt_BR' ? 'Bem-vindo à Obraguru' : 'Welcome to Obraguru',
+            react: WelcomeEmail({
+                userName: user.firstName,
+                confirmationUrl: `${baseUrl}/sign-up/check-email?email=${user.email}&token=${confirmationToken}`,
+                lang: user.language,
+                baseUrl: baseUrl
+            }),
+        });
 
         return { success: true, user }
     } catch (error) {

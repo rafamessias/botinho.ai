@@ -33,7 +33,7 @@ const ProjectInvitationEmail = ({
     lang = 'en',
     baseUrl = 'http://localhost:3000'
 }: ProjectInvitationEmailProps) => {
-    const isPt = lang === 'pt-BR';
+    const isPt = lang === 'pt-BR' || lang === 'pt_BR';
 
     return (
         <Html>

@@ -149,6 +149,7 @@
         "signInSuccess": "You have been signed in successfully.",
         "signInError": "Failed to sign in",
         "invalidCredentials": "Invalid email or password",
+        "accountBlocked": "Your account has been blocked by an administrator",
         "firstNameRequired": "First name is required",
         "lastNameRequired": "Last name is required",
         "phoneRequired": "Phone number is required",
@@ -165,7 +166,12 @@
             "seconds": "seconds",
             "resend": "Resend Verification Email",
             "sending": "Sending new verification email...",
-            "error": "Failed to send new verification email."
+            "error": "Failed to send new verification email.",
+            "invalidToken": "Invalid or expired verification token.",
+            "confirmed": "Email confirmed successfully!",
+            "subject": "Verify your email address",
+            "validating": "Validating email token...",
+            "requestNewEmail": "You can request a new verification email below."
         },
         "success": {
             "title": "Email Verified Successfully!",

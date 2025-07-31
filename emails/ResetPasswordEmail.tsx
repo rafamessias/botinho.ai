@@ -1,3 +1,4 @@
+
 import {
     Body,
     Button,
@@ -14,22 +15,22 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
-interface WelcomeEmailProps {
+interface ResetPasswordEmailProps {
     userName?: string;
-    confirmationUrl?: string;
+    resetPasswordLink?: string;
     lang?: string;
     baseUrl?: string;
 }
 
-const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.com', lang = 'en', baseUrl = 'http://localhost:3000' }: WelcomeEmailProps) => {
-    const isPt = lang === 'pt-BR';
+const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://example.com', lang = 'en', baseUrl = 'http://localhost:3000' }: ResetPasswordEmailProps) => {
+    const isPt = lang === 'pt-BR' || lang === 'pt_BR';
 
     return (
         <Html>
             <Head />
             <Body style={main}>
                 <Preview>
-                    {isPt ? 'Obraguru - Bem-vindo à sua nova conta!' : 'Obraguru - Welcome to your new account!'}
+                    {isPt ? 'Obraguru - Redefina sua senha' : 'Obraguru - Reset your password'}
                 </Preview>
                 <Container style={container}>
                     <Img
@@ -45,24 +46,25 @@ const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.co
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Bem-vindo ao Obraguru! Sua conta foi criada com sucesso e você já pode começar a gerenciar seus projetos de forma eficiente.'
-                                : 'Welcome to Obraguru! Your account has been successfully created and you can now start managing your projects efficiently.'
+                                ? 'Alguém solicitou recentemente uma alteração de senha para sua conta Obraguru. Se foi você, você pode definir uma nova senha aqui:'
+                                : 'Someone recently requested a password change for your Obraguru account. If this was you, you can set a new password here:'
                             }
                         </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'Com o Obraguru, você terá acesso a ferramentas poderosas para organizar, planejar e executar seus projetos com excelência.'
-                                : 'With Obraguru, you\'ll have access to powerful tools to organize, plan, and execute your projects with excellence.'
-                            }
-                        </Text>
-                        <Button style={button} href={confirmationUrl}>
-                            {isPt ? 'Acessar minha conta' : 'Access my account'}
+                        <Button style={button} href={resetPasswordLink}>
+                            {isPt ? 'Redefinir senha' : 'Reset password'}
                         </Button>
                         <Text style={text}>
                             {isPt
-                                ? 'Estamos aqui para ajudar você a alcançar seus objetivos. Se tiver alguma dúvida, não hesite em entrar em contato conosco.'
-                                : 'We\'re here to help you achieve your goals. If you have any questions, don\'t hesitate to contact us.'
+                                ? 'Se você não quer alterar sua senha ou não solicitou isso, apenas ignore e delete esta mensagem.'
+                                : 'If you don\'t want to change your password or didn\'t request this, just ignore and delete this message.'
                             }
+                        </Text>
+                        <Text style={text}>
+                            {isPt
+                                ? 'Para manter sua conta segura, por favor não encaminhe este email para ninguém.'
+                                : 'To keep your account secure, please don\'t forward this email to anyone.'
+                            }
+
                         </Text>
                         <Text style={text}>
                             {isPt ? 'Boa sorte com seus projetos!' : 'Good luck with your projects!'}
@@ -75,7 +77,7 @@ const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.co
                             }
                         </Text>
                         <Text style={anchor}>
-                            {confirmationUrl}
+                            {resetPasswordLink}
                         </Text>
                     </Section>
                 </Container>
@@ -93,9 +95,9 @@ const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.co
     );
 };
 
-WelcomeEmail.PreviewProps = {
+ResetPasswordEmail.PreviewProps = {
     userName: 'Alan',
-    loginLink: 'http://localhost:3000',
+    resetPasswordLink: 'http://localhost:3000',
     lang: 'pt-BR',
     baseUrl: 'http://localhost:3000',
 };
@@ -161,4 +163,4 @@ const hr = {
     margin: '20px 0',
 };
 
-export default WelcomeEmail; 
+export default ResetPasswordEmail;

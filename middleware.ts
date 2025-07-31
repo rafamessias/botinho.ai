@@ -8,7 +8,7 @@ const intlMiddleware = createMiddleware(routing);
 
 // Cache for session results
 const sessionCache = new Map<string, any>();
-const CACHE_DURATION = 5000; // 5 seconds
+const CACHE_DURATION = 500; // Reduced to 500ms for more responsive auth
 
 const publicRoutes = routing.locales.flatMap(locale => [
     `/${locale}/sign-in`,
@@ -32,6 +32,21 @@ function isPublicRoute(path: string) {
         path === publicRoute ||
         path === publicRoute + '/'
     );
+}
+
+// Function to clear session cache
+function clearSessionCache() {
+    sessionCache.clear();
+}
+
+// Function to get cache key based on cookies and headers
+function getCacheKey(request: NextRequest): string {
+    const authCookie = request.cookies.get('next-auth.session-token')?.value ||
+        request.cookies.get('__Secure-next-auth.session-token')?.value ||
+        request.cookies.get('next-auth.csrf-token')?.value ||
+        'no-auth';
+    const authHeader = request.headers.get('authorization') || '';
+    return `${authCookie}-${authHeader}`;
 }
 
 // Main middleware function
@@ -84,24 +99,56 @@ export default async function middleware(request: NextRequest) {
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
 
-    // Get user from NextAuth with caching
+    // Clear cache for auth-related paths to ensure fresh session data
+    if (pathname.includes('/auth/') || pathname.includes('/sign-in') || pathname.includes('/sign-up')) {
+        clearSessionCache();
+    }
+
+    // Clear cache if timestamp parameter is present (indicates fresh login)
+    const url = new URL(request.url);
+    if (url.searchParams.has('_t')) {
+        clearSessionCache();
+    }
+
+    // Get user from NextAuth with improved caching
     let session;
-    const cacheKey = request.headers.get('authorization') || 'no-auth';
+    const cacheKey = getCacheKey(request);
     const cached = sessionCache.get(cacheKey);
 
     if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
         session = cached.session;
     } else {
-        session = await auth();
-        sessionCache.set(cacheKey, { session, timestamp: Date.now() });
+        try {
+            session = await auth();
+            sessionCache.set(cacheKey, { session, timestamp: Date.now() });
+        } catch (error) {
+            console.error('Auth error in middleware:', error);
+            session = null;
+        }
     }
 
-    const user = session ? { ok: true, user: session.user } : { ok: false, user: null };
+    const user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };
+
+    /*
+    console.log('Middleware session check:', {
+        pathname,
+        userOk: user.ok,
+        userId: user.user?.id,
+        userEmail: user.user?.email,
+        hasSession: !!session,
+        cacheKey: cacheKey.substring(0, 20) + '...'
+    });
+    */
 
     // If user is logged in and trying to access public routes, redirect to home
     if (user.ok) {
         if (isPublicRoute(pathname)) {
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}`);
+            // Extract the current locale from the pathname
+            const currentLocale = routing.locales.find(locale =>
+                pathname.startsWith(`/${locale}`)
+            ) || user.user?.language || routing.defaultLocale;
+
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}`);
             return NextResponse.redirect(redirectUrl);
         }
 
@@ -109,19 +156,34 @@ export default async function middleware(request: NextRequest) {
         const hasCompany = session?.user?.company || false;
 
         if (!hasCompany && !pathname.includes('/company/create')) {
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}/company/create`);
+            // Extract the current locale from the pathname
+            const currentLocale = routing.locales.find(locale =>
+                pathname.startsWith(`/${locale}`)
+            ) || user.user?.language || routing.defaultLocale;
+
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}/company/create`);
             return NextResponse.redirect(redirectUrl);
         }
 
         if (hasCompany && pathname.includes('/company/create')) {
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}`);
+            // Extract the current locale from the pathname
+            const currentLocale = routing.locales.find(locale =>
+                pathname.startsWith(`/${locale}`)
+            ) || user.user?.language || routing.defaultLocale;
+
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}`);
             return NextResponse.redirect(redirectUrl);
         }
     }
 
     // If user is not logged in and trying to access protected routes, redirect to sign in
     if (!user.ok && !isPublicRoute(pathname)) {
-        const redirectUrl = new URL(`${request.nextUrl.origin}/${routing.defaultLocale}/sign-in?redirect=${pathname}`);
+        // Extract the current locale from the pathname
+        const currentLocale = routing.locales.find(locale =>
+            pathname.startsWith(`/${locale}`)
+        ) || routing.defaultLocale;
+
+        const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}/sign-in?redirect=${pathname}`);
         return NextResponse.redirect(redirectUrl);
     }
 

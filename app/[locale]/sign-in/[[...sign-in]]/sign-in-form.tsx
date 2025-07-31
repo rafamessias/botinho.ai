@@ -10,15 +10,16 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from '@/components/logo';
-import { getGoogleOAuthUrl, signIn } from '@/lib/strapi';
+import { getGoogleOAuthUrl } from '@/lib/strapi';
 import { usePathname } from '@/i18n/navigation';
 import { useUser } from '@/components/UserProvider';
 import { useLoading } from '@/components/LoadingProvider';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitch } from '@/components/language-switch';
 import { useRouter, useSearchParams } from 'next/navigation'
-import { signIn as nextAuthSignIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { getUserMe } from '@/components/actions/get-user-me-action';
+import { ApiResponse, User } from '@/components/types/prisma';
 
 
 interface SignInFormValues {
@@ -38,100 +39,98 @@ export function SignInForm({
     const t = useTranslations('auth');
     const router = useRouter();
     const pathname = usePathname();
-    const [isLoading, setIsLoading] = useState(false);
     const [isNavigating, setIsNavigating] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const { setUser, setLoading } = useUser();
+    const { setUser } = useUser();
     const [googleUrl, setGoogleUrl] = useState('');
-
+    const { isLoading, setIsLoading } = useLoading();
     const { register, handleSubmit, formState: { errors }, watch } = useForm<SignInFormValues>();
     const emailValue = watch('email');
 
     const onSubmit = async (data: SignInFormValues) => {
 
-        setLoading(true);
+        setIsLoading(true);
         try {
-            const result = await nextAuthSignIn("credentials", {
+            console.log("signing in")
+            const result = await signIn("credentials", {
                 email: data.email.toLowerCase(),
                 password: data.password,
                 redirect: false,
             });
-
-            console.log(result);
-
+            console.log("signing in result", result)
             if (result?.error) {
-                const message = result.error;
-                if (message.includes("Your account email is not confirmed")) {
+                const message = result.code || result.error;
+                if (message.includes("email-not-confirmed")) {
                     router.push(`/sign-up/check-email?email=${data.email}`);
-                } else if (message.includes("CredentialsSignin")) {
+                } else if (message.includes("invalid-credentials")) {
                     toast.error(t('invalidCredentials'));
-                } else if (message.includes("Your account has been blocked by an administrator")) {
-                    toast.error(t('invalidCredentials'));
-                } else if (message.includes("Internal Server Error")) {
-                    toast.error(t('invalidCredentials'));
+                } else if (message.includes("account-blocked")) {
+                    toast.error(t('accountBlocked'));
                 } else {
                     toast.error(message);
                 }
             } else {
+                // Success - get user data and redirect
+                toast.success(t('signInSuccess'));
+
+                // Small delay to ensure session is updated
+                await new Promise(resolve => setTimeout(resolve, 100));
 
                 // get user from prisma
-                const user = await getUserMe();
+                const user: ApiResponse<User> = await getUserMe();
                 if (user.success) {
                     setUser(user.data);
-                    setIsNavigating(true);
-                    toast.success(t('signInSuccess'));
 
                     //get locale
-                    const userLocale = "en" //result?.user?.language;
+                    const userLocale = user.data?.language;
 
-                    if (userLocale && userLocale !== locale) {
-                        router.push(`/${userLocale}${redirect || '/'}`);
-                    } else if (redirect) {
-                        router.push(redirect);
-                    } else {
-                        router.push('/');
-                    }
+                    // Force refresh the session cache by adding a timestamp to the URL
+                    const timestamp = Date.now();
+                    const baseUrl = userLocale && userLocale !== locale
+                        ? `/${userLocale}${redirect || '/'}`
+                        : redirect || '/';
+
+                    const finalUrl = baseUrl.includes('?')
+                        ? `${baseUrl}&_t=${timestamp}`
+                        : `${baseUrl}?_t=${timestamp}`;
+
+                    router.push(finalUrl);
+                } else {
+                    setIsLoading(false);
+                    setIsNavigating(false);
                 }
             }
 
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
-            if (message.includes("Your account email is not confirmed")) {
-                router.push('/sign-up/check-email');
-            } else if (message.includes("Invalid identifier or password")) {
-                toast.error(t('invalidCredentials'));
-            } else if (message.includes("Your account has been blocked by an administrator")) {
-                toast.error(t('invalidCredentials'));
-            } else if (message.includes("Internal Server Error")) {
-                toast.error(t('invalidCredentials'));
-            } else {
-                toast.error(message);
-            }
-            setLoading(false);
+            toast.error(message);
+            setIsLoading(false);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
+            // Only clear global loading if not navigating
+            if (!isNavigating) {
+                setIsLoading(false);
+            }
         }
     };
 
     useEffect(() => {
         // Clean up user context when component mounts
         setUser(null);
-        //setGlobalLoading(false);
-        setLoading(false);
+        setIsLoading(false);
         const getGoogleUrl = async () => {
             const googleUrl = await getGoogleOAuthUrl();
             setGoogleUrl(googleUrl);
         }
         getGoogleUrl();
-    }, [setUser, setLoading, pathname]);
+    }, [setUser, setIsLoading, pathname]);
 
     // Clean up loading state when component unmounts
     useEffect(() => {
         return () => {
-            setLoading(false);
-            //setGlobalLoading(false);
+            setIsLoading(false);
         };
-    }, [setLoading]);
+    }, [setIsLoading]);
 
     return (
         <Card className="max-w-md py-12 px-0 sm:px-6 grid gap-6 relative">

@@ -1,4 +1,3 @@
-
 import {
     Body,
     Button,
@@ -15,22 +14,27 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
-interface ResetPasswordEmailProps {
+interface EmailConfirmationEmailProps {
     userName?: string;
-    resetPasswordLink?: string;
+    confirmationLink?: string;
     lang?: string;
     baseUrl?: string;
 }
 
-const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://example.com', lang = 'en', baseUrl = 'http://localhost:3000' }: ResetPasswordEmailProps) => {
-    const isPt = lang === 'pt-BR';
+const EmailConfirmationEmail = ({
+    userName = 'User',
+    confirmationLink = 'https://example.com',
+    lang = 'en',
+    baseUrl = 'http://localhost:3000'
+}: EmailConfirmationEmailProps) => {
+    const isPt = lang === 'pt-BR' || lang === 'pt_BR';
 
     return (
         <Html>
             <Head />
             <Body style={main}>
                 <Preview>
-                    {isPt ? 'Obraguru - Redefina sua senha' : 'Obraguru - Reset your password'}
+                    {isPt ? 'Obraguru - Confirme seu email' : 'Obraguru - Confirm your email'}
                 </Preview>
                 <Container style={container}>
                     <Img
@@ -46,17 +50,17 @@ const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://ex
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Alguém solicitou recentemente uma alteração de senha para sua conta Obraguru. Se foi você, você pode definir uma nova senha aqui:'
-                                : 'Someone recently requested a password change for your Obraguru account. If this was you, you can set a new password here:'
+                                ? 'Você solicitou uma nova confirmação de email para sua conta Obraguru. Para ativar sua conta, clique no botão abaixo:'
+                                : 'You requested a new email confirmation for your Obraguru account. To activate your account, click the button below:'
                             }
                         </Text>
-                        <Button style={button} href={resetPasswordLink}>
-                            {isPt ? 'Redefinir senha' : 'Reset password'}
+                        <Button style={button} href={confirmationLink}>
+                            {isPt ? 'Confirmar email' : 'Confirm email'}
                         </Button>
                         <Text style={text}>
                             {isPt
-                                ? 'Se você não quer alterar sua senha ou não solicitou isso, apenas ignore e delete esta mensagem.'
-                                : 'If you don\'t want to change your password or didn\'t request this, just ignore and delete this message.'
+                                ? 'Se você não solicitou esta confirmação ou não reconhece esta conta, apenas ignore e delete esta mensagem.'
+                                : 'If you didn\'t request this confirmation or don\'t recognize this account, just ignore and delete this message.'
                             }
                         </Text>
                         <Text style={text}>
@@ -64,10 +68,15 @@ const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://ex
                                 ? 'Para manter sua conta segura, por favor não encaminhe este email para ninguém.'
                                 : 'To keep your account secure, please don\'t forward this email to anyone.'
                             }
-
                         </Text>
                         <Text style={text}>
-                            {isPt ? 'Boa sorte com seus projetos!' : 'Good luck with your projects!'}
+                            {isPt
+                                ? 'Após confirmar seu email, você terá acesso completo à plataforma Obraguru.'
+                                : 'After confirming your email, you will have full access to the Obraguru platform.'
+                            }
+                        </Text>
+                        <Text style={text}>
+                            {isPt ? 'Bem-vindo ao Obraguru!' : 'Welcome to Obraguru!'}
                         </Text>
                         <Hr style={hr} />
                         <Text style={text}>
@@ -77,7 +86,7 @@ const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://ex
                             }
                         </Text>
                         <Text style={anchor}>
-                            {resetPasswordLink}
+                            {confirmationLink}
                         </Text>
                     </Section>
                 </Container>
@@ -95,13 +104,12 @@ const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://ex
     );
 };
 
-ResetPasswordEmail.PreviewProps = {
+EmailConfirmationEmail.PreviewProps = {
     userName: 'Alan',
-    resetPasswordLink: 'http://localhost:3000',
+    confirmationLink: 'http://localhost:3000/api/auth/email-confirmation?confirmation=token123',
     lang: 'pt-BR',
     baseUrl: 'http://localhost:3000',
 };
-
 
 const main = {
     backgroundColor: '#f6f9fc',
@@ -113,7 +121,6 @@ const container = {
     border: '1px solid #f0f0f0',
     padding: '45px',
     borderRadius: '10px',
-
 };
 
 const logo = {
@@ -163,4 +170,4 @@ const hr = {
     margin: '20px 0',
 };
 
-export default ResetPasswordEmail;
+export default EmailConfirmationEmail; 

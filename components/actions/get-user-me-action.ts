@@ -12,7 +12,6 @@ export async function getUserMe() {
             return {
                 success: false,
                 data: null,
-                meta: null,
                 error: "No authenticated user found"
             }
         }
@@ -43,7 +42,6 @@ export async function getUserMe() {
             return {
                 success: false,
                 data: null,
-                meta: null,
                 error: "User not found"
             }
         }
@@ -71,7 +69,6 @@ export async function getUserMe() {
         return {
             success: true,
             data: userData,
-            meta: null
         }
 
     } catch (error) {
@@ -79,7 +76,6 @@ export async function getUserMe() {
         return {
             success: false,
             data: null,
-            meta: null,
             error: "Failed to fetch user"
         }
     }

@@ -150,6 +150,7 @@
         "signInSuccess": "Você foi conectado com sucesso.",
         "signInError": "Falha ao fazer login",
         "invalidCredentials": "Email ou senha inválidos",
+        "accountBlocked": "Sua conta foi bloqueada pelo administrador",
         "firstNameRequired": "Nome é obrigatório",
         "lastNameRequired": "Sobrenome é obrigatório",
         "phoneRequired": "Telefone é obrigatório",
@@ -166,7 +167,12 @@
             "seconds": "segundos",
             "resend": "Reenviar Email de Verificação",
             "sending": "Enviando novo email de verificação...",
-            "error": "Falha ao enviar novo email de verificação."
+            "error": "Falha ao enviar novo email de verificação.",
+            "invalidToken": "Token de verificação inválido ou expirado.",
+            "confirmed": "Email confirmado com sucesso!",
+            "subject": "Verifique seu endereço de email",
+            "validating": "Validando token de email...",
+            "requestNewEmail": "Você pode solicitar um novo email de verificação abaixo."
         },
         "success": {
             "title": "Email Verificado com Sucesso!",

@@ -5,29 +5,42 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
 import { Company } from "@/lib/generated/prisma"
+import { CredentialsSignin } from "next-auth"
 
 // Add type declarations at the top of the file
 declare module "next-auth" {
     interface Session {
-        user: {
-            id: string
-            email: string
-            name?: string | null
-            image?: string | null
-            company?: Company | null
-        }
-    }
-
-    interface User {
-        id: string
-        email: string
-        name?: string | null
-        image?: string | null
-        company?: Company | null
+        user?: User | null,
+        error?: string | null
     }
 }
 
+interface User {
+    id: string
+    email: string
+    name?: string | null
+    company?: Company | null
+    language?: string | null
+}
 
+const locale = async () => {
+    const cookies = require('next/headers').cookies;
+    return cookies().get('NEXT_LOCALE')?.value || 'en';
+}
+
+
+// Create custom error classes for specific error types
+class InvalidCredentialsError extends CredentialsSignin {
+    code = "invalid-credentials"
+}
+
+class EmailNotConfirmedError extends CredentialsSignin {
+    code = "email-not-confirmed"
+}
+
+class AccountBlockedError extends CredentialsSignin {
+    code = "account-blocked"
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: PrismaAdapter(prisma),
@@ -55,16 +68,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 try {
                     const user = await prisma.user.findUnique({
-                        where: {
-                            email: credentials.email as string
-                        },
-                        include: {
-                            company: true
-                        }
+                        where: { email: credentials.email as string },
+                        include: { company: true }
                     })
 
                     if (!user || !user.password) {
-                        return null
+                        throw new InvalidCredentialsError()
+                    }
+                    if (!user.confirmed) {
+                        throw new EmailNotConfirmedError()
+                    }
+                    if (user.blocked) {
+                        throw new AccountBlockedError()
                     }
 
                     const isPasswordValid = await bcrypt.compare(
@@ -73,7 +88,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     )
 
                     if (!isPasswordValid) {
-                        return null
+                        throw new InvalidCredentialsError()
                     }
 
                     return {
@@ -85,7 +100,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     }
                 } catch (error) {
                     console.error("Auth error:", error)
-                    return null
+                    if (error instanceof CredentialsSignin) {
+                        throw error
+                    }
+                    throw new InvalidCredentialsError()
                 }
             }
         })
@@ -95,7 +113,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (user) {
                 token.id = user.id
                 token.email = user.email
-                token.company = user.company as Company
+                token.company = (user as User)?.company as Company | undefined
+                // Add language to token
+                token.language = (user as User)?.language
             }
 
             if (account?.provider === "google") {
@@ -106,6 +126,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 })
 
                 if (!existingUser) {
+                    // Get locale from cookies
+                    const currentLocale = await locale()
+
                     // Create new user from Google OAuth
                     const newUser = await prisma.user.create({
                         data: {
@@ -114,7 +137,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             lastName: token.name?.split(' ').slice(1).join(' ') || '',
                             provider: 'google',
                             type: 'companyUser',
-                            language: 'en',
+                            language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
                             phone: '',
                             confirmed: true,
                         },
@@ -122,9 +145,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     })
                     token.id = newUser.id.toString()
                     token.company = newUser.company
+                    // Add language to token
+                    token.language = newUser.language
                 } else {
                     token.id = existingUser.id.toString()
                     token.company = existingUser.company
+                    // Add language to token
+                    token.language = existingUser.language
                 }
             }
 
@@ -135,11 +162,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.id = token.id as string
                 session.user.email = token.email as string
                 session.user.company = token.company as Company
+                // Fix the language assignment
+                session.user.language = token.language as string
             }
             return session
         },
         async signIn({ user, account, profile }) {
             if (account?.provider === "google") {
+
                 // Ensure user exists in database
                 const existingUser = await prisma.user.findUnique({
                     where: { email: user.email! },
@@ -155,7 +185,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             lastName: user.name?.split(' ').slice(1).join(' ') || '',
                             provider: 'google',
                             type: 'companyUser',
-                            language: 'en',
+                            language: await locale(),
                             phone: '',
                             confirmed: true,
                         }

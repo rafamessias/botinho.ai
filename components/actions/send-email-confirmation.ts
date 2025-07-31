@@ -2,17 +2,104 @@
 
 import { fetchContentApi } from "./fetch-content-api";
 import { getTranslations } from "next-intl/server";
+import { prisma } from "@/prisma/lib/prisma";
 
-export async function sendEmailConfirmationAction(email: string) {
+export async function sendEmailConfirmationAction(email: string, token: string | null) {
     const t = await getTranslations('auth');
     try {
-        const res: any = await fetchContentApi('auth/send-email-confirmation', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: { email: email },
+
+        // INSERT_YOUR_CODE
+        // Get user by email, select confirmationToken and confirmed fields
+        const user = await prisma.user.findUnique({
+            where: { email },
+            select: {
+                confirmationToken: true,
+                confirmed: true,
+                language: true,
+                firstName: true,
+                lastName: true,
+            },
         });
 
-        if (res.success) {
+        if (!user) {
+            return {
+                success: false,
+                error: t('checkEmail.error')
+            };
+        }
+
+
+        if (user.confirmed) {
+            return {
+                success: true,
+                message: t('checkEmail.confirmed')
+            };
+        }
+
+        if (!user.confirmed && token) {
+            if (user.confirmationToken !== token) {
+                return {
+                    success: false,
+                    error: t('checkEmail.invalidToken')
+                };
+            } else {
+                // INSERT_YOUR_CODE
+                const updatedUser = await prisma.user.update({
+                    where: { email },
+                    data: {
+                        confirmed: true,
+                        confirmationToken: null,
+                    },
+                });
+
+                if (updatedUser) {
+                    return {
+                        success: true,
+                        message: t('checkEmail.confirmed')
+                    };
+                } else {
+                    return {
+                        success: false,
+                        error: t('checkEmail.error')
+                    };
+                }
+            }
+        }
+
+        // Generate a new confirmation token
+        const newToken = (await import('crypto')).randomBytes(32).toString('hex');
+
+        // Update the user's confirmationToken in the database
+        await prisma.user.update({
+            where: { email },
+            data: {
+                confirmationToken: newToken,
+            },
+        });
+
+        // Prepare and send the confirmation email
+        // Import EmailConfirmationEmail and render if not already imported
+        // Assume baseUrl and fromEmail are available in this scope or set them here
+        const baseUrl = process.env.HOST;
+        const fromEmail = process.env.FROM_EMAIL || "Obraguru <contact@obra.guru>";
+        const { render } = await import("@react-email/render");
+        const EmailConfirmationEmail = (await import("@/emails/EmailConfirmationEmail")).default;
+        const resend = (await import("@/lib/resend")).default;
+
+        // Send the email
+        const { data, error } = await resend.emails.send({
+            from: fromEmail,
+            to: [email],
+            subject: t('checkEmail.subject'),
+            react: EmailConfirmationEmail({
+                confirmationLink: `${baseUrl}/sign-up/check-email?email=${encodeURIComponent(email)}&token=${newToken}`,
+                lang: user.language,
+                userName: `${user.firstName} ${user.lastName}`,
+                baseUrl: baseUrl,
+            })
+        });
+
+        if (data) {
             return {
                 success: true,
                 message: t('checkEmail.sending')
@@ -20,7 +107,7 @@ export async function sendEmailConfirmationAction(email: string) {
         } else {
             return {
                 success: false,
-                error: res.error?.message || t('checkEmail.error')
+                error: error?.message || t('checkEmail.error')
             };
         }
     } catch (error) {

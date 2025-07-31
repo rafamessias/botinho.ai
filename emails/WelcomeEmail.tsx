@@ -14,27 +14,22 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
-interface EmailConfirmationEmailProps {
+interface WelcomeEmailProps {
     userName?: string;
-    confirmationLink?: string;
+    confirmationUrl?: string;
     lang?: string;
     baseUrl?: string;
 }
 
-const EmailConfirmationEmail = ({
-    userName = 'User',
-    confirmationLink = 'https://example.com',
-    lang = 'en',
-    baseUrl = 'http://localhost:3000'
-}: EmailConfirmationEmailProps) => {
-    const isPt = lang === 'pt-BR';
+const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.com', lang = 'en', baseUrl = 'http://localhost:3000' }: WelcomeEmailProps) => {
+    const isPt = lang === 'pt-BR' || lang === 'pt_BR';
 
     return (
         <Html>
             <Head />
             <Body style={main}>
                 <Preview>
-                    {isPt ? 'Obraguru - Confirme seu email' : 'Obraguru - Confirm your email'}
+                    {isPt ? 'Obraguru - Bem-vindo à sua nova conta!' : 'Obraguru - Welcome to your new account!'}
                 </Preview>
                 <Container style={container}>
                     <Img
@@ -50,33 +45,27 @@ const EmailConfirmationEmail = ({
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Você solicitou uma nova confirmação de email para sua conta Obraguru. Para ativar sua conta, clique no botão abaixo:'
-                                : 'You requested a new email confirmation for your Obraguru account. To activate your account, click the button below:'
+                                ? 'Bem-vindo ao Obraguru! Sua conta foi criada com sucesso e você já pode começar a gerenciar seus projetos de forma eficiente.'
+                                : 'Welcome to Obraguru! Your account has been successfully created and you can now start managing your projects efficiently.'
                             }
                         </Text>
-                        <Button style={button} href={confirmationLink}>
-                            {isPt ? 'Confirmar email' : 'Confirm email'}
+                        <Text style={text}>
+                            {isPt
+                                ? 'Com o Obraguru, você terá acesso a ferramentas poderosas para organizar, planejar e executar seus projetos com excelência.'
+                                : 'With Obraguru, you\'ll have access to powerful tools to organize, plan, and execute your projects with excellence.'
+                            }
+                        </Text>
+                        <Button style={button} href={confirmationUrl}>
+                            {isPt ? 'Acessar minha conta' : 'Access my account'}
                         </Button>
                         <Text style={text}>
                             {isPt
-                                ? 'Se você não solicitou esta confirmação ou não reconhece esta conta, apenas ignore e delete esta mensagem.'
-                                : 'If you didn\'t request this confirmation or don\'t recognize this account, just ignore and delete this message.'
+                                ? 'Estamos aqui para ajudar você a alcançar seus objetivos. Se tiver alguma dúvida, não hesite em entrar em contato conosco.'
+                                : 'We\'re here to help you achieve your goals. If you have any questions, don\'t hesitate to contact us.'
                             }
                         </Text>
                         <Text style={text}>
-                            {isPt
-                                ? 'Para manter sua conta segura, por favor não encaminhe este email para ninguém.'
-                                : 'To keep your account secure, please don\'t forward this email to anyone.'
-                            }
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'Após confirmar seu email, você terá acesso completo à plataforma Obraguru.'
-                                : 'After confirming your email, you will have full access to the Obraguru platform.'
-                            }
-                        </Text>
-                        <Text style={text}>
-                            {isPt ? 'Bem-vindo ao Obraguru!' : 'Welcome to Obraguru!'}
+                            {isPt ? 'Boa sorte com seus projetos!' : 'Good luck with your projects!'}
                         </Text>
                         <Hr style={hr} />
                         <Text style={text}>
@@ -86,7 +75,7 @@ const EmailConfirmationEmail = ({
                             }
                         </Text>
                         <Text style={anchor}>
-                            {confirmationLink}
+                            {confirmationUrl}
                         </Text>
                     </Section>
                 </Container>
@@ -104,12 +93,13 @@ const EmailConfirmationEmail = ({
     );
 };
 
-EmailConfirmationEmail.PreviewProps = {
+WelcomeEmail.PreviewProps = {
     userName: 'Alan',
-    confirmationLink: 'http://localhost:3000/api/auth/email-confirmation?confirmation=token123',
+    loginLink: 'http://localhost:3000',
     lang: 'pt-BR',
     baseUrl: 'http://localhost:3000',
 };
+
 
 const main = {
     backgroundColor: '#f6f9fc',
@@ -121,6 +111,7 @@ const container = {
     border: '1px solid #f0f0f0',
     padding: '45px',
     borderRadius: '10px',
+
 };
 
 const logo = {
@@ -170,4 +161,4 @@ const hr = {
     margin: '20px 0',
 };
 
-export default EmailConfirmationEmail; 
+export default WelcomeEmail; 

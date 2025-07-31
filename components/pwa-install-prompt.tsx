@@ -116,27 +116,29 @@ export default function PWAInstallPrompt() {
     // iOS-specific install prompt
     if (isIOS && showIOSPrompt) {
         return (
-            <div className="fixed bottom-4 left-4 right-4 z-50 bg-background border rounded-lg shadow-lg p-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                        <Smartphone className="h-5 w-5 text-primary" />
-                        <div>
-                            <p className="font-medium">{t('iosTitle')}</p>
-                            <p className="text-sm text-muted-foreground">
-                                {t('iosDescription')}
-                            </p>
+            <div className="fixed bottom-4 left-4 right-4">
+                <div className="max-w-[680px] mx-auto z-50 bg-background border rounded-lg shadow-lg p-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <Smartphone className="h-5 w-5 text-primary" />
+                            <div>
+                                <p className="font-medium">{t('iosTitle')}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {t('iosDescription')}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Button
-                            onClick={handleIOSDismiss}
-                            variant="ghost"
-                            size="sm"
-                            className="p-1 h-8 w-8"
-                            aria-label={t('dismissButton')}
-                        >
-                            <X className="h-4 w-4" />
-                        </Button>
+                        <div className="flex items-center space-x-2">
+                            <Button
+                                onClick={handleIOSDismiss}
+                                variant="ghost"
+                                size="sm"
+                                className="p-1 h-8 w-8"
+                                aria-label={t('dismissButton')}
+                            >
+                                <X className="h-4 w-4" />
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -147,30 +149,32 @@ export default function PWAInstallPrompt() {
     if (!showInstallPrompt || isIOS) return null;
 
     return (
-        <div className="fixed bottom-4 left-4 right-4 z-50 bg-background border rounded-lg shadow-lg p-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                    <Download className="h-5 w-5 text-primary" />
-                    <div>
-                        <p className="font-medium">{t('title')}</p>
-                        <p className="text-sm text-muted-foreground">
-                            {t('description')}
-                        </p>
+        <div className="fixed bottom-4 left-4 right-4">
+            <div className="max-w-[680px] mx-auto z-50 bg-background border rounded-lg shadow-lg p-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                        <Download className="h-5 w-5 text-primary" />
+                        <div>
+                            <p className="font-medium">{t('title')}</p>
+                            <p className="text-sm text-muted-foreground">
+                                {t('description')}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Button onClick={handleInstallClick} size="sm">
-                        {t('installButton')}
-                    </Button>
-                    <Button
-                        onClick={handleDismiss}
-                        variant="ghost"
-                        size="sm"
-                        className="p-1 h-8 w-8"
-                        aria-label={t('dismissButton')}
-                    >
-                        <X className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center space-x-2">
+                        <Button onClick={handleInstallClick} size="sm">
+                            {t('installButton')}
+                        </Button>
+                        <Button
+                            onClick={handleDismiss}
+                            variant="ghost"
+                            size="sm"
+                            className="p-1 h-8 w-8"
+                            aria-label={t('dismissButton')}
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

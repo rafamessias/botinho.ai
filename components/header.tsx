@@ -35,6 +35,12 @@ export default function Header() {
     }
   }, [user]);
 
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+    };
+  }, [setLoading]);
+
   // Scroll handler for header visibility
   useEffect(() => {
     const handleScroll = () => {
@@ -58,8 +64,13 @@ export default function Header() {
   const handleLogout = async () => {
     setLoading(true);
     setUser(null);
-    await signOut();
-    router.push('/sign-in');
+    // signOut with redirect: false to control navigation manually
+    await signOut({ redirect: false });
+
+    // Add timestamp to force cache refresh
+    const timestamp = Date.now();
+    router.push(`/sign-in?_t=${timestamp}`);
+
   };
 
   // Don't render header content while loading
