@@ -2,95 +2,87 @@
 
 import { cookies } from 'next/headers';
 import { uploadFile } from '@/lib/strapi';
-import { fetchContentApi } from './fetch-content-api';
-import { getUserMeLoader } from '../services/get-user-me-loader';
-import { ApiResponse, Company, CompanyMember, CompanyMemberDialog, User } from '@/components/types/strapi';
+import { prisma } from '@/prisma/lib/prisma';
+import { getUserMe } from './get-user-me-action';
+import { ApiResponse, Company, CompanyMember, CompanyMemberDialog, User } from '@/components/types/prisma';
+import { DocumentType, UserType, Language } from '@/lib/generated/prisma';
+import bcrypt from 'bcryptjs';
 
 const COMPANY_USER_ROLE = 3;
-
 
 export async function createCompany(data: Company, members: CompanyMemberDialog[], image: FormData) {
 
     let companyRecordCreated: Company | null = null;
 
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
 
-        if (!token) {
-            throw new Error('Not authenticated');
+
+        const userMeResponse = await getUserMe();
+        if (!userMeResponse.success) {
+            return { success: false, error: 'Failed to get current user' };
         }
 
-
-        const userMeLoader: any = await getUserMeLoader();
-        if (!userMeLoader.ok) {
-            throw new Error('Failed to get current user');
-        }
-
-        const currentUser: User = userMeLoader.data;
+        const currentUser: User = userMeResponse.data;
 
         // Create the company
-        const companyResponse: ApiResponse<Company> = await fetchContentApi<Company>(`companies`, {
-            method: 'POST',
-            body: {
-                data: {
-                    name: data.name,
-                    documentType: data.documentType.toUpperCase(),
-                    document: data.document,
-                    zipCode: data.zipCode,
-                    state: data.state,
-                    city: data.city,
-                    address: data.address,
-                    owner: currentUser.id
-                }
+        const companyRecord = await prisma.company.create({
+            data: {
+                name: data.name,
+                documentType: data.documentType.toUpperCase() as DocumentType,
+                document: data.document,
+                zipCode: data.zipCode,
+                state: data.state,
+                city: data.city,
+                address: data.address,
+                ownerId: currentUser.id!
             }
         });
 
-        //console.log(`companyResponse: ${JSON.stringify(companyResponse)}`);
-        const companyRecord = companyResponse.data;
         if (!companyRecord?.id) {
             throw new Error('Failed to create company');
         }
 
+        // Transform to match the Company interface
+        const companyWithOwner: Company = {
+            ...companyRecord,
+            owner: currentUser.id!
+        };
+
         console.log(`Creating Company ${companyRecord.id} - Company created successfully`);
 
         // Update the current user with the company relationship
-        const currentUserResponse: ApiResponse<User> = await fetchContentApi<User>(`users/${currentUser.id}`, {
-            method: 'PUT',
-            body: {
-                company: companyRecord.id
-            },
+        const updatedUser = await prisma.user.update({
+            where: { id: currentUser.id! },
+            data: {
+                companyId: companyRecord.id
+            }
         });
 
-        if (!currentUserResponse.data?.id) {
+        if (!updatedUser?.id) {
             throw new Error('Failed to update current user with company');
         }
 
         console.log(`Creating Company ${companyRecord.id} - Current user updated successfully`);
 
-
         // Add current user as company member - Admin role
-        const memberResponse: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members`, {
-            method: 'POST',
-            body: {
-                data: {
-                    company: companyRecord.id,
-                    user: currentUser.id,
-                    role: 'admin',
-                    isAdmin: true,
-                    canPost: true,
-                    canApprove: true,
-                    isOwner: true
-                }
+        const memberRecord = await prisma.companyMember.create({
+            data: {
+                companyId: companyRecord.id,
+                userId: currentUser.id!,
+                isAdmin: true,
+                canPost: true,
+                canApprove: true,
+                isOwner: true,
+                companyMemberStatus: 'accepted'
             }
         });
 
-        if (!memberResponse.data) {
+        if (!memberRecord) {
             throw new Error('Failed to add current user as company member');
         }
 
         //save here, if it fails - catch will return the companyRecordCreated
-        companyRecordCreated = companyRecord;
+        companyRecordCreated = companyWithOwner;
 
         console.log(`Creating Company ${companyRecord.id} - Current user added as company member Admin successfully`);
 
@@ -110,72 +102,72 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
             const memberPromises = members.map(async (user) => {
                 // First, create or get the user
                 const pwd = Math.random().toString(36).slice(-8); // Generate random password
-                const userResponse: any = await fetchContentApi<User>(`auth/local/register`, {
-                    method: 'POST',
-                    body: {
-                        username: user.email,
-                        email: user.email,
-                        password: pwd,
-                        firstName: user.name.split(' ')[0],
-                        lastName: user.name.split(' ').slice(1).join(' '),
-                        phone: user.phone,
-                        company: companyRecord.id
-                    }
-                });
+                const hashedPassword = await bcrypt.hash(pwd, 10);
 
-                if (!userResponse?.success || !userResponse.data) {
-                    console.error(`Failed to create user: ${user.email}`);
-                    return { success: false, error: `Failed to create user: ${user.email}` };
-                }
-
-                let userData: User;
-
-                if (!userResponse?.success || !userResponse.data) {
-                    // Check if the error is due to email/username already taken
-                    if (userResponse.error?.includes('Email') || userResponse.error?.includes('Username')) {
-                        // Try to get the existing user by email
-                        const existingUserResponse: any = await fetchContentApi<User>(`users?filters[email][$eq]=${user.email}`, {
-                            method: 'GET'
-                        });
-
-                        if (existingUserResponse?.success && existingUserResponse.data?.length > 0) {
-                            userData = existingUserResponse.data[0];
-                            console.log(`User already exists: ${user.email} - Using existing user ID: ${userData.id}`);
-                        } else {
-                            console.error(`Failed to create user: ${user.email} - ${userResponse.error}`);
-                            return { success: false, error: `Failed to create user: ${userResponse.error}` };
-                        }
-                    } else {
-                        console.error(`Failed to create user: ${user.email} - ${userResponse.error}`);
-                        return { success: false, error: `Failed to create user: ${userResponse.error}` };
-                    }
-                } else {
-                    userData = userResponse.data?.user;
-                }
-
-                // Then, add the user as a company member
-                const memberResponse: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members`, {
-                    method: 'POST',
-                    body: {
+                try {
+                    const userData = await prisma.user.create({
                         data: {
-                            company: companyRecord.id,
-                            user: userData.id,
-                            role: 'member',
+                            email: user.email,
+                            password: hashedPassword,
+                            firstName: user.name.split(' ')[0],
+                            lastName: user.name.split(' ').slice(1).join(' '),
+                            phone: user.phone,
+                            companyId: companyRecord.id,
+                            type: 'companyUser' as UserType,
+                            language: 'pt_BR' as Language,
+                            confirmed: true
+                        }
+                    });
+
+                    // Then, add the user as a company member
+                    const memberResponse = await prisma.companyMember.create({
+                        data: {
+                            companyId: companyRecord.id,
+                            userId: userData.id,
                             isAdmin: user.isAdmin,
                             canPost: user.canPost,
-                            canApprove: user.canApprove
+                            canApprove: user.canApprove,
+                            isOwner: false,
+                            companyMemberStatus: 'accepted'
                         }
+                    });
+
+                    console.log(`Creating Company ${companyRecord.id} - Member ${user.email} added successfully`);
+                    return { success: true, data: memberResponse };
+
+                } catch (error: any) {
+                    // Check if the error is due to email/username already taken
+                    if (error.code === 'P2002' && (error.meta?.target?.includes('email') || error.meta?.target?.includes('username'))) {
+                        // Try to get the existing user by email
+                        const existingUser = await prisma.user.findUnique({
+                            where: { email: user.email }
+                        });
+
+                        if (existingUser) {
+                            // Then, add the user as a company member
+                            const memberResponse = await prisma.companyMember.create({
+                                data: {
+                                    companyId: companyRecord.id,
+                                    userId: existingUser.id,
+                                    isAdmin: user.isAdmin,
+                                    canPost: user.canPost,
+                                    canApprove: user.canApprove,
+                                    isOwner: false,
+                                    companyMemberStatus: 'accepted'
+                                }
+                            });
+
+                            console.log(`Creating Company ${companyRecord.id} - Member ${user.email} added successfully`);
+                            return { success: true, data: memberResponse };
+                        } else {
+                            console.error(`Failed to create user: ${user.email} - ${error.message}`);
+                            return { success: false, error: `Failed to create user: ${error.message}` };
+                        }
+                    } else {
+                        console.error(`Failed to create user: ${user.email} - ${error.message}`);
+                        return { success: false, error: `Failed to create user: ${error.message}` };
                     }
-                });
-
-                if (!memberResponse) {
-                    console.error(`Failed to add member: ${user.email}`);
-                    return { success: false, error: `Failed to add member: ${user.email}` };
                 }
-
-                console.log(`Creating Company ${companyRecord.id} - Member ${user.email} added successfully`);
-                return { success: true, data: memberResponse };
-
             });
 
             await Promise.all(memberPromises);
@@ -190,22 +182,17 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
 
 export async function updateCompany(data: any) {
     try {
-
         //remove documentId, id, createdAt, updatedAt, publishedAt, logo
         const { documentId, id, createdAt, updatedAt, publishedAt, logo, ...companyData } = data;
 
-        const response: any = await fetchContentApi(`companies/${documentId}`, {
-            method: 'PUT',
-            body: {
-                data: companyData
-            },
+        const company = await prisma.company.update({
+            where: { id: parseInt(documentId) },
+            data: companyData
         });
 
-        if (!response.data) {
+        if (!company) {
             throw new Error('Failed to update company');
         }
-
-        const company = response.data;
 
         return {
             success: true,
@@ -222,18 +209,22 @@ export async function updateCompany(data: any) {
 
 export async function createCompanyMember(user: any) {
     try {
-
-
-        const userMeLoader: any = await getUserMeLoader();
-        if (!userMeLoader.ok) {
+        const userMeResponse = await getUserMe();
+        if (!userMeResponse.success) {
             throw new Error('Failed to get current user');
         }
 
-        const currentUser: User = userMeLoader.data;
+        const currentUser: User = userMeResponse.data;
 
         if (!currentUser.company) {
             console.error('Current user does not have a company');
             return { success: false, error: 'Current user does not have a company' };
+        }
+
+        const companyId = typeof currentUser.company === 'number' ? currentUser.company : currentUser.company.id;
+        if (!companyId) {
+            console.error('Invalid company ID');
+            return { success: false, error: 'Invalid company ID' };
         }
 
         // First, create or get the user
@@ -242,89 +233,109 @@ export async function createCompanyMember(user: any) {
         for (let i = 0; i < 16; i++) {
             pwd += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        const userResponse: any = await fetchContentApi<User>(`auth/local/register`, {
-            method: 'POST',
-            body: {
-                username: user.user.email,
-                email: user.user.email,
-                password: pwd,
-                firstName: user.user.firstName,
-                lastName: user.user.lastName,
-                phone: user.user.phone,
-                company: currentUser.company,
-                type: 'companyUser',
-                companyName: user.companyName,
-                role: COMPANY_USER_ROLE,
-                language: user.language
-            }
-        });
 
-        let userData: User;
+        const hashedPassword = await bcrypt.hash(pwd, 10);
 
-        if (!userResponse?.success || !userResponse.data) {
-            console.log(userResponse);
-            // Check if the error is due to email/username already taken
-            if (userResponse.error?.includes('Email') || userResponse.error?.includes('Username')) {
-                // Try to get the existing user by email
-                return userResponse;
-                const existingUserResponse: any = await fetchContentApi<User>(`users?filters[email][$eq]=${user.user.email}`, {
-                    method: 'GET'
-                });
-
-                if (existingUserResponse?.success && existingUserResponse.data?.length > 0) {
-                    userData = existingUserResponse.data[0];
-                    console.log(`User already exists: ${user.user.email} - Using existing user ID: ${userData.id}`);
-                } else {
-                    console.error(`Failed to create user: ${user.user.email} - ${userResponse.error}`);
-                    return { success: false, error: `Failed to create user: ${userResponse.error}` };
-                }
-            } else {
-                console.error(`Failed to create user: ${user.user.email} - ${userResponse.error}`);
-                return { success: false, error: `Failed to create user: ${userResponse.error}` };
-            }
-        } else {
-            userData = userResponse.data?.user;
-        }
-
-        // Check if user is already a member of the company
-        const existingMemberResponse: any = await fetchContentApi<CompanyMember>(`company-members?filters[user][id][$eq]=${userData.id}&filters[company][id][$eq]=${currentUser.company}`, {
-            method: 'GET'
-        });
-
-        if (existingMemberResponse?.success && existingMemberResponse.data?.length > 0) {
-            console.log(`User ${user.user.email} is already a member of the company`);
-            return {
-                success: false,
-                error: 'User is already a member of this company',
-                data: existingMemberResponse.data[0]
-            };
-        }
-
-        const response: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>('company-members', {
-            method: 'POST',
-            body: {
+        try {
+            const userData = await prisma.user.create({
                 data: {
-                    user: userData.id,
-                    role: 'member',
+                    email: user.user.email,
+                    password: hashedPassword,
+                    firstName: user.user.firstName,
+                    lastName: user.user.lastName,
+                    phone: user.user.phone,
+                    companyId: companyId,
+                    type: 'companyUser' as UserType,
+                    language: user.language === 'pt-BR' ? 'pt_BR' : 'en' as Language,
+                    confirmed: true
+                }
+            });
+
+            // Check if user is already a member of the company
+            const existingMember = await prisma.companyMember.findFirst({
+                where: {
+                    userId: userData.id,
+                    companyId: companyId
+                }
+            });
+
+            if (existingMember) {
+                console.log(`User ${user.user.email} is already a member of the company`);
+                return {
+                    success: false,
+                    error: 'User is already a member of this company',
+                    data: existingMember
+                };
+            }
+
+            const memberResponse = await prisma.companyMember.create({
+                data: {
+                    companyId: companyId,
+                    userId: userData.id,
                     isAdmin: user.isAdmin,
                     canPost: user.canPost,
-                    canApprove: user.canApprove
+                    canApprove: user.canApprove,
+                    isOwner: false,
+                    companyMemberStatus: 'accepted'
                 }
-            },
-        });
+            });
 
-        if (!response.data) {
-            console.error(`Failed to create company member - ${response.error}`);
             return {
-                success: false,
-                error: `Failed to create company member - ${response.error}`
+                success: true,
+                data: { ...memberResponse, id: userData.id }
             };
-        }
 
-        return {
-            success: true,
-            data: { ...response.data, id: userData.id, userDocumentId: userData.documentId }
-        };
+        } catch (error: any) {
+            // Check if the error is due to email/username already taken
+            if (error.code === 'P2002' && (error.meta?.target?.includes('email') || error.meta?.target?.includes('username'))) {
+                // Try to get the existing user by email
+                const existingUser = await prisma.user.findUnique({
+                    where: { email: user.user.email }
+                });
+
+                if (existingUser) {
+                    // Check if user is already a member of the company
+                    const existingMember = await prisma.companyMember.findFirst({
+                        where: {
+                            userId: existingUser.id,
+                            companyId: companyId
+                        }
+                    });
+
+                    if (existingMember) {
+                        console.log(`User ${user.user.email} is already a member of the company`);
+                        return {
+                            success: false,
+                            error: 'User is already a member of this company',
+                            data: existingMember
+                        };
+                    }
+
+                    const memberResponse = await prisma.companyMember.create({
+                        data: {
+                            companyId: companyId,
+                            userId: existingUser.id,
+                            isAdmin: user.isAdmin,
+                            canPost: user.canPost,
+                            canApprove: user.canApprove,
+                            isOwner: false,
+                            companyMemberStatus: 'accepted'
+                        }
+                    });
+
+                    return {
+                        success: true,
+                        data: { ...memberResponse, id: existingUser.id }
+                    };
+                } else {
+                    console.error(`Failed to create user: ${user.user.email} - ${error.message}`);
+                    return { success: false, error: `Failed to create user: ${error.message}` };
+                }
+            } else {
+                console.error(`Failed to create user: ${user.user.email} - ${error.message}`);
+                return { success: false, error: `Failed to create user: ${error.message}` };
+            }
+        }
     } catch (error) {
         console.error('Error creating company member:', error);
         return {
@@ -338,29 +349,26 @@ export async function updateCompanyMember(data: any) {
     try {
         const { documentId, id, createdAt, updatedAt, publishedAt, ...memberData } = data;
 
-        const response: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members/${documentId}`, {
-            method: 'PUT',
-            body: {
-                data: {
-                    role: memberData.role,
-                    isAdmin: memberData.isAdmin,
-                    canPost: memberData.canPost,
-                    canApprove: memberData.canApprove
-                }
-            },
+        const member = await prisma.companyMember.update({
+            where: { id: parseInt(documentId) },
+            data: {
+                isAdmin: memberData.isAdmin,
+                canPost: memberData.canPost,
+                canApprove: memberData.canApprove
+            }
         });
 
-        if (!response.data) {
-            console.error(`Failed to update company member - ${response.error}`);
+        if (!member) {
+            console.error(`Failed to update company member`);
             return {
                 success: false,
-                error: `Failed to update company member - ${response.error}`
+                error: `Failed to update company member`
             };
         }
 
         return {
             success: true,
-            data: response.data
+            data: member
         };
     } catch (error) {
         console.error('Error updating company member:', error);
@@ -373,41 +381,26 @@ export async function updateCompanyMember(data: any) {
 
 export async function removeCompanyMember(documentId: string, userId: number) {
     try {
-
-        const response: ApiResponse<CompanyMember> = await fetchContentApi<CompanyMember>(`company-members/${documentId}`, {
-            method: 'DELETE'
+        const member = await prisma.companyMember.delete({
+            where: { id: parseInt(documentId) }
         });
 
-        if (!response.success && !response.data) {
-            console.error(`Failed to remove company member - ${response.error}`);
+        if (!member) {
+            console.error(`Failed to remove company member`);
             return {
                 success: false,
-                error: `Failed to remove company member - ${response.error}`
+                error: `Failed to remove company member`
             };
         }
 
-        console.log(`Removing company member - ${response.data?.id}`);
+        console.log(`Removing company member - ${member.id}`);
 
-        // Delete the associated user
-        /*
-        const userResponse: ApiResponse<User> = await fetchContentApi<User>(`users/${userId}`, {
-            method: 'DELETE'
-        });
-
-        if (!userResponse.data) {
-            console.error(`Failed to remove user - ${userResponse.error}`);
-            return {
-                success: false,
-                error: `Failed to remove user - ${userResponse.error}`
-            };
-        }
-
-        console.log(`Removing user - ${userResponse.data.id}`);
-        */
+        // Note: We're not deleting the user as requested in the original code
+        // The user deletion was commented out in the original implementation
 
         return {
             success: true,
-            data: response.data
+            data: member
         };
     } catch (error) {
         console.error('Error removing company member:', error);

@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
-import { Company, CompanyMemberDialog, ApiResponse } from '@/components/types/strapi';
+import { Company, CompanyMemberDialog, ApiResponse } from '@/components/types/prisma';
 
 export function CreateCompanyForm() {
     const t = useTranslations('company');
@@ -21,7 +21,7 @@ export function CreateCompanyForm() {
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
     const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<Company>({
-        defaultValues: { documentType: 'CNPJ' }
+        defaultValues: { documentType: 'cnpj' }
     });
     const documentType = watch('documentType');
     const { setUser } = useUser();
@@ -117,7 +117,7 @@ export function CreateCompanyForm() {
                     <Select
                         value={documentType}
                         onValueChange={value => {
-                            setValue('documentType', value as 'CPF' | 'CNPJ');
+                            setValue('documentType', value as 'cpf' | 'cnpj');
                             setValue('document', ''); 234
                             clearErrors(['document']);
                         }}
@@ -127,12 +127,12 @@ export function CreateCompanyForm() {
                             <SelectValue placeholder={t('documentTypePlaceholder')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="CPF">{t('cpf')}</SelectItem>
-                            <SelectItem value="CNPJ">{t('cnpj')}</SelectItem>
+                            <SelectItem value="cpf">{t('cpf')}</SelectItem>
+                            <SelectItem value="cnpj">{t('cnpj')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
-                {documentType === 'CPF' && (
+                {documentType === 'cpf' && (
                     <div>
                         <label className="font-semibold">{t('cpf')}</label>
                         <Input
@@ -162,7 +162,7 @@ export function CreateCompanyForm() {
                         )}
                     </div>
                 )}
-                {documentType === 'CNPJ' && (
+                {documentType === 'cnpj' && (
                     <div>
                         <label className="font-semibold">{t('cnpj')}</label>
                         <Input
