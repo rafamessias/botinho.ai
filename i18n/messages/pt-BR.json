@@ -185,6 +185,8 @@
             "description": "Digite o código do seu email e sua nova senha.",
             "code": "Código",
             "codePlaceholder": "Cole o código do seu email",
+            "email": "Email",
+            "emailPlaceholder": "Digite seu email",
             "newPassword": "Nova Senha",
             "newPasswordPlaceholder": "Digite a nova senha",
             "confirmPassword": "Confirmar Senha",
@@ -193,6 +195,7 @@
             "setNewPassword": "Definir Nova Senha",
             "errors": {
                 "codeRequired": "Código é obrigatório",
+                "emailRequired": "Email é obrigatório",
                 "passwordRequired": "Senha é obrigatória",
                 "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
                 "confirmPasswordRequired": "Por favor, confirme sua senha",
@@ -214,7 +217,8 @@
             },
             "backToSignIn": "Voltar para Entrar",
             "success": "Link de redefinição de senha enviado com sucesso",
-            "error": "Falha ao enviar link de redefinição de senha"
+            "error": "Falha ao enviar link de redefinição de senha",
+            "subject": "Redefina sua senha"
         },
         "language": {
             "title": "Idioma",

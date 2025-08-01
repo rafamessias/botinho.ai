@@ -51,13 +51,13 @@ export function SignInForm({
 
         setIsLoading(true);
         try {
-            console.log("signing in")
+
             const result = await signIn("credentials", {
                 email: data.email.toLowerCase(),
                 password: data.password,
                 redirect: false,
             });
-            console.log("signing in result", result)
+
             if (result?.error) {
                 const message = result.code || result.error;
                 if (message.includes("email-not-confirmed")) {

@@ -1,34 +1,33 @@
 'use server';
 
+import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-import { fetchContentApi } from "./fetch-content-api";
+const { prisma } = await import('@/prisma/lib/prisma');
 
-export async function setNewPasswordAction(code: string, password: string, passwordConfirmation: string) {
+export async function setNewPasswordAction(token: string, email: string, password: string, passwordConfirmation: string) {
     try {
-        const res: any = await fetchContentApi('auth/reset-password', {
-            method: "POST",
-            body: { code, password, passwordConfirmation },
+        // Use prisma to get the user by email and check resetPasswordToken
+        const user = await prisma.user.findUnique({
+            where: { email },
+            select: { resetPasswordToken: true }
         });
 
-        if (res.success) {
-            const cookieStore = await cookies();
-            cookieStore.set('jwt', res.data?.jwt, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                path: '/',
-                maxAge: 30 * 24 * 60 * 1 // 1 day
-            });
-
-            const user = await fetchContentApi(`users/me?populate=*`, {
-                token: res.data?.jwt
-            })
-
-            return { success: true, message: "Your password has been reset. You can now sign in.", user: user?.data };
-        } else {
-            console.log(res);
-            return { success: false, error: res.error?.message || "Failed to reset password.", user: null };
+        if (!user || user.resetPasswordToken !== token) {
+            return { success: false, error: "Invalid or expired reset token.", user: null };
         }
+
+        // Update the user's password
+        if (password !== passwordConfirmation) return { success: false, error: "Passwords do not match.", user: null };
+
+        const hashedPassword = await bcrypt.hash(password, 12)
+
+        const updatedUser = await prisma.user.update({
+            where: { email },
+            data: { password: hashedPassword }
+        });
+
+        return { success: true, message: "Your password has been reset. You can now sign in.", user: updatedUser };
+
     } catch (error) {
         console.log(error);
         return { success: false, error: error instanceof Error ? error.message : String(error), user: null };

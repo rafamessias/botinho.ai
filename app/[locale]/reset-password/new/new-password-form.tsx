@@ -12,14 +12,18 @@ import { setNewPasswordAction } from '@/components/actions/set-new-password-acti
 import { useRouter } from "@/i18n/navigation";
 import { useUser } from "@/components/UserProvider";
 import { useTranslations } from 'next-intl';
+import { signIn } from "next-auth/react";
+import { getUserMe } from "@/components/actions/get-user-me-action";
+import { ApiResponse, User } from "@/components/types/prisma";
 
 interface NewPasswordFormValues {
-    code: string;
+    token: string;
+    email: string;
     password: string;
     passwordConfirmation: string;
 }
 
-export default function NewPasswordForm() {
+export default function NewPasswordForm({ locale }: { locale: string }) {
     const t = useTranslations('auth');
     const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<NewPasswordFormValues>();
     const [isLoading, setIsLoading] = useState(false);
@@ -37,25 +41,52 @@ export default function NewPasswordForm() {
         // Get token from URL and set as code in form
         if (typeof window !== "undefined") {
             const searchParams = new URLSearchParams(window.location.search);
-            const code = searchParams.get('token') || "";
-            setValue("code", code);
+            const token = searchParams.get('token') || "";
+            const email = searchParams.get('email') || "";
+            setValue("token", token);
+            setValue("email", email);
         }
     }, [setUser, setValue]);
 
     const onSubmit = async (data: NewPasswordFormValues) => {
         setIsLoading(true);
         try {
-            const result = await setNewPasswordAction(data.code, data.password, data.passwordConfirmation);
+            const result = await setNewPasswordAction(data.token, data.email, data.password, data.passwordConfirmation);
             if (result.success) {
                 toast.success(result.message);
 
-                setUser(result.user);
+                const resultSignIn = await signIn("credentials", {
+                    email: data.email.toLowerCase(),
+                    password: data.password,
+                    redirect: false,
+                });
 
-                router.push('/');
-                router.refresh();
-            } else {
-                console.log(result);
-                toast.error(result.error);
+                // Small delay to ensure session is updated
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                // get user from prisma
+                const user: ApiResponse<User> = await getUserMe();
+                if (user.success) {
+                    setUser(user.data);
+
+                    //get locale
+                    const userLocale = user.data?.language;
+
+                    // Force refresh the session cache by adding a timestamp to the URL
+                    const timestamp = Date.now();
+                    const baseUrl = userLocale && userLocale !== locale
+                        ? `/${userLocale}/`
+                        : '/';
+
+                    const finalUrl = baseUrl.includes('?')
+                        ? `${baseUrl}&_t=${timestamp}`
+                        : `${baseUrl}?_t=${timestamp}`;
+
+                    router.push(finalUrl);
+                } else {
+                    console.log(result);
+                    toast.error(result.error);
+                }
             }
         } catch (error) {
             console.log(error);
@@ -78,16 +109,29 @@ export default function NewPasswordForm() {
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
                         <div className="space-y-2 hidden">
-                            <label htmlFor="code" className="font-semibold">{t('newPassword.code')}</label>
+                            <label htmlFor="token" className="font-semibold">{t('newPassword.code')}</label>
                             <Input
-                                id="code"
+                                id="token"
                                 type="text"
                                 placeholder={t('newPassword.codePlaceholder')}
                                 disabled
-                                {...register("code", { required: t('newPassword.errors.codeRequired') })}
+                                {...register("token", { required: t('newPassword.errors.codeRequired') })}
                             />
-                            {errors.code && (
-                                <p className="text-sm text-red-500">{errors.code.message}</p>
+                            {errors.token && (
+                                <p className="text-sm text-red-500">{errors.token.message}</p>
+                            )}
+                        </div>
+                        <div className="space-y-2 hidden">
+                            <label htmlFor="email" className="font-semibold">{t('newPassword.email')}</label>
+                            <Input
+                                id="email"
+                                type="text"
+                                placeholder={t('newPassword.emailPlaceholder')}
+                                disabled
+                                {...register("email", { required: t('newPassword.errors.emailRequired') })}
+                            />
+                            {errors.email && (
+                                <p className="text-sm text-red-500">{errors.email.message}</p>
                             )}
                         </div>
                         <div className="space-y-2">

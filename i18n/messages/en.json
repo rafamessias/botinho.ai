@@ -184,6 +184,8 @@
             "description": "Enter the code from your email and your new password.",
             "code": "Code",
             "codePlaceholder": "Paste the code from your email",
+            "email": "Email",
+            "emailPlaceholder": "Enter your email",
             "newPassword": "New Password",
             "newPasswordPlaceholder": "Enter new password",
             "confirmPassword": "Confirm Password",
@@ -192,6 +194,7 @@
             "setNewPassword": "Set New Password",
             "errors": {
                 "codeRequired": "Code is required",
+                "emailRequired": "Email is required",
                 "passwordRequired": "Password is required",
                 "passwordMinLength": "Password must be at least 6 characters",
                 "confirmPasswordRequired": "Please confirm your password",
@@ -213,7 +216,8 @@
             },
             "backToSignIn": "Back to Sign In",
             "success": "Password reset link sent successfully",
-            "error": "Failed to send password reset link"
+            "error": "Failed to send password reset link",
+            "subject": "Reset your password"
         },
         "language": {
             "title": "Language",
