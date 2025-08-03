@@ -31,7 +31,7 @@ export default function Header() {
   useEffect(() => {
     if (user) {
       setUserName(user?.firstName?.charAt(0) + user?.lastName?.charAt(0));
-      setCompanyId(user?.company?.documentId);
+      setCompanyId(user?.company?.id);
     }
   }, [user]);
 

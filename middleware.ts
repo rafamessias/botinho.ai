@@ -99,7 +99,8 @@ export default async function middleware(request: NextRequest) {
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
 
-    // Clear cache for auth-related paths to ensure fresh session data
+
+    /* Clear cache for auth-related paths to ensure fresh session data
     if (pathname.includes('/auth/') || pathname.includes('/sign-in') || pathname.includes('/sign-up')) {
         clearSessionCache();
     }
@@ -109,8 +110,9 @@ export default async function middleware(request: NextRequest) {
     if (url.searchParams.has('_t')) {
         clearSessionCache();
     }
-
+*/
     // Get user from NextAuth with improved caching
+    /*
     let session;
     const cacheKey = getCacheKey(request);
     const cached = sessionCache.get(cacheKey);
@@ -126,22 +128,15 @@ export default async function middleware(request: NextRequest) {
             session = null;
         }
     }
-
-    const user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };
-
-    /*
-    console.log('Middleware session check:', {
-        pathname,
-        userOk: user.ok,
-        userId: user.user?.id,
-        userEmail: user.user?.email,
-        hasSession: !!session,
-        cacheKey: cacheKey.substring(0, 20) + '...'
-    });
     */
+
+    const session = await auth();
+
+    let user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };
 
     // If user is logged in and trying to access public routes, redirect to home
     if (user.ok) {
+
         if (isPublicRoute(pathname)) {
             // Extract the current locale from the pathname
             const currentLocale = routing.locales.find(locale =>
@@ -153,7 +148,7 @@ export default async function middleware(request: NextRequest) {
         }
 
         // Check if user has company
-        const hasCompany = session?.user?.company || false;
+        const hasCompany = session?.user?.company ? true : false;
 
         if (!hasCompany && !pathname.includes('/company/create')) {
             // Extract the current locale from the pathname

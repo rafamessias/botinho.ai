@@ -272,6 +272,7 @@ model File {
   id        Int      @id @default(autoincrement())
   name      String
   url       String
+  publicId  String?
   mimeType  String?
   size      Int?
   createdAt DateTime @default(now())

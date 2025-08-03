@@ -10,6 +10,7 @@ type UserContextType = {
     user: any;
     setUser: Dispatch<SetStateAction<any>>;
     setLoading: Dispatch<SetStateAction<boolean>>;
+    updateUser: () => Promise<void>;
     loading: boolean;
     isCompanyUser: boolean;
     companyMemberCanApprove: boolean;
@@ -41,66 +42,71 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const locale = useLocale();
     const pathname = usePathname()
 
+
+    const updateUser = async () => {
+        setLoading(true);
+
+        let me: ApiResponse<User> | null = await getUserMe();
+
+        if (me && me.success) {
+            setUser(me.data as User);
+            const userData = me.data as User;
+
+            // Only redirect once and only if we haven't redirected yet
+            if (userData?.language && !hasRedirected && typeof window !== 'undefined') {
+                const currentLocale = locale
+
+                if (currentLocale !== userData.language) {
+                    setHasRedirected(true);
+                    // Replace the current locale with the user's preferred locale
+                    const newPath = `${userData.language}${pathname}`;
+                    router.push(newPath);
+                    return; // Exit early to prevent setting permissions
+                }
+            }
+
+            // Calculate all permissions synchronously
+            const isCompanyUser = userData?.companyMember ? true : false;
+            const companyMemberCanApprove = userData?.companyMember ? (
+                userData?.companyMember.canApprove ||
+                userData?.companyMember.isAdmin ||
+                userData?.companyMember.isOwner
+            ) : false;
+            const companyMemberCanPost = userData?.companyMember ? (
+                userData?.companyMember.canPost ||
+                userData?.companyMember.isAdmin ||
+                userData?.companyMember.isOwner
+            ) : false;
+            const companyMemberIsAdmin = userData?.companyMember ? (
+                userData?.companyMember.isAdmin ||
+                userData?.companyMember.isOwner
+            ) : false;
+            const projectUserCanApprove = (projectId: number) => {
+                return userData?.projectUser ?
+                    userData?.projectUser.some((pu: any) =>
+                        pu.canApprove === true && pu.project.id === projectId
+                    ) : false;
+            };
+
+            // Set all states at once
+            setIsCompanyUser(isCompanyUser);
+            setCompanyMemberCanApprove(companyMemberCanApprove);
+            setCompanyMemberCanPost(companyMemberCanPost);
+            setCompanyMemberIsAdmin(companyMemberIsAdmin);
+            setProjectUserCanApprove(projectUserCanApprove);
+            setLoading(false);
+
+        } else {
+            //console.error(me?.error);
+            setUser(null);
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
         // Fetch user from server action on mount
         (async () => {
-            setLoading(true);
-
-            let me: ApiResponse<User> | null = await getUserMe();
-
-            if (me && me.success) {
-                setUser(me.data as User);
-                const userData = me.data as User;
-
-                // Only redirect once and only if we haven't redirected yet
-                if (userData?.language && !hasRedirected && typeof window !== 'undefined') {
-                    const currentLocale = locale
-
-                    if (currentLocale !== userData.language) {
-                        setHasRedirected(true);
-                        // Replace the current locale with the user's preferred locale
-                        const newPath = `${userData.language}${pathname}`;
-                        router.push(newPath);
-                        return; // Exit early to prevent setting permissions
-                    }
-                }
-
-                // Calculate all permissions synchronously
-                const isCompanyUser = userData?.companyMember ? true : false;
-                const companyMemberCanApprove = userData?.companyMember ? (
-                    userData?.companyMember.canApprove ||
-                    userData?.companyMember.isAdmin ||
-                    userData?.companyMember.isOwner
-                ) : false;
-                const companyMemberCanPost = userData?.companyMember ? (
-                    userData?.companyMember.canPost ||
-                    userData?.companyMember.isAdmin ||
-                    userData?.companyMember.isOwner
-                ) : false;
-                const companyMemberIsAdmin = userData?.companyMember ? (
-                    userData?.companyMember.isAdmin ||
-                    userData?.companyMember.isOwner
-                ) : false;
-                const projectUserCanApprove = (projectId: number) => {
-                    return userData?.projectUser ?
-                        userData?.projectUser.some((pu: any) =>
-                            pu.canApprove === true && pu.project.id === projectId
-                        ) : false;
-                };
-
-                // Set all states at once
-                setIsCompanyUser(isCompanyUser);
-                setCompanyMemberCanApprove(companyMemberCanApprove);
-                setCompanyMemberCanPost(companyMemberCanPost);
-                setCompanyMemberIsAdmin(companyMemberIsAdmin);
-                setProjectUserCanApprove(projectUserCanApprove);
-                setLoading(false);
-
-            } else {
-                //console.error(me?.error);
-                setUser(null);
-                setLoading(false);
-            }
+            await updateUser();
         })();
     }, [router, hasRedirected]);
 
@@ -114,6 +120,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         <UserContext.Provider value={{
             user,
             setUser,
+            updateUser,
             setLoading,
             loading,
             isCompanyUser,

@@ -1,21 +1,18 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { uploadFile } from '@/lib/strapi';
+import bcrypt from 'bcryptjs';
 import { prisma } from '@/prisma/lib/prisma';
 import { getUserMe } from './get-user-me-action';
-import { ApiResponse, Company, CompanyMember, CompanyMemberDialog, User } from '@/components/types/prisma';
+import { Company, CompanyMemberDialog, User } from '@/components/types/prisma';
 import { DocumentType, UserType, Language } from '@/lib/generated/prisma';
-import bcrypt from 'bcryptjs';
-
-const COMPANY_USER_ROLE = 3;
+import { uploadFileToCloudinary } from './cloudinary-upload-action';
+import { auth } from '@/app/auth';
 
 export async function createCompany(data: Company, members: CompanyMemberDialog[], image: FormData) {
 
     let companyRecordCreated: Company | null = null;
 
     try {
-
 
         const userMeResponse = await getUserMe();
         if (!userMeResponse.success) {
@@ -28,7 +25,7 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
         const companyRecord = await prisma.company.create({
             data: {
                 name: data.name,
-                documentType: data.documentType.toUpperCase() as DocumentType,
+                documentType: data.documentType as DocumentType,
                 document: data.document,
                 zipCode: data.zipCode,
                 state: data.state,
@@ -55,6 +52,9 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
             where: { id: currentUser.id! },
             data: {
                 companyId: companyRecord.id
+            },
+            include: {
+                company: true
             }
         });
 
@@ -89,9 +89,18 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
         // First, upload the company logo if it exists
         const logoFile = image.get('logo');
         if (logoFile) {
-            const uploadResponse = await uploadFile(logoFile as File, companyRecord.id, 'api::company.company', 'logo');
-            if (!uploadResponse) {
-                throw new Error('Failed to upload logo');
+            // Use the Cloudinary upload action
+            // Import { uploadFileToCloudinary } from './cloudinary-upload-action' at the top of your file
+            const uploadResponse = await uploadFileToCloudinary({
+                file: logoFile as File,
+                tableName: 'Company',
+                recordId: companyRecord.id,
+                fieldName: 'logoId',
+                folder: companyRecord.id.toString()
+            });
+
+            if (!uploadResponse.success) {
+                throw new Error('Failed to upload logo: ' + (uploadResponse.error || 'Unknown error'));
             }
 
             console.log(`Creating Company ${companyRecord.id} - Logo uploaded successfully`);
@@ -173,7 +182,7 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
             await Promise.all(memberPromises);
         }
 
-        return { success: true, data: companyRecord };
+        return { success: true, data: companyWithOwner };
     } catch (error) {
         console.error('Error creating company:', error);
         return { success: false, error: error instanceof Error ? error.message : 'An error occurred', data: companyRecordCreated };

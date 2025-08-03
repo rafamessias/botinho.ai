@@ -12,10 +12,9 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
-import { Company, StrapiImage } from '@/components/types/strapi';
+import { Company, FileImage, CompanyMemberDialog } from '@/components/types/prisma';
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';
-import { CompanyMemberDialog } from '@/components/types/strapi';
 import { fetchContentApi } from '../actions/fetch-content-api';
 import { Controller } from 'react-hook-form';
 import { uploadFile } from '@/lib/strapi';
@@ -45,14 +44,14 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
 
-    const logo: StrapiImage = company.logo as StrapiImage;
+    const logo: FileImage = company.logo as FileImage;
 
     const getInitialValues = () => ({
         name: company.name,
         documentType: company.documentType,
-        document: company.documentType === 'CPF'
+        document: company.documentType === 'cpf'
             ? maskCPF(company.document)
-            : company.documentType === 'CNPJ'
+            : company.documentType === 'cnpj'
                 ? maskCNPJ(company.document)
                 : undefined,
         zipCode: maskZipCode(company.zipCode),
@@ -60,7 +59,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         city: company.city,
         address: company.address,
         logo: logo,
-        documentId: company.documentId
+        documentId: company.id
     });
 
     const initialValues = useMemo(() => getInitialValues(), [company]);
@@ -116,8 +115,8 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
             return {
                 ...user,
                 id: response.data.id,
-                documentId: response.data.documentId,
-                userDocumentId: response.data.userDocumentId
+                documentId: response.data.id,
+                userDocumentId: response.data.id
             };
         } catch (error) {
             console.error('Error adding company member:', error);
@@ -151,7 +150,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
             return {
                 ...user,
                 id: response.data.id,
-                documentId: response.data.documentId
+                documentId: response.data.id
             };
         } catch (error) {
             console.error('Error updating company member:', error);
@@ -341,8 +340,8 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
                                     <SelectValue placeholder={t('documentTypePlaceholder')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="CPF">{t('cpf')}</SelectItem>
-                                    <SelectItem value="CNPJ">{t('cnpj')}</SelectItem>
+                                    <SelectItem value="cpf">{t('cpf')}</SelectItem>
+                                    <SelectItem value="cnpj">{t('cnpj')}</SelectItem>
                                 </SelectContent>
                             </Select>
                         )}
@@ -351,7 +350,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
                         <p className="text-sm text-red-500 mt-1">{errors.documentType.message}</p>
                     )}
                 </div>
-                {documentType === 'CPF' && (
+                {documentType === 'cpf' && (
                     <div>
                         <label className="font-semibold">{t('cpf')}</label>
                         <Input
@@ -381,7 +380,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
                         )}
                     </div>
                 )}
-                {documentType === 'CNPJ' && (
+                {documentType === 'cnpj' && (
                     <div>
                         <label className="font-semibold">{t('cnpj')}</label>
                         <Input

@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useUser } from '../UserProvider';
 import { Company, CompanyMemberDialog, ApiResponse } from '@/components/types/prisma';
+import { useSession } from 'next-auth/react';
 
 export function CreateCompanyForm() {
     const t = useTranslations('company');
@@ -21,12 +22,12 @@ export function CreateCompanyForm() {
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
     const { register, handleSubmit, formState: { errors }, setValue, watch, clearErrors } = useForm<Company>({
-        defaultValues: { documentType: 'cnpj' }
+        defaultValues: { documentType: 'cnpj', logo: null }
     });
     const documentType = watch('documentType');
-    const { setUser } = useUser();
+    const { setUser, updateUser } = useUser();
     const { user } = useUser();
-
+    const { update } = useSession();
 
     const onSubmit = async (data: Company) => {
         try {
@@ -41,20 +42,25 @@ export function CreateCompanyForm() {
             };
 
             // Get users from the UserList component
-            const userMembers: CompanyMemberDialog[] = userListRef.current?.getUsers() || [];
+            const userMembers: CompanyMemberDialog[] = (userListRef.current?.getUsers() || []) as CompanyMemberDialog[];
 
             const image = new FormData();
-            if (data.logo instanceof FileList && data.logo.length > 0) {
+            if ((data.logo instanceof FileList || data.logo instanceof Array) && data.logo.length > 0) {
                 image.append('logo', data.logo[0]);
             } else if (data.logo instanceof File) {
                 image.append('logo', data.logo);
+            } else {
+                console.log('No valid logo found - logo is:', data.logo);
             }
 
             const result: ApiResponse<Company> = await createCompany(cleanData, userMembers, image);
 
             if (result.success) {
                 toast.success(t('companyCreated'));
+                await update({ user: { ...user, company: result.data } });
+
                 setUser({ ...user, company: result.data });
+                await updateUser();
                 router.push('/');
 
             } else {
@@ -62,6 +68,7 @@ export function CreateCompanyForm() {
 
                 if (result?.data) {
                     setUser({ ...user, company: result.data });
+                    await updateUser();
                     router.push('/');
                 }
 
@@ -118,7 +125,7 @@ export function CreateCompanyForm() {
                         value={documentType}
                         onValueChange={value => {
                             setValue('documentType', value as 'cpf' | 'cnpj');
-                            setValue('document', ''); 234
+                            setValue('document', '');
                             clearErrors(['document']);
                         }}
                         disabled={isSubmitting}

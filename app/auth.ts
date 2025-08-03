@@ -109,14 +109,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ token, user, account }) {
+        async jwt({ token, user, account, trigger }) {
             if (user) {
                 token.id = user.id
                 token.email = user.email
-                token.company = (user as User)?.company as Company | undefined
+                token.company = (user as User)?.company as Company | null
                 // Add language to token
                 token.language = (user as User)?.language
             }
+
+            // Only handle session updates on the server side and avoid middleware context
+            if (trigger === 'update' && (token.email && !token.company)) {
+                try {
+                    // Check if we're in a server environment and not in middleware
+                    if (typeof window === 'undefined' &&
+                        process.env.NODE_ENV &&
+                        !process.env.NEXT_RUNTIME?.includes('edge')) {
+
+                        const updatedUser = await prisma.user.findUnique({
+                            where: { email: token.email! },
+                            include: { company: true }
+                        });
+
+                        if (updatedUser) {
+                            token.company = updatedUser.company;
+                            token.language = updatedUser.language === "pt_BR" ? "pt-BR" : "en";
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error updating JWT token:', error);
+                    // Don't fail the token generation, just log the error
+                }
+            }
+
 
             if (account?.provider === "google") {
                 // Handle Google OAuth user creation/update

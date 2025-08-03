@@ -1,9 +1,10 @@
 import ContainerApp from "@/components/Container-app";
 import { EditCompanyForm } from "@/components/company/edit-company-form";
-import { fetchContentApi } from "@/components/actions/fetch-content-api";
-import { Company, CompanyMemberDialog } from "@/components/types/strapi";
+import { prisma } from "@/prisma/lib/prisma";
+import { Company, CompanyMemberDialog } from "@/components/types/prisma";
 import { RecordNotFound } from "@/components/shared/record-not-found";
 import { getTranslations } from "next-intl/server";
+
 export default async function CompanyPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
     const { locale, slug } = await params;
     const t = await getTranslations({ locale, namespace: 'company' });
@@ -14,24 +15,131 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
     let company: Company | null;
     let companyMembers: CompanyMemberDialog[] | null;
     try {
-        //get company
-        const companyRecord: any = await fetchContentApi(`companies/${slug}?populate=*`, {
-            next: {
-                revalidate: 300,
-                tags: [`companies:${slug}`]
+        // Get company with relations
+        const companyRecord = await prisma.company.findUnique({
+            where: { id: parseInt(slug) },
+            include: {
+                owner: true,
+                logo: true,
+                coverImage: true,
+                members: {
+                    include: {
+                        user: {
+                            include: {
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
+                },
+                projects: true,
+                users: true
             }
         });
-        company = companyRecord?.data;
 
-        //get company members
-        const companyMembersRecord: any = await fetchContentApi(`company-members?populate=*&filters[company][$eq]=${company?.id}&sort=createdAt:desc`, {
-            next: {
-                revalidate: 300,
-                tags: [`company-members:${slug}`]
-            }
-        });
+        if (!companyRecord) {
+            company = null;
+            companyMembers = [];
+        } else {
+            // Transform company data to match Strapi interface
+            company = {
+                id: companyRecord.id,
+                name: companyRecord.name,
+                documentType: companyRecord.documentType,
+                document: companyRecord.document,
+                zipCode: companyRecord.zipCode,
+                state: companyRecord.state,
+                city: companyRecord.city,
+                address: companyRecord.address,
+                owner: {
+                    id: companyRecord.owner.id,
+                    username: companyRecord.owner.email, // Using email as username
+                    email: companyRecord.owner.email,
+                    firstName: companyRecord.owner.firstName,
+                    lastName: companyRecord.owner.lastName || undefined,
+                    phone: companyRecord.owner.phone || undefined,
+                    type: companyRecord.owner.type,
+                    language: companyRecord.owner.language,
+                    confirmed: companyRecord.owner.confirmed || undefined,
+                    blocked: companyRecord.owner.blocked || undefined,
+                    createdAt: companyRecord.owner.createdAt,
+                    updatedAt: companyRecord.owner.updatedAt
+                },
+                logo: companyRecord.logo,
+                activeProjectCount: companyRecord.activeProjectCount,
+                projectCount: companyRecord.projectCount,
+                createdAt: companyRecord.createdAt,
+                updatedAt: companyRecord.updatedAt,
+                members: companyRecord.members.map(member => ({
+                    id: member.id,
+                    company: companyRecord.id,
+                    user: member.user.id,
+                    role: member.isAdmin ? 'admin' : 'member',
+                    isAdmin: member.isAdmin,
+                    canPost: member.canPost,
+                    canApprove: member.canApprove,
+                    isOwner: member.isOwner,
+                    createdAt: member.createdAt,
+                    updatedAt: member.updatedAt
+                })),
+                projects: companyRecord.projects.map(project => ({
+                    id: project.id,
+                    active: project.active,
+                    name: project.name,
+                    description: project.description || '',
+                    address: project.address || '',
+                    projectStatus: project.projectStatus,
+                    company: companyRecord.id,
+                    createdAt: project.createdAt,
+                    updatedAt: project.updatedAt
+                })),
+                users: companyRecord.users.map(user => ({
+                    id: user.id,
+                    username: user.email,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName || undefined,
+                    phone: user.phone || undefined,
+                    type: user.type,
+                    language: user.language,
+                    confirmed: user.confirmed || undefined,
+                    blocked: user.blocked || undefined,
+                    createdAt: user.createdAt,
+                    updatedAt: user.updatedAt
+                }))
+            };
 
-        companyMembers = companyMembersRecord?.data;
+            // Transform company members to CompanyMemberDialog format
+            companyMembers = companyRecord.members.map(member => ({
+                id: member.id,
+                name: `${member.user.firstName} ${member.user.lastName || ''}`.trim(),
+                firstName: member.user.firstName,
+                lastName: member.user.lastName || undefined,
+                email: member.user.email,
+                phone: member.user.phone || '',
+                avatar: member.user.avatar?.url || '',
+                user: {
+                    id: member.user.id,
+                    username: member.user.email,
+                    email: member.user.email,
+                    firstName: member.user.firstName,
+                    lastName: member.user.lastName || undefined,
+                    phone: member.user.phone || undefined,
+                    type: member.user.type,
+                    language: member.user.language,
+                    confirmed: member.user.confirmed || undefined,
+                    blocked: member.user.blocked || undefined,
+                    createdAt: member.user.createdAt,
+                    updatedAt: member.user.updatedAt
+                },
+                isAdmin: member.isAdmin,
+                canPost: member.canPost,
+                canApprove: member.canApprove,
+                isOwner: member.isOwner
+            }));
+        }
     } catch (error) {
         company = null;
         companyMembers = [];
