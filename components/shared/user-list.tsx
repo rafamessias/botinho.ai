@@ -6,7 +6,7 @@ import { AddUserDialog } from './add-user-dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { CompanyMemberDialog } from '@/components/types/strapi';
+import { CompanyMemberDialog } from '@/components/types/prisma';
 
 export interface UserListRef {
     getUsers: () => CompanyMemberDialog[];
@@ -74,11 +74,11 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
     const handleEditUser = async (index: number, updatedUser: CompanyMemberDialog) => {
 
         if (onEditUser) {
-            // Preserve the documentId from the existing user
+            // Preserve the id from the existing user
             const existingUser = users[index];
             const userWithDocumentId = {
                 ...updatedUser,
-                documentId: existingUser.documentId
+                id: existingUser.id
             };
 
             const result = await onEditUser(userWithDocumentId);
@@ -102,8 +102,8 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
 
     const handleRemoveUser = async (index: number) => {
         const userToRemove = users[index];
-        if (!userToRemove.documentId) {
-            console.error('Cannot remove user: missing documentId');
+        if (!userToRemove.id) {
+            console.error('Cannot remove user: missing id');
             return;
         }
 

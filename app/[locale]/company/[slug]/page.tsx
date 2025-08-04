@@ -67,7 +67,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
                     createdAt: companyRecord.owner.createdAt,
                     updatedAt: companyRecord.owner.updatedAt
                 },
-                logo: companyRecord.logo,
+                logo: companyRecord.logo?.url,
                 activeProjectCount: companyRecord.activeProjectCount,
                 projectCount: companyRecord.projectCount,
                 createdAt: companyRecord.createdAt,

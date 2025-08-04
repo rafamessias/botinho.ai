@@ -86,6 +86,8 @@ export async function uploadFileToCloudinary({
             data: {
                 name: file.name,
                 publicId: uploadResult.public_id,
+                format: uploadResult.format,
+                version: uploadResult.version.toString(),
                 url: uploadResult.secure_url,
                 mimeType: file.type,
                 size: file.size,

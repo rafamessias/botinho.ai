@@ -59,7 +59,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         city: company.city,
         address: company.address,
         logo: logo,
-        documentId: company.id
+        id: company.id
     });
 
     const initialValues = useMemo(() => getInitialValues(), [company]);
@@ -115,8 +115,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
             return {
                 ...user,
                 id: response.data.id,
-                documentId: response.data.id,
-                userDocumentId: response.data.id
+                userId: response.data.id
             };
         } catch (error) {
             console.error('Error adding company member:', error);
@@ -132,7 +131,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
             console.log("editing company member", user);
             setIsLoading(true);
             const response = await updateCompanyMember({
-                documentId: user.documentId,
+                id: user.id,
                 isAdmin: user.isAdmin,
                 canPost: user.canPost,
                 canApprove: user.canApprove
@@ -149,8 +148,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
             // Return the updated user data
             return {
                 ...user,
-                id: response.data.id,
-                documentId: response.data.id
+                id: response.data.id
             };
         } catch (error) {
             console.error('Error updating company member:', error);
@@ -164,7 +162,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
     const handleRemoveCompanyMember = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            const response = await removeCompanyMember(user.documentId as string, user.user?.id as number);
+            const response = await removeCompanyMember(user.id as number, user.user?.id as number);
 
             if (!response.success) {
                 console.error('Error removing company member:', response.error);
@@ -541,7 +539,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
                     phone: member?.user?.phone || '',
                     avatar: member?.user?.avatar && 'url' in member.user.avatar ? member.user.avatar.url : '',
                     user: member.user,
-                    documentId: member.documentId,
+                    id: member.id,
                     isAdmin: member.isAdmin || false,
                     canPost: member.canPost || false,
                     canApprove: member.canApprove || false,

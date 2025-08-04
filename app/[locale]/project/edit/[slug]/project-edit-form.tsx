@@ -9,9 +9,9 @@ import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { Project, StrapiImage, ProjectUser, ProjectStatus } from '@/components/types/strapi';
+import { Project, CompanyMemberDialog, ProjectUser } from '@/components/types/prisma';
+import { ProjectStatus } from '@/lib/generated/prisma';
 import { useLoading } from '@/components/LoadingProvider';
-import { CompanyMemberDialog } from '@/components/types/strapi';
 import { ProjectStatusCombobox } from '@/components/shared/project-status-combobox';
 import { ProjectStatusBadge } from '@/components/shared/project-status-badge';
 
@@ -20,7 +20,7 @@ interface ProjectFormValues {
     projectDescription: string;
     projectAddress: string;
     projectStatus: ProjectStatus;
-    projectPhoto?: string | FileList | File | StrapiImage;
+    projectPhoto?: string | FileList | File | string | null;
     projectUsers?: ProjectUser[];
 }
 
@@ -37,7 +37,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             projectDescription: project.description || '',
             projectAddress: project.address || '',
             projectStatus: project.projectStatus || 'active',
-            projectPhoto: project.image || {},
+            projectPhoto: project.image || null,
             projectUsers: project.users || [],
         }
     });
@@ -49,7 +49,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        documentId: user.documentId,
+        id: user.id,
         isAdmin: false,
         canPost: false,
         canApprove: user.canApprove || false,
@@ -79,8 +79,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             // Return the updated user data
             return {
                 ...user,
-                id: response.data?.id,
-                documentId: response.data?.documentId
+                id: response.data?.id
             };
         } catch (error) {
             console.error('Error adding project user:', error);
@@ -95,7 +94,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         try {
 
             setIsLoading(true);
-            const response: any = await updateProjectUser(project.id as number, user.documentId as string, {
+            const response: any = await updateProjectUser(project.id as number, user.id as number, {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
@@ -114,8 +113,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             // Return the updated user data
             return {
                 ...user,
-                id: response.data?.id,
-                documentId: response.data?.documentId
+                id: response.data?.id
             };
         } catch (error) {
             console.error('Error updating project user:', error);
@@ -129,8 +127,8 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     const handleRemoveProjectUser = async (user: CompanyMemberDialog) => {
         try {
             setIsLoading(true);
-            if (user.documentId) {
-                const response: any = await removeProjectUser(project.id as number, user.documentId as string);
+            if (user.id) {
+                const response: any = await removeProjectUser(project.id as number, user.id as string);
 
                 if (!response.success) {
                     console.error('Error removing project user:', response.error);
@@ -152,7 +150,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     };
 
     const onSubmit = async (data: ProjectFormValues) => {
-        if (!project.documentId) {
+        if (!project.id) {
             toast.error(t('error'));
             return;
         }
@@ -162,7 +160,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
 
         try {
             // Update project basic data
-            const updateResponse = await updateProject(project.documentId, {
+            const updateResponse = await updateProject(project.id, {
                 name: projectData.projectName,
                 description: projectData.projectDescription,
                 address: projectData.projectAddress,
@@ -176,7 +174,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
 
             // Handle file removals
             if (filesToBeRemoved.length > 0) {
-                await removeProjectAttachments(filesToBeRemoved, project.documentId);
+                await removeProjectAttachments(filesToBeRemoved, project.id);
             }
 
             // Handle new file uploads
@@ -185,7 +183,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                 const filesToUpload = Array.from(projectPhoto).filter((file): file is File => file instanceof File);
 
                 if (filesToUpload.length > 0) {
-                    const uploadResponse = await uploadProjectAttachments(project.id, project.documentId, filesToUpload);
+                    const uploadResponse = await uploadProjectAttachments(project.id, project.id, filesToUpload);
 
                     if (!uploadResponse.success) {
                         toast.error(uploadResponse.error || t('files.uploadError'));
@@ -196,7 +194,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
             */
 
             toast.success(t('success'));
-            router.push(`/project/view/${project.documentId}`);
+            router.push(`/project/view/${project.id}`);
 
         } catch (error) {
             console.error('Failed to update project:', error);
@@ -230,7 +228,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     register={register}
                     setValue={setValue}
                     name="projectPhoto"
-                    photoUrl={(project.image as StrapiImage)?.url || "/placeholder-image.webp"}
+                    photoUrl={project.image?.url || "/placeholder-image.webp"}
                     label={t('uploadPhoto.label')}
                     hint={t('uploadPhoto.hint')}
                     currentImage={(project.image as StrapiImage)?.url}

@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, Shield, FileText, CheckCircle, Crown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { CompanyMemberDialog } from '@/components/types/strapi';
+import { CompanyMemberDialog } from '@/components/types/prisma';
 import { ConfirmDialog } from './confirm-dialog';
 import { useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';

@@ -388,10 +388,10 @@ export async function updateCompanyMember(data: any) {
     }
 }
 
-export async function removeCompanyMember(documentId: string, userId: number) {
+export async function removeCompanyMember(id: number, userId: number) {
     try {
         const member = await prisma.companyMember.delete({
-            where: { id: parseInt(documentId) }
+            where: { id: id }
         });
 
         if (!member) {

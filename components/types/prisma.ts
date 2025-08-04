@@ -4,6 +4,9 @@ export interface FileImage {
     id?: number;
     name: string;
     url: string;
+    publicId?: string;
+    format?: string;
+    version?: string;
     mimeType: string;
     size: number;
     createdAt?: Date;
@@ -40,7 +43,7 @@ export interface Company {
     city: string;
     address: string;
     owner: User | number;
-    logo?: FileImage | FileList | File | null;
+    logo?: FileImage | FileList | File | string | null;
     users?: User[];
     members?: CompanyMember[];
     projects?: Project[];
@@ -91,7 +94,7 @@ export interface Project {
     incidentCount?: number;
     incidentCountDraft?: number;
     photoCount?: number;
-    image?: FileImage | FileList | File | null;
+    image?: FileImage | FileList | File | string | null;
     company: Company | number;
     users?: ProjectUser[];
     rdos?: RDO[];
@@ -123,7 +126,7 @@ export interface RDO {
     description: string;
     equipmentUsed: string;
     workforce: string;
-    media?: FileImage[] | FileList | File | null;
+    media?: FileImage[] | FileList | File | string | null;
     rdoStatus: RDOStatus;
     weatherMorningCondition: WeatherCondition;
     weatherMorningWorkable: boolean;
@@ -148,7 +151,7 @@ export interface Incident {
     project: Project | number;
     company?: Company | number;
     description: string;
-    media?: FileImage[] | FileList | File | null;
+    media?: FileImage[] | FileList | File | string | null;
     incidentStatus: IncidentStatus;
     priority?: number;
     commentCount?: number;

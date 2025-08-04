@@ -273,6 +273,8 @@ model File {
   name      String
   url       String
   publicId  String?
+  format    String?
+  version   String?
   mimeType  String?
   size      Int?
   createdAt DateTime @default(now())

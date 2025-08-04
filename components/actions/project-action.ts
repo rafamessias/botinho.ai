@@ -110,7 +110,7 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
     }
 }
 
-export async function updateProject(projectId: string, data: ProjectData) {
+export async function updateProject(projectId: number, data: ProjectData) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -358,7 +358,7 @@ export async function createProjectUser(projectId: number, projectName: string, 
     }
 }
 
-export async function updateProjectUser(projectId: number, documentId: string, user: any) {
+export async function updateProjectUser(projectId: number, documentId: number, user: any) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;

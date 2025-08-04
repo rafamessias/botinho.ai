@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { CompanyMemberDialog } from '@/components/types/strapi';
+import { CompanyMemberDialog } from '@/components/types/prisma';
 
 interface AddUserFormValues extends CompanyMemberDialog { }
 
