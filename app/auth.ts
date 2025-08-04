@@ -25,7 +25,8 @@ interface User {
 
 const locale = async () => {
     const cookies = require('next/headers').cookies;
-    return cookies().get('NEXT_LOCALE')?.value || 'en';
+    const cookieStore = await cookies();
+    return cookieStore.get('NEXT_LOCALE')?.value || 'en';
 }
 
 
@@ -52,8 +53,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     providers: [
         GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            clientId: process.env.AUTH_GOOGLE_ID!,
+            clientSecret: process.env.AUTH_GOOGLE_SECRET!,
         }),
         CredentialsProvider({
             name: "credentials",
@@ -152,7 +153,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 if (!existingUser) {
                     // Get locale from cookies
-                    const currentLocale = await locale()
+                    const currentLocale = await locale();
+                    console.log("Current locale:", currentLocale);
 
                     // Create new user from Google OAuth
                     const newUser = await prisma.user.create({
@@ -201,6 +203,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     include: { company: true }
                 })
 
+                const currentLocale = await locale();
+                console.log("Current locale:", currentLocale);
+
                 if (!existingUser) {
                     // Create user if doesn't exist
                     await prisma.user.create({
@@ -210,7 +215,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             lastName: user.name?.split(' ').slice(1).join(' ') || '',
                             provider: 'google',
                             type: 'companyUser',
-                            language: await locale(),
+                            language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
                             phone: '',
                             confirmed: true,
                         }

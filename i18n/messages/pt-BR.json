@@ -141,6 +141,7 @@
         "googleSignInSuccess": "Você foi conectado com Google com sucesso.",
         "googleSignUpSuccess": "Você foi cadastrado com Google com sucesso.",
         "googleSignUpError": "Falha ao cadastrar com Google",
+        "googleSignInError": "Falha ao entrar com Google",
         "googleAuthProcessing": "Processando autenticação do Google...",
         "googleAuthSuccess": "Autenticação bem-sucedida!",
         "googleAuthError": "Falha na autenticação",

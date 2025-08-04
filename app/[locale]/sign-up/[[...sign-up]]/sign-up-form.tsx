@@ -81,15 +81,18 @@ export default function SignUpForm({ params }: { params: { locale: string } }) {
         try {
             // Use NextAuth Google provider directly
             const result = await signIn("google", {
-                callbackUrl: '/company/create',
                 redirect: false,
             });
 
             if (result?.error) {
                 toast.error(t('googleSignUpError'));
+            } else if (result?.url) {
+                // Redirect to Google OAuth URL
+                router.push(result.url);
             } else {
+                // If no URL provided, redirect to home
                 setIsNavigating(true);
-                // The redirect will be handled by NextAuth
+                router.push('/sign-up');
             }
         } catch (error) {
             toast.error(t('signUpError'));
