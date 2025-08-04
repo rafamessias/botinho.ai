@@ -15,9 +15,8 @@ import { useUser } from '../UserProvider';
 import { Company, FileImage, CompanyMemberDialog } from '@/components/types/prisma';
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';
-import { fetchContentApi } from '../actions/fetch-content-api';
 import { Controller } from 'react-hook-form';
-import { uploadFile } from '@/lib/strapi';
+import { deleteFileFromCloudinary, uploadFileToCloudinary } from '@/components/actions/cloudinary-upload-action';
 
 function maskCPF(value: string) {
     return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
@@ -195,23 +194,33 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         try {
             setIsLoading(true);
             // Delete old file if exists
+            // Use server-side prisma actions for logo update
+            // Remove old logo if exists
             if (logo?.id) {
-                await fetchContentApi<any>(`upload/files/${logo.id}`, {
-                    method: 'DELETE'
-                });
+                await deleteFileFromCloudinary(logo.id);
+                setValue('logo', null);
             }
 
-            // Upload new file
-            const uploadResponse = await uploadFile(
-                pendingImageChange,
-                company.id as number,
-                'api::company.company',
-                'logo'
-            );
+            // Upload new logo using server-side action
+            // Assuming uploadFileToCloudinary is a server action that returns the uploaded file info
+            const uploadResponse = await uploadFileToCloudinary({
+                file: pendingImageChange,
+                tableName: 'Company',
+                recordId: company.id as number,
+                fieldName: 'logo'
+            });
 
-            if (!uploadResponse) {
+            if (!uploadResponse.success) {
                 throw new Error('Failed to upload new logo');
             }
+
+            // Update company with new logo url
+            await updateCompany({
+                ...company,
+                logo: uploadResponse.data
+            });
+
+            setValue('logo', uploadResponse.data);
 
             setImageToUpload(pendingImageChange);
             toast.success(t('logoUpdated'));
@@ -235,9 +244,8 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
             setIsLoading(true);
             // Delete old file if exists
             if (logo?.id) {
-                await fetchContentApi<any>(`upload/files/${logo.id}`, {
-                    method: 'DELETE'
-                });
+                await deleteFileFromCloudinary(logo.id);
+                setValue('logo', null);
             }
             setImageToUpload(null);
             toast.success(t('logoRemoved'));

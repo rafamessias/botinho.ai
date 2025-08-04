@@ -6,10 +6,6 @@ import { auth } from '@/app/auth';
 
 const intlMiddleware = createMiddleware(routing);
 
-// Cache for session results
-const sessionCache = new Map<string, any>();
-const CACHE_DURATION = 500; // Reduced to 500ms for more responsive auth
-
 const publicRoutes = routing.locales.flatMap(locale => [
     `/${locale}/sign-in`,
     `/sign-in`,
@@ -32,21 +28,6 @@ function isPublicRoute(path: string) {
         path === publicRoute ||
         path === publicRoute + '/'
     );
-}
-
-// Function to clear session cache
-function clearSessionCache() {
-    sessionCache.clear();
-}
-
-// Function to get cache key based on cookies and headers
-function getCacheKey(request: NextRequest): string {
-    const authCookie = request.cookies.get('next-auth.session-token')?.value ||
-        request.cookies.get('__Secure-next-auth.session-token')?.value ||
-        request.cookies.get('next-auth.csrf-token')?.value ||
-        'no-auth';
-    const authHeader = request.headers.get('authorization') || '';
-    return `${authCookie}-${authHeader}`;
 }
 
 // Main middleware function
@@ -98,37 +79,6 @@ export default async function middleware(request: NextRequest) {
 
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
-
-
-    /* Clear cache for auth-related paths to ensure fresh session data
-    if (pathname.includes('/auth/') || pathname.includes('/sign-in') || pathname.includes('/sign-up')) {
-        clearSessionCache();
-    }
-
-    // Clear cache if timestamp parameter is present (indicates fresh login)
-    const url = new URL(request.url);
-    if (url.searchParams.has('_t')) {
-        clearSessionCache();
-    }
-*/
-    // Get user from NextAuth with improved caching
-    /*
-    let session;
-    const cacheKey = getCacheKey(request);
-    const cached = sessionCache.get(cacheKey);
-
-    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-        session = cached.session;
-    } else {
-        try {
-            session = await auth();
-            sessionCache.set(cacheKey, { session, timestamp: Date.now() });
-        } catch (error) {
-            console.error('Auth error in middleware:', error);
-            session = null;
-        }
-    }
-    */
 
     const session = await auth();
 

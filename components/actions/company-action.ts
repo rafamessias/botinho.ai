@@ -6,7 +6,6 @@ import { getUserMe } from './get-user-me-action';
 import { Company, CompanyMemberDialog, User } from '@/components/types/prisma';
 import { DocumentType, UserType, Language } from '@/lib/generated/prisma';
 import { uploadFileToCloudinary } from './cloudinary-upload-action';
-import { auth } from '@/app/auth';
 
 export async function createCompany(data: Company, members: CompanyMemberDialog[], image: FormData) {
 
@@ -191,11 +190,11 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
 
 export async function updateCompany(data: any) {
     try {
-        //remove documentId, id, createdAt, updatedAt, publishedAt, logo
-        const { documentId, id, createdAt, updatedAt, publishedAt, logo, ...companyData } = data;
+        //remove id, createdAt, updatedAt, publishedAt, logo
+        const { id, createdAt, updatedAt, publishedAt, logo, ...companyData } = data;
 
         const company = await prisma.company.update({
-            where: { id: parseInt(documentId) },
+            where: { id: parseInt(id) },
             data: companyData
         });
 
@@ -356,10 +355,10 @@ export async function createCompanyMember(user: any) {
 
 export async function updateCompanyMember(data: any) {
     try {
-        const { documentId, id, createdAt, updatedAt, publishedAt, ...memberData } = data;
+        const { id, createdAt, updatedAt, publishedAt, ...memberData } = data;
 
         const member = await prisma.companyMember.update({
-            where: { id: parseInt(documentId) },
+            where: { id: parseInt(id) },
             data: {
                 isAdmin: memberData.isAdmin,
                 canPost: memberData.canPost,

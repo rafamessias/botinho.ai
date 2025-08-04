@@ -22,6 +22,10 @@ export interface UploadResult {
         fileId: number;
         url: string;
         publicId: string;
+        name: string;
+        format: string;
+        size: number;
+        mimeType: string;
     };
     error?: string;
 }
@@ -170,8 +174,12 @@ export async function uploadFileToCloudinary({
             success: true,
             data: {
                 fileId: fileRecord.id,
-                url: uploadResult.secure_url,
-                publicId: uploadResult.public_id
+                url: fileRecord.url,
+                publicId: fileRecord.publicId || '',
+                name: fileRecord.name,
+                format: fileRecord.format || '',
+                size: fileRecord.size || 0,
+                mimeType: fileRecord.mimeType || ''
             }
         };
 

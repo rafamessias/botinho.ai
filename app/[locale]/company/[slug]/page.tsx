@@ -1,7 +1,7 @@
 import ContainerApp from "@/components/Container-app";
 import { EditCompanyForm } from "@/components/company/edit-company-form";
 import { prisma } from "@/prisma/lib/prisma";
-import { Company, CompanyMemberDialog } from "@/components/types/prisma";
+import { Company, CompanyMemberDialog, FileImage } from "@/components/types/prisma";
 import { RecordNotFound } from "@/components/shared/record-not-found";
 import { getTranslations } from "next-intl/server";
 
@@ -67,7 +67,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
                     createdAt: companyRecord.owner.createdAt,
                     updatedAt: companyRecord.owner.updatedAt
                 },
-                logo: companyRecord.logo?.url,
+                logo: companyRecord.logo as FileImage,
                 activeProjectCount: companyRecord.activeProjectCount,
                 projectCount: companyRecord.projectCount,
                 createdAt: companyRecord.createdAt,
