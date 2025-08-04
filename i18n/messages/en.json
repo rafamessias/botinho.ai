@@ -159,6 +159,7 @@
         "confirmPasswordRequired": "Please confirm your password",
         "passwordsDoNotMatch": "Passwords do not match",
         "agreeRequired": "You must agree to the terms and privacy policy",
+        "OAuthAccountNotLinked": "This email is already linked to another account",
         "checkEmail": {
             "title": "Check Your Email",
             "description": "We've sent a verification email to {email}. Please check your inbox and follow the instructions to verify your account.",

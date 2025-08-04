@@ -160,6 +160,7 @@
         "confirmPasswordRequired": "Por favor, confirme sua senha",
         "passwordsDoNotMatch": "As senhas não coincidem",
         "agreeRequired": "Você deve concordar com os termos e política de privacidade",
+        "OAuthAccountNotLinked": "Este email já está vinculado a outra conta",
         "checkEmail": {
             "title": "Verifique seu Email",
             "description": "Enviamos um email de verificação para {email}. Por favor, verifique sua caixa de entrada e siga as instruções para verificar sua conta.",

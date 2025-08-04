@@ -44,7 +44,8 @@ class AccountBlockedError extends CredentialsSignin {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-    adapter: PrismaAdapter(prisma),
+    // Remove the PrismaAdapter since we're handling user creation manually
+    // adapter: PrismaAdapter(prisma),
     session: {
         strategy: "jwt",
     },
@@ -115,8 +116,46 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.id = user.id
                 token.email = user.email
                 token.company = (user as User)?.company as Company | null
-                // Add language to token
                 token.language = (user as User)?.language
+            }
+
+            // Handle Google OAuth user creation/update in JWT callback
+            if (account?.provider === "google" && user) {
+                try {
+                    const existingUser = await prisma.user.findUnique({
+                        where: { email: token.email! },
+                        include: { company: true }
+                    })
+
+                    if (!existingUser) {
+                        // Get locale from cookies
+                        const currentLocale = await locale();
+
+                        // Create new user from Google OAuth
+                        const newUser = await prisma.user.create({
+                            data: {
+                                email: token.email!,
+                                firstName: token.name?.split(' ')[0] || '',
+                                lastName: token.name?.split(' ').slice(1).join(' ') || '',
+                                provider: 'google',
+                                type: 'companyUser',
+                                language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
+                                phone: '',
+                                confirmed: true,
+                            },
+                            include: { company: true }
+                        })
+                        token.id = newUser.id.toString()
+                        token.company = newUser.company
+                        token.language = newUser.language
+                    } else {
+                        token.id = existingUser.id.toString()
+                        token.company = existingUser.company
+                        token.language = existingUser.language
+                    }
+                } catch (error) {
+                    console.error('Error handling Google OAuth user:', error);
+                }
             }
 
             // Only handle session updates on the server side and avoid middleware context
@@ -139,46 +178,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     }
                 } catch (error) {
                     console.error('Error updating JWT token:', error);
-                    // Don't fail the token generation, just log the error
-                }
-            }
-
-
-            if (account?.provider === "google") {
-                // Handle Google OAuth user creation/update
-                const existingUser = await prisma.user.findUnique({
-                    where: { email: token.email! },
-                    include: { company: true }
-                })
-
-                if (!existingUser) {
-                    // Get locale from cookies
-                    const currentLocale = await locale();
-                    console.log("Current locale:", currentLocale);
-
-                    // Create new user from Google OAuth
-                    const newUser = await prisma.user.create({
-                        data: {
-                            email: token.email!,
-                            firstName: token.name?.split(' ')[0] || '',
-                            lastName: token.name?.split(' ').slice(1).join(' ') || '',
-                            provider: 'google',
-                            type: 'companyUser',
-                            language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
-                            phone: '',
-                            confirmed: true,
-                        },
-                        include: { company: true }
-                    })
-                    token.id = newUser.id.toString()
-                    token.company = newUser.company
-                    // Add language to token
-                    token.language = newUser.language
-                } else {
-                    token.id = existingUser.id.toString()
-                    token.company = existingUser.company
-                    // Add language to token
-                    token.language = existingUser.language
                 }
             }
 
@@ -189,39 +188,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.id = token.id as string
                 session.user.email = token.email as string
                 session.user.company = token.company as Company
-                // Fix the language assignment
                 session.user.language = token.language as string
             }
             return session
         },
         async signIn({ user, account, profile }) {
-            if (account?.provider === "google") {
-
-                // Ensure user exists in database
-                const existingUser = await prisma.user.findUnique({
-                    where: { email: user.email! },
-                    include: { company: true }
-                })
-
-                const currentLocale = await locale();
-                console.log("Current locale:", currentLocale);
-
-                if (!existingUser) {
-                    // Create user if doesn't exist
-                    await prisma.user.create({
-                        data: {
-                            email: user.email!,
-                            firstName: user.name?.split(' ')[0] || '',
-                            lastName: user.name?.split(' ').slice(1).join(' ') || '',
-                            provider: 'google',
-                            type: 'companyUser',
-                            language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
-                            phone: '',
-                            confirmed: true,
-                        }
-                    })
-                }
-            }
+            // Allow all sign-ins
             return true
         }
     },

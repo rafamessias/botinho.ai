@@ -33,8 +33,6 @@ export function SignInForm({
 }) {
     const searchParams = useSearchParams();
     const redirect = searchParams.get('redirect');
-
-
     const t = useTranslations('auth');
     const router = useRouter();
     const pathname = usePathname();
@@ -139,10 +137,24 @@ export function SignInForm({
     };
 
     useEffect(() => {
+        // Ensure this runs only on client
+        if (typeof window === "undefined") return;
+        // Defer to next tick to ensure toast is mounted
+        setTimeout(() => {
+            const searchParams = new URLSearchParams(window.location.search);
+            const errorParam = searchParams.get('error');
+            if (errorParam) {
+                toast.error(t(errorParam));
+            }
+        }, 0);
+    }, []);
+
+    useEffect(() => {
         // Clean up user context when component mounts
         setUser(null);
         setIsLoading(false);
-    }, [setUser, setIsLoading, pathname]);
+
+    }, [setUser, setIsLoading]);
 
     // Clean up loading state when component unmounts
     useEffect(() => {
