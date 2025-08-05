@@ -285,7 +285,8 @@
         "memberAddError": "Falha ao adicionar membro",
         "memberUpdateError": "Falha ao atualizar membro",
         "memberAdded": "Membro adicionado com sucesso",
-        "memberUpdated": "Membro atualizado com sucesso"
+        "memberUpdated": "Membro atualizado com sucesso",
+        "P2002": "Usuário já é membro de uma empresa"
     },
     "error": {
         "notFound": {

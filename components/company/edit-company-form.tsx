@@ -104,7 +104,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
 
             if (!response.success || !response.data) {
                 console.error('Error adding company member:', response.error);
-                toast.error(`${t('memberAddError')} - ${response.error}`);
+                toast.error(`${t('memberAddError')} - ${t(response.error as string)}`);
                 return false;
             }
 
@@ -118,7 +118,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
             };
         } catch (error) {
             console.error('Error adding company member:', error);
-            toast.error(`${t('memberAddError')} - ${error}`);
+            toast.error(`${t('memberAddError')} - ${t(error as string)}`);
             throw error;
         } finally {
             setIsLoading(false);

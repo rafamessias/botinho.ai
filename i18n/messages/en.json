@@ -284,7 +284,8 @@
         "memberAddError": "Failed to add member",
         "memberUpdateError": "Failed to update member",
         "memberAdded": "Member added successfully",
-        "memberUpdated": "Member updated successfully"
+        "memberUpdated": "Member updated successfully",
+        "P2002": "User is already a member of a company"
     },
     "error": {
         "notFound": {

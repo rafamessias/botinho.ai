@@ -6,6 +6,12 @@ import { getUserMe } from './get-user-me-action';
 import { Company, CompanyMemberDialog, User } from '@/components/types/prisma';
 import { DocumentType, UserType, Language } from '@/lib/generated/prisma';
 import { uploadFileToCloudinary } from './cloudinary-upload-action';
+import CompanyInvitationEmail from '@/emails/CompanyInvitationEmail';
+import resend from '@/lib/resend';
+
+// Compose invitation URL (adjust as needed for your app)
+const baseUrl = process.env.HOST || 'http://localhost:3000';
+const fromEmail = process.env.FROM_EMAIL || 'Obraguru <obraguru@gmail.com>';
 
 export async function createCompany(data: Company, members: CompanyMemberDialog[], image: FormData) {
 
@@ -242,6 +248,7 @@ export async function createCompanyMember(user: any) {
             pwd += chars.charAt(Math.floor(Math.random() * chars.length));
         }
 
+        const confirmationToken = (await import('crypto')).randomBytes(32).toString('hex');
         const hashedPassword = await bcrypt.hash(pwd, 10);
 
         try {
@@ -255,7 +262,8 @@ export async function createCompanyMember(user: any) {
                     companyId: companyId,
                     type: 'companyUser' as UserType,
                     language: user.language === 'pt-BR' ? 'pt_BR' : 'en' as Language,
-                    confirmed: true
+                    confirmed: false,
+                    confirmationToken: confirmationToken
                 }
             });
 
@@ -288,62 +296,50 @@ export async function createCompanyMember(user: any) {
                 }
             });
 
+
+            // Send invitation email to the new user
+            try {
+                const invitationUrl = `${baseUrl}/sign-up/check-email?email=${user.email}&token=${confirmationToken}`;
+
+                // Prepare email HTML using the template
+                const emailHtml = CompanyInvitationEmail({
+                    userName: user.user.firstName,
+                    inviterName: `${userData.firstName} ${userData.lastName}`,
+                    companyName: user.companyName || '',
+                    invitationUrl,
+                    lang: user.language,
+                    baseUrl,
+                    password: pwd
+                });
+
+                const { data, error } = await resend.emails.send({
+                    from: fromEmail,
+                    to: [user.user.email],
+                    subject: user.language === 'pt-BR'
+                        ? `Convite para entrar na empresa ${user.companyName} no Obraguru`
+                        : `Invitation to join ${user.companyName} on Obraguru`,
+                    react: emailHtml,
+                });
+
+            } catch (emailError) {
+                console.error('Failed to send company invitation email:', emailError);
+                // Do not fail the main operation if email sending fails
+            }
+
             return {
                 success: true,
                 data: { ...memberResponse, id: userData.id }
             };
 
         } catch (error: any) {
-            // Check if the error is due to email/username already taken
-            if (error.code === 'P2002' && (error.meta?.target?.includes('email') || error.meta?.target?.includes('username'))) {
-                // Try to get the existing user by email
-                const existingUser = await prisma.user.findUnique({
-                    where: { email: user.user.email }
-                });
-
-                if (existingUser) {
-                    // Check if user is already a member of the company
-                    const existingMember = await prisma.companyMember.findFirst({
-                        where: {
-                            userId: existingUser.id,
-                            companyId: companyId
-                        }
-                    });
-
-                    if (existingMember) {
-                        console.log(`User ${user.user.email} is already a member of the company`);
-                        return {
-                            success: false,
-                            error: 'User is already a member of this company',
-                            data: existingMember
-                        };
-                    }
-
-                    const memberResponse = await prisma.companyMember.create({
-                        data: {
-                            companyId: companyId,
-                            userId: existingUser.id,
-                            isAdmin: user.isAdmin,
-                            canPost: user.canPost,
-                            canApprove: user.canApprove,
-                            isOwner: false,
-                            companyMemberStatus: 'accepted'
-                        }
-                    });
-
-                    return {
-                        success: true,
-                        data: { ...memberResponse, id: existingUser.id }
-                    };
-                } else {
-                    console.error(`Failed to create user: ${user.user.email} - ${error.message}`);
-                    return { success: false, error: `Failed to create user: ${error.message}` };
-                }
-            } else {
-                console.error(`Failed to create user: ${user.user.email} - ${error.message}`);
-                return { success: false, error: `Failed to create user: ${error.message}` };
-            }
+            console.error('Error creating company member:', JSON.stringify(error));
+            return {
+                success: false,
+                error: error.code,
+                data: null
+            };
         }
+
     } catch (error) {
         console.error('Error creating company member:', error);
         return {
