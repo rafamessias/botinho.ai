@@ -4,6 +4,7 @@ import cloudinary from '@/lib/cloudinary';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { PrismaClient } from '@/lib/generated/prisma';
+import { requireSession } from './check-session';
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -19,7 +20,7 @@ export interface UploadFileParams {
 export interface UploadResult {
     success: boolean;
     data?: {
-        fileId: number;
+        id: number;
         url: string;
         publicId: string;
         name: string;
@@ -50,15 +51,7 @@ export async function uploadFileToCloudinary({
         }
 
         // Check authentication (you can modify this based on your auth strategy)
-        const cookieStore = await cookies();
-        const token = cookieStore.get('authjs.session-token')?.value;
-
-        if (!token) {
-            return {
-                success: false,
-                error: 'Not authenticated'
-            };
-        }
+        await requireSession();
 
         // Convert File to Buffer for Cloudinary upload
         const bytes = await file.arrayBuffer();
@@ -173,7 +166,7 @@ export async function uploadFileToCloudinary({
         return {
             success: true,
             data: {
-                fileId: fileRecord.id,
+                id: fileRecord.id,
                 url: fileRecord.url,
                 publicId: fileRecord.publicId || '',
                 name: fileRecord.name,

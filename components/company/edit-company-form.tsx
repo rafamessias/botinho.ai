@@ -7,7 +7,7 @@ import { UserList, UserListRef } from '@/components/shared/user-list';
 import { Input } from '@/components/ui/input';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { updateCompany, createCompanyMember, updateCompanyMember, removeCompanyMember } from '@/components/actions/company-action';
+import { updateCompany, createCompanyMember, updateCompanyMember, removeCompanyMember, updateCompanyLogo } from '@/components/actions/company-action';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
@@ -182,7 +182,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
 
     const handleImageChange = async (file: any | null) => {
         if (file) {
-            setPendingImageChange(file);
+            setPendingImageChange(file[0]);
             setShowImageConfirm(true);
             setShowImageConfirm(true);
         }
@@ -201,24 +201,11 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
                 setValue('logo', null);
             }
 
-            // Upload new logo using server-side action
-            // Assuming uploadFileToCloudinary is a server action that returns the uploaded file info
-            const uploadResponse = await uploadFileToCloudinary({
-                file: pendingImageChange,
-                tableName: 'Company',
-                recordId: company.id as number,
-                fieldName: 'logo'
-            });
+            const uploadResponse = await updateCompanyLogo(company.id as number, pendingImageChange);
 
             if (!uploadResponse.success) {
                 throw new Error('Failed to upload new logo');
-            }
-
-            // Update company with new logo url
-            await updateCompany({
-                ...company,
-                logo: uploadResponse.data
-            });
+            } ``
 
             setValue('logo', uploadResponse.data);
 

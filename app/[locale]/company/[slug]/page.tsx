@@ -55,7 +55,6 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
                 address: companyRecord.address,
                 owner: {
                     id: companyRecord.owner.id,
-                    username: companyRecord.owner.email, // Using email as username
                     email: companyRecord.owner.email,
                     firstName: companyRecord.owner.firstName,
                     lastName: companyRecord.owner.lastName || undefined,

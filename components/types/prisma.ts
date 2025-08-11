@@ -15,14 +15,14 @@ export interface FileImage {
 
 export interface User {
     id?: number;
-    username: string;
     email: string;
     provider?: Provider;
-    confirmed?: boolean;
-    blocked?: boolean;
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
+    confirmed?: boolean | null;
+    blocked?: boolean | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    phone?: string | null;
+    owner?: boolean | null;
     avatar?: FileImage | FileList | File | null;
     company?: Company | number | null;
     companyMember?: CompanyMember | null;

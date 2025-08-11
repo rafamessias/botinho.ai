@@ -221,6 +221,44 @@ export async function updateCompany(data: any) {
     }
 }
 
+/**
+ * Updates the company logo by uploading a new file to Cloudinary and updating the company record.
+ * @param companyId - The ID of the company to update.
+ * @param file - The new logo file (File object).
+ * @returns {Promise<{success: boolean, data?: any, error?: string}>}
+ */
+export async function updateCompanyLogo(companyId: number, file: File) {
+    try {
+        // Upload the file to Cloudinary and get the file record
+        const uploadResponse = await uploadFileToCloudinary({
+            file,
+            tableName: 'Company',
+            recordId: companyId,
+            fieldName: 'logoId'
+        });
+
+        if (!uploadResponse.success || !uploadResponse.data) {
+            return {
+                success: false,
+                error: uploadResponse.error || 'Failed to upload logo'
+            };
+        }
+
+        return {
+            success: true,
+            data: uploadResponse.data
+        };
+    } catch (error) {
+        console.error('Error updating company logo:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred while updating company logo'
+        };
+    }
+}
+
+
+
 export async function createCompanyMember(user: any) {
     try {
         const userMeResponse = await getUserMe();
@@ -252,6 +290,7 @@ export async function createCompanyMember(user: any) {
         const hashedPassword = await bcrypt.hash(pwd, 10);
 
         try {
+
             const userData = await prisma.user.create({
                 data: {
                     email: user.user.email,
@@ -266,6 +305,7 @@ export async function createCompanyMember(user: any) {
                     confirmationToken: confirmationToken
                 }
             });
+            console.log(`Create Company Member - User ${user.user.email} created successfully`);
 
             // Check if user is already a member of the company
             const existingMember = await prisma.companyMember.findFirst({
@@ -274,9 +314,9 @@ export async function createCompanyMember(user: any) {
                     companyId: companyId
                 }
             });
-
+            console.log(`Create Company Member - User ${user.user.email} checked if is already a member of the company`);
             if (existingMember) {
-                console.log(`User ${user.user.email} is already a member of the company`);
+                console.log(`Create Company Member - User ${user.user.email} is already a member of the company`);
                 return {
                     success: false,
                     error: 'User is already a member of this company',
@@ -295,15 +335,16 @@ export async function createCompanyMember(user: any) {
                     companyMemberStatus: 'accepted'
                 }
             });
-
+            console.log(`Create Company Member - User ${userData.email} created successfully`);
 
             // Send invitation email to the new user
             try {
-                const invitationUrl = `${baseUrl}/sign-up/check-email?email=${user.email}&token=${confirmationToken}`;
+                console.log(`Create Company Member - Sending invitation email to the new user`);
+                const invitationUrl = `${baseUrl}/${user.language}/sign-up/check-email?email=${userData.email}&token=${confirmationToken}`;
 
                 // Prepare email HTML using the template
                 const emailHtml = CompanyInvitationEmail({
-                    userName: user.user.firstName,
+                    userName: userData.firstName,
                     inviterName: `${userData.firstName} ${userData.lastName}`,
                     companyName: user.companyName || '',
                     invitationUrl,
@@ -314,12 +355,13 @@ export async function createCompanyMember(user: any) {
 
                 const { data, error } = await resend.emails.send({
                     from: fromEmail,
-                    to: [user.user.email],
+                    to: [userData.email],
                     subject: user.language === 'pt-BR'
                         ? `Convite para entrar na empresa ${user.companyName} no Obraguru`
                         : `Invitation to join ${user.companyName} on Obraguru`,
                     react: emailHtml,
                 });
+                console.log(`Create Company Member - Email sent successfully to the new user`);
 
             } catch (emailError) {
                 console.error('Failed to send company invitation email:', emailError);

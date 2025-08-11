@@ -121,7 +121,7 @@ export default async function middleware(request: NextRequest) {
         }
     }
 
-    // If user is not logged in and trying to access protected routes, redirect to sign in
+    // If user is not logged in and trying to access protected routes (besides /), redirect to sign in
     if (!user.ok && !isPublicRoute(pathname)) {
         // Extract the current locale from the pathname
         const currentLocale = routing.locales.find(locale =>

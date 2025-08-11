@@ -11,11 +11,8 @@ import { toast } from 'sonner';
 import { useUser } from '@/components/UserProvider';
 import { SelectItem, Select, SelectValue, SelectContent } from '@/components/ui/select';
 import { SelectTrigger } from '@/components/ui/select';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
-import { uploadFile } from '@/lib/strapi';
 import { useLoading } from '@/components/LoadingProvider';
-import { User, StrapiImage } from '@/components/types/strapi';
-import { deleteProfileAction } from '@/components/actions/delete-profile-action';
+import { updateProfileAction, deleteProfileAction } from '@/components/actions/profile-action';
 import { DeleteProfileDialog } from '@/components/shared/delete-profile-dialog';
 import { Trash2 } from 'lucide-react';
 
@@ -83,24 +80,17 @@ export default function ProfileForm() {
             const firstName = nameParts[0] || '';
             const lastName = nameParts.slice(1).join(' ') || '';
 
-            // Prepare user update data
-            const updateData: any = {
+            // Prepare update data
+            const updateData = {
                 firstName,
                 lastName,
                 phone: data.phone,
                 language: data.language,
+                avatar: data.avatar && data.avatar.length > 0 ? data.avatar[0] : null,
             };
 
-            // Update user data
-            const response = await fetchContentApi(`users/${user.id}`, {
-                method: 'PUT',
-                body: updateData,
-                next: {
-                    revalidate: 0,
-                    tags: ['me']
-                },
-                revalidateTag: ['me']
-            });
+            // Update user profile using Prisma action
+            const response = await updateProfileAction(updateData);
 
             if (!response.success || response.error) {
                 console.error('Failed to update user:', response.error);
@@ -108,45 +98,10 @@ export default function ProfileForm() {
                 return;
             }
 
-            let updateUserData: User = response.data as User;
-
-
-            // Handle avatar upload if a new avatar is selected
-            if (data.avatar && data.avatar.length > 0 && user.id) {
-                const avatarFile = data.avatar[0];
-                if (avatarFile instanceof File) {
-                    const uploadResponse = await uploadFile(
-                        avatarFile,
-                        user.id,
-                        'plugin::users-permissions.user',
-                        'avatar'
-                    );
-
-                    if (!uploadResponse.success) {
-                        console.error('Failed to upload avatar:', uploadResponse.error);
-                        // Don't fail the entire update if avatar upload fails
-                        toast.warning('Profile updated but avatar upload failed');
-                    } else {
-                        if (uploadResponse.data && Array.isArray(uploadResponse.data) && uploadResponse.data.length > 0) {
-                            updateUserData.avatar = uploadResponse.data[0] as StrapiImage;
-                        }
-                    }
-                }
-            } else if (user.avatar && data.avatar && data.avatar.length === 0) {
-                // Delete old avatar if exists
-                const deleteResponse = await fetchContentApi<any>(`upload/files/${user.avatar.id}`, {
-                    method: 'DELETE'
-                });
-
-                if (!deleteResponse.success || deleteResponse.error) {
-                    console.error('Failed to delete avatar:', deleteResponse.error);
-                } else {
-                    console.log('Avatar deleted successfully');
-                }
-            }
-
             // Update user context with new data
-            if (updateUserData) setUser(updateUserData);
+            if (response.data) {
+                setUser(response.data);
+            }
 
             toast.success(t('success'));
             router.refresh();

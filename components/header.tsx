@@ -14,8 +14,7 @@ import { LanguageSwitch } from "@/components/language-switch"
 import { signOut } from "next-auth/react"
 
 export default function Header() {
-  const { user, setUser, companyMemberCanPost, companyMemberIsAdmin, loading } = useUser();
-  const { setLoading } = useUser();
+  const { user, setUser, companyMemberCanPost, companyMemberIsAdmin, setLoading, loading } = useUser();
   const [userName, setUserName] = useState('');
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
@@ -33,7 +32,7 @@ export default function Header() {
       setUserName(user?.firstName?.charAt(0) + user?.lastName?.charAt(0));
       setCompanyId(user?.company?.id);
     }
-  }, [user]);
+  }, [user, companyMemberCanPost, companyMemberIsAdmin]);
 
   useEffect(() => {
     return () => {
@@ -65,11 +64,11 @@ export default function Header() {
     setLoading(true);
     setUser(null);
     // signOut with redirect: false to control navigation manually
-    await signOut({ redirect: false });
+    await signOut({ redirect: true });
 
     // Add timestamp to force cache refresh
-    const timestamp = Date.now();
-    router.push(`/sign-in?_t=${timestamp}`);
+    //const timestamp = Date.now();
+    //router.push(`/sign-in?_t=${timestamp}`);
 
   };
 

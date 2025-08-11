@@ -4,7 +4,6 @@ import { prisma } from "@/prisma/lib/prisma"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
-import { Company } from "@/lib/generated/prisma"
 import { CredentialsSignin } from "next-auth"
 
 // Add type declarations at the top of the file
@@ -19,7 +18,7 @@ interface User {
     id: string
     email: string
     name?: string | null
-    company?: Company | null
+    company?: string | null
     language?: string | null
 }
 
@@ -97,7 +96,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         id: user.id.toString(),
                         email: user.email,
                         name: `${user.firstName} ${user.lastName}`,
-                        company: user.company,
+                        company: user?.company?.id.toString(),
                         language: user.language === "pt_BR" ? "pt-BR" : "en",
                     }
                 } catch (error) {
@@ -115,7 +114,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (user) {
                 token.id = user.id
                 token.email = user.email
-                token.company = (user as User)?.company as Company | null
+                token.company = (user as User)?.company as string | null
                 token.language = (user as User)?.language
             }
 
@@ -187,7 +186,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (token) {
                 session.user.id = token.id as string
                 session.user.email = token.email as string
-                session.user.company = token.company as Company
+                session.user.company = token.company as string
                 session.user.language = token.language as string
             }
             return session

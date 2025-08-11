@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { UseFormRegister, FieldValues, Path, UseFormSetValue } from 'react-hook-form';
 import { ConfirmDialog } from './confirm-dialog';
 import { useTranslations } from 'next-intl';
-import { StrapiImage } from '@/components/types/strapi';
+import { FileImage } from '@/components/types/prisma';
 
 interface UploadPhotoProps<T extends FieldValues> {
     register: UseFormRegister<T>;
@@ -16,48 +16,8 @@ interface UploadPhotoProps<T extends FieldValues> {
     onChange?: (file: File | File[] | null) => void;
     type?: 'logo' | 'photo' | 'carousel';
     currentImage?: string;
-    initialFiles?: (string | File | StrapiFiles | StrapiImage)[];
+    initialFiles?: (string | File | FileImage)[];
     onRemoveImage?: (fileOrUrl: string | File | number) => void;
-}
-
-export interface StrapiFiles {
-    id: number;
-    alternativeText: string | null;
-    caption: string | null;
-    createdAt: string;
-    documentId: string;
-    ext: string;
-    formats: {
-        small: {
-            url: string;
-        };
-        medium: {
-            url: string;
-        };
-        thumbnail: {
-            url: string;
-        };
-        large: {
-            url: string;
-        };
-        hash: string;
-        height: number;
-        id: number;
-        mime: string;
-        name: string;
-        previewUrl: string | null;
-        provider: string;
-        provider_metadata: {
-            public_id: string;
-            resource_type: string;
-        };
-        publishedAt: string;
-        size: number;
-        updatedAt: string;
-        url: string;
-        width: number;
-    };
-    url: string;
 }
 
 export function UploadPhoto<T extends FieldValues>({
@@ -76,7 +36,7 @@ export function UploadPhoto<T extends FieldValues>({
     const t = useTranslations('uploadPhoto');
     const [previewUrls, setPreviewUrls] = useState<string[]>(currentImage ? [currentImage] : []);
     const [carouselFiles, setCarouselFiles] = useState<File[]>([]);
-    const [existingFiles, setExistingFiles] = useState<(string | File | StrapiFiles | StrapiImage)[]>([]);
+    const [existingFiles, setExistingFiles] = useState<(string | File | FileImage)[]>([]);
     const [carouselIndex, setCarouselIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -89,7 +49,7 @@ export function UploadPhoto<T extends FieldValues>({
         if (initialFiles.length > 0) {
             const urls = initialFiles.map(file => {
                 if (typeof file === 'string') return file;
-                if ((file as StrapiFiles)?.url) return (file as StrapiFiles).url;
+                if ((file as FileImage)?.url) return (file as FileImage).url;
                 return URL.createObjectURL(file as File);
             });
             setPreviewUrls(urls);
@@ -150,8 +110,8 @@ export function UploadPhoto<T extends FieldValues>({
 
         if (typeof file === 'string') {
             fileOrUrl = file;
-        } else if ((file as StrapiFiles)?.id) {
-            fileOrUrl = (file as StrapiFiles).id;
+        } else if ((file as FileImage)?.id) {
+            fileOrUrl = (file as FileImage).id as number;
         } else {
             fileOrUrl = file as File;
         }

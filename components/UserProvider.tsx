@@ -4,6 +4,7 @@ import { getUserMe } from "@/components/actions/get-user-me-action";
 import { ApiResponse, User } from "@/components/types/prisma";
 import { useRouter, usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
+import { useSession } from "next-auth/react";
 
 
 type UserContextType = {
@@ -37,10 +38,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const [companyMemberCanPost, setCompanyMemberCanPost] = useState(false);
     const [companyMemberIsAdmin, setCompanyMemberIsAdmin] = useState(false);
     const [projectUserCanApprove, setProjectUserCanApprove] = useState<(projectId: number) => boolean>(() => () => false);
-    const [hasRedirected, setHasRedirected] = useState(false);
     const router = useRouter();
     const locale = useLocale();
     const pathname = usePathname()
+    const { data: session, status } = useSession();
 
 
     const updateUser = async () => {
@@ -53,11 +54,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             const userData = me.data as User;
 
             // Only redirect once and only if we haven't redirected yet
-            if (userData?.language && !hasRedirected && typeof window !== 'undefined') {
+            if (userData?.language && typeof window !== 'undefined') {
                 const currentLocale = locale
 
                 if (currentLocale !== userData.language) {
-                    setHasRedirected(true);
                     // Replace the current locale with the user's preferred locale
                     const newPath = `${userData.language}${pathname}`;
                     router.push(newPath);
@@ -105,12 +105,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         // Fetch user from server action on mount
-        (async () => {
-            await updateUser();
-        })();
-    }, [router, hasRedirected]);
+        if (status === 'authenticated' && session?.user) {
+            updateUser();
+        } else if (status === 'unauthenticated') {
+            setUser(null);
+            setLoading(false);
+        }
+    }, [session, status]);
 
-    // Remove the second useEffect that was causing duplicate redirects
 
     if (loading) {
         return <LoadingLayer />;
