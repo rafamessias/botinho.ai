@@ -3,13 +3,13 @@ import { useForm } from 'react-hook-form';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
 import { useRef, useState } from 'react';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
-import { uploadFile } from '@/lib/strapi';
+import { createProject } from '@/components/actions/project-action';
 import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { useLoading } from '@/components/LoadingProvider';
+
 interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
@@ -38,53 +38,33 @@ export function CreateProjectForm() {
         const { projectPhoto, ...projectData } = data;
 
         try {
-            const newProjectResponse: any = await fetchContentApi('projects', {
-                method: 'POST',
-                body: {
-                    data: {
-                        name: projectData.projectName,
-                        description: projectData.projectDescription,
-                        address: projectData.projectAddress,
-                    }
-                }
+            const result = await createProject({
+                name: projectData.projectName,
+                description: projectData.projectDescription,
+                address: projectData.projectAddress,
+                projectPhoto: projectPhoto?.[0],
+                users: users.map(user => ({
+                    name: user.name || '',
+                    email: user.email || '',
+                    phone: user.phone || '',
+                    canApprove: user.canApprove || false,
+                }))
             });
 
-            if (!newProjectResponse) {
-                throw new Error('Failed to create project');
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to create project');
             }
 
-            const newProject = newProjectResponse.data;
-
-            // Upload project photo if exists
-            if (projectPhoto && projectPhoto[0]) {
-                await uploadFile(
-                    projectPhoto[0],
-                    newProject.id,
-                    'api::project.project',
-                    'image'
-                );
-            }
-
-            // Create project users for each owner
-            for (const user of users) {
-                await fetchContentApi('project-users', {
-                    method: 'POST',
-                    body: {
-                        data: {
-                            project: newProject.id,
-                            name: user.name,
-                            email: user.email,
-                            phone: user.phone,
-                        }
-                    }
-                });
+            if (!result.data) {
+                throw new Error('Project created but no data returned');
             }
 
             toast.success(t('success'));
-            router.push(`/project/view/${newProject.documentId}`);
+            router.push(`/project/view/${result.data.id}`);
 
         } catch (error) {
             console.error('Failed to create project:', error);
+            toast.error(error instanceof Error ? error.message : 'Failed to create project');
         } finally {
             setIsLoading(false);
         }
@@ -148,7 +128,6 @@ export function CreateProjectForm() {
                     <Button
                         type="button"
                         variant="outline"
-
                     >
                         {t('buttons.cancel')}
                     </Button>

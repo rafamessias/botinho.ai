@@ -1,10 +1,13 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { uploadFile } from '@/lib/strapi';
-import { fetchContentApi } from './fetch-content-api';
-import { ApiResponse, Project, User } from '@/components/types/strapi';
+import { uploadFileToCloudinary, deleteFileFromCloudinary } from './cloudinary-upload-action';
+import { prisma } from '@/prisma/lib/prisma';
 import { revalidateTag } from 'next/cache';
+import { requireSession } from './check-session';
+import { getUserMe } from './get-user-me-action';
+import { getLocale } from "next-intl/server";
+import { Resend } from 'resend';
+import ProjectInvitationEmail from '@/emails/ProjectInvitationEmail';
 
 interface ProjectData {
     name: string;
@@ -25,8 +28,18 @@ interface UserRegistrationData {
     companyName?: string;
 }
 
-const PROJECT_USER_ROLE = 4;
-const COMPANY_USER_ROLE = 3;
+interface CreateProjectData {
+    name: string;
+    description: string;
+    address: string;
+    projectPhoto?: File;
+    users: Array<{
+        name: string;
+        email: string;
+        phone: string;
+        canApprove: boolean;
+    }>;
+}
 
 async function registerUserWithConflictHandling(userData: UserRegistrationData) {
     try {
@@ -37,13 +50,12 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
         const lastName = nameParts.slice(1).join(' ') || '';
 
         // First, check if user already exists
-        const existingUserResponse = await fetchContentApi<User[]>(`users?filters[email][$eq]=${userData.email}`, {
-            method: 'GET'
+        const existingUser = await prisma.user.findUnique({
+            where: { email: userData.email }
         });
 
-        if (existingUserResponse.success && existingUserResponse.data && existingUserResponse.data.length > 0) {
+        if (existingUser) {
             // User already exists, return the existing user
-            const existingUser = existingUserResponse.data[0];
             console.log('User already exists:', existingUser.email);
             return {
                 success: true,
@@ -52,6 +64,9 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
             };
         }
 
+        const locale = await getLocale();
+        const lang = locale === 'pt-BR' ? 'pt_BR' : 'en';
+
         // User doesn't exist, create new user
         // Generate a random 16-character password including punctuation, numbers, lowercase and uppercase letters
         const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
@@ -59,44 +74,72 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
         for (let i = 0; i < 16; i++) {
             pwd += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        const newUserResponse: any = await fetchContentApi<User>(`auth/local/register`, {
-            method: 'POST',
-            body: {
-                username: userData.email,
+
+        const confirmationToken = (await import('crypto')).randomBytes(32).toString('hex');
+
+        const newUser = await prisma.user.create({
+            data: {
                 email: userData.email,
                 password: pwd,
-                firstName: userData.name.split(' ')[0],
-                lastName: userData.name.split(' ').slice(1).join(' '),
+                firstName: firstName,
+                lastName: lastName,
                 phone: userData.phone,
-                company: userData.company,
-                type: userData.type,
-                ...(userData?.projectId && {
-                    projectId: userData?.projectId,
-                    projectName: userData?.projectName,
-                    role: PROJECT_USER_ROLE
-                }),
-                ...(userData?.companyName && {
-                    companyName: userData?.companyName,
-                    role: COMPANY_USER_ROLE
-                })
+                type: "projectUser",
+                language: lang,
+                provider: 'local',
+                confirmed: false,
+                confirmationToken,
             }
         });
 
-        if (!newUserResponse.success || !newUserResponse.data) {
-            console.error('Error creating user:', newUserResponse.error);
+        if (!newUser) {
+            console.error('Error creating user');
             return {
                 success: false,
-                error: newUserResponse.error || 'Failed to create user',
+                error: 'Failed to create user',
                 data: null
             };
         }
 
-        const user = newUserResponse.data.user;
+        // Send invitation email using Resend and ProjectInvitationEmail
 
-        console.log('New user created:', user.email);
+        // Get base URL for links in the email
+        const baseUrl = process.env.HOST;
+        const fromEmail = process.env.FROM_EMAIL || "Obraguru <contact@obra.guru>";
+
+        // Generate invitation URL (customize as needed)
+        const invitationUrl = `${baseUrl}/sign-up/check-email?email=${userData.email}&token=${confirmationToken}`;
+
+        // Prepare the email HTML using the React email template
+        const emailHtml = ProjectInvitationEmail({
+            userName: userData.name,
+            inviterName: userData.companyName, // Optionally pass inviter's name if available
+            projectName: userData.projectName, // Optionally pass project name if available
+            invitationUrl,
+            lang,
+            baseUrl,
+            password: pwd,
+        });
+
+        // Send the email
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        try {
+            await resend.emails.send({
+                from: fromEmail,
+                to: newUser.email,
+                subject: locale === 'pt-BR'
+                    ? 'Obraguru - Você foi convidado para um projeto!'
+                    : 'Obraguru - You have been invited to a project!',
+                react: emailHtml,
+            });
+        } catch (emailError) {
+            console.error('Failed to send invitation email:', emailError);
+        }
+
+        console.log('New user created:', newUser.email);
         return {
             success: true,
-            data: user,
+            data: newUser,
             message: 'User created successfully'
         };
 
@@ -110,38 +153,130 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
     }
 }
 
-export async function updateProject(projectId: number, data: ProjectData) {
+export async function createProject(data: CreateProjectData) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        // Check authentication
+        await requireSession();
 
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
-
-        const response: ApiResponse<Project> = await fetchContentApi<Project>(`projects/${projectId}`, {
-            method: 'PUT',
-            body: {
-                data: {
-                    name: data.name,
-                    description: data.description,
-                    address: data.address,
-                    projectStatus: data.projectStatus,
-                }
-            },
-            revalidateTag: [`project:${projectId}`, 'projects']
-        });
-
-        if (!response.success) {
-            console.error(`Error updating project: ${response.error}`);
+        // Get current user with company info
+        const userMeResponse = await getUserMe();
+        if (!userMeResponse.success || !userMeResponse.data?.company?.id) {
             return {
                 success: false,
-                error: `Error updating project: ${response.error}`,
+                error: 'User not found or no company associated',
                 data: null
             };
         }
 
-        return { success: true, data: response.data };
+        const companyId = userMeResponse.data.company.id;
+
+        // Create the project
+        const newProject = await prisma.project.create({
+            data: {
+                name: data.name,
+                description: data.description,
+                address: data.address,
+                projectStatus: 'active',
+                companyId: companyId,
+            }
+        });
+
+        if (!newProject) {
+            throw new Error('Failed to create project');
+        }
+
+        // Upload project photo if exists
+        if (data.projectPhoto) {
+            const uploadResult = await uploadFileToCloudinary({
+                file: data.projectPhoto,
+                tableName: 'Project',
+                recordId: newProject.id,
+                fieldName: 'imageId',
+                folder: 'obraguru/projects'
+            });
+
+            if (!uploadResult.success) {
+                console.error('Failed to upload project photo:', uploadResult.error);
+            }
+        }
+
+        // Create project users for each user
+        if (data.users && data.users.length > 0) {
+            for (const userData of data.users) {
+                // Register user if needed
+                const userRegistration = await registerUserWithConflictHandling({
+                    email: userData.email,
+                    name: userData.name,
+                    phone: userData.phone,
+                    type: 'projectUser',
+                    company: userData.name, // Using name as company for now
+                    projectId: newProject.id,
+                    projectName: data.name
+                });
+
+                if (userRegistration.success && userRegistration.data) {
+                    // Create project user record
+                    await prisma.projectUser.create({
+                        data: {
+                            projectId: newProject.id,
+                            companyId: companyId,
+                            userId: userRegistration.data.id,
+                            name: userData.name,
+                            email: userData.email,
+                            phone: userData.phone,
+                            canApprove: userData.canApprove,
+                            projectUserStatus: 'invited'
+                        }
+                    });
+                }
+            }
+        }
+
+        revalidateTag(`project:${newProject.id}`);
+        revalidateTag('projects');
+
+        return {
+            success: true,
+            data: newProject
+        };
+
+    } catch (error) {
+        console.error('Failed to create project:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred',
+            data: null
+        };
+    }
+}
+
+export async function updateProject(projectId: number, data: ProjectData) {
+    try {
+        await requireSession();
+
+        const response = await prisma.project.update({
+            where: { id: projectId },
+            data: {
+                name: data.name,
+                description: data.description,
+                address: data.address,
+                projectStatus: data.projectStatus as any,
+            }
+        });
+
+        if (!response) {
+            console.error(`Error updating project: ${projectId}`);
+            return {
+                success: false,
+                error: `Error updating project: ${projectId}`,
+                data: null
+            };
+        }
+
+        revalidateTag(`project:${projectId}`);
+        revalidateTag('projects');
+
+        return { success: true, data: response };
     } catch (error) {
         console.error('Error updating project:', error);
         return {
@@ -152,34 +287,31 @@ export async function updateProject(projectId: number, data: ProjectData) {
     }
 }
 
-export async function uploadProjectAttachments(projectId: number, documentId: string, files: File[]) {
+export async function uploadProjectAttachments(projectId: number, files: File[]) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
-
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
+        await requireSession();
 
         if (!files || files.length === 0) {
             return { success: true, data: [] };
         }
 
         const uploadPromises = files.map(async (file) => {
-            const uploadResponse = await uploadFile(
+            const uploadResponse = await uploadFileToCloudinary({
                 file,
-                projectId,
-                'api::project.project',
-                'image'
-            );
-            if (!uploadResponse) {
+                tableName: 'Project',
+                recordId: projectId,
+                fieldName: 'imageId',
+                folder: 'obraguru/projects'
+            });
+
+            if (!uploadResponse.success) {
                 throw new Error(`Failed to upload file: ${file.name}`);
             }
-            return uploadResponse;
+            return uploadResponse.data;
         });
 
         const uploadedFiles = await Promise.all(uploadPromises);
-        revalidateTag(`project:${documentId}`);
+        revalidateTag(`project:${projectId}`);
         revalidateTag('projects');
 
         return { success: true, data: uploadedFiles };
@@ -192,34 +324,36 @@ export async function uploadProjectAttachments(projectId: number, documentId: st
     }
 }
 
-export async function removeProjectAttachments(fileIds: number[], documentId: string) {
+export async function removeProjectAttachments(fileIds: number[], projectId: number) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
-
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
+        await requireSession();
 
         if (!fileIds || fileIds.length === 0) {
             return { success: true, data: [] };
         }
 
         const deletePromises = fileIds.map(async (fileId) => {
-            const response = await fetchContentApi<any>(`upload/files/${fileId}`, {
-                method: 'DELETE',
-                revalidateTag: `project:${documentId}`
+            const file = await prisma.file.findUnique({
+                where: { id: fileId }
             });
 
-            if (!response.success) {
+            if (!file) {
+                console.error(`File with ID ${fileId} not found`);
+                return { success: false, error: `File with ID ${fileId} not found` };
+            }
+
+            // Delete from Cloudinary and database
+            const deleteResult = await deleteFileFromCloudinary(fileId);
+
+            if (!deleteResult.success) {
                 console.error(`Failed to delete file with ID: ${fileId}`);
                 return { success: false, error: `Failed to delete file with ID: ${fileId}` };
             }
-            return response.data;
+            return { success: true, data: file };
         });
 
         const deletedFiles = await Promise.all(deletePromises);
-        revalidateTag(`project:${documentId}`);
+        revalidateTag(`project:${projectId}`);
         revalidateTag('projects');
 
         return { success: true, data: deletedFiles };
@@ -232,58 +366,60 @@ export async function removeProjectAttachments(fileIds: number[], documentId: st
     }
 }
 
-export async function updateProjectUsers(projectId: number, documentId: string, users: any[]) {
+export async function updateProjectUsers(projectId: number, users: any[]) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        await requireSession();
 
-        if (!token) {
-            throw new Error('Not authenticated');
+        // Get current user's company ID
+        const userMeResponse = await getUserMe();
+        if (!userMeResponse.success || !userMeResponse.data?.company?.id) {
+            return {
+                success: false,
+                error: 'User not found or no company associated',
+                data: null
+            };
         }
 
+        const companyId = userMeResponse.data.company.id;
+
         // First, get existing project users to delete them
-        const existingUsersResponse = await fetchContentApi<any[]>(`project-users?filters[project][id][$eq]=${projectId}`, {
-            method: 'GET'
+        const existingUsers = await prisma.projectUser.findMany({
+            where: { projectId: projectId }
         });
 
-        if (existingUsersResponse.success && existingUsersResponse.data) {
-            // Delete existing project users
-            for (const user of existingUsersResponse.data) {
-                await fetchContentApi(`project-users/${user.id}`, {
-                    method: 'DELETE',
-                    revalidateTag: [`project:${documentId}`, 'projects']
-                });
-            }
+        // Delete existing project users
+        if (existingUsers.length > 0) {
+            await prisma.projectUser.deleteMany({
+                where: { projectId: projectId }
+            });
         }
 
         // Then create new project users
         if (users && users.length > 0) {
             const createPromises = users.map(async (user) => {
-                const response = await fetchContentApi('project-users', {
-                    method: 'POST',
-                    body: {
-                        data: {
-                            project: projectId,
-                            name: user.name,
-                            email: user.email,
-                            phone: user.phone,
-                            canApprove: user.canApprove,
-                        }
-                    },
-                    revalidateTag: [`project:${documentId}`, 'projects']
+                const response = await prisma.projectUser.create({
+                    data: {
+                        projectId: projectId,
+                        name: user.name,
+                        email: user.email,
+                        phone: user.phone,
+                        canApprove: user.canApprove,
+                        projectUserStatus: 'invited',
+                        companyId: companyId
+                    }
                 });
 
-                if (!response.success) {
+                if (!response) {
                     console.error(`Failed to create project user: ${user.name}`);
                     return { success: false, error: `Failed to create project user: ${user.name}` };
                 }
-                return response.data;
+                return response;
             });
 
             await Promise.all(createPromises);
         }
 
-        revalidateTag(`project:${documentId}`);
+        revalidateTag(`project:${projectId}`);
         revalidateTag('projects');
 
         return { success: true, data: users };
@@ -298,12 +434,19 @@ export async function updateProjectUsers(projectId: number, documentId: string, 
 
 export async function createProjectUser(projectId: number, projectName: string, user: any) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        await requireSession();
 
-        if (!token) {
-            throw new Error('Not authenticated');
+        // Get current user's company ID
+        const userMeResponse = await getUserMe();
+        if (!userMeResponse.success || !userMeResponse.data?.company?.id) {
+            return {
+                success: false,
+                error: 'User not found or no company associated',
+                data: null
+            };
         }
+
+        const companyId = userMeResponse.data.company.id;
 
         const userData: any = await registerUserWithConflictHandling({
             email: user.email,
@@ -323,31 +466,31 @@ export async function createProjectUser(projectId: number, projectName: string, 
             };
         }
 
-        const response = await fetchContentApi('project-users', {
-            method: 'POST',
-            body: {
-                data: {
-                    project: projectId,
-                    name: user.name,
-                    email: user.email,
-                    phone: user.phone,
-                    user: userData.data.id,
-                    canApprove: user.canApprove || false,
-                }
-            },
-            revalidateTag: [`project:users:${projectId}`]
+        const response = await prisma.projectUser.create({
+            data: {
+                projectId: projectId,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                userId: userData.data.id,
+                canApprove: user.canApprove || false,
+                projectUserStatus: 'invited',
+                companyId: companyId
+            }
         });
 
-        if (!response.success || !response.data) {
-            console.error('Error creating project user:', response.error);
+        if (!response) {
+            console.error('Error creating project user');
             return {
                 success: false,
-                error: response.error || 'Failed to create project user',
+                error: 'Failed to create project user',
                 data: null
             };
         }
 
-        return { success: true, data: response.data };
+        revalidateTag(`project:users:${projectId}`);
+
+        return { success: true, data: response };
     } catch (error) {
         console.error('Error creating project user:', error);
         return {
@@ -360,36 +503,30 @@ export async function createProjectUser(projectId: number, projectName: string, 
 
 export async function updateProjectUser(projectId: number, documentId: number, user: any) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        await requireSession();
 
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
-
-        const response = await fetchContentApi(`project-users/${documentId}`, {
-            method: 'PUT',
-            body: {
-                data: {
-                    name: user.name,
-                    email: user.email,
-                    phone: user.phone,
-                    canApprove: user.canApprove || false,
-                }
-            },
-            revalidateTag: [`project:users:${projectId}`]
+        const response = await prisma.projectUser.update({
+            where: { id: documentId },
+            data: {
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                canApprove: user.canApprove || false,
+            }
         });
 
-        if (!response.success || !response.data) {
-            console.error('Error updating project user:', response.error);
+        if (!response) {
+            console.error('Error updating project user');
             return {
                 success: false,
-                error: response.error || 'Failed to update project user',
+                error: 'Failed to update project user',
                 data: null
             };
         }
 
-        return { success: true, data: response.data };
+        revalidateTag(`project:users:${projectId}`);
+
+        return { success: true, data: response };
     } catch (error) {
         console.error('Error updating project user:', error);
         return {
@@ -402,27 +539,23 @@ export async function updateProjectUser(projectId: number, documentId: number, u
 
 export async function removeProjectUser(projectId: number, documentId: string) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        await requireSession();
 
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
-
-        const response = await fetchContentApi(`project-users/${documentId}`, {
-            method: 'DELETE',
-            revalidateTag: [`project:users:${projectId}`]
+        const response = await prisma.projectUser.delete({
+            where: { id: parseInt(documentId) }
         });
 
-        if (!response.success) {
-            console.error('Error removing project user:', response.error);
+        if (!response) {
+            console.error('Error removing project user');
             return {
                 success: false,
-                error: response.error || 'Failed to remove project user'
+                error: 'Failed to remove project user'
             };
         }
 
-        return { success: true, data: response.data };
+        revalidateTag(`project:users:${projectId}`);
+
+        return { success: true, data: response };
     } catch (error) {
         console.error('Error removing project user:', error);
         return {

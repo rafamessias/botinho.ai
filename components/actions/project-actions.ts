@@ -1,90 +1,145 @@
 'use server';
 
-import { fetchContentApi } from './fetch-content-api';
-import { RDO, Incident, Project, ApiResponse } from '../types/strapi';
+import { prisma } from '@/prisma/lib/prisma';
+import { RDO, Incident, Project, ApiResponse } from '../types/prisma';
 
 export async function getPaginatedProjectRdos(projectSlug: string, page: number, pageSize: number): Promise<ApiResponse<RDO[]>> {
     try {
-        const response = await fetchContentApi<RDO[]>(
-            `rdos?filters[project][documentId][$eq]=${projectSlug}&populate[0]=user&populate[1]=media&sort[0]=date:desc&sort[1]=id:desc&pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
-            {
-                next: {
-                    revalidate: 300,
-                    tags: [`project:rdos:${projectSlug}`]
-                }
-            }
-        );
-        return response;
+        const projectId = parseInt(projectSlug);
+        if (isNaN(projectId)) {
+            return { success: false, data: null, error: 'Invalid project ID' };
+        }
+
+        const rdosData = await prisma.rDO.findMany({
+            where: { projectId: projectId },
+            include: {
+                user: {
+                    include: {
+                        avatar: true
+                    }
+                },
+                media: true
+            },
+            orderBy: [
+                { date: 'desc' },
+                { id: 'desc' }
+            ],
+            take: pageSize,
+            skip: (page - 1) * pageSize
+        });
+
+        return { success: true, data: rdosData as RDO[] };
     } catch (error) {
         console.error('Error fetching paginated project RDOs:', error);
-        return { success: false, data: null, meta: null, error: 'Failed to fetch RDOs' };
+        return { success: false, data: null, error: 'Failed to fetch RDOs' };
     }
 }
 
 export async function getPaginatedProjectIncidents(projectSlug: string, page: number, pageSize: number): Promise<ApiResponse<Incident[]>> {
     try {
-        const response = await fetchContentApi<Incident[]>(
-            `incidents?filters[project][documentId][$eq]=${projectSlug}&populate[0]=user&populate[1]=media&sort[0]=date:desc&sort[1]=id:desc&pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
-            {
-                next: {
-                    revalidate: 300,
-                    tags: [`project:incidents:${projectSlug}`]
-                }
-            }
-        );
-        return response;
+        const projectId = parseInt(projectSlug);
+        if (isNaN(projectId)) {
+            return { success: false, data: null, error: 'Invalid project ID' };
+        }
+
+        const incidentsData = await prisma.incident.findMany({
+            where: { projectId: projectId },
+            include: {
+                user: {
+                    include: {
+                        avatar: true
+                    }
+                },
+                media: true
+            },
+            orderBy: [
+                { date: 'desc' },
+                { id: 'desc' }
+            ],
+            take: pageSize,
+            skip: (page - 1) * pageSize
+        });
+
+        return { success: true, data: incidentsData as Incident[] };
     } catch (error) {
         console.error('Error fetching paginated project incidents:', error);
-        return { success: false, data: null, meta: null, error: 'Failed to fetch incidents' };
+        return { success: false, data: null, error: 'Failed to fetch incidents' };
     }
 }
 
 export async function getFilteredProjects(status: string = 'active'): Promise<ApiResponse<Project[]>> {
     try {
-        let endpoint = 'projects?populate=*&sort=id:desc';
+        const whereClause: any = {};
 
         if (status !== 'all') {
-            endpoint += `&filters[active][$eq]=${status === 'active' ? true : false}`;
+            whereClause.active = status === 'active';
         }
 
-        const response = await fetchContentApi<Project[]>(endpoint, {
-            next: {
-                revalidate: 300,
-                tags: ['projects']
+        const projectsData = await prisma.project.findMany({
+            where: whereClause,
+            include: {
+                image: true,
+                company: {
+                    include: {
+                        owner: true
+                    }
+                }
+            },
+            orderBy: {
+                id: 'desc'
             }
         });
-        return response;
+
+        return { success: true, data: projectsData as Project[] };
     } catch (error) {
         console.error('Error fetching filtered projects:', error);
-        return { success: false, data: null, meta: null, error: 'Failed to fetch projects' };
+        return { success: false, data: null, error: 'Failed to fetch projects' };
     }
 }
 
 export async function searchProjects(searchTerm: string, status: string = 'all'): Promise<ApiResponse<Project[]>> {
     try {
-        let endpoint = 'projects?populate=*&sort=id:desc';
+        const whereClause: any = {};
 
         // Add status filter if not 'all'
         if (status !== 'all') {
-            endpoint += `&filters[active][$eq]=${status === 'active' ? true : false}`;
+            whereClause.active = status === 'active';
         }
 
         // Add search filters
         if (searchTerm.trim()) {
-            endpoint += `&filters[$or][0][name][$containsi]=${encodeURIComponent(searchTerm.trim())}`;
-            endpoint += `&filters[$or][1][description][$containsi]=${encodeURIComponent(searchTerm.trim())}`;
-            endpoint += `&filters[$or][2][id][$eq]=${searchTerm.trim()}`;
+            const searchValue = searchTerm.trim();
+            const searchId = parseInt(searchValue);
+
+            whereClause.OR = [
+                { name: { contains: searchValue, mode: 'insensitive' } },
+                { description: { contains: searchValue, mode: 'insensitive' } }
+            ];
+
+            // If search term is a valid number, also search by ID
+            if (!isNaN(searchId)) {
+                whereClause.OR.push({ id: searchId });
+            }
         }
 
-        const response = await fetchContentApi<Project[]>(endpoint, {
-            next: {
-                revalidate: 300,
-                tags: ['projects']
+        const projectsData = await prisma.project.findMany({
+            where: whereClause,
+            include: {
+                image: true,
+                company: {
+                    include: {
+                        owner: true
+                    }
+                }
+            },
+            orderBy: {
+                id: 'desc'
             }
         });
-        return response;
+
+        return { success: true, data: projectsData as Project[] };
     } catch (error) {
         console.error('Error searching projects:', error);
-        return { success: false, data: null, meta: null, error: 'Failed to search projects' };
+        return { success: false, data: null, error: 'Failed to search projects' };
     }
 } 

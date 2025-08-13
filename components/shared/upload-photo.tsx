@@ -15,7 +15,7 @@ interface UploadPhotoProps<T extends FieldValues> {
     hint?: string;
     onChange?: (file: File | File[] | null) => void;
     type?: 'logo' | 'photo' | 'carousel';
-    currentImage?: string;
+    currentImage?: string | null;
     initialFiles?: (string | File | FileImage)[];
     onRemoveImage?: (fileOrUrl: string | File | number) => void;
 }

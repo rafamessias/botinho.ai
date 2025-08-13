@@ -9,22 +9,45 @@ import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { Project, CompanyMemberDialog, ProjectUser } from '@/components/types/prisma';
+import { CompanyMemberDialog, FileImage } from '@/components/types/prisma';
 import { ProjectStatus } from '@/lib/generated/prisma';
 import { useLoading } from '@/components/LoadingProvider';
 import { ProjectStatusCombobox } from '@/components/shared/project-status-combobox';
 import { ProjectStatusBadge } from '@/components/shared/project-status-badge';
+
+// Type for Project with included relations
+interface ProjectWithRelations {
+    id: number;
+    name: string | null;
+    description: string | null;
+    address: string | null;
+    projectStatus: ProjectStatus;
+    image: FileImage | null;
+    company: {
+        id: number;
+        name: string | null;
+        owner: any;
+    } | null;
+    users: Array<{
+        id: number;
+        name: string;
+        email: string;
+        phone: string;
+        canApprove: boolean;
+        user: any;
+    }> | null;
+}
 
 interface ProjectFormValues {
     projectName: string;
     projectDescription: string;
     projectAddress: string;
     projectStatus: ProjectStatus;
-    projectPhoto?: string | FileList | File | string | null;
-    projectUsers?: ProjectUser[];
+    projectPhoto?: FileList | File | FileImage | string | null;
+    projectUsers?: any[];
 }
 
-export default function ProjectEditForm({ project }: { project: Project }) {
+export default function ProjectEditForm({ project }: { project: ProjectWithRelations }) {
     const t = useTranslations('project.edit');
     const usersRef = useRef<UserListRef>(null);
     const { setIsLoading } = useLoading();
@@ -45,7 +68,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
     const currentStatus = watch('projectStatus');
 
     // Convert project users to the format expected by UserList
-    let initialUsers = project.users ? project.users.map((user: ProjectUser) => ({
+    let initialUsers = project.users ? project.users.map((user) => ({
         name: user.name,
         email: user.email,
         phone: user.phone,
@@ -60,7 +83,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         try {
             setIsLoading(true);
             const companyId = typeof project.company === 'number' ? project.company : project.company?.id;
-            const response: any = await createProjectUser(project.id as number, project.name, {
+            const response: any = await createProjectUser(project.id as number, project.name || '', {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
@@ -128,7 +151,7 @@ export default function ProjectEditForm({ project }: { project: Project }) {
         try {
             setIsLoading(true);
             if (user.id) {
-                const response: any = await removeProjectUser(project.id as number, user.id as string);
+                const response: any = await removeProjectUser(project.id as number, user.id.toString());
 
                 if (!response.success) {
                     console.error('Error removing project user:', response.error);
@@ -228,11 +251,11 @@ export default function ProjectEditForm({ project }: { project: Project }) {
                     register={register}
                     setValue={setValue}
                     name="projectPhoto"
-                    photoUrl={project.image?.url || "/placeholder-image.webp"}
+                    photoUrl={(project.image as FileImage)?.url || "/placeholder-image.webp"}
                     label={t('uploadPhoto.label')}
                     hint={t('uploadPhoto.hint')}
-                    currentImage={(project.image as StrapiImage)?.url}
-                    initialFiles={project.image ? [project.image as StrapiImage] : []}
+                    currentImage={(project.image as FileImage)?.url}
+                    initialFiles={project.image ? [project.image as FileImage] : []}
                     onRemoveImage={onRemoveImage}
 
                 />

@@ -731,7 +731,11 @@
         "title": "My profile",
         "avatar": {
             "label": "Profile photo",
-            "hint": "Add a profile photo"
+            "hint": "Add a profile photo",
+            "changePhotoTitle": "Change Profile Photo",
+            "changePhotoDescription": "Are you sure you want to change your profile photo? This will replace your current photo.",
+            "changePhotoConfirmLabel": "Change Photo",
+            "changePhotoCancelLabel": "Cancel"
         },
         "name": {
             "label": "Name",
@@ -765,6 +769,8 @@
             "ptbr": "Portuguese"
         },
         "success": "Profile updated successfully",
+        "avatarRemoved": "Profile photo removed successfully",
+        "avatarRemoveError": "Failed to remove profile photo",
         "delete": {
             "button": "Delete Profile",
             "title": "Delete Profile",

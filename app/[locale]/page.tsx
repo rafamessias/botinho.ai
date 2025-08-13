@@ -1,8 +1,9 @@
 import ContainerApp from "@/components/Container-app"
 import { getTranslations } from "next-intl/server"
 import HomePage from "@/components/homePage/home-page"
-import { fetchContentApi } from "@/components/actions/fetch-content-api"
-import { Project } from "@/components/types/strapi"
+import { prisma } from "@/prisma/lib/prisma"
+import { Project } from "@/components/types/prisma";
+
 
 interface PageProps {
     params: Promise<{ locale: string }>;
@@ -15,28 +16,33 @@ export default async function Page({ params }: PageProps) {
     // TEMPORARY: Add delay to test loading skeleton
     //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
 
-    // Fetch active projects on the server side by default
-    let projects: Project[] = [];
+    // Fetch active projects using Prisma
+    let projectsData = null;
     try {
-        const response = await fetchContentApi<Project[]>('projects?populate=*&filters[active][$eq]=true&sort=id:desc', {
-            next: {
-                revalidate: 300, // Cache for 5 minutes
-                tags: ['projects']
+        projectsData = await prisma.project.findMany({
+            where: {
+                active: true
+            },
+            include: {
+                image: true,
+                company: {
+                    include: {
+                        owner: true
+                    }
+                }
+            },
+            orderBy: {
+                id: 'desc'
             }
         });
 
-        if (response.success && response.data) {
-            // Serialize the data to ensure it's safe to pass to client components
-            projects = JSON.parse(JSON.stringify(response.data));
-        }
     } catch (error) {
         console.error('Failed to fetch projects:', error);
-        projects = [];
     }
 
     return (
         <ContainerApp form={false} title={t('home.projects')} showBackButton={false}>
-            <HomePage initialProjects={projects} />
+            <HomePage initialProjects={projectsData as Project[] | null} />
         </ContainerApp>
     );
 } 

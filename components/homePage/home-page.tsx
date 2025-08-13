@@ -5,20 +5,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ProjectCard from "@/components/homePage/project-card"
 import { Plus, Search, Loader2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Project, StrapiImage } from "@/components/types/strapi"
+import { Project, FileImage } from "@/components/types/prisma"
 import { useEffect, useState, useCallback } from "react"
 import { Link } from "@/i18n/navigation"
 import { useUser } from "@/components/UserProvider"
 import { getFilteredProjects, searchProjects } from "@/components/actions/project-actions"
 
 interface HomePageProps {
-    initialProjects: Project[];
+    initialProjects: Project[] | null;
 }
 
 export default function HomePage({ initialProjects }: HomePageProps) {
     const t = useTranslations('homepage');
     const { user } = useUser();
-    const [projects, setProjects] = useState<Project[]>(initialProjects);
+    const [projects, setProjects] = useState<Project[]>(initialProjects || []);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('active');
     const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ export default function HomePage({ initialProjects }: HomePageProps) {
 
     // Update projects when initialProjects prop changes
     useEffect(() => {
-        setProjects(initialProjects);
+        setProjects(initialProjects || []);
     }, [initialProjects]);
 
     // Debounced search function
@@ -166,20 +166,20 @@ export default function HomePage({ initialProjects }: HomePageProps) {
                 <>
                     <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                         {projects.map((project: Project) => {
-                            let projectImage: StrapiImage | null = null;
+                            let projectImage: FileImage | null = null;
                             if (project.image) {
-                                projectImage = project.image as StrapiImage;
+                                projectImage = project.image as FileImage;
                             }
 
                             return (
                                 <ProjectCard
                                     key={project.id}
                                     id={project.id?.toString() || ''}
-                                    documentId={project.documentId || ''}
-                                    title={project.name}
-                                    description={project.description}
+                                    documentId={project.id?.toString() || ''}
+                                    title={project.name || ''}
+                                    description={project.description || ''}
                                     imageUrl={projectImage?.url || ''}
-                                    isActive={project.active}
+                                    isActive={project.active || false}
                                 />
                             )
                         })}

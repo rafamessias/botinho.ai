@@ -148,7 +148,7 @@ export interface Incident {
     id?: number;
     user?: User | number;
     userName?: string;
-    project: Project | number;
+    project?: Project | number;
     company?: Company | number;
     description: string;
     media?: FileImage[] | FileList | File | string | null;

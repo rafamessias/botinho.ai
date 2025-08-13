@@ -1,6 +1,5 @@
 import ContainerApp from "@/components/Container-app";
-import { fetchContentApi } from "@/components/actions/fetch-content-api";
-import { Project, ProjectUser } from "@/components/types/strapi";
+import { prisma } from "@/prisma/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import ProjectEditForm from "./project-edit-form";
@@ -13,33 +12,40 @@ interface ProjectEditPageProps {
 export default async function ProjectEditPage({ params }: ProjectEditPageProps) {
     const { slug, locale } = await params;
 
-    let project: Project;
+    let projectData = null;
 
     try {
-        // Fetch project data
-        const projectResponse = await fetchContentApi<Project>(`projects/${slug}?populate=*`, {
-            next: {
-                revalidate: 300,
-                tags: [`project:${slug}`]
-            }
-        });
-
-        if (!projectResponse.success || !projectResponse.data) {
+        // Fetch project data using Prisma
+        const projectId = parseInt(slug);
+        if (isNaN(projectId)) {
             notFound();
         }
-        project = projectResponse.data;
 
-        // Fetch project users
-        const projectUsersResponse = await fetchContentApi<ProjectUser[]>(`project-users?filters[project][id][$eq]=${project.id}&populate=*`, {
-            next: {
-                revalidate: 300,
-                tags: [`project:users:${project.id}`]
+        projectData = await prisma.project.findUnique({
+            where: { id: projectId },
+            include: {
+                image: true,
+                company: {
+                    include: {
+                        owner: true
+                    }
+                },
+                users: {
+                    include: {
+                        user: {
+                            include: {
+                                avatar: true
+                            }
+                        }
+                    }
+                }
             }
         });
 
-        if (projectUsersResponse.success && projectUsersResponse.data) {
-            project.users = projectUsersResponse.data;
+        if (!projectData) {
+            notFound();
         }
+
 
     } catch (error) {
         console.error(error);
@@ -50,8 +56,8 @@ export default async function ProjectEditPage({ params }: ProjectEditPageProps) 
 
     return (
         <RestrictProjectUsers>
-            <ContainerApp title={project.name} showBackButton={true}>
-                <ProjectEditForm project={project} />
+            <ContainerApp title={projectData.name || ''} showBackButton={true}>
+                <ProjectEditForm project={projectData} />
             </ContainerApp>
         </RestrictProjectUsers>
     );

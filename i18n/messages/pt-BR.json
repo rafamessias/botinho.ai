@@ -739,7 +739,11 @@
         "title": "Meu perfil",
         "avatar": {
             "label": "Foto de perfil",
-            "hint": "Adicione uma foto de perfil"
+            "hint": "Adicione uma foto de perfil",
+            "changePhotoTitle": "Alterar foto de perfil",
+            "changePhotoDescription": "Tem certeza que deseja alterar sua foto de perfil? Isso substituirá sua foto atual.",
+            "changePhotoConfirmLabel": "Alterar foto",
+            "changePhotoCancelLabel": "Cancelar"
         },
         "name": {
             "label": "Nome",
@@ -773,6 +777,8 @@
             "ptbr": "Português"
         },
         "success": "Perfil atualizado com sucesso",
+        "avatarRemoved": "Foto de perfil removida com sucesso",
+        "avatarRemoveError": "Falha ao remover foto de perfil",
         "delete": {
             "button": "Excluir Perfil",
             "title": "Excluir Perfil",

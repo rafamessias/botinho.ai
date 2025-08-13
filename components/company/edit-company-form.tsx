@@ -184,7 +184,6 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         if (file) {
             setPendingImageChange(file[0]);
             setShowImageConfirm(true);
-            setShowImageConfirm(true);
         }
     };
 

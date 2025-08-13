@@ -1,7 +1,7 @@
 "use client";
 import { useForm, Controller } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -15,29 +15,47 @@ import { useLoading } from '@/components/LoadingProvider';
 import { updateProfileAction, deleteProfileAction } from '@/components/actions/profile-action';
 import { DeleteProfileDialog } from '@/components/shared/delete-profile-dialog';
 import { Trash2 } from 'lucide-react';
+import { deleteFileFromCloudinary, uploadFileToCloudinary } from '@/components/actions/cloudinary-upload-action';
+import { FileImage } from '@/components/types/prisma';
+import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 
 type FormData = {
     name: string;
     phone: string;
     email: string;
     language: 'en' | 'pt-BR';
-    avatar: File[] | null;
+    avatar: File[] | FileImage[] | null;
     notifyRDO: boolean;
 };
 
 export default function ProfileForm() {
     const router = useRouter();
+    const pathname = usePathname();
+    const locale = useLocale();
     const t = useTranslations('profile');
     const { user, setUser, setLoading } = useUser();
     const { setIsLoading } = useLoading();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showImageConfirm, setShowImageConfirm] = useState(false);
+    const [pendingImageChange, setPendingImageChange] = useState<File | null>(null);
+    const [imageToUpload, setImageToUpload] = useState<File | null>(null);
+    const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(user?.avatar?.url || null);
+    const [uploadPhotoKey, setUploadPhotoKey] = useState(0);
+
+    const avatar: FileImage = user?.avatar as FileImage;
+
+    // Update currentAvatarUrl when user avatar changes
+    useEffect(() => {
+        setCurrentAvatarUrl(user?.avatar?.url || null);
+    }, [user?.avatar?.url]);
 
     const {
         control,
         handleSubmit,
         formState: { isSubmitting, errors },
         setValue,
+        getValues,
         register,
         reset,
     } = useForm<FormData>({
@@ -66,6 +84,70 @@ export default function ProfileForm() {
         }
     }, [user, reset]);
 
+    const handleImageChange = async (file: any | null) => {
+        if (file) {
+            setShowImageConfirm(true);
+            setPendingImageChange(file[0]);
+        }
+    };
+
+    const confirmImageChange = async () => {
+        if (!pendingImageChange || !user?.id) return;
+
+        try {
+            setIsLoading(true);
+
+            // Delete old avatar if exists
+            if (avatar?.id) {
+                await deleteFileFromCloudinary(avatar.id);
+                setValue('avatar', null);
+            }
+
+            // Upload new avatar
+            const uploadResult = await uploadFileToCloudinary({
+                file: pendingImageChange,
+                tableName: 'User',
+                recordId: user.id,
+                fieldName: 'avatarId',
+                folder: 'obraguru/avatars'
+            });
+
+            if (!uploadResult.success || !uploadResult.data) {
+                throw new Error('Failed to upload avatar');
+            }
+
+            // Update form state with the uploaded image data
+            setValue('avatar', [uploadResult.data]);
+            setImageToUpload(pendingImageChange);
+            setCurrentAvatarUrl(uploadResult.data.url);
+
+            // Update user context immediately
+            setUser({
+                ...user,
+                avatar: uploadResult.data
+            });
+
+            toast.success('Avatar updated successfully');
+        } catch (error) {
+            console.error('Error updating avatar:', error);
+            toast.error('Failed to update avatar');
+        } finally {
+            setIsLoading(false);
+            setShowImageConfirm(false);
+            setPendingImageChange(null);
+        }
+    };
+
+    const cancelImageChange = () => {
+        setShowImageConfirm(false);
+        setPendingImageChange(null);
+        // Reset form state to current avatar if any
+        setValue('avatar', user?.avatar ? [user.avatar] : null);
+        setCurrentAvatarUrl(user?.avatar?.url || null);
+        // Force UploadPhoto component to re-render with original state
+        setUploadPhotoKey(prev => prev + 1);
+    };
+
     const onSubmit = async (data: FormData) => {
         if (!user?.id) {
             toast.error('User not found');
@@ -80,13 +162,13 @@ export default function ProfileForm() {
             const firstName = nameParts[0] || '';
             const lastName = nameParts.slice(1).join(' ') || '';
 
-            // Prepare update data
+            // Prepare update data (avatar is already handled separately)
             const updateData = {
                 firstName,
                 lastName,
                 phone: data.phone,
                 language: data.language,
-                avatar: data.avatar && data.avatar.length > 0 ? data.avatar[0] : null,
+                avatar: null, // Avatar is already handled separately
             };
 
             // Update user profile using Prisma action
@@ -104,6 +186,14 @@ export default function ProfileForm() {
             }
 
             toast.success(t('success'));
+
+            // Compare current locale with response.data.language, if different redirect to new locale
+            if (response.data && response.data.language && locale !== response.data.language) {
+                // Replace the current locale in the pathname with the new locale
+                const newPath = pathname.replace(`/${locale}`, `/${response.data.language}`);
+                router.push(newPath);
+                return; // Prevent further execution
+            }
             router.refresh();
 
         } catch (error) {
@@ -117,9 +207,39 @@ export default function ProfileForm() {
     const handleAvatarChange = (file: File | File[] | null) => {
         if (file) {
             const fileList = Array.isArray(file) ? file : [file];
-            setValue('avatar', fileList);
+            // Don't update form state yet, wait for confirmation
+            // setValue('avatar', fileList);
+            handleImageChange(fileList);
         } else {
             setValue('avatar', []);
+        }
+    };
+
+    const handleRemoveImage = async () => {
+        try {
+            setIsLoading(true);
+            // Delete old file if exists
+            if (user?.avatar?.id) {
+                await deleteFileFromCloudinary(user.avatar.id);
+            }
+
+            // Update form state to remove avatar
+            setValue('avatar', null);
+            setImageToUpload(null);
+            setCurrentAvatarUrl(null);
+
+            // Update user context to remove avatar
+            setUser({
+                ...user,
+                avatar: null
+            });
+
+            toast.success(t('avatarRemoved'));
+        } catch (error) {
+            console.error('Error removing avatar:', error);
+            toast.error(`${t('avatarRemoveError')} - ${error instanceof Error ? error.message : t('avatarRemoveError')}`);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -168,21 +288,17 @@ export default function ProfileForm() {
             <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
                 {/* Avatar Upload */}
                 <div className="flex gap-2">
-                    <Controller
+                    <UploadPhoto
+                        key={`${currentAvatarUrl || 'no-avatar'}-${uploadPhotoKey}`} // Force re-render when avatar changes or when canceling
+                        register={register}
+                        setValue={setValue}
                         name="avatar"
-                        control={control}
-                        render={({ field }) => (
-                            <UploadPhoto
-                                register={register}
-                                setValue={setValue}
-                                name="avatar"
-                                label={t('avatar.label')}
-                                hint={t('avatar.hint')}
-                                type="logo"
-                                currentImage={typeof user.avatar === 'object' && user.avatar && 'url' in user.avatar ? user.avatar.url : undefined}
-                                onChange={handleAvatarChange}
-                            />
-                        )}
+                        label={t('avatar.label')}
+                        hint={t('avatar.hint')}
+                        type="logo"
+                        currentImage={currentAvatarUrl}
+                        onChange={handleAvatarChange}
+                        onRemoveImage={handleRemoveImage}
                     />
                 </div>
 
@@ -329,6 +445,17 @@ export default function ProfileForm() {
                 nameRequired={t('delete.nameRequired')}
                 nameMismatch={t('delete.nameMismatch')}
                 expectedName={`${user.firstName || ''} ${user.lastName || ''}`.trim()}
+            />
+
+            {/* Image Change Confirmation Dialog */}
+            <ConfirmDialog
+                open={showImageConfirm}
+                onConfirm={confirmImageChange}
+                onCancel={cancelImageChange}
+                title={t('avatar.changePhotoTitle')}
+                description={t('avatar.changePhotoDescription')}
+                confirmLabel={t('avatar.changePhotoConfirmLabel')}
+                cancelLabel={t('avatar.changePhotoCancelLabel')}
             />
         </>
     );

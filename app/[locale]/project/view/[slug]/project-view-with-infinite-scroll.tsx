@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Project, StrapiImage, RDO, User, Incident } from '@/components/types/strapi';
+import { ProjectStatus, RDOStatus, IncidentStatus } from '@/lib/generated/prisma';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -17,12 +17,57 @@ import { useUser } from '@/components/UserProvider';
 import { Loader2 } from 'lucide-react';
 import { getPaginatedProjectRdos, getPaginatedProjectIncidents } from '@/components/actions/project-actions';
 import { ProjectStatusBadge } from '@/components/shared/project-status-badge';
+import { FileImage } from '@/components/types/prisma';
+
+// Types for data with included relations
+interface ProjectWithRelations {
+    id: number;
+    name: string | null;
+    description: string | null;
+    address: string | null;
+    projectStatus: ProjectStatus;
+    image: FileImage | null;
+    rdoCount?: number | null;
+    rdoCountDraft?: number | null;
+    incidentCount?: number | null;
+    incidentCountDraft?: number | null;
+}
+
+interface RDOWithRelations {
+    id: number;
+    description: string | null;
+    date: Date;
+    rdoStatus: RDOStatus;
+    user: any;
+    media: any[];
+    userName?: string | null;
+}
+
+interface IncidentWithRelations {
+    id: number;
+    description: string | null;
+    incidentStatus: IncidentStatus;
+    priority: number | null;
+    user: any;
+    media: any[];
+    userName?: string | null;
+    createdAt: Date;
+}
+
+interface ProjectUserWithRelations {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    canApprove: boolean;
+    user: any;
+}
 
 interface ProjectViewWithInfiniteScrollProps {
-    project: Project;
-    initialRdos: RDO[];
-    initialIncidents: Incident[];
-    projectUsers: User[];
+    project: ProjectWithRelations;
+    initialRdos: RDOWithRelations[];
+    initialIncidents: IncidentWithRelations[];
+    projectUsers: ProjectUserWithRelations[];
     projectSlug: string;
 }
 
@@ -81,13 +126,13 @@ export default function ProjectViewWithInfiniteScroll({
     }, [screenHeight, estimatedItemHeight]);
 
     // RDOs state
-    const [rdos, setRdos] = useState<RDO[]>(initialRdos);
+    const [rdos, setRdos] = useState<RDOWithRelations[]>(initialRdos);
     const [rdosHasMore, setRdosHasMore] = useState(initialRdos.length >= ITEMS_PER_PAGE);
     const [rdosPage, setRdosPage] = useState(1);
     const [rdosLoading, setRdosLoading] = useState(false);
 
     // Incidents state
-    const [incidents, setIncidents] = useState<Incident[]>(initialIncidents);
+    const [incidents, setIncidents] = useState<IncidentWithRelations[]>(initialIncidents);
     const [incidentsHasMore, setIncidentsHasMore] = useState(initialIncidents.length >= ITEMS_PER_PAGE);
     const [incidentsPage, setIncidentsPage] = useState(1);
     const [incidentsLoading, setIncidentsLoading] = useState(false);
@@ -138,7 +183,7 @@ export default function ProjectViewWithInfiniteScroll({
                         const response = await getPaginatedProjectRdos(projectSlug, nextPage, ITEMS_PER_PAGE);
 
                         if (response.success && response.data) {
-                            setRdos(prev => [...prev, ...response.data!]);
+                            setRdos(prev => [...prev, ...(response.data as any)]);
                             setRdosPage(nextPage);
                             setRdosHasMore(response.data.length === ITEMS_PER_PAGE);
                         }
@@ -165,7 +210,7 @@ export default function ProjectViewWithInfiniteScroll({
                         const response = await getPaginatedProjectIncidents(projectSlug, nextPage, ITEMS_PER_PAGE);
 
                         if (response.success && response.data) {
-                            setIncidents(prev => [...prev, ...response.data!]);
+                            setIncidents(prev => [...prev, ...(response.data as any)]);
                             setIncidentsPage(nextPage);
                             setIncidentsHasMore(response.data.length === ITEMS_PER_PAGE);
                         }
@@ -206,7 +251,7 @@ export default function ProjectViewWithInfiniteScroll({
             const response = await getPaginatedProjectRdos(projectSlug, nextPage, ITEMS_PER_PAGE);
 
             if (response.success && response.data) {
-                setRdos(prev => [...prev, ...response.data!]);
+                setRdos(prev => [...prev, ...(response.data as any)]);
                 setRdosPage(nextPage);
                 setRdosHasMore(response.data.length === ITEMS_PER_PAGE);
             }
@@ -226,7 +271,7 @@ export default function ProjectViewWithInfiniteScroll({
             const response = await getPaginatedProjectIncidents(projectSlug, nextPage, ITEMS_PER_PAGE);
 
             if (response.success && response.data) {
-                setIncidents(prev => [...prev, ...response.data!]);
+                setIncidents(prev => [...prev, ...(response.data as any)]);
                 setIncidentsPage(nextPage);
                 setIncidentsHasMore(response.data.length === ITEMS_PER_PAGE);
             }
@@ -237,26 +282,26 @@ export default function ProjectViewWithInfiniteScroll({
         }
     }, [projectSlug]);
 
-    const getRDOStatusLabel = (status: RDO['rdoStatus']) => {
+    const getRDOStatusLabel = (status: RDOWithRelations['rdoStatus']) => {
         switch (status) {
             case 'draft':
                 return t('rdoStatus.draft');
             case 'pendingApproval':
                 return t('rdoStatus.pendingApproval');
-            case 'Approved':
+            case 'approved':
                 return t('rdoStatus.approved');
-            case 'Rejected':
+            case 'rejected':
                 return t('rdoStatus.rejected');
             default:
                 return status;
         }
     };
 
-    const getRDOStatusVariant = (status: RDO['rdoStatus']): "default" | "secondary" | "destructive" | "outline" => {
+    const getRDOStatusVariant = (status: RDOWithRelations['rdoStatus']): "default" | "secondary" | "destructive" | "outline" => {
         switch (status) {
-            case 'Approved':
+            case 'approved':
                 return 'default';
-            case 'Rejected':
+            case 'rejected':
                 return 'destructive';
             case 'pendingApproval':
                 return 'secondary';
@@ -267,11 +312,11 @@ export default function ProjectViewWithInfiniteScroll({
         }
     };
 
-    const getIncidentStatusLabel = (status: string) => {
+    const getIncidentStatusLabel = (status: IncidentWithRelations['incidentStatus']) => {
         return tIncident(`status.${status}`);
     };
 
-    const getIncidentStatusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
+    const getIncidentStatusVariant = (status: IncidentWithRelations['incidentStatus']): "default" | "secondary" | "destructive" | "outline" => {
         switch (status) {
             case 'open':
                 return 'destructive';
@@ -284,30 +329,32 @@ export default function ProjectViewWithInfiniteScroll({
         }
     };
 
-    const getIncidentPriorityLabel = (priority: string) => {
+    const getIncidentPriorityLabel = (priority: number | null) => {
+        if (priority === null) return 'N/A';
         switch (priority) {
-            case 'low':
+            case 1:
                 return 'Low';
-            case 'medium':
+            case 2:
                 return 'Medium';
-            case 'high':
+            case 3:
                 return 'High';
-            case 'critical':
+            case 4:
                 return 'Critical';
             default:
-                return priority;
+                return priority.toString();
         }
     };
 
-    const getIncidentPriorityVariant = (priority: string): "default" | "secondary" | "destructive" | "outline" => {
+    const getIncidentPriorityVariant = (priority: number | null): "default" | "secondary" | "destructive" | "outline" => {
+        if (priority === null) return 'outline';
         switch (priority) {
-            case 'low':
+            case 1:
                 return 'outline';
-            case 'medium':
+            case 2:
                 return 'secondary';
-            case 'high':
+            case 3:
                 return 'destructive';
-            case 'critical':
+            case 4:
                 return 'destructive';
             default:
                 return 'outline';
@@ -319,8 +366,8 @@ export default function ProjectViewWithInfiniteScroll({
             <div className="absolute top-0 left-0 w-full h-48 rounded-t-lg overflow-hidden">
                 {project.image ? (
                     <Image
-                        src={(project.image as StrapiImage).url}
-                        alt={project.name}
+                        src={typeof project.image === 'string' ? project.image : (project.image as FileImage)?.url || ''}
+                        alt={project.name || ''}
                         fill
                         sizes="200px"
                         priority={true}
@@ -337,7 +384,7 @@ export default function ProjectViewWithInfiniteScroll({
                     <TooltipProvider >
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>
-                                <Link href={`/project/edit/${project.documentId}?goback=${currentUrl}`} className="absolute flex items-center gap-2">
+                                <Link href={`/project/edit/${project.id}?goback=${currentUrl}`} className="absolute flex items-center gap-2">
                                     <Button variant="ghost" className="flex items-center gap-2 justify-start">
                                         <Pencil className="w-4 h-4" />
                                     </Button>
@@ -393,21 +440,21 @@ export default function ProjectViewWithInfiniteScroll({
                                 }
                             >
                                 {rdos.map(rdo => {
-                                    const user = rdo.user as User;
-                                    const media = rdo.media as StrapiImage[];
+                                    const user = rdo.user as any;
+                                    const media = rdo.media as any[];
 
                                     return (
                                         <ActivityCard
                                             key={rdo.id}
                                             id={rdo.id || 0}
-                                            documentId={rdo.documentId || ''}
+                                            documentId={rdo.id?.toString() || ''}
                                             type="rdo"
                                             title="RDO"
-                                            description={rdo.description}
+                                            description={rdo.description || ''}
                                             date={new Date(rdo.date)}
                                             status={rdo.rdoStatus}
                                             user={user}
-                                            userName={rdo?.userName}
+                                            userName={rdo?.userName || undefined}
                                             media={media}
                                             getStatusLabel={getRDOStatusLabel}
                                             getStatusVariant={getRDOStatusVariant}
@@ -440,22 +487,22 @@ export default function ProjectViewWithInfiniteScroll({
                                 }
                             >
                                 {incidents.map(incident => {
-                                    const user = incident.user as User;
-                                    const media = incident.media as StrapiImage[];
+                                    const user = incident.user as any;
+                                    const media = incident.media as any[];
 
                                     return (
                                         <ActivityCard
                                             key={incident.id}
                                             id={incident.id || 0}
-                                            documentId={incident.documentId || ''}
+                                            documentId={incident.id?.toString() || ''}
                                             type="incident"
                                             title=""
-                                            description={incident.description}
+                                            description={incident.description || ''}
                                             date={new Date(incident.createdAt || '')}
                                             status={incident.incidentStatus}
-                                            priority={incident.priority}
+                                            priority={incident.priority || undefined}
                                             user={user}
-                                            userName={incident?.userName}
+                                            userName={incident?.userName || undefined}
                                             media={media}
                                             getStatusLabel={getIncidentStatusLabel}
                                             getStatusVariant={getIncidentStatusVariant}

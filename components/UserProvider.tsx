@@ -59,7 +59,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
                 if (currentLocale !== userData.language) {
                     // Replace the current locale with the user's preferred locale
-                    const newPath = `${userData.language}${pathname}`;
+                    const newPath = pathname.replace(currentLocale, userData.language);
                     router.push(newPath);
                     return; // Exit early to prevent setting permissions
                 }

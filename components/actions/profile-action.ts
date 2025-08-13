@@ -4,13 +4,14 @@ import { prisma } from '@/prisma/lib/prisma';
 import { uploadFileToCloudinary, deleteFileFromCloudinary } from './cloudinary-upload-action';
 import { requireSession } from './check-session';
 import { revalidateTag } from 'next/cache';
+import { FileImage } from '../types/prisma';
 
 export interface UpdateProfileData {
     firstName: string;
     lastName: string;
     phone: string;
     language: 'en' | 'pt-BR';
-    avatar?: File | null;
+    avatar?: File | FileImage | null;
 }
 
 export interface UpdateProfileResult {
@@ -97,8 +98,7 @@ export async function updateProfileAction(data: UpdateProfileData): Promise<Upda
 
         // Find the current user
         const currentUser = await prisma.user.findUnique({
-            where: { email: user.email },
-            include: { avatar: true }
+            where: { email: user.email }
         });
 
         if (!currentUser) {
@@ -115,30 +115,6 @@ export async function updateProfileAction(data: UpdateProfileData): Promise<Upda
             phone: data.phone,
             language: data.language === 'pt-BR' ? 'pt_BR' : 'en',
         };
-
-        // Handle avatar upload if provided
-        if (data.avatar && data.avatar instanceof File) {
-            // Delete old avatar if exists
-            if (currentUser.avatar) {
-                await deleteFileFromCloudinary(currentUser.avatar.id);
-            }
-
-            // Upload new avatar
-            const uploadResult = await uploadFileToCloudinary({
-                file: data.avatar,
-                tableName: 'User',
-                recordId: currentUser.id,
-                fieldName: 'avatarId',
-                folder: 'obraguru/avatars'
-            });
-
-            if (uploadResult.success && uploadResult.data) {
-                updateData.avatarId = uploadResult.data.id;
-            } else {
-                console.error('Failed to upload avatar:', uploadResult.error);
-                // Continue with profile update even if avatar upload fails
-            }
-        }
 
         // Update user profile
         const updatedUser = await prisma.user.update({
@@ -177,8 +153,6 @@ export async function updateProfileAction(data: UpdateProfileData): Promise<Upda
         // Revalidate cache
         revalidateTag('me');
 
-        console.log(userData);
-
         return {
             success: true,
             data: userData
@@ -189,6 +163,50 @@ export async function updateProfileAction(data: UpdateProfileData): Promise<Upda
         return {
             success: false,
             error: 'Failed to update profile'
+        };
+    }
+}
+
+export async function updateUserLanguageAction(language: 'en' | 'pt-BR'): Promise<UpdateProfileResult> {
+    try {
+        // Check authentication
+        const user = await requireSession();
+
+        if (!user?.email) {
+            return {
+                success: false,
+                error: 'No authenticated user found'
+            };
+        }
+
+        // Update user language
+        const updatedUser = await prisma.user.update({
+            where: { email: user.email },
+            data: {
+                language: language === 'pt-BR' ? 'pt_BR' : 'en',
+            }
+        });
+
+        // Transform the data to match the expected format
+        const userData = {
+            id: updatedUser.id,
+            email: updatedUser.email,
+            language: updatedUser.language === "pt_BR" ? "pt-BR" : "en",
+        };
+
+        // Revalidate cache
+        revalidateTag('me');
+
+        return {
+            success: true,
+            data: userData
+        };
+
+    } catch (error) {
+        console.error('Error updating user language:', error);
+        return {
+            success: false,
+            error: 'Failed to update user language'
         };
     }
 } 

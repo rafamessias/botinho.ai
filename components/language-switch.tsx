@@ -3,7 +3,7 @@
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { fetchContentApi } from "./actions/fetch-content-api";
+import { updateUserLanguageAction } from "./actions/profile-action";
 import { toast } from 'sonner';
 
 interface LanguageSwitchProps {
@@ -25,11 +25,7 @@ export function LanguageSwitch({ className, disabled, userId }: LanguageSwitchPr
         // Update user language in the database only if userId is provided
         if (userId) {
             try {
-                const response = await fetchContentApi(`users/${userId}`, {
-                    method: 'PUT',
-                    body: { language: newLocale },
-                    revalidateTag: ['me']
-                });
+                const response = await updateUserLanguageAction(newLocale);
 
                 if (!response.success || response.error) {
                     console.error('Failed to update user language:', response.error);

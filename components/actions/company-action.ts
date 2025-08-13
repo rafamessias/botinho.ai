@@ -29,13 +29,13 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
         // Create the company
         const companyRecord = await prisma.company.create({
             data: {
-                name: data.name,
+                name: data.name || '',
                 documentType: data.documentType as DocumentType,
-                document: data.document,
-                zipCode: data.zipCode,
-                state: data.state,
-                city: data.city,
-                address: data.address,
+                document: data.document || '',
+                zipCode: data.zipCode || '',
+                state: data.state || '',
+                city: data.city || '',
+                address: data.address || '',
                 ownerId: currentUser.id!
             }
         });
@@ -101,7 +101,7 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                 tableName: 'Company',
                 recordId: companyRecord.id,
                 fieldName: 'logoId',
-                folder: companyRecord.id.toString()
+                folder: 'obraguru/projects'
             });
 
             if (!uploadResponse.success) {
@@ -121,11 +121,11 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                 try {
                     const userData = await prisma.user.create({
                         data: {
-                            email: user.email,
+                            email: user.email || '',
                             password: hashedPassword,
-                            firstName: user.name.split(' ')[0],
-                            lastName: user.name.split(' ').slice(1).join(' '),
-                            phone: user.phone,
+                            firstName: user.name?.split(' ')[0] || '',
+                            lastName: user.name?.split(' ').slice(1).join(' ') || '',
+                            phone: user.phone || '',
                             companyId: companyRecord.id,
                             type: 'companyUser' as UserType,
                             language: 'pt_BR' as Language,
@@ -138,9 +138,9 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                         data: {
                             companyId: companyRecord.id,
                             userId: userData.id,
-                            isAdmin: user.isAdmin,
-                            canPost: user.canPost,
-                            canApprove: user.canApprove,
+                            isAdmin: user.isAdmin || false,
+                            canPost: user.canPost || false,
+                            canApprove: user.canApprove || false,
                             isOwner: false,
                             companyMemberStatus: 'accepted'
                         }
@@ -154,7 +154,7 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                     if (error.code === 'P2002' && (error.meta?.target?.includes('email') || error.meta?.target?.includes('username'))) {
                         // Try to get the existing user by email
                         const existingUser = await prisma.user.findUnique({
-                            where: { email: user.email }
+                            where: { email: user.email || '' }
                         });
 
                         if (existingUser) {
@@ -163,9 +163,9 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                                 data: {
                                     companyId: companyRecord.id,
                                     userId: existingUser.id,
-                                    isAdmin: user.isAdmin,
-                                    canPost: user.canPost,
-                                    canApprove: user.canApprove,
+                                    isAdmin: user.isAdmin || false,
+                                    canPost: user.canPost || false,
+                                    canApprove: user.canApprove || false,
                                     isOwner: false,
                                     companyMemberStatus: 'accepted'
                                 }
@@ -234,7 +234,8 @@ export async function updateCompanyLogo(companyId: number, file: File) {
             file,
             tableName: 'Company',
             recordId: companyId,
-            fieldName: 'logoId'
+            fieldName: 'logoId',
+            folder: 'obraguru/projects'
         });
 
         if (!uploadResponse.success || !uploadResponse.data) {
