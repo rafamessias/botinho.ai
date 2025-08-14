@@ -1,63 +1,119 @@
 import { RdoCard } from '@/components/rdo/rdo-card';
-import { Approval, Comment, RDO, RDOWithCommentsAndAudit } from '@/components/types/strapi';
+import { RDOWithCommentsAndAudit } from '@/components/types/strapi';
 import ContainerApp from '@/components/Container-app';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
+import { prisma } from '@/prisma/lib/prisma';
+import { notFound } from 'next/navigation';
 
 export default async function RdoPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
+    const rdoId = parseInt(slug);
+
+    if (isNaN(rdoId)) {
+        notFound();
+    }
 
     // TEMPORARY: Add delay to test loading skeleton
     //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
 
     let rdo: RDOWithCommentsAndAudit = {} as RDOWithCommentsAndAudit;
     let projectName: string = '';
+
     try {
-        const rdosFetch: any = await fetchContentApi<RDO>(`rdos/${slug}?populate=*`, {
-            next: {
-                revalidate: 300,
-                tags: [`rdos:${slug}`]
+        // Fetch RDO with all related data using Prisma
+        const rdoData = await prisma.rDO.findUnique({
+            where: { id: rdoId },
+            include: {
+                user: {
+                    include: {
+                        avatar: true
+                    }
+                },
+                project: {
+                    include: {
+                        company: true,
+                        image: true
+                    }
+                },
+                company: true,
+                media: true,
+                comments: {
+                    include: {
+                        user: {
+                            include: {
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
+                },
+                approvalAudits: {
+                    include: {
+                        user: {
+                            include: {
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        date: 'desc'
+                    }
+                }
             }
         });
-        rdo = rdosFetch.data || {};
-        if (typeof rdo.project === 'object') {
-            projectName = rdo.project?.name || '';
+
+        if (!rdoData) {
+            notFound();
         }
 
-        const commentsFetch: any = await fetchContentApi<Comment[]>(`comments?populate=*&filters[rdo][$eq]=${rdo.id}&sort[0]=createdAt:desc`, {
-            next: {
-                revalidate: 300,
-                tags: [`comments:${slug}`]
-            }
-        });
-        const comments = commentsFetch.data || [];
-
-        const auditFetch: any = await fetchContentApi<Approval[]>(`approval-audits?populate[user][fields][0]=firstName&populate[user][fields][1]=lastName&filters[rdo][$eq]=${rdo.id}&sort[0]=date:desc`, {
-            next: {
-                revalidate: 300,
-                tags: [`approval-audits:${slug}`]
-            }
-        });
-        const audit = auditFetch.data || [];
-
+        // Transform Prisma data to match the expected Strapi interface
+        // Using type assertion to handle complex type transformations
         rdo = {
-            ...rdo,
-            comments,
-            audit
+            id: rdoData.id,
+            documentId: rdoData.id.toString(),
+            user: rdoData.user as any,
+            userName: rdoData.user.firstName || 'Unknown',
+            project: rdoData.project as any,
+            date: rdoData.date,
+            description: rdoData.description,
+            equipmentUsed: rdoData.equipmentUsed,
+            workforce: rdoData.workforce,
+            media: rdoData.media as any,
+            rdoStatus: (rdoData.rdoStatus === 'approved' ? 'Approved' :
+                rdoData.rdoStatus === 'rejected' ? 'Rejected' :
+                    rdoData.rdoStatus) as any,
+            weatherMorning: {
+                condition: rdoData.weatherMorningCondition,
+                workable: rdoData.weatherMorningWorkable
+            },
+            weatherAfternoon: {
+                condition: rdoData.weatherAfternoonCondition,
+                workable: rdoData.weatherAfternoonWorkable
+            },
+            weatherNight: {
+                condition: rdoData.weatherNightCondition,
+                workable: rdoData.weatherNightWorkable
+            },
+            commentCount: rdoData.commentCount,
+            createdAt: rdoData.createdAt,
+            updatedAt: rdoData.updatedAt,
+            comments: rdoData.comments as any,
+            audit: rdoData.approvalAudits as any
         };
 
+        projectName = rdoData.project.name;
+
     } catch (error) {
-        rdo = {} as RDOWithCommentsAndAudit;
-        console.error('Failed to fetch projects:', error);
+        console.error('Failed to fetch RDO:', error);
+        notFound();
     }
 
     return (
-
         <ContainerApp title={`#${rdo.id} - ${projectName}`} showBackButton={true} className="!px-0 sm:!px-8" divClassName="!rounded-none sm:!rounded-xl !shadow-none sm:!shadow-md border border-gray-100 sm:!border-none">
             <div className=" mx-auto w-full ">
                 <RdoCard rdo={rdo} />
             </div>
-
         </ContainerApp>
-
     );
 } 
