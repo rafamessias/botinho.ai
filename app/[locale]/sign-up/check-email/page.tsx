@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from '@/components/logo';
 import { toast } from "sonner";
 import { sendEmailConfirmationAction } from '@/components/actions/send-email-confirmation';
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/i18n/navigation';

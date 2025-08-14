@@ -4,11 +4,11 @@ export interface FileImage {
     id?: number;
     name: string;
     url: string;
-    publicId?: string;
-    format?: string;
-    version?: string;
-    mimeType: string;
-    size: number;
+    publicId?: string | null;
+    format?: string | null;
+    version?: string | null;
+    mimeType?: string | null;
+    size?: number | null;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -31,6 +31,11 @@ export interface User {
     language?: Language;
     createdAt?: Date;
     updatedAt?: Date;
+    isCompanyUser?: boolean;
+    companyMemberCanApprove?: boolean;
+    companyMemberCanPost?: boolean;
+    companyMemberIsAdmin?: boolean;
+    projectUserCanApprove?: (projectId: number) => boolean;
 }
 
 export interface Company {
@@ -86,8 +91,8 @@ export interface Project {
     id?: number;
     active: boolean;
     name: string;
-    description: string;
-    address: string;
+    description?: string | null;
+    address?: string | null;
     projectStatus: ProjectStatus;
     rdoCount?: number;
     rdoCountDraft?: number;

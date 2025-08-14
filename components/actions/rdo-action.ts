@@ -1,286 +1,352 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { uploadFile } from '@/lib/strapi';
-import { fetchContentApi } from './fetch-content-api';
-import { ApiResponse, Approval, Project, RDO, WeatherOption, RDOWeather } from '@/components/types/strapi';
-import { revalidateTag } from 'next/cache';
+import { prisma } from '@/prisma/lib/prisma';
+import { RDO, Project, ApiResponse } from '@/components/types/prisma';
+import { WeatherCondition, RDOStatus } from '@/lib/generated/prisma';
+import { uploadMultipleFilesToCloudinary, deleteFileFromCloudinary } from './cloudinary-upload-action';
+import { requireSession } from './check-session';
+import { getUserMe } from './get-user-me-action';
 
 interface RDOData {
     project: Project;
     status: string;
     date: string;
-    weather: WeatherOption;
+    weather: {
+        weatherMorning: { condition: WeatherCondition | null, workable: boolean | null };
+        weatherAfternoon: { condition: WeatherCondition | null, workable: boolean | null };
+        weatherNight: { condition: WeatherCondition | null, workable: boolean | null };
+    };
     description: string;
     equipment: string;
     labor: string;
     files: File[];
 }
 
-// Helper function to remove id fields from weather data for Strapi v5 repeatable components
-function removeWeatherIds(data: RDO): RDO {
-    let cleanedData = { ...data };
-
-    // Remove id fields from weather arrays if they exist
-    if (cleanedData.weatherMorning && Array.isArray(cleanedData.weatherMorning)) {
-        cleanedData.weatherMorning = cleanedData.weatherMorning.map(weather => {
-            const { id, ...weatherWithoutId } = weather as any;
-            return weatherWithoutId;
-        });
-    }
-
-    if (cleanedData.weatherAfternoon && Array.isArray(cleanedData.weatherAfternoon)) {
-        cleanedData.weatherAfternoon = cleanedData.weatherAfternoon.map(weather => {
-            const { id, ...weatherWithoutId } = weather as any;
-            return weatherWithoutId;
-        });
-    }
-
-    if (cleanedData.weatherNight && Array.isArray(cleanedData.weatherNight)) {
-        cleanedData.weatherNight = cleanedData.weatherNight.map(weather => {
-            const { id, ...weatherWithoutId } = weather as any;
-            return weatherWithoutId;
-        });
-    }
-
-    return cleanedData;
-}
-
-export async function createRDO(data: RDOData) {
+export async function createRDO(data: RDOData): Promise<ApiResponse<RDO>> {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        // Check authentication
+        await requireSession();
 
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
-
-        const weatherMorning = Array.isArray(data.weather.weatherMorning) ? data.weather.weatherMorning : [data.weather.weatherMorning];
-        const weatherAfternoon = Array.isArray(data.weather.weatherAfternoon) ? data.weather.weatherAfternoon : [data.weather.weatherAfternoon];
-        const weatherNight = Array.isArray(data.weather.weatherNight) ? data.weather.weatherNight : [data.weather.weatherNight];
-
-        // Create the RDO
-        const rdoResponse: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos`, {
-            method: 'POST',
-            body: {
-                data: {
-                    project: data.project.id,
-                    projectDocumentId: data.project.documentId,
-                    //rdoStatus: data.status,
-                    date: data.date,
-                    weatherMorning: weatherMorning,
-                    weatherAfternoon: weatherAfternoon,
-                    weatherNight: weatherNight,
-                    description: data.description,
-                    equipmentUsed: data.equipment,
-                    workforce: data.labor,
-                }
-            },
-            revalidateTag: [`project:${data.project.documentId}`, `rdos`]
-        });
-
-        if (!rdoResponse.success) {
-            console.error(`Error creating RDO: ${rdoResponse.error}`);
+        // Get current user
+        const userMeResponse = await getUserMe();
+        if (!userMeResponse.success || !userMeResponse.data?.id) {
             return {
                 success: false,
-                error: `Error creating RDO: ${rdoResponse.error}`,
+                error: 'User not authenticated',
                 data: null
             };
         }
 
-        console.log(`Creating RDO ${rdoResponse.data?.id} - RDO created successfully`);
+        const userId = userMeResponse.data.id;
+        const companyId = userMeResponse.data.company?.id;
+
+        if (!companyId) {
+            return {
+                success: false,
+                error: 'User not associated with a company',
+                data: null
+            };
+        }
+
+        // Create the RDO
+        const rdoData = {
+            date: new Date(data.date),
+            rdoStatus: data.status as RDOStatus,
+            description: data.description,
+            equipmentUsed: data.equipment,
+            workforce: data.labor,
+            createdBy: userMeResponse.data.firstName || 'Unknown',
+            weatherMorningCondition: data.weather.weatherMorning.condition,
+            weatherMorningWorkable: data.weather.weatherMorning.workable,
+            weatherAfternoonCondition: data.weather.weatherAfternoon.condition,
+            weatherAfternoonWorkable: data.weather.weatherAfternoon.workable,
+            weatherNightCondition: data.weather.weatherNight.condition,
+            weatherNightWorkable: data.weather.weatherNight.workable,
+            companyId: companyId,
+            userId: userId,
+            projectId: data.project.id!
+        };
+
+        const newRDO = await prisma.rDO.create({
+            data: rdoData,
+            include: {
+                user: {
+                    include: {
+                        avatar: true
+                    }
+                },
+                project: {
+                    include: {
+                        company: true
+                    }
+                },
+                company: true,
+                media: true
+            }
+        });
+
+        if (!newRDO) {
+            return {
+                success: false,
+                error: 'Failed to create RDO',
+                data: null
+            };
+        }
+
+        console.log(`Creating RDO ${newRDO.id} - RDO created successfully`);
 
         // Upload files if they exist
         if (data.files.length > 0) {
-            const uploadPromises = data.files.map(async (file) => {
-                const uploadResponse = await uploadFile(
-                    file,
-                    rdoResponse.data?.id || 0,
-                    'api::rdo.rdo',
-                    'media'
-                );
-                if (!uploadResponse) {
-                    console.error(`Failed to upload file: ${file.name}`);
-                    return { success: false, error: `Failed to upload file: ${file.name}` };
-                }
-                return { success: true, data: uploadResponse };
-            });
+            const uploadResults = await uploadMultipleFilesToCloudinary(
+                data.files,
+                'RDO',
+                newRDO.id,
+                'media',
+                'obraguru/rdo-media'
+            );
+
+            // Check for upload failures
+            const failedUploads = uploadResults.filter(result => !result.success);
+            if (failedUploads.length > 0) {
+                console.error('Some files failed to upload:', failedUploads);
+            }
 
             console.log(`Uploading ${data.files.length} files successfully`);
-            await Promise.all(uploadPromises);
         }
-        revalidateTag(`rdos`);
 
-        return { success: true, data: rdoResponse.data };
+        // Update project RDO count
+        await prisma.project.update({
+            where: { id: data.project.id! },
+            data: {
+                rdoCount: {
+                    increment: 1
+                },
+                rdoCountDraft: {
+                    increment: data.status === 'draft' ? 1 : 0
+                }
+            }
+        });
+
+        return {
+            success: true,
+            data: newRDO as unknown as RDO
+        };
     } catch (error) {
         console.error(`Error creating RDO: ${error}`);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'An error occurred'
+            error: error instanceof Error ? error.message : 'An error occurred',
+            data: null
         };
     }
 }
 
-export async function updateRDOStatus(rdoId: string, status: 'pendingApproval' | 'Approved' | 'Rejected', auditData?: Approval) {
+export async function updateRDOStatus(rdoId: number, status: RDOStatus, auditData?: any): Promise<ApiResponse<RDO>> {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        await requireSession();
 
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
-
-        const response: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos/${rdoId}`, {
-            method: 'PUT',
-            body: {
-                data: {
-                    rdoStatus: status,
-                    audit: {
-                        ...{ ...auditData, action: status },
-                        rdo: rdoId,
-                        date: new Date().toISOString()
-                    }
-                }
-            },
-            revalidateTag: [`rdos:${rdoId}`, `rdos`]
-        });
-
-        if (!response.data?.id) {
-            console.error(`Error updating RDO: ${response.error}`);
+        const userMeResponse = await getUserMe();
+        if (!userMeResponse.success || !userMeResponse.data?.id) {
             return {
                 success: false,
-                error: `Error updating RDO: ${response.error}`,
+                error: 'User not authenticated',
                 data: null
             };
         }
 
-        return { success: true, data: response.data };
+        const userId = userMeResponse.data.id;
+
+        // Update RDO status
+        const updatedRDO = await prisma.rDO.update({
+            where: { id: rdoId },
+            data: {
+                rdoStatus: status
+            },
+            include: {
+                user: {
+                    include: {
+                        avatar: true
+                    }
+                },
+                project: {
+                    include: {
+                        company: true
+                    }
+                },
+                company: true,
+                media: true
+            }
+        });
+
+        if (!updatedRDO) {
+            return {
+                success: false,
+                error: 'Failed to update RDO status',
+                data: null
+            };
+        }
+
+        // Create approval audit record
+        if (auditData) {
+            await prisma.approvalAudit.create({
+                data: {
+                    action: status === 'approved' ? 'approved' : 'rejected',
+                    description: auditData.description,
+                    date: new Date(),
+                    ip_address: auditData.ip_address,
+                    latitude: auditData.latitude,
+                    longitude: auditData.longitude,
+                    device_type: auditData.device_type,
+                    time_zone: auditData.time_zone,
+                    geo_location: auditData.geo_location,
+                    document_hash: auditData.document_hash || '',
+                    userName: userMeResponse.data.firstName || 'Unknown',
+                    companyId: updatedRDO.companyId,
+                    projectId: updatedRDO.projectId,
+                    rdoId: rdoId,
+                    userId: userId
+                }
+            });
+        }
+
+        return {
+            success: true,
+            data: updatedRDO as unknown as RDO
+        };
     } catch (error) {
-        console.error(`Error ${status}ing RDO:`, error);
+        console.error(`Error updating RDO status:`, error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'An error occurred'
+            error: error instanceof Error ? error.message : 'An error occurred',
+            data: null
         };
     }
 }
 
-export async function updateRDO(rdoId: string, data: RDO) {
+export async function updateRDO(rdoId: number, data: Partial<RDO>): Promise<ApiResponse<RDO>> {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        await requireSession();
 
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
-
-        // Remove id fields from weather data for Strapi v5 repeatable components
-        const cleanedData = removeWeatherIds(data);
-
-        const response: ApiResponse<RDO> = await fetchContentApi<RDO>(`rdos/${rdoId}`, {
-            method: 'PUT',
-            body: {
-                data: {
-                    ...cleanedData
-                }
+        const updatedRDO = await prisma.rDO.update({
+            where: { id: rdoId },
+            data: {
+                date: data.date ? new Date(data.date) : undefined,
+                description: data.description,
+                equipmentUsed: data.equipmentUsed,
+                workforce: data.workforce,
+                rdoStatus: data.rdoStatus,
+                weatherMorningCondition: data.weatherMorningCondition,
+                weatherMorningWorkable: data.weatherMorningWorkable,
+                weatherAfternoonCondition: data.weatherAfternoonCondition,
+                weatherAfternoonWorkable: data.weatherAfternoonWorkable,
+                weatherNightCondition: data.weatherNightCondition,
+                weatherNightWorkable: data.weatherNightWorkable
             },
-            revalidateTag: [`rdos:${rdoId}`, `rdos`]
+            include: {
+                user: {
+                    include: {
+                        avatar: true
+                    }
+                },
+                project: {
+                    include: {
+                        company: true
+                    }
+                },
+                company: true,
+                media: true
+            }
         });
 
-        if (!response.success) {
-            console.error(`Error updating RDO: ${response.error}`);
+        if (!updatedRDO) {
             return {
                 success: false,
-                error: `Error updating RDO: ${response.error}`,
+                error: 'Failed to update RDO',
                 data: null
             };
         }
 
-        return { success: true, data: response.data };
+        return {
+            success: true,
+            data: updatedRDO as unknown as RDO
+        };
     } catch (error) {
         console.error('Error updating RDO:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'An error occurred'
+            error: error instanceof Error ? error.message : 'An error occurred',
+            data: null
         };
     }
 }
 
-export async function uploadRdoAttachments(rdoId: number, documentId: string, files: File[]) {
+export async function uploadRdoAttachments(rdoId: number, files: File[]): Promise<ApiResponse<any[]>> {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
-
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
+        await requireSession();
 
         if (!files || files.length === 0) {
             return { success: true, data: [] };
         }
 
-        const uploadPromises = files.map(async (file) => {
-            const uploadResponse = await uploadFile(
-                file,
-                rdoId,
-                'api::rdo.rdo',
-                'media'
-            );
-            if (!uploadResponse) {
-                throw new Error(`Failed to upload file: ${file.name}`);
-            }
-            return uploadResponse;
-        });
+        const uploadResults = await uploadMultipleFilesToCloudinary(
+            files,
+            'RDO',
+            rdoId,
+            'media',
+            'obraguru/rdo-media'
+        );
 
-        const uploadedFiles = await Promise.all(uploadPromises);
-        revalidateTag(`rdos:${documentId}`);
-        revalidateTag(`rdos`);
+        const successfulUploads = uploadResults.filter(result => result.success);
+        const failedUploads = uploadResults.filter(result => !result.success);
 
-        return { success: true, data: uploadedFiles };
+        if (failedUploads.length > 0) {
+            console.error('Some files failed to upload:', failedUploads);
+        }
+
+        return {
+            success: true,
+            data: successfulUploads.map(result => result.data)
+        };
     } catch (error) {
         console.error('Error uploading files:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'An error occurred while uploading files'
+            error: error instanceof Error ? error.message : 'An error occurred while uploading files',
+            data: null
         };
     }
 }
 
-export async function removeRdoAttachments(fileIds: number[], documentId: string) {
+export async function removeRdoAttachments(fileIds: number[]): Promise<ApiResponse<any[]>> {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
-
-        if (!token) {
-            throw new Error('Not authenticated');
-        }
+        await requireSession();
 
         if (!fileIds || fileIds.length === 0) {
             return { success: true, data: [] };
         }
 
         const deletePromises = fileIds.map(async (fileId) => {
-            const response = await fetchContentApi<any>(`upload/files/${fileId}`, {
-                method: 'DELETE',
-                revalidateTag: `rdos:${documentId}`
-            });
-
-            if (!response.success) {
+            const result = await deleteFileFromCloudinary(fileId);
+            if (!result.success) {
                 console.error(`Failed to delete file with ID: ${fileId}`);
                 return { success: false, error: `Failed to delete file with ID: ${fileId}` };
             }
-            return response.data;
+            return { success: true, fileId };
         });
 
         const deletedFiles = await Promise.all(deletePromises);
-        revalidateTag(`rdos:${documentId}`);
-        revalidateTag(`rdos`);
+        const successfulDeletes = deletedFiles.filter((result: any) => result.success);
 
-        return { success: true, data: deletedFiles };
+        return {
+            success: true,
+            data: successfulDeletes.map(result => result.fileId)
+        };
     } catch (error) {
         console.error('Error removing files:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'An error occurred while removing files'
+            error: error instanceof Error ? error.message : 'An error occurred while removing files',
+            data: null
         };
     }
 }

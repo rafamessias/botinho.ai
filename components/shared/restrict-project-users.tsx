@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';

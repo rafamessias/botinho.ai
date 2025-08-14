@@ -11,7 +11,7 @@ import { updateCompany, createCompanyMember, updateCompanyMember, removeCompanyM
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
-import { useUser } from '../UserProvider';
+import { useUser } from '../getUser';
 import { Company, FileImage, CompanyMemberDialog } from '@/components/types/prisma';
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';

@@ -7,11 +7,11 @@ import DynamicIntlProvider from "@/components/dynamic-intl-provider"
 import '@/app/globals.css';
 import { notFound } from 'next/navigation';
 import { Toaster } from '@/components/ui/sonner';
-import { UserProvider } from '@/components/UserProvider';
 import { LoadingProvider } from '@/components/LoadingProvider';
 import { TopProgress } from '@/components/RouteLoading';
 import PWAInstallPrompt from '@/components/pwa-install-prompt';
 import AuthSessionProvider from '@/components/providers/session-provider';
+import { UserProvider } from '@/components/getUser';
 
 const inter = Inter({
     subsets: ["latin"],

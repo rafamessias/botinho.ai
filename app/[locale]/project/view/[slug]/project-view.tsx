@@ -11,7 +11,7 @@ import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/comp
 import { usePathname, useSearchParams } from 'next/navigation';
 import ActivityCard from '@/components/shared/activity-card';
 import UserCard from '@/components/shared/user-card';
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 import { ProjectStatusBadge } from '@/components/shared/project-status-badge';
 import { FileImage } from '@/components/types/prisma';
 import { ProjectStatus, RDOStatus, IncidentStatus } from '@/lib/generated/prisma';

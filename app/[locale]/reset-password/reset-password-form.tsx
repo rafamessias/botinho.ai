@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Link } from '@/i18n/navigation';
 import { Logo } from '@/components/logo';
 import { forgotPasswordAction } from '@/components/actions/forgot-password-action';
-import { useUser } from "@/components/UserProvider";
+import { useUser } from "@/components/getUser";
 import { useTranslations } from 'next-intl';
 
 export default function ResetPasswordForm() {

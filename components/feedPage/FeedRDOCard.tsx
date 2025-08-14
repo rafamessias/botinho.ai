@@ -15,7 +15,7 @@ import { updateRDOStatus } from '@/components/actions/rdo-action';
 import { useLoading } from '@/components/LoadingProvider';
 import { toast } from 'sonner';
 import { getClientInfo } from '@/components/approval/approval-audit';
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 
 const getWeatherIcon = (condition: string | null) => {
     if (!condition) return null;

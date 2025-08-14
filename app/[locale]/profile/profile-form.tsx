@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 import { SelectItem, Select, SelectValue, SelectContent } from '@/components/ui/select';
 import { SelectTrigger } from '@/components/ui/select';
 import { useLoading } from '@/components/LoadingProvider';

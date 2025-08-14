@@ -13,7 +13,7 @@ import { TooltipContent, TooltipTrigger, TooltipProvider, Tooltip } from '@/comp
 import { usePathname, useSearchParams } from 'next/navigation';
 import ActivityCard from '@/components/shared/activity-card';
 import UserCard from '@/components/shared/user-card';
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 import { Loader2 } from 'lucide-react';
 import { getPaginatedProjectRdos, getPaginatedProjectIncidents } from '@/components/actions/project-actions';
 import { ProjectStatusBadge } from '@/components/shared/project-status-badge';

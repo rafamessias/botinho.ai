@@ -11,8 +11,8 @@ import { createCompany } from '@/components/actions/company-action';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
-import { useUser } from '../UserProvider';
-import { Company, CompanyMemberDialog, ApiResponse } from '@/components/types/prisma';
+import { useUser } from '../getUser';
+import { Company, CompanyMemberDialog, ApiResponse, User } from '@/components/types/prisma';
 import { useSession } from 'next-auth/react';
 
 export function CreateCompanyForm() {
@@ -59,16 +59,19 @@ export function CreateCompanyForm() {
                 toast.success(t('companyCreated'));
                 await update({ user: { ...user, company: result.data } });
 
-                setUser({ ...user, company: result.data });
-                await updateUser();
+                // Use updateUser with the new user data
+                const updatedUser = { ...user, company: result.data, email: user?.email || '' } as User;
+                setUser(updatedUser);
+                await updateUser(updatedUser);
                 router.push('/');
 
             } else {
                 toast.error(result.error || t('companyCreationError'));
 
                 if (result?.data) {
-                    setUser({ ...user, company: result.data });
-                    await updateUser();
+                    const updatedUser = { ...user, company: result.data, email: user?.email || '' } as User;
+                    setUser(updatedUser);
+                    await updateUser(updatedUser);
                     router.push('/');
                 }
 

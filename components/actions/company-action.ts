@@ -7,6 +7,8 @@ import { Company, CompanyMemberDialog, User } from '@/components/types/prisma';
 import { DocumentType, UserType, Language } from '@/lib/generated/prisma';
 import { uploadFileToCloudinary } from './cloudinary-upload-action';
 import CompanyInvitationEmail from '@/emails/CompanyInvitationEmail';
+import { getLocale } from "next-intl/server";
+import { Resend } from 'resend';
 import resend from '@/lib/resend';
 
 // Compose invitation URL (adjust as needed for your app)
@@ -118,6 +120,8 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                 const pwd = Math.random().toString(36).slice(-8); // Generate random password
                 const hashedPassword = await bcrypt.hash(pwd, 10);
 
+
+
                 try {
                     const userData = await prisma.user.create({
                         data: {
@@ -144,6 +148,23 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
                             isOwner: false,
                             companyMemberStatus: 'accepted'
                         }
+                    });
+
+                    const locale = await getLocale();
+
+                    // send welcome email
+                    const { data, error } = await resend.emails.send({
+                        from: fromEmail,
+                        to: [user.email],
+                        subject: locale === 'pt-BR' ? 'Bem-vindo à Obraguru' : 'Welcome to Obraguru',
+                        react: CompanyInvitationEmail({
+                            userName: user.name,
+                            companyName: companyRecord.name,
+                            password: pwd,
+                            invitationUrl: `${baseUrl}/sign-up/success`,
+                            lang: locale,
+                            baseUrl: baseUrl
+                        }),
                     });
 
                     console.log(`Creating Company ${companyRecord.id} - Member ${user.email} added successfully`);

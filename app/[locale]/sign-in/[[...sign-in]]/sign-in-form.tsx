@@ -11,7 +11,6 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from '@/components/logo';
 import { usePathname } from '@/i18n/navigation';
-import { useUser } from '@/components/UserProvider';
 import { useLoading } from '@/components/LoadingProvider';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitch } from '@/components/language-switch';
@@ -38,7 +37,6 @@ export function SignInForm({
     const pathname = usePathname();
     const [isNavigating, setIsNavigating] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const { setUser } = useUser();
     const { isLoading, setIsLoading } = useLoading();
     const { register, handleSubmit, formState: { errors }, watch } = useForm<SignInFormValues>();
     const emailValue = watch('email');
@@ -75,7 +73,6 @@ export function SignInForm({
                 // get user from prisma
                 const user: ApiResponse<User> = await getUserMe();
                 if (user.success) {
-                    setUser(user.data);
 
                     //get locale
                     const userLocale = user.data?.language;
@@ -150,12 +147,8 @@ export function SignInForm({
     }, []);
 
     useEffect(() => {
-        // Clean up user context when component mounts
-        setUser(null);
         setIsLoading(false);
-
-    }, [setUser, setIsLoading]);
-
+    }, [setIsLoading]);
     // Clean up loading state when component unmounts
     useEffect(() => {
         return () => {

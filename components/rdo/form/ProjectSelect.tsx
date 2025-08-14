@@ -15,7 +15,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { Project } from "@/components/types/strapi";
+import { Project } from "@/components/types/prisma";
 import { useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
@@ -31,55 +31,48 @@ export function ProjectSelect({ value, onChange, projects }: {
 
     return (
         <div>
-            <label className="block text-sm font-medium mb-1">{t('label')}</label>
-            <span className="block text-xs text-muted-foreground mb-2">{t('hint')}</span>
+            <label className="block text-sm font-medium mb-1">
+                {t('label')}
+            </label>
+            <p className="text-sm text-muted-foreground mb-2">
+                {t('hint')}
+            </p>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="w-full justify-between bg-white"
+                        className="w-full justify-between"
                     >
-                        {`${value?.id} - ${value?.name}` || t('placeholder')}
+                        {value ? value.name : t('placeholder')}
                         <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0">
-                    <Command className="max-w-[632px] min-w-[278px]">
-                        <CommandInput placeholder={t('searchPlaceholder')} className="h-9" />
+                    <Command>
+                        <CommandInput placeholder={t('searchPlaceholder')} />
                         <CommandList>
                             <CommandEmpty>{t('noResults')}</CommandEmpty>
-                            <CommandGroup className="max-h-[300px] overflow-y-auto w-full">
-
+                            <CommandGroup>
                                 {projects.map((project) => (
-                                    <CommandItem
-                                        key={project.id}
-                                        value={`${project.id}__${project.name}`}
-                                        onSelect={(currentValue) => {
-
-                                            const [id, _name] = currentValue.split('__');
-                                            const selected = projects.find(p => String(p.id) === id);
-                                            if (selected) {
-                                                onChange(selected);
+                                    <PopoverClose key={project.id} asChild>
+                                        <CommandItem
+                                            value={project.name}
+                                            onSelect={() => {
+                                                onChange(project);
                                                 setOpen(false);
-                                            }
-                                        }}
-
-                                        className={cn(
-                                            "cursor-pointer",
-                                            value?.id === project.id && "bg-accent"
-                                        )}
-                                    >
-                                        {project.id} - {project.name}
-
-                                        <Check
-                                            className={cn(
-                                                "ml-auto w-4 h-4",
-                                                value?.id === project.id ? "opacity-100" : "opacity-0"
-                                            )}
-                                        />
-                                    </CommandItem>
+                                            }}
+                                        >
+                                            <Check
+                                                className={cn(
+                                                    "mr-2 h-4 w-4",
+                                                    value?.id === project.id ? "opacity-100" : "opacity-0"
+                                                )}
+                                            />
+                                            {project.name}
+                                        </CommandItem>
+                                    </PopoverClose>
                                 ))}
                             </CommandGroup>
                         </CommandList>

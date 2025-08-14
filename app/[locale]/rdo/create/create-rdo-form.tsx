@@ -9,7 +9,8 @@ import { FileUploadBox } from '@/components/rdo/form/FileUploadBox';
 import { EquipmentTextarea } from '@/components/rdo/form/EquipmentTextarea';
 import { LaborTextarea } from '@/components/rdo/form/LaborTextarea';
 import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
-import { Project, WeatherOption } from '@/components/types/strapi';
+import { Project } from '@/components/types/prisma';
+import { WeatherCondition } from '@/lib/generated/prisma';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { createRDO } from '@/components/actions/rdo-action';
@@ -24,7 +25,11 @@ type FormData = {
     project: Project;
     status: string;
     date: string;
-    weather: WeatherOption;
+    weather: {
+        weatherMorning: { condition: WeatherCondition | null, workable: boolean | null };
+        weatherAfternoon: { condition: WeatherCondition | null, workable: boolean | null };
+        weatherNight: { condition: WeatherCondition | null, workable: boolean | null };
+    };
     description: string;
     equipment: string;
     labor: string;
@@ -70,7 +75,7 @@ export default function CreateRDOForm({ projects, selectedProject }: { projects:
 
             if (response.success) {
                 toast.success(t('success'));
-                router.push(`/rdo/view/${response.data?.documentId}`);
+                router.push(`/rdo/view/${response.data?.id}`);
             } else {
                 toast.error(response.error || t('error'));
             }

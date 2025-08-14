@@ -14,7 +14,7 @@ import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
 import CarouselMedia from '@/components/feedPage/CarouselMedia';
 import { CommentsSection } from '@/components/shared/comments-section';
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 import { updateIncidentStatus } from '@/components/actions/incident-action';
 import { getClientInfo } from '@/components/approval/approval-audit';
 import { useLoading } from '@/components/LoadingProvider';

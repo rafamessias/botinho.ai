@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl"
 import { Project, FileImage } from "@/components/types/prisma"
 import { useEffect, useState, useCallback } from "react"
 import { Link } from "@/i18n/navigation"
-import { useUser } from "@/components/UserProvider"
+import { useUser } from "@/components/getUser"
 import { getFilteredProjects, searchProjects } from "@/components/actions/project-actions"
 
 interface HomePageProps {

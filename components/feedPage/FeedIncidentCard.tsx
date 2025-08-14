@@ -15,7 +15,7 @@ import { updateIncidentStatus } from '@/components/actions/incident-action';
 import { useLoading } from '@/components/LoadingProvider';
 import { toast } from 'sonner';
 import { getClientInfo } from '@/components/approval/approval-audit';
-import { useUser } from '../UserProvider';
+import { useUser } from '../getUser';
 
 const getPriorityIcon = (priority: number | null) => {
     if (!priority) return null;

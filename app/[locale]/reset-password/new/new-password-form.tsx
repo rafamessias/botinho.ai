@@ -10,7 +10,7 @@ import { EyeOff } from "lucide-react";
 import { Logo } from '@/components/logo';
 import { setNewPasswordAction } from '@/components/actions/set-new-password-action';
 import { useRouter } from "@/i18n/navigation";
-import { useUser } from "@/components/UserProvider";
+import { useUser } from "@/components/getUser";
 import { useTranslations } from 'next-intl';
 import { signIn } from "next-auth/react";
 import { getUserMe } from "@/components/actions/get-user-me-action";

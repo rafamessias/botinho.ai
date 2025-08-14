@@ -6,7 +6,8 @@ import { Plus, ArrowLeft, Eye, Pencil } from "lucide-react"
 //import { useTheme } from "next-themes"
 import { Logo } from "@/components/logo"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
-import { useUser } from "@/components/UserProvider"
+import { useUser } from "@/components/getUser"
+import { User } from "@/components/types/prisma"
 import { useState, useEffect } from "react"
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
@@ -14,7 +15,6 @@ import { LanguageSwitch } from "@/components/language-switch"
 import { signOut } from "next-auth/react"
 
 export default function Header() {
-  const { user, setUser, companyMemberCanPost, companyMemberIsAdmin, setLoading, loading } = useUser();
   const [userName, setUserName] = useState('');
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
@@ -24,21 +24,25 @@ export default function Header() {
   const router = useRouter();
   const t = useTranslations('header');
 
+  // Use the new user context
+  const {
+    user,
+    loading,
+    isCompanyUser,
+    companyMemberCanPost,
+    companyMemberIsAdmin,
+    projectUserCanApprove
+  } = useUser();
+
   // Check if user is a project user
-  const isProjectUser = user?.type === 'projectUser';
+  const isProjectUser = isCompanyUser ? false : true;
 
   useEffect(() => {
     if (user) {
-      setUserName(user?.firstName?.charAt(0) + user?.lastName?.charAt(0));
-      setCompanyId(user?.company?.id);
+      setUserName((user?.firstName?.charAt(0) || '') + (user?.lastName?.charAt(0) || ''));
+      setCompanyId(typeof user?.company === 'object' ? user.company?.id?.toString() || null : null);
     }
-  }, [user, companyMemberCanPost, companyMemberIsAdmin]);
-
-  useEffect(() => {
-    return () => {
-      setLoading(false);
-    };
-  }, [setLoading]);
+  }, [user]);
 
   // Scroll handler for header visibility
   useEffect(() => {
@@ -61,8 +65,8 @@ export default function Header() {
   }, [lastScrollY]);
 
   const handleLogout = async () => {
-    setLoading(true);
-    setUser(null);
+    //setLoading(true); // This line was removed from the new_code, so it's removed here.
+    //setUser(null); // This line was removed from the new_code, so it's removed here.
     // signOut with redirect: false to control navigation manually
     await signOut({ redirect: true });
 
@@ -116,14 +120,14 @@ export default function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setCreateDropdownOpen(false)}>
-                  <Link href="/rdo/create" className="w-full">{t('createRDO')}</Link>
+                <DropdownMenuItem className=" w-full" onClick={() => setCreateDropdownOpen(false)}>
+                  <Link href="/rdo/create" className="cursor-pointer w-full">{t('createRDO')}</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setCreateDropdownOpen(false)}>
-                  <Link href="/project/create" className="w-full">{t('createProject')}</Link>
+                <DropdownMenuItem className="w-full" onClick={() => setCreateDropdownOpen(false)}>
+                  <Link href="/project/create" className="cursor-pointer w-full">{t('createProject')}</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setCreateDropdownOpen(false)}>
-                  <Link href="/incident/create" className="w-full">{t('createIncident')}</Link>
+                <DropdownMenuItem className="w-full" onClick={() => setCreateDropdownOpen(false)}>
+                  <Link href="/incident/create" className="cursor-pointer w-full">{t('createIncident')}</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -132,9 +136,11 @@ export default function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full h-10 w-10">
                 <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                  {user.avatar && typeof user.avatar === 'object' && 'formats' in user.avatar ? (
+                  {user.avatar && typeof user.avatar === 'object' && 'formats' in user.avatar &&
+                    user.avatar.formats && typeof user.avatar.formats === 'object' &&
+                    'thumbnail' in user.avatar.formats && user.avatar.formats.thumbnail ? (
                     <img
-                      src={user.avatar.formats.thumbnail.url}
+                      src={(user.avatar.formats.thumbnail as any).url}
                       alt={userName || 'User avatar'}
                       className="h-10 w-10 rounded-full object-cover"
                     />
@@ -147,17 +153,16 @@ export default function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-
-              <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                <Link href="/profile" className="w-full">{t('profile')}</Link>
+              <DropdownMenuItem className="w-full" onClick={() => setUserDropdownOpen(false)}>
+                <Link href="/profile" className="cursor-pointer w-full">{t('profile')}</Link>
               </DropdownMenuItem>
               {!isProjectUser && companyMemberIsAdmin && (
                 <>
-                  <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                    <Link href={`/company/${companyId}`} className="w-full">{t('company')}</Link>
+                  <DropdownMenuItem className="w-full" onClick={() => setUserDropdownOpen(false)}>
+                    <Link href={`/company/${companyId}`} className="cursor-pointer w-full">{t('company')}</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer w-full" onClick={() => setUserDropdownOpen(false)}>
-                    <Link href={`/subscription`} className="w-full">{t('subscription')}</Link>
+                  <DropdownMenuItem className="w-full" onClick={() => setUserDropdownOpen(false)}>
+                    <Link href={`/subscription`} className="cursor-pointer w-full">{t('subscription')}</Link>
                   </DropdownMenuItem>
                 </>
               )}
@@ -182,7 +187,7 @@ export default function Header() {
 export function SubHeader({ title, showBackButton = false, editButton = "" }: { title: string, showBackButton?: boolean, editButton?: string }) {
   const router = useRouter();
   const { user, loading } = useUser();
-  const isProjectUser = user?.type === 'projectUser';
+  const isProjectUser = user?.type === 'projectUser' || false;
   const [isMainHeaderVisible, setIsMainHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 

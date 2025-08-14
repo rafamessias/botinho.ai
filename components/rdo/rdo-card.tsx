@@ -20,7 +20,7 @@ import { Link } from '@/i18n/navigation';
 import { getClientInfo } from '@/components/approval/approval-audit';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { CommentsSection } from '@/components/shared/comments-section';
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 
 export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const t = useTranslations('rdo.rdoCard');

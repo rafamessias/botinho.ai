@@ -12,7 +12,7 @@ import { Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from '@/components/logo';
 import { signUpAction } from '@/components/actions/auth-actions';
-import { useUser } from '@/components/UserProvider';
+import { useUser } from '@/components/getUser';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitch } from '@/components/language-switch';
 import { signIn } from 'next-auth/react';

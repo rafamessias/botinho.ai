@@ -5,6 +5,9 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
 import { CredentialsSignin } from "next-auth"
+import { User as UserType } from "@/components/types/prisma"
+import WelcomeEmail from "@/emails/WelcomeEmail"
+import resend from "@/lib/resend"
 
 // Add type declarations at the top of the file
 declare module "next-auth" {
@@ -17,6 +20,7 @@ declare module "next-auth" {
 interface User {
     id: string
     email: string
+    password?: string | null
     name?: string | null
     company?: string | null
     language?: string | null
@@ -69,9 +73,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 try {
                     const user = await prisma.user.findUnique({
-                        where: { email: credentials.email as string },
-                        include: { company: true }
+                        where: { email: credentials.email as string }
                     })
+
 
                     if (!user || !user.password) {
                         throw new InvalidCredentialsError()
@@ -96,7 +100,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         id: user.id.toString(),
                         email: user.email,
                         name: `${user.firstName} ${user.lastName}`,
-                        company: user?.company?.id.toString(),
+                        company: user?.companyId?.toString(),
                         language: user.language === "pt_BR" ? "pt-BR" : "en",
                     }
                 } catch (error) {
@@ -114,17 +118,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (user) {
                 token.id = user.id
                 token.email = user.email
-                token.company = (user as User)?.company as string | null
-                token.language = (user as User)?.language
+                token.company = (user as any)?.company
+                token.language = (user as any)?.language
             }
 
             // Handle Google OAuth user creation/update in JWT callback
             if (account?.provider === "google" && user) {
                 try {
                     const existingUser = await prisma.user.findUnique({
-                        where: { email: token.email! },
-                        include: { company: true }
-                    })
+                        where: { email: token.email! }
+                    });
 
                     if (!existingUser) {
                         // Get locale from cookies
@@ -145,11 +148,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             include: { company: true }
                         })
                         token.id = newUser.id.toString()
-                        token.company = newUser.company
+                        token.email = newUser.email
+                        token.company = newUser.companyId?.toString()
                         token.language = newUser.language
+
+                        const baseUrl = process.env.HOST;
+                        const fromEmail = process.env.FROM_EMAIL || "Obraguru <contact@obra.guru>";
+
+                        // send welcome email
+                        const { data, error } = await resend.emails.send({
+                            from: fromEmail,
+                            to: [token.email!],
+                            subject: currentLocale === 'pt-BR' ? 'Bem-vindo à Obraguru' : 'Welcome to Obraguru',
+                            react: WelcomeEmail({
+                                userName: token.name || "",
+                                confirmationUrl: `${baseUrl}/sign-up/success`,
+                                lang: currentLocale,
+                                baseUrl: baseUrl
+                            }),
+                        });
+
                     } else {
-                        token.id = existingUser.id.toString()
-                        token.company = existingUser.company
+                        token.id = existingUser.id?.toString()
+                        token.email = existingUser.email
+                        token.company = existingUser.companyId?.toString()
                         token.language = existingUser.language
                     }
                 } catch (error) {
@@ -189,6 +211,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.company = token.company as string
                 session.user.language = token.language as string
             }
+
             return session
         },
         async signIn({ user, account, profile }) {
