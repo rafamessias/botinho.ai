@@ -42,12 +42,12 @@ export const UserList = forwardRef<UserListRef, UserListProps>(({
     const [userToEdit, setUserToEdit] = useState<CompanyMemberDialog | undefined>();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    // Update users when initialUsers changes
+    // Initialize users only once when component mounts
     useEffect(() => {
-        if (initialUsers && initialUsers.length > 0 && users.length === 0) {
+        if (initialUsers && initialUsers.length > 0) {
             setUsers(initialUsers);
         }
-    }, [initialUsers]);
+    }, []); // Empty dependency array means this runs only once on mount
 
     useImperativeHandle(ref, () => ({
         getUsers: () => users

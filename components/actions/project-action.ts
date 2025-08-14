@@ -6,8 +6,9 @@ import { revalidateTag } from 'next/cache';
 import { requireSession } from './check-session';
 import { getUserMe } from './get-user-me-action';
 import { getLocale } from "next-intl/server";
-import { Resend } from 'resend';
+import resend from '@/lib/resend';
 import ProjectInvitationEmail from '@/emails/ProjectInvitationEmail';
+import bcrypt from 'bcryptjs';
 
 interface ProjectData {
     name: string;
@@ -75,12 +76,13 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
             pwd += chars.charAt(Math.floor(Math.random() * chars.length));
         }
 
+        const hashedPassword = await bcrypt.hash(pwd, 10);
         const confirmationToken = (await import('crypto')).randomBytes(32).toString('hex');
 
         const newUser = await prisma.user.create({
             data: {
                 email: userData.email,
-                password: pwd,
+                password: hashedPassword,
                 firstName: firstName,
                 lastName: lastName,
                 phone: userData.phone,
@@ -122,7 +124,6 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
         });
 
         // Send the email
-        const resend = new Resend(process.env.RESEND_API_KEY);
         try {
             await resend.emails.send({
                 from: fromEmail,
@@ -147,7 +148,7 @@ async function registerUserWithConflictHandling(userData: UserRegistrationData) 
         console.error('Error in registerUserWithConflictHandling:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'An error occurred',
+            error: error,
             data: null
         };
     }

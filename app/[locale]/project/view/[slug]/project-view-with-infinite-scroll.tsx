@@ -73,12 +73,12 @@ interface ProjectViewWithInfiniteScrollProps {
 
 const ITEMS_PER_PAGE = Number(process.env.NEXT_PUBLIC_ITEMS_PER_PAGE) || 10;
 
-function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
+function InfoField({ label, value }: { label: string; value: string | React.ReactNode | undefined | null }) {
     if (!value) return null;
     return (
         <div>
             <h2 className="text-sm font-semibold text-gray-500">{label}</h2>
-            <p className="text-base text-gray-800">{value}</p>
+            <p className="text-base text-gray-800 whitespace-pre-line break-words">{value}</p>
         </div>
     );
 }
@@ -403,8 +403,20 @@ export default function ProjectViewWithInfiniteScroll({
                     <InfoField label={t('name')} value={`#${project.id} - ${project.name}`} />
                     <ProjectStatusBadge status={project.projectStatus} showIcon={false} />
                 </div>
-                <InfoField label={t('description')} value={project.description} />
-                <InfoField label={t('address')} value={project.address} />
+                <InfoField label={t('description')} value={project.description?.split('\n')
+                    .map((line, idx) => (
+                        <span key={idx}>
+                            {line}
+                            <br />
+                        </span>
+                    ))} />
+                <InfoField label={t('address')} value={project.address?.split('\n')
+                    .map((line, idx) => (
+                        <span key={idx}>
+                            {line}
+                            <br />
+                        </span>
+                    ))} />
             </div>
 
             <div className="rounded-xl">

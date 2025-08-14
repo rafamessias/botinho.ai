@@ -159,14 +159,13 @@ export default function ProjectEditForm({ project }: { project: ProjectWithRelat
                     return false;
                 }
             }
-            initialUsers = initialUsers.filter((u: any) => u.email !== user.email);
 
             toast.success(t('userRemoved'));
             return true;
         } catch (error) {
             console.error('Error removing project user:', error);
             toast.error(t('userRemoveError'));
-            throw error;
+            return false;
         } finally {
             setIsLoading(false);
         }

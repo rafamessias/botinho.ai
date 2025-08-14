@@ -59,12 +59,13 @@ interface UserWithRelations {
     avatar: FileImage | null;
 }
 
-function InfoField({ label, value }: { label: string; value: string | undefined | null }) {
+function InfoField({ label, value }: { label: string; value: string | React.ReactNode | null }) {
     if (!value) return null;
+    console.log('value', value);
     return (
         <div>
             <h2 className="text-sm font-semibold text-gray-500">{label}</h2>
-            <p className="text-base text-gray-800">{value}</p>
+            <p className="text-base text-gray-800 whitespace-pre-line break-words">{value}</p>
         </div>
     );
 }
@@ -222,8 +223,37 @@ export default function ProjectView({ project, rdos, incidents, projectUsers }: 
                     <InfoField label={t('name')} value={`#${project.id} - ${project.name}`} />
                     <ProjectStatusBadge status={project.projectStatus || 'active'} showIcon={true} />
                 </div>
-                <InfoField label={t('description')} value={project.description} />
-                <InfoField label={t('address')} value={project.address} />
+
+                <div className="flex flex-col gap-2">
+                    <h2 className="text-sm font-semibold text-gray-500">{t('description')}</h2>
+                    <p className="text-base text-gray-800 whitespace-pre-line break-words">{project.description?.split('\n')
+                        .map((line, idx) => (
+                            <span key={idx}>
+                                {line}
+                                <br />
+                            </span>
+                        ))}</p>
+                </div>
+                <InfoField
+                    label={t('description')}
+                    value={project.description?.split('\n')
+                        .map((line, idx) => (
+                            <span key={idx}>
+                                {line}
+                                <br />
+                            </span>
+                        ))}
+                />
+                <InfoField
+                    label={t('address')}
+                    value={project.address?.split('\n')
+                        .map((line, idx) => (
+                            <span key={idx}>
+                                {line}
+                                <br />
+                            </span>
+                        ))}
+                />
             </div>
 
             <div className="rounded-xl">

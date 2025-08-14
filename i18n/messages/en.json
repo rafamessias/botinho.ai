@@ -442,7 +442,7 @@
             "files": {
                 "uploadError": "Failed to upload files"
             },
-            "userAddError": "Failed to add user to project",
+            "userAddError": "Failed to add user to project - User already exists",
             "userAdded": "User added to project successfully",
             "userUpdateError": "Failed to update project user",
             "userUpdated": "Project user updated successfully",

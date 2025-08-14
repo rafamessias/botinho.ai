@@ -5,7 +5,6 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
 import { CredentialsSignin } from "next-auth"
-import { User as UserType } from "@/components/types/prisma"
 import WelcomeEmail from "@/emails/WelcomeEmail"
 import resend from "@/lib/resend"
 
