@@ -4,11 +4,11 @@ import CarouselMedia from '@/components/feedPage/CarouselMedia';
 import { MessageSquare, Sun, Cloud, CloudRain, X, Check, Share2, Pencil } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { RDO, StrapiImage, User } from '@/components/types/strapi';
+import { RDO, FileImage, User } from '@/components/types/prisma';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { updateRDOStatus } from '@/components/actions/rdo-action';
@@ -38,9 +38,9 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
     const router = useRouter();
     const { setIsLoading } = useLoading();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
+    const locale = useLocale();
 
     const t = useTranslations('rdo.rdoCard');
-    const userName = rdo.userName;
     const projectId = (typeof rdo.project === 'object' ? rdo.project.id : rdo.project) as number || 0;
 
     const { isCompanyUser, companyMemberCanApprove, projectUserCanApprove } = useUser();
@@ -52,13 +52,13 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
         }
     }, [projectUserCanApprove, projectId]);
 
-    const handleStatusUpdate = async (status: 'pendingApproval' | 'Approved' | 'Rejected') => {
-        if (!rdo.documentId) return;
+    const handleStatusUpdate = async (status: 'pendingApproval' | 'approved' | 'rejected') => {
+        if (!rdo.id) return;
 
         try {
             setIsLoading(true);
             const clientInfo = await getClientInfo();
-            const response = await updateRDOStatus(rdo.documentId, status, clientInfo);
+            const response = await updateRDOStatus(rdo.id, status, clientInfo);
             if (response.success) {
                 toast.success(t(`actions.UpdatedSuccess`));
                 rdo.rdoStatus = status;
@@ -74,6 +74,8 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
         }
     };
 
+    console.log(rdo);
+
     return (
         <Card className="p-6 space-y-4 !rounded-none sm:!rounded-xl !shadow-none sm:!shadow-sm border border-gray-100 sm:!border-none hover:!shadow-md transition-shadow">
             <CardHeader className="p-0 relative">
@@ -82,7 +84,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                         <TooltipProvider>
                             <Tooltip delayDuration={0}>
                                 <TooltipTrigger asChild>
-                                    <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                    <Link href={`/rdo/edit/${rdo.id}?goback=${currentUrl}`} className="flex items-center gap-2">
                                         <Button variant="ghost" className="flex items-center gap-2 justify-start">
                                             <Pencil className="w-4 h-4" />
                                         </Button>
@@ -98,7 +100,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>
                                 <Button variant="ghost" className="flex items-center gap-2 justify-start" onClick={() => {
-                                    navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.documentId}`);
+                                    navigator.clipboard.writeText(`${window.location.origin}/${locale}/rdo/view/${rdo.id}`);
                                     toast.success(t('linkCopied'));
                                 }}>
                                     <Share2 className="w-4 h-4" />
@@ -119,7 +121,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                         </div>
                         <div className="text-xs flex items-center gap-1">
                             <span className="text-muted-foreground">{t('postedBy')}</span>
-                            <span className="font-bold text-gray-800">{userName} </span>
+                            <span className="font-bold text-gray-800">{rdo.createdBy} </span>
                         </div>
                         <div className="text-xs text-muted-foreground">
                             {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
@@ -129,13 +131,11 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                 </div>
                 <div className="flex gap-2">
                     {[
-                        { period: t('morning'), weather: rdo.weatherMorning },
-                        { period: t('afternoon'), weather: rdo.weatherAfternoon },
-                        { period: t('night'), weather: rdo.weatherNight }
+                        { period: t('morning'), condition: rdo.weatherMorningCondition, workable: rdo.weatherMorningWorkable },
+                        { period: t('afternoon'), condition: rdo.weatherAfternoonCondition, workable: rdo.weatherAfternoonWorkable },
+                        { period: t('night'), condition: rdo.weatherNightCondition, workable: rdo.weatherNightWorkable }
                     ].map((weather) => {
-                        const weatherData = Array.isArray(weather.weather) ? weather.weather[0] : weather.weather;
-
-                        if (weatherData !== null && weatherData.condition !== null && weatherData.condition !== "null") {
+                        if (weather.condition !== null && weather.condition !== undefined) {
                             return (
                                 <TooltipProvider key={weather.period}>
                                     <Tooltip delayDuration={0}>
@@ -143,15 +143,15 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                                             <Badge
                                                 variant='outline'
                                                 key={weather.period}
-                                                className={`flex items-center gap-1 rounded-lg text-xs shadow-sm cursor-default ${!weatherData.workable
+                                                className={`flex items-center gap-1 rounded-lg text-xs shadow-sm cursor-default ${!weather.workable
                                                     && 'bg-red-50 text-red-900 hover:bg-red-100 hover:text-red-900'
                                                     }`}
                                             >
-                                                {weather.period} {getWeatherIcon(weatherData.condition)}
+                                                {weather.period} {getWeatherIcon(weather.condition)}
                                             </Badge>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{weatherData.workable ? t('workableConditions') : t('unworkableConditions')}</p>
+                                            <p>{weather.workable ? t('workableConditions') : t('unworkableConditions')}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
@@ -174,19 +174,19 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                     }
                 </div>
                 <div className="-mx-6 sm:mx-0">
-                    <CarouselMedia images={rdo.media as StrapiImage[] || []} className='rounded-none sm:rounded-lg border-none sm:border' />
+                    <CarouselMedia images={rdo.media as FileImage[] || []} className='rounded-none sm:rounded-lg border-none sm:border' />
                 </div>
             </CardContent>
             <CardFooter className="p-0 flex flex-col gap-2">
                 <div className="flex items-center justify-between text-xs text-gray-500 w-full">
                     <div className="flex gap-4">
-                        <Link href={`/rdo/view/${rdo.documentId}?goback=${currentUrl}`} className="text-blue-600 hover:text-blue-700 transition-colors">
+                        <Link href={`/rdo/view/${rdo.id}?goback=${currentUrl}`} className="text-blue-600 hover:text-blue-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 {t('details')}
                             </Button>
                         </Link>
 
-                        <Link href={`/rdo/view/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
+                        <Link href={`/rdo/view/${rdo.id}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 <MessageSquare className="w-4 h-4" /> {rdo.commentCount || 0}
                             </Button>
@@ -195,14 +195,14 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                     </div>
                     <Badge className={cn(
                         'rounded-full px-3 py-1 text-xs font-medium',
-                        rdo.rdoStatus === 'Approved' && 'bg-green-100 text-green-700',
-                        rdo.rdoStatus === 'Rejected' && 'bg-red-100 text-red-700',
+                        rdo.rdoStatus === 'approved' && 'bg-green-100 text-green-700',
+                        rdo.rdoStatus === 'rejected' && 'bg-red-100 text-red-700',
                         rdo.rdoStatus === 'pendingApproval' && 'bg-blue-100 text-blue-700',
                         rdo.rdoStatus === 'draft' && 'bg-gray-100 text-gray-700')
                     }>{t(rdo.rdoStatus)}</Badge>
                 </div>
                 <div className="flex items-center justify-end w-full gap-2">
-                    {(rdo.rdoStatus === 'draft' || rdo.rdoStatus === 'Rejected') && companyMemberCanApprove && (
+                    {(rdo.rdoStatus === 'draft' || rdo.rdoStatus === 'rejected') && companyMemberCanApprove && (
                         <>
                             <Button
                                 variant="outline"
@@ -221,7 +221,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                                 variant="outline"
                                 size="sm"
                                 className=" transition-colors"
-                                onClick={() => handleStatusUpdate('Rejected')}
+                                onClick={() => handleStatusUpdate('rejected')}
                             >
                                 <X className="w-4 h-4 mr-1" />
                                 {t('actions.reject')}
@@ -230,7 +230,7 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
                                 variant="outline"
                                 size="sm"
                                 className="border-emerald-200 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 transition-colors"
-                                onClick={() => handleStatusUpdate('Approved')}
+                                onClick={() => handleStatusUpdate('approved')}
                             >
                                 <Check className="w-4 h-4 mr-1" />
                                 {t('actions.approve')}

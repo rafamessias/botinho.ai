@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Comment, User } from '@/components/types/strapi';
+import { Comment } from '@/components/types/prisma';
 import { createComment, updateComment, deleteComment, getComments } from '@/components/actions/comment-action';
 import { useLoading } from '@/components/LoadingProvider';
 import { toast } from 'sonner';
@@ -15,8 +15,6 @@ import { useUser } from '@/components/getUser';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface CommentsSectionProps {
-    rdoDocumentId?: string;
-    incidentDocumentId?: string;
     projectId: number | null;
     rdoId?: number;
     incidentId?: number;
@@ -24,13 +22,13 @@ interface CommentsSectionProps {
     className?: string;
 }
 
-export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, incidentId, initialComments = [], className = '', projectId }: CommentsSectionProps) {
+export function CommentsSection({ rdoId, incidentId, initialComments = [], className = '', projectId }: CommentsSectionProps) {
     const t = useTranslations('shared.comments');
     const { user } = useUser();
     const { setIsLoading } = useLoading();
     const [comments, setComments] = useState<Comment[]>(initialComments);
     const [newComment, setNewComment] = useState('');
-    const [editingComment, setEditingComment] = useState<string | null>(null);
+    const [editingComment, setEditingComment] = useState<number | null>(null);
     const [editContent, setEditContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -48,7 +46,7 @@ export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, inci
             setIsLoading(true);
             const response = await getComments(rdoId, incidentId);
             if (response.success) {
-                setComments(response.data);
+                setComments(response.data as Comment[]);
             } else {
                 console.error('Failed to fetch comments:', response.error);
             }
@@ -66,15 +64,13 @@ export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, inci
             setIsSubmitting(true);
             const response = await createComment({
                 content: newComment.trim(),
-                rdoDocumentId,
-                incidentDocumentId,
                 rdoId,
                 incidentId,
                 projectId: projectId || undefined
             });
 
             if (response.success && response.data) {
-                setComments(prev => [response.data!, ...prev]);
+                setComments(prev => [response.data as any, ...prev]);
                 setNewComment('');
                 toast.success(t('commentAdded'));
             } else {
@@ -88,7 +84,7 @@ export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, inci
         }
     };
 
-    const handleEditComment = async (commentId: string) => {
+    const handleEditComment = async (commentId: number) => {
         if (!editContent.trim()) return;
 
         try {
@@ -97,7 +93,7 @@ export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, inci
 
             if (response.success && response.data) {
                 setComments(prev => prev.map(comment =>
-                    comment.documentId === commentId ? response.data! : comment
+                    comment.id === commentId ? response.data as any : comment
                 ));
                 setEditingComment(null);
                 setEditContent('');
@@ -114,14 +110,14 @@ export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, inci
     };
 
     const handleDeleteComment = async () => {
-        if (!commentToDelete?.documentId) return;
+        if (!commentToDelete?.id) return;
 
         try {
             setIsSubmitting(true);
-            const response = await deleteComment(commentToDelete.documentId, rdoDocumentId, incidentDocumentId);
+            const response = await deleteComment(commentToDelete.id, rdoId, incidentId);
 
             if (response.success) {
-                setComments(prev => prev.filter(comment => comment.documentId !== commentToDelete.documentId));
+                setComments(prev => prev.filter(comment => comment.id !== commentToDelete.id));
                 toast.success(t('commentDeleted'));
                 setDeleteDialogOpen(false);
                 setCommentToDelete(null);
@@ -147,7 +143,7 @@ export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, inci
     };
 
     const startEditing = (comment: Comment) => {
-        setEditingComment(comment.documentId || '');
+        setEditingComment(comment.id!);
         setEditContent(comment.content);
     };
 
@@ -201,8 +197,8 @@ export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, inci
                 ) : (
                     <div className="space-y-3">
                         {comments.map((comment) => (
-                            <div key={comment.documentId} className="bg-gray-50 p-3 rounded-lg">
-                                {editingComment === comment.documentId ? (
+                            <div key={comment.id} className="bg-gray-50 p-3 rounded-lg">
+                                {editingComment === comment.id ? (
                                     // Edit Mode
                                     <div className="space-y-2">
                                         <Textarea
@@ -223,7 +219,7 @@ export function CommentsSection({ rdoDocumentId, incidentDocumentId, rdoId, inci
                                             </Button>
                                             <Button
                                                 size="sm"
-                                                onClick={() => handleEditComment(comment.documentId!)}
+                                                onClick={() => handleEditComment(comment.id!)}
                                                 disabled={!editContent.trim() || isSubmitting}
                                             >
                                                 <Check className="w-4 h-4 mr-1" />

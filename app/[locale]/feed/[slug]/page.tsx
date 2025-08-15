@@ -1,8 +1,8 @@
 import React from 'react';
 import ContainerApp from '@/components/Container-app';
-import { Incident, RDO, Project, ApiResponse, User } from '@/components/types/strapi';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
+import { Incident, RDO, Project, User } from '@/components/types/prisma';
 import { getUserMe } from '@/components/actions/get-user-me-action';
+import { getFeedData } from '@/components/actions/feed-actions';
 import FeedWithInfiniteScroll from '@/components/feedPage/FeedWithInfiniteScroll';
 
 export default async function FeedPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -12,49 +12,24 @@ export default async function FeedPage({ params }: { params: Promise<{ slug: str
     // TEMPORARY: Add delay to test loading skeleton
     //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
 
-    // Fetch project data first
+    // Fetch user info
+    let user: User | null = null;
     let project: Project | null = null;
     let rdos: RDO[] = [];
     let incidents: Incident[] = [];
-    let user: User | null = null;
 
     try {
-        //get user info
-        const me: ApiResponse<User> = await getUserMe();
+        // Get user info
+        const me = await getUserMe();
         if (me.success) user = me.data as User;
 
-        // Fetch project data
-        const projectResult = await fetchContentApi<Project>(`projects/${slug}?populate=*`, {
-            next: {
-                revalidate: 300,
-                tags: [`project:${slug}`]
-            }
-        });
+        // Fetch all feed data using Prisma
+        const feedData = await getFeedData(parseInt(slug), pageSize);
 
-        if (projectResult.success && projectResult.data) {
-            project = projectResult.data;
-        }
-
-        // Fetch initial RDOs with pagination
-        const rdosResult = await fetchContentApi<RDO[]>(`rdos?populate=*&filters[project][$eq]=${project?.id}&sort=date:desc&sort=id:desc&pagination[page]=1&pagination[pageSize]=${pageSize}`, {
-            next: {
-                revalidate: 300,
-                tags: [`rdos`]
-            }
-        });
-        if (rdosResult.success && rdosResult.data) {
-            rdos = rdosResult.data;
-        }
-
-        // Fetch initial incidents with pagination
-        const incidentsResult = await fetchContentApi<Incident[]>(`incidents?populate=*&filters[project][$eq]=${project?.id}&sort=date:desc&sort=id:desc&pagination[page]=1&pagination[pageSize]=${pageSize}`, {
-            next: {
-                revalidate: 300,
-                tags: [`incidents`]
-            }
-        });
-        if (incidentsResult.success && incidentsResult.data) {
-            incidents = incidentsResult.data;
+        if (feedData.success && feedData.data) {
+            project = feedData.data.project as unknown as Project;
+            rdos = feedData.data.rdos as unknown as RDO[];
+            incidents = feedData.data.incidents as unknown as Incident[];
         }
 
     } catch (error) {

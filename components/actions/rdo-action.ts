@@ -2,7 +2,7 @@
 
 import { prisma } from '@/prisma/lib/prisma';
 import { RDO, Project, ApiResponse } from '@/components/types/prisma';
-import { WeatherCondition, RDOStatus } from '@/lib/generated/prisma';
+import { WeatherCondition, RDOStatus, Action } from '@/lib/generated/prisma';
 import { uploadMultipleFilesToCloudinary, deleteFileFromCloudinary } from './cloudinary-upload-action';
 import { requireSession } from './check-session';
 import { getUserMe } from './get-user-me-action';
@@ -190,7 +190,7 @@ export async function updateRDOStatus(rdoId: number, status: RDOStatus, auditDat
         if (auditData) {
             await prisma.approvalAudit.create({
                 data: {
-                    action: status === 'approved' ? 'approved' : 'rejected',
+                    action: status === 'approved' || status === 'pendingApproval' ? Action.approved : Action.rejected,
                     description: auditData.description,
                     date: new Date(),
                     ip_address: auditData.ip_address,
@@ -200,7 +200,7 @@ export async function updateRDOStatus(rdoId: number, status: RDOStatus, auditDat
                     time_zone: auditData.time_zone,
                     geo_location: auditData.geo_location,
                     document_hash: auditData.document_hash || '',
-                    userName: userMeResponse.data.firstName || 'Unknown',
+                    userName: userMeResponse.data.firstName + ' ' + userMeResponse.data.lastName || 'Unknown',
                     companyId: updatedRDO.companyId,
                     projectId: updatedRDO.projectId,
                     rdoId: rdoId,
@@ -223,7 +223,19 @@ export async function updateRDOStatus(rdoId: number, status: RDOStatus, auditDat
     }
 }
 
-export async function updateRDO(rdoId: number, data: Partial<RDO>): Promise<ApiResponse<RDO>> {
+export async function updateRDO(rdoId: number, data: {
+    description?: string;
+    equipmentUsed?: string;
+    workforce?: string;
+    rdoStatus?: RDOStatus;
+    weatherMorningCondition?: WeatherCondition | null;
+    weatherMorningWorkable?: boolean | null;
+    weatherAfternoonCondition?: WeatherCondition | null;
+    weatherAfternoonWorkable?: boolean | null;
+    weatherNightCondition?: WeatherCondition | null;
+    weatherNightWorkable?: boolean | null;
+    date?: Date;
+}): Promise<ApiResponse<RDO>> {
     try {
         await requireSession();
 
@@ -346,6 +358,70 @@ export async function removeRdoAttachments(fileIds: number[]): Promise<ApiRespon
         return {
             success: false,
             error: error instanceof Error ? error.message : 'An error occurred while removing files',
+            data: null
+        };
+    }
+}
+
+export async function getRDOById(rdoId: number): Promise<ApiResponse<RDO>> {
+    try {
+        await requireSession();
+
+        const rdo = await prisma.rDO.findUnique({
+            where: { id: rdoId },
+            include: {
+                user: {
+                    include: {
+                        avatar: true
+                    }
+                },
+                project: {
+                    include: {
+                        company: true
+                    }
+                },
+                company: true,
+                media: true,
+                comments: {
+                    include: {
+                        user: {
+                            include: {
+                                avatar: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
+                },
+                approvalAudits: {
+                    include: {
+                        user: true
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
+                }
+            }
+        });
+
+        if (!rdo) {
+            return {
+                success: false,
+                error: 'RDO not found',
+                data: null
+            };
+        }
+
+        return {
+            success: true,
+            data: rdo as unknown as RDO
+        };
+    } catch (error) {
+        console.error('Error fetching RDO:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred while fetching RDO',
             data: null
         };
     }

@@ -2,7 +2,8 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sun, Cloud, Moon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { WeatherOption } from '@/components/types/strapi';
+import { PrismaWeatherOption } from '@/components/types/prisma';
+import { WeatherCondition } from '@/lib/generated/prisma';
 
 const periods = [
     { key: 'weatherMorning', icon: <Sun className="inline w-4 h-4" /> },
@@ -11,11 +12,31 @@ const periods = [
 ] as const;
 
 export function WeatherConditionGroup({ weather, setWeather }: {
-    weather: WeatherOption, setWeather: (w: WeatherOption) => void
+    weather: PrismaWeatherOption, setWeather: (w: PrismaWeatherOption) => void
 }) {
     const t = useTranslations('formRDO.weather');
-    const weatherConditions = ['clear', 'cloudy', 'rainy'];
+    const weatherConditions: WeatherCondition[] = ['clear', 'cloudy', 'rainy'];
     const workableOptions = [true, false];
+
+    const handleWorkableChange = (periodKey: keyof PrismaWeatherOption, value: string) => {
+        let workableValue: boolean | null = null;
+
+        if (value === 'none') {
+            workableValue = null;
+        } else if (value === 'true') {
+            workableValue = true;
+        } else if (value === 'false') {
+            workableValue = false;
+        }
+
+        setWeather({
+            ...weather,
+            [periodKey]: {
+                ...weather[periodKey],
+                workable: workableValue
+            }
+        });
+    };
 
     return (
         <div>
@@ -28,18 +49,14 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                         </div>
                         <div className="w-full flex flex-1 justify-between sm:justify-start sm:gap-2">
                             <Select
-                                value={(() => {
-                                    const weatherData = weather[period.key];
-                                    if (!weatherData) return '';
-                                    return Array.isArray(weatherData) ? (weatherData as any[])[0]?.condition || '' : (weatherData as any).condition || '';
-                                })()}
+                                value={weather[period.key]?.condition || 'none'}
                                 onValueChange={val =>
                                     setWeather({
                                         ...weather,
-                                        [period.key]: [{
-                                            ...(Array.isArray(weather[period.key]) ? (weather[period.key] as any[])[0] || {} : (weather[period.key] as any) || {}),
-                                            condition: val as 'clear' | 'cloudy' | 'rainy' | null
-                                        }]
+                                        [period.key]: {
+                                            ...weather[period.key],
+                                            condition: val === 'none' ? null : val as WeatherCondition
+                                        }
                                     })
                                 }
                             >
@@ -47,7 +64,7 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem key="null" value="null" className="min-h-8">
+                                    <SelectItem key="none" value="none" className="min-h-8">
                                         {" "}
                                     </SelectItem>
                                     {weatherConditions.map(condition => (
@@ -58,26 +75,14 @@ export function WeatherConditionGroup({ weather, setWeather }: {
                                 </SelectContent>
                             </Select>
                             <Select
-                                value={(() => {
-                                    const weatherData = weather[period.key];
-                                    if (!weatherData) return '';
-                                    return Array.isArray(weatherData) ? (weatherData as any[])[0]?.workable?.toString() || '' : (weatherData as any).workable?.toString() || '';
-                                })()}
-                                onValueChange={val =>
-                                    setWeather({
-                                        ...weather,
-                                        [period.key]: [{
-                                            ...(Array.isArray(weather[period.key]) ? (weather[period.key] as any[])[0] || {} : (weather[period.key] as any) || {}),
-                                            workable: val === 'null' ? null : val === 'true'
-                                        }]
-                                    })
-                                }
+                                value={weather[period.key]?.workable?.toString() || 'none'}
+                                onValueChange={(val) => handleWorkableChange(period.key, val)}
                             >
                                 <SelectTrigger className="w-[130px]">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem key="null" value="null" className="min-h-8">
+                                    <SelectItem key="none" value="none" className="min-h-8">
                                         {" "}
                                     </SelectItem>
                                     {workableOptions.map(workable => (

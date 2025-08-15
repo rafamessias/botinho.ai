@@ -1,5 +1,5 @@
 import { RdoCard } from '@/components/rdo/rdo-card';
-import { RDOWithCommentsAndAudit } from '@/components/types/strapi';
+import { RDOWithCommentsAndAudit } from '@/components/types/prisma';
 import ContainerApp from '@/components/Container-app';
 import { prisma } from '@/prisma/lib/prisma';
 import { notFound } from 'next/navigation';
@@ -37,25 +37,11 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
                 company: true,
                 media: true,
                 comments: {
-                    include: {
-                        user: {
-                            include: {
-                                avatar: true
-                            }
-                        }
-                    },
                     orderBy: {
                         createdAt: 'desc'
                     }
                 },
                 approvalAudits: {
-                    include: {
-                        user: {
-                            include: {
-                                avatar: true
-                            }
-                        }
-                    },
                     orderBy: {
                         date: 'desc'
                     }
@@ -69,38 +55,7 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
 
         // Transform Prisma data to match the expected Strapi interface
         // Using type assertion to handle complex type transformations
-        rdo = {
-            id: rdoData.id,
-            documentId: rdoData.id.toString(),
-            user: rdoData.user as any,
-            userName: rdoData.user.firstName || 'Unknown',
-            project: rdoData.project as any,
-            date: rdoData.date,
-            description: rdoData.description,
-            equipmentUsed: rdoData.equipmentUsed,
-            workforce: rdoData.workforce,
-            media: rdoData.media as any,
-            rdoStatus: (rdoData.rdoStatus === 'approved' ? 'Approved' :
-                rdoData.rdoStatus === 'rejected' ? 'Rejected' :
-                    rdoData.rdoStatus) as any,
-            weatherMorning: {
-                condition: rdoData.weatherMorningCondition,
-                workable: rdoData.weatherMorningWorkable
-            },
-            weatherAfternoon: {
-                condition: rdoData.weatherAfternoonCondition,
-                workable: rdoData.weatherAfternoonWorkable
-            },
-            weatherNight: {
-                condition: rdoData.weatherNightCondition,
-                workable: rdoData.weatherNightWorkable
-            },
-            commentCount: rdoData.commentCount,
-            createdAt: rdoData.createdAt,
-            updatedAt: rdoData.updatedAt,
-            comments: rdoData.comments as any,
-            audit: rdoData.approvalAudits as any
-        };
+        rdo = rdoData as unknown as RDOWithCommentsAndAudit;
 
         projectName = rdoData.project.name;
 

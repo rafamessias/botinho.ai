@@ -140,6 +140,7 @@ export interface RDO {
     weatherNightCondition: WeatherCondition;
     weatherNightWorkable: boolean;
     commentCount?: number;
+    createdBy?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -169,7 +170,7 @@ export interface Incident {
 
 export interface Comment {
     id?: number;
-    user: User | number;
+    user?: User | number;
     content: string;
     rdo?: RDO | number;
     incident?: Incident | number;
@@ -205,4 +206,20 @@ export interface ApiResponse<T> {
     success: boolean;
     error?: string | null;
     data?: T | null;
+}
+
+// Weather option type for Prisma implementation
+export interface PrismaWeatherOption {
+    weatherMorning: {
+        condition: WeatherCondition | null;
+        workable: boolean | null;
+    };
+    weatherAfternoon: {
+        condition: WeatherCondition | null;
+        workable: boolean | null;
+    };
+    weatherNight: {
+        condition: WeatherCondition | null;
+        workable: boolean | null;
+    };
 }

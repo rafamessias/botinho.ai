@@ -550,8 +550,8 @@
             "statusCombobox": {
                 "draft": "Draft",
                 "pendingApproval": "Pending Approval",
-                "Approved": "Approved",
-                "Rejected": "Rejected"
+                "approved": "Approved",
+                "rejected": "Rejected"
             }
         },
         "files": {

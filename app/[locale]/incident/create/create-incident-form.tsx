@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { ProjectSelect } from '@/components/rdo/form/ProjectSelect';
 import { RDODatePicker } from '@/components/rdo/form/RDODatePicker';
-import { Project } from '@/components/types/strapi';
+import { Project } from '@/components/types/prisma';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { useLoading } from '@/components/LoadingProvider';
 import { createIncident } from '@/components/actions/incident-action';
@@ -34,7 +34,7 @@ export default function CreateIncidentForm({ projects, project }: { projects: Pr
     const t = useTranslations('incident');
     const { setIsLoading } = useLoading();
 
-    const initialProject = project ? (projects.filter((p: Project) => p.documentId === project)[0] || projects[0]) : projects[0];
+    const initialProject = project ? (projects.filter((p: Project) => p.id?.toString() === project)[0] || projects[0]) : projects[0];
 
     const {
         control,
@@ -57,11 +57,20 @@ export default function CreateIncidentForm({ projects, project }: { projects: Pr
         try {
             setIsLoading(true);
 
-            const response = await createIncident(data as any);
+            // Transform form data to match CreateIncidentData interface
+            const incidentData = {
+                projectId: data.project.id!,
+                date: new Date(data.date),
+                incidentStatus: data.incidentStatus as any,
+                description: data.description,
+                media: data.media || undefined
+            };
+
+            const response = await createIncident(incidentData);
 
             if (response.success) {
                 toast.success(t('success'));
-                router.push(`/incident/view/${response.data?.documentId}`);
+                router.push(`/incident/view/${response.data?.id}`);
             } else {
                 toast.error(response.error || t('error'));
             }

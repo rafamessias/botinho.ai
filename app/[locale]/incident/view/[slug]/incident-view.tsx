@@ -1,7 +1,7 @@
 'use client';
 
-import { Incident, StrapiImage, User, Project } from '@/components/types/strapi';
-import { useTranslations } from 'next-intl';
+import { Comment, Incident, FileImage, User, Project } from '@/components/types/prisma';
+import { useLocale, useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, CheckCircle, Clock, Pencil, Share2 } from 'lucide-react';
@@ -21,6 +21,7 @@ import { useLoading } from '@/components/LoadingProvider';
 
 export default function IncidentView({ incident }: { incident: Incident }) {
     const t = useTranslations('incident.view');
+    const locale = useLocale();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
@@ -30,19 +31,18 @@ export default function IncidentView({ incident }: { incident: Incident }) {
 
     const userName = incident.userName;
     const project = incident.project as Project;
-    const media = incident.media as StrapiImage[];
+    const media = incident.media as FileImage[];
 
     const projectName = typeof incident.project === 'object' && incident.project ? incident.project.name : '';
-    const projectDocumentId = typeof incident.project === 'object' && incident.project ? incident.project.documentId : '';
     const projectId = (typeof incident.project === 'object' && incident.project ? incident.project.id : null) || null;
 
     const handleStatusUpdate = async (status: 'open' | 'wip' | 'closed' | 'draft') => {
-        if (!incident.documentId) return;
+        if (!incident.id) return;
 
         try {
             setIsLoading(true);
             const clientInfo = await getClientInfo();
-            const response = await updateIncidentStatus(incident.documentId, status, clientInfo);
+            const response = await updateIncidentStatus(incident.id, status, clientInfo);
             if (response.success) {
                 toast.success(t(`actions.UpdatedSuccess`));
                 router.refresh();
@@ -84,7 +84,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                         <TooltipProvider>
                             <Tooltip delayDuration={0}>
                                 <TooltipTrigger asChild>
-                                    <Link href={`/incident/edit/${incident.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                    <Link href={`/incident/edit/${incident.id}?goback=${currentUrl}`} className="flex items-center gap-2">
                                         <Button variant="ghost" className="flex items-center gap-2 justify-start">
                                             <Pencil className="w-4 h-4" />
                                         </Button>
@@ -100,7 +100,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>
                                 <Button variant="ghost" className="flex items-center gap-2 justify-start" onClick={() => {
-                                    navigator.clipboard.writeText(`${window.location.origin}/incident/view/${incident.documentId}`);
+                                    navigator.clipboard.writeText(`${window.location.origin}/${locale}/incident/view/${incident.id}`);
                                     toast.success('Link copied to clipboard');
                                 }}>
                                     <Share2 className="w-4 h-4" />
@@ -125,8 +125,8 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                             </div>
                             <div className="text-xs mt-1 flex items-center gap-1">
                                 <span className="text-muted-foreground">{t('project')}</span>
-                                {projectDocumentId && typeof projectDocumentId === 'string' && (
-                                    <Link href={`/project/view/${projectDocumentId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
+                                {projectId && typeof projectId === 'number' && (
+                                    <Link href={`/project/view/${projectId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
                                 )}
                             </div>
                             <div className="text-xs text-muted-foreground mt-1">
@@ -230,9 +230,8 @@ export default function IncidentView({ incident }: { incident: Incident }) {
                 {/* Comments section */}
                 <div className="rounded-xl pt-2 pb-4">
                     <CommentsSection
-                        incidentDocumentId={incident.documentId}
                         incidentId={incident.id}
-                        initialComments={incident.comments || []}
+                        initialComments={(incident.comments as Comment[]) || []}
                         projectId={projectId}
                     />
                 </div>

@@ -10,26 +10,22 @@ import { FileUploadBox } from '@/components/rdo/form/FileUploadBox';
 import { EquipmentTextarea } from '@/components/rdo/form/EquipmentTextarea';
 import { LaborTextarea } from '@/components/rdo/form/LaborTextarea';
 import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
-import { RDO, WeatherOption, RDOStatus, Project, StrapiImage } from '@/components/types/strapi';
+import { RDO, Project, FileImage, PrismaWeatherOption } from '@/components/types/prisma';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { removeRdoAttachments, updateRDO, uploadRdoAttachments } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useState } from 'react';
+import { RDOStatus } from '@/lib/generated/prisma';
 
-const rdoStatuses = [
-    'draft',
-    'pendingApproval',
-    'Approved',
-    'Rejected'
-];
+const rdoStatuses = Object.keys(RDOStatus);
 
 type FormData = {
     project: any;
-    status: string;
+    status: RDOStatus;
     date: string;
-    weather: WeatherOption;
+    weather: PrismaWeatherOption;
     description: string;
     equipment: string;
     labor: string;
@@ -42,7 +38,6 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
     const { setIsLoading } = useLoading();
     const [filesToBeRemoved, setFilesToBeRemoved] = useState<number[]>([]);
 
-    //console.log(rdo);
     const {
         control,
         handleSubmit,
@@ -53,9 +48,18 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
             status: rdo.rdoStatus,
             date: new Date(rdo.date).toISOString(),
             weather: {
-                weatherMorning: rdo.weatherMorning,
-                weatherAfternoon: rdo.weatherAfternoon,
-                weatherNight: rdo.weatherNight,
+                weatherMorning: {
+                    condition: rdo.weatherMorningCondition,
+                    workable: rdo.weatherMorningWorkable,
+                },
+                weatherAfternoon: {
+                    condition: rdo.weatherAfternoonCondition,
+                    workable: rdo.weatherAfternoonWorkable,
+                },
+                weatherNight: {
+                    condition: rdo.weatherNightCondition,
+                    workable: rdo.weatherNightWorkable,
+                },
             },
             description: rdo.description || '',
             equipment: rdo.equipmentUsed || '',
@@ -71,7 +75,7 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
 
     const onSubmit = async (data: FormData) => {
 
-        if (!rdo.documentId) {
+        if (!rdo.id) {
             toast.error(t('error'));
             return;
         }
@@ -80,20 +84,23 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
             description: data.description,
             equipmentUsed: data.equipment,
             workforce: data.labor,
-            rdoStatus: data.status as RDOStatus,
-            weatherMorning: data.weather.weatherMorning,
-            weatherAfternoon: data.weather.weatherAfternoon,
-            weatherNight: data.weather.weatherNight,
+            rdoStatus: data.status,
+            weatherMorningCondition: data.weather.weatherMorning?.condition,
+            weatherMorningWorkable: data.weather.weatherMorning?.workable,
+            weatherAfternoonCondition: data.weather.weatherAfternoon?.condition,
+            weatherAfternoonWorkable: data.weather.weatherAfternoon?.workable,
+            weatherNightCondition: data.weather.weatherNight?.condition,
+            weatherNightWorkable: data.weather.weatherNight?.workable,
             date: new Date(data.date)
         }
 
         try {
             setIsLoading(true);
-            const response = await updateRDO(rdo.documentId, rdoData);
+            const response = await updateRDO(rdo.id, rdoData);
             if (response.success) {
 
                 if (filesToBeRemoved.length > 0) {
-                    await removeRdoAttachments(filesToBeRemoved, rdo.documentId as string);
+                    await removeRdoAttachments(filesToBeRemoved);
                 }
 
                 if (data.files && data.files.length > 0 && rdo.id) {
@@ -104,7 +111,7 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
                         return;
                     }
 
-                    const uploadResponse = await uploadRdoAttachments(rdo.id, rdo.documentId as string, filesToUpload);
+                    const uploadResponse = await uploadRdoAttachments(rdo.id, filesToUpload);
 
                     if (!uploadResponse.success) {
                         toast.error(uploadResponse.error || t('files.uploadError'));
@@ -214,7 +221,7 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
                     control={control}
                     render={({ field }) => (
                         <FileUploadBox
-                            initialFiles={rdo.media as StrapiImage[] || []}
+                            initialFiles={rdo.media as any[] || []}
                             onFiles={field.onChange}
                             onRemoveImage={onRemoveImage}
 

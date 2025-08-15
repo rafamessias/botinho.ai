@@ -1,64 +1,98 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { fetchContentApi } from './fetch-content-api';
-import { ApiResponse, Comment, RDO, Incident } from '@/components/types/strapi';
+import { prisma } from '@/prisma/lib/prisma';
 import { revalidateTag } from 'next/cache';
+import { auth } from '@/app/auth';
 
 export async function createComment(data: {
     content: string;
-    rdoDocumentId?: string;
-    incidentDocumentId?: string;
     rdoId?: number;
     incidentId?: number;
     projectId?: number;
 }) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        // Get the current session from NextAuth
+        const session = await auth();
 
-        if (!token) {
+        if (!session?.user?.email) {
             throw new Error('Not authenticated');
+        }
+
+        // Get user from database
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            include: { company: true }
+        });
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        if (!user.company) {
+            throw new Error('User must belong to a company');
         }
 
         const commentData: any = {
             content: data.content,
+            userName: `${user.firstName} ${user.lastName || ''}`.trim(),
+            userEmail: user.email,
+            userId: user.id,
+            companyId: user.company.id,
         };
 
         if (data.rdoId) {
-            commentData.rdo = data.rdoId;
+            commentData.rdoId = data.rdoId;
         }
 
         if (data.incidentId) {
-            commentData.incident = data.incidentId;
+            commentData.incidentId = data.incidentId;
         }
 
         if (data.projectId) {
-            commentData.project = data.projectId;
+            commentData.projectId = data.projectId;
         }
 
-        let revalidateTags = ['comments'];
-        revalidateTags = data.rdoDocumentId ? [...revalidateTags, `comments:${data.rdoDocumentId}`, `rdos:${data.rdoDocumentId}`] : revalidateTags;
-        revalidateTags = data.incidentDocumentId ? [...revalidateTags, `comments:${data.incidentDocumentId}`, `incidents:${data.incidentDocumentId}`] : revalidateTags;
-
-        const response: ApiResponse<Comment> = await fetchContentApi<Comment>('comments', {
-            method: 'POST',
-            body: {
-                data: commentData
-            },
-            revalidateTag: revalidateTags
+        const comment = await prisma.comment.create({
+            data: commentData,
+            include: {
+                user: true,
+                rdo: true,
+                incident: true,
+                project: true,
+                company: true
+            }
         });
 
-        if (!response.success || !response.data) {
-            console.error('Error creating comment:', response.error);
-            return {
-                success: false,
-                error: response.error || 'Failed to create comment',
-                data: null
-            };
+        // Update comment count on related entities
+        if (data.rdoId) {
+            await prisma.rDO.update({
+                where: { id: data.rdoId },
+                data: { commentCount: { increment: 1 } }
+            });
         }
 
-        return { success: true, data: response.data };
+        if (data.incidentId) {
+            await prisma.incident.update({
+                where: { id: data.incidentId },
+                data: { commentCount: { increment: 1 } }
+            });
+        }
+
+        // Revalidate cache
+        let revalidateTags = ['comments'];
+        if (data.rdoId) {
+            revalidateTags.push(`comments:${data.rdoId}`, `rdos:${data.rdoId}`);
+        }
+        if (data.incidentId) {
+            revalidateTags.push(`comments:${data.incidentId}`, `incidents:${data.incidentId}`);
+        }
+
+        revalidateTags.forEach(tag => revalidateTag(tag));
+
+        return {
+            success: true,
+            data: comment
+        };
     } catch (error) {
         console.error('Error creating comment:', error);
         return {
@@ -69,35 +103,60 @@ export async function createComment(data: {
     }
 }
 
-export async function updateComment(commentId: string, content: string) {
+export async function updateComment(commentId: number, content: string) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        // Get the current session from NextAuth
+        const session = await auth();
 
-        if (!token) {
+        if (!session?.user?.email) {
             throw new Error('Not authenticated');
         }
 
-        const response: ApiResponse<Comment> = await fetchContentApi<Comment>(`comments/${commentId}`, {
-            method: 'PUT',
-            body: {
-                data: {
-                    content: content
-                }
-            },
-            revalidateTag: ['comments']
+        // Get user from database
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email }
         });
 
-        if (!response.success || !response.data) {
-            console.error('Error updating comment:', response.error);
-            return {
-                success: false,
-                error: response.error || 'Failed to update comment',
-                data: null
-            };
+        if (!user) {
+            throw new Error('User not found');
         }
 
-        return { success: true, data: response.data };
+        // Check if comment exists and user owns it
+        const existingComment = await prisma.comment.findUnique({
+            where: { id: commentId }
+        });
+
+        if (!existingComment) {
+            throw new Error('Comment not found');
+        }
+
+        if (existingComment.userId !== user.id) {
+            throw new Error('Not authorized to update this comment');
+        }
+
+        const comment = await prisma.comment.update({
+            where: { id: commentId },
+            data: {
+                content: content,
+                userName: `${user.firstName} ${user.lastName || ''}`.trim(),
+                userEmail: user.email
+            },
+            include: {
+                user: true,
+                rdo: true,
+                incident: true,
+                project: true,
+                company: true
+            }
+        });
+
+        // Revalidate cache
+        revalidateTag('comments');
+
+        return {
+            success: true,
+            data: comment
+        };
     } catch (error) {
         console.error('Error updating comment:', error);
         return {
@@ -108,31 +167,71 @@ export async function updateComment(commentId: string, content: string) {
     }
 }
 
-export async function deleteComment(commentId: string, rdoDocumentId?: string, incidentDocumentId?: string) {
+export async function deleteComment(commentId: number, rdoId?: number, incidentId?: number) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        // Get the current session from NextAuth
+        const session = await auth();
 
-        if (!token) {
+        if (!session?.user?.email) {
             throw new Error('Not authenticated');
         }
 
-        let revalidateTags = ['comments'];
-        revalidateTags = rdoDocumentId ? [...revalidateTags, `comments:${rdoDocumentId}`, `rdos:${rdoDocumentId}`] : revalidateTags;
-        revalidateTags = incidentDocumentId ? [...revalidateTags, `comments:${incidentDocumentId}`, `incidents:${incidentDocumentId}`] : revalidateTags;
-
-        const response: ApiResponse<boolean> = await fetchContentApi<boolean>(`comments/${commentId}`, {
-            method: 'DELETE',
-            revalidateTag: revalidateTags
+        // Get user from database
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email }
         });
 
-        if (!response.success) {
-            console.error('Error deleting comment:', response.error);
-            return {
-                success: false,
-                error: response.error || 'Failed to delete comment'
-            };
+        if (!user) {
+            throw new Error('User not found');
         }
+
+        // Check if comment exists and user owns it
+        const existingComment = await prisma.comment.findUnique({
+            where: { id: commentId }
+        });
+
+        if (!existingComment) {
+            throw new Error('Comment not found');
+        }
+
+        if (existingComment.userId !== user.id) {
+            throw new Error('Not authorized to delete this comment');
+        }
+
+        // Store IDs for updating counts
+        const rdoId = existingComment.rdoId;
+        const incidentId = existingComment.incidentId;
+
+        // Delete the comment
+        await prisma.comment.delete({
+            where: { id: commentId }
+        });
+
+        // Update comment count on related entities
+        if (rdoId) {
+            await prisma.rDO.update({
+                where: { id: rdoId },
+                data: { commentCount: { decrement: 1 } }
+            });
+        }
+
+        if (incidentId) {
+            await prisma.incident.update({
+                where: { id: incidentId },
+                data: { commentCount: { decrement: 1 } }
+            });
+        }
+
+        // Revalidate cache
+        let revalidateTags = ['comments'];
+        if (rdoId) {
+            revalidateTags.push(`comments:${rdoId}`, `rdos:${rdoId}`);
+        }
+        if (incidentId) {
+            revalidateTags.push(`comments:${incidentId}`, `incidents:${incidentId}`);
+        }
+
+        revalidateTags.forEach(tag => revalidateTag(tag));
 
         return { success: true };
     } catch (error) {
@@ -146,37 +245,41 @@ export async function deleteComment(commentId: string, rdoDocumentId?: string, i
 
 export async function getComments(rdoId?: number, incidentId?: number) {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('jwt')?.value;
+        // Get the current session from NextAuth
+        const session = await auth();
 
-        if (!token) {
+        if (!session?.user?.email) {
             throw new Error('Not authenticated');
         }
 
-        let endpoint = 'comments?populate=*&sort[0]=createdAt:desc';
+        const whereClause: any = {};
 
         if (rdoId) {
-            endpoint += `&filters[rdo][$eq]=${rdoId}`;
+            whereClause.rdoId = rdoId;
         }
 
         if (incidentId) {
-            endpoint += `&filters[incident][$eq]=${incidentId}`;
+            whereClause.incidentId = incidentId;
         }
 
-        const response: ApiResponse<Comment[]> = await fetchContentApi<Comment[]>(endpoint, {
-            method: 'GET'
+        const comments = await prisma.comment.findMany({
+            where: whereClause,
+            include: {
+                user: true,
+                rdo: true,
+                incident: true,
+                project: true,
+                company: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
         });
 
-        if (!response.success) {
-            console.error('Error fetching comments:', response.error);
-            return {
-                success: false,
-                error: response.error || 'Failed to fetch comments',
-                data: []
-            };
-        }
-
-        return { success: true, data: response.data || [] };
+        return {
+            success: true,
+            data: comments
+        };
     } catch (error) {
         console.error('Error fetching comments:', error);
         return {

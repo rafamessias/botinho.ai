@@ -10,16 +10,14 @@ import { EquipmentTextarea } from '@/components/rdo/form/EquipmentTextarea';
 import { LaborTextarea } from '@/components/rdo/form/LaborTextarea';
 import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
 import { Project } from '@/components/types/prisma';
-import { WeatherCondition } from '@/lib/generated/prisma';
+import { RDOStatus, WeatherCondition } from '@/lib/generated/prisma';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { createRDO } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 
-const rdoStatuses = [
-    'draft',
-];
+const rdoStatuses = Object.values(RDOStatus);
 
 type FormData = {
     project: Project;

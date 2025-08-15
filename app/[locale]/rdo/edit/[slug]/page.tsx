@@ -1,23 +1,33 @@
 import { RdoEditForm } from '@/components/rdo/RdoEditForm';
-import { RDO } from '@/components/types/strapi';
+import { RDO } from '@/components/types/prisma';
 import ContainerApp from '@/components/Container-app';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
+import { getRDOById } from '@/components/actions/rdo-action';
 import { RestrictProjectUsers } from '@/components/shared/restrict-project-users';
+import { notFound } from 'next/navigation';
 
 export default async function EditRdoPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
+    // Convert slug to number for Prisma query
+    const rdoId = parseInt(slug, 10);
+
+    if (isNaN(rdoId)) {
+        notFound();
+    }
+
     let rdo: RDO = {} as RDO;
     try {
-        const rdoFetch: any = await fetchContentApi<RDO>(`rdos/${slug}?populate=*`, {
-            next: {
-                revalidate: 0,
-                tags: [`rdos:${slug}`]
-            }
-        });
-        rdo = rdoFetch.data || {};
+        const rdoResponse = await getRDOById(rdoId);
+
+        if (!rdoResponse.success || !rdoResponse.data) {
+            console.error('Failed to fetch RDO:', rdoResponse.error);
+            notFound();
+        }
+
+        rdo = rdoResponse.data;
     } catch (error) {
         console.error('Failed to fetch RDO:', error);
+        notFound();
     }
 
     return (

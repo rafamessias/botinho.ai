@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Cloud, Sun, CloudRain, Share2, Pencil, X, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CarouselMedia from '../feedPage/CarouselMedia';
-import { RDO, RDOWithCommentsAndAudit, User } from '../types/strapi';
+import { Approval, RDO, RDOWithCommentsAndAudit, User } from '@/components/types/prisma';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
@@ -34,7 +34,6 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const [pUCanApprove, setPUCanApprove] = useState<boolean>(false);
 
     const projectName = typeof rdo.project === 'object' ? rdo.project.name : '';
-    const projectDocumentId = typeof rdo.project === 'object' ? rdo.project.documentId : '';
     const projectId = (typeof rdo.project === 'object' ? rdo.project.id : 0) || 0;
 
     const { companyMemberCanApprove, projectUserCanApprove } = useUser();
@@ -49,15 +48,15 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
     const handleApprove = async () => {
-        if (!rdo.documentId) {
+        if (!rdo.id) {
             toast.error(t('actions.approveError'));
             return;
         }
         try {
             setIsLoading(true);
-            const approvalStatus = rdo.rdoStatus === 'draft' || rdo.rdoStatus === 'Rejected' ? 'pendingApproval' : 'Approved';
+            const approvalStatus = rdo.rdoStatus === 'draft' || rdo.rdoStatus === 'rejected' ? 'pendingApproval' : 'approved';
             const clientInfo = await getClientInfo();
-            const response = await updateRDOStatus(rdo.documentId || '', approvalStatus, clientInfo);
+            const response = await updateRDOStatus(rdo.id || 0, approvalStatus, clientInfo);
             if (response.success) {
                 toast.success(t('actions.approveSuccess'));
                 router.refresh();
@@ -72,15 +71,15 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     };
 
     const handleReject = async () => {
-        if (!rdo.documentId) {
+        if (!rdo.id) {
             toast.error(t('actions.rejectError'));
             return;
         }
         try {
             setIsLoading(true);
-            const rejectionStatus = rdo.rdoStatus === 'pendingApproval' ? 'Rejected' : 'pendingApproval';
+            const rejectionStatus = rdo.rdoStatus === 'pendingApproval' ? 'rejected' : 'pendingApproval';
             const clientInfo = await getClientInfo();
-            const response = await updateRDOStatus(rdo.documentId || '', rejectionStatus, clientInfo);
+            const response = await updateRDOStatus(rdo.id || 0, rejectionStatus, clientInfo);
             if (response.success) {
                 toast.success(t('actions.rejectSuccess'));
                 router.refresh();
@@ -119,9 +118,9 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                 return t('draft');
             case 'pendingApproval':
                 return t('pendingApproval');
-            case 'Approved':
+            case 'approved':
                 return t('approved');
-            case 'Rejected':
+            case 'rejected':
                 return t('rejected');
             default:
                 return status;
@@ -137,7 +136,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             <TooltipProvider>
                                 <Tooltip delayDuration={0}>
                                     <TooltipTrigger asChild>
-                                        <Link href={`/rdo/edit/${rdo.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                        <Link href={`/rdo/edit/${rdo.id}?goback=${currentUrl}`} className="flex items-center gap-2">
                                             <Button variant="ghost" className="flex items-center gap-2 justify-start">
                                                 <Pencil className="w-4 h-4" />
                                             </Button>
@@ -153,7 +152,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             <Tooltip delayDuration={0}>
                                 <TooltipTrigger asChild>
                                     <Button variant="ghost" className="flex items-center gap-2 justify-start" onClick={() => {
-                                        navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.documentId}`);
+                                        navigator.clipboard.writeText(`${window.location.origin}/rdo/view/${rdo.id}`);
                                         toast.success(t('linkCopied'));
                                     }}>
                                         <Share2 className="w-4 h-4" />
@@ -180,7 +179,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                                 </div>
                                 <div className="text-xs mt-1 flex items-center gap-1">
                                     <span className="text-muted-foreground">{t('project')}</span>
-                                    <Link href={`/project/view/${projectDocumentId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
+                                    <Link href={`/project/view/${projectId}`} className="font-bold underline text-gray-800"> {projectName}</Link>
                                 </div>
                                 <div className="text-xs text-muted-foreground mt-1">
                                     {new Date(rdo.date).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
@@ -191,8 +190,8 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
 
                             <Badge className={cn(
                                 'rounded-full px-3 py-1 text-xs font-medium',
-                                rdo.rdoStatus === 'Approved' && 'bg-green-100 text-green-700',
-                                rdo.rdoStatus === 'Rejected' && 'bg-red-100 text-red-700',
+                                rdo.rdoStatus === 'approved' && 'bg-green-100 text-green-700',
+                                rdo.rdoStatus === 'rejected' && 'bg-red-100 text-red-700',
                                 rdo.rdoStatus === 'pendingApproval' && 'bg-blue-100 text-blue-700',
                                 rdo.rdoStatus === 'draft' && 'bg-gray-100 text-gray-700')
                             }>
@@ -209,26 +208,25 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                         <div className="font-semibold text-sm mb-4">{t('weather.title')}</div>
                         <div className="flex flex-row gap-2 overflow-x-auto">
                             {[
-                                { period: t('morning'), weather: rdo.weatherMorning },
-                                { period: t('afternoon'), weather: rdo.weatherAfternoon },
-                                { period: t('night'), weather: rdo.weatherNight }
+                                { period: t('morning'), weather: rdo.weatherMorningCondition, workable: rdo.weatherMorningWorkable },
+                                { period: t('afternoon'), weather: rdo.weatherAfternoonCondition, workable: rdo.weatherAfternoonWorkable },
+                                { period: t('night'), weather: rdo.weatherNightCondition, workable: rdo.weatherNightWorkable }
                             ].map((weather) => {
-                                const weatherData = Array.isArray(weather.weather) ? weather.weather[0] : weather.weather;
-                                if (weatherData !== null && weatherData.condition !== null && weatherData.condition !== "null") {
+                                if (weather.weather !== null) {
                                     return (
 
                                         <Badge
                                             variant='outline'
                                             key={weather.period}
-                                            className={`flex flex-col py-2 items-center gap-1 rounded-lg text-xs shadow-sm cursor-default ${!weatherData.workable
+                                            className={`flex flex-col py-2 items-center gap-1 rounded-lg text-xs shadow-sm cursor-default ${!weather.workable
                                                 && 'bg-red-50 text-red-900 hover:bg-red-100 hover:text-red-900'
                                                 }`}
                                         >
                                             <div className='flex items-center gap-1'>
-                                                {weather.period} {getWeatherIcon(weatherData.condition)}
+                                                {weather.period} {getWeatherIcon(weather.weather)}
                                             </div>
-                                            <div className={`text-[10px] text-muted-foreground ${!weatherData.workable && 'text-red-900'}`}>
-                                                {t(`weather.${weatherData.condition}`)} - {t(`weather.${weatherData.workable}`)}
+                                            <div className={`text-[10px] text-muted-foreground ${!weather.workable && 'text-red-900'}`}>
+                                                {t(`weather.${weather.weather}`)} - {t(`weather.${weather.workable}`)}
                                             </div>
                                         </Badge>
 
@@ -311,7 +309,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             </>
                         )}
 
-                        {(rdo.rdoStatus === 'Rejected' || rdo.rdoStatus === 'draft') && companyMemberCanApprove && (
+                        {(rdo.rdoStatus === 'rejected' || rdo.rdoStatus === 'draft') && companyMemberCanApprove && (
                             <>
                                 <Button
                                     variant="outline"
@@ -337,8 +335,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             </TabsList>
                             <TabsContent value="comments" className="mt-2">
                                 <CommentsSection
-                                    rdoDocumentId={rdo.documentId}
-                                    rdoId={rdo.id}
+                                    rdoId={rdo.id || 0}
                                     initialComments={rdo.comments || []}
                                     projectId={projectId}
                                 />
@@ -346,26 +343,9 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
                             <TabsContent value="audit" className="mt-2">
                                 {Array.isArray(rdo.audit) && rdo.audit.length > 0 ? (
                                     <div className="space-y-4">
-                                        {rdo.audit.map((audit, index) => (
-                                            <div key={index} className="bg-gray-50 p-3 rounded-lg">
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <div className="flex items-center gap-2">
-                                                        <Badge variant={audit.action === 'Approved' ? 'default' : 'destructive'}>
-                                                            {audit.action}
-                                                        </Badge>
-                                                        <span className="text-xs text-gray-500">
-                                                            {format(new Date(audit.date || ''), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className="text-[10px] text-gray-600 space-y-1">
-                                                    <p>  {typeof audit.user === 'object' ? audit?.user?.firstName + ' ' + audit?.user?.lastName : ''}</p>
-                                                    <p><span className="font-medium">IP:</span> {audit.ip_address}</p>
-                                                    <p><span className="font-medium">Location:</span> {audit.geo_location}</p>
-                                                    <p><span className="font-medium">Device:</span> {audit.device_type}</p>
-                                                </div>
-                                            </div>
-                                        ))}
+                                        {rdo.audit.map((audit, index) => {
+                                            return <AuditRow key={index} audit={audit as Approval} />;
+                                        })}
                                     </div>
                                 ) : (
                                     <div className="text-center text-gray-400 py-4">{t('tabs.noAudit')}</div>
@@ -378,4 +358,42 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
             </Card>
         </>
     );
-} 
+}
+
+function AuditRow({ audit }: { audit: Approval }) {
+    const [collapsed, setCollapsed] = useState(true);
+    return (
+        <div className="bg-gray-50 p-3 rounded-lg">
+            <button
+                type="button"
+                className="w-full flex items-center justify-between mb-2 focus:outline-none"
+                onClick={() => setCollapsed((c) => !c)}
+                aria-expanded={!collapsed}
+            >
+                <div className="flex items-center gap-2">
+                    <Badge variant={audit.action === 'approved' ? 'default' : 'destructive'}>
+                        {audit.action}
+                    </Badge>
+                    <span className="text-xs text-gray-500">
+                        {format(new Date(audit.date || ''), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                    </span>
+                </div>
+                <span className="ml-2 text-xs text-gray-400">
+                    {collapsed ? (
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeWidth="2" d="M6 9l6 6 6-6" /></svg>
+                    ) : (
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeWidth="2" d="M18 15l-6-6-6 6" /></svg>
+                    )}
+                </span>
+            </button>
+            {!collapsed && (
+                <div className="text-[10px] text-gray-600 space-y-1 mt-2">
+                    <p>{audit.userName}</p>
+                    <p><span className="font-medium">IP:</span> {audit.ip_address}</p>
+                    <p><span className="font-medium">Location:</span> {audit.geo_location}</p>
+                    <p><span className="font-medium">Device:</span> {audit.device_type}</p>
+                </div>
+            )}
+        </div>
+    );
+}

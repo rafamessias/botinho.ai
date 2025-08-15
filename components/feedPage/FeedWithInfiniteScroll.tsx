@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import FeedRDOCard from './FeedRDOCard';
 import FeedIncidentCard from './FeedIncidentCard';
-import { Incident, RDO, Project, User } from '@/components/types/strapi';
+import { Incident, RDO, Project, User } from '@/components/types/prisma';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
@@ -69,7 +69,7 @@ export default function FeedWithInfiniteScroll({
             const response = await getPaginatedRdos(project.id, nextPage, ITEMS_PER_PAGE);
 
             if (response.success && response.data) {
-                setRdos(prev => [...prev, ...response.data!]);
+                setRdos(prev => [...prev, ...(response.data as any)]);
                 setRdosPage(nextPage);
                 setRdosHasMore(response.data.length === ITEMS_PER_PAGE);
             }
@@ -89,7 +89,7 @@ export default function FeedWithInfiniteScroll({
             const response = await getPaginatedIncidents(project.id, nextPage, ITEMS_PER_PAGE);
 
             if (response.success && response.data) {
-                setIncidents(prev => [...prev, ...response.data!]);
+                setIncidents(prev => [...prev, ...(response.data as any)]);
                 setIncidentsPage(nextPage);
                 setIncidentsHasMore(response.data.length === ITEMS_PER_PAGE);
             }

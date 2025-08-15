@@ -1,6 +1,6 @@
 import ContainerApp from '@/components/Container-app';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
-import { Incident } from '@/components/types/strapi';
+import { getIncidentById } from '@/components/actions/incident-action';
+import { Incident } from '@/components/types/prisma';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import IncidentView from './incident-view';
@@ -19,36 +19,29 @@ export default async function IncidentViewPage({ params }: IncidentViewPageProps
     let incident: Incident | null = null;
 
     try {
-        // Fetch incident data
-        const incidentResponse = await fetchContentApi<Incident>(`incidents/${slug}?populate=*`, {
-            next: {
-                revalidate: 300,
-                tags: [`incident:${slug}`]
-            }
-        });
+        // Parse the slug as incident ID
+        const incidentId = parseInt(slug, 10);
+
+        if (isNaN(incidentId)) {
+            notFound();
+        }
+
+        // Fetch incident data using Prisma
+        const incidentResponse = await getIncidentById(incidentId);
 
         if (!incidentResponse.success || !incidentResponse.data) {
             notFound();
         }
 
-        incident = incidentResponse.data;
+        // Transform the Prisma response to match the expected Strapi Incident type
+        const prismaIncident = incidentResponse.data;
 
-
-        const commentsFetch: any = await fetchContentApi<Comment[]>(`comments?populate=*&filters[incident][$eq]=${incident.id}&sort[0]=createdAt:desc`, {
-            next: {
-                revalidate: 300,
-                tags: [`comments:${slug}`]
-            }
-        });
-        const comments = commentsFetch.data || [];
-
-        incident = {
-            ...incident,
-            comments
-        };
+        // Use the Prisma incident data directly
+        incident = prismaIncident;
 
     } catch (error) {
         console.error('Error fetching incident:', error);
+        notFound();
     }
 
     if (!incident) {

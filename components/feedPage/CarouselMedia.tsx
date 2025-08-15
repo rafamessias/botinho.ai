@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { StrapiImage } from '../types/strapi';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { FileImage } from '../types/prisma';
 
 interface CarouselMediaProps {
-    images: StrapiImage[];
+    images: FileImage[];
     className?: string;
 }
 

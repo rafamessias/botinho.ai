@@ -4,11 +4,11 @@ import CarouselMedia from '@/components/feedPage/CarouselMedia';
 import { MessageSquare, EllipsisVertical, X, Check, Share2, Pencil, AlertTriangle, Clock, CheckCircle } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { Incident, StrapiImage, User } from '@/components/types/strapi';
+import { Incident, FileImage, User } from '@/components/types/prisma';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { updateIncidentStatus } from '@/components/actions/incident-action';
@@ -39,17 +39,17 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
     const { setIsLoading } = useLoading();
     const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
     const { user: userAuth, isCompanyUser } = useUser();
-
+    const locale = useLocale();
     const t = useTranslations('incident.incidentCard');
     const userName = incident.userName;
 
     const handleStatusUpdate = async (status: 'open' | 'wip' | 'closed' | 'draft') => {
-        if (!incident.documentId) return;
+        if (!incident.id) return;
 
         try {
             setIsLoading(true);
             const clientInfo = await getClientInfo();
-            const response = await updateIncidentStatus(incident.documentId, status, clientInfo);
+            const response = await updateIncidentStatus(incident.id, status, clientInfo);
             if (response.success) {
                 toast.success(t(`actions.UpdatedSuccess`));
                 incident.incidentStatus = status;
@@ -103,7 +103,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                         <TooltipProvider>
                             <Tooltip delayDuration={0}>
                                 <TooltipTrigger asChild>
-                                    <Link href={`/incident/edit/${incident.documentId}?goback=${currentUrl}`} className="flex items-center gap-2">
+                                    <Link href={`/incident/edit/${incident.id}?goback=${currentUrl}`} className="flex items-center gap-2">
                                         <Button variant="ghost" className="flex items-center gap-2 justify-start">
                                             <Pencil className="w-4 h-4" />
                                         </Button>
@@ -119,7 +119,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>
                                 <Button variant="ghost" className="flex items-center gap-2 justify-start" onClick={() => {
-                                    navigator.clipboard.writeText(`${window.location.origin}/incident/view/${incident.documentId}`);
+                                    navigator.clipboard.writeText(`${window.location.origin}/${locale}/incident/view/${incident.id}`);
                                     toast.success(t('linkCopied'));
                                 }}>
                                     <Share2 className="w-4 h-4" />
@@ -146,6 +146,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                         </div>
                     </div>
                 </div>
+                {/*}
                 <div className="flex gap-2">
                     {incident.priority && (
                         <TooltipProvider>
@@ -165,6 +166,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                         </TooltipProvider>
                     )}
                 </div>
+                */}
             </CardHeader>
             <CardContent className="p-0">
                 <div className="text-sm mb-4 text-gray-800">
@@ -179,18 +181,18 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
                     }
                 </div>
                 <div className="-mx-6 sm:mx-0">
-                    <CarouselMedia images={incident.media as StrapiImage[] || []} className='rounded-none sm:rounded-lg border-none sm:border' />
+                    <CarouselMedia images={incident.media as FileImage[] || []} className='rounded-none sm:rounded-lg border-none sm:border' />
                 </div>
             </CardContent>
             <CardFooter className="p-0 flex flex-col gap-2">
                 <div className="flex items-center justify-between text-xs text-gray-500 w-full">
                     <div className="flex gap-4">
-                        <Link href={`/incident/view/${incident.documentId}?goback=${currentUrl}`} className="text-blue-600 hover:text-blue-700 transition-colors">
+                        <Link href={`/incident/view/${incident.id}?goback=${currentUrl}`} className="text-blue-600 hover:text-blue-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 {t('details')}
                             </Button>
                         </Link>
-                        <Link href={`/incident/view/${incident.documentId}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
+                        <Link href={`/incident/view/${incident.id}?goback=${currentUrl}`} className="flex items-center gap-1 hover:text-gray-700 transition-colors">
                             <Button variant="ghost" className="text-blue-600 hover:text-blue-700 transition-colors">
                                 <MessageSquare className="w-4 h-4" /> {incident.commentCount || 0}
                             </Button>
