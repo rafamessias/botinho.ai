@@ -31,7 +31,7 @@ export default async function IncidentEditPage({ params }: IncidentEditPageProps
             notFound();
         }
 
-        incident = incidentResponse.data;
+        incident = incidentResponse.data as Incident;
     } catch (error) {
         console.error('Error fetching incident:', error);
         notFound();
