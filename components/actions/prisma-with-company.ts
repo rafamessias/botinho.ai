@@ -27,6 +27,15 @@ function addCompanyOrProjectToWhere(where: any, companyId: number | null, projec
 }
 
 export const prismaWithCompany = {
+    company: {
+        async findUnique(args: any) {
+            const { companyId } = await getCurrentUserCompanyId();
+            return prisma.company.findUnique({
+                ...args,
+                where: { ...args.where, id: companyId }
+            });
+        }
+    },
     approvalAudit: {
         async create(data: any) {
             const { companyId } = await getCurrentUserCompanyId();
