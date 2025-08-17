@@ -37,7 +37,7 @@ export default async function IncidentViewPage({ params }: IncidentViewPageProps
         const prismaIncident = incidentResponse.data;
 
         // Use the Prisma incident data directly
-        incident = prismaIncident;
+        incident = prismaIncident as Incident;
 
     } catch (error) {
         console.error('Error fetching incident:', error);
