@@ -40,15 +40,15 @@ export default function ProfileForm() {
     const [showImageConfirm, setShowImageConfirm] = useState(false);
     const [pendingImageChange, setPendingImageChange] = useState<File | null>(null);
     const [imageToUpload, setImageToUpload] = useState<File | null>(null);
-    const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(user?.avatar?.url || null);
+    const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>((user?.avatar as FileImage)?.url || null);
     const [uploadPhotoKey, setUploadPhotoKey] = useState(0);
 
     const avatar: FileImage = user?.avatar as FileImage;
 
     // Update currentAvatarUrl when user avatar changes
     useEffect(() => {
-        setCurrentAvatarUrl(user?.avatar?.url || null);
-    }, [user?.avatar?.url]);
+        setCurrentAvatarUrl((user?.avatar as FileImage)?.url || null);
+    }, [(user?.avatar as FileImage)?.url]);
 
     const {
         control,
@@ -63,8 +63,8 @@ export default function ProfileForm() {
             name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
             phone: user?.phone || '',
             email: user?.email || '',
-            language: user?.language || 'en',
-            avatar: user?.avatar ? [user.avatar] : null,
+            language: user?.language as 'en' | 'pt-BR' || 'en',
+            avatar: user?.avatar ? [user.avatar as FileImage] : null,
             notifyRDO: false,
         },
         mode: 'onBlur',
@@ -77,8 +77,8 @@ export default function ProfileForm() {
                 name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
                 phone: user.phone || '',
                 email: user.email || '',
-                language: user.language || 'en',
-                avatar: user.avatar ? [user.avatar] : null,
+                language: user.language as 'en' | 'pt-BR' || 'en',
+                avatar: user.avatar ? [user.avatar as FileImage] : null,
                 notifyRDO: false,
             });
         }
@@ -142,8 +142,8 @@ export default function ProfileForm() {
         setShowImageConfirm(false);
         setPendingImageChange(null);
         // Reset form state to current avatar if any
-        setValue('avatar', user?.avatar ? [user.avatar] : null);
-        setCurrentAvatarUrl(user?.avatar?.url || null);
+        setValue('avatar', user?.avatar ? [user.avatar as FileImage] : null);
+        setCurrentAvatarUrl((user?.avatar as FileImage)?.url || null);
         // Force UploadPhoto component to re-render with original state
         setUploadPhotoKey(prev => prev + 1);
     };
@@ -219,8 +219,8 @@ export default function ProfileForm() {
         try {
             setIsLoading(true);
             // Delete old file if exists
-            if (user?.avatar?.id) {
-                await deleteFileFromCloudinary(user.avatar.id);
+            if ((user?.avatar as FileImage)?.id) {
+                await deleteFileFromCloudinary((user?.avatar as FileImage)?.id as number);
             }
 
             // Update form state to remove avatar
@@ -230,8 +230,9 @@ export default function ProfileForm() {
 
             // Update user context to remove avatar
             setUser({
-                ...user,
-                avatar: null
+                ...user!,
+                email: user!.email || '',
+                avatar: null as unknown as FileImage
             });
 
             toast.success(t('avatarRemoved'));

@@ -42,7 +42,7 @@ export default function SignUpCheckEmailPage() {
                 setTokenError(null);
 
                 try {
-                    const result = await sendEmailConfirmationAction(user?.email || emailFromUrl, tokenFromUrl);
+                    const result = await sendEmailConfirmationAction(user?.email || emailFromUrl || '', tokenFromUrl || '');
 
                     if (result.success) {
                         toast.success(result.message);
@@ -73,7 +73,7 @@ export default function SignUpCheckEmailPage() {
         setTokenError(null); // Clear any previous token errors
 
         try {
-            const result = await sendEmailConfirmationAction(user?.email || emailFromUrl, null);
+            const result = await sendEmailConfirmationAction(user?.email || emailFromUrl || '', null);
             if (result.success) {
                 toast.success(result.message);
                 setCountdown(initialCountdown);
@@ -98,7 +98,7 @@ export default function SignUpCheckEmailPage() {
                         {t('checkEmail.title')}
                     </CardTitle>
                     <CardDescription className="text-center">
-                        {t('checkEmail.description', { email: user?.email || emailFromUrl })}
+                        {t('checkEmail.description', { email: user?.email || emailFromUrl || '' })}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center gap-4">

@@ -2,6 +2,7 @@ import ContainerApp from "@/components/Container-app"
 import { getTranslations } from "next-intl/server"
 import HomePage from "@/components/homePage/home-page"
 import { prisma } from "@/prisma/lib/prisma"
+import { prismaWithCompany } from "@/components/actions/prisma-with-company"
 import { Project } from "@/components/types/prisma";
 
 
@@ -19,7 +20,7 @@ export default async function Page({ params }: PageProps) {
     // Fetch active projects using Prisma
     let projectsData = null;
     try {
-        projectsData = await prisma.project.findMany({
+        projectsData = await prismaWithCompany.project.findMany({
             where: {
                 active: true
             },

@@ -264,6 +264,7 @@ model Company {
   approvalAudits ApprovalAudit[] @relation("CompanyApprovalAudits")
   members        CompanyMember[] @relation("CompanyMembers")
   projectUsers   ProjectUser[]   @relation("CompanyProjectUsers")
+  files          File[]          @relation("CompanyFiles")
 
   // Users relation (one-to-many)
   users User[] @relation("UserCompany")
@@ -291,6 +292,9 @@ model File {
   imageFor         Project[]  @relation("ProjectImage")
   mediaFor         RDO[]      @relation("RDOMedia")
   incidentMediaFor Incident[]
+
+  companyId Int?
+  company   Company? @relation("CompanyFiles", fields: [companyId], references: [id])
 
   @@map("files")
 }

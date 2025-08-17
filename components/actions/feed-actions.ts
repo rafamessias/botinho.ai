@@ -1,6 +1,7 @@
 "use server"
 
 import { prisma } from "@/prisma/lib/prisma"
+import { prismaWithCompany } from "./prisma-with-company"
 import { revalidateTag } from "next/cache"
 import { requireSession } from "./check-session"
 
@@ -77,7 +78,7 @@ export async function getProjectRDOs(projectId: number, page: number = 1, pageSi
 
         const skip = (page - 1) * pageSize
 
-        const rdos = await prisma.rDO.findMany({
+        const rdos = await prismaWithCompany.rdo.findMany({
             where: {
                 projectId: projectId
             },
@@ -106,7 +107,7 @@ export async function getProjectRDOs(projectId: number, page: number = 1, pageSi
         })
 
         // Transform to match expected format
-        const transformedRdos = rdos.map(rdo => ({
+        const transformedRdos = rdos.map((rdo: any) => ({
             id: rdo.id,
             date: rdo.date,
             rdoStatus: rdo.rdoStatus,
@@ -164,7 +165,7 @@ export async function getProjectIncidents(projectId: number, page: number = 1, p
 
         const skip = (page - 1) * pageSize
 
-        const incidents = await prisma.incident.findMany({
+        const incidents = await prismaWithCompany.incident.findMany({
             where: {
                 projectId: projectId
             },
@@ -193,7 +194,7 @@ export async function getProjectIncidents(projectId: number, page: number = 1, p
         })
 
         // Transform to match expected format
-        const transformedIncidents = incidents.map(incident => ({
+        const transformedIncidents = incidents.map((incident: any) => ({
             id: incident.id,
             date: incident.date,
             incidentStatus: incident.incidentStatus,

@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/prisma/lib/prisma';
+import { prismaWithCompany } from './prisma-with-company';
 import { revalidateTag } from 'next/cache';
 import { auth } from '@/app/auth';
 
@@ -52,15 +53,14 @@ export async function createComment(data: {
             commentData.projectId = data.projectId;
         }
 
-        const comment = await prisma.comment.create({
-            data: commentData,
-            include: {
-                user: true,
-                rdo: true,
-                incident: true,
-                project: true,
-                company: true
-            }
+        const comment = await prismaWithCompany.comment.create({
+            content: data.content,
+            userName: `${user.firstName} ${user.lastName || ''}`.trim(),
+            userEmail: user.email,
+            userId: user.id,
+            ...(data.rdoId && { rdoId: data.rdoId }),
+            ...(data.incidentId && { incidentId: data.incidentId }),
+            ...(data.projectId && { projectId: data.projectId }),
         });
 
         // Update comment count on related entities
@@ -122,7 +122,7 @@ export async function updateComment(commentId: number, content: string) {
         }
 
         // Check if comment exists and user owns it
-        const existingComment = await prisma.comment.findUnique({
+        const existingComment = await prismaWithCompany.comment.findUnique({
             where: { id: commentId }
         });
 
@@ -186,7 +186,7 @@ export async function deleteComment(commentId: number, rdoId?: number, incidentI
         }
 
         // Check if comment exists and user owns it
-        const existingComment = await prisma.comment.findUnique({
+        const existingComment = await prismaWithCompany.comment.findUnique({
             where: { id: commentId }
         });
 
@@ -262,7 +262,7 @@ export async function getComments(rdoId?: number, incidentId?: number) {
             whereClause.incidentId = incidentId;
         }
 
-        const comments = await prisma.comment.findMany({
+        const comments = await prismaWithCompany.comment.findMany({
             where: whereClause,
             include: {
                 user: true,

@@ -1,6 +1,6 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
-import { ProjectStatus } from "@/components/types/strapi";
+import { ProjectStatus } from "@/lib/generated/prisma";
 import { useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
 

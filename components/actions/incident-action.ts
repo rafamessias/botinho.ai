@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/prisma/lib/prisma';
+import { prismaWithCompany } from './prisma-with-company';
 import { requireSession } from './check-session';
 import { uploadFileToCloudinary, deleteFileFromCloudinary } from './cloudinary-upload-action';
 import { getUserMe } from './get-user-me-action';
@@ -52,27 +53,14 @@ export async function createIncident(data: CreateIncidentData) {
         const userId = userMeResponse.data.id;
 
         // Create the incident
-        const incident = await prisma.incident.create({
-            data: {
-                projectId: data.projectId,
-                companyId: companyId,
-                userId: userId,
-                date: data.date,
-                incidentStatus: data.incidentStatus,
-                description: data.description,
-                priority: data.priority || 1,
-                createdBy: `${userMeResponse.data.firstName} ${userMeResponse.data.lastName}`.trim(),
-            },
-            include: {
-                project: true,
-                user: {
-                    include: {
-                        avatar: true
-                    }
-                },
-                company: true,
-                media: true
-            }
+        const incident = await prismaWithCompany.incident.create({
+            projectId: data.projectId,
+            userId: userId,
+            date: data.date,
+            incidentStatus: data.incidentStatus,
+            description: data.description,
+            priority: data.priority || 1,
+            createdBy: `${userMeResponse.data.firstName} ${userMeResponse.data.lastName}`.trim(),
         });
 
         console.log(`Creating incident ${incident.id} - Incident created successfully`);
@@ -258,23 +246,20 @@ export async function updateIncidentStatus(incidentId: number, status: IncidentS
 
         // Create approval record for audit trail if client info is provided
         if (clientInfo) {
-            await prisma.approvalAudit.create({
-                data: {
-                    incidentId: incidentId,
-                    action: status === 'open' || status === 'wip' || status === 'closed' ? 'approved' : 'rejected',
-                    description: `Status updated to ${status}`,
-                    date: new Date(),
-                    ip_address: clientInfo.ip_address,
-                    latitude: clientInfo.latitude,
-                    longitude: clientInfo.longitude,
-                    device_type: clientInfo.device_type,
-                    time_zone: clientInfo.time_zone,
-                    geo_location: clientInfo.geo_location,
-                    document_hash: `incident_${incidentId}_${Date.now()}`,
-                    userName: `${userMeResponse.data.firstName} ${userMeResponse.data.lastName}`.trim(),
-                    companyId: userMeResponse.data.company.id,
-                    userId: userMeResponse.data.id
-                }
+            await prismaWithCompany.approvalAudit.create({
+                incidentId: incidentId,
+                action: status === 'open' || status === 'wip' || status === 'closed' ? 'approved' : 'rejected',
+                description: `Status updated to ${status}`,
+                date: new Date(),
+                ip_address: clientInfo.ip_address,
+                latitude: clientInfo.latitude,
+                longitude: clientInfo.longitude,
+                device_type: clientInfo.device_type,
+                time_zone: clientInfo.time_zone,
+                geo_location: clientInfo.geo_location,
+                document_hash: `incident_${incidentId}_${Date.now()}`,
+                userName: `${userMeResponse.data.firstName} ${userMeResponse.data.lastName}`.trim(),
+                userId: userMeResponse.data.id
             });
         }
 
@@ -305,7 +290,7 @@ export async function getIncidentById(incidentId: number) {
         // Check authentication
         await requireSession();
 
-        const incident = await prisma.incident.findUnique({
+        const incident = await prismaWithCompany.incident.findUnique({
             where: {
                 id: incidentId
             },

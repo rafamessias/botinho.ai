@@ -1,6 +1,6 @@
 import ContainerApp from '@/components/Container-app';
-import { fetchContentApi } from '@/components/actions/fetch-content-api';
-import { Incident } from '@/components/types/strapi';
+import { getIncidentById } from '@/components/actions/incident-action';
+import { Incident } from '@/components/types/prisma';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import IncidentEditForm from './incident-edit-form';
@@ -17,13 +17,15 @@ export default async function IncidentEditPage({ params }: IncidentEditPageProps
     let incident: Incident | null = null;
 
     try {
-        // Fetch incident data
-        const incidentResponse = await fetchContentApi<Incident>(`incidents/${slug}?populate=*`, {
-            next: {
-                revalidate: 300,
-                tags: [`incident:${slug}`]
-            }
-        });
+        // Parse the slug as incident ID
+        const incidentId = parseInt(slug, 10);
+
+        if (isNaN(incidentId)) {
+            notFound();
+        }
+
+        // Fetch incident data using Prisma
+        const incidentResponse = await getIncidentById(incidentId);
 
         if (!incidentResponse.success || !incidentResponse.data) {
             notFound();
@@ -32,6 +34,7 @@ export default async function IncidentEditPage({ params }: IncidentEditPageProps
         incident = incidentResponse.data;
     } catch (error) {
         console.error('Error fetching incident:', error);
+        notFound();
     }
 
     if (!incident) {

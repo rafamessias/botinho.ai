@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/prisma/lib/prisma';
+import { prismaWithCompany } from './prisma-with-company';
 import { RDO, Project, ApiResponse } from '@/components/types/prisma';
 import { WeatherCondition, RDOStatus, Action } from '@/lib/generated/prisma';
 import { uploadMultipleFilesToCloudinary, deleteFileFromCloudinary } from './cloudinary-upload-action';
@@ -67,22 +68,21 @@ export async function createRDO(data: RDOData): Promise<ApiResponse<RDO>> {
             projectId: data.project.id!
         };
 
-        const newRDO = await prisma.rDO.create({
-            data: rdoData,
-            include: {
-                user: {
-                    include: {
-                        avatar: true
-                    }
-                },
-                project: {
-                    include: {
-                        company: true
-                    }
-                },
-                company: true,
-                media: true
-            }
+        const newRDO = await prismaWithCompany.rdo.create({
+            date: new Date(data.date),
+            rdoStatus: data.status as RDOStatus,
+            description: data.description,
+            equipmentUsed: data.equipment,
+            workforce: data.labor,
+            createdBy: userMeResponse.data.firstName || 'Unknown',
+            weatherMorningCondition: data.weather.weatherMorning.condition,
+            weatherMorningWorkable: data.weather.weatherMorning.workable,
+            weatherAfternoonCondition: data.weather.weatherAfternoon.condition,
+            weatherAfternoonWorkable: data.weather.weatherAfternoon.workable,
+            weatherNightCondition: data.weather.weatherNight.condition,
+            weatherNightWorkable: data.weather.weatherNight.workable,
+            userId: userId,
+            projectId: data.project.id!
         });
 
         if (!newRDO) {
@@ -188,24 +188,21 @@ export async function updateRDOStatus(rdoId: number, status: RDOStatus, auditDat
 
         // Create approval audit record
         if (auditData) {
-            await prisma.approvalAudit.create({
-                data: {
-                    action: status === 'approved' || status === 'pendingApproval' ? Action.approved : Action.rejected,
-                    description: auditData.description,
-                    date: new Date(),
-                    ip_address: auditData.ip_address,
-                    latitude: auditData.latitude,
-                    longitude: auditData.longitude,
-                    device_type: auditData.device_type,
-                    time_zone: auditData.time_zone,
-                    geo_location: auditData.geo_location,
-                    document_hash: auditData.document_hash || '',
-                    userName: userMeResponse.data.firstName + ' ' + userMeResponse.data.lastName || 'Unknown',
-                    companyId: updatedRDO.companyId,
-                    projectId: updatedRDO.projectId,
-                    rdoId: rdoId,
-                    userId: userId
-                }
+            await prismaWithCompany.approvalAudit.create({
+                action: status === 'approved' || status === 'pendingApproval' ? Action.approved : Action.rejected,
+                description: auditData.description,
+                date: new Date(),
+                ip_address: auditData.ip_address,
+                latitude: auditData.latitude,
+                longitude: auditData.longitude,
+                device_type: auditData.device_type,
+                time_zone: auditData.time_zone,
+                geo_location: auditData.geo_location,
+                document_hash: auditData.document_hash || '',
+                userName: userMeResponse.data.firstName + ' ' + userMeResponse.data.lastName || 'Unknown',
+                projectId: updatedRDO.projectId,
+                rdoId: rdoId,
+                userId: userId
             });
         }
 
@@ -367,7 +364,7 @@ export async function getRDOById(rdoId: number): Promise<ApiResponse<RDO>> {
     try {
         await requireSession();
 
-        const rdo = await prisma.rDO.findUnique({
+        const rdo = await prismaWithCompany.rdo.findUnique({
             where: { id: rdoId },
             include: {
                 user: {

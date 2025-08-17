@@ -2,6 +2,7 @@ import ContainerApp from '@/components/Container-app';
 import CreateIncidentForm from './create-incident-form';
 import { getTranslations } from 'next-intl/server';
 import { prisma } from '@/prisma/lib/prisma';
+import { prismaWithCompany } from '@/components/actions/prisma-with-company';
 import { Project } from '@/components/types/prisma';
 import { EmptyState } from '@/components/shared/empty-state';
 import { RestrictProjectUsers } from '@/components/shared/restrict-project-users';
@@ -33,12 +34,9 @@ export default async function IncidentCreatePage({ searchParams }: { searchParam
             );
         }
 
-        const companyId = userMeResponse.data.company.id;
-
         // Fetch projects using Prisma
-        const projects = await prisma.project.findMany({
+        const projects = await prismaWithCompany.project.findMany({
             where: {
-                companyId: companyId,
                 projectStatus: {
                     in: ['active', 'wip']
                 },
@@ -58,7 +56,7 @@ export default async function IncidentCreatePage({ searchParams }: { searchParam
         });
 
         // Transform projects to match expected format
-        const transformedProjects: Project[] = projects.map(project => ({
+        const transformedProjects: Project[] = projects.map((project: any) => ({
             id: project.id,
             name: project.name,
             description: project.description || '',

@@ -259,7 +259,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
 
             if (result.success) {
                 toast.success(t('companyUpdated'));
-                setUser({ ...user, company: result.data });
+                setUser({ ...user, company: result.data as any, email: user?.email || '' } as any);
             } else {
                 toast.error(result.error || t('companyUpdateError'));
             }

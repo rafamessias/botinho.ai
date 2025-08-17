@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { StrapiImage, User } from '@/components/types/strapi';
+import { FileImage, User } from '@/components/types/prisma';
 
 interface ActivityCardProps {
     id: number;
@@ -19,7 +19,7 @@ interface ActivityCardProps {
     priority?: string | number;
     user: User;
     userName?: string;
-    media?: StrapiImage[];
+    media?: FileImage[];
     getStatusLabel: (status: any) => string;
     getStatusVariant: (status: any) => "default" | "secondary" | "destructive" | "outline";
     getPriorityLabel?: (priority: any) => string;

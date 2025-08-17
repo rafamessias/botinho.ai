@@ -5,6 +5,7 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { PrismaClient } from '@/lib/generated/prisma';
 import { requireSession } from './check-session';
+import { prismaWithCompany } from './prisma-with-company';
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -79,16 +80,14 @@ export async function uploadFileToCloudinary({
         });
 
         // Create File record in Prisma
-        const fileRecord = await prisma.file.create({
-            data: {
-                name: file.name,
-                publicId: uploadResult.public_id,
-                format: uploadResult.format,
-                version: uploadResult.version.toString(),
-                url: uploadResult.secure_url,
-                mimeType: file.type,
-                size: file.size,
-            }
+        const fileRecord = await prismaWithCompany.file.create({
+            name: file.name,
+            publicId: uploadResult.public_id,
+            format: uploadResult.format,
+            version: uploadResult.version.toString(),
+            url: uploadResult.secure_url,
+            mimeType: file.type,
+            size: file.size,
         });
 
         // Update the referenced table record
@@ -218,7 +217,7 @@ export async function uploadMultipleFilesToCloudinary(
 export async function deleteFileFromCloudinary(fileId: number): Promise<{ success: boolean; error?: string }> {
     try {
         // Get the file record from Prisma
-        const fileRecord = await prisma.file.findUnique({
+        const fileRecord = await prismaWithCompany.file.findUnique({
             where: { id: fileId }
         });
 

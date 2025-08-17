@@ -1,6 +1,7 @@
 import ContainerApp from "@/components/Container-app";
 import CreateRDOForm from "./create-rdo-form";
 import { prisma } from "@/prisma/lib/prisma";
+import { prismaWithCompany } from "@/components/actions/prisma-with-company";
 import { Project } from "@/components/types/prisma";
 import { Company, User } from "@/lib/generated/prisma";
 import { getTranslations } from "next-intl/server";
@@ -13,14 +14,10 @@ export default async function CreateRDOPage({ searchParams }: { searchParams: Pr
     let selectedProject: Project | null = null;
 
     try {
-        // Get current user session
-        const user = await requireSession();
-        const company: any = user?.company;
 
         // Fetch projects using Prisma
-        const projects = await prisma.project.findMany({
+        const projects = await prismaWithCompany.project.findMany({
             where: {
-                companyId: company.id,
                 projectStatus: {
                     in: ['active', 'wip']
                 }
@@ -42,7 +39,7 @@ export default async function CreateRDOPage({ searchParams }: { searchParams: Pr
         if (project) {
             const projectId = parseInt(project);
             if (!isNaN(projectId)) {
-                selectedProject = projects.find(p => p.id === projectId) || null;
+                selectedProject = projects.find((p: any) => p.id === projectId) as any || null;
             }
         }
 
@@ -67,7 +64,7 @@ export default async function CreateRDOPage({ searchParams }: { searchParams: Pr
         return (
             <RestrictProjectUsers>
                 <ContainerApp title={t('title')} showBackButton={true}>
-                    <CreateRDOForm projects={projects} selectedProject={selectedProject} />
+                    <CreateRDOForm projects={projects as any} selectedProject={selectedProject} />
                 </ContainerApp>
             </RestrictProjectUsers>
         );

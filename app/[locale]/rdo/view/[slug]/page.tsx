@@ -2,6 +2,7 @@ import { RdoCard } from '@/components/rdo/rdo-card';
 import { RDOWithCommentsAndAudit } from '@/components/types/prisma';
 import ContainerApp from '@/components/Container-app';
 import { prisma } from '@/prisma/lib/prisma';
+import { prismaWithCompany } from '@/components/actions/prisma-with-company';
 import { notFound } from 'next/navigation';
 
 export default async function RdoPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -20,7 +21,7 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
 
     try {
         // Fetch RDO with all related data using Prisma
-        const rdoData = await prisma.rDO.findUnique({
+        const rdoData = await prismaWithCompany.rdo.findUnique({
             where: { id: rdoId },
             include: {
                 user: {
@@ -57,7 +58,7 @@ export default async function RdoPage({ params }: { params: Promise<{ slug: stri
         // Using type assertion to handle complex type transformations
         rdo = rdoData as unknown as RDOWithCommentsAndAudit;
 
-        projectName = rdoData.project.name;
+        projectName = (rdoData as any).project.name;
 
     } catch (error) {
         console.error('Failed to fetch RDO:', error);

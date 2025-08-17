@@ -74,8 +74,6 @@ const FeedRDOCard = ({ rdo }: { rdo: RDO }) => {
         }
     };
 
-    console.log(rdo);
-
     return (
         <Card className="p-6 space-y-4 !rounded-none sm:!rounded-xl !shadow-none sm:!shadow-sm border border-gray-100 sm:!border-none hover:!shadow-md transition-shadow">
             <CardHeader className="p-0 relative">

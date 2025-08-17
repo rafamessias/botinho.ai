@@ -2,6 +2,7 @@
 
 import { uploadFileToCloudinary, deleteFileFromCloudinary } from './cloudinary-upload-action';
 import { prisma } from '@/prisma/lib/prisma';
+import { prismaWithCompany } from './prisma-with-company';
 import { revalidateTag } from 'next/cache';
 import { requireSession } from './check-session';
 import { getUserMe } from './get-user-me-action';
@@ -172,14 +173,11 @@ export async function createProject(data: CreateProjectData) {
         const companyId = userMeResponse.data.company.id;
 
         // Create the project
-        const newProject = await prisma.project.create({
-            data: {
-                name: data.name,
-                description: data.description,
-                address: data.address,
-                projectStatus: 'active',
-                companyId: companyId,
-            }
+        const newProject = await prismaWithCompany.project.create({
+            name: data.name,
+            description: data.description,
+            address: data.address,
+            projectStatus: 'active',
         });
 
         if (!newProject) {
@@ -217,17 +215,14 @@ export async function createProject(data: CreateProjectData) {
 
                 if (userRegistration.success && userRegistration.data) {
                     // Create project user record
-                    await prisma.projectUser.create({
-                        data: {
-                            projectId: newProject.id,
-                            companyId: companyId,
-                            userId: userRegistration.data.id,
-                            name: userData.name,
-                            email: userData.email,
-                            phone: userData.phone,
-                            canApprove: userData.canApprove,
-                            projectUserStatus: 'invited'
-                        }
+                    await prismaWithCompany.projectUser.create({
+                        projectId: newProject.id,
+                        userId: userRegistration.data.id,
+                        name: userData.name,
+                        email: userData.email,
+                        phone: userData.phone,
+                        canApprove: userData.canApprove,
+                        projectUserStatus: 'invited'
                     });
                 }
             }
@@ -334,7 +329,7 @@ export async function removeProjectAttachments(fileIds: number[], projectId: num
         }
 
         const deletePromises = fileIds.map(async (fileId) => {
-            const file = await prisma.file.findUnique({
+            const file = await prismaWithCompany.file.findUnique({
                 where: { id: fileId }
             });
 
@@ -384,7 +379,7 @@ export async function updateProjectUsers(projectId: number, users: any[]) {
         const companyId = userMeResponse.data.company.id;
 
         // First, get existing project users to delete them
-        const existingUsers = await prisma.projectUser.findMany({
+        const existingUsers = await prismaWithCompany.projectUser.findMany({
             where: { projectId: projectId }
         });
 
@@ -398,16 +393,13 @@ export async function updateProjectUsers(projectId: number, users: any[]) {
         // Then create new project users
         if (users && users.length > 0) {
             const createPromises = users.map(async (user) => {
-                const response = await prisma.projectUser.create({
-                    data: {
-                        projectId: projectId,
-                        name: user.name,
-                        email: user.email,
-                        phone: user.phone,
-                        canApprove: user.canApprove,
-                        projectUserStatus: 'invited',
-                        companyId: companyId
-                    }
+                const response = await prismaWithCompany.projectUser.create({
+                    projectId: projectId,
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                    canApprove: user.canApprove,
+                    projectUserStatus: 'invited'
                 });
 
                 if (!response) {
@@ -467,17 +459,14 @@ export async function createProjectUser(projectId: number, projectName: string, 
             };
         }
 
-        const response = await prisma.projectUser.create({
-            data: {
-                projectId: projectId,
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                userId: userData.data.id,
-                canApprove: user.canApprove || false,
-                projectUserStatus: 'invited',
-                companyId: companyId
-            }
+        const response = await prismaWithCompany.projectUser.create({
+            projectId: projectId,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            userId: userData.data.id,
+            canApprove: user.canApprove || false,
+            projectUserStatus: 'invited'
         });
 
         if (!response) {

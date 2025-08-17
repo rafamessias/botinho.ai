@@ -1,6 +1,5 @@
 "use server";
 
-import { fetchContentApi } from "./fetch-content-api";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/prisma/lib/prisma";
 

@@ -3,8 +3,8 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Mail, Phone, Calendar } from 'lucide-react';
-import { User as UserType } from '@/components/types/strapi';
+import { Phone, Calendar } from 'lucide-react';
+import { User as UserType } from '@/lib/generated/prisma';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

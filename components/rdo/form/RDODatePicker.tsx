@@ -45,7 +45,7 @@ export function RDODatePicker({ value, onChange }: { value: string, onChange: (v
         if (parsed) {
             setDate(parsed);
             setMonth(parsed);
-            onChange(parsed.toISOString().split('T')[0]);
+            onChange(parsed.toISOString());
         }
     };
 
@@ -54,7 +54,7 @@ export function RDODatePicker({ value, onChange }: { value: string, onChange: (v
         if (selected) {
             setInputValue(formatDate(selected));
             setMonth(selected);
-            onChange(selected.toISOString().split('T')[0]);
+            onChange(selected.toISOString());
             setOpen(false);
         }
     };

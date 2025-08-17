@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/prisma/lib/prisma';
+import { prismaWithCompany } from './prisma-with-company';
 import { RDO, Incident, Project, ApiResponse } from '../types/prisma';
 
 export async function getPaginatedProjectRdos(projectSlug: string, page: number, pageSize: number): Promise<ApiResponse<RDO[]>> {
@@ -10,7 +11,7 @@ export async function getPaginatedProjectRdos(projectSlug: string, page: number,
             return { success: false, data: null, error: 'Invalid project ID' };
         }
 
-        const rdosData = await prisma.rDO.findMany({
+        const rdosData = await prismaWithCompany.rdo.findMany({
             where: { projectId: projectId },
             include: {
                 user: {
@@ -42,7 +43,7 @@ export async function getPaginatedProjectIncidents(projectSlug: string, page: nu
             return { success: false, data: null, error: 'Invalid project ID' };
         }
 
-        const incidentsData = await prisma.incident.findMany({
+        const incidentsData = await prismaWithCompany.incident.findMany({
             where: { projectId: projectId },
             include: {
                 user: {
@@ -75,7 +76,7 @@ export async function getFilteredProjects(status: string = 'active'): Promise<Ap
             whereClause.active = status === 'active';
         }
 
-        const projectsData = await prisma.project.findMany({
+        const projectsData = await prismaWithCompany.project.findMany({
             where: whereClause,
             include: {
                 image: true,
@@ -90,7 +91,7 @@ export async function getFilteredProjects(status: string = 'active'): Promise<Ap
             }
         });
 
-        return { success: true, data: projectsData as Project[] };
+        return { success: true, data: projectsData as unknown as Project[] };
     } catch (error) {
         console.error('Error fetching filtered projects:', error);
         return { success: false, data: null, error: 'Failed to fetch projects' };
@@ -122,7 +123,7 @@ export async function searchProjects(searchTerm: string, status: string = 'all')
             }
         }
 
-        const projectsData = await prisma.project.findMany({
+        const projectsData = await prismaWithCompany.project.findMany({
             where: whereClause,
             include: {
                 image: true,
@@ -137,7 +138,7 @@ export async function searchProjects(searchTerm: string, status: string = 'all')
             }
         });
 
-        return { success: true, data: projectsData as Project[] };
+        return { success: true, data: projectsData as unknown as Project[] };
     } catch (error) {
         console.error('Error searching projects:', error);
         return { success: false, data: null, error: 'Failed to search projects' };

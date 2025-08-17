@@ -1,5 +1,6 @@
 import ContainerApp from "@/components/Container-app";
 import { prisma } from "@/prisma/lib/prisma";
+import { prismaWithCompany } from "@/components/actions/prisma-with-company";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import ProjectEditForm from "./project-edit-form";
@@ -21,7 +22,7 @@ export default async function ProjectEditPage({ params }: ProjectEditPageProps) 
             notFound();
         }
 
-        projectData = await prisma.project.findUnique({
+        projectData = await prismaWithCompany.project.findUnique({
             where: { id: projectId },
             include: {
                 image: true,
@@ -57,7 +58,7 @@ export default async function ProjectEditPage({ params }: ProjectEditPageProps) 
     return (
         <RestrictProjectUsers>
             <ContainerApp title={projectData.name || ''} showBackButton={true}>
-                <ProjectEditForm project={projectData} />
+                <ProjectEditForm project={projectData as any} />
             </ContainerApp>
         </RestrictProjectUsers>
     );

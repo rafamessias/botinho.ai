@@ -1,5 +1,6 @@
 import ContainerApp from '@/components/Container-app';
 import { prisma } from '@/prisma/lib/prisma';
+import { prismaWithCompany } from '@/components/actions/prisma-with-company';
 import { notFound } from 'next/navigation';
 import ProjectViewWithInfiniteScroll from './project-view-with-infinite-scroll';
 
@@ -16,7 +17,7 @@ export default async function ProjectViewPage({ params }: { params: Promise<{ sl
         notFound();
     }
 
-    const projectData = await prisma.project.findUnique({
+    const projectData = await prismaWithCompany.project.findUnique({
         where: { id: projectId },
         include: {
             image: true,
@@ -33,7 +34,7 @@ export default async function ProjectViewPage({ params }: { params: Promise<{ sl
     }
 
     // Fetch initial RDOs with pagination using Prisma
-    const rdosData = await prisma.rDO.findMany({
+    const rdosData = await prismaWithCompany.rdo.findMany({
         where: { projectId: projectId },
         include: {
             user: {
@@ -53,7 +54,7 @@ export default async function ProjectViewPage({ params }: { params: Promise<{ sl
 
 
     // Fetch initial incidents with pagination using Prisma
-    const incidentsData = await prisma.incident.findMany({
+    const incidentsData = await prismaWithCompany.incident.findMany({
         where: { projectId: projectId },
         include: {
             user: {
@@ -74,7 +75,7 @@ export default async function ProjectViewPage({ params }: { params: Promise<{ sl
 
 
     // Fetch project users using Prisma
-    const projectUsersData = await prisma.projectUser.findMany({
+    const projectUsersData = await prismaWithCompany.projectUser.findMany({
         where: { projectId: projectId },
         include: {
             user: {
@@ -93,10 +94,10 @@ export default async function ProjectViewPage({ params }: { params: Promise<{ sl
     return (
         <ContainerApp title={projectData.name || ''} showBackButton={true}>
             <ProjectViewWithInfiniteScroll
-                project={projectData}
-                initialRdos={rdosData}
-                initialIncidents={incidentsData}
-                projectUsers={projectUsersData}
+                project={projectData as any}
+                initialRdos={rdosData as any}
+                initialIncidents={incidentsData as any}
+                projectUsers={projectUsersData as any}
                 projectSlug={slug}
             />
         </ContainerApp>

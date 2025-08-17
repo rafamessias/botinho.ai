@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { ProjectSelect } from '@/components/rdo/form/ProjectSelect';
 import { RDODatePicker } from '@/components/rdo/form/RDODatePicker';
-import { Project, Incident, StrapiImage } from '@/components/types/strapi';
+import { Project, Incident, FileImage } from '@/components/types/prisma';
 import { UploadPhoto } from '@/components/shared/upload-photo';
 import { useLoading } from '@/components/LoadingProvider';
 import { updateIncident, uploadIncidentAttachments, removeIncidentAttachments } from '@/components/actions/incident-action';
@@ -55,7 +55,7 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
     });
 
     const onSubmit = async (data: FormData) => {
-        if (!incident.documentId) {
+        if (!incident.id) {
             toast.error(t('error'));
             return;
         }
@@ -68,19 +68,19 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
 
         try {
             setIsLoading(true);
-            const response = await updateIncident(incident.documentId, incidentData);
+            const response = await updateIncident(incident.id, incidentData);
 
             if (response.success) {
                 // Remove files if any
                 if (filesToBeRemoved.length > 0) {
-                    await removeIncidentAttachments(filesToBeRemoved, incident.documentId);
+                    await removeIncidentAttachments(filesToBeRemoved, incident.id);
                 }
 
                 // Upload new files if any
                 if (data.media && data.media.length > 0 && incident.id) {
                     const filesToUpload = data.media.filter((file): file is File => file instanceof File);
                     if (filesToUpload.length > 0) {
-                        const uploadResponse = await uploadIncidentAttachments(incident.id, incident.documentId, filesToUpload);
+                        const uploadResponse = await uploadIncidentAttachments(incident.id, filesToUpload);
                         if (!uploadResponse.success) {
                             toast.error(uploadResponse.error || t('files.uploadError'));
                         }
@@ -213,7 +213,7 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
                     label={t('files.label')}
                     hint={t('files.hint')}
                     type="carousel"
-                    initialFiles={incident.media as StrapiImage[] || []}
+                    initialFiles={incident.media as FileImage[] || []}
                     onRemoveImage={onRemoveImage}
                     onChange={(files) => {
                         if (files) {

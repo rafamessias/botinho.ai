@@ -67,7 +67,7 @@ export default function NewPasswordForm({ locale }: { locale: string }) {
                 // get user from prisma
                 const user: ApiResponse<User> = await getUserMe();
                 if (user.success) {
-                    setUser(user.data);
+                    setUser(user.data as any);
 
                     //get locale
                     const userLocale = user.data?.language;

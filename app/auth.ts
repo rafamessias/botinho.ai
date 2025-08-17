@@ -23,6 +23,7 @@ interface User {
     name?: string | null
     company?: string | null
     language?: string | null
+    projectId?: string | null
 }
 
 const locale = async () => {
@@ -72,9 +73,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 try {
                     const user = await prisma.user.findUnique({
-                        where: { email: credentials.email as string }
+                        where: { email: credentials.email as string },
+                        include: { projectUsers: true }
                     })
-
 
                     if (!user || !user.password) {
                         throw new InvalidCredentialsError()
@@ -95,12 +96,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         throw new InvalidCredentialsError()
                     }
 
+                    // Get the first projectId from user's projectUsers relation, if available
+                    let projectId = null;
+                    if (user.projectUsers && user.projectUsers.length > 0) {
+                        projectId = user.projectUsers.map(pu => pu.projectId?.toString()).filter(Boolean).join(",");
+                    }
+
                     return {
                         id: user.id.toString(),
                         email: user.email,
                         name: `${user.firstName} ${user.lastName}`,
                         company: user?.companyId?.toString(),
                         language: user.language === "pt_BR" ? "pt-BR" : "en",
+                        projectId: projectId
                     }
                 } catch (error) {
                     console.error("Auth error:", error)
@@ -119,13 +127,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.email = user.email
                 token.company = (user as any)?.company
                 token.language = (user as any)?.language
+                token.projectId = (user as any)?.projectId
             }
 
             // Handle Google OAuth user creation/update in JWT callback
             if (account?.provider === "google" && user) {
                 try {
                     const existingUser = await prisma.user.findUnique({
-                        where: { email: token.email! }
+                        where: { email: token.email! },
+                        include: { projectUsers: true }
                     });
 
                     if (!existingUser) {
@@ -172,6 +182,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         token.email = existingUser.email
                         token.company = existingUser.companyId?.toString()
                         token.language = existingUser.language
+                        token.projectId = existingUser.projectUsers.map(pu => pu.projectId?.toString()).filter(Boolean).join(",");
                     }
                 } catch (error) {
                     console.error('Error handling Google OAuth user:', error);
@@ -209,6 +220,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.email = token.email as string
                 session.user.company = token.company as string
                 session.user.language = token.language as string
+                session.user.projectId = token.projectId as string
             }
 
             return session

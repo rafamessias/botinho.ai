@@ -2,15 +2,15 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, FileImage, Download } from 'lucide-react';
+import { Calendar, FileImage as FileImageIcon, Download } from 'lucide-react';
 import Image from 'next/image';
-import { StrapiImage } from '@/components/types/strapi';
+import { FileImage } from '@/components/types/prisma';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 
 interface MediaCardProps {
-    media: StrapiImage;
+    media: FileImage;
     t: (key: string) => string;
 }
 
@@ -55,7 +55,7 @@ export default function MediaCard({ media, t }: MediaCardProps) {
             <CardContent className="p-3">
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                        <FileImage className="h-4 w-4 text-gray-500" />
+                        <FileImageIcon className="h-4 w-4 text-gray-500" />
                         <span className="text-sm font-medium truncate">
                             {media.name || 'Untitled'}
                         </span>
@@ -76,9 +76,9 @@ export default function MediaCard({ media, t }: MediaCardProps) {
                             <Badge variant="outline" className="text-xs">
                                 {formatFileSize(media.size)}
                             </Badge>
-                            {media.ext && (
+                            {media.mimeType && (
                                 <Badge variant="outline" className="text-xs">
-                                    {media.ext.toUpperCase()}
+                                    {media.mimeType?.toUpperCase()}
                                 </Badge>
                             )}
                         </div>
