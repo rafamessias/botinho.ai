@@ -48,16 +48,16 @@ export default function FeedWithInfiniteScroll({
 
     const rdoCount = () => {
         if (user?.companyMember) {
-            return Number(project?.rdoCount || 0) + Number(project?.rdoCountDraft || 0);
+            return Number(project?.rdoCount || 0)
         }
-        return Number(project?.rdoCount || 0);
+        return Number(project?.rdoCount || 0) - Number(project?.rdoCountDraft || 0);;
     }
 
     const incidentCount = () => {
         if (user?.companyMember) {
-            return Number(project?.incidentCount || 0) + Number(project?.incidentCountDraft || 0);
+            return Number(project?.incidentCount || 0);
         }
-        return Number(project?.incidentCount || 0);
+        return Number(project?.incidentCount || 0) - Number(project?.incidentCountDraft || 0);
     }
 
     const fetchMoreRdos = useCallback(async () => {

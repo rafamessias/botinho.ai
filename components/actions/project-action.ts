@@ -160,18 +160,6 @@ export async function createProject(data: CreateProjectData) {
         // Check authentication
         await requireSession();
 
-        // Get current user with company info
-        const userMeResponse = await getUserMe();
-        if (!userMeResponse.success || !userMeResponse.data?.company?.id) {
-            return {
-                success: false,
-                error: 'User not found or no company associated',
-                data: null
-            };
-        }
-
-        const companyId = userMeResponse.data.company.id;
-
         // Create the project
         const newProject = await prismaWithCompany.project.create({
             name: data.name,
@@ -228,6 +216,21 @@ export async function createProject(data: CreateProjectData) {
             }
         }
 
+        // Increment company project number fields
+        if (newProject.companyId) {
+            await prisma.company.update({
+                where: { id: newProject.companyId },
+                data: {
+                    projectCount: {
+                        increment: 1
+                    },
+                    activeProjectCount: {
+                        increment: 1
+                    }
+                }
+            });
+        }
+
         revalidateTag(`project:${newProject.id}`);
         revalidateTag('projects');
 
@@ -248,8 +251,25 @@ export async function createProject(data: CreateProjectData) {
 
 export async function updateProject(projectId: number, data: ProjectData) {
     try {
-        await requireSession();
+        const userSession = await requireSession();
 
+        // Fetch the existing project to compare status and active fields
+        const existingProject = await prisma.project.findUnique({
+            where: { id: projectId },
+            select: { projectStatus: true, active: true, companyId: true }
+        });
+
+        // Determine the new value for 'active' based on the new status
+        let newActive = existingProject?.active;
+        if (data.projectStatus) {
+            if (['finished', 'stopped', 'deactivated'].includes(data.projectStatus)) {
+                newActive = false;
+            } else if (['active', 'wip'].includes(data.projectStatus)) {
+                newActive = true;
+            }
+        }
+
+        // Update the project with the new fields, including 'active'
         const response = await prisma.project.update({
             where: { id: projectId },
             data: {
@@ -257,6 +277,7 @@ export async function updateProject(projectId: number, data: ProjectData) {
                 description: data.description,
                 address: data.address,
                 projectStatus: data.projectStatus as any,
+                active: newActive
             }
         });
 
@@ -268,6 +289,21 @@ export async function updateProject(projectId: number, data: ProjectData) {
                 data: null
             };
         }
+
+        // Only increment or decrement activeProjectCount if the 'active' field actually changed
+        if (typeof newActive === 'boolean' && newActive !== existingProject?.active) {
+            if (response.companyId) {
+                await prisma.company.update({
+                    where: { id: response.companyId },
+                    data: {
+                        activeProjectCount: {
+                            [newActive ? 'increment' : 'decrement']: 1
+                        }
+                    }
+                });
+            }
+        }
+
 
         revalidateTag(`project:${projectId}`);
         revalidateTag('projects');
@@ -438,8 +474,6 @@ export async function createProjectUser(projectId: number, projectName: string, 
                 data: null
             };
         }
-
-        const companyId = userMeResponse.data.company.id;
 
         const userData: any = await registerUserWithConflictHandling({
             email: user.email,
