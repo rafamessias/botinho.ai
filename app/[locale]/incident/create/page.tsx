@@ -1,15 +1,18 @@
-import ContainerApp from '@/components/Container-app';
-import CreateIncidentForm from './create-incident-form';
-import { getTranslations } from 'next-intl/server';
+import ContainerApp from "@/components/Container-app";
+import CreateIncidentForm from "./create-incident-form";
 import { prisma } from '@/prisma/lib/prisma';
 import { prismaWithCompany } from '@/components/actions/prisma-with-company';
-import { Project } from '@/components/types/prisma';
-import { EmptyState } from '@/components/shared/empty-state';
-import { RestrictProjectUsers } from '@/components/shared/restrict-project-users';
+import { Project } from "@/components/types/prisma";
+import { getTranslations } from "next-intl/server";
+import { EmptyState } from "@/components/shared/empty-state";
+import { RestrictProjectUsers } from "@/components/shared/restrict-project-users";
 import { requireSession } from '@/components/actions/check-session';
 import { getUserMe } from '@/components/actions/get-user-me-action';
 
-export default async function IncidentCreatePage({ searchParams }: { searchParams: Promise<{ locale: string, project: string }> }) {
+// Force dynamic rendering since this page uses authentication
+export const dynamic = 'force-dynamic';
+
+export default async function CreateIncidentPage({ searchParams }: { searchParams: Promise<{ project: string, locale: string }> }) {
     const { locale, project } = await searchParams;
     const t = await getTranslations({ locale, namespace: 'incident' });
 

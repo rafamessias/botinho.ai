@@ -9,6 +9,9 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { RestrictProjectUsers } from "@/components/shared/restrict-project-users";
 import { requireSession } from "@/components/actions/check-session";
 
+// Force dynamic rendering since this page uses authentication
+export const dynamic = 'force-dynamic';
+
 export default async function CreateRDOPage({ searchParams }: { searchParams: Promise<{ project: string, locale: string }> }) {
     const { project, locale } = await searchParams;
     let selectedProject: Project | null = null;

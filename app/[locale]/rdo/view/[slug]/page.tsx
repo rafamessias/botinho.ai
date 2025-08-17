@@ -5,6 +5,9 @@ import { prisma } from '@/prisma/lib/prisma';
 import { prismaWithCompany } from '@/components/actions/prisma-with-company';
 import { notFound } from 'next/navigation';
 
+// Force dynamic rendering since this page uses authentication
+export const dynamic = 'force-dynamic';
+
 export default async function RdoPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const rdoId = parseInt(slug);

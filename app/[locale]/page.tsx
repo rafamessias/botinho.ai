@@ -1,10 +1,11 @@
 import ContainerApp from "@/components/Container-app"
 import { getTranslations } from "next-intl/server"
 import HomePage from "@/components/homePage/home-page"
-import { prisma } from "@/prisma/lib/prisma"
 import { prismaWithCompany } from "@/components/actions/prisma-with-company"
 import { Project } from "@/components/types/prisma";
 
+// Force dynamic rendering since this page uses authentication
+export const dynamic = 'force-dynamic';
 
 interface PageProps {
     params: Promise<{ locale: string }>;

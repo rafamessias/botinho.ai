@@ -1,16 +1,13 @@
-import ContainerApp from "@/components/Container-app";
-import { prisma } from "@/prisma/lib/prisma";
+
 import { prismaWithCompany } from "@/components/actions/prisma-with-company";
-import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import ContainerApp from "@/components/Container-app";
 import ProjectEditForm from "./project-edit-form";
-import { RestrictProjectUsers } from "@/components/shared/restrict-project-users";
 
-interface ProjectEditPageProps {
-    params: Promise<{ slug: string; locale: string }>;
-}
+// Force dynamic rendering since this page uses authentication
+export const dynamic = 'force-dynamic';
 
-export default async function ProjectEditPage({ params }: ProjectEditPageProps) {
+export default async function ProjectEditPage({ params }: { params: Promise<{ slug: string, locale: string }> }) {
     const { slug, locale } = await params;
 
     let projectData = null;
@@ -53,13 +50,9 @@ export default async function ProjectEditPage({ params }: ProjectEditPageProps) 
         notFound();
     }
 
-    const t = await getTranslations({ locale, namespace: 'project' });
-
     return (
-        <RestrictProjectUsers>
-            <ContainerApp title={projectData.name || ''} showBackButton={true}>
-                <ProjectEditForm project={projectData as any} />
-            </ContainerApp>
-        </RestrictProjectUsers>
+        <ContainerApp title={projectData.name || ''} showBackButton={true}>
+            <ProjectEditForm project={projectData as any} />
+        </ContainerApp>
     );
 } 

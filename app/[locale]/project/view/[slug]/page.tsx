@@ -1,8 +1,10 @@
 import ContainerApp from '@/components/Container-app';
-import { prisma } from '@/prisma/lib/prisma';
 import { prismaWithCompany } from '@/components/actions/prisma-with-company';
 import { notFound } from 'next/navigation';
 import ProjectViewWithInfiniteScroll from './project-view-with-infinite-scroll';
+
+// Force dynamic rendering since this page uses authentication
+export const dynamic = 'force-dynamic';
 
 export default async function ProjectViewPage({ params }: { params: Promise<{ slug: string, locale: string }> }) {
     const { slug } = await params;
