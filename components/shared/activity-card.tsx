@@ -72,11 +72,13 @@ export default function ActivityCard({
                                 <Badge variant={getStatusVariant(status)}>
                                     {getStatusLabel(status)}
                                 </Badge>
+                                {/*
                                 {priority && getPriorityLabel && getPriorityVariant && (
                                     <Badge variant={getPriorityVariant(String(priority))}>
                                         {getPriorityLabel(String(priority))}
                                     </Badge>
                                 )}
+                                */}
                             </div>
                         </div>
 

@@ -40,7 +40,7 @@ interface RDOWithRelations {
     rdoStatus: RDOStatus;
     user: any;
     media: any[];
-    userName?: string | null;
+    createdBy?: string | null;
 }
 
 interface IncidentWithRelations {
@@ -50,7 +50,7 @@ interface IncidentWithRelations {
     priority: number | null;
     user: any;
     media: any[];
-    userName?: string | null;
+    createdBy?: string | null;
     createdAt: Date;
 }
 
@@ -230,16 +230,16 @@ export default function ProjectViewWithInfiniteScroll({
 
     const rdoTotal = () => {
         if (user?.companyMember) {
-            return Number(project.rdoCount || 0) + Number(project.rdoCountDraft || 0);
+            return Number(project.rdoCount || 0);
         }
-        return Number(project.rdoCount || 0);
+        return Number(project.rdoCount || 0) - Number(project.rdoCountDraft || 0);
     }
 
     const incidentTotal = () => {
         if (user?.companyMember) {
-            return Number(project.incidentCount || 0) + Number(project.incidentCountDraft || 0);
+            return Number(project.incidentCount || 0);
         }
-        return Number(project.incidentCount || 0);
+        return Number(project.incidentCount || 0) - Number(project.incidentCountDraft || 0);
     }
 
     const fetchMoreRdos = useCallback(async () => {
@@ -466,7 +466,7 @@ export default function ProjectViewWithInfiniteScroll({
                                             date={new Date(rdo.date)}
                                             status={rdo.rdoStatus}
                                             user={user}
-                                            userName={rdo?.userName || undefined}
+                                            userName={rdo?.createdBy || undefined}
                                             media={media}
                                             getStatusLabel={getRDOStatusLabel}
                                             getStatusVariant={getRDOStatusVariant}
@@ -514,7 +514,7 @@ export default function ProjectViewWithInfiniteScroll({
                                             status={incident.incidentStatus}
                                             priority={incident.priority || undefined}
                                             user={user}
-                                            userName={incident?.userName || undefined}
+                                            userName={incident?.createdBy || undefined}
                                             media={media}
                                             getStatusLabel={getIncidentStatusLabel}
                                             getStatusVariant={getIncidentStatusVariant}
