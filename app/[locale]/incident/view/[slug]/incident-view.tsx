@@ -29,7 +29,7 @@ export default function IncidentView({ incident }: { incident: Incident }) {
     const router = useRouter();
     const { setIsLoading } = useLoading();
 
-    const userName = incident.userName;
+    const userName = incident.createdBy;
     const project = incident.project as Project;
     const media = incident.media as FileImage[];
 

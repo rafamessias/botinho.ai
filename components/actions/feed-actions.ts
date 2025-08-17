@@ -15,18 +15,7 @@ export async function getProjectBySlug(slug: string) {
                 active: true
             },
             include: {
-                company: {
-                    include: {
-                        owner: true
-                    }
-                },
                 image: true,
-                users: {
-                    include: {
-                        user: true,
-                        company: true
-                    }
-                }
             }
         })
 
@@ -52,8 +41,6 @@ export async function getProjectBySlug(slug: string) {
             photoCount: project.photoCount,
             active: project.active,
             image: project.image,
-            company: project.company,
-            users: project.users,
             createdAt: project.createdAt,
             updatedAt: project.updatedAt
         }
@@ -83,20 +70,7 @@ export async function getProjectRDOs(projectId: number, page: number = 1, pageSi
                 projectId: projectId
             },
             include: {
-                user: true,
-                project: true,
-                company: true,
                 media: true,
-                comments: {
-                    include: {
-                        user: true
-                    }
-                },
-                approvalAudits: {
-                    include: {
-                        user: true
-                    }
-                }
             },
             orderBy: [
                 { date: 'desc' },
@@ -122,12 +96,7 @@ export async function getProjectRDOs(projectId: number, page: number = 1, pageSi
             weatherAfternoonWorkable: rdo.weatherAfternoonWorkable,
             weatherNightCondition: rdo.weatherNightCondition,
             weatherNightWorkable: rdo.weatherNightWorkable,
-            user: rdo.user,
-            project: rdo.project,
-            company: rdo.company,
             media: rdo.media,
-            comments: rdo.comments,
-            approvalAudits: rdo.approvalAudits,
             createdAt: rdo.createdAt,
             updatedAt: rdo.updatedAt
         }))
@@ -170,20 +139,7 @@ export async function getProjectIncidents(projectId: number, page: number = 1, p
                 projectId: projectId
             },
             include: {
-                user: true,
-                project: true,
-                company: true,
                 media: true,
-                comments: {
-                    include: {
-                        user: true
-                    }
-                },
-                approvalAudits: {
-                    include: {
-                        user: true
-                    }
-                }
             },
             orderBy: [
                 { date: 'desc' },
@@ -202,12 +158,7 @@ export async function getProjectIncidents(projectId: number, page: number = 1, p
             description: incident.description,
             commentCount: incident.commentCount,
             createdBy: incident.createdBy,
-            user: incident.user,
-            project: incident.project,
-            company: incident.company,
             media: incident.media,
-            comments: incident.comments,
-            approvalAudits: incident.approvalAudits,
             createdAt: incident.createdAt,
             updatedAt: incident.updatedAt
         }))

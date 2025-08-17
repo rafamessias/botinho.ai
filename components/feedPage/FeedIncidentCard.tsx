@@ -41,7 +41,7 @@ const FeedIncidentCard = ({ incident }: { incident: Incident }) => {
     const { user: userAuth, isCompanyUser } = useUser();
     const locale = useLocale();
     const t = useTranslations('incident.incidentCard');
-    const userName = incident.userName;
+    const userName = incident.createdBy;
 
     const handleStatusUpdate = async (status: 'open' | 'wip' | 'closed' | 'draft') => {
         if (!incident.id) return;

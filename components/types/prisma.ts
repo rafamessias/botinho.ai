@@ -153,7 +153,7 @@ export type RDOWithCommentsAndAudit = RDO & {
 export interface Incident {
     id?: number;
     user?: User | number;
-    userName?: string;
+    createdBy?: string;
     project?: Project | number;
     company?: Company | number;
     description: string;
