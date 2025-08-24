@@ -62,7 +62,7 @@ export function CreateProjectForm() {
                 try {
                     // Upload file to Cloudinary
                     const uploadResults = await uploadToCloudinary(
-                        projectPhoto,
+                        Array.from(projectPhoto),
                         'obraguru/projects',
                         (progress) => {
                             console.log('Upload progress:', progress);

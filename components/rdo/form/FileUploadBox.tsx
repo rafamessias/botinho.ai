@@ -11,7 +11,7 @@ export function FileUploadBox({
 }: {
   onFiles: (files: File[]) => void,
   initialFiles?: (string | File | FileImage)[],
-  onRemoveImage?: (fileOrUrl: string | File | number) => void
+  onRemoveImage?: (fileOrUrl: string | File | FileImage | number) => void
 }) {
   const { register, setValue } = useForm();
   const t = useTranslations('formRDO.files');
