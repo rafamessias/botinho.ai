@@ -10,9 +10,11 @@ import { toast } from 'sonner';
 import { ProjectSelect } from '@/components/rdo/form/ProjectSelect';
 import { RDODatePicker } from '@/components/rdo/form/RDODatePicker';
 import { Project, Incident, FileImage } from '@/components/types/prisma';
-import { UploadPhoto } from '@/components/shared/upload-photo';
+import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { useLoading } from '@/components/LoadingProvider';
-import { updateIncident, uploadIncidentAttachments, removeIncidentAttachments } from '@/components/actions/incident-action';
+import { updateIncident, removeIncidentAttachments } from '@/components/actions/incident-action';
+import { uploadToCloudinary } from '@/lib/client-upload';
+import { createFileRecords } from '@/components/actions/client-upload-action';
 import { useState } from 'react';
 
 const statusOptions = [
@@ -68,21 +70,45 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
 
         try {
             setIsLoading(true);
-            const response = await updateIncident(incident.id, incidentData);
+            const response = await updateIncident(incident.id!, incidentData);
 
             if (response.success) {
                 // Remove files if any
                 if (filesToBeRemoved.length > 0) {
-                    await removeIncidentAttachments(filesToBeRemoved, incident.id);
+                    await removeIncidentAttachments(filesToBeRemoved, incident.id!);
                 }
 
                 // Upload new files if any
                 if (data.media && data.media.length > 0 && incident.id) {
                     const filesToUpload = data.media.filter((file): file is File => file instanceof File);
                     if (filesToUpload.length > 0) {
-                        const uploadResponse = await uploadIncidentAttachments(incident.id, filesToUpload);
-                        if (!uploadResponse.success) {
-                            toast.error(uploadResponse.error || t('files.uploadError'));
+                        try {
+                            // Upload files to Cloudinary
+                            const uploadResults = await uploadToCloudinary(filesToUpload, 'obraguru/incidents');
+
+                            // Transform results to ClientUploadResult format
+                            const clientUploadResults = uploadResults
+                                .filter(result => result.success && result.data)
+                                .map(result => result.data!);
+
+                            // Create file records in database
+                            const fileRecordsResponse = await createFileRecords({
+                                uploadResults: clientUploadResults,
+                                tableName: 'incident',
+                                recordId: incident.id!,
+                                fieldName: 'media'
+                            });
+
+                            if (!fileRecordsResponse.success) {
+                                toast.error(fileRecordsResponse.error || t('files.uploadError'));
+                            } else {
+                                // Clear the form state after successful upload
+                                setFilesToBeRemoved([]);
+                                setValue('media', null); // Clear the form field
+                            }
+                        } catch (error) {
+                            console.error('Error uploading files:', error);
+                            toast.error(t('files.uploadError'));
                         }
                     }
                 }
@@ -104,9 +130,15 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
         router.back();
     };
 
-    const onRemoveImage = async (fileOrUrl: string | File | number) => {
+    const onRemoveImage = async (fileOrUrl: string | File | FileImage | number) => {
         if (typeof fileOrUrl === 'number') {
             setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl]);
+        } else if ((fileOrUrl as FileImage)?.id) {
+            // Handle FileImage objects with database IDs
+            const fileId = (fileOrUrl as FileImage).id;
+            if (fileId) {
+                setFilesToBeRemoved([...filesToBeRemoved, fileId]);
+            }
         }
     };
 
@@ -206,7 +238,7 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
 
             {/* Upload Photos, Videos and Documents */}
             <div>
-                <UploadPhoto
+                <EnhancedUploadPhoto
                     register={register}
                     setValue={setValue}
                     name="media"
@@ -217,9 +249,11 @@ export default function IncidentEditForm({ incident }: { incident: Incident }) {
                     onRemoveImage={onRemoveImage}
                     onChange={(files) => {
                         if (files) {
-                            setValue('media', Array.isArray(files) ? files : [files]);
+                            setValue('media', files);
                         }
                     }}
+                    maxFiles={10}
+                    maxFileSize={50}
                 />
             </div>
 

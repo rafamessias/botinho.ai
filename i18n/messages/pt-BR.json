@@ -807,5 +807,24 @@
         "title": "Você está offline",
         "description": "Parece que você não tem conexão com a internet. Verifique sua conexão e tente novamente.",
         "retry": "Tentar novamente"
+    },
+    "enhancedUpload": {
+        "fileSizeError": "O tamanho do arquivo deve ser menor que {maxFileSize}MB",
+        "fileTypeError": "Tipo de arquivo não suportado",
+        "maxFilesError": "Máximo de {maxFiles} arquivos permitidos",
+        "filesProcessedSuccess": "{count} arquivo(s) processado(s) com sucesso",
+        "processFilesError": "Falha ao processar arquivos",
+        "uploadHint": "Clique para enviar ou arraste e solte",
+        "fileLimits": "Máx {maxFiles} arquivos, {maxFileSize}MB cada",
+        "compressing": "Comprimindo...",
+        "selectFiles": "Selecionar Arquivos",
+        "compressingFiles": "Comprimindo arquivos...",
+        "uploadingFiles": "Enviando arquivos...",
+        "selectedFiles": "Arquivos Selecionados:",
+        "preview": "Visualização {index}",
+        "dragOverMessage": "Solte os arquivos aqui para enviar",
+        "videoFile": "Arquivo de Vídeo",
+        "documentFile": "Arquivo de Documento",
+        "imageFile": "Arquivo de Imagem"
     }
 }

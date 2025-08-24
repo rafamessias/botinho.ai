@@ -1,9 +1,11 @@
 'use client';
 import { useForm } from 'react-hook-form';
-import { UploadPhoto } from '@/components/shared/upload-photo';
+import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
 import { useRef, useState } from 'react';
 import { createProject } from '@/components/actions/project-action';
+import { uploadToCloudinary } from '@/lib/client-upload';
+import { createFileRecords } from '@/components/actions/client-upload-action';
 import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -42,7 +44,7 @@ export function CreateProjectForm() {
                 name: projectData.projectName,
                 description: projectData.projectDescription,
                 address: projectData.projectAddress,
-                projectPhoto: projectPhoto?.[0],
+                projectPhoto: undefined, // We'll handle file separately
                 users: users.map(user => ({
                     name: user.name || '',
                     email: user.email || '',
@@ -51,12 +53,50 @@ export function CreateProjectForm() {
                 }))
             });
 
-            if (!result.success) {
+            if (!result.success || !result.data?.id) {
                 throw new Error(result.error || 'Failed to create project');
             }
 
-            if (!result.data) {
-                throw new Error('Project created but no data returned');
+            // Handle file upload if there's a project photo
+            if (projectPhoto && projectPhoto.length > 0) {
+                try {
+                    // Upload file to Cloudinary
+                    const uploadResults = await uploadToCloudinary(
+                        projectPhoto,
+                        'obraguru/projects',
+                        (progress) => {
+                            console.log('Upload progress:', progress);
+                        }
+                    );
+
+                    // Filter successful uploads
+                    const successfulUploads = uploadResults
+                        .filter(result => result.success)
+                        .map(result => result.data!)
+                        .filter(Boolean);
+
+                    if (successfulUploads.length > 0) {
+                        // Create file record in database
+                        const fileRecordsResponse = await createFileRecords({
+                            uploadResults: successfulUploads,
+                            tableName: 'Project',
+                            recordId: result.data.id,
+                            fieldName: 'imageId'
+                        });
+
+                        if (!fileRecordsResponse.success) {
+                            console.error('Failed to create file record:', fileRecordsResponse.error);
+                            // Continue anyway, the project was created successfully
+                        }
+                    }
+
+                    if (uploadResults.some(result => !result.success)) {
+                        toast.warning('Project created successfully, but photo upload failed');
+                    }
+                } catch (uploadError) {
+                    console.error('Error uploading project photo:', uploadError);
+                    toast.warning('Project created successfully, but photo upload failed');
+                }
             }
 
             toast.success(t('success'));
@@ -74,13 +114,15 @@ export function CreateProjectForm() {
         <div className="relative">
             <form id="obra-form" className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
 
-                <UploadPhoto
+                <EnhancedUploadPhoto
                     register={register}
                     setValue={setValue}
                     name="projectPhoto"
-                    photoUrl="/placeholder-image.webp"
                     label={t('uploadPhoto.label')}
                     hint={t('uploadPhoto.hint')}
+                    type="photo"
+                    maxFiles={1}
+                    maxFileSize={50}
                 />
 
                 <div>

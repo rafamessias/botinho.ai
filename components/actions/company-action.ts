@@ -93,7 +93,9 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
 
         console.log(`Creating Company ${companyRecord.id} - Current user added as company member Admin successfully`);
 
+        // DEPRECATED: File uploads are now handled client-side
         // First, upload the company logo if it exists
+        /*
         const logoFile = image.get('logo');
         if (logoFile) {
             // Use the Cloudinary upload action
@@ -112,6 +114,7 @@ export async function createCompany(data: Company, members: CompanyMemberDialog[
 
             console.log(`Creating Company ${companyRecord.id} - Logo uploaded successfully`);
         }
+        */
 
         // Add users as company members
         if (members.length > 0) {
@@ -243,11 +246,16 @@ export async function updateCompany(data: any) {
 }
 
 /**
+ * DEPRECATED: This function has been replaced by client-side uploads
  * Updates the company logo by uploading a new file to Cloudinary and updating the company record.
  * @param companyId - The ID of the company to update.
  * @param file - The new logo file (File object).
  * @returns {Promise<{success: boolean, data?: any, error?: string}>}
+ * 
+ * NOTE: This function is commented out to prevent server-side file uploads.
+ * Use client-side uploads with createFileRecords instead.
  */
+/*
 export async function updateCompanyLogo(companyId: number, file: File) {
     try {
         // Upload the file to Cloudinary and get the file record
@@ -277,6 +285,16 @@ export async function updateCompanyLogo(companyId: number, file: File) {
             error: error instanceof Error ? error.message : 'An error occurred while updating company logo'
         };
     }
+}
+*/
+
+// Placeholder function to maintain compatibility
+export async function updateCompanyLogo(companyId: number, file: File) {
+    console.warn('DEPRECATED: updateCompanyLogo is deprecated. Use client-side uploads instead.');
+    return {
+        success: false,
+        error: 'Server-side uploads are deprecated. Use client-side uploads with createFileRecords instead.'
+    };
 }
 
 

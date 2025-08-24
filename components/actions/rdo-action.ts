@@ -95,7 +95,9 @@ export async function createRDO(data: RDOData): Promise<ApiResponse<RDO>> {
 
         console.log(`Creating RDO ${newRDO.id} - RDO created successfully`);
 
+        // DEPRECATED: File uploads are now handled client-side
         // Upload files if they exist
+        /*
         if (data.files.length > 0) {
             const uploadResults = await uploadMultipleFilesToCloudinary(
                 data.files,
@@ -113,6 +115,7 @@ export async function createRDO(data: RDOData): Promise<ApiResponse<RDO>> {
 
             console.log(`Uploading ${data.files.length} files successfully`);
         }
+        */
 
         // Update project RDO count
         await prisma.project.update({
@@ -289,6 +292,14 @@ export async function updateRDO(rdoId: number, data: {
     }
 }
 
+/**
+ * DEPRECATED: This function has been replaced by client-side uploads
+ * Uploads RDO attachments to Cloudinary
+ * 
+ * NOTE: This function is commented out to prevent server-side file uploads.
+ * Use client-side uploads with createFileRecords instead.
+ */
+/*
 export async function uploadRdoAttachments(rdoId: number, files: File[]): Promise<ApiResponse<any[]>> {
     try {
         await requireSession();
@@ -324,6 +335,17 @@ export async function uploadRdoAttachments(rdoId: number, files: File[]): Promis
             data: null
         };
     }
+}
+*/
+
+// Placeholder function to maintain compatibility
+export async function uploadRdoAttachments(rdoId: number, files: File[]): Promise<ApiResponse<any[]>> {
+    console.warn('DEPRECATED: uploadRdoAttachments is deprecated. Use client-side uploads instead.');
+    return {
+        success: false,
+        error: 'Server-side uploads are deprecated. Use client-side uploads with createFileRecords instead.',
+        data: null
+    };
 }
 
 export async function removeRdoAttachments(fileIds: number[]): Promise<ApiResponse<any[]>> {

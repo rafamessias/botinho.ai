@@ -1,10 +1,10 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { UploadPhoto } from '@/components/shared/upload-photo';
+import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
 import { useRef, useState } from 'react';
-import { updateProject, uploadProjectAttachments, removeProjectAttachments, createProjectUser, updateProjectUser, removeProjectUser } from '@/components/actions/project-action';
+import { updateProject, removeProjectAttachments, createProjectUser, updateProjectUser, removeProjectUser } from '@/components/actions/project-action';
 import { Button } from '@/components/shared/button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -14,6 +14,8 @@ import { ProjectStatus } from '@/lib/generated/prisma';
 import { useLoading } from '@/components/LoadingProvider';
 import { ProjectStatusCombobox } from '@/components/shared/project-status-combobox';
 import { ProjectStatusBadge } from '@/components/shared/project-status-badge';
+import { uploadToCloudinary } from '@/lib/client-upload';
+import { createFileRecords } from '@/components/actions/client-upload-action';
 
 // Type for Project with included relations
 interface ProjectWithRelations {
@@ -43,7 +45,7 @@ interface ProjectFormValues {
     projectDescription: string;
     projectAddress: string;
     projectStatus: ProjectStatus;
-    projectPhoto?: FileList | File | FileImage | string | null;
+    projectPhoto?: File[] | null;
     projectUsers?: any[];
 }
 
@@ -60,7 +62,7 @@ export default function ProjectEditForm({ project }: { project: ProjectWithRelat
             projectDescription: project.description || '',
             projectAddress: project.address || '',
             projectStatus: project.projectStatus || 'active',
-            projectPhoto: project.image || null,
+            projectPhoto: null,
             projectUsers: project.users || [],
         }
     });
@@ -200,20 +202,36 @@ export default function ProjectEditForm({ project }: { project: ProjectWithRelat
             }
 
             // Handle new file uploads
-            /*
-            if (projectPhoto && projectPhoto.length > 0 && project.id) {
-                const filesToUpload = Array.from(projectPhoto).filter((file): file is File => file instanceof File);
+            if (data.projectPhoto && data.projectPhoto.length > 0 && project.id) {
+                const filesToUpload = data.projectPhoto.filter((file): file is File => file instanceof File);
 
                 if (filesToUpload.length > 0) {
-                    const uploadResponse = await uploadProjectAttachments(project.id, project.id, filesToUpload);
+                    try {
+                        // Upload files to Cloudinary
+                        const uploadResults = await uploadToCloudinary(filesToUpload, 'obraguru/projects');
 
-                    if (!uploadResponse.success) {
-                        toast.error(uploadResponse.error || t('files.uploadError'));
-                        // Continue with the process even if file upload fails
+                        // Transform results to ClientUploadResult format
+                        const clientUploadResults = uploadResults
+                            .filter(result => result.success && result.data)
+                            .map(result => result.data!);
+
+                        // Create file records in database
+                        const fileRecordsResponse = await createFileRecords({
+                            uploadResults: clientUploadResults,
+                            tableName: 'project',
+                            recordId: project.id,
+                            fieldName: 'image'
+                        });
+
+                        if (!fileRecordsResponse.success) {
+                            toast.error(fileRecordsResponse.error || t('files.uploadError'));
+                        }
+                    } catch (error) {
+                        console.error('Error uploading files:', error);
+                        toast.error(t('files.uploadError'));
                     }
                 }
             }
-            */
 
             toast.success(t('success'));
             router.push(`/project/view/${project.id}`);
@@ -230,15 +248,21 @@ export default function ProjectEditForm({ project }: { project: ProjectWithRelat
         router.back();
     };
 
-    const onRemoveImage = async (fileOrUrl: string | File | number) => {
+    const onRemoveImage = async (fileOrUrl: string | File | FileImage | number) => {
         if (typeof fileOrUrl === 'number') {
             setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl as number]);
+        } else if ((fileOrUrl as FileImage)?.id) {
+            // Handle FileImage objects with database IDs
+            const fileId = (fileOrUrl as FileImage).id;
+            if (fileId) {
+                setFilesToBeRemoved([...filesToBeRemoved, fileId]);
+            }
         }
     };
 
-    const onChange = (file: File | File[] | null) => {
-        if (file) {
-            // setValue('projectPhoto', file);
+    const onChange = (files: File[] | null) => {
+        if (files) {
+            setValue('projectPhoto', files);
         }
     };
 
@@ -246,17 +270,18 @@ export default function ProjectEditForm({ project }: { project: ProjectWithRelat
         <div className="relative">
             <form id="project-edit-form" className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
 
-                <UploadPhoto
+                <EnhancedUploadPhoto
                     register={register}
                     setValue={setValue}
                     name="projectPhoto"
-                    photoUrl={(project.image as FileImage)?.url || "/placeholder-image.webp"}
                     label={t('uploadPhoto.label')}
                     hint={t('uploadPhoto.hint')}
-                    currentImage={(project.image as FileImage)?.url}
+                    type="photo"
                     initialFiles={project.image ? [project.image as FileImage] : []}
                     onRemoveImage={onRemoveImage}
-
+                    onChange={onChange}
+                    maxFiles={1}
+                    maxFileSize={50}
                 />
 
 

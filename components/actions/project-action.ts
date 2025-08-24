@@ -172,7 +172,9 @@ export async function createProject(data: CreateProjectData) {
             throw new Error('Failed to create project');
         }
 
+        // DEPRECATED: File uploads are now handled client-side
         // Upload project photo if exists
+        /*
         if (data.projectPhoto) {
             const uploadResult = await uploadFileToCloudinary({
                 file: data.projectPhoto,
@@ -186,6 +188,7 @@ export async function createProject(data: CreateProjectData) {
                 console.error('Failed to upload project photo:', uploadResult.error);
             }
         }
+        */
 
         // Create project users for each user
         if (data.users && data.users.length > 0) {
@@ -319,6 +322,14 @@ export async function updateProject(projectId: number, data: ProjectData) {
     }
 }
 
+/**
+ * DEPRECATED: This function has been replaced by client-side uploads
+ * Uploads project attachments to Cloudinary
+ * 
+ * NOTE: This function is commented out to prevent server-side file uploads.
+ * Use client-side uploads with createFileRecords instead.
+ */
+/*
 export async function uploadProjectAttachments(projectId: number, files: File[]) {
     try {
         await requireSession();
@@ -354,6 +365,16 @@ export async function uploadProjectAttachments(projectId: number, files: File[])
             error: error instanceof Error ? error.message : 'An error occurred while uploading files'
         };
     }
+}
+*/
+
+// Placeholder function to maintain compatibility
+export async function uploadProjectAttachments(projectId: number, files: File[]) {
+    console.warn('DEPRECATED: uploadProjectAttachments is deprecated. Use client-side uploads instead.');
+    return {
+        success: false,
+        error: 'Server-side uploads are deprecated. Use client-side uploads with createFileRecords instead.'
+    };
 }
 
 export async function removeProjectAttachments(fileIds: number[], projectId: number) {

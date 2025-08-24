@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { UploadPhoto } from '@/components/shared/upload-photo';
+import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
 import { Input } from '@/components/ui/input';
 import { useRef, useState, useEffect } from 'react';
@@ -99,13 +99,15 @@ export function CreateCompanyForm() {
             <h2 className="text-2xl font-semibold mb-2">
                 {t('createTitle')}
             </h2>
-            <UploadPhoto
+            <EnhancedUploadPhoto
                 register={register}
                 setValue={setValue}
                 type="logo"
                 name="logo"
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
+                maxFiles={1}
+                maxFileSize={10}
             />
 
             <div>
