@@ -14,6 +14,8 @@ import { RDOStatus, WeatherCondition } from '@/lib/generated/prisma';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { createRDO } from '@/components/actions/rdo-action';
+import { uploadToCloudinary } from '@/lib/client-upload';
+import { createFileRecords } from '@/components/actions/client-upload-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 
@@ -69,14 +71,59 @@ export default function CreateRDOForm({ projects, selectedProject }: { projects:
         try {
             setIsLoading(true);
 
+            // Create RDO first
             const response = await createRDO(data);
 
-            if (response.success) {
-                toast.success(t('success'));
-                router.push(`/rdo/view/${response.data?.id}`);
-            } else {
+            if (!response.success || !response.data?.id) {
                 toast.error(response.error || t('error'));
+                return;
             }
+
+            // Handle file uploads if there are files
+            if (data.files && data.files.length > 0) {
+                try {
+                    // Upload files to Cloudinary
+                    const uploadResults = await uploadToCloudinary(
+                        data.files,
+                        'obraguru/rdo-media',
+                        (progress) => {
+                            // You can add progress tracking here if needed
+                            console.log('Upload progress:', progress);
+                        }
+                    );
+
+                    // Filter successful uploads
+                    const successfulUploads = uploadResults
+                        .filter(result => result.success)
+                        .map(result => result.data!)
+                        .filter(Boolean);
+
+                    if (successfulUploads.length > 0) {
+                        // Create file records in database
+                        const fileRecordsResponse = await createFileRecords({
+                            uploadResults: successfulUploads,
+                            tableName: 'RDO',
+                            recordId: response.data.id,
+                            fieldName: 'media'
+                        });
+
+                        if (!fileRecordsResponse.success) {
+                            console.error('Failed to create file records:', fileRecordsResponse.error);
+                            // Continue anyway, the RDO was created successfully
+                        }
+                    }
+
+                    if (uploadResults.some(result => !result.success)) {
+                        toast.warning('Some files failed to upload, but RDO was created successfully');
+                    }
+                } catch (uploadError) {
+                    console.error('Error uploading files:', uploadError);
+                    toast.warning('RDO created successfully, but file upload failed');
+                }
+            }
+
+            toast.success(t('success'));
+            router.push(`/rdo/view/${response.data.id}`);
         } catch (error) {
             console.error('Error submitting form:', error);
             toast.error(t('error'));

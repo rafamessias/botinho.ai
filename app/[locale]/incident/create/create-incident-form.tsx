@@ -10,9 +10,11 @@ import { toast } from 'sonner';
 import { ProjectSelect } from '@/components/rdo/form/ProjectSelect';
 import { RDODatePicker } from '@/components/rdo/form/RDODatePicker';
 import { Project } from '@/components/types/prisma';
-import { UploadPhoto } from '@/components/shared/upload-photo';
+import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { useLoading } from '@/components/LoadingProvider';
 import { createIncident } from '@/components/actions/incident-action';
+import { uploadToCloudinary } from '@/lib/client-upload';
+import { createFileRecords } from '@/components/actions/client-upload-action';
 
 const statusOptions = [
     'draft',
@@ -63,17 +65,61 @@ export default function CreateIncidentForm({ projects, project }: { projects: Pr
                 date: new Date(data.date),
                 incidentStatus: data.incidentStatus as any,
                 description: data.description,
-                media: data.media || undefined
+                media: undefined // We'll handle files separately
             };
 
             const response = await createIncident(incidentData);
 
-            if (response.success) {
-                toast.success(t('success'));
-                router.push(`/incident/view/${response.data?.id}`);
-            } else {
+            if (!response.success || !response.data?.id) {
                 toast.error(response.error || t('error'));
+                return;
             }
+
+            // Handle file uploads if there are files
+            if (data.media && data.media.length > 0) {
+                try {
+                    // Upload files to Cloudinary
+                    const uploadResults = await uploadToCloudinary(
+                        data.media,
+                        'obraguru/incidents',
+                        (progress) => {
+                            // You can add progress tracking here if needed
+                            console.log('Upload progress:', progress);
+                        }
+                    );
+
+                    // Filter successful uploads
+                    const successfulUploads = uploadResults
+                        .filter(result => result.success)
+                        .map(result => result.data!)
+                        .filter(Boolean);
+
+                    if (successfulUploads.length > 0) {
+                        // Create file records in database
+                        const fileRecordsResponse = await createFileRecords({
+                            uploadResults: successfulUploads,
+                            tableName: 'Incident',
+                            recordId: response.data.id,
+                            fieldName: 'media'
+                        });
+
+                        if (!fileRecordsResponse.success) {
+                            console.error('Failed to create file records:', fileRecordsResponse.error);
+                            // Continue anyway, the incident was created successfully
+                        }
+                    }
+
+                    if (uploadResults.some(result => !result.success)) {
+                        toast.warning('Some files failed to upload, but incident was created successfully');
+                    }
+                } catch (uploadError) {
+                    console.error('Error uploading files:', uploadError);
+                    toast.warning('Incident created successfully, but file upload failed');
+                }
+            }
+
+            toast.success(t('success'));
+            router.push(`/incident/view/${response.data.id}`);
         } catch (error) {
             console.error('Error submitting form:', error);
             toast.error(t('error'));
@@ -170,7 +216,7 @@ export default function CreateIncidentForm({ projects, project }: { projects: Pr
 
             {/* Upload Photos, Videos and Documents */}
             <div>
-                <UploadPhoto
+                <EnhancedUploadPhoto
                     register={register}
                     setValue={setValue}
                     name="media"
@@ -179,9 +225,11 @@ export default function CreateIncidentForm({ projects, project }: { projects: Pr
                     type="carousel"
                     onChange={(files) => {
                         if (files) {
-                            setValue('media', Array.isArray(files) ? files : [files]);
+                            setValue('media', files);
                         }
                     }}
+                    maxFiles={10}
+                    maxFileSize={50}
                 />
             </div>
 

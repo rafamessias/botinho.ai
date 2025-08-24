@@ -65,7 +65,9 @@ export async function createIncident(data: CreateIncidentData) {
 
         console.log(`Creating incident ${incident.id} - Incident created successfully`);
 
+        // DEPRECATED: File uploads are now handled client-side
         // Upload files if they exist
+        /*
         if (data.media && data.media.length > 0) {
             const uploadPromises = data.media.map(async (file) => {
                 const uploadResponse = await uploadFileToCloudinary({
@@ -86,6 +88,7 @@ export async function createIncident(data: CreateIncidentData) {
             console.log(`Uploading ${data.media.length} files successfully`);
             await Promise.all(uploadPromises);
         }
+        */
 
         // Update project incident count
         await prisma.project.update({
@@ -156,6 +159,14 @@ export async function updateIncident(incidentId: number, data: UpdateIncidentDat
     }
 }
 
+/**
+ * DEPRECATED: This function has been replaced by client-side uploads
+ * Uploads incident attachments to Cloudinary
+ * 
+ * NOTE: This function is commented out to prevent server-side file uploads.
+ * Use client-side uploads with createFileRecords instead.
+ */
+/*
 export async function uploadIncidentAttachments(incidentId: number, files: File[]) {
     try {
         // Check authentication
@@ -193,6 +204,17 @@ export async function uploadIncidentAttachments(incidentId: number, files: File[
             data: null
         };
     }
+}
+*/
+
+// Placeholder function to maintain compatibility
+export async function uploadIncidentAttachments(incidentId: number, files: File[]) {
+    console.warn('DEPRECATED: uploadIncidentAttachments is deprecated. Use client-side uploads instead.');
+    return {
+        success: false,
+        error: 'Server-side uploads are deprecated. Use client-side uploads with createFileRecords instead.',
+        data: null
+    };
 }
 
 export async function removeIncidentAttachments(fileIds: number[], incidentId: number) {

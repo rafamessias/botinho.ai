@@ -2,12 +2,12 @@
 
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { UploadPhoto } from '@/components/shared/upload-photo';
+import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { UserList, UserListRef } from '@/components/shared/user-list';
 import { Input } from '@/components/ui/input';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { updateCompany, createCompanyMember, updateCompanyMember, removeCompanyMember, updateCompanyLogo } from '@/components/actions/company-action';
+import { updateCompany, createCompanyMember, updateCompanyMember, removeCompanyMember } from '@/components/actions/company-action';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
@@ -16,7 +16,9 @@ import { Company, FileImage, CompanyMemberDialog } from '@/components/types/pris
 import { Button } from '../shared/button';
 import { ConfirmDialog } from '../shared/confirm-dialog';
 import { Controller } from 'react-hook-form';
-import { deleteFileFromCloudinary, uploadFileToCloudinary } from '@/components/actions/cloudinary-upload-action';
+import { deleteFileFromCloudinary } from '@/components/actions/cloudinary-upload-action';
+import { uploadToCloudinary } from '@/lib/client-upload';
+import { createFileRecords } from '@/components/actions/client-upload-action';
 
 function maskCPF(value: string) {
     return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
@@ -180,39 +182,49 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         }
     };
 
-    const handleImageChange = async (file: any | null) => {
-        if (file) {
-            setPendingImageChange(file[0]);
+    const handleImageChange = (files: File[] | null) => {
+        if (files && files.length > 0) {
+            setPendingImageChange(files[0]);
             setShowImageConfirm(true);
         }
     };
 
     const confirmImageChange = async () => {
-        if (!pendingImageChange) return;
-
         try {
             setIsLoading(true);
-            // Delete old file if exists
-            // Use server-side prisma actions for logo update
-            // Remove old logo if exists
-            if (logo?.id) {
-                await deleteFileFromCloudinary(logo.id);
-                setValue('logo', null);
+            if (!pendingImageChange) {
+                throw new Error('No image to upload');
             }
 
-            const uploadResponse = await updateCompanyLogo(company.id as number, pendingImageChange);
+            // Upload file to Cloudinary
+            const uploadResults = await uploadToCloudinary([pendingImageChange], 'obraguru/companies');
 
-            if (!uploadResponse.success) {
-                throw new Error('Failed to upload new logo');
-            } ``
+            // Transform results to ClientUploadResult format
+            const clientUploadResults = uploadResults
+                .filter(result => result.success && result.data)
+                .map(result => result.data!);
 
-            setValue('logo', uploadResponse.data);
+            if (clientUploadResults.length === 0) {
+                throw new Error('Failed to upload image');
+            }
+
+            // Create file record in database
+            const fileRecordsResponse = await createFileRecords({
+                uploadResults: clientUploadResults,
+                tableName: 'company',
+                recordId: company.id!,
+                fieldName: 'logo'
+            });
+
+            if (!fileRecordsResponse.success) {
+                throw new Error(fileRecordsResponse.error || 'Failed to create file record');
+            }
 
             setImageToUpload(pendingImageChange);
             toast.success(t('logoUpdated'));
         } catch (error) {
             console.error('Error updating logo:', error);
-            toast.error(`${t('logoUpdateError')} - ${error}`);
+            toast.error(`${t('logoUpdateError')} - ${error instanceof Error ? error.message : 'Unknown error'}`);
         } finally {
             setIsLoading(false);
             setShowImageConfirm(false);
@@ -225,7 +237,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         setPendingImageChange(null);
     };
 
-    const handleRemoveImage = async () => {
+    const handleRemoveImage = async (fileOrUrl: string | File | FileImage | number) => {
         try {
             setIsLoading(true);
             // Delete old file if exists
@@ -283,19 +295,20 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
 
     return (
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-            <UploadPhoto
+            <EnhancedUploadPhoto
                 register={register}
                 setValue={setValue}
                 type="logo"
                 name="logo"
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
-                initialFiles={logo?.url ? [logo.url] : []}
+                initialFiles={logo ? [logo] : []}
                 onRemoveImage={handleRemoveImage}
-                onChange={(file) => {
-                    handleImageChange(file);
-
+                onChange={(files) => {
+                    handleImageChange(files);
                 }}
+                maxFiles={1}
+                maxFileSize={10}
             />
 
             <div>

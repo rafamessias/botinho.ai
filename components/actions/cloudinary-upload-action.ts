@@ -33,8 +33,13 @@ export interface UploadResult {
 }
 
 /**
+ * DEPRECATED: This function has been replaced by client-side uploads
  * Uploads a file to Cloudinary, creates a File record in Prisma, and updates the referenced table
+ * 
+ * NOTE: This function is commented out to prevent server-side file uploads.
+ * Use client-side uploads with createFileRecords instead.
  */
+/*
 export async function uploadFileToCloudinary({
     file,
     tableName,
@@ -183,10 +188,31 @@ export async function uploadFileToCloudinary({
         };
     }
 }
+*/
+
+// Placeholder function to maintain compatibility
+export async function uploadFileToCloudinary({
+    file,
+    tableName,
+    recordId,
+    fieldName,
+    folder = 'obraguru'
+}: UploadFileParams): Promise<UploadResult> {
+    console.warn('DEPRECATED: uploadFileToCloudinary is deprecated. Use client-side uploads instead.');
+    return {
+        success: false,
+        error: 'Server-side uploads are deprecated. Use client-side uploads with createFileRecords instead.'
+    };
+}
 
 /**
+ * DEPRECATED: This function has been replaced by client-side uploads
  * Uploads multiple files to Cloudinary
+ * 
+ * NOTE: This function is commented out to prevent server-side file uploads.
+ * Use client-side uploads with createFileRecords instead.
  */
+/*
 export async function uploadMultipleFilesToCloudinary(
     files: File[],
     tableName: string,
@@ -209,6 +235,22 @@ export async function uploadMultipleFilesToCloudinary(
     );
 
     return Promise.all(uploadPromises);
+}
+*/
+
+// Placeholder function to maintain compatibility
+export async function uploadMultipleFilesToCloudinary(
+    files: File[],
+    tableName: string,
+    recordId: number,
+    fieldName: string,
+    folder?: string
+): Promise<UploadResult[]> {
+    console.warn('DEPRECATED: uploadMultipleFilesToCloudinary is deprecated. Use client-side uploads instead.');
+    return files.map(() => ({
+        success: false,
+        error: 'Server-side uploads are deprecated. Use client-side uploads with createFileRecords instead.'
+    }));
 }
 
 /**

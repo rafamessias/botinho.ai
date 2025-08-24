@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { UploadPhoto } from '@/components/shared/upload-photo';
+import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useUser } from '@/components/getUser';
@@ -15,7 +15,9 @@ import { useLoading } from '@/components/LoadingProvider';
 import { updateProfileAction, deleteProfileAction } from '@/components/actions/profile-action';
 import { DeleteProfileDialog } from '@/components/shared/delete-profile-dialog';
 import { Trash2 } from 'lucide-react';
-import { deleteFileFromCloudinary, uploadFileToCloudinary } from '@/components/actions/cloudinary-upload-action';
+import { deleteFileFromCloudinary } from '@/components/actions/cloudinary-upload-action';
+import { uploadToCloudinary } from '@/lib/client-upload';
+import { createFileRecords } from '@/components/actions/client-upload-action';
 import { FileImage } from '@/components/types/prisma';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 
@@ -103,7 +105,9 @@ export default function ProfileForm() {
                 setValue('avatar', null);
             }
 
+            // DEPRECATED: File uploads are now handled client-side
             // Upload new avatar
+            /*
             const uploadResult = await uploadFileToCloudinary({
                 file: pendingImageChange,
                 tableName: 'User',
@@ -126,6 +130,45 @@ export default function ProfileForm() {
                 ...user,
                 avatar: uploadResult.data
             });
+            */
+
+            // Upload new avatar to Cloudinary
+            const uploadResults = await uploadToCloudinary([pendingImageChange], 'obraguru/avatars');
+
+            // Transform results to ClientUploadResult format
+            const clientUploadResults = uploadResults
+                .filter(result => result.success && result.data)
+                .map(result => result.data!);
+
+            if (clientUploadResults.length === 0) {
+                throw new Error('Failed to upload avatar');
+            }
+
+            // Create file record in database
+            const fileRecordsResponse = await createFileRecords({
+                uploadResults: clientUploadResults,
+                tableName: 'user',
+                recordId: user.id,
+                fieldName: 'avatar'
+            });
+
+            if (!fileRecordsResponse.success) {
+                throw new Error(fileRecordsResponse.error || 'Failed to create file record');
+            }
+
+            // Update form state with the uploaded image data
+            const uploadedFile = fileRecordsResponse.data?.[0];
+            if (uploadedFile) {
+                setValue('avatar', [uploadedFile]);
+                setImageToUpload(pendingImageChange);
+                setCurrentAvatarUrl(uploadedFile.url);
+
+                // Update user context immediately
+                setUser({
+                    ...user,
+                    avatar: uploadedFile
+                });
+            }
 
             toast.success('Avatar updated successfully');
         } catch (error) {
@@ -289,7 +332,7 @@ export default function ProfileForm() {
             <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
                 {/* Avatar Upload */}
                 <div className="flex gap-2">
-                    <UploadPhoto
+                    <EnhancedUploadPhoto
                         key={`${currentAvatarUrl || 'no-avatar'}-${uploadPhotoKey}`} // Force re-render when avatar changes or when canceling
                         register={register}
                         setValue={setValue}
@@ -297,9 +340,11 @@ export default function ProfileForm() {
                         label={t('avatar.label')}
                         hint={t('avatar.hint')}
                         type="logo"
-                        currentImage={currentAvatarUrl}
+                        initialFiles={currentAvatarUrl ? [currentAvatarUrl] : []}
                         onChange={handleAvatarChange}
                         onRemoveImage={handleRemoveImage}
+                        maxFiles={1}
+                        maxFileSize={10}
                     />
                 </div>
 

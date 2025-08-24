@@ -799,5 +799,24 @@
         "title": "You are offline",
         "description": "It looks like you are not connected to the internet. Check your connection and try again.",
         "retry": "Try again"
+    },
+    "enhancedUpload": {
+        "fileSizeError": "File size must be less than {maxFileSize}MB",
+        "fileTypeError": "File type not supported",
+        "maxFilesError": "Maximum {maxFiles} files allowed",
+        "filesProcessedSuccess": "{count} file(s) processed successfully",
+        "processFilesError": "Failed to process files",
+        "uploadHint": "Click to upload or drag and drop",
+        "fileLimits": "Max {maxFiles} files, {maxFileSize}MB each",
+        "compressing": "Compressing...",
+        "selectFiles": "Select Files",
+        "compressingFiles": "Compressing files...",
+        "uploadingFiles": "Uploading files...",
+        "selectedFiles": "Selected Files:",
+        "preview": "Preview {index}",
+        "dragOverMessage": "Drop files here to upload",
+        "videoFile": "Video File",
+        "documentFile": "Document File",
+        "imageFile": "Image File"
     }
 }

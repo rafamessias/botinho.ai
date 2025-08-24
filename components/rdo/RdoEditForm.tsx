@@ -6,18 +6,20 @@ import { RDOStatusSelect } from '@/components/rdo/form/RDOStatusSelect';
 import { RDODatePicker } from '@/components/rdo/form/RDODatePicker';
 import { WeatherConditionGroup } from '@/components/rdo/form/WeatherConditionGroup';
 import { DescriptionTextarea } from '@/components/rdo/form/DescriptionTextarea';
-import { FileUploadBox } from '@/components/rdo/form/FileUploadBox';
 import { EquipmentTextarea } from '@/components/rdo/form/EquipmentTextarea';
 import { LaborTextarea } from '@/components/rdo/form/LaborTextarea';
 import { FormActionButtons } from '@/components/rdo/form/FormActionButtons';
+import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { RDO, Project, FileImage, PrismaWeatherOption } from '@/components/types/prisma';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { removeRdoAttachments, updateRDO, uploadRdoAttachments } from '@/components/actions/rdo-action';
+import { removeRdoAttachments, updateRDO } from '@/components/actions/rdo-action';
 import { toast } from 'sonner';
 import { useLoading } from '@/components/LoadingProvider';
 import { useState } from 'react';
 import { RDOStatus } from '@/lib/generated/prisma';
+import { uploadToCloudinary } from '@/lib/client-upload';
+import { createFileRecords } from '@/components/actions/client-upload-action';
 
 const rdoStatuses = Object.keys(RDOStatus);
 
@@ -41,7 +43,9 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
     const {
         control,
         handleSubmit,
-        formState: { isSubmitting, errors }
+        formState: { isSubmitting, errors },
+        register,
+        setValue,
     } = useForm<FormData>({
         defaultValues: {
             project: rdo.project,
@@ -111,11 +115,29 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
                         return;
                     }
 
-                    const uploadResponse = await uploadRdoAttachments(rdo.id, filesToUpload);
+                    try {
+                        // Upload files to Cloudinary
+                        const uploadResults = await uploadToCloudinary(filesToUpload, 'obraguru/rdo');
 
-                    if (!uploadResponse.success) {
-                        toast.error(uploadResponse.error || t('files.uploadError'));
-                        // Decide if we should stop here or continue
+                        // Transform results to ClientUploadResult format
+                        const clientUploadResults = uploadResults
+                            .filter(result => result.success && result.data)
+                            .map(result => result.data!);
+
+                        // Create file records in database
+                        const fileRecordsResponse = await createFileRecords({
+                            uploadResults: clientUploadResults,
+                            tableName: 'rdo',
+                            recordId: rdo.id,
+                            fieldName: 'media'
+                        });
+
+                        if (!fileRecordsResponse.success) {
+                            toast.error(fileRecordsResponse.error || t('files.uploadError'));
+                        }
+                    } catch (error) {
+                        console.error('Error uploading files:', error);
+                        toast.error(t('files.uploadError'));
                     }
                 }
 
@@ -132,8 +154,16 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
         }
     };
 
-    const onRemoveImage = async (fileOrUrl: string | File | number) => {
-        if (typeof fileOrUrl === 'number') setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl as number]);
+    const onRemoveImage = async (fileOrUrl: string | File | FileImage | number) => {
+        if (typeof fileOrUrl === 'number') {
+            setFilesToBeRemoved([...filesToBeRemoved, fileOrUrl as number]);
+        } else if ((fileOrUrl as FileImage)?.id) {
+            // Handle FileImage objects with database IDs
+            const fileId = (fileOrUrl as FileImage).id;
+            if (fileId) {
+                setFilesToBeRemoved([...filesToBeRemoved, fileId]);
+            }
+        }
     };
 
     return (
@@ -220,11 +250,18 @@ export function RdoEditForm({ rdo }: { rdo: RDO }) {
                     name="files"
                     control={control}
                     render={({ field }) => (
-                        <FileUploadBox
-                            initialFiles={rdo.media as any[] || []}
-                            onFiles={field.onChange}
+                        <EnhancedUploadPhoto
+                            register={register}
+                            setValue={setValue}
+                            name="files"
+                            label="Files"
+                            hint="Upload photos, videos, and documents"
+                            type="carousel"
+                            initialFiles={rdo.media as FileImage[] || []}
                             onRemoveImage={onRemoveImage}
-
+                            onChange={field.onChange}
+                            maxFiles={10}
+                            maxFileSize={50}
                         />
                     )}
                 />
