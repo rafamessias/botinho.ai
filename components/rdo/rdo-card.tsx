@@ -29,7 +29,7 @@ export function RdoCard({ rdo }: { rdo: RDOWithCommentsAndAudit }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const userName = rdo.userName;
+    const userName = rdo.createdBy;
     const { user: userAuth } = useUser();
     const [pUCanApprove, setPUCanApprove] = useState<boolean>(false);
 

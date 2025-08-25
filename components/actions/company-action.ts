@@ -223,9 +223,19 @@ export async function updateCompany(data: any) {
         //remove id, createdAt, updatedAt, publishedAt, logo
         const { id, createdAt, updatedAt, publishedAt, logo, ...companyData } = data;
 
+        // Handle logoId separately if logo is provided
+        if (logo && typeof logo === 'object' && 'id' in logo) {
+            companyData.logoId = logo.id;
+        } else if (logo === null) {
+            companyData.logoId = null;
+        }
+
         const company = await prisma.company.update({
             where: { id: parseInt(id) },
-            data: companyData
+            data: companyData,
+            include: {
+                logo: true
+            }
         });
 
         if (!company) {

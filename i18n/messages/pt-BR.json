@@ -55,6 +55,10 @@
             "actions": {
                 "reject": "Rejeitar",
                 "approve": "Aprovar",
+                "approveError": "Falha ao aprovar RDO",
+                "approveSuccess": "RDO aprovado com sucesso",
+                "rejectError": "Falha ao rejeitar RDO",
+                "rejectSuccess": "RDO rejeitado com sucesso",
                 "Approved": "Aprovado",
                 "Rejected": "Rejeitado",
                 "UpdatedSuccess": "RDO atualizado com sucesso",
@@ -825,6 +829,8 @@
         "dragOverMessage": "Solte os arquivos aqui para enviar",
         "videoFile": "Arquivo de Vídeo",
         "documentFile": "Arquivo de Documento",
-        "imageFile": "Arquivo de Imagem"
+        "imageFile": "Arquivo de Imagem",
+        "change": "Alterar",
+        "remove": "Remover"
     }
 }

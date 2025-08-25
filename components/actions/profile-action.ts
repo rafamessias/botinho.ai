@@ -11,7 +11,7 @@ export interface UpdateProfileData {
     lastName: string;
     phone: string;
     language: 'en' | 'pt-BR';
-    avatar?: File | FileImage | null;
+    avatarId?: number | null;
 }
 
 export interface UpdateProfileResult {
@@ -114,6 +114,7 @@ export async function updateProfileAction(data: UpdateProfileData): Promise<Upda
             lastName: data.lastName,
             phone: data.phone,
             language: data.language === 'pt-BR' ? 'pt_BR' : 'en',
+            ...(data?.avatarId && { avatarId: data.avatarId }),
         };
 
         // Update user profile

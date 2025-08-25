@@ -90,7 +90,7 @@ export default function Header() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+            <div className="h-10 w-10 rounded-full bg-muted animate-pulse bg-slate-300" />
           </div>
         </div>
       </header>
@@ -217,7 +217,7 @@ export function SubHeader({ title, showBackButton = false, editButton = "" }: { 
     return (
       <div className="w-full h-12 sm:h-16 bg-muted border-b flex justify-start items-center py-2 sticky top-16 z-40">
         <div className="container max-w-[1280px] flex justify-start items-center">
-          <div className="h-6 w-32 bg-muted animate-pulse rounded" />
+          <div className="h-6 w-32 bg-muted animate-pulse rounded bg-slate-300" />
         </div>
       </div>
     );
