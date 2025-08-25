@@ -9,17 +9,17 @@ import { EnhancedUploadPhoto } from '@/components/shared/enhanced-upload-photo';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useUser } from '@/components/getUser';
-import { SelectItem, Select, SelectValue, SelectContent } from '@/components/ui/select';
+import { SelectItem, Select, SelectContent } from '@/components/ui/select';
 import { SelectTrigger } from '@/components/ui/select';
+import { SelectValue } from '@/components/ui/select';
 import { useLoading } from '@/components/LoadingProvider';
 import { updateProfileAction, deleteProfileAction } from '@/components/actions/profile-action';
-import { DeleteProfileDialog } from '@/components/shared/delete-profile-dialog';
 import { Trash2 } from 'lucide-react';
 import { deleteFileFromCloudinary } from '@/components/actions/cloudinary-upload-action';
 import { uploadToCloudinary } from '@/lib/client-upload';
 import { createFileRecords } from '@/components/actions/client-upload-action';
 import { FileImage } from '@/components/types/prisma';
-import { ConfirmDialog } from '@/components/shared/confirm-dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type FormData = {
     name: string;
@@ -30,6 +30,12 @@ type FormData = {
     notifyRDO: boolean;
 };
 
+type PendingAvatarChange = {
+    type: 'upload' | 'edit' | 'remove';
+    file?: File;
+    currentAvatar?: FileImage;
+};
+
 export default function ProfileForm() {
     const router = useRouter();
     const pathname = usePathname();
@@ -37,20 +43,11 @@ export default function ProfileForm() {
     const t = useTranslations('profile');
     const { user, setUser, setLoading } = useUser();
     const { setIsLoading } = useLoading();
-    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [showImageConfirm, setShowImageConfirm] = useState(false);
-    const [pendingImageChange, setPendingImageChange] = useState<File | null>(null);
-    const [imageToUpload, setImageToUpload] = useState<File | null>(null);
-    const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>((user?.avatar as FileImage)?.url || null);
+    const [pendingAvatarChange, setPendingAvatarChange] = useState<PendingAvatarChange | null>(null);
     const [uploadPhotoKey, setUploadPhotoKey] = useState(0);
 
     const avatar: FileImage = user?.avatar as FileImage;
-
-    // Update currentAvatarUrl when user avatar changes
-    useEffect(() => {
-        setCurrentAvatarUrl((user?.avatar as FileImage)?.url || null);
-    }, [(user?.avatar as FileImage)?.url]);
 
     const {
         control,
@@ -65,7 +62,7 @@ export default function ProfileForm() {
             name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
             phone: user?.phone || '',
             email: user?.email || '',
-            language: user?.language as 'en' | 'pt-BR' || 'en',
+            language: (user?.language as 'en' | 'pt-BR') || 'en',
             avatar: user?.avatar ? [user.avatar as FileImage] : null,
             notifyRDO: false,
         },
@@ -86,107 +83,53 @@ export default function ProfileForm() {
         }
     }, [user, reset]);
 
-    const handleImageChange = async (file: any | null) => {
+    // Get the current avatar to display (either pending change or current)
+    const getCurrentAvatarForDisplay = () => {
+        if ((pendingAvatarChange?.type === 'upload' || pendingAvatarChange?.type === 'edit') && pendingAvatarChange.file) {
+            // Return a temporary URL for the pending file
+            return [URL.createObjectURL(pendingAvatarChange.file)];
+        } else if (pendingAvatarChange?.type === 'remove') {
+            // Return empty array for removal
+            return [];
+        } else {
+            // Return current avatar
+            return avatar?.url ? [avatar.url] : [];
+        }
+    };
+
+    const handleAvatarChange = (file: File | File[] | null) => {
         if (file) {
-            setShowImageConfirm(true);
-            setPendingImageChange(file[0]);
+            const fileList = Array.isArray(file) ? file : [file];
+            // For single file uploads (like avatar), we expect only one file
+            const newFile = fileList[0];
+
+            // Determine if this is an edit (replacing existing avatar) or upload (no existing avatar)
+            const changeType = avatar ? 'edit' : 'upload';
+
+            setPendingAvatarChange({
+                type: changeType,
+                file: newFile,
+                currentAvatar: avatar
+            });
+        } else {
+            setPendingAvatarChange({
+                type: 'remove',
+                currentAvatar: avatar
+            });
         }
     };
 
-    const confirmImageChange = async () => {
-        if (!pendingImageChange || !user?.id) return;
-
-        try {
-            setIsLoading(true);
-
-            // Delete old avatar if exists
-            if (avatar?.id) {
-                await deleteFileFromCloudinary(avatar.id);
-                setValue('avatar', null);
-            }
-
-            // DEPRECATED: File uploads are now handled client-side
-            // Upload new avatar
-            /*
-            const uploadResult = await uploadFileToCloudinary({
-                file: pendingImageChange,
-                tableName: 'User',
-                recordId: user.id,
-                fieldName: 'avatarId',
-                folder: 'obraguru/avatars'
-            });
-
-            if (!uploadResult.success || !uploadResult.data) {
-                throw new Error('Failed to upload avatar');
-            }
-
-            // Update form state with the uploaded image data
-            setValue('avatar', [uploadResult.data]);
-            setImageToUpload(pendingImageChange);
-            setCurrentAvatarUrl(uploadResult.data.url);
-
-            // Update user context immediately
-            setUser({
-                ...user,
-                avatar: uploadResult.data
-            });
-            */
-
-            // Upload new avatar to Cloudinary
-            const uploadResults = await uploadToCloudinary([pendingImageChange], 'obraguru/avatars');
-
-            // Transform results to ClientUploadResult format
-            const clientUploadResults = uploadResults
-                .filter(result => result.success && result.data)
-                .map(result => result.data!);
-
-            if (clientUploadResults.length === 0) {
-                throw new Error('Failed to upload avatar');
-            }
-
-            // Create file record in database
-            const fileRecordsResponse = await createFileRecords({
-                uploadResults: clientUploadResults,
-                tableName: 'user',
-                recordId: user.id,
-                fieldName: 'avatar'
-            });
-
-            if (!fileRecordsResponse.success) {
-                throw new Error(fileRecordsResponse.error || 'Failed to create file record');
-            }
-
-            // Update form state with the uploaded image data
-            const uploadedFile = fileRecordsResponse.data?.[0];
-            if (uploadedFile) {
-                setValue('avatar', [uploadedFile]);
-                setImageToUpload(pendingImageChange);
-                setCurrentAvatarUrl(uploadedFile.url);
-
-                // Update user context immediately
-                setUser({
-                    ...user,
-                    avatar: uploadedFile
-                });
-            }
-
-            toast.success('Avatar updated successfully');
-        } catch (error) {
-            console.error('Error updating avatar:', error);
-            toast.error('Failed to update avatar');
-        } finally {
-            setIsLoading(false);
-            setShowImageConfirm(false);
-            setPendingImageChange(null);
-        }
+    const handleRemoveImage = () => {
+        setPendingAvatarChange({
+            type: 'remove',
+            currentAvatar: avatar
+        });
     };
 
-    const cancelImageChange = () => {
-        setShowImageConfirm(false);
-        setPendingImageChange(null);
-        // Reset form state to current avatar if any
+    const resetPendingAvatarChange = () => {
+        setPendingAvatarChange(null);
+        // Reset form state to current avatar
         setValue('avatar', user?.avatar ? [user.avatar as FileImage] : null);
-        setCurrentAvatarUrl((user?.avatar as FileImage)?.url || null);
         // Force UploadPhoto component to re-render with original state
         setUploadPhotoKey(prev => prev + 1);
     };
@@ -198,20 +141,67 @@ export default function ProfileForm() {
         }
 
         setLoading(true);
+        setIsLoading(true);
 
         try {
+            // Handle pending avatar changes first
+            if (pendingAvatarChange) {
+                if ((pendingAvatarChange.type === 'upload' || pendingAvatarChange.type === 'edit') && pendingAvatarChange.file) {
+                    // For edit type, delete old avatar first
+                    if (pendingAvatarChange.type === 'edit' && pendingAvatarChange.currentAvatar?.id) {
+                        await deleteFileFromCloudinary(pendingAvatarChange.currentAvatar.id);
+                    }
+
+                    // Upload new avatar to Cloudinary
+                    const uploadResults = await uploadToCloudinary([pendingAvatarChange.file], 'obraguru/avatars');
+
+                    // Transform results to ClientUploadResult format
+                    const clientUploadResults = uploadResults
+                        .filter(result => result.success && result.data)
+                        .map(result => result.data!);
+
+                    if (clientUploadResults.length === 0) {
+                        throw new Error('Failed to upload avatar');
+                    }
+
+                    // Create file record in database
+                    const fileRecordsResponse = await createFileRecords({
+                        uploadResults: clientUploadResults,
+                        tableName: 'user',
+                        recordId: user!.id,
+                        fieldName: 'avatar'
+                    });
+
+                    if (!fileRecordsResponse.success) {
+                        throw new Error(fileRecordsResponse.error || 'Failed to create file record');
+                    }
+
+                    // Update form data with the uploaded file
+                    const uploadedFile = fileRecordsResponse.data?.[0];
+                    if (uploadedFile) {
+                        data.avatar = [uploadedFile as FileImage];
+                    }
+                } else if (pendingAvatarChange.type === 'remove') {
+                    // Delete current avatar if exists
+                    if (pendingAvatarChange.currentAvatar?.id) {
+                        await deleteFileFromCloudinary(pendingAvatarChange.currentAvatar.id);
+                    }
+                    data.avatar = null;
+                }
+            }
+
             // Split name into firstName and lastName
             const nameParts = data.name.trim().split(' ');
             const firstName = nameParts[0] || '';
             const lastName = nameParts.slice(1).join(' ') || '';
 
-            // Prepare update data (avatar is already handled separately)
+            // Prepare update data
             const updateData = {
                 firstName,
                 lastName,
                 phone: data.phone,
                 language: data.language,
-                avatar: null, // Avatar is already handled separately
+                ...(data.avatar && { avatarId: (data.avatar as FileImage[])?.[0]?.id }),
             };
 
             // Update user profile using Prisma action
@@ -227,6 +217,9 @@ export default function ProfileForm() {
             if (response.data) {
                 setUser(response.data);
             }
+
+            // Clear pending avatar change
+            setPendingAvatarChange(null);
 
             toast.success(t('success'));
 
@@ -244,45 +237,6 @@ export default function ProfileForm() {
             toast.error(t('error'));
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleAvatarChange = (file: File | File[] | null) => {
-        if (file) {
-            const fileList = Array.isArray(file) ? file : [file];
-            // Don't update form state yet, wait for confirmation
-            // setValue('avatar', fileList);
-            handleImageChange(fileList);
-        } else {
-            setValue('avatar', []);
-        }
-    };
-
-    const handleRemoveImage = async () => {
-        try {
-            setIsLoading(true);
-            // Delete old file if exists
-            if ((user?.avatar as FileImage)?.id) {
-                await deleteFileFromCloudinary((user?.avatar as FileImage)?.id as number);
-            }
-
-            // Update form state to remove avatar
-            setValue('avatar', null);
-            setImageToUpload(null);
-            setCurrentAvatarUrl(null);
-
-            // Update user context to remove avatar
-            setUser({
-                ...user!,
-                email: user!.email || '',
-                avatar: null as unknown as FileImage
-            });
-
-            toast.success(t('avatarRemoved'));
-        } catch (error) {
-            console.error('Error removing avatar:', error);
-            toast.error(`${t('avatarRemoveError')} - ${error instanceof Error ? error.message : t('avatarRemoveError')}`);
-        } finally {
             setIsLoading(false);
         }
     };
@@ -321,9 +275,68 @@ export default function ProfileForm() {
     // Show loading state while user is being fetched
     if (!user) {
         return (
-            <div className="flex items-center justify-center h-32">
-                <div className="h-8 w-8 rounded-full bg-primary animate-pulse" />
+
+            <div className="relative mx-auto w-full max-w-[680px] px-6 py-6">
+                <div className="flex flex-col gap-6">
+                    {/* Avatar Upload */}
+                    <div className="flex gap-2">
+                        <div className="space-y-2">
+                            <Skeleton className="h-5 w-24" />
+                            <div className="flex items-center gap-4">
+                                <Skeleton className="h-20 w-20 rounded-lg" />
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-32" />
+                                    <Skeleton className="h-4 w-48" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Name */}
+                    <div className="space-y-2">
+                        <Skeleton className="h-5 w-16" />
+                        <Skeleton className="h-10 w-full" />
+                    </div>
+
+                    {/* Phone */}
+                    <div className="space-y-2">
+                        <Skeleton className="h-5 w-20" />
+                        <Skeleton className="h-10 w-full" />
+                    </div>
+
+                    {/* Email */}
+                    <div className="space-y-2">
+                        <Skeleton className="h-5 w-20" />
+                        <Skeleton className="h-10 w-full" />
+                    </div>
+
+                    {/* Language */}
+                    <div className="space-y-2">
+                        <Skeleton className="h-5 w-24" />
+                        <Skeleton className="h-10 w-full" />
+                    </div>
+
+                    {/* RDO Notification Toggle */}
+                    <div className="flex items-center justify-between">
+                        <Skeleton className="h-5 w-32" />
+                        <Skeleton className="h-6 w-11 rounded-full" />
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex justify-end gap-2 mt-4">
+                        <Skeleton className="h-10 w-24" />
+                        <Skeleton className="h-10 w-24" />
+                    </div>
+
+                    {/* Delete Profile Button */}
+                    <div className="border-t pt-6 mt-6">
+                        <div className="text-center">
+                            <Skeleton className="h-10 w-32" />
+                        </div>
+                    </div>
+                </div>
             </div>
+
         );
     }
 
@@ -333,14 +346,14 @@ export default function ProfileForm() {
                 {/* Avatar Upload */}
                 <div className="flex gap-2">
                     <EnhancedUploadPhoto
-                        key={`${currentAvatarUrl || 'no-avatar'}-${uploadPhotoKey}`} // Force re-render when avatar changes or when canceling
+                        key={`${uploadPhotoKey}-${pendingAvatarChange ? 'pending' : 'current'}`}
                         register={register}
                         setValue={setValue}
                         name="avatar"
                         label={t('avatar.label')}
                         hint={t('avatar.hint')}
-                        type="logo"
-                        initialFiles={currentAvatarUrl ? [currentAvatarUrl] : []}
+                        type="photo"
+                        initialFiles={getCurrentAvatarForDisplay()}
                         onChange={handleAvatarChange}
                         onRemoveImage={handleRemoveImage}
                         maxFiles={1}
@@ -465,7 +478,7 @@ export default function ProfileForm() {
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={() => setShowDeleteDialog(true)}
+                                onClick={handleDeleteProfile}
                                 className="text-destructive border-destructive hover:bg-destructive hover:text-white"
                                 disabled={isDeleting}
                             >
@@ -476,33 +489,6 @@ export default function ProfileForm() {
                     </div>
                 )}
             </form>
-
-            {/* Delete Profile Dialog */}
-            <DeleteProfileDialog
-                open={showDeleteDialog}
-                onConfirm={handleDeleteProfile}
-                onCancel={() => setShowDeleteDialog(false)}
-                title={t('delete.title')}
-                description={t('delete.description')}
-                confirmLabel={t('delete.confirmLabel')}
-                cancelLabel={t('delete.cancelLabel')}
-                nameConfirmation={t('delete.nameConfirmation')}
-                namePlaceholder={t('delete.namePlaceholder')}
-                nameRequired={t('delete.nameRequired')}
-                nameMismatch={t('delete.nameMismatch')}
-                expectedName={`${user.firstName || ''} ${user.lastName || ''}`.trim()}
-            />
-
-            {/* Image Change Confirmation Dialog */}
-            <ConfirmDialog
-                open={showImageConfirm}
-                onConfirm={confirmImageChange}
-                onCancel={cancelImageChange}
-                title={t('avatar.changePhotoTitle')}
-                description={t('avatar.changePhotoDescription')}
-                confirmLabel={t('avatar.changePhotoConfirmLabel')}
-                cancelLabel={t('avatar.changePhotoCancelLabel')}
-            />
         </>
     );
 } 

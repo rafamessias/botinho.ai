@@ -54,6 +54,10 @@
             "actions": {
                 "reject": "Reject",
                 "approve": "Approve",
+                "approveError": "Failed to approve RDO",
+                "approveSuccess": "RDO approved successfully",
+                "rejectError": "Failed to reject RDO",
+                "rejectSuccess": "RDO rejected successfully",
                 "Approved": "Approved",
                 "Rejected": "Rejected",
                 "UpdatedSuccess": "RDO updated successfully",
@@ -817,6 +821,8 @@
         "dragOverMessage": "Drop files here to upload",
         "videoFile": "Video File",
         "documentFile": "Document File",
-        "imageFile": "Image File"
+        "imageFile": "Image File",
+        "change": "Change",
+        "remove": "Remove"
     }
 }

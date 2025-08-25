@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import { compressFiles } from '@/lib/compression';
 import { FileImage } from '@/components/types/prisma';
-import { Trash2, Upload, Image as ImageIcon, Video, File as FileIcon } from 'lucide-react';
+import { Trash2, Upload, Image as ImageIcon, Video, File as FileIcon, Edit3 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 interface EnhancedUploadPhotoProps<T extends FieldValues> {
@@ -17,7 +17,7 @@ interface EnhancedUploadPhotoProps<T extends FieldValues> {
     label: string;
     hint?: string;
     onChange?: (files: File[]) => void;
-    type?: 'logo' | 'photo' | 'carousel';
+    type?: 'logo' | 'photo' | 'carousel' | 'banner';
     initialFiles?: (string | File | FileImage)[];
     onRemoveImage?: (fileOrUrl: string | File | FileImage | number) => void;
     maxFiles?: number;
@@ -126,7 +126,7 @@ export function EnhancedUploadPhoto<T extends FieldValues>({
         return null;
     };
 
-    const handleFileSelect = async (selectedFiles: FileList | null) => {
+    const handleFileSelect = async (selectedFiles: FileList | null, isEditMode: boolean = false) => {
         if (!selectedFiles) return;
 
         const fileArray = Array.from(selectedFiles);
@@ -140,10 +140,25 @@ export function EnhancedUploadPhoto<T extends FieldValues>({
             }
         }
 
-        // Check max files limit
-        if (files.length + existingFiles.length + fileArray.length > maxFiles) {
-            toast.error(t('maxFilesError', { maxFiles }));
-            return;
+        // If in edit mode, clear existing files first
+        if (isEditMode) {
+            // Clear existing files and previews
+            setFiles([]);
+            setExistingFiles([]);
+            setPreviewUrls([]);
+
+            // Clean up existing preview URLs
+            previewUrls.forEach(url => {
+                if (url && url.startsWith('blob:')) {
+                    URL.revokeObjectURL(url);
+                }
+            });
+        } else {
+            // Check max files limit for normal mode
+            if (files.length + existingFiles.length + fileArray.length > maxFiles) {
+                toast.error(t('maxFilesError', { maxFiles }));
+                return;
+            }
         }
 
         setIsCompressing(true);
@@ -155,13 +170,12 @@ export function EnhancedUploadPhoto<T extends FieldValues>({
             // Create preview URLs
             const newPreviewUrls = compressedFiles.map(file => URL.createObjectURL(file));
 
-            setFiles(prev => [...prev, ...compressedFiles]);
-            setPreviewUrls(prev => [...prev, ...newPreviewUrls]);
+            setFiles(compressedFiles);
+            setPreviewUrls(newPreviewUrls);
 
-            // Update form value - only set the new File objects, not existing files
-            const allNewFiles = [...files, ...compressedFiles];
-            setValue(name, allNewFiles as any);
-            onChange?.(allNewFiles);
+            // Update form value
+            setValue(name, compressedFiles as any);
+            onChange?.(compressedFiles);
 
             toast.success(t('filesProcessedSuccess', { count: compressedFiles.length }));
         } catch (error) {
@@ -219,6 +233,98 @@ export function EnhancedUploadPhoto<T extends FieldValues>({
         if (file.type.startsWith('image/')) return <ImageIcon className="w-4 h-4" />;
         if (file.type.startsWith('video/')) return <Video className="w-4 h-4" />;
         return <FileIcon className="w-4 h-4" />;
+    };
+
+    const getPreviewSize = () => {
+        switch (type) {
+            case 'logo':
+                return 'w-[150px] h-[150px]';
+            case 'photo':
+                return 'w-[150px] h-[150px]'; // 150x150px for profile photos
+            case 'banner':
+                return 'w-full h-64';
+            default:
+                return 'w-[150px] h-[150px]'; // Default to profile photo size
+        }
+    };
+
+    const getPreviewContainerSize = () => {
+        switch (type) {
+            case 'logo':
+                return 'w-[150px] h-[150px]';
+            case 'photo':
+                return 'w-[150px] h-[150px]'; // Container for profile photos
+            case 'banner':
+                return 'w-full max-w-2xl';
+            default:
+                return 'w-[150px] h-[150px]'; // Default to profile photo container
+        }
+    };
+
+    const renderSingleImagePreview = (fileOrUrl: string | File | FileImage, index: number) => {
+        const previewUrl = previewUrls[index];
+        const isExistingFile = index < existingFiles.length;
+        const file = isExistingFile ? fileOrUrl : fileOrUrl as File;
+
+        // Determine file name
+        let fileName = 'Unknown file';
+        if (typeof file === 'string') {
+            fileName = file.split('/').pop() || 'Image';
+        } else if (file instanceof File) {
+            fileName = file.name;
+        } else if ((file as FileImage)?.name) {
+            fileName = (file as FileImage).name;
+        }
+
+        return (
+            <div className="flex flex-col items-center">
+                <div className={`${getPreviewContainerSize()} relative`}>
+                    <div className={`${getPreviewSize()} overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-50`}>
+                        <img
+                            src={previewUrl}
+                            alt={t('preview', { index: index + 1 })}
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+
+                    {/* Always visible buttons positioned to avoid photo overlap */}
+                    <div className="absolute -top-3 -right-3 flex gap-1">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => {
+                                // Trigger file selection in edit mode
+                                const input = fileInputRef.current;
+                                if (input) {
+                                    const originalOnChange = input.onchange;
+                                    input.onchange = (e) => {
+                                        const target = e.target as HTMLInputElement;
+                                        handleFileSelect(target.files, true);
+                                        // Reset the input value and restore original onChange
+                                        input.value = '';
+                                        input.onchange = originalOnChange;
+                                    };
+                                    input.click();
+                                }
+                            }}
+                            className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-gray-700 shadow-sm border border-gray-200"
+                        >
+                            <Edit3 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeFile(index)}
+                            className="h-8 w-8 p-0 bg-red-500/90 hover:bg-red-500 text-white shadow-sm"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     const renderFilePlaceholder = (fileOrUrl: string | File | FileImage, index: number) => {
@@ -414,76 +520,99 @@ export function EnhancedUploadPhoto<T extends FieldValues>({
 
         const droppedFiles = Array.from(e.dataTransfer.files);
         if (droppedFiles.length > 0) {
-            handleFileSelect(e.dataTransfer.files);
+            handleFileSelect(e.dataTransfer.files, false);
         }
     };
 
     // Combine existing and new files for display
     const allFiles = [...existingFiles, ...files];
 
+    // Check if this is a single file upload (not carousel)
+    const isSingleFileUpload = type !== 'carousel' && maxFiles === 1;
+    const hasSingleImage = isSingleFileUpload && allFiles.length === 1;
+
+    // Check if we should show single image preview
+    const shouldShowSingleImagePreview = hasSingleImage && (() => {
+        const firstFile = allFiles[0];
+        return typeof firstFile === 'string' ||
+            (firstFile instanceof File && firstFile.type.startsWith('image/')) ||
+            ((firstFile as FileImage)?.mimeType && (firstFile as FileImage).mimeType?.startsWith('image/')) ||
+            ((firstFile as FileImage)?.url && !(firstFile as FileImage).format);
+    })();
+
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             <div>
                 <label className="text-sm font-medium">{label}</label>
                 {hint && <p className="text-xs text-muted-foreground mt-1">{hint}</p>}
             </div>
 
-            {/* File Input */}
-            <div
-                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${isDragOver
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-            >
-                <input
-                    {...register(name)}
-                    ref={fileInputRef}
-                    type="file"
-                    multiple={type === 'carousel'}
-                    accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx"
-                    onChange={(e) => handleFileSelect(e.target.files)}
-                    className="hidden"
-                />
+            {/* Hidden file input - always present */}
+            <input
+                {...register(name)}
+                ref={fileInputRef}
+                type="file"
+                multiple={type === 'carousel'}
+                accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx"
+                onChange={(e) => handleFileSelect(e.target.files, false)}
+                className="hidden"
+            />
 
-                <Upload className={`mx-auto h-12 w-12 transition-colors ${isDragOver ? 'text-blue-500' : 'text-gray-400'
-                    }`} />
-                <p className="mt-2 text-sm text-gray-600">
-                    {isDragOver ? t('dragOverMessage') : t('uploadHint')}
-                </p>
-                <p className="text-xs text-gray-500">
-                    {t('fileLimits', { maxFiles, maxFileSize })}
-                </p>
+            {/* Single Image Preview */}
+            {shouldShowSingleImagePreview ? (
+                <div className="flex ">
+                    {renderSingleImagePreview(allFiles[0], 0)}
+                </div>
+            ) : (
+                <>
+                    {/* File Input */}
+                    <div
+                        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${isDragOver
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-300 hover:border-gray-400'
+                            }`}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                    >
+                        <Upload className={`mx-auto h-12 w-12 transition-colors ${isDragOver ? 'text-blue-500' : 'text-gray-400'
+                            }`} />
+                        <p className="mt-2 text-sm text-gray-600">
+                            {isDragOver ? t('dragOverMessage') : t('uploadHint')}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                            {t('fileLimits', { maxFiles, maxFileSize })}
+                        </p>
 
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isCompressing || isUploading}
-                    className="mt-4"
-                >
-                    {isCompressing ? t('compressing') : t('selectFiles')}
-                </Button>
-            </div>
-
-            {/* Progress Bar */}
-            {(isCompressing || isUploading) && (
-                <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span>{isCompressing ? t('compressingFiles') : t('uploadingFiles')}</span>
-                        <span>{uploadProgress}%</span>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isCompressing || isUploading}
+                            className="mt-4"
+                        >
+                            {isCompressing ? t('compressing') : t('selectFiles')}
+                        </Button>
                     </div>
-                    <Progress value={uploadProgress} className="w-full" />
-                </div>
-            )}
 
-            {/* Preview Grid */}
-            {allFiles.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {allFiles.map((fileOrUrl, index) => renderFilePlaceholder(fileOrUrl, index))}
-                </div>
+                    {/* Progress Bar */}
+                    {(isCompressing || isUploading) && (
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                                <span>{isCompressing ? t('compressingFiles') : t('uploadingFiles')}</span>
+                                <span>{uploadProgress}%</span>
+                            </div>
+                            <Progress value={uploadProgress} className="w-full" />
+                        </div>
+                    )}
+
+                    {/* Preview Grid */}
+                    {allFiles.length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {allFiles.map((fileOrUrl, index) => renderFilePlaceholder(fileOrUrl, index))}
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

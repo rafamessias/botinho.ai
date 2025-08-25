@@ -32,6 +32,12 @@ function maskZipCode(value: string) {
     return value.replace(/^(\d{5})(\d{3})$/, "$1-$2");
 }
 
+type PendingLogoChange = {
+    type: 'upload' | 'edit' | 'remove';
+    file?: File;
+    currentLogo?: FileImage;
+};
+
 export function EditCompanyForm({ company, companyMembers, locale }: { company: Company, companyMembers: CompanyMemberDialog[] | null, locale: string }) {
     const t = useTranslations('company');
     const router = useRouter();
@@ -39,13 +45,13 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
     const [showResetConfirm, setShowResetConfirm] = useState(false);
-    const [imageToUpload, setImageToUpload] = useState<File | null>(null);
-    const [showImageConfirm, setShowImageConfirm] = useState(false);
-    const [pendingImageChange, setPendingImageChange] = useState<File | null>(null);
+    const [pendingLogoChange, setPendingLogoChange] = useState<PendingLogoChange | null>(null);
+    const [uploadPhotoKey, setUploadPhotoKey] = useState(0);
+    const [currentLogo, setCurrentLogo] = useState<FileImage | null>(company.logo as FileImage);
     const { setIsLoading } = useLoading();
     const userListRef = useRef<UserListRef>(null);
 
-    const logo: FileImage = company.logo as FileImage;
+    const logo: FileImage = currentLogo as FileImage;
 
     const getInitialValues = () => ({
         name: company.name,
@@ -59,7 +65,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         state: company.state,
         city: company.city,
         address: company.address,
-        logo: logo,
+        logo: currentLogo,
         id: company.id
     });
 
@@ -70,11 +76,25 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
     });
     const documentType = watch('documentType');
 
+    // Get the current logo to display (either pending change or current)
+    const getCurrentLogoForDisplay = () => {
+        if ((pendingLogoChange?.type === 'upload' || pendingLogoChange?.type === 'edit') && pendingLogoChange.file) {
+            // Return a temporary URL for the pending file
+            return [URL.createObjectURL(pendingLogoChange.file)];
+        } else if (pendingLogoChange?.type === 'remove') {
+            // Return empty array for removal
+            return [];
+        } else {
+            // Return current logo
+            return logo?.url ? [logo.url] : [];
+        }
+    };
+
     // Track form changes
     useEffect(() => {
-        const hasFormChanges = isDirty || imageToUpload !== null;
+        const hasFormChanges = isDirty || pendingLogoChange !== null;
         setHasChanges((prev) => prev !== hasFormChanges ? hasFormChanges : prev);
-    }, [isDirty, imageToUpload]);
+    }, [isDirty, pendingLogoChange]);
 
     const handleReset = () => {
         setShowResetConfirm(true);
@@ -82,8 +102,18 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
 
     const confirmReset = () => {
         reset(initialValues);
-        setImageToUpload(null);
+        setPendingLogoChange(null);
         setShowResetConfirm(false);
+        // Force UploadPhoto component to re-render with original state
+        setUploadPhotoKey(prev => prev + 1);
+    };
+
+    const resetPendingLogoChange = () => {
+        setPendingLogoChange(null);
+        // Reset form state to current logo
+        setValue('logo', currentLogo);
+        // Force UploadPhoto component to re-render with original state
+        setUploadPhotoKey(prev => prev + 1);
     };
 
     const handleAddCompanyMember = async (user: CompanyMemberDialog) => {
@@ -182,83 +212,85 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         }
     };
 
-    const handleImageChange = (files: File[] | null) => {
-        if (files && files.length > 0) {
-            setPendingImageChange(files[0]);
-            setShowImageConfirm(true);
-        }
-    };
+    const handleLogoChange = (file: File | File[] | null) => {
+        if (file) {
+            const fileList = Array.isArray(file) ? file : [file];
+            // For single file uploads (like logo), we expect only one file
+            const newFile = fileList[0];
 
-    const confirmImageChange = async () => {
-        try {
-            setIsLoading(true);
-            if (!pendingImageChange) {
-                throw new Error('No image to upload');
-            }
+            // Determine if this is an edit (replacing existing logo) or upload (no existing logo)
+            const changeType = currentLogo ? 'edit' : 'upload';
 
-            // Upload file to Cloudinary
-            const uploadResults = await uploadToCloudinary([pendingImageChange], 'obraguru/companies');
-
-            // Transform results to ClientUploadResult format
-            const clientUploadResults = uploadResults
-                .filter(result => result.success && result.data)
-                .map(result => result.data!);
-
-            if (clientUploadResults.length === 0) {
-                throw new Error('Failed to upload image');
-            }
-
-            // Create file record in database
-            const fileRecordsResponse = await createFileRecords({
-                uploadResults: clientUploadResults,
-                tableName: 'company',
-                recordId: company.id!,
-                fieldName: 'logo'
+            setPendingLogoChange({
+                type: changeType,
+                file: newFile,
+                currentLogo: currentLogo || undefined
             });
-
-            if (!fileRecordsResponse.success) {
-                throw new Error(fileRecordsResponse.error || 'Failed to create file record');
-            }
-
-            setImageToUpload(pendingImageChange);
-            toast.success(t('logoUpdated'));
-        } catch (error) {
-            console.error('Error updating logo:', error);
-            toast.error(`${t('logoUpdateError')} - ${error instanceof Error ? error.message : 'Unknown error'}`);
-        } finally {
-            setIsLoading(false);
-            setShowImageConfirm(false);
-            setPendingImageChange(null);
+        } else {
+            setPendingLogoChange({
+                type: 'remove',
+                currentLogo: currentLogo || undefined
+            });
         }
     };
 
-    const cancelImageChange = () => {
-        setShowImageConfirm(false);
-        setPendingImageChange(null);
-    };
-
-    const handleRemoveImage = async (fileOrUrl: string | File | FileImage | number) => {
-        try {
-            setIsLoading(true);
-            // Delete old file if exists
-            if (logo?.id) {
-                await deleteFileFromCloudinary(logo.id);
-                setValue('logo', null);
-            }
-            setImageToUpload(null);
-            toast.success(t('logoRemoved'));
-        } catch (error) {
-            console.error('Error removing logo:', error);
-            toast.error(`${t('logoRemoveError')} - ${error instanceof Error ? error.message : t('logoRemoveError')}`);
-        } finally {
-            setIsLoading(false);
-        }
+    const handleRemoveLogo = () => {
+        setPendingLogoChange({
+            type: 'remove',
+            currentLogo: logo
+        });
     };
 
     const onSubmit = async (data: Company) => {
         try {
             setIsSubmitting(true);
             setIsLoading(true);
+
+            // Handle pending logo changes first
+            if (pendingLogoChange) {
+                if ((pendingLogoChange.type === 'upload' || pendingLogoChange.type === 'edit') && pendingLogoChange.file) {
+                    // For edit type, delete old logo first
+                    if (pendingLogoChange.type === 'edit' && pendingLogoChange.currentLogo?.id) {
+                        await deleteFileFromCloudinary(pendingLogoChange.currentLogo.id);
+                    }
+
+                    // Upload new logo to Cloudinary
+                    const uploadResults = await uploadToCloudinary([pendingLogoChange.file], 'obraguru/companies');
+
+                    // Transform results to ClientUploadResult format
+                    const clientUploadResults = uploadResults
+                        .filter(result => result.success && result.data)
+                        .map(result => result.data!);
+
+                    if (clientUploadResults.length === 0) {
+                        throw new Error('Failed to upload logo');
+                    }
+
+                    // Create file record in database
+                    const fileRecordsResponse = await createFileRecords({
+                        uploadResults: clientUploadResults,
+                        tableName: 'company',
+                        recordId: company.id!,
+                        fieldName: 'logoId'
+                    });
+
+                    if (!fileRecordsResponse.success) {
+                        throw new Error(fileRecordsResponse.error || 'Failed to create file record');
+                    }
+
+                    // Update form data with the uploaded file
+                    const uploadedFile = fileRecordsResponse.data?.[0];
+                    if (uploadedFile) {
+                        data.logo = uploadedFile as FileImage;
+                    }
+                } else if (pendingLogoChange.type === 'remove') {
+                    // Delete current logo if exists
+                    if (pendingLogoChange.currentLogo?.id) {
+                        await deleteFileFromCloudinary(pendingLogoChange.currentLogo.id);
+                    }
+                    data.logo = null;
+                }
+            }
 
             // Remove masking from cpf, cnpj, and zipcode
             const cleanData = {
@@ -272,6 +304,35 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
             if (result.success) {
                 toast.success(t('companyUpdated'));
                 setUser({ ...user, company: result.data as any, email: user?.email || '' } as any);
+
+                // Clear pending logo change
+                setPendingLogoChange(null);
+
+                // Force re-render of the upload component with new data
+                setUploadPhotoKey(prev => prev + 1);
+
+                // Reset form with updated data from the result
+                const updatedCompany = result.data as any;
+                const updatedInitialValues = {
+                    name: updatedCompany.name,
+                    documentType: updatedCompany.documentType,
+                    document: updatedCompany.documentType === 'cpf'
+                        ? maskCPF(updatedCompany.document)
+                        : updatedCompany.documentType === 'cnpj'
+                            ? maskCNPJ(updatedCompany.document)
+                            : undefined,
+                    zipCode: maskZipCode(updatedCompany.zipCode),
+                    state: updatedCompany.state,
+                    city: updatedCompany.city,
+                    address: updatedCompany.address,
+                    logo: updatedCompany.logo,
+                    id: updatedCompany.id
+                };
+                reset(updatedInitialValues);
+
+                // Update the current logo state to reflect the changes
+                // This ensures getCurrentLogoForDisplay() shows the correct logo
+                setCurrentLogo(updatedCompany.logo);
             } else {
                 toast.error(result.error || t('companyUpdateError'));
             }
@@ -282,7 +343,6 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
         } finally {
             setIsSubmitting(false);
             setIsLoading(false);
-
         }
     };
 
@@ -302,13 +362,12 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
                 name="logo"
                 label={t('uploadLogo')}
                 hint={t('uploadLogoHint')}
-                initialFiles={logo ? [logo] : []}
-                onRemoveImage={handleRemoveImage}
-                onChange={(files) => {
-                    handleImageChange(files);
-                }}
+                initialFiles={getCurrentLogoForDisplay()}
+                onRemoveImage={handleRemoveLogo}
+                onChange={handleLogoChange}
                 maxFiles={1}
                 maxFileSize={10}
+                key={uploadPhotoKey} // Add key to force re-render
             />
 
             <div>
@@ -567,15 +626,7 @@ export function EditCompanyForm({ company, companyMembers, locale }: { company: 
                 cancelLabel={t('cancel')}
             />
 
-            <ConfirmDialog
-                open={showImageConfirm}
-                onConfirm={confirmImageChange}
-                onCancel={cancelImageChange}
-                title={t('imageChangeConfirmTitle')}
-                description={t('imageChangeConfirmDescription')}
-                confirmLabel={t('confirm')}
-                cancelLabel={t('cancel')}
-            />
+
         </form>
     );
 } 
