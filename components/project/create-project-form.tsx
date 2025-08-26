@@ -120,7 +120,7 @@ export function CreateProjectForm() {
                     name="projectPhoto"
                     label={t('uploadPhoto.label')}
                     hint={t('uploadPhoto.hint')}
-                    type="photo"
+                    type="banner"
                     maxFiles={1}
                     maxFileSize={50}
                 />

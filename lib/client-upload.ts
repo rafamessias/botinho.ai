@@ -48,15 +48,20 @@ export async function uploadToCloudinary(
         // Compress files first
         const compressedFiles = await compressFiles(files);
 
-        // Get signed upload parameters
-        const uploadParams = await getSignedUploadParams(folder);
-
         const results: UploadResult[] = [];
         let completed = 0;
 
         // Upload files sequentially to avoid overwhelming the server
         for (const file of compressedFiles) {
             try {
+                // Use upload resource type for all files - this should handle PDFs correctly
+                const resourceType = 'upload';
+
+                // Get signed upload parameters
+                const uploadParams = await getSignedUploadParams(folder, resourceType);
+
+                const endpoint = `https://api.cloudinary.com/v1_1/${uploadParams.cloudName}/upload`;
+
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('folder', uploadParams.folder);
@@ -66,7 +71,7 @@ export async function uploadToCloudinary(
                 formData.append('resource_type', uploadParams.resourceType);
 
                 const response = await fetch(
-                    `https://api.cloudinary.com/v1_1/${uploadParams.cloudName}/auto/upload`,
+                    endpoint,
                     {
                         method: 'POST',
                         body: formData,

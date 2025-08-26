@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { LanguageSwitch } from "@/components/language-switch"
 import { signOut } from "next-auth/react"
+import { Skeleton } from "./ui/skeleton"
 
 export default function Header() {
   const [userName, setUserName] = useState('');
@@ -90,7 +91,8 @@ export default function Header() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <div className="h-10 w-10 rounded-full bg-muted animate-pulse bg-slate-300" />
+            <Skeleton className="h-10 w-20 " />
+            <div className="h-10 w-10 rounded-full bg-muted" />
           </div>
         </div>
       </header>

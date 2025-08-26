@@ -167,15 +167,27 @@ export function EnhancedUploadPhoto<T extends FieldValues>({
             // Compress files
             const compressedFiles = await compressFiles(fileArray);
 
-            // Create preview URLs
+            // Create preview URLs for new files
             const newPreviewUrls = compressedFiles.map(file => URL.createObjectURL(file));
 
-            setFiles(compressedFiles);
-            setPreviewUrls(newPreviewUrls);
+            if (isEditMode) {
+                // In edit mode, replace all files
+                setFiles(compressedFiles);
+                setPreviewUrls(newPreviewUrls);
+                setValue(name, compressedFiles as any);
+                onChange?.(compressedFiles);
+            } else {
+                // In normal mode, add new files to existing ones
+                const updatedFiles = [...files, ...compressedFiles];
+                const updatedPreviewUrls = [...previewUrls, ...newPreviewUrls];
 
-            // Update form value
-            setValue(name, compressedFiles as any);
-            onChange?.(compressedFiles);
+                setFiles(updatedFiles);
+                setPreviewUrls(updatedPreviewUrls);
+
+                // Update form value with all files (existing + new)
+                setValue(name, updatedFiles as any);
+                onChange?.(updatedFiles);
+            }
 
             toast.success(t('filesProcessedSuccess', { count: compressedFiles.length }));
         } catch (error) {

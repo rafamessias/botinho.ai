@@ -149,6 +149,13 @@ export async function compressFile(file: File): Promise<File> {
                 return await compressImage(file);
             case 'video':
                 return await compressVideo(file);
+            case 'application':
+                // For PDFs and other documents, return as-is without compression
+                if (file.type === 'application/pdf' ||
+                    file.type.startsWith('application/')) {
+                    return file;
+                }
+            // Fall through to default for other application types
             default:
                 // For documents, check size and return as-is if under limit
                 if (file.size <= COMPRESSION_SETTINGS.documents.maxSize) {

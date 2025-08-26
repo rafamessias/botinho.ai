@@ -3,7 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Video, File, Image as ImageIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { FileImage, User } from '@/components/types/prisma';
@@ -45,6 +45,40 @@ export default function ActivityCard({
     getPriorityVariant,
     t
 }: ActivityCardProps) {
+    // Helper function to determine file type and render appropriate component
+    const renderMediaThumbnail = (file: FileImage, index: number) => {
+        const isVideo = file.mimeType?.startsWith('video/');
+        const isImage = file.mimeType?.startsWith('image/');
+
+        return (
+            <div key={index} className="relative w-8 h-8 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
+                {isVideo ? (
+                    <Video className="w-4 h-4 text-gray-600" />
+                ) : isImage ? (
+                    <Image
+                        src={file.url}
+                        alt={`Media ${index + 1}`}
+                        fill
+                        sizes="32px"
+                        priority={true}
+                        className="object-cover"
+                        onError={(e) => {
+                            // Fallback to file icon if image fails to load
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const parent = target.parentElement;
+                            if (parent) {
+                                parent.innerHTML = '<svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>';
+                            }
+                        }}
+                    />
+                ) : (
+                    <File className="w-4 h-4 text-gray-600" />
+                )}
+            </div>
+        );
+    };
+
     return (
         <Card className="border border-gray-100 px-2 py-1 hover:shadow-md transition-shadow">
             <CardContent className="p-4">
@@ -92,18 +126,7 @@ export default function ActivityCard({
                         {/* Media thumbnails */}
                         {media && media.length > 0 && (
                             <div className="mt-2 flex items-center gap-1">
-                                {media.slice(0, 5).map((image, index) => (
-                                    <div key={index} className="relative w-8 h-8 rounded overflow-hidden">
-                                        <Image
-                                            src={image.url}
-                                            alt={`Media ${index + 1}`}
-                                            fill
-                                            sizes="32px"
-                                            priority={true}
-                                            className="object-cover"
-                                        />
-                                    </div>
-                                ))}
+                                {media.slice(0, 5).map((file, index) => renderMediaThumbnail(file, index))}
                                 {media.length > 5 && (
                                     <span className="text-xs text-gray-500 ml-1">
                                         +{media.length - 5}
