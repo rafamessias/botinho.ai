@@ -276,7 +276,7 @@ export default function ProjectEditForm({ project }: { project: ProjectWithRelat
                     name="projectPhoto"
                     label={t('uploadPhoto.label')}
                     hint={t('uploadPhoto.hint')}
-                    type="photo"
+                    type="banner"
                     initialFiles={project.image ? [project.image as FileImage] : []}
                     onRemoveImage={onRemoveImage}
                     onChange={onChange}

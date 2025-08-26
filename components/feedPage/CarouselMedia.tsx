@@ -59,7 +59,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images, className }) => {
         const fileType = getFileType(file);
         switch (fileType) {
             case 'pdf':
-                return <FileText className="w-8 h-8 text-red-500" />;
+                return <FileText className="w-8 h-8 text-blue-500" />;
             case 'video':
                 return <Video className="w-8 h-8 text-blue-500" />;
             default:
@@ -118,7 +118,7 @@ const CarouselMedia: React.FC<CarouselMediaProps> = ({ images, className }) => {
                                 e.stopPropagation();
                                 handleDownload(file);
                             }}
-                            className="mt-3 bg-red-500 hover:bg-red-600"
+                            className="mt-3 bg-blue-500 hover:bg-blue-600"
                             size="sm"
                         >
                             <Download className="w-4 h-4 mr-2" />

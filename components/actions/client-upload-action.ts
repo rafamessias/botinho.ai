@@ -184,6 +184,6 @@ function getMimeTypeFromFormat(format: string): string {
         'mov': 'video/quicktime',
         'avi': 'video/x-msvideo'
     };
-
-    return mimeTypes[format.toLowerCase()] || 'application/octet-stream';
+    //console.log('format', format);
+    return mimeTypes[format?.toLowerCase()] || 'application/octet-stream';
 }

@@ -45,7 +45,7 @@ export function ProjectSelect({ value, onChange, projects }: {
                         aria-expanded={open}
                         className="w-full justify-between"
                     >
-                        {value ? value.name : t('placeholder')}
+                        {value ? value.id + ' - ' + value.name : t('placeholder')}
                         <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
@@ -70,7 +70,7 @@ export function ProjectSelect({ value, onChange, projects }: {
                                                     value?.id === project.id ? "opacity-100" : "opacity-0"
                                                 )}
                                             />
-                                            {project.name}
+                                            {project.id} - {project.name}
                                         </CommandItem>
                                     </PopoverClose>
                                 ))}

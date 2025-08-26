@@ -83,6 +83,7 @@ export function RDODatePicker({ value, onChange }: { value: string, onChange: (v
                             />
                             <Button
                                 id="date-picker"
+                                type="button"
                                 variant="ghost"
                                 className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
                                 tabIndex={-1}
