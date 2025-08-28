@@ -1,836 +1,169 @@
 {
-    "rdo": {
-        "rdo": "RDO",
-        "title": "Criar RDO",
-        "postedBy": "Postado por",
-        "morning": "Manhã",
-        "afternoon": "Tarde",
-        "night": "Noite",
-        "pendingApproval": "Aguardando Aprovação",
-        "comments": "Comentários",
-        "approvals": "Aprovações",
-        "empty": {
-            "title": "Nenhum projeto encontrado",
-            "description": "Você precisa criar um projeto antes de criar um RDO.",
-            "createButton": "Criar Projeto"
-        },
-        "rdoCard": {
-            "postedBy": "Postado por",
-            "project": "Projeto",
-            "date": "Data",
-            "status": "Status",
-            "morning": "Manhã",
-            "afternoon": "Tarde",
-            "night": "Noite",
-            "draft": "Rascunho",
-            "pendingApproval": "Aguardando Aprovação",
-            "details": "Detalhes",
-            "comments": "Comentários",
-            "workableConditions": "Condições de trabalho adequadas",
-            "unworkableConditions": "Condições de trabalho inadequadas",
-            "approved": "Aprovado",
-            "Approved": "Aprovado",
-            "rejected": "Rejeitado",
-            "Rejected": "Rejeitado",
-            "edit": "Editar",
-            "share": "Compartilhar",
-            "linkCopied": "Link copiado para a área de transferência",
-            "weather": {
-                "title": "Condição Climática",
-                "clear": "Claro",
-                "cloudy": "Nublado",
-                "rainy": "Chuvoso",
-                "true": "Praticável",
-                "false": "Impraticável"
-            },
-            "activities": {
-                "title": "Atividades Executadas"
-            },
-            "equipment": {
-                "title": "Equipamentos Utilizados"
-            },
-            "workforce": {
-                "title": "Mão de Obra"
-            },
-            "actions": {
-                "reject": "Rejeitar",
-                "approve": "Aprovar",
-                "approveError": "Falha ao aprovar RDO",
-                "approveSuccess": "RDO aprovado com sucesso",
-                "rejectError": "Falha ao rejeitar RDO",
-                "rejectSuccess": "RDO rejeitado com sucesso",
-                "Approved": "Aprovado",
-                "Rejected": "Rejeitado",
-                "UpdatedSuccess": "RDO atualizado com sucesso",
-                "UpdatedError": "Erro ao atualizar RDO",
-                "save": "Salvar",
-                "cancel": "Cancelar"
-            },
-            "tabs": {
-                "comments": "Comentários",
-                "noComments": "Sem comentários",
-                "occurrences": "Ocorrências",
-                "audit": "Aprovação",
-                "noAudit": "Sem histórico de aprovação",
-                "newOccurrence": "Nova Ocorrência",
-                "notImplemented": {
-                    "comments": "Sem comentários",
-                    "audit": "Sem histórico de aprovação"
-                }
-            }
-        },
-        "bottomNav": {
-            "progress": "Andamento",
-            "occurrences": "Ocorrências",
-            "project": "Projeto",
-            "projectList": "Lista Projetos"
-        }
+    "Page": {
+        "title": "Painel Principal",
+        "description": "Painel do Framework SaaS"
     },
-    "homepage": {
+    "AppSidebar": {
+        "brand": "Meu SaaS",
         "navigation": {
-            "progress": "Andamento",
-            "occurrences": "Ocorrências",
-            "project": "Projeto",
-            "projectList": "Lista Projetos"
-        },
-        "home": {
-            "searchProjects": "Buscar projetos...",
-            "allProjects": "Todos os Projetos",
-            "activeProjects": "Projetos Ativos",
-            "inactiveProjects": "Projetos Inativos",
-            "newProject": "Novo Projeto",
+            "dashboard": "Painel",
+            "lifecycle": "Ciclo de Vida",
+            "analytics": "Análises",
             "projects": "Projetos",
-            "clearSearch": "Limpar busca",
-            "empty": {
-                "noProjects": "Nenhum projeto encontrado",
-                "noResults": "Nenhum projeto corresponde à sua busca",
-                "getStarted": "Comece criando seu primeiro projeto",
-                "adjustSearch": "Tente ajustar seus critérios de busca ou filtro"
-            }
+            "team": "Equipe"
         },
-        "projectCard": {
-            "active": "Ativo",
-            "inactive": "Inativo",
-            "viewUpdates": "Ver Atualizações",
-            "viewDetails": "Ver Detalhes",
-            "information": "Informações"
+        "secondary": {
+            "settings": "Configurações",
+            "getHelp": "Obter Ajuda"
+        },
+        "documents": {
+            "dataLibrary": "Biblioteca de Dados",
+            "reports": "Relatórios",
+            "wordAssistant": "Assistente de Texto"
+        },
+        "user": {
+            "name": "shadcn",
+            "email": "m@example.com"
         }
     },
-    "auth": {
-        "signIn": "Entrar",
-        "signUp": "Cadastrar",
-        "redirecting": "Redirecionando...",
-        "enterCredentials": "Digite suas credenciais para acessar sua conta",
-        "email": "Email",
-        "emailPlaceholder": "nome@exemplo.com",
-        "emailRequired": "Email é obrigatório",
-        "emailInvalid": "Email inválido",
-        "password": "Senha",
-        "passwordRequired": "Senha é obrigatória",
-        "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
-        "forgotPassword": "Esqueceu a senha?",
-        "orContinueWith": "Ou continue com",
-        "noAccount": "Não tem uma conta?",
-        "createAccount": "Crie sua conta para começar",
-        "firstName": "Nome",
-        "lastName": "Sobrenome",
-        "phoneNumber": "Telefone",
-        "confirmPassword": "Confirmar Senha",
-        "agreeToTerms": "Eu concordo com os",
-        "termsAndConditions": "Termos e Condições",
-        "and": "e",
-        "privacyPolicy": "Política de Privacidade",
-        "alreadyHaveAccount": "Já tem uma conta?",
-        "google": "Google",
-        "googleSignInSuccess": "Você foi conectado com Google com sucesso.",
-        "googleSignUpSuccess": "Você foi cadastrado com Google com sucesso.",
-        "googleSignUpError": "Falha ao cadastrar com Google",
-        "googleSignInError": "Falha ao entrar com Google",
-        "googleAuthProcessing": "Processando autenticação do Google...",
-        "googleAuthSuccess": "Autenticação bem-sucedida!",
-        "googleAuthError": "Falha na autenticação",
-        "googleAuthNoCode": "Nenhum código de autorização recebido",
-        "googleAuthPleaseWait": "Aguarde enquanto completamos sua autenticação...",
-        "backToSignIn": "Voltar para Entrar",
-        "signInSuccess": "Você foi conectado com sucesso.",
-        "signInError": "Falha ao fazer login",
-        "invalidCredentials": "Email ou senha inválidos",
-        "accountBlocked": "Sua conta foi bloqueada pelo administrador",
-        "firstNameRequired": "Nome é obrigatório",
-        "lastNameRequired": "Sobrenome é obrigatório",
-        "phoneRequired": "Telefone é obrigatório",
-        "phoneInvalid": "Formato inválido. Use (99) 99999-9999",
-        "phonePlaceholder": "(xx) xxxxx-xxxx",
-        "confirmPasswordRequired": "Por favor, confirme sua senha",
-        "passwordsDoNotMatch": "As senhas não coincidem",
-        "agreeRequired": "Você deve concordar com os termos e política de privacidade",
-        "OAuthAccountNotLinked": "Este email já está vinculado a outra conta",
-        "checkEmail": {
-            "title": "Verifique seu Email",
-            "description": "Enviamos um email de verificação para {email}. Por favor, verifique sua caixa de entrada e siga as instruções para verificar sua conta.",
-            "noEmail": "Não recebeu o email?",
-            "requestAnother": "Você pode solicitar outro email de verificação em:",
-            "seconds": "segundos",
-            "resend": "Reenviar Email de Verificação",
-            "sending": "Enviando novo email de verificação...",
-            "error": "Falha ao enviar novo email de verificação.",
-            "invalidToken": "Token de verificação inválido ou expirado.",
-            "confirmed": "Email confirmado com sucesso!",
-            "subject": "Verifique seu endereço de email",
-            "validating": "Validando token de email...",
-            "requestNewEmail": "Você pode solicitar um novo email de verificação abaixo."
-        },
-        "success": {
-            "title": "Email Verificado com Sucesso!",
-            "description": "Seu email foi verificado. Você será redirecionado para a página de login em {countdown} segundos.",
-            "notRedirected": "Se você não for redirecionado automaticamente,",
-            "clickHere": "clique aqui"
-        },
-        "newPassword": {
-            "title": "Definir Nova Senha",
-            "description": "Digite o código do seu email e sua nova senha.",
-            "code": "Código",
-            "codePlaceholder": "Cole o código do seu email",
-            "email": "Email",
-            "emailPlaceholder": "Digite seu email",
-            "newPassword": "Nova Senha",
-            "newPasswordPlaceholder": "Digite a nova senha",
-            "confirmPassword": "Confirmar Senha",
-            "confirmPasswordPlaceholder": "Confirme a nova senha",
-            "resetting": "Redefinindo...",
-            "setNewPassword": "Definir Nova Senha",
-            "errors": {
-                "codeRequired": "Código é obrigatório",
-                "emailRequired": "Email é obrigatório",
-                "passwordRequired": "Senha é obrigatória",
-                "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
-                "confirmPasswordRequired": "Por favor, confirme sua senha",
-                "passwordsDoNotMatch": "As senhas não coincidem"
-            }
-        },
-        "resetPassword": {
-            "title": "Redefinir Senha",
-            "description": "Digite seu email para receber um link de redefinição de senha.",
-            "email": {
-                "label": "Email",
-                "placeholder": "nome@exemplo.com",
-                "required": "Email é obrigatório",
-                "invalid": "Email inválido"
-            },
-            "buttons": {
-                "sending": "Enviando...",
-                "sendResetLink": "Enviar Link de Redefinição"
-            },
-            "backToSignIn": "Voltar para Entrar",
-            "success": "Link de redefinição de senha enviado com sucesso",
-            "error": "Falha ao enviar link de redefinição de senha",
-            "subject": "Redefina sua senha"
-        },
-        "language": {
-            "title": "Idioma",
-            "english": "Inglês",
-            "portuguese": "Português"
-        },
-        "signUpSuccess": "Conta criada com sucesso! Por favor, verifique seu email para confirmar sua conta.",
-        "signUpError": "Falha ao criar conta. Por favor, tente novamente.",
-        "userAlreadyExists": "Usuário com esse email já existe."
+    "SiteHeader": {
+        "title": "Painel Principal"
     },
-    "company": {
-        "createTitle": "Criar Empresa",
-        "editTitle": "Editar Empresa",
-        "uploadLogo": "Subir Logo",
-        "uploadLogoHint": "Adicione um logo para sua empresa",
-        "companyName": "Nome da Empresa",
-        "companyNamePlaceholder": "Ex.: João Construção e Reforma",
-        "documentType": "Tipo de Documento",
-        "documentTypePlaceholder": "Selecione o tipo de documento",
-        "cpf": "CPF",
-        "cpfPlaceholder": "Ex.: 000.000.000-00",
-        "cnpj": "CNPJ",
-        "cnpjPlaceholder": "Ex.: 00.000.000/0001-00",
-        "zipcode": "CEP",
-        "zipcodePlaceholder": "Ex.: 00000-000",
-        "state": "Estado",
-        "statePlaceholder": "Ex.: SP",
-        "city": "Cidade",
-        "cityPlaceholder": "Ex.: São Paulo",
-        "address": "Endereço da Empresa",
-        "addressPlaceholder": "Avenida Paulista 4550",
-        "activeProjectCount": "Projetos Ativos",
-        "projectCount": "Total de Projetos",
-        "companyTeam": "Equipe da Empresa",
-        "companyTeamHint": "Adicione sua equipe para trabalhar na plataforma",
-        "addTeam": "Adicionar",
-        "cancel": "Cancelar",
-        "create": "Criar Empresa",
-        "update": "Atualizar Empresa",
-        "updating": "Atualizando...",
-        "creating": "Criando...",
-        "companyCreated": "Empresa criada com sucesso",
-        "companyCreationError": "Falha ao criar empresa",
-        "companyUpdated": "Empresa atualizada com sucesso",
-        "companyUpdateError": "Falha ao atualizar empresa",
-        "reset": "Resetar",
-        "resetConfirmTitle": "Resetar Alterações",
-        "resetConfirmDescription": "Tem certeza que deseja resetar todas as alterações? Isso restaurará o formulário ao seu estado inicial.",
-        "resetConfirm": "Sim, resetar alterações",
-        "imageChangeConfirmTitle": "Alterar Logo",
-        "imageChangeConfirmDescription": "Tem certeza que deseja alterar a logo? Isso substituirá a logo atual por uma nova.",
-        "imageChangeConfirm": "Sim, alterar logo",
-        "imageChangeError": "Falha ao alterar logo",
-        "imageRemoveError": "Falha ao remover logo",
-        "confirm": "Confirmar",
-        "logoRemoved": "Logo removida com sucesso",
-        "logoRemoveError": "Falha ao remover logo",
-        "logoUpdated": "Logo atualizada com sucesso",
-        "logoUpdateError": "Falha ao atualizar logo",
-        "memberRemoved": "Membro removido com sucesso",
-        "memberRemoveError": "Falha ao remover membro",
-        "memberAddError": "Falha ao adicionar membro",
-        "memberUpdateError": "Falha ao atualizar membro",
-        "memberAdded": "Membro adicionado com sucesso",
-        "memberUpdated": "Membro atualizado com sucesso",
-        "P2002": "Usuário já é membro de uma empresa"
+    "SectionCards": {
+        "totalRevenue": {
+            "title": "Receita Total",
+            "description": "Crescendo este mês",
+            "subtitle": "Visitantes dos últimos 6 meses"
+        },
+        "newCustomers": {
+            "title": "Novos Clientes",
+            "description": "Queda de 20% neste período",
+            "subtitle": "Aquisição precisa de atenção"
+        },
+        "activeAccounts": {
+            "title": "Contas Ativas",
+            "description": "Forte retenção de usuários",
+            "subtitle": "Engajamento excede metas"
+        },
+        "growthRate": {
+            "title": "Taxa de Crescimento",
+            "description": "Aumento constante de performance",
+            "subtitle": "Atende projeções de crescimento"
+        }
+    },
+    "ChartAreaInteractive": {
+        "title": "Total de Visitantes",
+        "description": {
+            "full": "Total dos últimos 3 meses",
+            "short": "Últimos 3 meses"
+        },
+        "timeRange": {
+            "last3Months": "Últimos 3 meses",
+            "last30Days": "Últimos 30 dias",
+            "last7Days": "Últimos 7 dias"
+        },
+        "chart": {
+            "visitors": "Visitantes",
+            "desktop": "Desktop",
+            "mobile": "Mobile"
+        }
+    },
+    "DataTable": {
+        "columns": {
+            "header": "Cabeçalho",
+            "sectionType": "Tipo de Seção",
+            "status": "Status",
+            "target": "Meta",
+            "limit": "Limite",
+            "reviewer": "Revisor"
+        },
+        "status": {
+            "done": "Concluído",
+            "inProgress": "Em Progresso",
+            "notStarted": "Não Iniciado"
+        },
+        "actions": {
+            "edit": "Editar",
+            "makeCopy": "Fazer uma cópia",
+            "favorite": "Favoritar",
+            "delete": "Excluir",
+            "openMenu": "Abrir menu",
+            "dragToReorder": "Arrastar para reordenar"
+        },
+        "views": {
+            "outline": "Estrutura",
+            "pastPerformance": "Performance Passada",
+            "keyPersonnel": "Pessoal Chave",
+            "focusDocuments": "Documentos de Foco"
+        },
+        "buttons": {
+            "customizeColumns": "Personalizar Colunas",
+            "columns": "Colunas",
+            "addSection": "Adicionar Seção",
+            "selectView": "Selecionar uma visualização"
+        },
+        "pagination": {
+            "rowsPerPage": "Linhas por página",
+            "page": "Página",
+            "of": "de",
+            "rowsSelected": "linha(s) selecionada(s)",
+            "goToFirstPage": "Ir para primeira página",
+            "goToPreviousPage": "Ir para página anterior",
+            "goToNextPage": "Ir para próxima página",
+            "goToLastPage": "Ir para última página"
+        },
+        "messages": {
+            "noResults": "Nenhum resultado.",
+            "saving": "Salvando",
+            "done": "Concluído",
+            "error": "Erro"
+        },
+        "form": {
+            "assignReviewer": "Atribuir revisor",
+            "selectType": "Selecionar um tipo",
+            "selectStatus": "Selecionar um status",
+            "selectReviewer": "Selecionar um revisor",
+            "submit": "Enviar",
+            "done": "Concluído"
+        },
+        "types": {
+            "tableOfContents": "Índice",
+            "executiveSummary": "Resumo Executivo",
+            "technicalApproach": "Abordagem Técnica",
+            "design": "Design",
+            "capabilities": "Capacidades",
+            "focusDocuments": "Documentos de Foco",
+            "narrative": "Narrativa",
+            "coverPage": "Página de Capa"
+        },
+        "reviewers": {
+            "eddieLake": "Eddie Lake",
+            "jamikTashpulatov": "Jamik Tashpulatov",
+            "emilyWhalen": "Emily Whalen"
+        },
+        "drawer": {
+            "showingVisitors": "Mostrando total de visitantes dos últimos 6 meses",
+            "trendingUp": "Crescendo 5,2% este mês",
+            "description": "Mostrando total de visitantes dos últimos 6 meses. Este é apenas um texto aleatório para testar o layout. Ele se estende por múltiplas linhas e deve quebrar."
+        }
     },
     "error": {
         "notFound": {
             "code": "404",
             "title": "Página não encontrada",
             "message": "A página que você está procurando não existe.",
-            "button": "Voltar para a Home"
+            "button": "Ir para a página inicial"
         }
     },
-    "shared": {
-        "user": {
-            "title": "Usuários",
-            "description": "Adicione ou edite informações do usuário",
-            "addTitle": "Adicionar Usuário",
-            "editTitle": "Editar Usuário",
-            "addButton": "Adicionar Usuário",
-            "empty": "Nenhum usuário adicionado ainda",
-            "name": "Nome",
-            "namePlaceholder": "Digite o nome do usuário",
-            "nameRequired": "Nome é obrigatório",
-            "email": "Email",
-            "emailPlaceholder": "Digite o email do usuário",
-            "emailRequired": "Email é obrigatório",
-            "emailInvalid": "Por favor, digite um email válido",
-            "phone": "Telefone",
-            "phonePlaceholder": "(00) 00000-0000",
-            "phoneRequired": "Telefone é obrigatório",
-            "phoneInvalid": "Por favor, digite um número de telefone válido",
-            "add": "Adicionar",
-            "save": "Salvar",
-            "cancel": "Cancelar",
-            "edit": "Editar usuário",
-            "remove": "Remover usuário",
-            "removeConfirm": {
-                "title": "Remover Usuário",
-                "description": "Tem certeza que deseja remover o usuário {name}?",
-                "confirm": "Remover",
-                "cancel": "Cancelar"
-            },
-            "permissions": {
-                "isAdmin": "Administrador",
-                "canPost": "Pode Postar",
-                "canApprove": "Pode Aprovar",
-                "isOwner": "Proprietário"
-            }
-        },
-        "comments": {
-            "addComment": "Adicionar Comentário",
-            "commentPlaceholder": "Escreva seu comentário aqui...",
-            "comments": "Comentários",
-            "noComments": "Nenhum comentário ainda",
-            "commentAdded": "Comentário adicionado com sucesso",
-            "commentAddError": "Falha ao adicionar comentário",
-            "commentUpdated": "Comentário atualizado com sucesso",
-            "commentUpdateError": "Falha ao atualizar comentário",
-            "commentDeleted": "Comentário removido com sucesso",
-            "commentDeleteError": "Falha ao remover comentário",
-            "deleteConfirm": "Tem certeza que deseja remover este comentário?",
-            "deleteConfirmTitle": "Remover Comentário",
-            "deleteConfirmDescription": "Tem certeza que deseja remover este comentário? Esta ação não pode ser desfeita.",
-            "delete": "Remover",
-            "deleting": "Removendo...",
-            "save": "Salvar",
-            "cancel": "Cancelar"
-        }
-    },
-    "header": {
-        "redirecting": "Redirecionando...",
-        "create": "Criar",
-        "createRDO": "RDO",
-        "createProject": "Projeto",
-        "createIncident": "Ocorrência",
-        "profile": "Perfil",
-        "subscription": "Assinatura",
-        "company": "Empresa",
-        "english": "Inglês",
-        "portuguese": "Português",
-        "logout": "Sair"
-    },
-    "project": {
-        "create": {
-            "title": "Criar Projeto",
-            "editTitle": "Editar Projeto",
-            "uploadPhoto": {
-                "label": "Subir Foto",
-                "hint": "Adicione uma foto (550px x 158px) para representar o Projeto"
-            },
-            "name": {
-                "label": "Nome Projeto",
-                "hint": "Qual seria o nome do Projeto",
-                "placeholder": "Ex.: Construção Casa João",
-                "required": "O nome do projeto é obrigatório"
-            },
-            "description": {
-                "label": "Descrição do Projeto",
-                "hint": "Adicione uma descrição detalhada do projeto",
-                "placeholder": "Descreva os detalhes do projeto...",
-                "required": "A descrição do projeto é obrigatória"
-            },
-            "address": {
-                "label": "Endereço do Projeto",
-                "hint": "Adicione o endereço que será efetuado o projeto",
-                "placeholder": "Avenida Paulista 4550\nSão Paulo\nCEP 09000-000",
-                "required": "O endereço do projeto é obrigatório"
-            },
-            "buttons": {
-                "cancel": "Cancelar",
-                "create": "Criar"
-            },
-            "success": "Projeto criado com sucesso"
-        },
-        "edit": {
-            "title": "Editar Projeto",
-            "uploadPhoto": {
-                "label": "Subir Foto",
-                "hint": "Adicione uma foto (550px x 158px) para representar o Projeto"
-            },
-            "name": {
-                "label": "Nome Projeto",
-                "hint": "Qual seria o nome do Projeto",
-                "placeholder": "Ex.: Construção Casa João",
-                "required": "O nome do projeto é obrigatório"
-            },
-            "description": {
-                "label": "Descrição do Projeto",
-                "hint": "Adicione uma descrição detalhada do projeto",
-                "placeholder": "Descreva os detalhes do projeto...",
-                "required": "A descrição do projeto é obrigatória"
-            },
-            "address": {
-                "label": "Endereço do Projeto",
-                "hint": "Adicione o endereço que será efetuado o projeto",
-                "placeholder": "Avenida Paulista 4550\nSão Paulo\nCEP 09000-000",
-                "required": "O endereço do projeto é obrigatório"
-            },
-            "status": {
-                "label": "Status do Projeto",
-                "hint": "Selecione o status atual do projeto",
-                "placeholder": "Selecionar status do projeto",
-                "searchPlaceholder": "Buscar status...",
-                "noResults": "Nenhum status encontrado.",
-                "active": "Ativo",
-                "wip": "Em Andamento",
-                "finished": "Finalizado",
-                "stopped": "Parado",
-                "deactivated": "Desativado"
-            },
-            "buttons": {
-                "cancel": "Cancelar",
-                "update": "Atualizar"
-            },
-            "success": "Projeto atualizado com sucesso",
-            "error": "Falha ao atualizar projeto",
-            "files": {
-                "uploadError": "Falha ao enviar arquivos"
-            },
-            "userAddError": "Falha ao adicionar usuário ao projeto - Usuário já existe",
-            "userAdded": "Usuário adicionado ao projeto com sucesso",
-            "userUpdateError": "Falha ao atualizar usuário do projeto",
-            "userUpdated": "Usuário do projeto atualizado com sucesso",
-            "userRemoveError": "Falha ao remover usuário do projeto",
-            "userRemoved": "Usuário removido do projeto com sucesso"
-        },
-        "status": {
-            "active": "Ativo",
-            "wip": "Em Andamento",
-            "finished": "Finalizado",
-            "stopped": "Parado",
-            "deactivated": "Desativado"
-        },
-        "view": {
-            "title": "Detalhes do Projeto",
-            "name": "Projeto",
-            "description": "Descrição",
-            "address": "Endereço",
-            "edit": "Editar Projeto",
-            "postedBy": "Postado por",
-            "rdoStatus": {
-                "draft": "Rascunho",
-                "pendingApproval": "Aguardando Aprovação",
-                "approved": "Aprovado",
-                "rejected": "Rejeitado"
-            },
-            "moreImage": "imagem adicional",
-            "moreImages": "imagens adicionais",
-            "tabs": {
-                "rdos": "RDOs",
-                "incidents": "Ocorrências",
-                "media": "Mídia",
-                "users": "Usuários",
-                "noRdos": "Nenhum RDO para este projeto ainda.",
-                "noIncidents": "Nenhuma ocorrência para este projeto ainda.",
-                "noMedia": "Nenhuma mídia para este projeto ainda.",
-                "noUsers": "Nenhum usuário atribuído a este projeto ainda.",
-                "endMessage": "Você viu todos os itens"
-            },
-            "userCard": {
-                "noRole": "Sem Função",
-                "role": {
-                    "admin": "Administrador",
-                    "canApprove": "Pode Aprovar"
-                },
-                "memberSince": "Membro desde"
-            }
-        }
-    },
-    "formRDO": {
-        "title": "Criar RDO",
-        "project": {
-            "label": "Projeto",
-            "hint": "Essa RDO ficará vinculada ao projeto",
-            "placeholder": "Selecione o projeto",
-            "searchPlaceholder": "Buscar projeto...",
-            "noResults": "Nenhum projeto encontrado.",
-            "required": "Projeto é obrigatório."
-        },
-        "date": {
-            "label": "Data do RDO",
-            "hint": "Qual data será esse RDO",
-            "placeholder": "dd/mm/aaaa",
-            "selectDate": "Selecionar data",
-            "required": "Data é obrigatória."
-        },
-        "labor": {
-            "label": "Mão de Obra",
-            "hint": "Adicione a mão de obra utilizada",
-            "placeholder": "Executamos a seguinte parte da obra..."
-        },
-        "equipment": {
-            "label": "Equipamentos Utilizados",
-            "hint": "Adicione os equipamentos utilizados",
-            "placeholder": "Executamos a seguinte parte da obra..."
-        },
-        "description": {
-            "label": "Conte o que foi feito",
-            "hint": "Adicione o que foi feito nessa RDO",
-            "placeholder": "Executamos a seguinte parte da obra...",
-            "required": "Descrição é obrigatória.",
-            "minLength": "A descrição deve ter pelo menos 10 caracteres."
-        },
-        "weather": {
-            "label": "Condição Climática",
-            "periods": {
-                "weatherMorning": "Manhã",
-                "weatherAfternoon": "Tarde",
-                "weatherNight": "Noite"
-            },
-            "conditions": {
-                "clear": "Claro",
-                "cloudy": "Nublado",
-                "rainy": "Chuvoso"
-            },
-            "workable": {
-                "true": "Praticável",
-                "false": "Impraticável"
-            }
-        },
-        "status": {
-            "label": "Status do RDO",
-            "hint": "Modifique o Status do RDO aqui",
-            "placeholder": "Selecione o status",
-            "statusCombobox": {
-                "draft": "Rascunho",
-                "pendingApproval": "Aguardando Aprovação",
-                "approved": "Aprovado",
-                "rejected": "Rejeitado"
-            }
-        },
-        "files": {
-            "label": "Subir Fotos, Vídeos e documentos",
-            "hint": "Adicione fotos e vídeos no seu post para atualizar a Obra",
-            "clickToAdd": "Clique para adicionar fotos ou vídeos",
-            "addMore": "Adicionar mais",
-            "uploadError": "Falha ao enviar arquivos",
-            "removeImage": {
-                "success": "Imagem removida com sucesso",
-                "error": "Falha ao remover imagem",
-                "title": "Remover imagem",
-                "description": "Tem certeza que deseja remover esta imagem?",
-                "confirm": "Remover",
-                "cancel": "Cancelar"
-            }
-        },
-        "update": {
-            "success": "RDO atualizada com sucesso",
-            "error": "Falha ao atualizar RDO"
-        },
-        "success": "RDO criada com sucesso",
-        "error": "Falha ao criar RDO"
-    },
-    "uploadPhoto": {
-        "clickToAdd": "Clique para adicionar fotos ou vídeos",
-        "clickToAddLogo": "Clique para adicionar um logo",
-        "clickToAddPhoto": "Clique para adicionar uma foto",
-        "removeImage": {
-            "title": "Remover imagem",
-            "description": "Tem certeza que deseja remover esta imagem?",
-            "confirm": "Remover",
-            "cancel": "Cancelar"
-        }
-    },
-    "feed": {
-        "empty": {
-            "title": "Nenhuma RDO encontrada",
-            "description": "Não há RDOs disponíveis para este projeto ainda.",
-            "createButton": "Criar RDO"
-        },
-        "tabs": {
-            "rdos": "RDOs",
-            "incidents": "Ocorrências"
-        },
-        "endMessage": "Você viu todos os itens",
-        "incidents": {
-            "empty": {
-                "title": "Nenhuma ocorrência encontrada",
-                "description": "Não há ocorrências disponíveis para este projeto ainda.",
-                "createButton": "Criar Ocorrência"
-            }
-        }
-    },
-    "incident": {
-        "title": "Postar Incidente",
-        "empty": {
-            "title": "Nenhum projeto encontrado",
-            "description": "Você precisa criar um projeto antes de criar uma Ocorrência.",
-            "createButton": "Criar Projeto"
-        },
-        "project": {
-            "label": "Projeto",
-            "hint": "Esta ocorrência será vinculada ao projeto",
-            "required": "Projeto é obrigatório"
-        },
-        "status": {
-            "label": "Status da Ocorrência",
-            "hint": "Modifique o Status da Ocorrência aqui",
-            "draft": "Rascunho",
-            "open": "Aberto",
-            "wip": "Em Andamento",
-            "closed": "Fechado"
-        },
-        "priority": {
-            "label": "Prioridade",
-            "hint": "Defina o nível de prioridade da ocorrência",
-            "low": "Baixa",
-            "medium": "Média",
-            "high": "Alta",
-            "critical": "Crítica"
-        },
-        "date": {
-            "label": "Data da Ocorrência",
-            "hint": "Qual a data da ocorrência",
-            "placeholder": "dd/mm/yyyy",
-            "selectDate": "Selecionar data",
-            "required": "Data é obrigatória."
-        },
-        "description": {
-            "label": "Descrição da Ocorrência",
-            "hint": "Descreva o que aconteceu no campo abaixo",
-            "placeholder": "Discrepância entre o projeto e a execução da piscina...",
-            "required": "Descrição é obrigatória"
-        },
-        "files": {
-            "label": "Subir Fotos, Vídeos e documentos",
-            "hint": "Caso necessário, adicione fotos, vídeos e documentos",
-            "clickToAdd": "Clique para adicionar arquivos",
-            "uploadError": "Falha ao enviar arquivos"
-        },
-        "actions": {
-            "cancel": "Cancelar",
-            "submit": "Enviar",
-            "update": "Atualizar",
-            "updating": "Atualizando...",
-            "draft": "Rascunho"
-        },
-        "success": "Ocorrência enviada com sucesso!",
-        "error": "Falha ao enviar Ocorrência",
-        "update": {
-            "success": "Ocorrência atualizada com sucesso!",
-            "error": "Falha ao atualizar ocorrência"
-        },
-        "view": {
-            "title": "Ocorrência",
-            "description": "Descrição",
-            "reportedBy": "Reportada por",
-            "project": "Projeto",
-            "edit": "Editar Ocorrência",
-            "media": "Mídia",
-            "comments": "Comentários",
-            "noComments": "Nenhum comentário ainda",
-            "status": {
-                "open": "Aberto",
-                "wip": "Em Andamento",
-                "closed": "Fechado",
-                "draft": "Rascunho"
-            },
-            "priority": {
-                "low": "Baixa",
-                "medium": "Média",
-                "high": "Alta",
-                "critical": "Crítica"
-            },
-            "date": {
-                "label": "Data da Ocorrência",
-                "hint": "Qual a data da ocorrência",
-                "placeholder": "dd/mm/yyyy",
-                "selectDate": "Selecionar data",
-                "required": "Data é obrigatória."
-            },
-            "actions": {
-                "open": "Abrir",
-                "wip": "Em Andamento",
-                "close": "Fechar",
-                "draft": "Rascunho",
-                "UpdatedSuccess": "Ocorrência atualizada com sucesso",
-                "UpdatedError": "Erro ao atualizar ocorrência"
-            }
-        },
-        "incidentCard": {
-            "title": "Ocorrência",
-            "reportedBy": "Reportada por",
-            "edit": "Editar",
-            "share": "Compartilhar",
-            "linkCopied": "Link copiado para a área de transferência",
-            "details": "Detalhes",
-            "draft": "Rascunho",
-            "open": "Aberto",
-            "wip": "Em Andamento",
-            "closed": "Fechado",
-            "priority": {
-                "1": "Alta",
-                "2": "Média",
-                "3": "Baixa",
-                "description": {
-                    "1": "Ocorrência de alta prioridade que requer atenção imediata",
-                    "2": "Ocorrência de média prioridade que requer atenção em breve",
-                    "3": "Ocorrência de baixa prioridade que pode ser tratada posteriormente"
-                }
-            },
-            "actions": {
-                "open": "Abrir",
-                "wip": "Em Andamento",
-                "close": "Fechar",
-                "UpdatedSuccess": "Ocorrência atualizada com sucesso",
-                "UpdatedError": "Erro ao atualizar ocorrência",
-                "draft": "Rascunho"
-            }
-        }
-    },
-    "profile": {
-        "title": "Meu perfil",
-        "avatar": {
-            "label": "Foto de perfil",
-            "hint": "Adicione uma foto de perfil",
-            "changePhotoTitle": "Alterar foto de perfil",
-            "changePhotoDescription": "Tem certeza que deseja alterar sua foto de perfil? Isso substituirá sua foto atual.",
-            "changePhotoConfirmLabel": "Alterar foto",
-            "changePhotoCancelLabel": "Cancelar"
-        },
-        "name": {
-            "label": "Nome",
-            "placeholder": "Digite seu nome",
-            "required": "Nome é obrigatório"
-        },
-        "phone": {
-            "label": "Telefone",
-            "placeholder": "123-456-7890"
-        },
-        "email": {
-            "label": "Email",
-            "placeholder": "exemplo@email.com",
-            "required": "Email é obrigatório"
-        },
-        "birthday": {
-            "label": "Data de nascimento",
-            "placeholder": "Definir data de nascimento"
-        },
-        "notifyRDO": {
-            "label": "Receber notificação de novo RDO"
-        },
-        "actions": {
-            "cancel": "Cancelar",
-            "submit": "Salvar alterações"
-        },
-        "language": {
-            "label": "Idioma",
-            "placeholder": "Selecione o idioma",
-            "en": "Inglês",
-            "ptbr": "Português"
-        },
-        "success": "Perfil atualizado com sucesso",
-        "avatarRemoved": "Foto de perfil removida com sucesso",
-        "avatarRemoveError": "Falha ao remover foto de perfil",
-        "delete": {
-            "button": "Excluir Perfil",
-            "title": "Excluir Perfil",
-            "description": "Esta ação não pode ser desfeita. Isso excluirá permanentemente seu perfil e o removerá de todos os projetos e empresas.",
-            "confirmLabel": "Excluir Perfil",
-            "cancelLabel": "Cancelar",
-            "nameConfirmation": "Digite seu nome completo para confirmar a exclusão",
-            "namePlaceholder": "Digite seu nome completo",
-            "nameRequired": "Digite seu nome completo para confirmar a exclusão",
-            "nameMismatch": "Nome não confere. Digite seu nome completo exatamente como mostrado.",
-            "success": "Perfil excluído com sucesso",
-            "error": "Falha ao excluir perfil"
-        }
-    },
-    "pwa": {
-        "installPrompt": {
-            "title": "Instalar Obraguru",
-            "description": "Adicione ao seu dispositivo para acesso rápido",
-            "installButton": "Instalar",
-            "dismissButton": "Fechar",
-            "iosTitle": "Adicionar à Tela Inicial",
-            "iosDescription": "Toque no botão compartilhar e selecione 'Adicionar à Tela Inicial'"
-        }
-    },
-    "offline": {
-        "title": "Você está offline",
-        "description": "Parece que você não tem conexão com a internet. Verifique sua conexão e tente novamente.",
-        "retry": "Tentar novamente"
-    },
-    "enhancedUpload": {
-        "fileSizeError": "O tamanho do arquivo deve ser menor que {maxFileSize}MB",
-        "fileTypeError": "Tipo de arquivo não suportado",
-        "maxFilesError": "Máximo de {maxFiles} arquivos permitidos",
-        "filesProcessedSuccess": "{count} arquivo(s) processado(s) com sucesso",
-        "processFilesError": "Falha ao processar arquivos",
-        "uploadHint": "Clique para enviar ou arraste e solte",
-        "fileLimits": "Máx {maxFiles} arquivos, {maxFileSize}MB cada",
-        "compressing": "Comprimindo...",
-        "selectFiles": "Selecionar Arquivos",
-        "compressingFiles": "Comprimindo arquivos...",
-        "uploadingFiles": "Enviando arquivos...",
-        "selectedFiles": "Arquivos Selecionados:",
-        "preview": "Visualização {index}",
-        "dragOverMessage": "Solte os arquivos aqui para enviar",
-        "videoFile": "Arquivo de Vídeo",
-        "documentFile": "Arquivo de Documento",
-        "imageFile": "Arquivo de Imagem",
-        "change": "Alterar",
-        "remove": "Remover"
+    "Common": {
+        "loading": "Carregando...",
+        "save": "Salvar",
+        "cancel": "Cancelar",
+        "close": "Fechar",
+        "search": "Pesquisar",
+        "filter": "Filtrar",
+        "sort": "Ordenar",
+        "selectAll": "Selecionar tudo",
+        "selectRow": "Selecionar linha"
     }
 }

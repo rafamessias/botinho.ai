@@ -1,5 +1,4 @@
 import NextAuth from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/prisma/lib/prisma"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
@@ -96,19 +95,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         throw new InvalidCredentialsError()
                     }
 
-                    // Get the first projectId from user's projectUsers relation, if available
-                    let projectId = null;
-                    if (user.projectUsers && user.projectUsers.length > 0) {
-                        projectId = user.projectUsers.map(pu => pu.projectId?.toString()).filter(Boolean).join(",");
-                    }
-
                     return {
                         id: user.id.toString(),
                         email: user.email,
                         name: `${user.firstName} ${user.lastName}`,
-                        company: user?.companyId?.toString(),
                         language: user.language === "pt_BR" ? "pt-BR" : "en",
-                        projectId: projectId
                     }
                 } catch (error) {
                     console.error("Auth error:", error)
@@ -125,9 +116,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (user) {
                 token.id = user.id
                 token.email = user.email
-                token.company = (user as any)?.company
                 token.language = (user as any)?.language
-                token.projectId = (user as any)?.projectId
             }
 
             // Handle Google OAuth user creation/update in JWT callback
@@ -135,7 +124,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 try {
                     const existingUser = await prisma.user.findUnique({
                         where: { email: token.email! },
-                        include: { projectUsers: true }
                     });
 
                     if (!existingUser) {
@@ -149,16 +137,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 firstName: token.name?.split(' ')[0] || '',
                                 lastName: token.name?.split(' ').slice(1).join(' ') || '',
                                 provider: 'google',
-                                type: 'companyUser',
                                 language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
                                 phone: '',
                                 confirmed: true,
                             },
-                            include: { company: true }
                         })
                         token.id = newUser.id.toString()
                         token.email = newUser.email
-                        token.company = newUser.companyId?.toString()
                         token.language = newUser.language
 
                         const baseUrl = process.env.HOST;
@@ -180,9 +165,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     } else {
                         token.id = existingUser.id?.toString()
                         token.email = existingUser.email
-                        token.company = existingUser.companyId?.toString()
                         token.language = existingUser.language
-                        token.projectId = existingUser.projectUsers.map(pu => pu.projectId?.toString()).filter(Boolean).join(",");
                     }
                 } catch (error) {
                     console.error('Error handling Google OAuth user:', error);
@@ -199,11 +182,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                         const updatedUser = await prisma.user.findUnique({
                             where: { email: token.email! },
-                            include: { company: true }
                         });
 
                         if (updatedUser) {
-                            token.company = updatedUser.company;
                             token.language = updatedUser.language === "pt_BR" ? "pt-BR" : "en";
                         }
                     }
@@ -218,9 +199,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (token) {
                 session.user.id = token.id as string
                 session.user.email = token.email as string
-                session.user.company = token.company as string
                 session.user.language = token.language as string
-                session.user.projectId = token.projectId as string
             }
 
             return session

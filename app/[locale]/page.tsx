@@ -1,50 +1,41 @@
-import ContainerApp from "@/components/Container-app"
-import { getTranslations } from "next-intl/server"
-import HomePage from "@/components/homePage/home-page"
-import { prismaWithCompany } from "@/components/actions/prisma-with-company"
-import { Project } from "@/components/types/prisma";
+import * as React from "react"
+import { AppSidebar } from "@/components/app-sidebar"
+import { ChartAreaInteractive } from "@/components/chart-area-interactive"
+import { DataTable } from "@/components/data-table"
+import { SectionCards } from "@/components/section-cards"
+import { SiteHeader } from "@/components/site-header"
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar"
 
-// Force dynamic rendering since this page uses authentication
-export const dynamic = 'force-dynamic';
+import data from "./data.json"
 
-interface PageProps {
-    params: Promise<{ locale: string }>;
+export default function Page() {
+  return (
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              <SectionCards />
+              <div className="px-4 lg:px-6">
+                <ChartAreaInteractive />
+              </div>
+              <DataTable data={data} />
+            </div>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  )
 }
-
-export default async function Page({ params }: PageProps) {
-    const { locale } = await params;
-    const t = await getTranslations({ locale, namespace: 'homepage' });
-
-    // TEMPORARY: Add delay to test loading skeleton
-    //await new Promise(resolve => setTimeout(resolve, 300000)); // 3 second delay
-
-    // Fetch active projects using Prisma
-    let projectsData = null;
-    try {
-        projectsData = await prismaWithCompany.project.findMany({
-            where: {
-                active: true
-            },
-            include: {
-                image: true,
-                company: {
-                    include: {
-                        owner: true
-                    }
-                }
-            },
-            orderBy: {
-                id: 'desc'
-            }
-        });
-
-    } catch (error) {
-        console.error('Failed to fetch projects:', error);
-    }
-
-    return (
-        <ContainerApp form={false} title={t('home.projects')} showBackButton={false}>
-            <HomePage initialProjects={projectsData as Project[] | null} />
-        </ContainerApp>
-    );
-} 

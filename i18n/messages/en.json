@@ -1,828 +1,169 @@
 {
-    "rdo": {
-        "rdo": "RDO",
-        "title": "Create RDO",
-        "postedBy": "Posted by",
-        "morning": "Morning",
-        "afternoon": "Afternoon",
-        "night": "Night",
-        "comments": "Comments",
-        "approvals": "Approvals",
-        "empty": {
-            "title": "No projects found",
-            "description": "You need to create a project before creating an RDO.",
-            "createButton": "Create Project"
-        },
-        "rdoCard": {
-            "postedBy": "Posted by",
-            "date": "Date",
-            "project": "Project",
-            "status": "Status",
-            "morning": "Morning",
-            "afternoon": "Afternoon",
-            "night": "Night",
-            "draft": "Draft",
-            "pendingApproval": "Pending Approval",
-            "details": "Details",
-            "comments": "Comments",
-            "workableConditions": "Suitable working conditions",
-            "unworkableConditions": "Unsuitable working conditions",
-            "approved": "Approved",
-            "Approved": "Approved",
-            "rejected": "Rejected",
-            "Rejected": "Rejected",
-            "edit": "Edit",
-            "share": "Share",
-            "linkCopied": "Link copied to clipboard",
-            "weather": {
-                "title": "Weather Condition",
-                "clear": "Clear",
-                "cloudy": "Cloudy",
-                "rainy": "Rainy",
-                "true": "Workable",
-                "false": "Unworkable"
-            },
-            "activities": {
-                "title": "Executed Activities"
-            },
-            "equipment": {
-                "title": "Equipment Used"
-            },
-            "workforce": {
-                "title": "Workforce"
-            },
-            "actions": {
-                "reject": "Reject",
-                "approve": "Approve",
-                "approveError": "Failed to approve RDO",
-                "approveSuccess": "RDO approved successfully",
-                "rejectError": "Failed to reject RDO",
-                "rejectSuccess": "RDO rejected successfully",
-                "Approved": "Approved",
-                "Rejected": "Rejected",
-                "UpdatedSuccess": "RDO updated successfully",
-                "UpdatedError": "Error updating RDO",
-                "save": "Save",
-                "cancel": "Cancel"
-            },
-            "tabs": {
-                "comments": "Comments",
-                "noComments": "No comments",
-                "occurrences": "Occurrences",
-                "audit": "Approval",
-                "noAudit": "No approval history",
-                "newOccurrence": "New Occurrence",
-                "notImplemented": {
-                    "comments": "No comments",
-                    "audit": "No approval history"
-                }
-            }
-        },
-        "bottomNav": {
-            "progress": "Progress",
-            "occurrences": "Occurrences",
-            "project": "Project",
-            "projectList": "Project List"
-        }
+    "Page": {
+        "title": "Main Dashboard",
+        "description": "SaaS Framework Dashboard"
     },
-    "homepage": {
-        "home": {
-            "searchProjects": "Search projects...",
-            "allProjects": "All Projects",
-            "activeProjects": "Active Projects",
-            "inactiveProjects": "Inactive Projects",
-            "newProject": "New Project",
-            "projects": "Projects",
-            "clearSearch": "Clear search",
-            "empty": {
-                "noProjects": "No projects found",
-                "noResults": "No projects match your search",
-                "getStarted": "Get started by creating your first project",
-                "adjustSearch": "Try adjusting your search or filter criteria"
-            }
-        },
+    "AppSidebar": {
+        "brand": "My SaaS",
         "navigation": {
-            "progress": "Progress",
-            "occurrences": "Occurrences",
-            "project": "Project",
-            "projectList": "Project List"
+            "dashboard": "Dashboard",
+            "lifecycle": "Lifecycle",
+            "analytics": "Analytics",
+            "projects": "Projects",
+            "team": "Team"
         },
-        "projectCard": {
-            "active": "Active",
-            "inactive": "Inactive",
-            "viewUpdates": "View Updates",
-            "viewDetails": "View Details",
-            "information": "Information"
+        "secondary": {
+            "settings": "Settings",
+            "getHelp": "Get Help"
+        },
+        "documents": {
+            "dataLibrary": "Data Library",
+            "reports": "Reports",
+            "wordAssistant": "Word Assistant"
+        },
+        "user": {
+            "name": "shadcn",
+            "email": "m@example.com"
         }
     },
-    "auth": {
-        "signIn": "Sign In",
-        "signUp": "Sign Up",
-        "redirecting": "Redirecting...",
-        "enterCredentials": "Enter your credentials to access your account",
-        "email": "Email",
-        "emailPlaceholder": "name@example.com",
-        "emailRequired": "Email is required",
-        "emailInvalid": "Invalid email address",
-        "password": "Password",
-        "passwordRequired": "Password is required",
-        "passwordMinLength": "Password must be at least 6 characters",
-        "forgotPassword": "Forgot password?",
-        "orContinueWith": "Or continue with",
-        "noAccount": "Don't have an account?",
-        "createAccount": "Create your account to get started",
-        "firstName": "First Name",
-        "lastName": "Last Name",
-        "phoneNumber": "Phone Number",
-        "confirmPassword": "Confirm Password",
-        "agreeToTerms": "I agree to the",
-        "termsAndConditions": "Terms and Conditions",
-        "and": "and",
-        "privacyPolicy": "Privacy Policy",
-        "alreadyHaveAccount": "Already have an account?",
-        "google": "Google",
-        "googleSignInSuccess": "You have been signed in with Google successfully.",
-        "googleSignUpSuccess": "You have been signed up with Google successfully.",
-        "googleSignUpError": "Failed to sign up with Google",
-        "googleSignInError": "Failed to sign in with Google",
-        "googleAuthProcessing": "Processing Google authentication...",
-        "googleAuthSuccess": "Authentication successful!",
-        "googleAuthError": "Authentication failed",
-        "googleAuthNoCode": "No authorization code received",
-        "googleAuthPleaseWait": "Please wait while we complete your authentication...",
-        "backToSignIn": "Back to Sign In",
-        "signInSuccess": "You have been signed in successfully.",
-        "signInError": "Failed to sign in",
-        "invalidCredentials": "Invalid email or password",
-        "accountBlocked": "Your account has been blocked by an administrator",
-        "firstNameRequired": "First name is required",
-        "lastNameRequired": "Last name is required",
-        "phoneRequired": "Phone number is required",
-        "phoneInvalid": "Invalid format. Use (99) 99999-9999",
-        "phonePlaceholder": "(xx) xxxxx-xxxx",
-        "confirmPasswordRequired": "Please confirm your password",
-        "passwordsDoNotMatch": "Passwords do not match",
-        "agreeRequired": "You must agree to the terms and privacy policy",
-        "OAuthAccountNotLinked": "This email is already linked to another account",
-        "checkEmail": {
-            "title": "Check Your Email",
-            "description": "We've sent a verification email to {email}. Please check your inbox and follow the instructions to verify your account.",
-            "noEmail": "Didn't receive the email?",
-            "requestAnother": "You can request another verification email in:",
-            "seconds": "seconds",
-            "resend": "Resend Verification Email",
-            "sending": "Sending new verification email...",
-            "error": "Failed to send new verification email.",
-            "invalidToken": "Invalid or expired verification token.",
-            "confirmed": "Email confirmed successfully!",
-            "subject": "Verify your email address",
-            "validating": "Validating email token...",
-            "requestNewEmail": "You can request a new verification email below."
-        },
-        "success": {
-            "title": "Email Verified Successfully!",
-            "description": "Your email has been verified. You will be redirected to the login page in {countdown} seconds.",
-            "notRedirected": "If you are not redirected automatically,",
-            "clickHere": "click here"
-        },
-        "newPassword": {
-            "title": "Set New Password",
-            "description": "Enter the code from your email and your new password.",
-            "code": "Code",
-            "codePlaceholder": "Paste the code from your email",
-            "email": "Email",
-            "emailPlaceholder": "Enter your email",
-            "newPassword": "New Password",
-            "newPasswordPlaceholder": "Enter new password",
-            "confirmPassword": "Confirm Password",
-            "confirmPasswordPlaceholder": "Confirm new password",
-            "resetting": "Resetting...",
-            "setNewPassword": "Set New Password",
-            "errors": {
-                "codeRequired": "Code is required",
-                "emailRequired": "Email is required",
-                "passwordRequired": "Password is required",
-                "passwordMinLength": "Password must be at least 6 characters",
-                "confirmPasswordRequired": "Please confirm your password",
-                "passwordsDoNotMatch": "Passwords do not match"
-            }
-        },
-        "resetPassword": {
-            "title": "Reset Password",
-            "description": "Enter your email to receive a password reset link.",
-            "email": {
-                "label": "Email",
-                "placeholder": "name@example.com",
-                "required": "Email is required",
-                "invalid": "Invalid email address"
-            },
-            "buttons": {
-                "sending": "Sending...",
-                "sendResetLink": "Send Reset Link"
-            },
-            "backToSignIn": "Back to Sign In",
-            "success": "Password reset link sent successfully",
-            "error": "Failed to send password reset link",
-            "subject": "Reset your password"
-        },
-        "language": {
-            "title": "Language",
-            "english": "English",
-            "portuguese": "Portuguese"
-        },
-        "signUpSuccess": "Account created successfully! Please check your email to verify your account.",
-        "signUpError": "Failed to create account. Please try again.",
-        "userAlreadyExists": "User with this email already exists. Please sign in."
+    "SiteHeader": {
+        "title": "Main Dashboard"
     },
-    "company": {
-        "createTitle": "Create Company",
-        "editTitle": "Edit Company",
-        "uploadLogo": "Upload Logo",
-        "uploadLogoHint": "Add a logo for your company",
-        "companyName": "Company Name",
-        "companyNamePlaceholder": "e.g. John Construction and Renovation",
-        "documentType": "Document Type",
-        "documentTypePlaceholder": "Select document type",
-        "cpf": "CPF",
-        "cpfPlaceholder": "e.g. 000.000.000-00",
-        "cnpj": "CNPJ",
-        "cnpjPlaceholder": "e.g. 00.000.000/0001-00",
-        "zipcode": "Zipcode",
-        "zipcodePlaceholder": "e.g. 00000-000",
-        "state": "State",
-        "statePlaceholder": "e.g. SP",
-        "city": "City",
-        "cityPlaceholder": "e.g. São Paulo",
-        "address": "Address",
-        "addressPlaceholder": "Avenida Paulista 4550",
-        "activeProjectCount": "Active Projects",
-        "projectCount": "Total Projects",
-        "companyTeam": "Company Team",
-        "companyTeamHint": "Add your team to work on the platform",
-        "addTeam": "Add",
-        "cancel": "Cancel",
-        "create": "Create Company",
-        "update": "Update Company",
-        "updating": "Updating...",
-        "creating": "Creating...",
-        "companyCreated": "Company created successfully",
-        "companyCreationError": "Failed to create company",
-        "companyUpdated": "Company updated successfully",
-        "companyUpdateError": "Failed to update company",
-        "reset": "Reset",
-        "resetConfirmTitle": "Reset Changes",
-        "resetConfirmDescription": "Are you sure you want to reset all changes? This will restore the form to its initial state.",
-        "resetConfirm": "Yes, reset changes",
-        "imageChangeConfirmTitle": "Change Image",
-        "imageChangeConfirmDescription": "Are you sure you want to change the image? This will replace the current image with a new one.",
-        "imageChangeConfirm": "Yes, change image",
-        "imageChangeError": "Failed to change image",
-        "imageRemoveError": "Failed to remove image",
-        "confirm": "Confirm",
-        "logoRemoved": "Logo removed successfully",
-        "logoRemoveError": "Failed to remove logo",
-        "logoUpdated": "Logo updated successfully",
-        "logoUpdateError": "Failed to update logo",
-        "memberRemoved": "Member removed successfully",
-        "memberRemoveError": "Failed to remove member",
-        "memberAddError": "Failed to add member",
-        "memberUpdateError": "Failed to update member",
-        "memberAdded": "Member added successfully",
-        "memberUpdated": "Member updated successfully",
-        "P2002": "User is already a member of a company"
+    "SectionCards": {
+        "totalRevenue": {
+            "title": "Total Revenue",
+            "description": "Trending up this month",
+            "subtitle": "Visitors for the last 6 months"
+        },
+        "newCustomers": {
+            "title": "New Customers",
+            "description": "Down 20% this period",
+            "subtitle": "Acquisition needs attention"
+        },
+        "activeAccounts": {
+            "title": "Active Accounts",
+            "description": "Strong user retention",
+            "subtitle": "Engagement exceed targets"
+        },
+        "growthRate": {
+            "title": "Growth Rate",
+            "description": "Steady performance increase",
+            "subtitle": "Meets growth projections"
+        }
+    },
+    "ChartAreaInteractive": {
+        "title": "Total Visitors",
+        "description": {
+            "full": "Total for the last 3 months",
+            "short": "Last 3 months"
+        },
+        "timeRange": {
+            "last3Months": "Last 3 months",
+            "last30Days": "Last 30 days",
+            "last7Days": "Last 7 days"
+        },
+        "chart": {
+            "visitors": "Visitors",
+            "desktop": "Desktop",
+            "mobile": "Mobile"
+        }
+    },
+    "DataTable": {
+        "columns": {
+            "header": "Header",
+            "sectionType": "Section Type",
+            "status": "Status",
+            "target": "Target",
+            "limit": "Limit",
+            "reviewer": "Reviewer"
+        },
+        "status": {
+            "done": "Done",
+            "inProgress": "In Progress",
+            "notStarted": "Not Started"
+        },
+        "actions": {
+            "edit": "Edit",
+            "makeCopy": "Make a copy",
+            "favorite": "Favorite",
+            "delete": "Delete",
+            "openMenu": "Open menu",
+            "dragToReorder": "Drag to reorder"
+        },
+        "views": {
+            "outline": "Outline",
+            "pastPerformance": "Past Performance",
+            "keyPersonnel": "Key Personnel",
+            "focusDocuments": "Focus Documents"
+        },
+        "buttons": {
+            "customizeColumns": "Customize Columns",
+            "columns": "Columns",
+            "addSection": "Add Section",
+            "selectView": "Select a view"
+        },
+        "pagination": {
+            "rowsPerPage": "Rows per page",
+            "page": "Page",
+            "of": "of",
+            "rowsSelected": "row(s) selected",
+            "goToFirstPage": "Go to first page",
+            "goToPreviousPage": "Go to previous page",
+            "goToNextPage": "Go to next page",
+            "goToLastPage": "Go to last page"
+        },
+        "messages": {
+            "noResults": "No results.",
+            "saving": "Saving",
+            "done": "Done",
+            "error": "Error"
+        },
+        "form": {
+            "assignReviewer": "Assign reviewer",
+            "selectType": "Select a type",
+            "selectStatus": "Select a status",
+            "selectReviewer": "Select a reviewer",
+            "submit": "Submit",
+            "done": "Done"
+        },
+        "types": {
+            "tableOfContents": "Table of Contents",
+            "executiveSummary": "Executive Summary",
+            "technicalApproach": "Technical Approach",
+            "design": "Design",
+            "capabilities": "Capabilities",
+            "focusDocuments": "Focus Documents",
+            "narrative": "Narrative",
+            "coverPage": "Cover Page"
+        },
+        "reviewers": {
+            "eddieLake": "Eddie Lake",
+            "jamikTashpulatov": "Jamik Tashpulatov",
+            "emilyWhalen": "Emily Whalen"
+        },
+        "drawer": {
+            "showingVisitors": "Showing total visitors for the last 6 months",
+            "trendingUp": "Trending up by 5.2% this month",
+            "description": "Showing total visitors for the last 6 months. This is just some random text to test the layout. It spans multiple lines and should wrap around."
+        }
     },
     "error": {
         "notFound": {
             "code": "404",
-            "title": "Page Not Found",
+            "title": "Page not found",
             "message": "The page you are looking for does not exist.",
-            "button": "Go to Home"
+            "button": "Go to home"
         }
     },
-    "shared": {
-        "user": {
-            "title": "Users",
-            "description": "Add or edit user information",
-            "addTitle": "Add User",
-            "editTitle": "Edit User",
-            "addButton": "Add User",
-            "empty": "No users added yet",
-            "name": "Name",
-            "namePlaceholder": "Enter user's name",
-            "nameRequired": "Name is required",
-            "email": "Email",
-            "emailPlaceholder": "Enter user's email",
-            "emailRequired": "Email is required",
-            "emailInvalid": "Please enter a valid email address",
-            "phone": "Phone",
-            "phonePlaceholder": "(00) 00000-0000",
-            "phoneRequired": "Phone is required",
-            "phoneInvalid": "Please enter a valid phone number",
-            "add": "Add",
-            "save": "Save",
-            "cancel": "Cancel",
-            "edit": "Edit user",
-            "remove": "Remove user",
-            "removeConfirm": {
-                "title": "Remove User",
-                "description": "Are you sure you want to remove {name}?",
-                "confirm": "Remove",
-                "cancel": "Cancel"
-            },
-            "permissions": {
-                "isAdmin": "Administrator",
-                "canPost": "Can Post",
-                "canApprove": "Can Approve",
-                "isOwner": "Owner"
-            }
-        },
-        "comments": {
-            "addComment": "Add Comment",
-            "commentPlaceholder": "Write your comment here...",
-            "comments": "Comments",
-            "noComments": "No comments yet",
-            "commentAdded": "Comment added successfully",
-            "commentAddError": "Failed to add comment",
-            "commentUpdated": "Comment updated successfully",
-            "commentUpdateError": "Failed to update comment",
-            "commentDeleted": "Comment deleted successfully",
-            "commentDeleteError": "Failed to delete comment",
-            "deleteConfirm": "Are you sure you want to delete this comment?",
-            "deleteConfirmTitle": "Delete Comment",
-            "deleteConfirmDescription": "Are you sure you want to delete this comment? This action cannot be undone.",
-            "delete": "Delete",
-            "deleting": "Deleting...",
-            "save": "Save",
-            "cancel": "Cancel"
-        }
-    },
-    "header": {
-        "redirecting": "Redirecting...",
-        "create": "Create",
-        "createRDO": "RDO",
-        "createProject": "Project",
-        "createIncident": "Incident",
-        "profile": "Profile",
-        "subscription": "Subscription",
-        "company": "Company",
-        "english": "English",
-        "portuguese": "Portuguese",
-        "logout": "Logout"
-    },
-    "project": {
-        "create": {
-            "title": "Create Project",
-            "editTitle": "Edit Project",
-            "uploadPhoto": {
-                "label": "Upload Photo",
-                "hint": "Add a photo (550px x 158px) to represent the Project"
-            },
-            "name": {
-                "label": "Project Name",
-                "hint": "What would be the name of the Project",
-                "placeholder": "Ex.: John's House Construction",
-                "required": "Project name is required"
-            },
-            "description": {
-                "label": "Project Description",
-                "hint": "Add a detailed description of the project",
-                "placeholder": "Describe the project details...",
-                "required": "Project description is required"
-            },
-            "address": {
-                "label": "Project Address",
-                "hint": "Add the address where the project will be executed",
-                "placeholder": "Paulista Avenue 4550\nSão Paulo\nZIP 09000-000",
-                "required": "Project address is required"
-            },
-            "buttons": {
-                "cancel": "Cancel",
-                "create": "Create"
-            },
-            "success": "Project created successfully"
-        },
-        "edit": {
-            "title": "Edit Project",
-            "uploadPhoto": {
-                "label": "Upload Photo",
-                "hint": "Add a photo (550px x 158px) to represent the Project"
-            },
-            "name": {
-                "label": "Project Name",
-                "hint": "What would be the name of the Project",
-                "placeholder": "Ex.: John's House Construction",
-                "required": "Project name is required"
-            },
-            "description": {
-                "label": "Project Description",
-                "hint": "Add a detailed description of the project",
-                "placeholder": "Describe the project details...",
-                "required": "Project description is required"
-            },
-            "address": {
-                "label": "Project Address",
-                "hint": "Add the address where the project will be executed",
-                "placeholder": "Paulista Avenue 4550\nSão Paulo\nZIP 09000-000",
-                "required": "Project address is required"
-            },
-            "status": {
-                "label": "Project Status",
-                "hint": "Select the current status of the project",
-                "placeholder": "Select project status",
-                "searchPlaceholder": "Search status...",
-                "noResults": "No status found.",
-                "active": "Active",
-                "wip": "Work in Progress",
-                "finished": "Finished",
-                "stopped": "Stopped",
-                "deactivated": "Deactivated"
-            },
-            "buttons": {
-                "cancel": "Cancel",
-                "update": "Update"
-            },
-            "success": "Project updated successfully",
-            "error": "Failed to update project",
-            "files": {
-                "uploadError": "Failed to upload files"
-            },
-            "userAddError": "Failed to add user to project - User already exists",
-            "userAdded": "User added to project successfully",
-            "userUpdateError": "Failed to update project user",
-            "userUpdated": "Project user updated successfully",
-            "userRemoveError": "Failed to remove user from project",
-            "userRemoved": "User removed from project successfully"
-        },
-        "status": {
-            "active": "Active",
-            "wip": "Work in Progress",
-            "finished": "Finished",
-            "stopped": "Stopped",
-            "deactivated": "Deactivated"
-        },
-        "view": {
-            "title": "Project Details",
-            "name": "Project",
-            "description": "Description",
-            "address": "Address",
-            "edit": "Edit Project",
-            "postedBy": "Posted by",
-            "rdoStatus": {
-                "draft": "Draft",
-                "pendingApproval": "Pending Approval",
-                "approved": "Approved",
-                "rejected": "Rejected"
-            },
-            "moreImage": "more image",
-            "moreImages": "more images",
-            "tabs": {
-                "rdos": "RDOs",
-                "incidents": "Incidents",
-                "media": "Media",
-                "users": "Users",
-                "noRdos": "No RDOs for this project yet.",
-                "noIncidents": "No incidents for this project yet.",
-                "noMedia": "No media for this project yet.",
-                "noUsers": "No users assigned to this project yet.",
-                "endMessage": "You have seen all items"
-            },
-            "userCard": {
-                "noRole": "No Role",
-                "role": {
-                    "admin": "Administrator",
-                    "canApprove": "Can Approve"
-                },
-                "memberSince": "Member since"
-            }
-        }
-    },
-    "formRDO": {
-        "title": "Create RDO",
-        "project": {
-            "label": "Project",
-            "hint": "This RDO will be linked to the project",
-            "placeholder": "Select project",
-            "searchPlaceholder": "Search project...",
-            "noResults": "No projects found.",
-            "required": "Project is required."
-        },
-        "date": {
-            "label": "RDO Date",
-            "hint": "What date will this RDO be for",
-            "placeholder": "dd/mm/yyyy",
-            "selectDate": "Select date",
-            "required": "Date is required."
-        },
-        "labor": {
-            "label": "Labor",
-            "hint": "Add the labor used",
-            "placeholder": "We executed the following part of the work..."
-        },
-        "equipment": {
-            "label": "Equipment Used",
-            "hint": "Add the equipment used",
-            "placeholder": "We executed the following part of the work..."
-        },
-        "description": {
-            "label": "Tell us what was done",
-            "hint": "Add what was done in this RDO",
-            "placeholder": "We executed the following part of the work...",
-            "required": "Description is required.",
-            "minLength": "Description must be at least 10 characters."
-        },
-        "weather": {
-            "label": "Weather Condition",
-            "periods": {
-                "weatherMorning": "Morning",
-                "weatherAfternoon": "Afternoon",
-                "weatherNight": "Night"
-            },
-            "conditions": {
-                "clear": "Clear",
-                "cloudy": "Cloudy",
-                "rainy": "Rainy"
-            },
-            "workable": {
-                "true": "Workable",
-                "false": "Unworkable"
-            }
-        },
-        "status": {
-            "label": "RDO Status",
-            "hint": "Modify the RDO Status here",
-            "placeholder": "Select status",
-            "statusCombobox": {
-                "draft": "Draft",
-                "pendingApproval": "Pending Approval",
-                "approved": "Approved",
-                "rejected": "Rejected"
-            }
-        },
-        "files": {
-            "label": "Upload Photos, Videos and Documents",
-            "hint": "Add photos and videos to your post to update the Work",
-            "clickToAdd": "Click to add photos or videos",
-            "addMore": "Add more",
-            "uploadError": "Failed to upload files",
-            "removeImage": {
-                "success": "Image removed successfully",
-                "error": "Failed to remove image",
-                "title": "Remove image",
-                "description": "Are you sure you want to remove this image?",
-                "confirm": "Remove",
-                "cancel": "Cancel"
-            }
-        },
-        "update": {
-            "success": "RDO updated successfully",
-            "error": "Failed to update RDO"
-        },
-        "success": "RDO created successfully",
-        "error": "Failed to create RDO"
-    },
-    "uploadPhoto": {
-        "clickToAdd": "Click to add photos or videos",
-        "clickToAddLogo": "Click to add a logo",
-        "clickToAddPhoto": "Click to add a photo",
-        "removeImage": {
-            "title": "Remove image",
-            "description": "Are you sure you want to remove this image?",
-            "confirm": "Remove",
-            "cancel": "Cancel"
-        }
-    },
-    "feed": {
-        "empty": {
-            "title": "No RDOs found",
-            "description": "There are no RDOs available for this project yet.",
-            "createButton": "Create RDO"
-        },
-        "tabs": {
-            "rdos": "RDOs",
-            "incidents": "Incidents"
-        },
-        "endMessage": "You have seen all items",
-        "incidents": {
-            "empty": {
-                "title": "No incidents found",
-                "description": "There are no incidents available for this project yet.",
-                "createButton": "Create Incident"
-            }
-        }
-    },
-    "incident": {
-        "title": "Post Incident",
-        "empty": {
-            "title": "No projects found",
-            "description": "You need to create a project before creating an incident.",
-            "createButton": "Create Project"
-        },
-        "project": {
-            "label": "Project",
-            "hint": "This Incident will be linked to the project",
-            "required": "Project is required"
-        },
-        "status": {
-            "label": "Incident Status",
-            "hint": "Modify the Incident Status here",
-            "draft": "Draft",
-            "open": "Open",
-            "wip": "In Progress",
-            "closed": "Closed"
-        },
-        "priority": {
-            "label": "Priority",
-            "hint": "Set the incident priority level",
-            "low": "Low",
-            "medium": "Medium",
-            "high": "High",
-            "critical": "Critical"
-        },
-        "date": {
-            "label": "Incident Date",
-            "hint": "What date will this incident be for",
-            "placeholder": "dd/mm/yyyy",
-            "selectDate": "Select date",
-            "required": "Date is required."
-        },
-        "description": {
-            "label": "Incident Description",
-            "hint": "Describe what happened in the field below",
-            "placeholder": "Discrepancy between the project and the execution of the pool...",
-            "required": "Description is required"
-        },
-        "files": {
-            "label": "Upload Photos, Videos and Documents",
-            "hint": "If necessary, add photos, videos and documents",
-            "clickToAdd": "Click to add files",
-            "uploadError": "Failed to upload files"
-        },
-        "actions": {
-            "cancel": "Cancel",
-            "submit": "Submit",
-            "update": "Update",
-            "updating": "Updating...",
-            "draft": "Draft"
-        },
-        "success": "Incident submitted successfully!",
-        "error": "Failed to submit incident",
-        "update": {
-            "success": "Incident updated successfully!",
-            "error": "Failed to update incident"
-        },
-        "view": {
-            "title": "Incident",
-            "description": "Description",
-            "reportedBy": "Reported by",
-            "project": "Project",
-            "edit": "Edit Incident",
-            "media": "Media",
-            "comments": "Comments",
-            "noComments": "No comments yet",
-            "status": {
-                "draft": "Draft",
-                "open": "Open",
-                "wip": "In Progress",
-                "closed": "Closed"
-            },
-            "priority": {
-                "low": "Low",
-                "medium": "Medium",
-                "high": "High",
-                "critical": "Critical"
-            },
-            "actions": {
-                "open": "Open",
-                "wip": "In Progress",
-                "close": "Close",
-                "draft": "Draft",
-                "UpdatedSuccess": "Incident updated successfully",
-                "UpdatedError": "Error updating incident"
-            }
-        },
-        "incidentCard": {
-            "title": "Incident",
-            "reportedBy": "Reported by",
-            "edit": "Edit",
-            "share": "Share",
-            "linkCopied": "Link copied to clipboard",
-            "details": "Details",
-            "draft": "Draft",
-            "open": "Open",
-            "wip": "In Progress",
-            "closed": "Closed",
-            "priority": {
-                "1": "High",
-                "2": "Medium",
-                "3": "Low",
-                "description": {
-                    "1": "High priority incident requiring immediate attention",
-                    "2": "Medium priority incident requiring attention soon",
-                    "3": "Low priority incident that can be addressed later"
-                }
-            },
-            "actions": {
-                "open": "Open",
-                "wip": "In Progress",
-                "close": "Close",
-                "UpdatedSuccess": "Incident updated successfully",
-                "UpdatedError": "Error updating incident",
-                "draft": "Draft"
-            }
-        }
-    },
-    "profile": {
-        "title": "My profile",
-        "avatar": {
-            "label": "Profile photo",
-            "hint": "Add a profile photo",
-            "changePhotoTitle": "Change Profile Photo",
-            "changePhotoDescription": "Are you sure you want to change your profile photo? This will replace your current photo.",
-            "changePhotoConfirmLabel": "Change Photo",
-            "changePhotoCancelLabel": "Cancel"
-        },
-        "name": {
-            "label": "Name",
-            "placeholder": "Enter your name",
-            "required": "Name is required"
-        },
-        "phone": {
-            "label": "Phone",
-            "placeholder": "123-456-7890"
-        },
-        "email": {
-            "label": "Email",
-            "placeholder": "example@email.com",
-            "required": "Email is required"
-        },
-        "birthday": {
-            "label": "Birthday",
-            "placeholder": "Set birthday"
-        },
-        "notifyRDO": {
-            "label": "Receive new RDO notification"
-        },
-        "actions": {
-            "cancel": "Cancel",
-            "submit": "Save changes"
-        },
-        "language": {
-            "label": "Language",
-            "placeholder": "Select language",
-            "en": "English",
-            "ptbr": "Portuguese"
-        },
-        "success": "Profile updated successfully",
-        "avatarRemoved": "Profile photo removed successfully",
-        "avatarRemoveError": "Failed to remove profile photo",
-        "delete": {
-            "button": "Delete Profile",
-            "title": "Delete Profile",
-            "description": "This action cannot be undone. This will permanently delete your profile and remove you from all projects and companies.",
-            "confirmLabel": "Delete Profile",
-            "cancelLabel": "Cancel",
-            "nameConfirmation": "Please type your full name to confirm deletion",
-            "namePlaceholder": "Enter your full name",
-            "nameRequired": "Please enter your full name to confirm deletion",
-            "nameMismatch": "Name does not match. Please enter your full name exactly as shown.",
-            "success": "Profile deleted successfully",
-            "error": "Failed to delete profile"
-        }
-    },
-    "pwa": {
-        "installPrompt": {
-            "title": "Install Obraguru",
-            "description": "Add to your device for quick access",
-            "installButton": "Install",
-            "dismissButton": "Dismiss",
-            "iosTitle": "Add to Home Screen",
-            "iosDescription": "Tap the share button and select 'Add to Home Screen'"
-        }
-    },
-    "offline": {
-        "title": "You are offline",
-        "description": "It looks like you are not connected to the internet. Check your connection and try again.",
-        "retry": "Try again"
-    },
-    "enhancedUpload": {
-        "fileSizeError": "File size must be less than {maxFileSize}MB",
-        "fileTypeError": "File type not supported",
-        "maxFilesError": "Maximum {maxFiles} files allowed",
-        "filesProcessedSuccess": "{count} file(s) processed successfully",
-        "processFilesError": "Failed to process files",
-        "uploadHint": "Click to upload or drag and drop",
-        "fileLimits": "Max {maxFiles} files, {maxFileSize}MB each",
-        "compressing": "Compressing...",
-        "selectFiles": "Select Files",
-        "compressingFiles": "Compressing files...",
-        "uploadingFiles": "Uploading files...",
-        "selectedFiles": "Selected Files:",
-        "preview": "Preview {index}",
-        "dragOverMessage": "Drop files here to upload",
-        "videoFile": "Video File",
-        "documentFile": "Document File",
-        "imageFile": "Image File",
-        "change": "Change",
-        "remove": "Remove"
+    "Common": {
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "close": "Close",
+        "search": "Search",
+        "filter": "Filter",
+        "sort": "Sort",
+        "selectAll": "Select all",
+        "selectRow": "Select row"
     }
 }

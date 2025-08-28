@@ -1,13 +1,9 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/shared/button';
-import { useRouter } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
+import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 
-export default function NotFound() {
-    const t = useTranslations('error.notFound');
-    const router = useRouter();
+export default async function NotFound() {
+    const t = await getTranslations('error.notFound');
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -18,7 +14,7 @@ export default function NotFound() {
                 <Link href="/" >
                     <Button
                         className="mt-4 py-2 px-4 rounded-md"
-                        variant="primary"
+                        variant="default"
                     >
                         {t('button')}
                     </Button>
