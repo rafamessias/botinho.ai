@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import {
   IconCamera,
   IconChartBar,
@@ -38,67 +39,38 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const data = {
     user: {
-      name: t("user.name"),
-      email: t("user.email"),
+      name: "Rafael Messias",
+      email: "contact@rafaelmessias.com",
       avatar: "/placeholder-user.png",
     },
     navMain: [
       {
         title: t("navigation.dashboard"),
-        url: "#",
+        url: "/",
         icon: IconDashboard,
       },
       {
         title: t("navigation.lifecycle"),
-        url: "#",
+        url: "/lifecycle",
         icon: IconListDetails,
       },
       {
         title: t("navigation.analytics"),
-        url: "#",
+        url: "/analytics",
         icon: IconChartBar,
       },
       {
         title: t("navigation.projects"),
-        url: "#",
+        url: "/projects",
         icon: IconFolder,
       },
       {
         title: t("navigation.team"),
-        url: "#",
+        url: "/team",
         icon: IconUsers,
       },
     ],
 
-    navSecondary: [
-      {
-        title: t("secondary.settings"),
-        url: "#",
-        icon: IconSettings,
-      },
-      {
-        title: t("secondary.getHelp"),
-        url: "#",
-        icon: IconHelp,
-      },
-    ],
-    documents: [
-      {
-        name: t("documents.dataLibrary"),
-        url: "#",
-        icon: IconDatabase,
-      },
-      {
-        name: t("documents.reports"),
-        url: "#",
-        icon: IconReport,
-      },
-      {
-        name: t("documents.wordAssistant"),
-        url: "#",
-        icon: IconFileWord,
-      },
-    ],
   }
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -120,7 +92,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         {/* <NavDocuments items={data.documents} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

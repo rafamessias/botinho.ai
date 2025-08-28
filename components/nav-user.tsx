@@ -5,6 +5,7 @@ import {
   IconDotsVertical,
   IconLogout,
   IconNotification,
+  IconSettings,
   IconUserCircle,
 } from "@tabler/icons-react"
 
@@ -26,8 +27,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar"
+import { useLocale, useTranslations } from "next-intl"
+import { useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -38,7 +40,33 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const { isMobile } = useSidebar()
+  const locale = useLocale()
+  const t = useTranslations("NavUser")
+  const router = useRouter();
+
+  const menuItems = [
+    {
+      label: t("account"),
+      icon: IconUserCircle,
+      href: "/account",
+    },
+    {
+      label: t("billing"),
+      icon: IconCreditCard,
+      href: "/billing",
+    },
+
+    {
+      label: t("notifications"),
+      icon: IconNotification,
+      href: "/notifications",
+    },
+    {
+      label: t("settings"),
+      icon: IconSettings,
+      href: `/${locale}/settings`,
+    },
+  ]
 
   return (
     <SidebarMenu>
@@ -64,7 +92,7 @@ export function NavUser({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={"bottom"}
             align="end"
             sideOffset={4}
           >
@@ -84,23 +112,22 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
-              </DropdownMenuItem>
+              {menuItems.map((item) => (
+                <DropdownMenuItem
+                  key={item.label}
+                  onSelect={() => {
+                    router.push(item.href);
+                  }}
+                >
+                  <item.icon />
+                  {item.label}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <IconLogout />
-              Log out
+              {t("logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

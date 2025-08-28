@@ -12,18 +12,10 @@
             "projects": "Projects",
             "team": "Team"
         },
-        "secondary": {
-            "settings": "Settings",
-            "getHelp": "Get Help"
-        },
         "documents": {
             "dataLibrary": "Data Library",
             "reports": "Reports",
             "wordAssistant": "Word Assistant"
-        },
-        "user": {
-            "name": "shadcn",
-            "email": "m@example.com"
         }
     },
     "SiteHeader": {
@@ -155,6 +147,13 @@
             "button": "Go to home"
         }
     },
+    "NavUser": {
+        "account": "Account",
+        "billing": "Billing",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "logout": "Log out"
+    },
     "Common": {
         "loading": "Loading...",
         "save": "Save",
@@ -165,5 +164,23 @@
         "sort": "Sort",
         "selectAll": "Select all",
         "selectRow": "Select row"
+    },
+    "Settings": {
+        "title": "Settings",
+        "description": "Manage your account settings and preferences",
+        "appearance": {
+            "title": "Appearance",
+            "description": "Customize how the application looks and feels"
+        },
+        "language": {
+            "title": "Language",
+            "description": "Choose your preferred language for the application"
+        },
+        "theme": {
+            "light": "Light",
+            "dark": "Dark",
+            "system": "System",
+            "description": "Select your preferred theme for the application"
+        }
     }
 }

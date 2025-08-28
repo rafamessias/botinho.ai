@@ -12,18 +12,10 @@
             "projects": "Projetos",
             "team": "Equipe"
         },
-        "secondary": {
-            "settings": "Configurações",
-            "getHelp": "Obter Ajuda"
-        },
         "documents": {
             "dataLibrary": "Biblioteca de Dados",
             "reports": "Relatórios",
             "wordAssistant": "Assistente de Texto"
-        },
-        "user": {
-            "name": "shadcn",
-            "email": "m@example.com"
         }
     },
     "SiteHeader": {
@@ -155,6 +147,13 @@
             "button": "Ir para a página inicial"
         }
     },
+    "NavUser": {
+        "account": "Conta",
+        "billing": "Faturamento",
+        "notifications": "Notificações",
+        "settings": "Configurações",
+        "logout": "Sair"
+    },
     "Common": {
         "loading": "Carregando...",
         "save": "Salvar",
@@ -165,5 +164,23 @@
         "sort": "Ordenar",
         "selectAll": "Selecionar tudo",
         "selectRow": "Selecionar linha"
+    },
+    "Settings": {
+        "title": "Configurações",
+        "description": "Gerencie as configurações e preferências da sua conta",
+        "appearance": {
+            "title": "Aparência",
+            "description": "Personalize como o aplicativo se parece e se sente"
+        },
+        "language": {
+            "title": "Idioma",
+            "description": "Escolha seu idioma preferido para o aplicativo"
+        },
+        "theme": {
+            "light": "Claro",
+            "dark": "Escuro",
+            "system": "Sistema",
+            "description": "Selecione seu tema preferido para o aplicativo"
+        }
     }
 }
