@@ -182,5 +182,60 @@
             "system": "Sistema",
             "description": "Selecione seu tema preferido para o aplicativo"
         }
+    },
+    "SignInForm": {
+        "title": "Bem-vindo de volta",
+        "description": "Faça login com sua conta do Google",
+        "googleButton": "Entrar com Google",
+        "orContinueWith": "Ou continue com",
+        "email": "Email",
+        "emailPlaceholder": "m@exemplo.com",
+        "password": "Senha",
+        "forgotPassword": "Esqueceu sua senha?",
+        "loginButton": "Entrar",
+        "signingIn": "Entrando...",
+        "noAccount": "Não tem uma conta?",
+        "signUp": "Cadastrar-se",
+        "termsText": "Ao clicar em continuar, você concorda com nossos",
+        "termsOfService": "Termos de Serviço",
+        "and": "e",
+        "privacyPolicy": "Política de Privacidade",
+        "validation": {
+            "emailRequired": "Por favor, insira um endereço de email válido",
+            "passwordMinLength": "A senha deve ter pelo menos 6 caracteres"
+        }
+    },
+    "SignUpForm": {
+        "title": "Crie sua conta",
+        "description": "Cadastre-se com sua conta do Google",
+        "googleButton": "Cadastrar-se com Google",
+        "orContinueWith": "Ou continue com",
+        "name": "Nome Completo",
+        "namePlaceholder": "João Silva",
+        "email": "Email",
+        "emailPlaceholder": "m@exemplo.com",
+        "phone": "Número de Telefone",
+        "phonePlaceholder": "+55 (11) 99999-9999",
+        "password": "Senha",
+        "passwordPlaceholder": "Digite sua senha",
+        "confirmPassword": "Confirmar Senha",
+        "confirmPasswordPlaceholder": "Confirme sua senha",
+        "signUpButton": "Criar Conta",
+        "signingUp": "Criando conta...",
+        "haveAccount": "Já tem uma conta?",
+        "signIn": "Entrar",
+        "termsText": "Ao clicar em continuar, você concorda com nossos",
+        "termsOfService": "Termos de Serviço",
+        "and": "e",
+        "privacyPolicy": "Política de Privacidade",
+        "validation": {
+            "nameMinLength": "O nome deve ter pelo menos 2 caracteres",
+            "emailRequired": "Por favor, insira um endereço de email válido",
+            "phoneMinLength": "O número de telefone deve ter pelo menos 10 caracteres",
+            "phoneInvalid": "Por favor, insira um número de telefone válido",
+            "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
+            "confirmPasswordMinLength": "A confirmação da senha deve ter pelo menos 6 caracteres",
+            "passwordsDoNotMatch": "As senhas não coincidem"
+        }
     }
 }

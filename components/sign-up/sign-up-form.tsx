@@ -18,42 +18,48 @@ import { z } from "zod"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
 
-export function SignInForm({
+export function SignUpForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
-    const t = useTranslations("SignInForm")
+    const t = useTranslations("SignUpForm")
 
     // Form validation schema with translations
-    const signInSchema = z.object({
+    const signUpSchema = z.object({
+        name: z.string().min(2, t("validation.nameMinLength")),
         email: z.string().email(t("validation.emailRequired")),
+        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^[+]?[\d\s\-\(\)]{10,}$/, t("validation.phoneInvalid")),
         password: z.string().min(6, t("validation.passwordMinLength")),
+        confirmPassword: z.string().min(6, t("validation.confirmPasswordMinLength")),
+    }).refine((data) => data.password === data.confirmPassword, {
+        message: t("validation.passwordsDoNotMatch"),
+        path: ["confirmPassword"],
     })
 
-    type SignInFormData = z.infer<typeof signInSchema>
+    type SignUpFormData = z.infer<typeof signUpSchema>
 
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<SignInFormData>({
-        resolver: zodResolver(signInSchema),
+    } = useForm<SignUpFormData>({
+        resolver: zodResolver(signUpSchema),
     })
 
-    const onSubmit = async (data: SignInFormData) => {
+    const onSubmit = async (data: SignUpFormData) => {
         try {
-            console.log("Sign in form data:", data)
-            // TODO: Implement actual sign in logic here
+            console.log("Sign up form data:", data)
+            // TODO: Implement actual sign up logic here
         } catch (error) {
-            console.error("Sign in error:", error)
+            console.error("Sign up error:", error)
         }
     }
 
-    const handleGoogleSignIn = async () => {
+    const handleGoogleSignUp = async () => {
         try {
-            console.log("Google sign in")
+            console.log("Google sign up")
         } catch (error) {
-            console.error("Google sign in error:", error)
+            console.error("Google sign up error:", error)
         }
     }
 
@@ -67,10 +73,9 @@ export function SignInForm({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-
                     <div className="grid gap-6 mb-6">
                         <div className="flex flex-col gap-4">
-                            <Button variant="outline" className="w-full cursor-pointer" onClick={handleGoogleSignIn}>
+                            <Button variant="outline" className="w-full cursor-pointer" onClick={handleGoogleSignUp}>
                                 <IconBrandGoogleFilled
                                     className="mr-2 size-5"
                                     aria-label="Google"
@@ -89,6 +94,18 @@ export function SignInForm({
                         <div className="grid gap-6">
                             <div className="grid gap-6">
                                 <div className="grid gap-3">
+                                    <Label htmlFor="name">{t("name")}</Label>
+                                    <Input
+                                        id="name"
+                                        type="text"
+                                        placeholder={t("namePlaceholder")}
+                                        {...register("name")}
+                                    />
+                                    {errors.name && (
+                                        <p className="text-sm text-red-500">{errors.name.message}</p>
+                                    )}
+                                </div>
+                                <div className="grid gap-3">
                                     <Label htmlFor="email">{t("email")}</Label>
                                     <Input
                                         id="email"
@@ -101,32 +118,49 @@ export function SignInForm({
                                     )}
                                 </div>
                                 <div className="grid gap-3">
-                                    <div className="flex items-center">
-                                        <Label htmlFor="password">{t("password")}</Label>
-                                        <a
-                                            href="#"
-                                            className="ml-auto text-sm underline-offset-4 hover:underline"
-                                        >
-                                            {t("forgotPassword")}
-                                        </a>
-                                    </div>
+                                    <Label htmlFor="phone">{t("phone")}</Label>
+                                    <Input
+                                        id="phone"
+                                        type="tel"
+                                        placeholder={t("phonePlaceholder")}
+                                        {...register("phone")}
+                                    />
+                                    {errors.phone && (
+                                        <p className="text-sm text-red-500">{errors.phone.message}</p>
+                                    )}
+                                </div>
+                                <div className="grid gap-3">
+                                    <Label htmlFor="password">{t("password")}</Label>
                                     <Input
                                         id="password"
                                         type="password"
+                                        placeholder={t("passwordPlaceholder")}
                                         {...register("password")}
                                     />
                                     {errors.password && (
                                         <p className="text-sm text-red-500">{errors.password.message}</p>
                                     )}
                                 </div>
+                                <div className="grid gap-3">
+                                    <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+                                    <Input
+                                        id="confirmPassword"
+                                        type="password"
+                                        placeholder={t("confirmPasswordPlaceholder")}
+                                        {...register("confirmPassword")}
+                                    />
+                                    {errors.confirmPassword && (
+                                        <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+                                    )}
+                                </div>
                                 <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting}>
-                                    {isSubmitting ? t("signingIn") : t("loginButton")}
+                                    {isSubmitting ? t("signingUp") : t("signUpButton")}
                                 </Button>
                             </div>
                             <div className="text-center text-sm">
-                                {t("noAccount")}{" "}
-                                <Link href="/sign-up" className="underline underline-offset-4">
-                                    {t("signUp")}
+                                {t("haveAccount")}{" "}
+                                <Link href="/sign-in" className="underline underline-offset-4">
+                                    {t("signIn")}
                                 </Link>
                             </div>
                         </div>

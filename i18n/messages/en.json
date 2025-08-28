@@ -182,5 +182,60 @@
             "system": "System",
             "description": "Select your preferred theme for the application"
         }
+    },
+    "SignInForm": {
+        "title": "Welcome back",
+        "description": "Login with your Google account",
+        "googleButton": "Login with Google",
+        "orContinueWith": "Or continue with",
+        "email": "Email",
+        "emailPlaceholder": "m@example.com",
+        "password": "Password",
+        "forgotPassword": "Forgot your password?",
+        "loginButton": "Login",
+        "signingIn": "Signing in...",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign up",
+        "termsText": "By clicking continue, you agree to our",
+        "termsOfService": "Terms of Service",
+        "and": "and",
+        "privacyPolicy": "Privacy Policy",
+        "validation": {
+            "emailRequired": "Please enter a valid email address",
+            "passwordMinLength": "Password must be at least 6 characters long"
+        }
+    },
+    "SignUpForm": {
+        "title": "Create your account",
+        "description": "Sign up with your Google account",
+        "googleButton": "Sign up with Google",
+        "orContinueWith": "Or continue with",
+        "name": "Full Name",
+        "namePlaceholder": "John Doe",
+        "email": "Email",
+        "emailPlaceholder": "m@example.com",
+        "phone": "Phone Number",
+        "phonePlaceholder": "+1 (555) 123-4567",
+        "password": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm your password",
+        "signUpButton": "Create Account",
+        "signingUp": "Creating account...",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign in",
+        "termsText": "By clicking continue, you agree to our",
+        "termsOfService": "Terms of Service",
+        "and": "and",
+        "privacyPolicy": "Privacy Policy",
+        "validation": {
+            "nameMinLength": "Name must be at least 2 characters long",
+            "emailRequired": "Please enter a valid email address",
+            "phoneMinLength": "Phone number must be at least 10 characters long",
+            "phoneInvalid": "Please enter a valid phone number",
+            "passwordMinLength": "Password must be at least 6 characters long",
+            "confirmPasswordMinLength": "Password confirmation must be at least 6 characters long",
+            "passwordsDoNotMatch": "Passwords do not match"
+        }
     }
 }

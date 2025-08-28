@@ -16,6 +16,30 @@ import {
 export function ThemeSelector() {
     const { theme, setTheme } = useTheme()
     const t = useTranslations("Settings")
+    const [mounted, setMounted] = React.useState(false)
+
+    React.useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) {
+        return (
+            <div className="flex items-center space-x-2">
+                <Button variant="outline" size="sm" className="cursor-pointer">
+                    <Sun className="h-[1.2rem] w-[1.2rem]" />
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
+                <div className="ml-4">
+                    <p className="text-sm font-medium">
+                        {t("theme.system")}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                        {t("theme.description")}
+                    </p>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex items-center space-x-2">

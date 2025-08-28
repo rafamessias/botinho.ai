@@ -6,14 +6,14 @@ export default async function NotFound() {
     const t = await getTranslations('error.notFound');
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-background">
             <div className="text-center space-y-6 p-8">
-                <h1 className="text-9xl font-bold text-blue-700">{t('code')}</h1>
-                <h2 className="text-3xl font-semibold text-gray-900">{t('title')}</h2>
-                <p className="text-gray-600 max-w-md mx-auto">{t('message')}</p>
+                <h1 className="text-9xl font-bold text-primary">{t('code')}</h1>
+                <h2 className="text-3xl font-semibold text-foreground">{t('title')}</h2>
+                <p className="text-muted-foreground max-w-md mx-auto">{t('message')}</p>
                 <Link href="/" >
                     <Button
-                        className="mt-4 py-2 px-4 rounded-md"
+                        className="mt-4 py-2 px-4 rounded-md cursor-pointer"
                         variant="default"
                     >
                         {t('button')}

@@ -68,6 +68,15 @@ export function NavUser({
     },
   ]
 
+  // Helper to truncate string to max 20 chars, adding ... if longer
+  const truncateText = (text: string, maxLength: number = 20): string => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength - 3) + "...";
+  };
+
+  const truncatedName = truncateText(user.name, 22);
+  const truncatedEmail = truncateText(user.email, 22);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -82,9 +91,9 @@ export function NavUser({
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{truncatedName}</span>
                 <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
+                  {truncatedEmail}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -103,9 +112,9 @@ export function NavUser({
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">{truncatedName}</span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
+                    {truncatedEmail}
                   </span>
                 </div>
               </div>
