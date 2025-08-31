@@ -152,7 +152,8 @@
         "billing": "Faturamento",
         "notifications": "Notificações",
         "settings": "Configurações",
-        "logout": "Sair"
+        "logout": "Sair",
+        "loggingOut": "Saindo..."
     },
     "Common": {
         "loading": "Carregando...",
@@ -237,5 +238,101 @@
             "confirmPasswordMinLength": "A confirmação da senha deve ter pelo menos 6 caracteres",
             "passwordsDoNotMatch": "As senhas não coincidem"
         }
+    },
+    "CheckEmailPage": {
+        "title": "Verifique seu email",
+        "description": {
+            "withEmail": "Enviamos um link de confirmação para:",
+            "generic": "Enviamos um email de confirmação para você"
+        },
+        "instructions": {
+            "step1": "Verifique sua caixa de entrada por uma mensagem nossa",
+            "step2": "Clique no link de confirmação no email",
+            "step3": "Você será redirecionado para fazer login em sua conta"
+        },
+        "resend": {
+            "didntReceive": "Não recebeu o email?",
+            "waitTime": "Você pode solicitar um novo email em {time}",
+            "button": "Reenviar email de confirmação",
+            "sending": "Enviando..."
+        },
+        "messages": {
+            "emailResent": "Email de confirmação enviado com sucesso"
+        },
+        "errors": {
+            "noEmail": "Endereço de email é necessário para reenviar confirmação",
+            "resendFailed": "Falha ao reenviar email de confirmação"
+        },
+        "backToSignIn": "Voltar para login",
+        "help": {
+            "checkSpam": "Não esqueça de verificar sua pasta de spam",
+            "needHelp": "Precisa de ajuda?",
+            "contactSupport": "Contatar suporte"
+        },
+        "testimonial": {
+            "quote": "Esta plataforma transformou como gerenciamos nosso negócio. O sistema de autenticação é perfeito e seguro.",
+            "author": "Sofia Davis"
+        }
+    },
+    "ConfirmEmailPage": {
+        "title": "Confirmação de Email",
+        "description": "Confirmando seu endereço de email",
+        "status": {
+            "loading": {
+                "title": "Confirmando seu email...",
+                "description": "Aguarde enquanto verificamos seu endereço de email",
+                "instructions": "Isso deve levar apenas alguns segundos"
+            },
+            "success": {
+                "title": "Email confirmado com sucesso!",
+                "description": "Seu endereço de email foi verificado e sua conta está ativa",
+                "instructions": "Agora você pode fazer login em sua conta",
+                "redirecting": "Redirecionando para login..."
+            },
+            "error": {
+                "title": "Falha na confirmação",
+                "description": "Não conseguimos confirmar seu endereço de email",
+                "instructions": "O link de confirmação pode ter expirado ou já foi usado"
+            },
+            "invalid": {
+                "title": "Link de confirmação inválido",
+                "description": "O link de confirmação é inválido ou está ausente",
+                "instructions": "Verifique o link em seu email ou solicite um novo email de confirmação"
+            }
+        },
+        "actions": {
+            "retry": "Tentar novamente",
+            "continueToSignIn": "Continuar para login",
+            "goToSignIn": "Ir para login",
+            "backToSignUp": "Voltar para cadastro"
+        },
+        "messages": {
+            "confirmSuccess": "Email confirmado com sucesso!"
+        },
+        "errors": {
+            "noToken": "Nenhum token de confirmação fornecido",
+            "confirmFailed": "Falha ao confirmar endereço de email"
+        },
+        "help": {
+            "needHelp": "Precisa de ajuda?",
+            "contactSupport": "Contatar suporte"
+        }
+    },
+    "AuthErrors": {
+        "invalidCredentials": "Email ou senha inválidos",
+        "emailNotConfirmed": "Por favor, confirme seu email antes de fazer login",
+        "accountBlocked": "Sua conta foi bloqueada",
+        "authenticationFailed": "Falha na autenticação",
+        "unexpectedError": "Ocorreu um erro inesperado",
+        "emailExists": "Já existe uma conta com este email",
+        "phoneExists": "Já existe uma conta com este número de telefone",
+        "registrationFailed": "Ocorreu um erro inesperado durante o registro",
+        "googleSignInFailed": "Falha ao entrar com Google",
+        "logoutFailed": "Falha ao sair",
+        "invalidToken": "Token de confirmação inválido ou expirado",
+        "confirmationFailed": "Ocorreu um erro inesperado durante a confirmação do email",
+        "userNotFound": "Usuário não encontrado",
+        "emailAlreadyConfirmed": "Email já foi confirmado",
+        "resendFailed": "Falha ao reenviar email de confirmação"
     }
 }

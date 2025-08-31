@@ -28,6 +28,7 @@ const EmailConfirmationEmail = ({
     baseUrl = 'http://localhost:3000'
 }: EmailConfirmationEmailProps) => {
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
+    const logoURL = baseUrl + '/placeholder-logo.png';
 
     return (
         <Html>
@@ -38,7 +39,7 @@ const EmailConfirmationEmail = ({
                 </Preview>
                 <Container style={container}>
                     <Img
-                        src={`${baseUrl}/obraguru-logo-200px-dark.png`}
+                        src={logoURL}
                         width="40"
                         height="40"
                         alt="Obraguru"

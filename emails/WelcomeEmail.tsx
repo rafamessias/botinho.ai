@@ -23,6 +23,7 @@ interface WelcomeEmailProps {
 
 const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.com', lang = 'en', baseUrl = 'http://localhost:3000' }: WelcomeEmailProps) => {
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
+    const logoURL = baseUrl + '/placeholder-logo.png';
 
     return (
         <Html>
@@ -33,7 +34,7 @@ const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.co
                 </Preview>
                 <Container style={container}>
                     <Img
-                        src={`${baseUrl}/obraguru-logo-200px-dark.png`}
+                        src={logoURL}
                         width="40"
                         height="40"
                         alt="Obraguru"

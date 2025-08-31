@@ -17,18 +17,25 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
+import { googleSignInAction, signUpAction } from "@/components/server-actions/auth"
+import { useState } from "react"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export function SignUpForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
     const t = useTranslations("SignUpForm")
+    const router = useRouter()
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+    const [phoneValue, setPhoneValue] = useState("")
 
     // Form validation schema with translations
     const signUpSchema = z.object({
         name: z.string().min(2, t("validation.nameMinLength")),
         email: z.string().email(t("validation.emailRequired")),
-        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^[+]?[\d\s\-\(\)]{10,}$/, t("validation.phoneInvalid")),
+        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^\d{10,11}$/, t("validation.phoneInvalid")),
         password: z.string().min(6, t("validation.passwordMinLength")),
         confirmPassword: z.string().min(6, t("validation.confirmPasswordMinLength")),
     }).refine((data) => data.password === data.confirmPassword, {
@@ -41,25 +48,71 @@ export function SignUpForm({
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors, isSubmitting },
     } = useForm<SignUpFormData>({
         resolver: zodResolver(signUpSchema),
     })
 
+    // Phone number masking function
+    const formatPhoneNumber = (value: string): string => {
+        // Remove all non-digits
+        const digits = value.replace(/\D/g, '')
+
+        // Apply formatting based on length
+        if (digits.length <= 2) {
+            return `(${digits}`
+        } else if (digits.length <= 7) {
+            return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+        } else {
+            return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`
+        }
+    }
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value
+        const formattedValue = formatPhoneNumber(inputValue)
+
+        // Limit to maximum length
+        if (formattedValue.length <= 15) {
+            setPhoneValue(formattedValue)
+            // Extract only digits for form validation
+            const digitsOnly = formattedValue.replace(/\D/g, '')
+            setValue("phone", digitsOnly, { shouldValidate: true })
+        }
+    }
+
     const onSubmit = async (data: SignUpFormData) => {
         try {
-            console.log("Sign up form data:", data)
-            // TODO: Implement actual sign up logic here
+            const result = await signUpAction(data)
+
+            if (result?.success === false) {
+                toast.error(result.error)
+            } else if (result?.success === true) {
+                toast.success(result.message || "Account created successfully!")
+                // Redirect to check email page with email parameter
+                router.push(`/sign-up/check-email?email=${encodeURIComponent(data.email)}`)
+            }
         } catch (error) {
             console.error("Sign up error:", error)
+            toast.error("An unexpected error occurred during registration")
         }
     }
 
     const handleGoogleSignUp = async () => {
         try {
-            console.log("Google sign up")
+            setIsGoogleLoading(true)
+            await googleSignInAction()
+            // NextAuth will handle the redirect after successful Google sign-up
         } catch (error) {
+            // NextAuth throws NEXT_REDIRECT for OAuth redirects - this is expected
+            if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+                // Don't show error for redirects - this is normal OAuth flow
+                return
+            }
             console.error("Google sign up error:", error)
+            toast.error("Failed to sign up with Google")
+            setIsGoogleLoading(false)
         }
     }
 
@@ -75,13 +128,18 @@ export function SignUpForm({
                 <CardContent>
                     <div className="grid gap-6 mb-6">
                         <div className="flex flex-col gap-4">
-                            <Button variant="outline" className="w-full cursor-pointer" onClick={handleGoogleSignUp}>
+                            <Button
+                                variant="outline"
+                                className="w-full cursor-pointer"
+                                onClick={handleGoogleSignUp}
+                                disabled={isGoogleLoading || isSubmitting}
+                            >
                                 <IconBrandGoogleFilled
                                     className="mr-2 size-5"
                                     aria-label="Google"
                                     tabIndex={0}
                                 />
-                                {t("googleButton")}
+                                {isGoogleLoading ? "Signing up..." : t("googleButton")}
                             </Button>
                         </div>
                         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -122,8 +180,10 @@ export function SignUpForm({
                                     <Input
                                         id="phone"
                                         type="tel"
-                                        placeholder={t("phonePlaceholder")}
-                                        {...register("phone")}
+                                        placeholder="(11) 99999-9999"
+                                        value={phoneValue}
+                                        onChange={handlePhoneChange}
+                                        maxLength={15}
                                     />
                                     {errors.phone && (
                                         <p className="text-sm text-red-500">{errors.phone.message}</p>
@@ -153,7 +213,7 @@ export function SignUpForm({
                                         <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
                                     )}
                                 </div>
-                                <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting}>
+                                <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting || isGoogleLoading}>
                                     {isSubmitting ? t("signingUp") : t("signUpButton")}
                                 </Button>
                             </div>

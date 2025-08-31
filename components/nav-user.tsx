@@ -29,7 +29,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useLocale, useTranslations } from "next-intl"
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"
+import { logoutAction } from "@/components/server-actions/auth"
+import { useState } from "react"
 
 export function NavUser({
   user,
@@ -42,7 +44,8 @@ export function NavUser({
 }) {
   const locale = useLocale()
   const t = useTranslations("NavUser")
-  const router = useRouter();
+  const router = useRouter()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const menuItems = [
     {
@@ -76,6 +79,22 @@ export function NavUser({
 
   const truncatedName = truncateText(user.name, 22);
   const truncatedEmail = truncateText(user.email, 22);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true)
+      await logoutAction()
+      // NextAuth will handle the redirect after logout
+    } catch (error) {
+      // NextAuth throws NEXT_REDIRECT for logout redirects - this is expected
+      if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+        // Don't show error for redirects - this is normal logout flow
+        return
+      }
+      console.error("Logout error:", error)
+      setIsLoggingOut(false)
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -134,9 +153,13 @@ export function NavUser({
               ))}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={handleLogout}
+              disabled={isLoggingOut}
+              className="cursor-pointer"
+            >
               <IconLogout />
-              {t("logout")}
+              {isLoggingOut ? t("loggingOut") : t("logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

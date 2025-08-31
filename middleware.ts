@@ -14,8 +14,8 @@ const publicRoutes = routing.locales.flatMap(locale => [
     `/reset-password`,
     `/${locale}/reset-password/new`,
     `/reset-password/new`,
-    `/${locale}/sign-up/success`,
-    `/sign-up/success`,
+    `/${locale}/sign-up/confirm`,
+    `/sign-up/confirm`,
     `/${locale}/sign-up/check-email`,
     `/sign-up/check-email`,
     `/${locale}/auth/google/callback`,
@@ -78,59 +78,61 @@ export default async function middleware(request: NextRequest) {
 
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
-    /*
-        const session = await auth();
-    
-        let user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };
-    
-        // If user is logged in and trying to access public routes, redirect to home
-        if (user.ok) {
-    
-            if (isPublicRoute(pathname)) {
-                // Extract the current locale from the pathname
-                const currentLocale = routing.locales.find(locale =>
-                    pathname.startsWith(`/${locale}`)
-                ) || user.user?.language || routing.defaultLocale;
-    
-                const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}`);
-                return NextResponse.redirect(redirectUrl);
-            }
-    
-            // Check if user has company
-            const hasCompany = session?.user?.company ? true : false;
-    
-            if (!hasCompany && !pathname.includes('/company/create')) {
-                // Extract the current locale from the pathname
-                const currentLocale = routing.locales.find(locale =>
-                    pathname.startsWith(`/${locale}`)
-                ) || user.user?.language || routing.defaultLocale;
-    
-                const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}/company/create`);
-                return NextResponse.redirect(redirectUrl);
-            }
-    
-            if (hasCompany && pathname.includes('/company/create')) {
-                // Extract the current locale from the pathname
-                const currentLocale = routing.locales.find(locale =>
-                    pathname.startsWith(`/${locale}`)
-                ) || user.user?.language || routing.defaultLocale;
-    
-                const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}`);
-                return NextResponse.redirect(redirectUrl);
-            }
-        }
-    
-        // If user is not logged in and trying to access protected routes (besides /), redirect to sign in
-        if (!user.ok && !isPublicRoute(pathname)) {
+
+    const session = await auth();
+
+    let user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };
+
+    // If user is logged in and trying to access public routes, redirect to home
+    if (user.ok) {
+
+        if (isPublicRoute(pathname)) {
             // Extract the current locale from the pathname
             const currentLocale = routing.locales.find(locale =>
                 pathname.startsWith(`/${locale}`)
-            ) || routing.defaultLocale;
-    
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}/sign-in?redirect=${pathname}`);
+            ) || user.user?.language || routing.defaultLocale;
+
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}`);
             return NextResponse.redirect(redirectUrl);
         }
-    */
+
+        /*
+        // Check if user has company
+        const hasCompany = session?.user?.company ? true : false;
+ 
+        if (!hasCompany && !pathname.includes('/company/create')) {
+            // Extract the current locale from the pathname
+            const currentLocale = routing.locales.find(locale =>
+                pathname.startsWith(`/${locale}`)
+            ) || user.user?.language || routing.defaultLocale;
+ 
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}/company/create`);
+            return NextResponse.redirect(redirectUrl);
+        }
+ 
+        if (hasCompany && pathname.includes('/company/create')) {
+            // Extract the current locale from the pathname
+            const currentLocale = routing.locales.find(locale =>
+                pathname.startsWith(`/${locale}`)
+            ) || user.user?.language || routing.defaultLocale;
+ 
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}`);
+            return NextResponse.redirect(redirectUrl);
+        }
+            */
+    }
+
+    // If user is not logged in and trying to access protected routes (besides /), redirect to sign in
+    if (!user.ok && !isPublicRoute(pathname)) {
+        // Extract the current locale from the pathname
+        const currentLocale = routing.locales.find(locale =>
+            pathname.startsWith(`/${locale}`)
+        ) || routing.defaultLocale;
+
+        const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}/sign-in?redirect=${pathname}`);
+        return NextResponse.redirect(redirectUrl);
+    }
+
     // Otherwise, carry on
     return intlResponse;
 }

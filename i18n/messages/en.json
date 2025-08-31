@@ -152,7 +152,8 @@
         "billing": "Billing",
         "notifications": "Notifications",
         "settings": "Settings",
-        "logout": "Log out"
+        "logout": "Log out",
+        "loggingOut": "Logging out..."
     },
     "Common": {
         "loading": "Loading...",
@@ -237,5 +238,101 @@
             "confirmPasswordMinLength": "Password confirmation must be at least 6 characters long",
             "passwordsDoNotMatch": "Passwords do not match"
         }
+    },
+    "CheckEmailPage": {
+        "title": "Check your email",
+        "description": {
+            "withEmail": "We've sent a confirmation link to:",
+            "generic": "We've sent you a confirmation email"
+        },
+        "instructions": {
+            "step1": "Check your email inbox for a message from us",
+            "step2": "Click the confirmation link in the email",
+            "step3": "You'll be redirected to sign in to your account"
+        },
+        "resend": {
+            "didntReceive": "Didn't receive the email?",
+            "waitTime": "You can request a new email in {time}",
+            "button": "Resend confirmation email",
+            "sending": "Sending..."
+        },
+        "messages": {
+            "emailResent": "Confirmation email sent successfully"
+        },
+        "errors": {
+            "noEmail": "Email address is required to resend confirmation",
+            "resendFailed": "Failed to resend confirmation email"
+        },
+        "backToSignIn": "Back to sign in",
+        "help": {
+            "checkSpam": "Don't forget to check your spam folder",
+            "needHelp": "Need help?",
+            "contactSupport": "Contact support"
+        },
+        "testimonial": {
+            "quote": "This platform has transformed how we manage our business. The authentication system is seamless and secure.",
+            "author": "Sofia Davis"
+        }
+    },
+    "ConfirmEmailPage": {
+        "title": "Email Confirmation",
+        "description": "Confirming your email address",
+        "status": {
+            "loading": {
+                "title": "Confirming your email...",
+                "description": "Please wait while we verify your email address",
+                "instructions": "This should only take a few seconds"
+            },
+            "success": {
+                "title": "Email confirmed successfully!",
+                "description": "Your email address has been verified and your account is now active",
+                "instructions": "You can now sign in to your account",
+                "redirecting": "Redirecting to sign in..."
+            },
+            "error": {
+                "title": "Confirmation failed",
+                "description": "We couldn't confirm your email address",
+                "instructions": "The confirmation link may have expired or been used already"
+            },
+            "invalid": {
+                "title": "Invalid confirmation link",
+                "description": "The confirmation link is invalid or missing",
+                "instructions": "Please check the link in your email or request a new confirmation email"
+            }
+        },
+        "actions": {
+            "retry": "Try again",
+            "continueToSignIn": "Continue to sign in",
+            "goToSignIn": "Go to sign in",
+            "backToSignUp": "Back to sign up"
+        },
+        "messages": {
+            "confirmSuccess": "Email confirmed successfully!"
+        },
+        "errors": {
+            "noToken": "No confirmation token provided",
+            "confirmFailed": "Failed to confirm email address"
+        },
+        "help": {
+            "needHelp": "Need help?",
+            "contactSupport": "Contact support"
+        }
+    },
+    "AuthErrors": {
+        "invalidCredentials": "Invalid email or password",
+        "emailNotConfirmed": "Please confirm your email before signing in",
+        "accountBlocked": "Your account has been blocked",
+        "authenticationFailed": "Authentication failed",
+        "unexpectedError": "An unexpected error occurred",
+        "emailExists": "An account with this email already exists",
+        "phoneExists": "An account with this phone number already exists",
+        "registrationFailed": "An unexpected error occurred during registration",
+        "googleSignInFailed": "Failed to sign in with Google",
+        "logoutFailed": "Failed to logout",
+        "invalidToken": "Invalid or expired confirmation token",
+        "confirmationFailed": "An unexpected error occurred during email confirmation",
+        "userNotFound": "User not found",
+        "emailAlreadyConfirmed": "Email is already confirmed",
+        "resendFailed": "Failed to resend confirmation email"
     }
 }

@@ -16,13 +16,18 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
+import { Link, useRouter } from "@/i18n/navigation"
+import { googleSignInAction, signInAction } from "@/components/server-actions/auth"
+import { useState } from "react"
+import { toast } from "sonner"
 
 export function SignInForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
     const t = useTranslations("SignInForm")
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+    const router = useRouter()
 
     // Form validation schema with translations
     const signInSchema = z.object({
@@ -42,18 +47,40 @@ export function SignInForm({
 
     const onSubmit = async (data: SignInFormData) => {
         try {
-            console.log("Sign in form data:", data)
-            // TODO: Implement actual sign in logic here
+            const result = await signInAction(data)
+
+            if (result?.success === false) {
+                toast.error(result.error)
+                if (result.errorCode === "email-not-confirmed") {
+                    router.push("/sign-up/check-email?email=" + data.email)
+                }
+            }
+            // If successful, NextAuth will handle the redirect
         } catch (error) {
+            // NextAuth throws NEXT_REDIRECT for successful sign-in redirects - this is expected
+            if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+                // Don't show error for redirects - this is normal sign-in flow
+                return
+            }
             console.error("Sign in error:", error)
+            toast.error("An unexpected error occurred")
         }
     }
 
     const handleGoogleSignIn = async () => {
         try {
-            console.log("Google sign in")
+            setIsGoogleLoading(true)
+            await googleSignInAction()
+            // NextAuth will handle the redirect after successful Google sign-in
         } catch (error) {
+            // NextAuth throws NEXT_REDIRECT for OAuth redirects - this is expected
+            if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+                // Don't show error for redirects - this is normal OAuth flow
+                return
+            }
             console.error("Google sign in error:", error)
+            toast.error("Failed to sign in with Google")
+            setIsGoogleLoading(false)
         }
     }
 
@@ -70,13 +97,18 @@ export function SignInForm({
 
                     <div className="grid gap-6 mb-6">
                         <div className="flex flex-col gap-4">
-                            <Button variant="outline" className="w-full cursor-pointer" onClick={handleGoogleSignIn}>
+                            <Button
+                                variant="outline"
+                                className="w-full cursor-pointer"
+                                onClick={handleGoogleSignIn}
+                                disabled={isGoogleLoading || isSubmitting}
+                            >
                                 <IconBrandGoogleFilled
                                     className="mr-2 size-5"
                                     aria-label="Google"
                                     tabIndex={0}
                                 />
-                                {t("googleButton")}
+                                {isGoogleLoading ? "Signing in..." : t("googleButton")}
                             </Button>
                         </div>
                         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -119,7 +151,7 @@ export function SignInForm({
                                         <p className="text-sm text-red-500">{errors.password.message}</p>
                                     )}
                                 </div>
-                                <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting}>
+                                <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting || isGoogleLoading}>
                                     {isSubmitting ? t("signingIn") : t("loginButton")}
                                 </Button>
                             </div>

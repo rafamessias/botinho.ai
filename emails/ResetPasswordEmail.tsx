@@ -24,6 +24,7 @@ interface ResetPasswordEmailProps {
 
 const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://example.com', lang = 'en', baseUrl = 'http://localhost:3000' }: ResetPasswordEmailProps) => {
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
+    const logoURL = baseUrl + '/placeholder-logo.png';
 
     return (
         <Html>
@@ -34,7 +35,7 @@ const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://ex
                 </Preview>
                 <Container style={container}>
                     <Img
-                        src={`${baseUrl}/obraguru-logo-200px-dark.png`}
+                        src={logoURL}
                         width="40"
                         height="40"
                         alt="Obraguru"
