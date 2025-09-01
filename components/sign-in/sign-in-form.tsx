@@ -20,6 +20,9 @@ import { Link, useRouter } from "@/i18n/navigation"
 import { googleSignInAction, signInAction } from "@/components/server-actions/auth"
 import { useState } from "react"
 import { toast } from "sonner"
+import { ThemeSelector } from "@/components/theme-selector"
+import { LanguageSelector } from "@/components/language-selector"
+import { useSearchParams } from "next/navigation"
 
 export function SignInForm({
     className,
@@ -28,6 +31,7 @@ export function SignInForm({
     const t = useTranslations("SignInForm")
     const [isGoogleLoading, setIsGoogleLoading] = useState(false)
     const router = useRouter()
+    const searchParams = useSearchParams()
 
     // Form validation schema with translations
     const signInSchema = z.object({
@@ -40,10 +44,14 @@ export function SignInForm({
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm<SignInFormData>({
         resolver: zodResolver(signInSchema),
     })
+
+    // Watch email field to pass to reset password link
+    const emailValue = watch("email")
 
     const onSubmit = async (data: SignInFormData) => {
         try {
@@ -54,8 +62,19 @@ export function SignInForm({
                 if (result.errorCode === "email-not-confirmed") {
                     router.push("/sign-up/check-email?email=" + data.email)
                 }
+            } else if (result?.success === true) {
+                // Success - handle redirect properly
+
+                const redirectParam = searchParams.get("redirect")
+                if (redirectParam) {
+                    // If there's a redirect parameter, navigate to it
+                    // The middleware will handle locale conversion
+                    window.location.href = redirectParam
+                } else {
+                    // No redirect, just reload to trigger middleware locale check
+                    window.location.reload();
+                }
             }
-            // If successful, NextAuth will handle the redirect
         } catch (error) {
             // NextAuth throws NEXT_REDIRECT for successful sign-in redirects - this is expected
             if (error instanceof Error && error.message === "NEXT_REDIRECT") {
@@ -70,7 +89,9 @@ export function SignInForm({
     const handleGoogleSignIn = async () => {
         try {
             setIsGoogleLoading(true)
-            await googleSignInAction()
+            // Get redirect parameter from URL
+            const redirectParam = searchParams.get("redirect")
+            await googleSignInAction(redirectParam || undefined)
             // NextAuth will handle the redirect after successful Google sign-in
         } catch (error) {
             // NextAuth throws NEXT_REDIRECT for OAuth redirects - this is expected
@@ -87,7 +108,11 @@ export function SignInForm({
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
-                <CardHeader className="text-center">
+                <CardHeader className="text-center relative">
+                    <div className="flex justify-end items-center gap-1">
+                        <LanguageSelector variant="compact" />
+                        <ThemeSelector variant="compact" />
+                    </div>
                     <CardTitle className="text-xl">{t("title")}</CardTitle>
                     <CardDescription>
                         {t("description")}
@@ -135,12 +160,12 @@ export function SignInForm({
                                 <div className="grid gap-3">
                                     <div className="flex items-center">
                                         <Label htmlFor="password">{t("password")}</Label>
-                                        <a
-                                            href="#"
+                                        <Link
+                                            href={`/reset-password${emailValue ? `?email=${encodeURIComponent(emailValue)}` : ''}`}
                                             className="ml-auto text-sm underline-offset-4 hover:underline"
                                         >
                                             {t("forgotPassword")}
-                                        </a>
+                                        </Link>
                                     </div>
                                     <Input
                                         id="password"

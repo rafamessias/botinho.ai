@@ -15,12 +15,14 @@ import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
 import { googleSignInAction, signUpAction } from "@/components/server-actions/auth"
 import { useState } from "react"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
+import { ThemeSelector } from "@/components/theme-selector"
+import { LanguageSelector } from "@/components/language-selector"
 
 export function SignUpForm({
     className,
@@ -28,8 +30,10 @@ export function SignUpForm({
 }: React.ComponentProps<"div">) {
     const t = useTranslations("SignUpForm")
     const router = useRouter()
+    const searchParams = useSearchParams()
     const [isGoogleLoading, setIsGoogleLoading] = useState(false)
     const [phoneValue, setPhoneValue] = useState("")
+    const locale = useLocale()
 
     // Form validation schema with translations
     const signUpSchema = z.object({
@@ -91,7 +95,7 @@ export function SignUpForm({
             } else if (result?.success === true) {
                 toast.success(result.message || "Account created successfully!")
                 // Redirect to check email page with email parameter
-                router.push(`/sign-up/check-email?email=${encodeURIComponent(data.email)}`)
+                router.push(`/${locale}/sign-up/check-email?email=${encodeURIComponent(data.email)}`)
             }
         } catch (error) {
             console.error("Sign up error:", error)
@@ -102,7 +106,9 @@ export function SignUpForm({
     const handleGoogleSignUp = async () => {
         try {
             setIsGoogleLoading(true)
-            await googleSignInAction()
+            // Get redirect parameter from URL
+            const redirectParam = searchParams.get("redirect")
+            await googleSignInAction(redirectParam || undefined)
             // NextAuth will handle the redirect after successful Google sign-up
         } catch (error) {
             // NextAuth throws NEXT_REDIRECT for OAuth redirects - this is expected
@@ -119,7 +125,11 @@ export function SignUpForm({
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
-                <CardHeader className="text-center">
+                <CardHeader className="text-center relative">
+                    <div className="flex justify-end items-center gap-1">
+                        <LanguageSelector variant="compact" />
+                        <ThemeSelector variant="compact" />
+                    </div>
                     <CardTitle className="text-xl">{t("title")}</CardTitle>
                     <CardDescription>
                         {t("description")}
@@ -219,7 +229,7 @@ export function SignUpForm({
                             </div>
                             <div className="text-center text-sm">
                                 {t("haveAccount")}{" "}
-                                <Link href="/sign-in" className="underline underline-offset-4">
+                                <Link href={`/${locale}/sign-in`} className="underline underline-offset-4">
                                     {t("signIn")}
                                 </Link>
                             </div>

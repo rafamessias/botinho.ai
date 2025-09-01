@@ -20,6 +20,8 @@ const publicRoutes = routing.locales.flatMap(locale => [
     `/sign-up/check-email`,
     `/${locale}/auth/google/callback`,
     `/auth/google/callback`,
+    `/${locale}/reset-password/confirm`,
+    `/reset-password/confirm`,
 ]);
 
 function isPublicRoute(path: string) {
@@ -33,32 +35,20 @@ function isPublicRoute(path: string) {
 export default async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // Early returns for static assets and API routes
-    if (pathname.startsWith('/api')) {
-        return NextResponse.next();
-    }
-
-    // Skip static files - ADD webmanifest to the list
-    if (pathname.match(/\.(ico|png|jpg|jpeg|gif|webp|svg|css|js|woff|woff2|ttf|eot|webmanifest|json|xml)$/)) {
-        return NextResponse.next();
-    }
-
-    // Skip Next.js internal routes
-    if (pathname.startsWith('/_next/')) {
-        return NextResponse.next();
-    }
-
-    // Skip favicon and other browser requests
-    if (pathname.includes('favicon') || pathname.includes('.well-known')) {
-        return NextResponse.next();
-    }
-
-    // Skip PWA and manifest files specifically
-    if (pathname.includes('site.webmanifest') ||
+    // Early returns for requests that don't need auth checking
+    if (
+        pathname.startsWith('/api') ||
+        pathname.startsWith('/_next/') ||
+        pathname.includes('favicon') ||
+        pathname.includes('.well-known') ||
+        pathname.includes('site.webmanifest') ||
         pathname.includes('manifest.json') ||
         pathname.includes('browserconfig.xml') ||
         pathname.includes('robots.txt') ||
-        pathname.includes('sitemap.xml')) {
+        pathname.includes('sitemap.xml') ||
+        pathname.match(/\.(ico|png|jpg|jpeg|gif|webp|svg|css|js|woff|woff2|ttf|eot|webmanifest|json|xml)(\?.*)?$/) ||
+        pathname === '/favicon.ico'
+    ) {
         return NextResponse.next();
     }
 
@@ -81,18 +71,18 @@ export default async function middleware(request: NextRequest) {
 
     const session = await auth();
 
-    let user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };
+    const user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };
 
-    // If user is logged in and trying to access public routes, redirect to home
+    // If user is logged in, handle locale and redirect logic
     if (user.ok) {
+        // Extract the user's preferred locale
+        const userLocale = user.user?.language || routing.defaultLocale;
+        const currentLocale = routing.locales.find(locale => pathname.startsWith(`/${locale}`)) || routing.defaultLocale;
 
+        // If user is trying to access public routes (sign-in, sign-up, etc.), redirect to home with their locale
         if (isPublicRoute(pathname)) {
-            // Extract the current locale from the pathname
-            const currentLocale = routing.locales.find(locale =>
-                pathname.startsWith(`/${locale}`)
-            ) || user.user?.language || routing.defaultLocale;
 
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}`);
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}`);
             return NextResponse.redirect(redirectUrl);
         }
 
@@ -101,25 +91,76 @@ export default async function middleware(request: NextRequest) {
         const hasCompany = session?.user?.company ? true : false;
  
         if (!hasCompany && !pathname.includes('/company/create')) {
-            // Extract the current locale from the pathname
-            const currentLocale = routing.locales.find(locale =>
-                pathname.startsWith(`/${locale}`)
-            ) || user.user?.language || routing.defaultLocale;
- 
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}/company/create`);
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}/company/create`);
             return NextResponse.redirect(redirectUrl);
         }
  
         if (hasCompany && pathname.includes('/company/create')) {
-            // Extract the current locale from the pathname
-            const currentLocale = routing.locales.find(locale =>
-                pathname.startsWith(`/${locale}`)
-            ) || user.user?.language || routing.defaultLocale;
- 
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}`);
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}`);
             return NextResponse.redirect(redirectUrl);
         }
-            */
+        */
+
+        // Handle redirect parameter from URL (for general navigation) or OAuth redirect cookie
+        const redirectParam = request.nextUrl.searchParams.get("redirect");
+        const oauthRedirectCookie = request.cookies.get('oauth_redirect')?.value;
+
+        // Prioritize URL redirect param, then check OAuth cookie
+        const finalRedirectParam = redirectParam || oauthRedirectCookie;
+
+        if (finalRedirectParam) {
+            // Clear the OAuth redirect cookie if we're using it
+            const response = NextResponse.next();
+            if (oauthRedirectCookie && !redirectParam) {
+                response.cookies.delete('oauth_redirect');
+            }
+            // Ensure redirect path is safe (starts with "/")
+            const safeRedirectPath = finalRedirectParam.startsWith("/") ? finalRedirectParam : `/${finalRedirectParam}`;
+
+            // Check if the redirect path already includes a locale
+            const redirectLocale = routing.locales.find(locale =>
+                safeRedirectPath.startsWith(`/${locale}`)
+            );
+
+            // Build the final redirect path with user's locale
+            let finalRedirectPath = safeRedirectPath;
+            if (redirectLocale) {
+                // Replace the locale in the redirect path with the user's locale if different
+                if (redirectLocale !== userLocale) {
+                    finalRedirectPath = safeRedirectPath.replace(
+                        new RegExp(`^/${redirectLocale}`),
+                        `/${userLocale}`
+                    );
+                }
+            } else {
+                // Prepend the user's locale if not present
+                finalRedirectPath = `/${userLocale}${safeRedirectPath.startsWith("/") ? "" : "/"}${safeRedirectPath.replace(/^\//, "")}`;
+            }
+
+            const redirectUrl = new URL(`${request.nextUrl.origin}${finalRedirectPath}`);
+
+            // Clear the OAuth redirect cookie if we used it
+            if (oauthRedirectCookie && !redirectParam) {
+                redirectUrl.searchParams.delete('oauth_redirect');
+                const finalResponse = NextResponse.redirect(redirectUrl);
+                finalResponse.cookies.delete('oauth_redirect');
+                return finalResponse;
+            }
+
+            return NextResponse.redirect(redirectUrl);
+        }
+
+        // Always ensure logged-in users are using their preferred locale
+        if (currentLocale !== userLocale) {
+            // Replace the current locale in the pathname with the user's locale
+            const newPathname = pathname.replace(
+                new RegExp(`^/${currentLocale}`),
+                `/${userLocale}`
+            );
+            // Preserve any search parameters
+            const redirectUrl = new URL(`${request.nextUrl.origin}${newPathname}${request.nextUrl.search}`);
+            return NextResponse.redirect(redirectUrl);
+        }
     }
 
     // If user is not logged in and trying to access protected routes (besides /), redirect to sign in
@@ -139,9 +180,11 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        // Only match page routes, not static files or API routes
-        '/((?!api|_next/static|_next/image|favicon.ico|site.webmanifest|manifest.json|browserconfig.xml|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|eot|webmanifest|json|xml)).*)',
-        // Handle locale routes specifically
+        // Match page routes only
         '/(en|pt-BR)/:path*',
+        // Also match root paths that will be redirected to locale paths
+        '/',
+        '/sign-in',
+        '/sign-up',
     ],
 };

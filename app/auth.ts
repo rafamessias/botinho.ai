@@ -22,7 +22,7 @@ interface User {
     name?: string | null
     company?: string | null
     language?: string | null
-    projectId?: string | null
+    avatarUrl?: string | null
 }
 
 const locale = async () => {
@@ -48,11 +48,24 @@ class AccountBlockedError extends CredentialsSignin {
 export const { handlers, signIn, signOut, auth } = NextAuth({
     // Remove the PrismaAdapter since we're handling user creation manually
     // adapter: PrismaAdapter(prisma),
+    secret: process.env.AUTH_SECRET,
     session: {
         strategy: "jwt",
+        maxAge: 30 * 24 * 60 * 60, // 30 days
     },
     pages: {
         signIn: "/sign-in",
+    },
+    cookies: {
+        sessionToken: {
+            name: `next-auth.session-token`,
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: process.env.NODE_ENV === 'production'
+            }
+        }
     },
     providers: [
         GoogleProvider({
@@ -72,7 +85,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 try {
                     const user = await prisma.user.findUnique({
-                        where: { email: credentials.email as string }
+                        where: { email: credentials.email as string },
+                        include: { avatar: true }
                     })
 
                     if (!user || !user.password) {
@@ -99,6 +113,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         email: user.email,
                         name: `${user.firstName} ${user.lastName}`,
                         language: user.language === "pt_BR" ? "pt-BR" : "en",
+                        avatarUrl: user?.avatarUrl || user.avatar?.url || null,
                     }
                 } catch (error) {
                     console.error("Auth error:", error)
@@ -115,7 +130,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (user) {
                 token.id = user.id
                 token.email = user.email
+                token.name = user.name
                 token.language = (user as any)?.language
+                token.avatarUrl = (user as any)?.avatarUrl
             }
 
             // Handle Google OAuth user creation/update in JWT callback
@@ -138,21 +155,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 provider: 'google',
                                 language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
                                 phone: '',
+                                blocked: false,
+                                avatarUrl: token.picture as string | null,
+                                idProvider: token.id as string | null,
                                 confirmed: true,
                             },
                         })
                         token.id = newUser.id.toString()
                         token.email = newUser.email
                         token.language = newUser.language
+                        token.avatarUrl = newUser.avatarUrl
+                        token.name = `${newUser.firstName} ${newUser.lastName}`
 
                         const baseUrl = process.env.HOST;
-                        const fromEmail = process.env.FROM_EMAIL || "Obraguru <contact@obra.guru>";
+                        const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <contact@saasframework.com>";
 
                         // send welcome email
                         const { data, error } = await resend.emails.send({
                             from: fromEmail,
                             to: [token.email!],
-                            subject: currentLocale === 'pt-BR' ? 'Bem-vindo à Obraguru' : 'Welcome to Obraguru',
+                            subject: currentLocale === 'pt-BR' ? 'Bem-vindo à SaaS Framework' : 'Welcome to SaaS Framework',
                             react: WelcomeEmail({
                                 userName: token.name || "",
                                 confirmationUrl: `${baseUrl}/sign-up/success`,
@@ -164,7 +186,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     } else {
                         token.id = existingUser.id?.toString()
                         token.email = existingUser.email
-                        token.language = existingUser.language
+                        token.language = existingUser.language === "pt_BR" ? "pt-BR" : "en"
+                        token.avatarUrl = existingUser.avatarUrl
+                        token.name = `${existingUser.firstName} ${existingUser.lastName}`
                     }
                 } catch (error) {
                     console.error('Error handling Google OAuth user:', error);
@@ -196,9 +220,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         async session({ session, token }) {
             if (token) {
-                session.user.id = token.id as string
-                session.user.email = token.email as string
-                session.user.language = token.language as string
+                // Ensure session.user exists and has all required properties
+                session.user = {
+                    ...session.user,
+                    id: token.id as string,
+                    email: token.email as string,
+                    name: token.name as string,
+                    avatarUrl: token.avatarUrl as string,
+                    language: token.language as string
+                }
             }
 
             return session

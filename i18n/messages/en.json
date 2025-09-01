@@ -318,6 +318,74 @@
             "contactSupport": "Contact support"
         }
     },
+    "ResetPasswordForm": {
+        "title": "Reset your password",
+        "description": "Enter your email address and we'll send you a link to reset your password",
+        "email": "Email",
+        "emailPlaceholder": "m@example.com",
+        "resetButton": "Send reset link",
+        "submitting": "Sending...",
+        "rememberPassword": "Remember your password?",
+        "backToSignIn": "Back to sign in",
+        "termsText": "By clicking continue, you agree to our",
+        "termsOfService": "Terms of Service",
+        "and": "and",
+        "privacyPolicy": "Privacy Policy",
+        "validation": {
+            "emailRequired": "Please enter a valid email address"
+        },
+        "success": {
+            "title": "Check your email",
+            "description": "We've sent you a password reset link if an account with that email exists",
+            "instructions": "Click the link in the email to reset your password. The link will expire in 1 hour.",
+            "checkSpam": "Don't forget to check your spam folder",
+            "backToSignIn": "Back to sign in"
+        },
+        "messages": {
+            "resetEmailSent": "Password reset link sent successfully",
+            "unexpectedError": "An unexpected error occurred"
+        },
+        "help": {
+            "needHelp": "Need help?",
+            "contactSupport": "Contact support"
+        }
+    },
+    "ResetPasswordConfirmForm": {
+        "title": "Set new password",
+        "description": "Enter your new password below to complete the password reset",
+        "password": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "passwordPlaceholder": "Enter new password",
+        "confirmPasswordPlaceholder": "Confirm new password",
+        "resetButton": "Reset Password",
+        "submitting": "Resetting...",
+        "backToSignIn": "Back to sign in",
+        "termsText": "By clicking continue, you agree to our",
+        "termsOfService": "Terms of Service",
+        "and": "and",
+        "privacyPolicy": "Privacy Policy",
+        "validation": {
+            "passwordRequired": "Password must be at least 6 characters",
+            "passwordsDoNotMatch": "Passwords do not match"
+        },
+        "success": {
+            "title": "Password reset successfully!",
+            "description": "Your password has been changed and you can now sign in with your new password",
+            "instructions": "You will be redirected to the sign in page",
+            "redirecting": "Redirecting to sign in..."
+        },
+        "error": {
+            "title": "Reset failed",
+            "description": "We couldn't reset your password",
+            "instructions": "The reset link may be expired or invalid. Please request a new password reset.",
+            "requestNewReset": "Request new reset"
+        },
+        "messages": {
+            "passwordResetSuccess": "Password reset successfully",
+            "unexpectedError": "An unexpected error occurred",
+            "invalidToken": "Invalid or expired reset token"
+        }
+    },
     "AuthErrors": {
         "invalidCredentials": "Invalid email or password",
         "emailNotConfirmed": "Please confirm your email before signing in",

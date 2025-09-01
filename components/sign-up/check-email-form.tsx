@@ -135,7 +135,7 @@ export function CheckEmailForm({
                             </p>
 
                             {!canResend ? (
-                                <div className="flex items-start justify-center gap-2 text-sm text-muted-foreground">
+                                <div className="flex flex-col items-center justify-center gap-2 text-sm text-muted-foreground">
                                     <IconClock className="h-4 w-4" />
                                     <span>
                                         {t("resend.waitTime", { time: formatTime(countdown) })}

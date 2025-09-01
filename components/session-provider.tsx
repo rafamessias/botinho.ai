@@ -12,6 +12,7 @@ export default function AuthSessionProvider({ children }: SessionProviderProps) 
         <SessionProvider
             refetchInterval={0}
             refetchOnWindowFocus={false}
+            refetchWhenOffline={false}
         >
             {children}
         </SessionProvider>

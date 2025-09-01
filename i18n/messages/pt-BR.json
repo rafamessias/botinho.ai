@@ -318,6 +318,74 @@
             "contactSupport": "Contatar suporte"
         }
     },
+    "ResetPasswordForm": {
+        "title": "Redefinir sua senha",
+        "description": "Digite seu endereço de email e enviaremos um link para redefinir sua senha",
+        "email": "Email",
+        "emailPlaceholder": "m@exemplo.com",
+        "resetButton": "Enviar link de redefinição",
+        "submitting": "Enviando...",
+        "rememberPassword": "Lembra da sua senha?",
+        "backToSignIn": "Voltar ao login",
+        "termsText": "Ao clicar em continuar, você concorda com nossos",
+        "termsOfService": "Termos de Serviço",
+        "and": "e",
+        "privacyPolicy": "Política de Privacidade",
+        "validation": {
+            "emailRequired": "Por favor, insira um endereço de email válido"
+        },
+        "success": {
+            "title": "Verifique seu email",
+            "description": "Enviamos um link de redefinição de senha se existe uma conta com esse email",
+            "instructions": "Clique no link no email para redefinir sua senha. O link expirará em 1 hora.",
+            "checkSpam": "Não se esqueça de verificar sua pasta de spam",
+            "backToSignIn": "Voltar ao login"
+        },
+        "messages": {
+            "resetEmailSent": "Link de redefinição de senha enviado com sucesso",
+            "unexpectedError": "Ocorreu um erro inesperado"
+        },
+        "help": {
+            "needHelp": "Precisa de ajuda?",
+            "contactSupport": "Entre em contato com o suporte"
+        }
+    },
+    "ResetPasswordConfirmForm": {
+        "title": "Definir nova senha",
+        "description": "Digite sua nova senha abaixo para completar a redefinição de senha",
+        "password": "Nova Senha",
+        "confirmPassword": "Confirmar Nova Senha",
+        "passwordPlaceholder": "Digite a nova senha",
+        "confirmPasswordPlaceholder": "Confirme a nova senha",
+        "resetButton": "Redefinir Senha",
+        "submitting": "Redefinindo...",
+        "backToSignIn": "Voltar ao login",
+        "termsText": "Ao clicar em continuar, você concorda com nossos",
+        "termsOfService": "Termos de Serviço",
+        "and": "e",
+        "privacyPolicy": "Política de Privacidade",
+        "validation": {
+            "passwordRequired": "A senha deve ter pelo menos 6 caracteres",
+            "passwordsDoNotMatch": "As senhas não coincidem"
+        },
+        "success": {
+            "title": "Senha redefinida com sucesso!",
+            "description": "Sua senha foi alterada e você já pode fazer login com sua nova senha",
+            "instructions": "Você será redirecionado para a página de login",
+            "redirecting": "Redirecionando para o login..."
+        },
+        "error": {
+            "title": "Redefinição falhou",
+            "description": "Não foi possível redefinir sua senha",
+            "instructions": "O link de redefinição pode estar expirado ou inválido. Por favor, solicite uma nova redefinição de senha.",
+            "requestNewReset": "Solicitar nova redefinição"
+        },
+        "messages": {
+            "passwordResetSuccess": "Senha redefinida com sucesso",
+            "unexpectedError": "Ocorreu um erro inesperado",
+            "invalidToken": "Token de redefinição inválido ou expirado"
+        }
+    },
     "AuthErrors": {
         "invalidCredentials": "Email ou senha inválidos",
         "emailNotConfirmed": "Por favor, confirme seu email antes de fazer login",

@@ -25,21 +25,23 @@ enum Provider {
 }
 
 model User {
-  id                 Int      @id @default(autoincrement())
-  email              String   @unique
-  provider           Provider @default(local)
-  password           String?
-  resetPasswordToken String?
-  confirmationToken  String?
-  confirmed          Boolean?
-  blocked            Boolean?
-  phone              String?  @unique
-  firstName          String
-  lastName           String?
-  avatarUrl          String?
-  language           Language
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id                   Int       @id @default(autoincrement())
+  idProvider           String?
+  email                String    @unique
+  provider             Provider  @default(local)
+  password             String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  confirmationToken    String?
+  confirmed            Boolean?
+  blocked              Boolean?
+  phone                String?   @unique
+  firstName            String
+  lastName             String?
+  avatarUrl            String?
+  language             Language
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   // Relations
   avatar   File? @relation("UserAvatar", fields: [avatarId], references: [id])

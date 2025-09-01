@@ -1,6 +1,6 @@
 "use server"
 
-import { signIn, signOut } from "@/app/auth"
+import { signIn, signOut, auth } from "@/app/auth"
 import { prisma } from "@/prisma/lib/prisma"
 import bcrypt from "bcryptjs"
 import { redirect } from "next/navigation"
@@ -8,6 +8,7 @@ import { z } from "zod"
 import { AuthError } from "next-auth"
 import resend from "@/lib/resend"
 import EmailConfirmationEmail from "@/emails/EmailConfirmationEmail"
+import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
 
@@ -63,20 +64,20 @@ export const signInAction = async (formData: SignInFormData) => {
         // Validate form data
         const validatedData = signInSchema.parse(formData)
 
-        // Attempt to sign in using NextAuth
+        // Attempt to sign in using NextAuth without redirect
         const result = await signIn("credentials", {
             email: validatedData.email,
             password: validatedData.password,
             redirect: false,
         })
 
-        // If sign in successful, redirect to home
-        if (result && !result.error) {
-            const locale = await getCurrentLocale()
-            redirect(`/${locale}`)
+        // Check result and handle accordingly
+        if (result?.error) {
+            return { success: false, error: result.error }
         }
 
-        return { success: false, error: t("invalidCredentials") }
+        // If successful, return success and let client handle redirect
+        return { success: true }
     } catch (error) {
         // NextAuth throws NEXT_REDIRECT which is expected behavior for redirects
         if (error instanceof Error && error.message === "NEXT_REDIRECT") {
@@ -215,8 +216,19 @@ export const signUpAction = async (formData: SignUpFormData) => {
 /**
  * Server action for Google OAuth sign-in
  */
-export const googleSignInAction = async () => {
+export const googleSignInAction = async (redirectPath?: string) => {
     try {
+        // Store redirect path in cookies if provided
+        if (redirectPath) {
+            const cookieStore = await cookies()
+            cookieStore.set('oauth_redirect', redirectPath, {
+                maxAge: 300, // 5 minutes
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax'
+            })
+        }
+
         await signIn("google")
     } catch (error) {
         // NextAuth throws NEXT_REDIRECT which is expected behavior for redirects
@@ -344,12 +356,210 @@ export const resendConfirmationEmailAction = async (email: string) => {
             console.error("Failed to send confirmation email:", error)
         }
 
-        console.log("Email sent:", data)
-
         return { success: true, message: "Confirmation email sent successfully" }
 
     } catch (error) {
         console.error("Resend confirmation email error:", error)
         return { success: false, error: t("resendFailed") }
+    }
+}
+
+/**
+ * Server action to get current user information
+ */
+export const getCurrentUserAction = async () => {
+    try {
+        const session = await auth()
+
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated", user: null }
+        }
+
+        // Get complete user information from database
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                avatarUrl: true,
+                language: true,
+                provider: true,
+                confirmed: true,
+                blocked: true,
+                createdAt: true,
+                updatedAt: true,
+                avatar: {
+                    select: {
+                        id: true,
+                        url: true,
+                        name: true
+                    }
+                }
+            }
+        })
+
+        if (!user) {
+            return { success: false, error: "User not found", user: null }
+        }
+
+        // Transform data for frontend use
+        const userData = {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            name: `${user.firstName} ${user.lastName || ''}`.trim(),
+            phone: user.phone,
+            avatarUrl: user.avatarUrl || user.avatar?.url || null,
+            language: user.language,
+            provider: user.provider,
+            confirmed: user.confirmed,
+            blocked: user.blocked,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            // Access control flags
+            isActive: Boolean(user.confirmed && !user.blocked),
+            canAccess: Boolean(user.confirmed && !user.blocked),
+        }
+
+        return { success: true, user: userData }
+    } catch (error) {
+        console.error("Get current user error:", error)
+        return { success: false, error: "Failed to get user information", user: null }
+    }
+}
+
+/**
+ * Server action to request password reset
+ */
+export const resetPasswordAction = async (email: string) => {
+    const t = await getTranslations("AuthErrors")
+
+    try {
+        if (!email) {
+            return { success: false, error: "Email is required" }
+        }
+
+        // Validate email format
+        const emailSchema = z.string().email("Invalid email address")
+        const validatedEmail = emailSchema.parse(email)
+
+        // Find user with the email
+        const user = await prisma.user.findUnique({
+            where: { email: validatedEmail }
+        })
+
+        // Always return success to prevent email enumeration attacks
+        // but only send email if user exists
+        if (user && user.confirmed && !user.blocked) {
+            // Generate reset token
+            const resetPasswordToken = generateConfirmationToken()
+            const resetPasswordExpires = new Date(Date.now() + 3600000) // 1 hour from now
+
+            // Update user with reset token and expiration
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    resetPasswordToken,
+                    resetPasswordExpires
+                }
+            })
+
+            // Get current locale
+            const currentLocale = await getCurrentLocale()
+
+            // Send reset password email
+            const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
+            const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+            const resetUrl = `${baseUrl}/${currentLocale}/reset-password/confirm?token=${resetPasswordToken}`
+
+            try {
+                await resend.emails.send({
+                    from: fromEmail,
+                    to: [validatedEmail],
+                    subject: currentLocale === 'pt-BR' ? 'Redefinir sua senha' : 'Reset your password',
+                    react: ResetPasswordEmail({
+                        userName: user.firstName,
+                        resetPasswordLink: resetUrl,
+                        lang: currentLocale,
+                        baseUrl
+                    }),
+                })
+            } catch (emailError) {
+                console.error("Failed to send reset password email:", emailError)
+                // Don't fail the request if email fails
+            }
+        }
+
+        return { success: true, message: "If an account with that email exists, we've sent you a reset link." }
+
+    } catch (error) {
+        console.error("Reset password error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("unexpectedError") }
+    }
+}
+
+/**
+ * Server action to confirm password reset with new password
+ */
+export const confirmPasswordResetAction = async (token: string, password: string) => {
+    const t = await getTranslations("AuthErrors")
+
+    try {
+        if (!token || !password) {
+            return { success: false, error: "Token and password are required" }
+        }
+
+        // Validate password
+        const passwordSchema = z.string().min(6, "Password must be at least 6 characters")
+        const validatedPassword = passwordSchema.parse(password)
+
+        // Find user with valid reset token
+        const user = await prisma.user.findFirst({
+            where: {
+                resetPasswordToken: token,
+                resetPasswordExpires: {
+                    gt: new Date() // Token must not be expired
+                },
+                confirmed: true,
+                blocked: false
+            }
+        })
+
+        if (!user) {
+            return { success: false, error: t("invalidToken") }
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(validatedPassword, 12)
+
+        // Update user with new password and clear reset token
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashedPassword,
+                resetPasswordToken: null,
+                resetPasswordExpires: null
+            }
+        })
+
+        return { success: true, message: "Password reset successfully. You can now sign in with your new password." }
+
+    } catch (error) {
+        console.error("Password reset confirmation error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("unexpectedError") }
     }
 }

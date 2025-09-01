@@ -32,20 +32,31 @@ import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { logoutAction } from "@/components/server-actions/auth"
 import { useState } from "react"
+import { useUser } from "@/components/user-provider"
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+export function NavUser() {
   const locale = useLocale()
   const t = useTranslations("NavUser")
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { user, loading } = useUser()
+
+  // Show loading state if user data is still loading
+  if (loading || !user) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" className="cursor-pointer">
+            <div className="h-8 w-8 rounded-lg bg-gray-200 animate-pulse" />
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="h-4 bg-gray-200 rounded animate-pulse mb-1" />
+              <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3" />
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
+  }
 
   const menuItems = [
     {
@@ -84,6 +95,7 @@ export function NavUser({
     try {
       setIsLoggingOut(true)
       await logoutAction()
+      router.push(`/${locale}/sign-in`)
       // NextAuth will handle the redirect after logout
     } catch (error) {
       // NextAuth throws NEXT_REDIRECT for logout redirects - this is expected
@@ -105,9 +117,11 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <Avatar className="h-8 w-8 rounded-lg ">
+                <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
+                <AvatarFallback className="rounded-lg">
+                  {user.firstName?.charAt(0) || ""}{user.lastName?.charAt(0) || ""}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{truncatedName}</span>
@@ -124,21 +138,6 @@ export function NavUser({
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{truncatedName}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {truncatedEmail}
-                  </span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuGroup>
               {menuItems.map((item) => (
                 <DropdownMenuItem

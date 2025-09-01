@@ -13,33 +13,48 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function ThemeSelector() {
+interface ThemeSelectorProps {
+    variant?: "default" | "compact"
+}
+
+export function ThemeSelector({ variant = "default" }: ThemeSelectorProps) {
     const { theme, setTheme } = useTheme()
     const t = useTranslations("Settings")
-    const [mounted, setMounted] = React.useState(false)
 
-    React.useEffect(() => {
-        setMounted(true)
-    }, [])
-
-    if (!mounted) {
+    // Compact variant - icon only
+    if (variant === "compact") {
         return (
-            <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" className="cursor-pointer">
-                    <Sun className="h-[1.2rem] w-[1.2rem]" />
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
-                <div className="ml-4">
-                    <p className="text-sm font-medium">
-                        {t("theme.system")}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                        {t("theme.description")}
-                    </p>
-                </div>
-            </div>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:bg-muted/50 transition-colors"
+                    >
+                        <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                        <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                        <span className="sr-only">Toggle theme</span>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[120px]">
+                    <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer">
+                        <Sun className="mr-2 h-4 w-4" />
+                        <span>Light</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer">
+                        <Moon className="mr-2 h-4 w-4" />
+                        <span>Dark</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer">
+                        <Monitor className="mr-2 h-4 w-4" />
+                        <span>System</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         )
     }
+
+    // Default variant - with description
 
     return (
         <div className="flex items-center space-x-2">
