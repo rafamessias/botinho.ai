@@ -195,8 +195,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
             }
 
-            // Only handle session updates on the server side and avoid middleware context
-            if (trigger === 'update' && (token.email && !token.company)) {
+            // Handle session updates when trigger is 'update'
+            if (trigger === 'update') {
                 try {
                     // Check if we're in a server environment and not in middleware
                     if (typeof window === 'undefined' &&
@@ -205,10 +205,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                         const updatedUser = await prisma.user.findUnique({
                             where: { email: token.email! },
+                            select: {
+                                language: true,
+                                firstName: true,
+                                lastName: true,
+                                avatarUrl: true
+                            }
                         });
 
                         if (updatedUser) {
+                            // Update token with fresh data from database
                             token.language = updatedUser.language === "pt_BR" ? "pt-BR" : "en";
+                            token.name = `${updatedUser.firstName} ${updatedUser.lastName || ''}`.trim();
+                            token.avatarUrl = updatedUser.avatarUrl;
                         }
                     }
                 } catch (error) {

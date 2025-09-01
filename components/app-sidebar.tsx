@@ -18,6 +18,7 @@ import {
   IconReport,
   IconSettings,
   IconUsers,
+  IconBuilding,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -68,6 +69,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: t("navigation.team"),
         url: "/team",
         icon: IconUsers,
+      },
+      {
+        title: t("navigation.company"),
+        url: "/company",
+        icon: IconBuilding,
       },
     ],
 

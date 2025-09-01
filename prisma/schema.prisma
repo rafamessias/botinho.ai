@@ -24,6 +24,23 @@ enum Provider {
   local
 }
 
+enum DocumentType {
+  cpf
+  cnpj
+}
+
+enum CompanyMemberStatus {
+  invited
+  accepted
+  rejected
+}
+
+enum Theme {
+  light
+  dark
+  system
+}
+
 model User {
   id                   Int       @id @default(autoincrement())
   idProvider           String?
@@ -40,6 +57,7 @@ model User {
   lastName             String?
   avatarUrl            String?
   language             Language
+  theme                Theme     @default(system)
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
@@ -50,6 +68,9 @@ model User {
   // NextAuth relations
   accounts Account[]
   sessions Session[]
+
+  // Company member relation
+  companyMembers CompanyMember[] @relation("UserCompanyMembers")
 
   @@map("users")
 }
@@ -68,7 +89,9 @@ model File {
   updatedAt DateTime @updatedAt
 
   // Relations
-  avatarFor User[] @relation("UserAvatar")
+  avatarFor User[]   @relation("UserAvatar")
+  company   Company? @relation("CompanyFiles", fields: [companyId], references: [id])
+  companyId Int?
 
   @@map("files")
 }
@@ -111,4 +134,43 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model Company {
+  id           Int           @id @default(autoincrement())
+  name         String
+  documentType DocumentType?
+  document     String?
+  zipCode      String?
+  state        String?
+  city         String?
+  address      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  files   File[]          @relation("CompanyFiles")
+  members CompanyMember[] @relation("CompanyMembers")
+
+  @@map("companies")
+}
+
+model CompanyMember {
+  id                  Int                 @id @default(autoincrement())
+  isAdmin             Boolean
+  canPost             Boolean
+  canApprove          Boolean
+  isOwner             Boolean
+  companyMemberStatus CompanyMemberStatus
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  // Relations
+  userId Int
+  user   User @relation("UserCompanyMembers", fields: [userId], references: [id])
+
+  companyId Int
+  company   Company @relation("CompanyMembers", fields: [companyId], references: [id])
+
+  @@map("company_members")
 }

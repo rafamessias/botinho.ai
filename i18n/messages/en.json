@@ -10,7 +10,8 @@
             "lifecycle": "Lifecycle",
             "analytics": "Analytics",
             "projects": "Projects",
-            "team": "Team"
+            "team": "Team",
+            "company": "Company"
         },
         "documents": {
             "dataLibrary": "Data Library",
@@ -402,5 +403,127 @@
         "userNotFound": "User not found",
         "emailAlreadyConfirmed": "Email is already confirmed",
         "resendFailed": "Failed to resend confirmation email"
+    },
+    "Company": {
+        "title": "Company Management",
+        "description": "Manage your companies and team members",
+        "createCompany": "Create Company",
+        "createCompanyDescription": "Create a new company to get started with your team.",
+        "editCompany": "Edit Company",
+        "editCompanyDescription": "Update your company information.",
+        "selectCompany": "Select Company",
+        "companyDetails": "Company information and settings",
+        "noCompanies": "No companies found",
+        "noCompaniesDescription": "You haven't created any companies yet. Create your first company to get started.",
+        "createFirstCompany": "Create Your First Company",
+        "form": {
+            "name": "Company Name",
+            "namePlaceholder": "Enter company name",
+            "documentType": "Document Type",
+            "selectDocumentType": "Select document type",
+            "document": "Document Number",
+            "documentPlaceholder": "Enter document number",
+            "zipCode": "ZIP Code",
+            "zipCodePlaceholder": "Enter ZIP code",
+            "state": "State",
+            "statePlaceholder": "Enter state",
+            "city": "City",
+            "cityPlaceholder": "Enter city",
+            "address": "Address",
+            "addressPlaceholder": "Enter full address",
+            "cancel": "Cancel",
+            "create": "Create Company",
+            "creating": "Creating...",
+            "update": "Update Company",
+            "updating": "Updating..."
+        },
+        "documentTypes": {
+            "cpf": "CPF",
+            "cnpj": "CNPJ"
+        },
+        "members": {
+            "title": "Team Members",
+            "description": "Manage your company team members and their permissions",
+            "inviteMember": "Invite Member",
+            "inviteDescription": "Send an invitation to a new team member.",
+            "email": "Email Address",
+            "emailPlaceholder": "member@example.com",
+            "permissions": "Permissions",
+            "isAdmin": "Administrator - Can manage company and members",
+            "canPost": "Can Post - Can create posts and content",
+            "canApprove": "Can Approve - Can approve posts and content",
+            "sendInvite": "Send Invitation",
+            "inviting": "Sending...",
+            "name": "Name",
+            "role": "Role",
+            "status": "Status",
+            "owner": "Owner",
+            "admin": "Admin",
+            "member": "Member",
+            "makeAdmin": "Make Admin",
+            "removeAdmin": "Remove Admin",
+            "removeMember": "Remove Member",
+            "noMembers": "No team members",
+            "noMembersDescription": "Your company doesn't have any team members yet.",
+            "inviteFirstMember": "Invite Your First Member",
+            "status": {
+                "invited": "Invited",
+                "accepted": "Active",
+                "rejected": "Rejected"
+            },
+            "inviteSuccess": "Member invited successfully",
+            "inviteFailed": "Failed to invite member",
+            "removeSuccess": "Member removed successfully",
+            "removeFailed": "Failed to remove member",
+            "updateSuccess": "Member permissions updated successfully",
+            "updateFailed": "Failed to update member permissions"
+        },
+        "messages": {
+            "createSuccess": "Company created successfully",
+            "updateSuccess": "Company updated successfully",
+            "operationFailed": "Operation failed",
+            "unexpectedError": "An unexpected error occurred"
+        }
+    },
+    "CompanyInvitation": {
+        "pageTitle": "Company Invitation",
+        "title": "You've been invited!",
+        "description": "You have received an invitation to join a company.",
+        "companyInvitation": "Company team invitation",
+        "acceptInvitation": "Accept Invitation",
+        "rejectInvitation": "Decline Invitation",
+        "accepting": "Accepting...",
+        "rejecting": "Declining...",
+        "status": {
+            "accepted": {
+                "title": "Invitation Accepted!",
+                "description": "You have successfully joined the company.",
+                "descriptionWithCompany": "You have successfully joined {companyName}.",
+                "redirecting": "Redirecting you to the company page...",
+                "goToCompany": "Go to Company"
+            },
+            "rejected": {
+                "title": "Invitation Declined",
+                "description": "You have declined the company invitation.",
+                "goHome": "Go to Home"
+            },
+            "error": {
+                "title": "Invalid Invitation",
+                "description": "This invitation link is invalid or has expired.",
+                "instructions": "The invitation may have already been used or canceled.",
+                "goToCompanies": "Go to Companies",
+                "goHome": "Go to Home"
+            }
+        },
+        "messages": {
+            "invitationAccepted": "Company invitation accepted successfully",
+            "invitationRejected": "Company invitation declined"
+        },
+        "errors": {
+            "invalidInvitation": "Invalid invitation link",
+            "acceptFailed": "Failed to accept invitation",
+            "rejectFailed": "Failed to decline invitation",
+            "unexpectedError": "An unexpected error occurred"
+        }
     }
 }

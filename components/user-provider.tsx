@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react"
 import { useSession } from "next-auth/react"
 import { getCurrentUserAction } from "@/components/server-actions/auth"
+import { useTheme } from "next-themes"
+import { Theme } from "@/lib/generated/prisma"
 
 // User type definition
 export interface User {
@@ -17,6 +19,7 @@ export interface User {
     provider: string
     confirmed: boolean | null
     blocked: boolean | null
+    theme: Theme
     createdAt: Date
     updatedAt: Date
     // Access control flags
@@ -51,6 +54,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const { theme, setTheme } = useTheme()
+
 
     // Function to fetch user data
     const fetchUser = async () => {
@@ -67,6 +72,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
             if (result.success && result.user) {
                 setUser(result.user)
+                if (theme !== result.user?.theme) setTheme(result.user?.theme)
+
             } else {
                 setError(result.error || "Failed to load user data")
                 setUser(null)

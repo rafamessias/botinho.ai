@@ -12,6 +12,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { updateUserThemeAction } from "@/components/server-actions/user"
 
 interface ThemeSelectorProps {
     variant?: "default" | "compact"
@@ -20,6 +21,25 @@ interface ThemeSelectorProps {
 export function ThemeSelector({ variant = "default" }: ThemeSelectorProps) {
     const { theme, setTheme } = useTheme()
     const t = useTranslations("Settings")
+    const [mounted, setMounted] = React.useState(false)
+
+    // Prevent hydration mismatch by only rendering theme-dependent content after mount
+    React.useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    const handleThemeChange = async (newTheme: "light" | "dark" | "system") => {
+        try {
+            // Update theme in next-themes (for immediate UI update)
+            setTheme(newTheme)
+            // Update theme in user record
+            await updateUserThemeAction(newTheme)
+
+        } catch (error) {
+            //Avoid returning error to the client
+            console.error("Theme update error:", error)
+        }
+    }
 
     // Compact variant - icon only
     if (variant === "compact") {
@@ -37,15 +57,15 @@ export function ThemeSelector({ variant = "default" }: ThemeSelectorProps) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[120px]">
-                    <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer">
+                    <DropdownMenuItem onClick={() => handleThemeChange("light")} className="cursor-pointer">
                         <Sun className="mr-2 h-4 w-4" />
                         <span>Light</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer">
+                    <DropdownMenuItem onClick={() => handleThemeChange("dark")} className="cursor-pointer">
                         <Moon className="mr-2 h-4 w-4" />
                         <span>Dark</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer">
+                    <DropdownMenuItem onClick={() => handleThemeChange("system")} className="cursor-pointer">
                         <Monitor className="mr-2 h-4 w-4" />
                         <span>System</span>
                     </DropdownMenuItem>
@@ -67,15 +87,15 @@ export function ThemeSelector({ variant = "default" }: ThemeSelectorProps) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setTheme("light")}>
+                    <DropdownMenuItem onClick={() => handleThemeChange("light")}>
                         <Sun className="mr-2 h-4 w-4" />
                         <span>{t("theme.light")}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("dark")}>
+                    <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
                         <Moon className="mr-2 h-4 w-4" />
                         <span>{t("theme.dark")}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("system")}>
+                    <DropdownMenuItem onClick={() => handleThemeChange("system")}>
                         <Monitor className="mr-2 h-4 w-4" />
                         <span>{t("theme.system")}</span>
                     </DropdownMenuItem>
@@ -83,9 +103,10 @@ export function ThemeSelector({ variant = "default" }: ThemeSelectorProps) {
             </DropdownMenu>
             <div className="ml-4">
                 <p className="text-sm font-medium">
-                    {theme === "light" && t("theme.light")}
-                    {theme === "dark" && t("theme.dark")}
-                    {theme === "system" && t("theme.system")}
+                    {mounted && theme === "light" && t("theme.light")}
+                    {mounted && theme === "dark" && t("theme.dark")}
+                    {mounted && theme === "system" && t("theme.system")}
+                    {!mounted && t("theme.system")}
                 </p>
                 <p className="text-xs text-muted-foreground">
                     {t("theme.description")}

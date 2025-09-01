@@ -11,6 +11,7 @@ import EmailConfirmationEmail from "@/emails/EmailConfirmationEmail"
 import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
+import { Provider, Theme } from "@/lib/generated/prisma"
 
 // Types for form data
 export interface SignInFormData {
@@ -245,9 +246,9 @@ export const googleSignInAction = async (redirectPath?: string) => {
 /**
  * Server action for user logout
  */
-export const logoutAction = async () => {
+export const logoutAction = async (redirectTo: string) => {
     try {
-        await signOut()
+        await signOut({ redirect: true, redirectTo })
     } catch (error) {
         // NextAuth throws NEXT_REDIRECT which is expected behavior for redirects
         if (error instanceof Error && error.message === "NEXT_REDIRECT") {
@@ -387,6 +388,7 @@ export const getCurrentUserAction = async () => {
                 avatarUrl: true,
                 language: true,
                 provider: true,
+                theme: true,
                 confirmed: true,
                 blocked: true,
                 createdAt: true,
@@ -414,8 +416,9 @@ export const getCurrentUserAction = async () => {
             name: `${user.firstName} ${user.lastName || ''}`.trim(),
             phone: user.phone,
             avatarUrl: user.avatarUrl || user.avatar?.url || null,
-            language: user.language,
-            provider: user.provider,
+            language: user.language === "pt_BR" ? "pt-BR" : "en",
+            provider: user.provider as Provider,
+            theme: user.theme as Theme,
             confirmed: user.confirmed,
             blocked: user.blocked,
             createdAt: user.createdAt,

@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { useTranslations } from "next-intl"
-import { useParams, usePathname, useSearchParams } from "next/navigation"
-import { Link } from "@/i18n/navigation"
+import { useParams, usePathname, useSearchParams, useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { Globe } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { updateUserLanguageAction } from "@/components/server-actions/user"
 
 const languages = [
     {
@@ -39,6 +40,26 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
     const currentLocale = params.locale as string
     const currentLanguage = languages.find(lang => lang.code === currentLocale)
     const pathname = usePathname()
+    const router = useRouter()
+    const { update } = useSession()
+
+    const handleLanguageChange = async (newLanguage: string, targetPath: string) => {
+        try {
+            // Update user language preference in database
+            const result = await updateUserLanguageAction(newLanguage as "en" | "pt-BR")
+
+            // Update the session with new language
+            await update({
+                language: newLanguage
+            })
+
+            // Navigate to the new language
+            router.push(`/${newLanguage}${targetPath}`)
+        } catch (error) {
+            // Avoid returning error to the client
+            console.error("Language update error:", error)
+        }
+    }
 
     // Remove current locale from pathname if present (for proper locale switching)
     const pathnameWithoutLocale = React.useMemo(() => {
@@ -93,17 +114,18 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
                 <DropdownMenuContent align="end" className="min-w-[140px]">
                     {languages.map((language) => (
                         <DropdownMenuItem key={language.code} asChild>
-                            <Link
-                                href={targetPath}
-                                locale={language.code}
+                            <Button
+                                variant="ghost"
+                                size="sm"
                                 className="cursor-pointer flex items-center w-full"
+                                onClick={() => handleLanguageChange(language.code, targetPath)}
                             >
                                 <span className="mr-2">{language.flag}</span>
                                 <span>{language.name}</span>
                                 {currentLanguage?.code === language.code && (
                                     <span className="ml-auto text-xs opacity-60">✓</span>
                                 )}
-                            </Link>
+                            </Button>
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
@@ -124,10 +146,15 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
                 <DropdownMenuContent align="end">
                     {languages.map((language) => (
                         <DropdownMenuItem key={language.code} asChild>
-                            <Link href={targetPath} locale={language.code}>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="cursor-pointer"
+                                onClick={() => handleLanguageChange(language.code, targetPath)}
+                            >
                                 <span className="mr-2">{language.flag}</span>
                                 <span>{language.name}</span>
-                            </Link>
+                            </Button>
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>

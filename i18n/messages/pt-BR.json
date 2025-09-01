@@ -10,7 +10,8 @@
             "lifecycle": "Ciclo de Vida",
             "analytics": "Análises",
             "projects": "Projetos",
-            "team": "Equipe"
+            "team": "Equipe",
+            "company": "Empresa"
         },
         "documents": {
             "dataLibrary": "Biblioteca de Dados",
@@ -402,5 +403,127 @@
         "userNotFound": "Usuário não encontrado",
         "emailAlreadyConfirmed": "Email já foi confirmado",
         "resendFailed": "Falha ao reenviar email de confirmação"
+    },
+    "Company": {
+        "title": "Gestão de Empresa",
+        "description": "Gerencie suas empresas e membros da equipe",
+        "createCompany": "Criar Empresa",
+        "createCompanyDescription": "Crie uma nova empresa para começar com sua equipe.",
+        "editCompany": "Editar Empresa",
+        "editCompanyDescription": "Atualize as informações da sua empresa.",
+        "selectCompany": "Selecionar Empresa",
+        "companyDetails": "Informações e configurações da empresa",
+        "noCompanies": "Nenhuma empresa encontrada",
+        "noCompaniesDescription": "Você ainda não criou nenhuma empresa. Crie sua primeira empresa para começar.",
+        "createFirstCompany": "Criar Sua Primeira Empresa",
+        "form": {
+            "name": "Nome da Empresa",
+            "namePlaceholder": "Digite o nome da empresa",
+            "documentType": "Tipo de Documento",
+            "selectDocumentType": "Selecione o tipo de documento",
+            "document": "Número do Documento",
+            "documentPlaceholder": "Digite o número do documento",
+            "zipCode": "CEP",
+            "zipCodePlaceholder": "Digite o CEP",
+            "state": "Estado",
+            "statePlaceholder": "Digite o estado",
+            "city": "Cidade",
+            "cityPlaceholder": "Digite a cidade",
+            "address": "Endereço",
+            "addressPlaceholder": "Digite o endereço completo",
+            "cancel": "Cancelar",
+            "create": "Criar Empresa",
+            "creating": "Criando...",
+            "update": "Atualizar Empresa",
+            "updating": "Atualizando..."
+        },
+        "documentTypes": {
+            "cpf": "CPF",
+            "cnpj": "CNPJ"
+        },
+        "members": {
+            "title": "Membros da Equipe",
+            "description": "Gerencie os membros da sua equipe e suas permissões",
+            "inviteMember": "Convidar Membro",
+            "inviteDescription": "Envie um convite para um novo membro da equipe.",
+            "email": "Endereço de Email",
+            "emailPlaceholder": "membro@exemplo.com",
+            "permissions": "Permissões",
+            "isAdmin": "Administrador - Pode gerenciar empresa e membros",
+            "canPost": "Pode Postar - Pode criar postagens e conteúdo",
+            "canApprove": "Pode Aprovar - Pode aprovar postagens e conteúdo",
+            "sendInvite": "Enviar Convite",
+            "inviting": "Enviando...",
+            "name": "Nome",
+            "role": "Função",
+            "status": "Status",
+            "owner": "Proprietário",
+            "admin": "Admin",
+            "member": "Membro",
+            "makeAdmin": "Tornar Admin",
+            "removeAdmin": "Remover Admin",
+            "removeMember": "Remover Membro",
+            "noMembers": "Nenhum membro da equipe",
+            "noMembersDescription": "Sua empresa ainda não tem membros da equipe.",
+            "inviteFirstMember": "Convide Seu Primeiro Membro",
+            "status": {
+                "invited": "Convidado",
+                "accepted": "Ativo",
+                "rejected": "Rejeitado"
+            },
+            "inviteSuccess": "Membro convidado com sucesso",
+            "inviteFailed": "Falha ao convidar membro",
+            "removeSuccess": "Membro removido com sucesso",
+            "removeFailed": "Falha ao remover membro",
+            "updateSuccess": "Permissões do membro atualizadas com sucesso",
+            "updateFailed": "Falha ao atualizar permissões do membro"
+        },
+        "messages": {
+            "createSuccess": "Empresa criada com sucesso",
+            "updateSuccess": "Empresa atualizada com sucesso",
+            "operationFailed": "Operação falhou",
+            "unexpectedError": "Ocorreu um erro inesperado"
+        }
+    },
+    "CompanyInvitation": {
+        "pageTitle": "Convite da Empresa",
+        "title": "Você foi convidado!",
+        "description": "Você recebeu um convite para se juntar a uma empresa.",
+        "companyInvitation": "Convite da equipe da empresa",
+        "acceptInvitation": "Aceitar Convite",
+        "rejectInvitation": "Recusar Convite",
+        "accepting": "Aceitando...",
+        "rejecting": "Recusando...",
+        "status": {
+            "accepted": {
+                "title": "Convite Aceito!",
+                "description": "Você se juntou à empresa com sucesso.",
+                "descriptionWithCompany": "Você se juntou à {companyName} com sucesso.",
+                "redirecting": "Redirecionando você para a página da empresa...",
+                "goToCompany": "Ir para Empresa"
+            },
+            "rejected": {
+                "title": "Convite Recusado",
+                "description": "Você recusou o convite da empresa.",
+                "goHome": "Ir para Início"
+            },
+            "error": {
+                "title": "Convite Inválido",
+                "description": "Este link de convite é inválido ou expirou.",
+                "instructions": "O convite pode já ter sido usado ou cancelado.",
+                "goToCompanies": "Ir para Empresas",
+                "goHome": "Ir para Início"
+            }
+        },
+        "messages": {
+            "invitationAccepted": "Convite da empresa aceito com sucesso",
+            "invitationRejected": "Convite da empresa recusado"
+        },
+        "errors": {
+            "invalidInvitation": "Link de convite inválido",
+            "acceptFailed": "Falha ao aceitar convite",
+            "rejectFailed": "Falha ao recusar convite",
+            "unexpectedError": "Ocorreu um erro inesperado"
+        }
     }
 }

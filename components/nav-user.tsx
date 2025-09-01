@@ -94,8 +94,7 @@ export function NavUser() {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true)
-      await logoutAction()
-      router.push(`/${locale}/sign-in`)
+      await logoutAction(`/${locale}/sign-in`)
       // NextAuth will handle the redirect after logout
     } catch (error) {
       // NextAuth throws NEXT_REDIRECT for logout redirects - this is expected

@@ -1,229 +1,194 @@
+import React from 'react'
 import {
     Body,
-    Button,
     Container,
     Head,
+    Heading,
     Html,
-    Img,
     Link,
     Preview,
     Section,
     Text,
     Row,
-    Hr,
-} from '@react-email/components';
-import * as React from 'react';
+    Column,
+    Img,
+} from '@react-email/components'
 
 interface CompanyInvitationEmailProps {
-    userName?: string;
-    inviterName?: string;
-    companyName?: string;
-    invitationUrl?: string;
-    lang?: string;
-    baseUrl?: string;
-    password?: string;
+    userName: string
+    companyName: string
+    invitedBy: string
+    invitationLink: string
+    lang?: string
+    baseUrl?: string
 }
 
-const CompanyInvitationEmail = ({
-    userName = 'User',
-    inviterName = 'Team Member',
-    companyName = 'Company',
-    password = '',
-    invitationUrl = 'https://example.com',
+const main = {
+    backgroundColor: '#ffffff',
+    fontFamily:
+        '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+}
+
+const container = {
+    margin: '0 auto',
+    padding: '20px 0 48px',
+    maxWidth: '560px',
+}
+
+const logo = {
+    margin: '0 auto',
+}
+
+const paragraph = {
+    fontSize: '16px',
+    lineHeight: '26px',
+    color: '#484848',
+}
+
+const btnContainer = {
+    textAlign: 'center' as const,
+}
+
+const button = {
+    backgroundColor: '#000',
+    borderRadius: '3px',
+    color: '#fff',
+    fontSize: '16px',
+    textDecoration: 'none',
+    textAlign: 'center' as const,
+    display: 'block',
+    padding: '12px',
+    margin: '16px auto',
+    maxWidth: '200px',
+}
+
+const hr = {
+    borderColor: '#cccccc',
+    margin: '20px 0',
+}
+
+const footer = {
+    color: '#9ca299',
+    fontSize: '14px',
+    marginBottom: '10px',
+}
+
+const CompanyInvitationEmail: React.FC<CompanyInvitationEmailProps> = ({
+    userName,
+    companyName,
+    invitedBy,
+    invitationLink,
     lang = 'en',
-    baseUrl = 'http://localhost:3000'
-}: CompanyInvitationEmailProps) => {
-    const isPt = lang === 'pt-BR' || lang === 'pt_BR';
-    const logoURL = baseUrl + '/placeholder-logo.png';
+    baseUrl = 'http://localhost:3000',
+}) => {
+    const isPortuguese = lang === 'pt-BR'
+
+    const translations = {
+        en: {
+            subject: `Invitation to join ${companyName}`,
+            preview: `${invitedBy} invited you to join ${companyName}`,
+            greeting: `Hi ${userName},`,
+            invitationText: `${invitedBy} has invited you to join ${companyName} on our platform.`,
+            benefitsTitle: 'As a team member, you will be able to:',
+            benefits: [
+                'Collaborate with your team members',
+                'Access company resources and tools',
+                'Participate in team discussions',
+                'Manage projects and tasks together',
+            ],
+            acceptButton: 'Accept Invitation',
+            alternativeText: 'If the button above doesn\'t work, copy and paste this link into your browser:',
+            footerText: 'If you don\'t want to join this company, you can safely ignore this email.',
+            regards: 'Best regards,',
+            teamName: 'The SaaS Framework Team',
+        },
+        'pt-BR': {
+            subject: `Convite para se juntar à ${companyName}`,
+            preview: `${invitedBy} convidou você para se juntar à ${companyName}`,
+            greeting: `Olá ${userName},`,
+            invitationText: `${invitedBy} convidou você para se juntar à ${companyName} em nossa plataforma.`,
+            benefitsTitle: 'Como membro da equipe, você poderá:',
+            benefits: [
+                'Colaborar com os membros da sua equipe',
+                'Acessar recursos e ferramentas da empresa',
+                'Participar de discussões da equipe',
+                'Gerenciar projetos e tarefas em conjunto',
+            ],
+            acceptButton: 'Aceitar Convite',
+            alternativeText: 'Se o botão acima não funcionar, copie e cole este link no seu navegador:',
+            footerText: 'Se você não quiser se juntar a esta empresa, pode ignorar este email com segurança.',
+            regards: 'Atenciosamente,',
+            teamName: 'Equipe SaaS Framework',
+        },
+    }
+
+    const t = translations[isPortuguese ? 'pt-BR' : 'en']
 
     return (
         <Html>
             <Head />
+            <Preview>{t.preview}</Preview>
             <Body style={main}>
-                <Preview>
-                    {isPt
-                        ? `Obraguru - Você foi convidado para a empresa ${companyName}!`
-                        : `Obraguru - You've been invited to join ${companyName}!`
-                    }
-                </Preview>
                 <Container style={container}>
-                    <Img
-                        src={logoURL}
-                        width="40"
-                        height="40"
-                        alt="Obraguru"
-                        style={logo}
-                    />
-                    <Section>
-                        <Text style={text}>
-                            {isPt ? `Olá ${userName},` : `Hi ${userName},`}
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? `Você foi convidado(a) para se juntar à empresa "${companyName}" no Obraguru.`
-                                : `You've been invited to join the company "${companyName}" on Obraguru.`
-                            }
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'Como membro da empresa, você terá acesso a todos os projetos, recursos e ferramentas de colaboração disponíveis para a equipe.'
-                                : 'As a company member, you\'ll have access to all projects, resources, and collaboration tools available to the team.'
-                            }
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'O Obraguru oferece uma plataforma completa para gerenciamento de projetos empresariais, permitindo que equipes trabalhem de forma eficiente e organizada.'
-                                : 'Obraguru provides a comprehensive platform for enterprise project management, enabling teams to work efficiently and organized.'
-                            }
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'Clique no botão abaixo para aceitar o convite e se tornar parte da equipe:'
-                                : 'Click the button below to accept the invitation and become part of the team:'
-                            }
-                        </Text>
-                        <Button style={button} href={invitationUrl}>
-                            {isPt ? 'Aceitar convite' : 'Accept invitation'}
-                        </Button>
-
-                        {password && (
-                            <>
-                                <Text style={text}>
-                                    {isPt
-                                        ? 'Sua senha temporária para acessar a plataforma:'
-                                        : 'Your temporary password to access the platform:'
-                                    }
-                                </Text>
-                                <Text style={{ ...text, fontWeight: 'bold', fontSize: '16px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
-                                    {password}
-                                </Text>
-                                <Text style={text}>
-                                    {isPt
-                                        ? 'Por favor, altere sua senha após o primeiro acesso para garantir a segurança da sua conta.'
-                                        : 'Please change your password after your first login to ensure your account\'s security.'
-                                    }
-                                </Text>
-                            </>
-                        )}
-
-
-                        <Text style={text}>
-                            {isPt
-                                ? 'Junte-se à empresa e comece a colaborar com seus colegas em projetos importantes. Sua contribuição será valiosa para o sucesso da equipe!'
-                                : 'Join the company and start collaborating with your colleagues on important projects. Your contribution will be valuable to the team\'s success!'
-                            }
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'Após aceitar o convite, você poderá acessar todos os projetos da empresa e começar a trabalhar imediatamente.'
-                                : 'After accepting the invitation, you\'ll be able to access all company projects and start working immediately.'
-                            }
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'Se você tiver alguma dúvida sobre a empresa ou a plataforma, não hesite em entrar em contato conosco.'
-                                : 'If you have any questions about the company or the platform, don\'t hesitate to contact us.'
-                            }
-                        </Text>
-                        <Hr style={hr} />
-                        <Text style={text}>
-                            {isPt
-                                ? 'Se você não conseguiu clicar no botão acima, copie e cole o link abaixo:'
-                                : 'If you could not click the button above, copy and paste the URL below:'
-                            }
-                        </Text>
-                        <Text style={anchor}>
-                            {invitationUrl}
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'Este convite expira em 7 dias por motivos de segurança.'
-                                : 'This invitation expires in 7 days for security reasons.'
-                            }
-                        </Text>
+                    <Section style={logo}>
+                        <Img
+                            src={`${baseUrl}/placeholder-logo.png`}
+                            width="40"
+                            height="40"
+                            alt="SaaS Framework"
+                        />
                     </Section>
+                    <Heading
+                        style={{
+                            fontSize: '24px',
+                            lineHeight: '1.3',
+                            fontWeight: '700',
+                            color: '#484848',
+                            textAlign: 'center',
+                        }}
+                    >
+                        {t.subject}
+                    </Heading>
+                    <Text style={paragraph}>{t.greeting}</Text>
+                    <Text style={paragraph}>{t.invitationText}</Text>
+
+                    <Text style={paragraph}>{t.benefitsTitle}</Text>
+                    <ul style={{ ...paragraph, paddingLeft: '20px' }}>
+                        {t.benefits.map((benefit, index) => (
+                            <li key={index} style={{ marginBottom: '8px' }}>
+                                {benefit}
+                            </li>
+                        ))}
+                    </ul>
+
+                    <Section style={btnContainer}>
+                        <Link style={button} href={invitationLink}>
+                            {t.acceptButton}
+                        </Link>
+                    </Section>
+
+                    <Text style={paragraph}>
+                        {t.alternativeText}
+                    </Text>
+                    <Text style={{ ...paragraph, fontSize: '14px', color: '#9ca299' }}>
+                        {invitationLink}
+                    </Text>
+
+                    <hr style={hr} />
+
+                    <Text style={footer}>
+                        {t.footerText}
+                    </Text>
+
+                    <Text style={footer}>
+                        {t.regards}
+                        <br />
+                        {t.teamName}
+                    </Text>
                 </Container>
-
-                <Section style={footer}>
-                    <Row>
-                        <Text style={{ textAlign: 'center', color: '#706a7b' }}>
-                            {isPt ? '© 2025 Obraguru, Todos os direitos reservados' : '© 2025 Obraguru, All Rights Reserved'}
-                        </Text>
-                    </Row>
-                </Section>
-
             </Body>
         </Html>
-    );
-};
+    )
+}
 
-CompanyInvitationEmail.PreviewProps = {
-    userName: 'Carlos Oliveira',
-    inviterName: 'Ana Costa',
-    companyName: 'Tech Solutions Ltda',
-    invitationUrl: 'http://localhost:3000/company-invite/xyz789',
-    lang: 'pt-BR',
-    baseUrl: 'http://localhost:3000',
-    password: '123456',
-};
-
-const main = {
-    backgroundColor: '#f6f9fc',
-    padding: '10px 0',
-};
-
-const container = {
-    backgroundColor: '#ffffff',
-    border: '1px solid #f0f0f0',
-    padding: '45px',
-    borderRadius: '10px',
-};
-
-const logo = {
-    width: '40px',
-    height: '40px',
-    borderRadius: '10%',
-};
-
-const text = {
-    fontSize: '16px',
-    fontFamily:
-        "'Open Sans', 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif",
-    fontWeight: '300',
-    color: '#404040',
-    lineHeight: '26px',
-};
-
-const button = {
-    backgroundColor: '#007ee6',
-    borderRadius: '4px',
-    color: '#fff',
-    fontFamily: "'Open Sans', 'Helvetica Neue', Arial",
-    fontSize: '15px',
-    textDecoration: 'none',
-    textAlign: 'center' as const,
-    display: 'block',
-    width: '210px',
-    padding: '14px 7px',
-};
-
-const anchor = {
-    textDecoration: 'underline',
-    fontSize: '16px',
-    fontFamily:
-        "'Open Sans', 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif",
-    fontWeight: '300',
-    color: '#404040',
-};
-
-const footer = {
-    maxWidth: '580px',
-    margin: '0 auto',
-};
-
-const hr = {
-    borderColor: '#e6e6e6',
-    margin: '20px 0',
-};
-
-export default CompanyInvitationEmail; 
+export default CompanyInvitationEmail
