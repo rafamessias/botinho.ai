@@ -62,7 +62,7 @@ export function NavUser() {
     {
       label: t("account"),
       icon: IconUserCircle,
-      href: "/account",
+      href: `/${locale}/account`,
     },
     {
       label: t("billing"),

@@ -159,21 +159,55 @@ export const signUpAction = async (formData: SignUpFormData) => {
         const firstName = nameParts[0]
         const lastName = nameParts.slice(1).join(' ') || ''
 
-        // Create user in database
-        const newUser = await prisma.user.create({
-            data: {
-                email: validatedData.email,
-                password: hashedPassword,
-                phone: validatedData.phone,
-                firstName,
-                lastName,
-                provider: 'local',
-                language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
-                confirmationToken,
-                confirmed: false,
-                blocked: false,
-            }
+        // Create user and team in a transaction
+        const result = await prisma.$transaction(async (tx) => {
+            // Create user
+            const newUser = await tx.user.create({
+                data: {
+                    email: validatedData.email,
+                    password: hashedPassword,
+                    phone: validatedData.phone,
+                    firstName,
+                    lastName,
+                    provider: 'local',
+                    language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
+                    confirmationToken,
+                    confirmed: false,
+                    blocked: false,
+                }
+            })
+
+            // Create a default team for the user
+            const team = await tx.team.create({
+                data: {
+                    name: t("defaultTeamName", { firstName }),
+                    description: t("defaultTeamDescription", { firstName })
+                }
+            })
+
+            // Create team member (owner)
+            await tx.teamMember.create({
+                data: {
+                    userId: newUser.id,
+                    teamId: team.id,
+                    isAdmin: true,
+                    canPost: true,
+                    canApprove: true,
+                    isOwner: true,
+                    teamMemberStatus: 'accepted',
+                }
+            })
+
+            // Update user's default team
+            await tx.user.update({
+                where: { id: newUser.id },
+                data: { defaultTeamId: team.id }
+            })
+
+            return { user: newUser, team }
         })
+
+        const newUser = result.user
 
         // Send confirmation email
         const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'

@@ -180,11 +180,18 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        // Match page routes only
+        // Match all locale-prefixed routes
         '/(en|pt-BR)/:path*',
-        // Also match root paths that will be redirected to locale paths
+        // Match root and all public routes without locale
         '/',
         '/sign-in',
         '/sign-up',
+        '/reset-password',
+        '/sign-up/confirm',
+        '/sign-up/check-email',
+        '/auth/google/callback',
+        '/reset-password/confirm',
+        // Match any other routes that should go through middleware
+        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.).*)',
     ],
 };

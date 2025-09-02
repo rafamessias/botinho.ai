@@ -159,6 +159,7 @@
     "Common": {
         "loading": "Loading...",
         "save": "Save",
+        "saving": "Saving...",
         "cancel": "Cancel",
         "close": "Close",
         "search": "Search",
@@ -402,7 +403,12 @@
         "confirmationFailed": "An unexpected error occurred during email confirmation",
         "userNotFound": "User not found",
         "emailAlreadyConfirmed": "Email is already confirmed",
-        "resendFailed": "Failed to resend confirmation email"
+        "resendFailed": "Failed to resend confirmation email",
+        "phoneAlreadyInUse": "Phone number is already in use",
+        "profileUpdateFailed": "Failed to update profile",
+        "avatarUpdateFailed": "Failed to update avatar",
+        "defaultTeamName": "Default Team",
+        "defaultTeamDescription": "Default team for {firstName}"
     },
     "Company": {
         "title": "Company Management",
@@ -420,7 +426,7 @@
             "name": "Company Name",
             "namePlaceholder": "Enter company name",
             "documentType": "Document Type",
-            "selectDocumentType": "Select document type",
+            "selectDocumentType": "Document type",
             "document": "Document Number",
             "documentPlaceholder": "Enter document number",
             "zipCode": "ZIP Code",
@@ -456,7 +462,7 @@
             "inviting": "Sending...",
             "name": "Name",
             "role": "Role",
-            "status": "Status",
+            "statusLabel": "Status",
             "owner": "Owner",
             "admin": "Admin",
             "member": "Member",
@@ -483,6 +489,43 @@
             "updateSuccess": "Company updated successfully",
             "operationFailed": "Operation failed",
             "unexpectedError": "An unexpected error occurred"
+        }
+    },
+    "Profile": {
+        "title": "Profile",
+        "description": "Manage your account information and preferences",
+        "avatar": {
+            "title": "Profile Picture",
+            "description": "Update your profile picture",
+            "change": "Change photo",
+            "instructions": "Click the camera icon to upload a new profile picture. Supported formats: JPG, PNG, GIF.",
+            "updating": "Updating avatar..."
+        },
+        "profile": {
+            "title": "Personal Information",
+            "description": "Update your personal information",
+            "firstName": "First Name",
+            "firstNamePlaceholder": "Enter your first name",
+            "lastName": "Last Name",
+            "lastNamePlaceholder": "Enter your last name",
+            "phone": "Phone Number",
+            "phonePlaceholder": "+1 (555) 123-4567",
+            "email": "Email Address",
+            "emailNote": "Email address cannot be changed"
+        },
+        "messages": {
+            "profileUpdated": "Profile updated successfully",
+            "avatarUpdated": "Profile picture updated successfully",
+            "updateFailed": "Failed to update profile",
+            "avatarUpdateFailed": "Failed to update profile picture",
+            "unexpectedError": "An unexpected error occurred"
+        },
+        "validation": {
+            "firstNameRequired": "First name is required",
+            "firstNameTooLong": "First name is too long",
+            "lastNameTooLong": "Last name is too long",
+            "phoneMinLength": "Phone number must be at least 10 characters",
+            "phoneInvalid": "Invalid phone number format"
         }
     },
     "CompanyInvitation": {
@@ -524,6 +567,78 @@
             "acceptFailed": "Failed to accept invitation",
             "rejectFailed": "Failed to decline invitation",
             "unexpectedError": "An unexpected error occurred"
+        }
+    },
+    "Team": {
+        "title": "Team Management",
+        "description": "Manage your teams and team members",
+        "teams": "Teams",
+        "createTeam": "Create Team",
+        "createTeamDescription": "Create a new team to collaborate with others.",
+        "editTeam": "Edit Team",
+        "editTeamDescription": "Update your team information.",
+        "noTeams": "No teams found",
+        "noTeamsDescription": "You haven't created any teams yet. Create your first team to get started.",
+        "createFirstTeam": "Create Your First Team",
+        "form": {
+            "name": "Team Name",
+            "namePlaceholder": "Enter team name",
+            "description": "Description",
+            "descriptionPlaceholder": "Enter team description (optional)",
+            "cancel": "Cancel",
+            "create": "Create Team",
+            "creating": "Creating...",
+            "update": "Update Team",
+            "updating": "Updating..."
+        },
+        "members": {
+            "title": "Team Members",
+            "description": "Manage your team members and their permissions",
+            "inviteMember": "Invite Member",
+            "inviteDescription": "Send an invitation to a new team member.",
+            "email": "Email Address",
+            "emailPlaceholder": "member@example.com",
+            "permissions": "Permissions",
+            "isAdmin": "Administrator - Can manage team and members",
+            "canPost": "Can Post - Can create posts and content",
+            "canApprove": "Can Approve - Can approve posts and content",
+            "sendInvite": "Send Invitation",
+            "inviting": "Sending...",
+            "name": "Name",
+            "role": "Role",
+            "statusLabel": "Status",
+            "owner": "Owner",
+            "admin": "Admin",
+            "member": "Member",
+            "makeAdmin": "Make Admin",
+            "removeAdmin": "Remove Admin",
+            "removeMember": "Remove Member",
+            "noMembers": "No team members",
+            "noMembersDescription": "Your team doesn't have any members yet.",
+            "inviteFirstMember": "Invite Your First Member",
+            "status": {
+                "invited": "Invited",
+                "accepted": "Active",
+                "rejected": "Rejected"
+            },
+            "inviteSuccess": "Member invited successfully",
+            "inviteFailed": "Failed to invite member",
+            "removeSuccess": "Member removed successfully",
+            "removeFailed": "Failed to remove member",
+            "updateSuccess": "Member permissions updated successfully",
+            "updateFailed": "Failed to update member permissions"
+        },
+        "messages": {
+            "createSuccess": "Team created successfully",
+            "createFailed": "Failed to create team",
+            "updateSuccess": "Team updated successfully",
+            "updateFailed": "Failed to update team",
+            "inviteSuccess": "Member invited successfully",
+            "inviteFailed": "Failed to invite member",
+            "memberUpdateSuccess": "Member permissions updated successfully",
+            "memberUpdateFailed": "Failed to update member permissions",
+            "memberRemoveSuccess": "Member removed successfully",
+            "memberRemoveFailed": "Failed to remove member"
         }
     }
 }

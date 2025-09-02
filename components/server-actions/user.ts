@@ -104,7 +104,7 @@ export const updateUserProfileAction = async (profileData: {
             })
 
             if (existingUser) {
-                return { success: false, error: "Phone number is already in use" }
+                return { success: false, error: t("phoneAlreadyInUse") }
             }
         }
 
@@ -153,7 +153,7 @@ export const updateUserLanguageAction = async (language: "en" | "pt-BR") => {
         })
 
         if (!user) {
-            return { success: false, error: "User not found" }
+            return { success: false, error: t("userNotFound") }
         }
 
         // Convert language format for database
