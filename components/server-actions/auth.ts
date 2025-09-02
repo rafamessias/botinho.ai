@@ -45,14 +45,14 @@ const signUpSchema = z.object({
 })
 
 // Helper function to get current locale
-const getCurrentLocale = async (): Promise<string> => {
+export const getCurrentLocale = async (): Promise<string> => {
     const cookieStore = await cookies()
     return cookieStore.get('NEXT_LOCALE')?.value || 'en'
 }
 
 // Helper function to generate confirmation token
-const generateConfirmationToken = (): string => {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+export const generateConfirmationToken = async (randomCharacters: number = 36, numberCharacters: number = 15): Promise<string> => {
+    return Math.random().toString(randomCharacters).substring(2, numberCharacters) + Math.random().toString(randomCharacters).substring(2, numberCharacters)
 }
 
 /**
@@ -149,7 +149,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
         const hashedPassword = await bcrypt.hash(validatedData.password, 12)
 
         // Generate confirmation token
-        const confirmationToken = generateConfirmationToken()
+        const confirmationToken = await generateConfirmationToken()
 
         // Get current locale
         const currentLocale = await getCurrentLocale()
@@ -360,7 +360,7 @@ export const resendConfirmationEmailAction = async (email: string) => {
         }
 
         // Generate new confirmation token
-        const confirmationToken = generateConfirmationToken()
+        const confirmationToken = await generateConfirmationToken()
 
         // Update user with new token
         await prisma.user.update({
@@ -493,7 +493,7 @@ export const resetPasswordAction = async (email: string) => {
         // but only send email if user exists
         if (user && user.confirmed && !user.blocked) {
             // Generate reset token
-            const resetPasswordToken = generateConfirmationToken()
+            const resetPasswordToken = await generateConfirmationToken()
             const resetPasswordExpires = new Date(Date.now() + 3600000) // 1 hour from now
 
             // Update user with reset token and expiration

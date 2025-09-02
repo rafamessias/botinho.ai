@@ -5,6 +5,10 @@ import { prisma } from "@/prisma/lib/prisma"
 import { z } from "zod"
 import { getTranslations } from "next-intl/server"
 import { TeamMemberStatus } from "@/lib/generated/prisma"
+import { generateConfirmationToken, getCurrentLocale } from "./auth"
+import bcrypt from "bcryptjs"
+import resend from "@/lib/resend"
+import TeamInvitationEmail from "@/emails/TeamInvitationEmail"
 
 // Validation schemas
 const createTeamSchema = z.object({
@@ -197,18 +201,58 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
         })
 
         if (!invitedUser) {
+
+
+            const invitedUserPassword = await generateConfirmationToken(12, 10)
+
+            // Hash password
+            const hashedPassword = await bcrypt.hash(invitedUserPassword, 12)
+
+            // Generate confirmation token
+            const confirmationToken = await generateConfirmationToken()
+
+            // Get current locale
+            const currentLocale = await getCurrentLocale()
+
+            // Split name into first and last name
+            const firstName = validatedData.email.trim().split('@')[0]
+
+
             // Create a placeholder user for the invitation
             invitedUser = await prisma.user.create({
                 data: {
                     email: validatedData.email,
-                    firstName: "Invited",
-                    lastName: "User",
+                    firstName: firstName,
+                    lastName: "",
                     provider: "local",
-                    language: "en",
+                    language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
+                    password: hashedPassword,
+                    confirmationToken: confirmationToken,
                     confirmed: false,
                     blocked: false,
                 }
             })
+
+            // Send invitation email
+            const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
+            const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+            const invitationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}`
+
+            const { data, error } = await resend.emails.send({
+                from: fromEmail,
+                to: [validatedData.email],
+                subject: currentLocale === 'pt-BR' ? 'Convite para se juntar à equipe' : 'Invitation to join team',
+                react: await TeamInvitationEmail({
+                    userName: firstName,
+                    invitationUrl: invitationUrl,
+                    lang: currentLocale,
+                    baseUrl,
+                    teamName: "My Team",
+                    inviterName: session.user.email,
+                    password: invitedUserPassword,
+                }),
+            })
+
         }
 
         // Check if user is already a member
@@ -235,9 +279,6 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                 teamMemberStatus: "invited",
             }
         })
-
-        // TODO: Send invitation email here
-        // For now, we'll just create the invitation
 
         return {
             success: true,
