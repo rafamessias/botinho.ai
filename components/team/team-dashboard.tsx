@@ -211,7 +211,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                     {/* No Team Selected */}
                     {!selectedTeam && (
                         <div className="text-center py-8">
-                            <p className="text-muted-foreground">Select a team to view details</p>
+                            <p className="text-muted-foreground">{t("modals.noTeamSelected")}</p>
                         </div>
                     )}
                 </CardHeader>

@@ -178,7 +178,7 @@ export const TeamMembers = ({
 
                         {/* Actions */}
                         {!member.isOwner && (
-                            <div className="flex flex-col md:flex-row items-center gap-2">
+                            <div className="flex flex-col lg:flex-row items-center gap-2">
                                 <Button
                                     variant="outline"
                                     size="sm"
@@ -186,8 +186,8 @@ export const TeamMembers = ({
                                     className="w-full md:w-auto"
                                 >
                                     <IconEdit className="h-4 w-4 mr-2" />
-                                    <span className="hidden sm:inline">Edit</span>
-                                    <span className="sm:hidden">Edit</span>
+                                    <span className="hidden sm:inline">{t("form.update")}</span>
+                                    <span className="sm:hidden">{t("form.update")}</span>
                                 </Button>
                                 <Button
                                     variant="outline"
@@ -196,8 +196,8 @@ export const TeamMembers = ({
                                     className="w-full md:w-auto"
                                 >
                                     <IconTrash className="h-4 w-4 mr-2" />
-                                    <span className="hidden sm:inline">Remove</span>
-                                    <span className="sm:hidden">Remove</span>
+                                    <span className="hidden sm:inline">{t("members.removeMember")}</span>
+                                    <span className="sm:hidden">{t("members.removeMember")}</span>
                                 </Button>
                             </div>
                         )}
@@ -209,9 +209,12 @@ export const TeamMembers = ({
             <Dialog open={!!editingMember} onOpenChange={() => setEditingMember(null)}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>Edit Team Member</DialogTitle>
+                        <DialogTitle>{t("modals.editMember.title")}</DialogTitle>
                         <DialogDescription>
-                            Update permissions for {editingMember?.user.firstName} {editingMember?.user.lastName}
+                            {t("modals.editMember.description", {
+                                firstName: editingMember?.user.firstName || "",
+                                lastName: editingMember?.user.lastName || ""
+                            })}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -239,7 +242,7 @@ export const TeamMembers = ({
 
                             {/* Permissions */}
                             <div className="space-y-4">
-                                <h4 className="font-medium">Permissions</h4>
+                                <h4 className="font-medium">{t("modals.editMember.permissions")}</h4>
 
                                 <div className="space-y-3">
                                     <div className="flex items-center space-x-3">
@@ -251,7 +254,7 @@ export const TeamMembers = ({
                                             }
                                         />
                                         <Label htmlFor="edit-admin" className="text-sm font-medium">
-                                            Team Administrator
+                                            {t("modals.editMember.teamAdministrator")}
                                         </Label>
                                     </div>
 
@@ -264,7 +267,7 @@ export const TeamMembers = ({
                                             }
                                         />
                                         <Label htmlFor="edit-post" className="text-sm font-medium">
-                                            Can Post Content
+                                            {t("modals.editMember.canPostContent")}
                                         </Label>
                                     </div>
 
@@ -277,7 +280,7 @@ export const TeamMembers = ({
                                             }
                                         />
                                         <Label htmlFor="edit-approve" className="text-sm font-medium">
-                                            Can Approve Content
+                                            {t("modals.editMember.canApproveContent")}
                                         </Label>
                                     </div>
                                 </div>
@@ -290,14 +293,14 @@ export const TeamMembers = ({
                                     onClick={() => setEditingMember(null)}
                                     className="flex-1"
                                 >
-                                    Cancel
+                                    {t("modals.editMember.cancel")}
                                 </Button>
                                 <Button
                                     onClick={handleSaveMember}
                                     disabled={updatingMember === editingMember.id}
                                     className="flex-1"
                                 >
-                                    {updatingMember === editingMember.id ? "Saving..." : "Save Changes"}
+                                    {updatingMember === editingMember.id ? t("modals.editMember.saving") : t("modals.editMember.saveChanges")}
                                 </Button>
                             </div>
                         </div>
@@ -309,9 +312,9 @@ export const TeamMembers = ({
             <Dialog open={!!removingMember} onOpenChange={() => setRemovingMember(null)}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>Remove Team Member</DialogTitle>
+                        <DialogTitle>{t("modals.removeMember.title")}</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to remove this member from the team?
+                            {t("modals.removeMember.description")}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -336,7 +339,7 @@ export const TeamMembers = ({
                             </div>
 
                             <div className="text-sm text-muted-foreground">
-                                This action cannot be undone. The member will lose access to the team and all associated content.
+                                {t("modals.removeMember.warning")}
                             </div>
 
                             {/* Actions */}
@@ -346,14 +349,14 @@ export const TeamMembers = ({
                                     onClick={() => setRemovingMember(null)}
                                     className="flex-1"
                                 >
-                                    Cancel
+                                    {t("modals.removeMember.cancel")}
                                 </Button>
                                 <Button
                                     variant="destructive"
                                     onClick={handleRemoveMember}
                                     className="flex-1"
                                 >
-                                    Remove Member
+                                    {t("modals.removeMember.removeMember")}
                                 </Button>
                             </div>
                         </div>

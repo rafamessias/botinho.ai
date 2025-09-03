@@ -639,6 +639,27 @@
             "memberUpdateFailed": "Failed to update member permissions",
             "memberRemoveSuccess": "Member removed successfully",
             "memberRemoveFailed": "Failed to remove member"
+        },
+        "modals": {
+            "editMember": {
+                "title": "Edit Team Member",
+                "description": "Update permissions for {firstName} {lastName}",
+                "permissions": "Permissions",
+                "teamAdministrator": "Team Administrator",
+                "canPostContent": "Can Post Content",
+                "canApproveContent": "Can Approve Content",
+                "cancel": "Cancel",
+                "saveChanges": "Save Changes",
+                "saving": "Saving..."
+            },
+            "removeMember": {
+                "title": "Remove Team Member",
+                "description": "Are you sure you want to remove this member from the team?",
+                "warning": "This action cannot be undone. The member will lose access to the team and all associated content.",
+                "cancel": "Cancel",
+                "removeMember": "Remove Member"
+            },
+            "noTeamSelected": "Select a team to view details"
         }
     }
 }

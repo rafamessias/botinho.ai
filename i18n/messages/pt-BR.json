@@ -639,6 +639,27 @@
             "memberUpdateFailed": "Falha ao atualizar permissões do membro",
             "memberRemoveSuccess": "Membro removido com sucesso",
             "memberRemoveFailed": "Falha ao remover membro"
+        },
+        "modals": {
+            "editMember": {
+                "title": "Editar Membro da Equipe",
+                "description": "Atualizar permissões para {firstName} {lastName}",
+                "permissions": "Permissões",
+                "teamAdministrator": "Administrador da Equipe",
+                "canPostContent": "Pode Postar Conteúdo",
+                "canApproveContent": "Pode Aprovar Conteúdo",
+                "cancel": "Cancelar",
+                "saveChanges": "Salvar Alterações",
+                "saving": "Salvando..."
+            },
+            "removeMember": {
+                "title": "Remover Membro da Equipe",
+                "description": "Tem certeza de que deseja remover este membro da equipe?",
+                "warning": "Esta ação não pode ser desfeita. O membro perderá acesso à equipe e todo o conteúdo associado.",
+                "cancel": "Cancelar",
+                "removeMember": "Remover Membro"
+            },
+            "noTeamSelected": "Selecione uma equipe para ver detalhes"
         }
     }
 }

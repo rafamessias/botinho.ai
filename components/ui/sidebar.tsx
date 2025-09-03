@@ -6,6 +6,7 @@ import { cva, VariantProps } from "class-variance-authority"
 import { PanelLeftIcon } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
+import { usePathname, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,6 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { IconChevronLeft, IconChevronRight, IconMenu2 } from "@tabler/icons-react"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -305,6 +307,20 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
 }
 
 function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
+  const [isLoading, setIsLoading] = React.useState(false)
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  React.useEffect(() => {
+    setIsLoading(true)
+
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [pathname, searchParams])
+
   return (
     <main
       data-slot="sidebar-inset"
@@ -314,7 +330,17 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
         className
       )}
       {...props}
-    />
+    >
+      {/* Loading Spinner */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center">
+          <div className="flex flex-col items-center space-y-3">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          </div>
+        </div>
+      )}
+      {props.children}
+    </main>
   )
 }
 
@@ -569,7 +595,7 @@ function SidebarMenuAction({
         "peer-data-[size=lg]/menu-button:top-2.5",
         "group-data-[collapsible=icon]:hidden",
         showOnHover &&
-          "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
+        "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
         className
       )}
       {...props}
