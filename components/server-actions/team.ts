@@ -188,6 +188,13 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                 teamId: validatedData.teamId,
                 user: { email: session.user.email },
                 isAdmin: true,
+            },
+            include: {
+                team: {
+                    select: {
+                        name: true,
+                    }
+                }
             }
         })
 
@@ -236,7 +243,7 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
             // Send invitation email
             const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
             const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
-            const invitationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}`
+            const invitationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}&teamId=${validatedData.teamId}`
 
             const { data, error } = await resend.emails.send({
                 from: fromEmail,
@@ -247,7 +254,7 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                     invitationUrl: invitationUrl,
                     lang: currentLocale,
                     baseUrl,
-                    teamName: "My Team",
+                    teamName: teamMember.team.name,
                     inviterName: session.user.email,
                     password: invitedUserPassword,
                 }),

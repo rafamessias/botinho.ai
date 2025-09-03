@@ -298,7 +298,7 @@ export const logoutAction = async (redirectTo: string) => {
 /**
  * Server action to confirm email address
  */
-export const confirmEmailAction = async (token: string) => {
+export const confirmEmailAction = async (token: string, teamId: number) => {
     const t = await getTranslations("AuthErrors")
 
     try {
@@ -318,13 +318,27 @@ export const confirmEmailAction = async (token: string) => {
             return { success: false, error: t("invalidToken") }
         }
 
-        // Update user to confirmed
-        await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                confirmed: true,
-                confirmationToken: null,
-            }
+        // Update user to confirmed and update any pending team invitations
+        await prisma.$transaction(async (tx) => {
+            // Update user to confirmed
+            await tx.user.update({
+                where: { id: user.id },
+                data: {
+                    confirmed: true,
+                    confirmationToken: null,
+                }
+            })
+
+            // Update any pending team member invitations to accepted
+            await tx.teamMember.updateMany({
+                where: {
+                    userId: user.id,
+                    teamId: teamId,
+                },
+                data: {
+                    teamMemberStatus: "accepted"
+                }
+            })
         })
 
         return { success: true, message: "Email confirmed successfully. You can now sign in." }

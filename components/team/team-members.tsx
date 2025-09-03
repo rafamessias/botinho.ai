@@ -56,20 +56,6 @@ export const TeamMembers = ({
         canApprove: false
     })
 
-    // Debug logging
-    console.log('TeamMembers props:', {
-        teamId,
-        currentUserId,
-        isCurrentUserAdmin,
-        membersCount: members.length,
-        members: members.map(m => ({
-            id: m.id,
-            userId: m.user.id,
-            isAdmin: m.isAdmin,
-            isOwner: m.isOwner
-        }))
-    })
-
     const handleEditMember = (member: TeamMember) => {
         setEditingMember(member)
         setEditForm({

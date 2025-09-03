@@ -26,6 +26,7 @@ export function ConfirmEmailForm({
     const searchParams = useSearchParams()
     const router = useRouter()
     const token = searchParams.get("token") || ""
+    const teamId = searchParams.get("teamId") || ""
 
     const [status, setStatus] = useState<ConfirmationStatus>("loading")
     const [errorMessage, setErrorMessage] = useState("")
@@ -46,7 +47,7 @@ export function ConfirmEmailForm({
             confirmationAttempted.current = true
 
             try {
-                const result = await confirmEmailAction(token)
+                const result = await confirmEmailAction(token, parseInt(teamId))
 
                 if (result?.success === false) {
                     setStatus("error")
@@ -135,7 +136,7 @@ export function ConfirmEmailForm({
         setErrorMessage("")
 
         try {
-            const result = await confirmEmailAction(token)
+            const result = await confirmEmailAction(token, parseInt(teamId))
 
             if (result?.success === false) {
                 setStatus("error")
