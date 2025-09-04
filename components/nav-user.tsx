@@ -65,15 +65,15 @@ export function NavUser() {
       href: `/${locale}/account`,
     },
     {
-      label: t("billing"),
+      label: t("subscription"),
       icon: IconCreditCard,
-      href: "/billing",
+      href: `/${locale}/subscription`,
     },
 
     {
       label: t("notifications"),
       icon: IconNotification,
-      href: "/notifications",
+      href: `/${locale}/notifications`,
     },
     {
       label: t("settings"),

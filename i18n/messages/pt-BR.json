@@ -153,7 +153,7 @@
     },
     "NavUser": {
         "account": "Conta",
-        "billing": "Faturamento",
+        "subscription": "Assinatura",
         "notifications": "Notificações",
         "settings": "Configurações",
         "logout": "Sair",
@@ -663,6 +663,95 @@
                 "removeMember": "Remover Membro"
             },
             "noTeamSelected": "Selecione uma equipe para ver detalhes"
+        }
+    },
+    "Subscription": {
+        "title": "Planos de Assinatura",
+        "description": "Escolha o plano perfeito para suas necessidades",
+        "currentPlan": {
+            "title": "Plano Atual",
+            "description": "Detalhes da sua assinatura atual",
+            "manageSubscription": "Gerenciar Assinatura",
+            "billingCycle": "Ciclo de Cobrança",
+            "nextBilling": "Próxima Cobrança",
+            "status": {
+                "active": "Ativo",
+                "cancelled": "Cancelado",
+                "expired": "Expirado",
+                "trial": "Teste"
+            }
+        },
+        "billingToggle": {
+            "monthly": "Mensal",
+            "yearly": "Anual",
+            "save": "Economize 20%"
+        },
+        "plans": {
+            "starter": {
+                "name": "Inicial",
+                "description": "Perfeito para indivíduos e pequenas equipes",
+                "features": [
+                    "Até 5 membros da equipe",
+                    "10GB de armazenamento",
+                    "Análises básicas",
+                    "Suporte por email",
+                    "Modelos padrão"
+                ],
+                "cta": "Começar",
+                "popular": false
+            },
+            "professional": {
+                "name": "Profissional",
+                "description": "Ideal para empresas em crescimento",
+                "features": [
+                    "Até 25 membros da equipe",
+                    "100GB de armazenamento",
+                    "Análises avançadas",
+                    "Suporte prioritário",
+                    "Modelos personalizados",
+                    "Acesso à API",
+                    "Ferramentas de colaboração em equipe"
+                ],
+                "cta": "Iniciar Teste Grátis",
+                "popular": true
+            },
+            "enterprise": {
+                "name": "Empresarial",
+                "description": "Para grandes organizações com necessidades avançadas",
+                "features": [
+                    "Membros ilimitados da equipe",
+                    "Armazenamento ilimitado",
+                    "Análises personalizadas",
+                    "Suporte telefônico 24/7",
+                    "Solução white-label",
+                    "Acesso avançado à API",
+                    "Integrações personalizadas",
+                    "Gerente de conta dedicado"
+                ],
+                "cta": "Falar com Vendas",
+                "popular": false
+            }
+        },
+        "pricing": {
+            "monthly": {
+                "starter": "R$ 45",
+                "professional": "R$ 145",
+                "enterprise": "Personalizado"
+            },
+            "yearly": {
+                "starter": "R$ 35",
+                "professional": "R$ 115",
+                "enterprise": "Personalizado"
+            },
+            "perMonth": "por mês",
+            "perYear": "por ano",
+            "billedAnnually": "cobrado anualmente"
+        },
+        "messages": {
+            "subscriptionUpdated": "Assinatura atualizada com sucesso",
+            "subscriptionFailed": "Falha ao atualizar assinatura",
+            "trialStarted": "Teste grátis iniciado com sucesso",
+            "contactSales": "Entre em contato com nossa equipe de vendas para preços personalizados"
         }
     }
 }

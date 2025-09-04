@@ -13,6 +13,7 @@ import {
     Hr,
 } from '@react-email/components';
 import * as React from 'react';
+import { emailConfig } from '@/lib/emailConfig';
 
 interface WelcomeEmailProps {
     userName?: string;
@@ -23,21 +24,21 @@ interface WelcomeEmailProps {
 
 const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.com', lang = 'en', baseUrl = 'http://localhost:3000' }: WelcomeEmailProps) => {
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
-    const logoURL = baseUrl + '/placeholder-logo.png';
 
+    const { companyName, logoURL } = emailConfig;
     return (
         <Html>
             <Head />
             <Body style={main}>
                 <Preview>
-                    {isPt ? 'Obraguru - Bem-vindo à sua nova conta!' : 'Obraguru - Welcome to your new account!'}
+                    {isPt ? `${companyName} - Bem-vindo à sua nova conta!` : `${companyName} - Welcome to your new account!`}
                 </Preview>
                 <Container style={container}>
                     <Img
                         src={logoURL}
                         width="40"
                         height="40"
-                        alt="Obraguru"
+                        alt={companyName}
                         style={logo}
                     />
                     <Section>
@@ -46,14 +47,14 @@ const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.co
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Bem-vindo ao Obraguru! Sua conta foi criada com sucesso e você já pode começar a gerenciar seus projetos de forma eficiente.'
-                                : 'Welcome to Obraguru! Your account has been successfully created and you can now start managing your projects efficiently.'
+                                ? `Bem-vindo ao ${companyName}! Sua conta foi criada com sucesso e você já pode começar a gerenciar seus projetos de forma eficiente.`
+                                : `Welcome to ${companyName}! Your account has been successfully created and you can now start managing your projects efficiently.`
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Com o Obraguru, você terá acesso a ferramentas poderosas para organizar, planejar e executar seus projetos com excelência.'
-                                : 'With Obraguru, you\'ll have access to powerful tools to organize, plan, and execute your projects with excellence.'
+                                ? `Com o ${companyName}, você terá acesso a ferramentas poderosas para organizar, planejar e executar seus projetos com excelência.`
+                                : `With ${companyName}, you\'ll have access to powerful tools to organize, plan, and execute your projects with excellence.`
                             }
                         </Text>
                         <Button style={button} href={confirmationUrl}>
@@ -84,7 +85,7 @@ const WelcomeEmail = ({ userName = 'User', confirmationUrl = 'https://example.co
                 <Section style={footer}>
                     <Row>
                         <Text style={{ textAlign: 'center', color: '#706a7b' }}>
-                            {isPt ? '© 2025 Obraguru, Todos os direitos reservados' : '© 2025 Obraguru, All Rights Reserved'}
+                            {isPt ? `© 2025 ${companyName}, Todos os direitos reservados` : `© 2025 ${companyName}, All Rights Reserved`}
                         </Text>
                     </Row>
                 </Section>
