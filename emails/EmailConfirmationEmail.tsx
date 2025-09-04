@@ -1,3 +1,4 @@
+import { emailConfig } from '@/lib/emailConfig';
 import {
     Body,
     Button,
@@ -28,21 +29,22 @@ const EmailConfirmationEmail = ({
     baseUrl = 'http://localhost:3000'
 }: EmailConfirmationEmailProps) => {
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
-    const logoURL = baseUrl + '/placeholder-logo.png';
+
+    const { companyName, logoURL } = emailConfig;
 
     return (
         <Html>
             <Head />
             <Body style={main}>
                 <Preview>
-                    {isPt ? 'Obraguru - Confirme seu email' : 'Obraguru - Confirm your email'}
+                    {isPt ? `${companyName} - Confirme seu email` : `${companyName} - Confirm your email`}
                 </Preview>
                 <Container style={container}>
                     <Img
                         src={logoURL}
                         width="40"
                         height="40"
-                        alt="Obraguru"
+                        alt={companyName}
                         style={logo}
                     />
                     <Section>
@@ -51,8 +53,8 @@ const EmailConfirmationEmail = ({
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Você solicitou uma nova confirmação de email para sua conta Obraguru. Para ativar sua conta, clique no botão abaixo:'
-                                : 'You requested a new email confirmation for your Obraguru account. To activate your account, click the button below:'
+                                ? `Você solicitou uma nova confirmação de email para sua conta ${companyName}. Para ativar sua conta, clique no botão abaixo:`
+                                : `You requested a new email confirmation for your ${companyName} account. To activate your account, click the button below:`
                             }
                         </Text>
                         <Button style={button} href={confirmationLink}>
@@ -77,7 +79,7 @@ const EmailConfirmationEmail = ({
                             }
                         </Text>
                         <Text style={text}>
-                            {isPt ? 'Bem-vindo ao Obraguru!' : 'Welcome to Obraguru!'}
+                            {isPt ? `Bem-vindo ao ${companyName}!` : `Welcome to ${companyName}!`}
                         </Text>
                         <Hr style={hr} />
                         <Text style={text}>
@@ -95,7 +97,7 @@ const EmailConfirmationEmail = ({
                 <Section style={footer}>
                     <Row>
                         <Text style={{ textAlign: 'center', color: '#706a7b' }}>
-                            {isPt ? '© 2025 Obraguru, Todos os direitos reservados' : '© 2025 Obraguru, All Rights Reserved'}
+                            {isPt ? `© 2025 ${companyName}, Todos os direitos reservados` : `© 2025 ${companyName}, All Rights Reserved`}
                         </Text>
                     </Row>
                 </Section>

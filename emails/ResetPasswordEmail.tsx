@@ -1,4 +1,5 @@
 
+import { emailConfig } from '@/lib/emailConfig';
 import {
     Body,
     Button,
@@ -24,21 +25,21 @@ interface ResetPasswordEmailProps {
 
 const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://example.com', lang = 'en', baseUrl = 'http://localhost:3000' }: ResetPasswordEmailProps) => {
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
-    const logoURL = baseUrl + '/placeholder-logo.png';
+    const { companyName, logoURL } = emailConfig;
 
     return (
         <Html>
             <Head />
             <Body style={main}>
                 <Preview>
-                    {isPt ? 'Obraguru - Redefina sua senha' : 'Obraguru - Reset your password'}
+                    {isPt ? `${companyName} - Redefina sua senha` : `${companyName} - Reset your password`}
                 </Preview>
                 <Container style={container}>
                     <Img
                         src={logoURL}
                         width="40"
                         height="40"
-                        alt="Obraguru"
+                        alt={companyName}
                         style={logo}
                     />
                     <Section>
@@ -47,12 +48,12 @@ const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://ex
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Alguém solicitou recentemente uma alteração de senha para sua conta Obraguru. Se foi você, você pode definir uma nova senha aqui:'
-                                : 'Someone recently requested a password change for your Obraguru account. If this was you, you can set a new password here:'
+                                ? `Alguém solicitou recentemente uma alteração de senha para sua conta ${companyName}. Se foi você, você pode definir uma nova senha aqui:`
+                                : `Someone recently requested a password change for your ${companyName} account. If this was you, you can set a new password here:`
                             }
                         </Text>
                         <Button style={button} href={resetPasswordLink}>
-                            {isPt ? 'Redefinir senha' : 'Reset password'}
+                            {isPt ? `Redefinir senha` : `Reset password`}
                         </Button>
                         <Text style={text}>
                             {isPt
@@ -86,7 +87,7 @@ const ResetPasswordEmail = ({ userName = 'User', resetPasswordLink = 'https://ex
                 <Section style={footer}>
                     <Row>
                         <Text style={{ textAlign: 'center', color: '#706a7b' }}>
-                            {isPt ? '© 2025 Obraguru, Todos os direitos reservados' : '© 2025 Obraguru, All Rights Reserved'}
+                            {isPt ? `© 2025 ${companyName}, Todos os direitos reservados` : `© 2025 ${companyName}, All Rights Reserved`}
                         </Text>
                     </Row>
                 </Section>

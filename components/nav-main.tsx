@@ -2,6 +2,7 @@
 
 import { IconCirclePlusFilled, type TablerIcon } from "@tabler/icons-react"
 import { usePathname, Link } from "@/i18n/navigation"
+import { useTranslations } from "next-intl"
 
 import {
   SidebarGroup,
@@ -21,6 +22,7 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname()
+  const t = useTranslations("NavMain")
 
   return (
     <SidebarGroup>
@@ -28,11 +30,11 @@ export function NavMain({
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
-              tooltip="Quick Create"
+              tooltip={t("quickCreate")}
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear cursor-pointer"
             >
               <IconCirclePlusFilled />
-              <span>Quick Create</span>
+              <span>{t("quickCreate")}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

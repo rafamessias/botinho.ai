@@ -232,9 +232,8 @@ export function ProfileForm() {
                             </p>
                         </div>
 
-                        <Separator />
 
-                        <div className="flex justify-end space-x-2">
+                        <div className="flex justify-end space-x-2 mt-4">
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}

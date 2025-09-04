@@ -19,6 +19,9 @@
             "wordAssistant": "Word Assistant"
         }
     },
+    "NavMain": {
+        "quickCreate": "Quick Create"
+    },
     "SiteHeader": {
         "title": "Main Dashboard"
     },

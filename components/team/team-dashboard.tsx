@@ -181,31 +181,35 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
 
                     {/* Team Info Section */}
                     {selectedTeam && (
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                            <div className="flex-1">
-                                <CardTitle className="text-xl lg:text-2xl">{selectedTeam.name}</CardTitle>
-                                {selectedTeam.description && (
-                                    <CardDescription className="mt-2 text-sm">
-                                        {selectedTeam.description}
-                                    </CardDescription>
-                                )}
-                                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
-                                    <span>{selectedTeam.members.length} member{selectedTeam.members.length !== 1 ? 's' : ''}</span>
+                        <>
+                            <Separator />
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div className="flex-1">
+                                    <CardTitle className="text-xl lg:text-2xl">{selectedTeam.name}</CardTitle>
+                                    {selectedTeam.description && (
+                                        <CardDescription className="mt-2 text-sm">
+                                            {selectedTeam.description}
+                                        </CardDescription>
+                                    )}
+                                    <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+                                        <span>{selectedTeam.members.length} member{selectedTeam.members.length !== 1 ? 's' : ''}</span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setShowEditForm(true)}
+                                        className="w-full sm:w-auto"
+                                    >
+                                        <IconEdit className="h-4 w-4 mr-2" />
+                                        <span className="sm:hidden">Edit</span>
+                                        <span className="hidden sm:inline">{t("editTeam")}</span>
+                                    </Button>
                                 </div>
                             </div>
-                            <div className="flex gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setShowEditForm(true)}
-                                    className="w-full sm:w-auto"
-                                >
-                                    <IconEdit className="h-4 w-4 mr-2" />
-                                    <span className="sm:hidden">Edit</span>
-                                    <span className="hidden sm:inline">{t("editTeam")}</span>
-                                </Button>
-                            </div>
-                        </div>
+
+                        </>
                     )}
 
                     {/* No Team Selected */}

@@ -19,6 +19,9 @@
             "wordAssistant": "Assistente de Texto"
         }
     },
+    "NavMain": {
+        "quickCreate": "Criação Rápida"
+    },
     "SiteHeader": {
         "title": "Painel Principal"
     },

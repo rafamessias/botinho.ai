@@ -1,3 +1,4 @@
+import { emailConfig } from '@/lib/emailConfig';
 import {
     Body,
     Button,
@@ -35,22 +36,23 @@ const TeamInvitationEmail = ({
 }: TeamInvitationEmailProps) => {
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
 
+    const { companyName, logoURL } = emailConfig;
     return (
         <Html>
             <Head />
             <Body style={main}>
                 <Preview>
                     {isPt
-                        ? `Obraguru - Você foi convidado para a equipe ${teamName}!`
-                        : `Obraguru - You've been invited to join ${teamName}!`
+                        ? `${companyName} - Você foi convidado para a equipe ${teamName}!`
+                        : `${companyName} - You've been invited to join ${teamName}!`
                     }
                 </Preview>
                 <Container style={container}>
                     <Img
-                        src={`${baseUrl}/obraguru-logo-200px-dark.png`}
+                        src={logoURL}
                         width="40"
                         height="40"
-                        alt="Obraguru"
+                        alt={companyName}
                         style={logo}
                     />
                     <Section>
@@ -59,20 +61,20 @@ const TeamInvitationEmail = ({
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? `Você foi convidado(a) para se juntar à equipe "${teamName}" no Obraguru.`
-                                : `You've been invited to join the team "${teamName}" on Obraguru.`
+                                ? `Você foi convidado(a) para se juntar à equipe "${teamName}" no ${companyName}.`
+                                : `You've been invited to join the team "${teamName}" on ${companyName}.`
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Como membro da equipe, você terá acesso a todos os projetos, recursos e ferramentas de colaboração disponíveis para a equipe.'
+                                ? `Como membro da equipe, você terá acesso a todos os projetos, recursos e ferramentas de colaboração disponíveis para a equipe.`
                                 : 'As a company member, you\'ll have access to all projects, resources, and collaboration tools available to the team.'
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'O Obraguru oferece uma plataforma completa para gerenciamento de projetos, permitindo que equipes trabalhem de forma eficiente e organizada.'
-                                : 'Obraguru provides a comprehensive platform for enterprise project management, enabling teams to work efficiently and organized.'
+                                ? `O ${companyName} oferece uma plataforma completa para gerenciamento de projetos, permitindo que equipes trabalhem de forma eficiente e organizada.`
+                                : `${companyName} provides a comprehensive platform for enterprise project management, enabling teams to work efficiently and organized.`
                             }
                         </Text>
                         <Text style={text}>
@@ -146,7 +148,7 @@ const TeamInvitationEmail = ({
                 <Section style={footer}>
                     <Row>
                         <Text style={{ textAlign: 'center', color: '#706a7b' }}>
-                            {isPt ? '© 2025 Obraguru, Todos os direitos reservados' : '© 2025 Obraguru, All Rights Reserved'}
+                            {isPt ? `© 2025 ${companyName}, Todos os direitos reservados` : `© 2025 ${companyName}, All Rights Reserved`}
                         </Text>
                     </Row>
                 </Section>
