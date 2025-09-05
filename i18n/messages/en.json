@@ -20,7 +20,15 @@
         }
     },
     "NavMain": {
-        "quickCreate": "Quick Create"
+        "quickCreate": "Quick Create",
+        "addTeam": "Add Team",
+        "selectTeam": "Select team...",
+        "searchTeams": "Search teams...",
+        "noTeamsFound": "No teams found.",
+        "messages": {
+            "teamsUpdated": "Teams updated successfully",
+            "failedToUpdateDefaultTeam": "Failed to update default team"
+        }
     },
     "SiteHeader": {
         "title": "Main Dashboard"
@@ -632,6 +640,8 @@
             "updateFailed": "Failed to update member permissions"
         },
         "messages": {
+            "teamsUpdated": "Teams updated successfully",
+            "failedToRefreshTeams": "Failed to refresh teams",
             "createSuccess": "Team created successfully",
             "createFailed": "Failed to create team",
             "updateSuccess": "Team updated successfully",
@@ -684,7 +694,8 @@
         "billingToggle": {
             "monthly": "Monthly",
             "yearly": "Yearly",
-            "save": "Save 20%"
+            "save": "Save 20%",
+            "popular": "Popular"
         },
         "plans": {
             "starter": {

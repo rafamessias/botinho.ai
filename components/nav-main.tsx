@@ -1,8 +1,11 @@
 "use client"
 
-import { IconCirclePlusFilled, type TablerIcon } from "@tabler/icons-react"
+import { useState, Suspense } from "react"
+import { IconCirclePlusFilled, IconUsers, IconChevronDown, IconPlus, type TablerIcon } from "@tabler/icons-react"
 import { usePathname, Link } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
+import { useUser } from "@/components/user-provider"
+import { updateDefaultTeamAction } from "@/components/server-actions/user"
 
 import {
   SidebarGroup,
@@ -11,6 +14,178 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import { Separator } from "./ui/separator"
+
+interface UserTeam {
+  id: number
+  name: string
+  description?: string | null
+  members: Array<{
+    id: number
+    isAdmin: boolean
+    canPost: boolean
+    canApprove: boolean
+    isOwner: boolean
+    teamMemberStatus: string
+    user: {
+      id: number
+      firstName: string
+      lastName: string
+      email: string
+      avatarUrl?: string | null
+    }
+  }>
+}
+
+// Loading component for team selection
+function TeamSelectionLoading() {
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton className="w-full justify-between cursor-pointer animate-pulse">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <IconUsers className="h-4 w-4 shrink-0" />
+            <span className="truncate text-sm bg-muted rounded h-4 w-24"></span>
+          </div>
+          <IconChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  )
+}
+
+// Team selection component
+function TeamSelection() {
+  const t = useTranslations("NavMain")
+  const { user, loading, refreshUser } = useUser()
+  const [selectedTeam, setSelectedTeam] = useState<UserTeam | null>(null)
+  const [open, setOpen] = useState(false)
+
+  // Get teams from user context
+  const teams = user?.teams || []
+
+  // Set default team as selected when teams are available
+  if (teams.length > 0 && !selectedTeam) {
+    const defaultTeam = user?.defaultTeamId
+      ? teams.find(team => team.id === user.defaultTeamId)
+      : teams[0]
+    setSelectedTeam(defaultTeam || teams[0])
+  }
+
+  // Handle team selection change
+  const handleTeamSelect = async (team: UserTeam) => {
+    setSelectedTeam(team)
+    setOpen(false)
+
+    // Update default team in database
+    try {
+      const result = await updateDefaultTeamAction(team.id)
+      if (result.success) {
+        // Refresh user data to get updated defaultTeamId
+        await refreshUser(false)
+        toast.success(t("messages.teamsUpdated"))
+      } else {
+        console.error("Failed to update default team:", result.error)
+        toast.error(t("messages.failedToUpdateDefaultTeam"))
+      }
+    } catch (error) {
+      console.error("Error updating default team:", error)
+    }
+  }
+
+  // If no teams found, show "Add Team" option
+  if (teams.length === 0 && !loading) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            className="w-full cursor-pointer"
+          >
+            <Link href="/team">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <IconPlus className="h-4 w-4 shrink-0" />
+                <span className="truncate text-sm">
+                  {t("addTeam")}
+                </span>
+              </div>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
+  }
+
+  // Show team selection combobox
+  if (loading) {
+    return <TeamSelectionLoading />
+  }
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <SidebarMenuButton
+              asChild
+              className="w-full justify-between cursor-pointer"
+            >
+              <Button
+                variant="ghost"
+                role="combobox"
+                aria-expanded={open}
+                className="w-full justify-between h-auto p-2 border"
+              >
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <IconUsers className="h-4 w-4 shrink-0" />
+                  <span className="truncate text-sm">
+                    {selectedTeam ? selectedTeam.name : t("selectTeam")}
+                  </span>
+                </div>
+                <IconChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </SidebarMenuButton>
+          </PopoverTrigger>
+          <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+            <Command>
+              <CommandInput placeholder={t("searchTeams")} />
+              <CommandList>
+                <CommandEmpty>{t("noTeamsFound")}</CommandEmpty>
+                <CommandGroup>
+                  {teams.map((team) => (
+                    <CommandItem
+                      key={team.id}
+                      value={team.name}
+                      onSelect={() => handleTeamSelect(team)}
+                    >
+                      <IconUsers className="mr-2 h-4 w-4" />
+                      <span className="truncate">{team.name}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  )
+}
 
 export function NavMain({
   items,
@@ -27,7 +202,12 @@ export function NavMain({
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
+        {/* Team Selection with Suspense */}
+        <Suspense fallback={<TeamSelectionLoading />}>
+          <TeamSelection />
+        </Suspense>
+
+        <SidebarMenu className="mt-2">
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
               tooltip={t("quickCreate")}

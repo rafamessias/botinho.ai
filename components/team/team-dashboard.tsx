@@ -10,7 +10,7 @@ import { toast } from "sonner"
 import { TeamForm } from "@/components/team/team-form"
 import { InviteMemberForm } from "@/components/team/invite-member-form"
 import { TeamMembers } from "@/components/team/team-members"
-import { getUserTeamsAction } from "@/components/server-actions/team"
+import { useUser } from "@/components/user-provider"
 import {
     Command,
     CommandEmpty,
@@ -54,33 +54,52 @@ interface TeamDashboardProps {
 
 export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProps) => {
     const t = useTranslations("Team")
+    const { user, refreshUser } = useUser()
     const [teams, setTeams] = useState<Team[]>(initialTeams)
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(initialTeams.length > 0 ? initialTeams[0] : null)
+
+
+    // Use current user ID from user context if available, fallback to prop
+    const currentUserIdFromContext = user?.id || currentUserId
     const [showCreateForm, setShowCreateForm] = useState(false)
     const [showEditForm, setShowEditForm] = useState(false)
     const [showInviteForm, setShowInviteForm] = useState(false)
     const [open, setOpen] = useState(false)
 
+    // Update teams from user context when user data changes
+    useEffect(() => {
+        if (user?.teams) {
+            setTeams(user.teams as Team[])
+            // Update selected team if it still exists in the new data
+            if (selectedTeam) {
+                const updatedTeam = user.teams.find(t => t.id === selectedTeam.id)
+                if (updatedTeam) {
+                    setSelectedTeam(updatedTeam as Team)
+                } else if (user.teams.length > 0) {
+                    // If selected team no longer exists, select the first available team
+                    setSelectedTeam(user.teams[0] as Team)
+                }
+            } else if (user.teams.length > 0) {
+                // If no team is selected, select the first one
+                setSelectedTeam(user.teams[0] as Team)
+            }
+        }
+    }, [user?.teams, selectedTeam])
+
     const handleTeamUpdate = async () => {
         try {
-            const result = await getUserTeamsAction()
-            if (result.success && result.teams) {
-                setTeams(result.teams as Team[])
-                if (selectedTeam) {
-                    const updatedTeam = result.teams.find(t => t.id === selectedTeam.id)
-                    if (updatedTeam) {
-                        setSelectedTeam(updatedTeam as Team)
-                    }
-                }
-            }
+            // Refresh user data which includes teams
+            await refreshUser(false)
+            toast.success(t("messages.teamsUpdated"))
         } catch (error) {
             console.error("Failed to refresh teams:", error)
+            toast.error(t("messages.failedToRefreshTeams"))
         }
     }
 
     const isCurrentUserAdmin = (team: Team) => {
         const isAdmin = team.members.some(m =>
-            m.user.id === currentUserId && m.isAdmin
+            m.user.id === currentUserIdFromContext && m.isAdmin
         )
         return isAdmin
     }
@@ -246,7 +265,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                             <TeamMembers
                                 teamId={selectedTeam.id}
                                 members={selectedTeam.members as any}
-                                currentUserId={currentUserId}
+                                currentUserId={currentUserIdFromContext}
                                 isCurrentUserAdmin={isCurrentUserAdmin(selectedTeam)}
                                 onMemberUpdate={handleTeamUpdate}
                                 onInviteMember={() => setShowInviteForm(true)}

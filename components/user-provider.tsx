@@ -5,6 +5,28 @@ import { useSession } from "next-auth/react"
 import { getCurrentUserAction } from "@/components/server-actions/auth"
 import { useTheme } from "next-themes"
 import { Theme } from "@/lib/generated/prisma"
+import { getUserTeamsAction } from "./server-actions/team"
+
+interface UserTeam {
+    id: number
+    name: string
+    description?: string | null
+    members: Array<{
+        id: number
+        isAdmin: boolean
+        canPost: boolean
+        canApprove: boolean
+        isOwner: boolean
+        teamMemberStatus: string
+        user: {
+            id: number
+            firstName: string
+            lastName: string
+            email: string
+            avatarUrl?: string | null
+        }
+    }>
+}
 
 // User type definition
 export interface User {
@@ -20,6 +42,8 @@ export interface User {
     confirmed: boolean | null
     blocked: boolean | null
     theme: Theme
+    teams: UserTeam[] | null
+    defaultTeamId: number | null
     createdAt: Date
     updatedAt: Date
     // Access control flags
@@ -32,7 +56,7 @@ interface UserContextType {
     user: User | null
     loading: boolean
     error: string | null
-    refreshUser: () => Promise<void>
+    refreshUser: (teamsUpdate: boolean) => Promise<void>
     // Access control helpers
     isAuthenticated: boolean
     isActive: boolean
@@ -58,7 +82,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
 
     // Function to fetch user data
-    const fetchUser = async () => {
+    const fetchUser = async (teamsUpdate: boolean = true) => {
         if (!session?.user?.email) {
             setUser(null)
             setLoading(false)
@@ -71,7 +95,17 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
             const result = await getCurrentUserAction()
 
             if (result.success && result.user) {
-                setUser(result.user)
+                if (teamsUpdate) {
+                    const resultTeams = await getUserTeamsAction()
+                    if (resultTeams && resultTeams?.success && resultTeams?.teams) {
+                        setUser({ ...result.user, teams: resultTeams.teams as UserTeam[] })
+                    } else {
+                        setUser({ ...result.user, teams: null })
+                    }
+                } else {
+                    setUser({ ...result.user, teams: user?.teams || null })
+                }
+
                 if (theme !== result.user?.theme) setTheme(result.user?.theme)
 
             } else {
@@ -88,8 +122,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
 
     // Refresh user function (can be called manually)
-    const refreshUser = async () => {
-        await fetchUser()
+    const refreshUser = async (teamsUpdate: boolean = true) => {
+        await fetchUser(teamsUpdate)
     }
 
     // Fetch user data when session changes - simplified approach

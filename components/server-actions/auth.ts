@@ -441,6 +441,7 @@ export const getCurrentUserAction = async () => {
                 blocked: true,
                 createdAt: true,
                 updatedAt: true,
+                defaultTeamId: true,
                 avatar: {
                     select: {
                         id: true,
@@ -471,6 +472,7 @@ export const getCurrentUserAction = async () => {
             blocked: user.blocked,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
+            defaultTeamId: user.defaultTeamId,
             // Access control flags
             isActive: Boolean(user.confirmed && !user.blocked),
             canAccess: Boolean(user.confirmed && !user.blocked),

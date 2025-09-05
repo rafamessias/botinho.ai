@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Check, Crown, Star, Users } from "lucide-react";
+import { Check, Crown, Star, Users, Loader2 } from "lucide-react";
+import { createCheckoutSession, createPortalSession } from "@/components/server-actions/subscription";
+import { useToast } from "@/hooks/use-toast";
 
 interface SubscriptionPlan {
     id: string;
@@ -22,14 +24,40 @@ interface SubscriptionPlan {
 export const SubscriptionPage = () => {
     const t = useTranslations("Subscription");
     const [isYearly, setIsYearly] = useState(false);
-
-    // Mock current subscription data - in real app, this would come from your backend
-    const currentSubscription = {
+    const [isLoading, setIsLoading] = useState(false);
+    const [currentSubscription, setCurrentSubscription] = useState({
         plan: "professional",
         status: "active",
         billingCycle: "monthly",
         nextBilling: "2024-02-15"
-    };
+    });
+    const { toast } = useToast();
+
+    // Check for success/cancel parameters in URL
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        const canceled = urlParams.get('canceled');
+
+        if (success) {
+            toast({
+                title: "Success!",
+                description: "Your subscription has been activated successfully.",
+            });
+            // Remove URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        if (canceled) {
+            toast({
+                title: "Cancelled",
+                description: "Subscription process was cancelled.",
+                variant: "destructive",
+            });
+            // Remove URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, [toast]);
 
     const starterFeatures = t.raw("plans.starter.features") as string[];
     const professionalFeatures = t.raw("plans.professional.features") as string[];
@@ -74,14 +102,37 @@ export const SubscriptionPage = () => {
         return isYearly ? t("pricing.perYear") : t("pricing.perMonth");
     };
 
-    const handleSubscribe = (planId: string) => {
-        // In a real app, this would handle subscription logic
-        console.log(`Subscribing to ${planId} plan (${isYearly ? 'yearly' : 'monthly'})`);
+    const handleSubscribe = async (planId: string) => {
+        setIsLoading(true);
+        try {
+            const billingCycle = isYearly ? 'yearly' : 'monthly';
+            await createCheckoutSession(planId, billingCycle);
+        } catch (error) {
+            console.error('Error creating checkout session:', error);
+            toast({
+                title: "Error",
+                description: "Failed to start subscription process. Please try again.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleManageSubscription = () => {
-        // In a real app, this would redirect to subscription management
-        console.log("Managing subscription");
+    const handleManageSubscription = async () => {
+        setIsLoading(true);
+        try {
+            await createPortalSession();
+        } catch (error) {
+            console.error('Error creating portal session:', error);
+            toast({
+                title: "Error",
+                description: "Failed to open subscription management. Please try again.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -98,8 +149,19 @@ export const SubscriptionPage = () => {
                                 {t("currentPlan.description")}
                             </CardDescription>
                         </div>
-                        <Button onClick={handleManageSubscription} variant="outline">
-                            {t("currentPlan.manageSubscription")}
+                        <Button
+                            onClick={handleManageSubscription}
+                            variant="outline"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Loading...
+                                </>
+                            ) : (
+                                t("currentPlan.manageSubscription")
+                            )}
                         </Button>
                     </div>
                 </CardHeader>
@@ -134,23 +196,26 @@ export const SubscriptionPage = () => {
             </Card>
 
             {/* Billing Toggle */}
-            <div className="flex items-center justify-center space-x-4">
-                <Label htmlFor="billing-toggle" className="text-sm font-medium">
-                    {t("billingToggle.monthly")}
-                </Label>
-                <Switch
-                    id="billing-toggle"
-                    checked={isYearly}
-                    onCheckedChange={setIsYearly}
-                />
-                <Label htmlFor="billing-toggle" className="text-sm font-medium">
-                    {t("billingToggle.yearly")}
-                </Label>
-                {isYearly && (
-                    <Badge variant="secondary" className="ml-2">
-                        {t("billingToggle.save")}
-                    </Badge>
-                )}
+            <div className="flex flex-col items-center justify-start space-x-4 h-12">
+                <div className="flex items-center space-x-2">
+                    <Label htmlFor="billing-toggle" className="text-sm font-medium">
+                        {t("billingToggle.monthly")}
+                    </Label>
+                    <Switch
+                        id="billing-toggle"
+                        className="cursor-pointer"
+                        checked={isYearly}
+                        onCheckedChange={setIsYearly}
+                    />
+                    <Label htmlFor="billing-toggle" className="text-sm font-medium">
+                        {t("billingToggle.yearly")}
+                    </Label>
+                    {isYearly && (
+                        <Badge variant="secondary" className="ml-2">
+                            {t("billingToggle.save")}
+                        </Badge>
+                    )}
+                </div>
             </div>
 
             {/* Pricing Cards */}
@@ -159,14 +224,14 @@ export const SubscriptionPage = () => {
                     <Card
                         key={plan.id}
                         className={`relative transition-all duration-200 hover:shadow-lg ${plan.popular
-                            ? "border-2 border-primary shadow-lg scale-105"
+                            ? "border-2 border-primary shadow-lg scale-105 order-first sm:order-none"
                             : "border hover:border-primary/50"
                             }`}
                     >
                         {plan.popular && (
                             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                                 <Badge className="bg-primary text-primary-foreground">
-                                    {t("billingToggle.save")}
+                                    {t("billingToggle.popular")}
                                 </Badge>
                             </div>
                         )}
@@ -184,18 +249,31 @@ export const SubscriptionPage = () => {
                             <CardDescription className="text-sm">
                                 {plan.description}
                             </CardDescription>
-                            <div className="mt-4">
-                                <div className="text-3xl font-bold">
-                                    {getPrice(plan.id)}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                    {getBillingPeriod()}
-                                    {isYearly && plan.id !== "enterprise" && (
-                                        <span className="block text-xs">
-                                            {t("pricing.billedAnnually")}
-                                        </span>
-                                    )}
-                                </div>
+                            <div className="mt-6">
+                                {isYearly && plan.id !== "enterprise" ? (
+                                    <div className="h-16 flex flex-col justify-center">
+                                        <div className="relative flex items-center justify-center gap-2">
+                                            <span className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground line-through ">
+                                                {t(`pricing.monthly.${plan.id}`)}
+                                            </span>
+                                            <div className="text-3xl font-bold text-primary">
+                                                {getPrice(plan.id)}
+                                            </div>
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                            {getBillingPeriod()}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="h-16 flex flex-col justify-center">
+                                        <div className="text-3xl font-bold text-primary">
+                                            {getPrice(plan.id)}
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                            {getBillingPeriod()}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </CardHeader>
 
@@ -215,8 +293,16 @@ export const SubscriptionPage = () => {
                                 className="w-full"
                                 variant={plan.popular ? "default" : "outline"}
                                 onClick={() => handleSubscribe(plan.id)}
+                                disabled={isLoading}
                             >
-                                {plan.cta}
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Processing...
+                                    </>
+                                ) : (
+                                    plan.cta
+                                )}
                             </Button>
                         </CardFooter>
                     </Card>

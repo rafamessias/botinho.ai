@@ -269,3 +269,42 @@ export const getUserPreferencesAction = async () => {
         return { success: false, error: "Failed to get user preferences", preferences: null }
     }
 }
+
+/**
+ * Update user's default team
+ */
+export const updateDefaultTeamAction = async (teamId: number) => {
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        // Verify user is a member of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId,
+                user: { email: session.user.email }
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to set this team as default" }
+        }
+
+        // Update user's default team
+        const updatedUser = await prisma.user.update({
+            where: { email: session.user.email },
+            data: { defaultTeamId: teamId }
+        })
+
+        return {
+            success: true,
+            user: updatedUser
+        }
+
+    } catch (error) {
+        console.error("Update default team error:", error)
+        return { success: false, error: "Failed to update default team" }
+    }
+}

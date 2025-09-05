@@ -20,7 +20,15 @@
         }
     },
     "NavMain": {
-        "quickCreate": "Criação Rápida"
+        "quickCreate": "Criação Rápida",
+        "addTeam": "Adicionar Equipe",
+        "selectTeam": "Selecionar equipe...",
+        "searchTeams": "Pesquisar equipes...",
+        "noTeamsFound": "Nenhuma equipe encontrada.",
+        "messages": {
+            "teamsUpdated": "Equipes atualizadas com sucesso",
+            "failedToUpdateDefaultTeam": "Falha ao atualizar equipe padrão"
+        }
     },
     "SiteHeader": {
         "title": "Painel Principal"
@@ -632,6 +640,8 @@
             "updateFailed": "Falha ao atualizar permissões do membro"
         },
         "messages": {
+            "teamsUpdated": "Equipes atualizadas com sucesso",
+            "failedToRefreshTeams": "Falha ao atualizar equipes",
             "createSuccess": "Equipe criada com sucesso",
             "createFailed": "Falha ao criar equipe",
             "updateSuccess": "Equipe atualizada com sucesso",
@@ -684,7 +694,8 @@
         "billingToggle": {
             "monthly": "Mensal",
             "yearly": "Anual",
-            "save": "Economize 20%"
+            "save": "Economize 20%",
+            "popular": "Popular"
         },
         "plans": {
             "starter": {

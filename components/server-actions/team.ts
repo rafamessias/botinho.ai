@@ -237,6 +237,7 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                     confirmationToken: confirmationToken,
                     confirmed: false,
                     blocked: false,
+                    defaultTeamId: validatedData.teamId,
                 }
             })
 
