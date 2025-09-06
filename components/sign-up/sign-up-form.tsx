@@ -177,7 +177,6 @@ export function SignUpForm({
                                     <Label htmlFor="phone">{t("phone")}</Label>
                                     <PhoneInput
                                         id="phone"
-                                        defaultCountry="BR"
                                         value={phoneValue}
                                         onChange={(internationalNumber) => {
                                             setPhoneValue(internationalNumber)

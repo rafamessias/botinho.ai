@@ -19,6 +19,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatPhoneNumber, extractPhoneDigits, countries, CountryCode, Country, parseInternationalNumber, buildInternationalNumber } from "@/lib/phone-utils"
+import { useLocale } from "next-intl"
 
 interface PhoneInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
     value?: string // Can be international number (e.g., "+5511999999999") or local number
@@ -29,10 +30,27 @@ interface PhoneInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElemen
 }
 
 export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
-    ({ value = "", onChange, onFormattedChange, onCountryChange, defaultCountry = 'BR', ...props }, ref) => {
+    ({ value = "", onChange, onFormattedChange, onCountryChange, defaultCountry, ...props }, ref) => {
+        const locale = useLocale()
         const [displayValue, setDisplayValue] = useState("")
+
+        // Function to get country code based on locale
+        const getCountryFromLocale = (locale: string): CountryCode => {
+            switch (locale) {
+                case 'pt-BR':
+                    return 'BR'
+                case 'en':
+                    return 'US'
+                default:
+                    return 'BR' // Default to Brazil
+            }
+        }
+
+        // Determine initial country: use defaultCountry if provided, otherwise use locale-based country
+        const initialCountryCode = defaultCountry || getCountryFromLocale(locale)
+
         const [selectedCountry, setSelectedCountry] = useState<Country>(() =>
-            countries.find(c => c.code === defaultCountry) || countries[0]
+            countries.find(c => c.code === initialCountryCode) || countries[0]
         )
         const [open, setOpen] = useState(false)
 
@@ -57,6 +75,17 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
                 }
             }
         }, [value, selectedCountry.code])
+
+        // Update country based on locale when field is empty
+        useEffect(() => {
+            if (!value && !displayValue) {
+                const localeCountryCode = getCountryFromLocale(locale)
+                const localeCountry = countries.find(c => c.code === localeCountryCode)
+                if (localeCountry && localeCountry.code !== selectedCountry.code) {
+                    setSelectedCountry(localeCountry)
+                }
+            }
+        }, [locale, value, displayValue, selectedCountry.code])
 
         const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const inputValue = e.target.value
