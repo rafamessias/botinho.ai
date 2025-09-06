@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { formatPhoneNumber, Country } from "@/lib/phone-utils"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -10,6 +11,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { PhoneInput } from "@/components/ui/phone-input"
 import { Label } from "@/components/ui/label"
 import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import { useForm } from "react-hook-form"
@@ -33,14 +35,15 @@ export function SignUpForm({
     const router = useRouter()
     const searchParams = useSearchParams()
     const [isGoogleLoading, setIsGoogleLoading] = useState(false)
-    const [phoneValue, setPhoneValue] = useState("")
+    const [phoneValue, setPhoneValue] = useState("") // This will store the international number
+    const [selectedCountry, setSelectedCountry] = useState<Country | null>(null)
     const locale = useLocale()
 
     // Form validation schema with translations
     const signUpSchema = z.object({
         name: z.string().min(2, t("validation.nameMinLength")),
         email: z.string().email(t("validation.emailRequired")),
-        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^\d{10,11}$/, t("validation.phoneInvalid")),
+        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^\+\d{10,15}$/, t("validation.phoneInvalid")),
         password: z.string().min(6, t("validation.passwordMinLength")),
         confirmPassword: z.string().min(6, t("validation.confirmPasswordMinLength")),
     }).refine((data) => data.password === data.confirmPassword, {
@@ -59,33 +62,6 @@ export function SignUpForm({
         resolver: zodResolver(signUpSchema),
     })
 
-    // Phone number masking function
-    const formatPhoneNumber = (value: string): string => {
-        // Remove all non-digits
-        const digits = value.replace(/\D/g, '')
-
-        // Apply formatting based on length
-        if (digits.length <= 2) {
-            return `(${digits}`
-        } else if (digits.length <= 7) {
-            return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
-        } else {
-            return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`
-        }
-    }
-
-    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = e.target.value
-        const formattedValue = formatPhoneNumber(inputValue)
-
-        // Limit to maximum length
-        if (formattedValue.length <= 15) {
-            setPhoneValue(formattedValue)
-            // Extract only digits for form validation
-            const digitsOnly = formattedValue.replace(/\D/g, '')
-            setValue("phone", digitsOnly, { shouldValidate: true })
-        }
-    }
 
     const onSubmit = async (data: SignUpFormData) => {
         try {
@@ -199,13 +175,17 @@ export function SignUpForm({
                                 </div>
                                 <div className="grid gap-3">
                                     <Label htmlFor="phone">{t("phone")}</Label>
-                                    <Input
+                                    <PhoneInput
                                         id="phone"
-                                        type="tel"
-                                        placeholder="(11) 99999-9999"
+                                        defaultCountry="BR"
                                         value={phoneValue}
-                                        onChange={handlePhoneChange}
-                                        maxLength={15}
+                                        onChange={(internationalNumber) => {
+                                            setPhoneValue(internationalNumber)
+                                            setValue("phone", internationalNumber, { shouldValidate: true })
+                                        }}
+                                        onCountryChange={(country) => {
+                                            setSelectedCountry(country)
+                                        }}
                                     />
                                     {errors.phone && (
                                         <p className="text-sm text-red-500">{errors.phone.message}</p>
@@ -241,7 +221,7 @@ export function SignUpForm({
                             </div>
                             <div className="text-center text-sm">
                                 {t("haveAccount")}{" "}
-                                <Link href={`/${locale}/sign-in`} className="underline underline-offset-4">
+                                <Link href={`/sign-in`} className="underline underline-offset-4">
                                     {t("signIn")}
                                 </Link>
                             </div>

@@ -9,6 +9,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { PhoneInput } from "@/components/ui/phone-input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -63,7 +64,7 @@ export function ProfileForm() {
             if (result.success) {
                 toast.success(t("messages.profileUpdated"))
                 // Refresh user data
-                await refreshUser()
+                await refreshUser(false)
             } else {
                 toast.error(result.error || t("messages.updateFailed"))
             }
@@ -91,7 +92,7 @@ export function ProfileForm() {
             if (result.success) {
                 toast.success(t("messages.avatarUpdated"))
                 // Refresh user data
-                await refreshUser()
+                await refreshUser(false)
             } else {
                 toast.error(result.error || t("messages.avatarUpdateFailed"))
             }
@@ -206,10 +207,11 @@ export function ProfileForm() {
 
                         <div className="space-y-2">
                             <Label htmlFor="phone">{t("profile.phone")}</Label>
-                            <Input
+                            <PhoneInput
                                 id="phone"
                                 placeholder={t("profile.phonePlaceholder")}
-                                {...form.register("phone")}
+                                value={form.watch("phone")}
+                                onChange={(value) => form.setValue("phone", value, { shouldValidate: true })}
                             />
                             {form.formState.errors.phone && (
                                 <p className="text-sm text-red-500">
