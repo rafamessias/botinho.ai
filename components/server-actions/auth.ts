@@ -9,6 +9,7 @@ import { AuthError } from "next-auth"
 import resend from "@/lib/resend"
 import EmailConfirmationEmail from "@/emails/EmailConfirmationEmail"
 import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
+import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
 import { Provider, Theme } from "@/lib/generated/prisma"
@@ -148,8 +149,11 @@ export const signUpAction = async (formData: SignUpFormData) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(validatedData.password, 12)
 
-        // Generate confirmation token
-        const confirmationToken = await generateConfirmationToken()
+        // Generate confirmation token or OTP based on environment
+        const isOTPEnabled = process.env.OTP_ENABLED === 'true'
+        const confirmationToken = isOTPEnabled
+            ? Math.floor(100000 + Math.random() * 900000).toString() // 6-digit OTP
+            : await generateConfirmationToken() // Random token for email confirmation
 
         // Get current locale
         const currentLocale = await getCurrentLocale()
@@ -209,23 +213,42 @@ export const signUpAction = async (formData: SignUpFormData) => {
 
         const newUser = result.user
 
-        // Send confirmation email
-        const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
+        // Send confirmation email or OTP based on environment
+        const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/otp?otp=${confirmationToken}?email=${validatedData.email}?phone=${validatedData.phone}`
         const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
-        const confirmationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}`
 
         try {
-            await resend.emails.send({
-                from: fromEmail,
-                to: [validatedData.email],
-                subject: currentLocale === 'pt-BR' ? 'Confirme seu email' : 'Confirm your email',
-                react: EmailConfirmationEmail({
-                    userName: firstName,
-                    confirmationLink: confirmationUrl,
-                    lang: currentLocale,
-                    baseUrl
-                }),
-            })
+            if (isOTPEnabled) {
+                // Send OTP via email (fallback until SMS is implemented)
+                await resend.emails.send({
+                    from: fromEmail,
+                    to: [validatedData.email],
+                    subject: currentLocale === 'pt-BR' ? 'Seu código de verificação' : 'Your verification code',
+                    react: OTPEmail({
+                        userName: firstName,
+                        otpCode: confirmationToken,
+                        lang: currentLocale,
+                        baseUrl
+                    }),
+                })
+
+                // TODO: Send OTP via SMS
+                console.log(`OTP for ${validatedData.phone}: ${confirmationToken}`)
+            } else {
+                // Send email confirmation link
+                const confirmationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}`
+                await resend.emails.send({
+                    from: fromEmail,
+                    to: [validatedData.email],
+                    subject: currentLocale === 'pt-BR' ? 'Confirme seu email' : 'Confirm your email',
+                    react: EmailConfirmationEmail({
+                        userName: firstName,
+                        confirmationLink: confirmationUrl,
+                        lang: currentLocale,
+                        baseUrl
+                    }),
+                })
+            }
         } catch (emailError) {
             console.error("Failed to send confirmation email:", emailError)
             // Don't fail the registration if email fails
@@ -233,7 +256,9 @@ export const signUpAction = async (formData: SignUpFormData) => {
 
         return {
             success: true,
-            message: "Account created successfully. Please check your email to confirm your account.",
+            message: isOTPEnabled
+                ? t("otpSentSignup")
+                : t("emailSent"),
             userId: newUser.id
         }
 
@@ -613,6 +638,135 @@ export const confirmPasswordResetAction = async (token: string, password: string
             return { success: false, error: error.errors[0].message }
         }
 
+        return { success: false, error: t("unexpectedError") }
+    }
+}
+
+/**
+ * Server action to confirm OTP for account verification
+ */
+export const confirmOTPAction = async (otp: string, email?: string, phone?: string) => {
+    const t = await getTranslations("AuthErrors")
+
+    try {
+        if (!otp || (!email && !phone)) {
+            return { success: false, error: t("otpRequired") }
+        }
+
+        // Validate OTP format (6 digits)
+        const otpSchema = z.string().regex(/^\d{6}$/, t("otpInvalidFormat"))
+        const validatedOTP = otpSchema.parse(otp)
+
+        // Find user with the OTP token
+        const user = await prisma.user.findFirst({
+            where: {
+                confirmationToken: validatedOTP,
+                confirmed: false,
+                ...(email ? { email } : {}),
+                ...(phone ? { phone } : {})
+            }
+        })
+
+        if (!user) {
+            return { success: false, error: t("invalidOTP") }
+        }
+
+        // Update user to confirmed and clear OTP token
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                confirmed: true,
+                confirmationToken: null,
+            }
+        })
+
+        return { success: true, message: t("accountConfirmed") }
+
+    } catch (error) {
+        console.error("OTP confirmation error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("unexpectedError") }
+    }
+}
+
+/**
+ * Server action to resend OTP for account verification
+ */
+export const resendOTPAction = async (email?: string, phone?: string) => {
+    const t = await getTranslations("AuthErrors")
+
+    try {
+        if (!email && !phone) {
+            return { success: false, error: t("emailOrPhoneRequired") }
+        }
+
+        // Find user with the email or phone
+        const user = await prisma.user.findFirst({
+            where: {
+                confirmed: false,
+                ...(email ? { email } : {}),
+                ...(phone ? { phone } : {})
+            }
+        })
+
+        if (!user) {
+            return { success: false, error: t("userNotFound") }
+        }
+
+        // Generate new OTP (6 digits)
+        const newOTP = Math.floor(100000 + Math.random() * 900000).toString()
+
+        // Update user with new OTP
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { confirmationToken: newOTP }
+        })
+
+        // TODO: Implement SMS sending logic here
+        // For now, we'll just log the OTP (in production, this should be sent via SMS)
+        console.log(`OTP for ${email || phone}: ${newOTP}`)
+
+        // Get current locale
+        const currentLocale = await getCurrentLocale()
+
+        // Send OTP via SMS (placeholder - implement your SMS provider here)
+        try {
+            // Example SMS sending logic (replace with your SMS provider)
+            // await sendSMS({
+            //     to: phone,
+            //     message: `Your verification code is: ${newOTP}`
+            // })
+
+            // For now, we'll also send an email with the OTP as a fallback
+            if (email) {
+                const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/otp?otp=${newOTP}?email=${email}?phone=${phone}`
+                const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+
+                await resend.emails.send({
+                    from: fromEmail,
+                    to: [email],
+                    subject: currentLocale === 'pt-BR' ? 'Seu código de verificação' : 'Your verification code',
+                    react: OTPEmail({
+                        userName: user.firstName,
+                        otpCode: newOTP,
+                        lang: currentLocale,
+                        baseUrl
+                    }),
+                })
+            }
+        } catch (smsError) {
+            console.error("Failed to send OTP:", smsError)
+            // Don't fail the request if SMS/email fails
+        }
+
+        return { success: true, message: t("otpSent") }
+
+    } catch (error) {
+        console.error("Resend OTP error:", error)
         return { success: false, error: t("unexpectedError") }
     }
 }

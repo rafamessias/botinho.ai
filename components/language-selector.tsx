@@ -54,7 +54,8 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
             })
 
             // Navigate to the new language
-            router.push(`/${newLanguage}${targetPath}`)
+            const newPath = `/${newLanguage}${targetPath || "/"}`
+            router.push(newPath)
         } catch (error) {
             // Avoid returning error to the client
             console.error("Language update error:", error)
@@ -66,10 +67,10 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
         if (currentPath) return currentPath
 
         // If pathname starts with locale, remove it
-        if (pathname.startsWith(`/${currentLocale}`)) {
+        if (pathname && currentLocale && pathname.startsWith(`/${currentLocale}`)) {
             return pathname.slice(`/${currentLocale}`.length) || "/"
         }
-        return pathname
+        return pathname || "/"
     }, [pathname, currentLocale, currentPath])
 
     // Handle search parameters and update redirect parameter locale if needed
@@ -78,7 +79,7 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
 
         // If there's a redirect parameter, update its locale
         const redirect = params.get('redirect')
-        if (redirect) {
+        if (redirect && currentLocale) {
             // Remove locale from redirect URL and let the Link component handle the new locale
             let updatedRedirect = redirect
             if (redirect.startsWith(`/${currentLocale}`)) {

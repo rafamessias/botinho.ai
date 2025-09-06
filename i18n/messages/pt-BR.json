@@ -331,6 +331,31 @@
             "contactSupport": "Contatar suporte"
         }
     },
+    "OTPPage": {
+        "title": "Verifique Sua Conta",
+        "description": "Digite o código de verificação enviado para seu telefone"
+    },
+    "OTPForm": {
+        "title": "Digite o Código de Verificação",
+        "emailDescription": "Enviamos um código de verificação para {email}",
+        "phoneDescription": "Enviamos um código de verificação para {phone}",
+        "enterOTP": "Digite o código de 6 dígitos abaixo",
+        "confirming": "Verificando...",
+        "confirmButton": "Verificar Conta",
+        "didntReceive": "Não recebeu o código?",
+        "resending": "Enviando...",
+        "resendButton": "Reenviar Código",
+        "otpDetected": "OTP detectado na URL, enviando automaticamente...",
+        "invalidOtpFormat": "OTP deve ter 6 dígitos",
+        "invalidOtpFormatUrl": "Formato de OTP inválido na URL",
+        "missingParams": "Parâmetros de email ou telefone ausentes",
+        "accountConfirmed": "Conta confirmada com sucesso!",
+        "otpSent": "OTP enviado com sucesso!",
+        "resendFailed": "Falha ao reenviar OTP",
+        "unexpectedError": "Ocorreu um erro inesperado",
+        "otpInvalidFormat": "OTP deve ter 6 dígitos",
+        "otpInvalidFormatUrl": "Formato de OTP inválido na URL"
+    },
     "ResetPasswordForm": {
         "title": "Redefinir sua senha",
         "description": "Digite seu endereço de email e enviaremos um link para redefinir sua senha",
@@ -419,7 +444,15 @@
         "profileUpdateFailed": "Falha ao atualizar perfil",
         "avatarUpdateFailed": "Falha ao atualizar avatar",
         "defaultTeamName": "Equipe Padrão",
-        "defaultTeamDescription": "Equipe padrão para {firstName}"
+        "defaultTeamDescription": "Equipe padrão para {firstName}",
+        "invalidOTP": "Código de verificação inválido ou expirado",
+        "otpRequired": "OTP e email ou telefone são obrigatórios",
+        "otpInvalidFormat": "OTP deve ter 6 dígitos",
+        "accountConfirmed": "Conta confirmada com sucesso. Agora você pode fazer login.",
+        "emailOrPhoneRequired": "Email ou telefone é obrigatório",
+        "otpSent": "OTP enviado com sucesso",
+        "otpSentSignup": "Conta criada com sucesso. Por favor, verifique seu telefone/email para o código de verificação.",
+        "emailSent": "Conta criada com sucesso. Por favor, verifique seu email para confirmar sua conta."
     },
     "Company": {
         "title": "Gestão de Empresa",

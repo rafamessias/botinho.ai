@@ -26,8 +26,9 @@ import { LanguageSelector } from "@/components/language-selector"
 
 export function SignUpForm({
     className,
+    isOTPEnabled,
     ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { isOTPEnabled: boolean }) {
     const t = useTranslations("SignUpForm")
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -94,8 +95,19 @@ export function SignUpForm({
                 toast.error(result.error)
             } else if (result?.success === true) {
                 toast.success(result.message || "Account created successfully!")
-                // Redirect to check email page with email parameter
-                router.push(`/${locale}/sign-up/check-email?email=${encodeURIComponent(data.email)}`)
+
+                // Check if OTP is enabled
+                if (isOTPEnabled) {
+                    // Redirect to OTP page with email and phone parameters
+                    const params = new URLSearchParams({
+                        email: data.email,
+                        phone: data.phone
+                    })
+                    router.push(`/${locale}/sign-up/otp?${params.toString()}`)
+                } else {
+                    // Redirect to check email page with email parameter (existing flow)
+                    router.push(`/${locale}/sign-up/check-email?email=${encodeURIComponent(data.email)}`)
+                }
             }
         } catch (error) {
             console.error("Sign up error:", error)

@@ -331,6 +331,31 @@
             "contactSupport": "Contact support"
         }
     },
+    "OTPPage": {
+        "title": "Verify Your Account",
+        "description": "Enter the verification code sent to your phone"
+    },
+    "OTPForm": {
+        "title": "Enter Verification Code",
+        "emailDescription": "We've sent a verification code to {email}",
+        "phoneDescription": "We've sent a verification code to {phone}",
+        "enterOTP": "Enter the 6-digit code below",
+        "confirming": "Verifying...",
+        "confirmButton": "Verify Account",
+        "didntReceive": "Didn't receive the code?",
+        "resending": "Sending...",
+        "resendButton": "Resend Code",
+        "otpDetected": "OTP detected from URL, auto-submitting...",
+        "invalidOtpFormat": "OTP must be 6 digits",
+        "invalidOtpFormatUrl": "Invalid OTP format in URL",
+        "missingParams": "Missing email or phone parameter",
+        "accountConfirmed": "Account confirmed successfully!",
+        "otpSent": "OTP sent successfully!",
+        "resendFailed": "Failed to resend OTP",
+        "unexpectedError": "An unexpected error occurred",
+        "otpInvalidFormat": "OTP must be 6 digits",
+        "otpInvalidFormatUrl": "Invalid OTP format in URL"
+    },
     "ResetPasswordForm": {
         "title": "Reset your password",
         "description": "Enter your email address and we'll send you a link to reset your password",
@@ -419,7 +444,15 @@
         "profileUpdateFailed": "Failed to update profile",
         "avatarUpdateFailed": "Failed to update avatar",
         "defaultTeamName": "Default Team",
-        "defaultTeamDescription": "Default team for {firstName}"
+        "defaultTeamDescription": "Default team for {firstName}",
+        "invalidOTP": "Invalid or expired verification code",
+        "otpRequired": "OTP and email or phone are required",
+        "otpInvalidFormat": "OTP must be 6 digits",
+        "accountConfirmed": "Account confirmed successfully. You can now sign in.",
+        "emailOrPhoneRequired": "Email or phone is required",
+        "otpSent": "OTP sent successfully",
+        "otpSentSignup": "Account created successfully. Please check your phone/email for the verification code.",
+        "emailSent": "Account created successfully. Please check your email to confirm your account."
     },
     "Company": {
         "title": "Company Management",

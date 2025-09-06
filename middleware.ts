@@ -22,6 +22,8 @@ const publicRoutes = routing.locales.flatMap(locale => [
     `/auth/google/callback`,
     `/${locale}/reset-password/confirm`,
     `/reset-password/confirm`,
+    `/${locale}/sign-up/otp`,
+    `/sign-up/otp`,
 ]);
 
 function isPublicRoute(path: string) {
@@ -191,6 +193,7 @@ export const config = {
         '/sign-up/check-email',
         '/auth/google/callback',
         '/reset-password/confirm',
+        '/sign-up/otp',
         // Match any other routes that should go through middleware
         '/((?!api|_next/static|_next/image|favicon.ico|.*\\.).*)',
     ],

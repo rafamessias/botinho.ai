@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { Separator } from "./ui/separator"
 
 interface UserTeam {
   id: number
@@ -57,7 +56,7 @@ function TeamSelectionLoading() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton className="w-full justify-between cursor-pointer animate-pulse">
+        <SidebarMenuButton className="w-full justify-between cursor-pointer animate-pulse border h-[38px]">
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <IconUsers className="h-4 w-4 shrink-0" />
             <span className="truncate text-sm bg-muted rounded h-4 w-24"></span>
@@ -115,7 +114,7 @@ function TeamSelection() {
         <SidebarMenuItem>
           <SidebarMenuButton
             asChild
-            className="w-full cursor-pointer"
+            className="w-full cursor-pointer border h-[38px]"
           >
             <Link href="/team">
               <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -143,13 +142,13 @@ function TeamSelection() {
           <PopoverTrigger asChild>
             <SidebarMenuButton
               asChild
-              className="w-full justify-between cursor-pointer"
+              className="w-full justify-between cursor-pointer border h-[38px]"
             >
               <Button
                 variant="ghost"
                 role="combobox"
                 aria-expanded={open}
-                className="w-full justify-between h-auto p-2 border"
+                className="w-full justify-between h-auto p-2"
               >
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <IconUsers className="h-4 w-4 shrink-0" />
