@@ -214,7 +214,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
         const newUser = result.user
 
         // Send confirmation email or OTP based on environment
-        const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/otp?otp=${confirmationToken}?email=${validatedData.email}?phone=${validatedData.phone}`
+        const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/sign-up/otp?otp=${confirmationToken}&email=${validatedData.email}&phone=${validatedData.phone}`
         const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
 
         try {
@@ -743,7 +743,7 @@ export const resendOTPAction = async (email?: string, phone?: string) => {
 
             // For now, we'll also send an email with the OTP as a fallback
             if (email) {
-                const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/otp?otp=${newOTP}?email=${email}?phone=${phone}`
+                const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/sign-up/otp?otp=${newOTP}&email=${email}`
                 const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
 
                 await resend.emails.send({

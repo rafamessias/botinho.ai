@@ -50,10 +50,12 @@ export function OTPForm() {
 
     // Auto-submit if OTP is provided via URL
     useEffect(() => {
+        console.log("urlOtp", urlOtp)
+        console.log("isSubmitting", email, phone)
         if (urlOtp && urlOtp.length === 6 && !isSubmitting) {
             setOtp(urlOtp)
             setValue("otp", urlOtp)
-            toast.info(t("otpDetected"))
+            //toast.info(t("otpDetected"))
             // Auto-submit after a short delay to ensure the form is ready
             const timer = setTimeout(() => {
                 handleSubmit(onSubmit)()
