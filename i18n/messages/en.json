@@ -7,20 +7,15 @@
         "brand": "My SaaS",
         "navigation": {
             "dashboard": "Dashboard",
-            "lifecycle": "Lifecycle",
-            "analytics": "Analytics",
-            "projects": "Projects",
-            "team": "Team",
-            "company": "Company"
+            "surveys": "Surveys",
+            "team": "Team"
         },
         "documents": {
-            "dataLibrary": "Data Library",
-            "reports": "Reports",
-            "wordAssistant": "Word Assistant"
+            "dataLibrary": "Data Library"
         }
     },
     "NavMain": {
-        "quickCreate": "Quick Create",
+        "quickCreate": "Create Survey",
         "addTeam": "Add Team",
         "selectTeam": "Select team...",
         "searchTeams": "Search teams...",
@@ -621,6 +616,9 @@
         "createTeamDescription": "Create a new team to collaborate with others.",
         "editTeam": "Edit Team",
         "editTeamDescription": "Update your team information.",
+        "deleteTeam": "Delete Team",
+        "deleteTeamConfirmation": "Are you sure you want to delete the team \"{teamName}\"? This action cannot be undone and will remove all team members and associated data.",
+        "delete": "Delete",
         "noTeams": "No teams found",
         "noTeamsDescription": "You haven't created any teams yet. Create your first team to get started.",
         "createFirstTeam": "Create Your First Team",
@@ -679,6 +677,10 @@
             "createFailed": "Failed to create team",
             "updateSuccess": "Team updated successfully",
             "updateFailed": "Failed to update team",
+            "deleteSuccess": "Team deleted successfully",
+            "deleteFailed": "Failed to delete team",
+            "cannotDeleteOnlyTeam": "Cannot delete the only team. You must have at least one team.",
+            "onlyTeamOwnerCanDeleteTeam": "Only the team owner can delete the team",
             "inviteSuccess": "Member invited successfully",
             "inviteFailed": "Failed to invite member",
             "memberUpdateSuccess": "Member permissions updated successfully",
@@ -796,6 +798,149 @@
             "subscriptionFailed": "Failed to update subscription",
             "trialStarted": "Free trial started successfully",
             "contactSales": "Contact our sales team for custom pricing"
+        }
+    },
+    "Survey": {
+        "title": "Surveys",
+        "description": "Manage your surveys and collect responses",
+        "stats": {
+            "totalSurveys": {
+                "title": "Total Surveys",
+                "description": "All surveys created",
+                "subtitle": "Includes drafts and completed"
+            },
+            "activeSurveys": {
+                "title": "Active Surveys",
+                "description": "Currently collecting responses",
+                "subtitle": "Live and accepting responses"
+            },
+            "totalResponses": {
+                "title": "Total Responses",
+                "description": "All responses collected",
+                "subtitle": "Across all surveys"
+            },
+            "responseRate": {
+                "title": "Response Rate",
+                "description": "Average completion rate",
+                "subtitle": "Response quality indicator"
+            }
+        },
+        "table": {
+            "title": "All Surveys",
+            "totalSurveys": "surveys",
+            "columns": {
+                "title": "Survey Title",
+                "type": "Type",
+                "status": "Status",
+                "responses": "Responses",
+                "createdAt": "Created",
+                "updatedAt": "Updated"
+            },
+            "status": {
+                "active": "Active",
+                "draft": "Draft",
+                "completed": "Completed"
+            },
+            "actions": {
+                "view": "View",
+                "edit": "Edit",
+                "duplicate": "Duplicate",
+                "delete": "Delete",
+                "openMenu": "Open menu"
+            },
+            "buttons": {
+                "createSurvey": "Create Survey",
+                "customizeColumns": "Customize Columns",
+                "columns": "Columns"
+            },
+            "search": {
+                "placeholder": "Search surveys..."
+            },
+            "filters": {
+                "status": "Filter by status",
+                "allStatuses": "All Statuses",
+                "active": "Active",
+                "draft": "Draft",
+                "completed": "Completed"
+            },
+            "pagination": {
+                "rowsPerPage": "Rows per page",
+                "page": "Page",
+                "of": "of",
+                "rowsSelected": "row(s) selected",
+                "goToFirstPage": "Go to first page",
+                "goToPreviousPage": "Go to previous page",
+                "goToNextPage": "Go to next page",
+                "goToLastPage": "Go to last page"
+            },
+            "messages": {
+                "noResults": "No surveys found."
+            }
+        }
+    },
+    "CreateSurvey": {
+        "title": "Create Survey",
+        "description": "Create a new survey to collect responses from your audience",
+        "actions": {
+            "saveDraft": "Save Draft",
+            "publish": "Publish"
+        },
+        "details": {
+            "title": "Survey Details",
+            "name": {
+                "label": "Name",
+                "placeholder": "Enter survey name"
+            },
+            "enabled": {
+                "label": "Enable Survey",
+                "description": "Make this survey active and available for responses"
+            },
+            "multipleResponses": {
+                "label": "Allow multiple responses per person",
+                "description": "Let the same person respond multiple times"
+            }
+        },
+        "questions": {
+            "title": "Questions",
+            "addQuestion": "Add Question",
+            "questionTitle": {
+                "label": "Title",
+                "placeholder": "Enter question title"
+            },
+            "description": {
+                "label": "Description (Optional)",
+                "placeholder": "Enter question description"
+            },
+            "format": {
+                "label": "Format",
+                "placeholder": "Select question format"
+            }
+        },
+        "targets": {
+            "title": "Targets",
+            "description": "Survey targets allow you to add surveys to the pages of your website or product without having to change any code.",
+            "addTarget": "Add Target",
+            "noTargets": "No targets configured yet"
+        },
+        "style": {
+            "title": "Style",
+            "primaryColor": {
+                "label": "Primary Color"
+            },
+            "fontFamily": {
+                "label": "Font Family",
+                "placeholder": "Select font family"
+            },
+            "borderRadius": {
+                "label": "Border Radius",
+                "placeholder": "Select border radius"
+            },
+            "preview": {
+                "label": "Preview",
+                "title": "Sample Question",
+                "description": "This is how your survey will look to respondents",
+                "button": "Submit Response"
+            }
         }
     }
 }

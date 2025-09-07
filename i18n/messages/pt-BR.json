@@ -7,20 +7,15 @@
         "brand": "Meu SaaS",
         "navigation": {
             "dashboard": "Painel",
-            "lifecycle": "Ciclo de Vida",
-            "analytics": "Análises",
-            "projects": "Projetos",
-            "team": "Equipe",
-            "company": "Empresa"
+            "surveys": "Pesquisas",
+            "team": "Equipe"
         },
         "documents": {
-            "dataLibrary": "Biblioteca de Dados",
-            "reports": "Relatórios",
-            "wordAssistant": "Assistente de Texto"
+            "dataLibrary": "Biblioteca de Dados"
         }
     },
     "NavMain": {
-        "quickCreate": "Criação Rápida",
+        "quickCreate": "Criar Pesquisa",
         "addTeam": "Adicionar Equipe",
         "selectTeam": "Selecionar equipe...",
         "searchTeams": "Pesquisar equipes...",
@@ -621,6 +616,9 @@
         "createTeamDescription": "Crie uma nova equipe para colaborar com outros.",
         "editTeam": "Editar Equipe",
         "editTeamDescription": "Atualize as informações da sua equipe.",
+        "deleteTeam": "Excluir Equipe",
+        "deleteTeamConfirmation": "Tem certeza de que deseja excluir a equipe \"{teamName}\"? Esta ação não pode ser desfeita e removerá todos os membros da equipe e dados associados.",
+        "delete": "Excluir",
         "noTeams": "Nenhuma equipe encontrada",
         "noTeamsDescription": "Você ainda não criou nenhuma equipe. Crie sua primeira equipe para começar.",
         "createFirstTeam": "Criar Sua Primeira Equipe",
@@ -679,6 +677,10 @@
             "createFailed": "Falha ao criar equipe",
             "updateSuccess": "Equipe atualizada com sucesso",
             "updateFailed": "Falha ao atualizar equipe",
+            "deleteSuccess": "Equipe excluída com sucesso",
+            "deleteFailed": "Falha ao excluir equipe",
+            "cannotDeleteOnlyTeam": "Não é possível excluir a única equipe. Você deve ter pelo menos uma equipe.",
+            "onlyTeamOwnerCanDeleteTeam": "Apenas o proprietário da equipe pode excluir a equipe",
             "inviteSuccess": "Membro convidado com sucesso",
             "inviteFailed": "Falha ao convidar membro",
             "memberUpdateSuccess": "Permissões do membro atualizadas com sucesso",
@@ -796,6 +798,149 @@
             "subscriptionFailed": "Falha ao atualizar assinatura",
             "trialStarted": "Teste grátis iniciado com sucesso",
             "contactSales": "Entre em contato com nossa equipe de vendas para preços personalizados"
+        }
+    },
+    "Survey": {
+        "title": "Pesquisas",
+        "description": "Gerencie suas pesquisas e colete respostas",
+        "stats": {
+            "totalSurveys": {
+                "title": "Total de Pesquisas",
+                "description": "Todas as pesquisas criadas",
+                "subtitle": "Inclui rascunhos e concluídas"
+            },
+            "activeSurveys": {
+                "title": "Pesquisas Ativas",
+                "description": "Coletando respostas atualmente",
+                "subtitle": "Ativas e aceitando respostas"
+            },
+            "totalResponses": {
+                "title": "Total de Respostas",
+                "description": "Todas as respostas coletadas",
+                "subtitle": "Em todas as pesquisas"
+            },
+            "responseRate": {
+                "title": "Taxa de Resposta",
+                "description": "Taxa média de conclusão",
+                "subtitle": "Indicador de qualidade das respostas"
+            }
+        },
+        "table": {
+            "title": "Todas as Pesquisas",
+            "totalSurveys": "pesquisas",
+            "columns": {
+                "title": "Título da Pesquisa",
+                "type": "Tipo",
+                "status": "Status",
+                "responses": "Respostas",
+                "createdAt": "Criada",
+                "updatedAt": "Atualizada"
+            },
+            "status": {
+                "active": "Ativa",
+                "draft": "Rascunho",
+                "completed": "Concluída"
+            },
+            "actions": {
+                "view": "Visualizar",
+                "edit": "Editar",
+                "duplicate": "Duplicar",
+                "delete": "Excluir",
+                "openMenu": "Abrir menu"
+            },
+            "buttons": {
+                "createSurvey": "Criar Pesquisa",
+                "customizeColumns": "Personalizar Colunas",
+                "columns": "Colunas"
+            },
+            "search": {
+                "placeholder": "Buscar pesquisas..."
+            },
+            "filters": {
+                "status": "Filtrar por status",
+                "allStatuses": "Todos os Status",
+                "active": "Ativa",
+                "draft": "Rascunho",
+                "completed": "Concluída"
+            },
+            "pagination": {
+                "rowsPerPage": "Linhas por página",
+                "page": "Página",
+                "of": "de",
+                "rowsSelected": "linha(s) selecionada(s)",
+                "goToFirstPage": "Ir para primeira página",
+                "goToPreviousPage": "Ir para página anterior",
+                "goToNextPage": "Ir para próxima página",
+                "goToLastPage": "Ir para última página"
+            },
+            "messages": {
+                "noResults": "Nenhuma pesquisa encontrada."
+            }
+        }
+    },
+    "CreateSurvey": {
+        "title": "Criar Pesquisa",
+        "description": "Crie uma nova pesquisa para coletar respostas do seu público",
+        "actions": {
+            "saveDraft": "Salvar Rascunho",
+            "publish": "Publicar"
+        },
+        "details": {
+            "title": "Detalhes da Pesquisa",
+            "name": {
+                "label": "Nome",
+                "placeholder": "Digite o nome da pesquisa"
+            },
+            "enabled": {
+                "label": "Ativar Pesquisa",
+                "description": "Tornar esta pesquisa ativa e disponível para respostas"
+            },
+            "multipleResponses": {
+                "label": "Permitir múltiplas respostas por pessoa",
+                "description": "Permitir que a mesma pessoa responda várias vezes"
+            }
+        },
+        "questions": {
+            "title": "Perguntas",
+            "addQuestion": "Adicionar Pergunta",
+            "questionTitle": {
+                "label": "Título",
+                "placeholder": "Digite o título da pergunta"
+            },
+            "description": {
+                "label": "Descrição (Opcional)",
+                "placeholder": "Digite a descrição da pergunta"
+            },
+            "format": {
+                "label": "Formato",
+                "placeholder": "Selecione o formato da pergunta"
+            }
+        },
+        "targets": {
+            "title": "Alvos",
+            "description": "Os alvos da pesquisa permitem adicionar pesquisas às páginas do seu site ou produto sem precisar alterar nenhum código.",
+            "addTarget": "Adicionar Alvo",
+            "noTargets": "Nenhum alvo configurado ainda"
+        },
+        "style": {
+            "title": "Estilo",
+            "primaryColor": {
+                "label": "Cor Primária"
+            },
+            "fontFamily": {
+                "label": "Fonte",
+                "placeholder": "Selecione a fonte"
+            },
+            "borderRadius": {
+                "label": "Raio da Borda",
+                "placeholder": "Selecione o raio da borda"
+            },
+            "preview": {
+                "label": "Visualização",
+                "title": "Pergunta de Exemplo",
+                "description": "É assim que sua pesquisa aparecerá para os respondentes",
+                "button": "Enviar Resposta"
+            }
         }
     }
 }

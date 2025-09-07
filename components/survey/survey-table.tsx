@@ -1,0 +1,534 @@
+"use client"
+
+import * as React from "react"
+import { useTranslations } from "next-intl"
+import {
+    ColumnDef,
+    ColumnFiltersState,
+    flexRender,
+    getCoreRowModel,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
+    VisibilityState,
+} from "@tanstack/react-table"
+import {
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    ChevronsLeft,
+    ChevronsRight,
+    MoreHorizontal,
+    Columns,
+    Plus,
+    Eye,
+    Edit,
+    Copy,
+    Trash2,
+    Calendar,
+    Users,
+} from "lucide-react"
+import { z } from "zod"
+
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { Link } from "@/i18n/navigation"
+
+export const surveySchema = z.object({
+    id: z.number(),
+    title: z.string(),
+    status: z.string(),
+    responses: z.number(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+    type: z.string(),
+})
+
+// Dummy survey data
+const dummySurveys: z.infer<typeof surveySchema>[] = [
+    {
+        id: 1,
+        title: "Customer Satisfaction Survey",
+        status: "Active",
+        responses: 245,
+        createdAt: "2024-01-15",
+        updatedAt: "2024-01-20",
+        type: "Customer Feedback"
+    },
+    {
+        id: 2,
+        title: "Employee Engagement Survey",
+        status: "Draft",
+        responses: 0,
+        createdAt: "2024-01-18",
+        updatedAt: "2024-01-18",
+        type: "Internal"
+    },
+    {
+        id: 3,
+        title: "Product Feedback Form",
+        status: "Active",
+        responses: 89,
+        createdAt: "2024-01-10",
+        updatedAt: "2024-01-19",
+        type: "Product Research"
+    },
+    {
+        id: 4,
+        title: "Market Research Survey",
+        status: "Completed",
+        responses: 156,
+        createdAt: "2024-01-05",
+        updatedAt: "2024-01-15",
+        type: "Market Research"
+    },
+    {
+        id: 5,
+        title: "Website Usability Test",
+        status: "Active",
+        responses: 67,
+        createdAt: "2024-01-12",
+        updatedAt: "2024-01-21",
+        type: "UX Research"
+    },
+    {
+        id: 6,
+        title: "Event Feedback Survey",
+        status: "Completed",
+        responses: 203,
+        createdAt: "2024-01-08",
+        updatedAt: "2024-01-16",
+        type: "Event Feedback"
+    },
+    {
+        id: 7,
+        title: "Training Evaluation",
+        status: "Draft",
+        responses: 0,
+        createdAt: "2024-01-22",
+        updatedAt: "2024-01-22",
+        type: "Training"
+    },
+    {
+        id: 8,
+        title: "Brand Awareness Study",
+        status: "Active",
+        responses: 134,
+        createdAt: "2024-01-14",
+        updatedAt: "2024-01-20",
+        type: "Brand Research"
+    }
+]
+
+export const SurveyTable = () => {
+    const t = useTranslations("Survey")
+    const [data] = React.useState(() => dummySurveys)
+    const [rowSelection, setRowSelection] = React.useState({})
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [pagination, setPagination] = React.useState({
+        pageIndex: 0,
+        pageSize: 10,
+    })
+
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case "Active":
+                return <Badge variant="default" className="bg-green-500 hover:bg-green-600">{status}</Badge>
+            case "Draft":
+                return <Badge variant="secondary">{status}</Badge>
+            case "Completed":
+                return <Badge variant="outline">{status}</Badge>
+            default:
+                return <Badge variant="outline">{status}</Badge>
+        }
+    }
+
+    const columns: ColumnDef<z.infer<typeof surveySchema>>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <div className="flex items-center justify-center">
+                    <Checkbox
+                        checked={
+                            table.getIsAllPageRowsSelected() ||
+                            (table.getIsSomePageRowsSelected() && "indeterminate")
+                        }
+                        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                        aria-label="Select all"
+                    />
+                </div>
+            ),
+            cell: ({ row }) => (
+                <div className="flex items-center justify-center">
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => row.toggleSelected(!!value)}
+                        aria-label="Select row"
+                    />
+                </div>
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            accessorKey: "title",
+            header: t("table.columns.title"),
+            cell: ({ row }) => (
+                <div className="font-medium">
+                    {row.original.title}
+                </div>
+            ),
+            enableHiding: false,
+        },
+        {
+            accessorKey: "type",
+            header: t("table.columns.type"),
+            cell: ({ row }) => (
+                <Badge variant="outline" className="text-muted-foreground">
+                    {row.original.type}
+                </Badge>
+            ),
+        },
+        {
+            accessorKey: "status",
+            header: t("table.columns.status"),
+            cell: ({ row }) => getStatusBadge(row.original.status),
+        },
+        {
+            accessorKey: "responses",
+            header: () => <div className="w-full text-right">{t("table.columns.responses")}</div>,
+            cell: ({ row }) => (
+                <div className="text-right font-medium">
+                    {row.original.responses.toLocaleString()}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "createdAt",
+            header: t("table.columns.createdAt"),
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(row.original.createdAt).toLocaleDateString()}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "updatedAt",
+            header: t("table.columns.updatedAt"),
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(row.original.updatedAt).toLocaleDateString()}
+                </div>
+            ),
+        },
+        {
+            id: "actions",
+            cell: ({ row }) => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+                            size="icon"
+                        >
+                            <MoreHorizontal />
+                            <span className="sr-only">{t("table.actions.openMenu")}</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem>
+                            <Eye className="h-4 w-4 mr-2" />
+                            {t("table.actions.view")}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Edit className="h-4 w-4 mr-2" />
+                            {t("table.actions.edit")}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Copy className="h-4 w-4 mr-2" />
+                            {t("table.actions.duplicate")}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="destructive">
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            {t("table.actions.delete")}
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ),
+        },
+    ]
+
+    const table = useReactTable({
+        data,
+        columns,
+        state: {
+            sorting,
+            columnVisibility,
+            rowSelection,
+            columnFilters,
+            pagination,
+        },
+        getRowId: (row) => row.id.toString(),
+        enableRowSelection: true,
+        onRowSelectionChange: setRowSelection,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        onColumnVisibilityChange: setColumnVisibility,
+        onPaginationChange: setPagination,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
+    })
+
+    return (
+        <div className="w-full space-y-4">
+            {/* Table Header */}
+            <div className="flex flex-col items-start sm:flex-row gap-4 sm:justify-between sm:items-center">
+                <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-semibold">{t("table.title")}</h2>
+                    <Badge variant="secondary" className="ml-2">
+                        {data.length} {t("table.totalSurveys")}
+                    </Badge>
+                </div>
+                <div className="flex w-full sm:w-auto items-center gap-2 justify-end">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm">
+                                <Columns />
+                                <span className="hidden lg:inline">{t("table.buttons.customizeColumns")}</span>
+                                <span className="lg:hidden">{t("table.buttons.columns")}</span>
+                                <ChevronDown />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                            {table
+                                .getAllColumns()
+                                .filter(
+                                    (column) =>
+                                        typeof column.accessorFn !== "undefined" &&
+                                        column.getCanHide()
+                                )
+                                .map((column) => {
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                            key={column.id}
+                                            className="capitalize"
+                                            checked={column.getIsVisible()}
+                                            onCheckedChange={(value) =>
+                                                column.toggleVisibility(!!value)
+                                            }
+                                        >
+                                            {column.id}
+                                        </DropdownMenuCheckboxItem>
+                                    )
+                                })}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button size="sm" asChild>
+                        <Link href="/survey/create">
+                            <Plus />
+                            <span className="hidden lg:inline">{t("table.buttons.createSurvey")}</span>
+                            <span className="lg:hidden">Create</span>
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+
+            {/* Search and Filters */}
+            <div className="flex items-center gap-4">
+                <div className="flex-1">
+                    <Input
+                        placeholder={t("table.search.placeholder")}
+                        value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("title")?.setFilterValue(event.target.value)
+                        }
+                        className="max-w-sm"
+                    />
+                </div>
+                <Select
+                    value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
+                    onValueChange={(value) =>
+                        table.getColumn("status")?.setFilterValue(value === "all" ? "" : value)
+                    }
+                >
+                    <SelectTrigger className="w-40">
+                        <SelectValue placeholder={t("table.filters.status")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">{t("table.filters.allStatuses")}</SelectItem>
+                        <SelectItem value="Active">{t("table.filters.active")}</SelectItem>
+                        <SelectItem value="Draft">{t("table.filters.draft")}</SelectItem>
+                        <SelectItem value="Completed">{t("table.filters.completed")}</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-hidden rounded-lg border">
+                <Table>
+                    <TableHeader className="bg-muted">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead key={header.id} colSpan={header.colSpan}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    )
+                                })}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
+                                    {t("table.messages.noResults")}
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex items-center justify-between px-4">
+                <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
+                    {table.getFilteredSelectedRowModel().rows.length} {t("table.pagination.of")}{" "}
+                    {table.getFilteredRowModel().rows.length} {t("table.pagination.rowsSelected")}
+                </div>
+                <div className="flex w-full items-center gap-8 lg:w-fit">
+                    <div className="hidden items-center gap-2 lg:flex">
+                        <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                            {t("table.pagination.rowsPerPage")}
+                        </Label>
+                        <Select
+                            value={`${table.getState().pagination.pageSize}`}
+                            onValueChange={(value) => {
+                                table.setPageSize(Number(value))
+                            }}
+                        >
+                            <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                                <SelectValue
+                                    placeholder={table.getState().pagination.pageSize}
+                                />
+                            </SelectTrigger>
+                            <SelectContent side="top">
+                                {[10, 20, 30, 40, 50].map((pageSize) => (
+                                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                                        {pageSize}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex w-fit items-center justify-center text-sm font-medium">
+                        {t("table.pagination.page")} {table.getState().pagination.pageIndex + 1} {t("table.pagination.of")}{" "}
+                        {table.getPageCount()}
+                    </div>
+                    <div className="ml-auto flex items-center gap-2 lg:ml-0">
+                        <Button
+                            variant="outline"
+                            className="hidden h-8 w-8 p-0 lg:flex"
+                            onClick={() => table.setPageIndex(0)}
+                            disabled={!table.getCanPreviousPage()}
+                        >
+                            <span className="sr-only">{t("table.pagination.goToFirstPage")}</span>
+                            <ChevronsLeft />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className="size-8"
+                            size="icon"
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                        >
+                            <span className="sr-only">{t("table.pagination.goToPreviousPage")}</span>
+                            <ChevronLeft />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className="size-8"
+                            size="icon"
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                        >
+                            <span className="sr-only">{t("table.pagination.goToNextPage")}</span>
+                            <ChevronRight />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className="hidden size-8 lg:flex"
+                            size="icon"
+                            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                            disabled={!table.getCanNextPage()}
+                        >
+                            <span className="sr-only">{t("table.pagination.goToLastPage")}</span>
+                            <ChevronsRight />
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}

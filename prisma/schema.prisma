@@ -89,8 +89,6 @@ model File {
 
   // Relations
   avatarFor User[] @relation("UserAvatar")
-  team      Team?  @relation("TeamFiles", fields: [teamId], references: [id])
-  teamId    Int?
 
   @@map("files")
 }
@@ -143,7 +141,6 @@ model Team {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  files   File[]       @relation("TeamFiles")
   members TeamMember[] @relation("TeamMembers")
   user    User[]       @relation("UserDefaultTeam")
 

@@ -69,12 +69,6 @@ export function NavUser() {
       icon: IconCreditCard,
       href: `/${locale}/subscription`,
     },
-
-    {
-      label: t("notifications"),
-      icon: IconNotification,
-      href: `/${locale}/notifications`,
-    },
     {
       label: t("settings"),
       icon: IconSettings,

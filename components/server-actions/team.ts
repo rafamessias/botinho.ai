@@ -43,6 +43,10 @@ const removeMemberSchema = z.object({
     userId: z.number(),
 })
 
+const deleteTeamSchema = z.object({
+    teamId: z.number(),
+})
+
 /**
  * Create a new team and make the current user the owner
  */
@@ -427,6 +431,109 @@ export const removeMemberAction = async (formData: z.infer<typeof removeMemberSc
         }
 
         return { success: false, error: t("messages.memberRemoveFailed") }
+    }
+}
+
+/**
+ * Delete a team and all its members (only team owner can do this)
+ */
+export const deleteTeamAction = async (formData: z.infer<typeof deleteTeamSchema>) => {
+    const t = await getTranslations("Team")
+
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        const validatedData = deleteTeamSchema.parse(formData)
+
+        // Get current user
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email }
+        })
+
+        if (!user) {
+            return { success: false, error: "User not found" }
+        }
+
+        // Check if user is the owner of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId: validatedData.teamId,
+                userId: user.id,
+                isOwner: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: t("messages.onlyTeamOwnerCanDeleteTeam") }
+        }
+
+        // Check if this is the user's only team
+        const userTeamsCount = await prisma.teamMember.count({
+            where: {
+                userId: teamMember.userId,
+            }
+        })
+
+        if (userTeamsCount <= 1) {
+            return { success: false, error: t("messages.cannotDeleteOnlyTeam") }
+        }
+
+        // Check if the deleted team is the current user's default team
+        const isDefaultTeam = user.defaultTeamId === validatedData.teamId
+
+        // Delete team and all its members in a transaction
+        await prisma.$transaction(async (tx) => {
+            // Delete all team members first (due to foreign key constraints)
+            await tx.teamMember.deleteMany({
+                where: { teamId: validatedData.teamId }
+            })
+
+            // Delete the team
+            await tx.team.delete({
+                where: { id: validatedData.teamId }
+            })
+
+            // If the deleted team was the default team, set the oldest remaining team as the new default
+            if (isDefaultTeam) {
+                // Find the oldest remaining team for the user
+                const oldestTeam = await tx.teamMember.findFirst({
+                    where: { userId: user.id },
+                    include: { team: true },
+                    orderBy: { createdAt: 'asc' }
+                })
+
+                // Update user's default team to the oldest remaining team
+                if (oldestTeam) {
+                    await tx.user.update({
+                        where: { id: user.id },
+                        data: { defaultTeamId: oldestTeam.teamId }
+                    })
+                } else {
+                    // Fallback: set default team to null if no teams remain (shouldn't happen due to validation above)
+                    await tx.user.update({
+                        where: { id: user.id },
+                        data: { defaultTeamId: null }
+                    })
+                }
+            }
+        })
+
+        return {
+            success: true,
+            message: t("messages.deleteSuccess"),
+        }
+
+    } catch (error) {
+        console.error("Delete team error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("messages.deleteFailed") }
     }
 }
 

@@ -124,48 +124,6 @@ export function ProfileForm() {
 
     return (
         <div className="space-y-6">
-            {/* Avatar Section */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t("avatar.title")}</CardTitle>
-                    <CardDescription>{t("avatar.description")}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center space-x-4">
-                        <div className="relative">
-                            <Avatar className="h-20 w-20">
-                                <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
-                                <AvatarFallback className="text-lg">
-                                    {user.firstName?.charAt(0) || ""}{user.lastName?.charAt(0) || ""}
-                                </AvatarFallback>
-                            </Avatar>
-                            <label
-                                htmlFor="avatar-upload"
-                                className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-2 cursor-pointer hover:bg-primary/90 transition-colors"
-                                title={t("avatar.change")}
-                            >
-                                <IconCamera className="h-4 w-4" />
-                            </label>
-                            <input
-                                id="avatar-upload"
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={handleAvatarChange}
-                                disabled={isAvatarUpdating}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <p className="text-sm text-muted-foreground">
-                                {t("avatar.instructions")}
-                            </p>
-                            {isAvatarUpdating && (
-                                <p className="text-sm text-blue-600">{t("avatar.updating")}</p>
-                            )}
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
 
             {/* Profile Information Section */}
             <Card>

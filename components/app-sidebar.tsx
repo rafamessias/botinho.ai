@@ -2,28 +2,14 @@
 
 import * as React from "react"
 import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
 import {
-  IconCamera,
-  IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
   IconInnerShadowTop,
   IconListDetails,
-  IconReport,
-  IconSettings,
   IconUsers,
-  IconBuilding,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -51,30 +37,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconDashboard,
       },
       {
-        title: t("navigation.lifecycle"),
-        url: "/lifecycle",
+        title: t("navigation.surveys"),
+        url: "/survey",
         icon: IconListDetails,
-      },
-      {
-        title: t("navigation.analytics"),
-        url: "/analytics",
-        icon: IconChartBar,
-      },
-      {
-        title: t("navigation.projects"),
-        url: "/projects",
-        icon: IconFolder,
       },
       {
         title: t("navigation.team"),
         url: "/team",
         icon: IconUsers,
-      },
-      {
-        title: t("navigation.company"),
-        url: "/company",
-        icon: IconBuilding,
-      },
+      }
     ],
 
   }
