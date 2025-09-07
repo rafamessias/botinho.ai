@@ -6,7 +6,7 @@ export default async function OTPPage() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-muted">
+        <div className="min-h-screen flex items-center justify-center bg-sidebar">
             <div className="w-full max-w-md space-y-6 p-6">
                 <div className="text-center space-y-2">
                     <h1 className="text-2xl font-bold">{t('title')}</h1>
