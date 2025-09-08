@@ -891,6 +891,11 @@
                 "label": "Name",
                 "placeholder": "Enter survey name"
             },
+            "type": {
+                "label": "Survey Type",
+                "placeholder": "Select survey type",
+                "manageTypes": "Manage Types"
+            },
             "enabled": {
                 "label": "Enable Survey",
                 "description": "Make this survey active and available for responses"
@@ -903,6 +908,10 @@
         "questions": {
             "title": "Questions",
             "addQuestion": "Add Question",
+            "collapseAll": "Collapse All",
+            "expandAll": "Expand All",
+            "question": "question",
+            "questions": "questions",
             "questionTitle": {
                 "label": "Title",
                 "placeholder": "Enter question title"
@@ -914,6 +923,28 @@
             "format": {
                 "label": "Format",
                 "placeholder": "Select question format"
+            },
+            "required": {
+                "label": "Required",
+                "description": "Make this question mandatory"
+            },
+            "options": {
+                "label": "Options",
+                "addOption": "Add Option",
+                "optionPlaceholder": "Enter option text",
+                "removeOption": "Remove option"
+            },
+            "yesNoLabels": {
+                "label": "Custom Labels",
+                "yesLabel": "Yes Label",
+                "noLabel": "No Label",
+                "yesPlaceholder": "Enter yes label",
+                "noPlaceholder": "Enter no label"
+            },
+            "buttonLabel": {
+                "label": "Button Label",
+                "buttonLabel": "Button Text",
+                "buttonPlaceholder": "Continue"
             }
         },
         "targets": {
@@ -924,22 +955,83 @@
         },
         "style": {
             "title": "Style",
-            "primaryColor": {
-                "label": "Primary Color"
+            "collapse": "Collapse",
+            "expand": "Expand",
+            "backgroundColor": {
+                "label": "Background Colour"
+            },
+            "textColor": {
+                "label": "Text Colour"
+            },
+            "buttonBackgroundColor": {
+                "label": "Button Background Colour"
+            },
+            "buttonTextColor": {
+                "label": "Button Text Colour"
+            },
+            "margin": {
+                "label": "Margin"
+            },
+            "padding": {
+                "label": "Padding"
+            },
+            "borderRadius": {
+                "label": "Border Radius"
+            },
+            "titleFontSize": {
+                "label": "Title Font Size"
+            },
+            "bodyFontSize": {
+                "label": "Body Font Size"
             },
             "fontFamily": {
                 "label": "Font Family",
                 "placeholder": "Select font family"
-            },
-            "borderRadius": {
-                "label": "Border Radius",
-                "placeholder": "Select border radius"
             },
             "preview": {
                 "label": "Preview",
                 "title": "Sample Question",
                 "description": "This is how your survey will look to respondents",
                 "button": "Submit Response"
+            }
+        },
+        "surveyTypes": {
+            "modal": {
+                "title": "Manage Survey Types",
+                "description": "Create, edit, or delete survey types",
+                "createNew": "Create New Type",
+                "editType": "Edit Type",
+                "deleteType": "Delete Type",
+                "typeName": "Type Name",
+                "typeNamePlaceholder": "Enter type name",
+                "save": "Save",
+                "cancel": "Cancel",
+                "delete": "Delete",
+                "saving": "Saving...",
+                "deleting": "Deleting..."
+            },
+            "actions": {
+                "edit": "Edit",
+                "delete": "Delete",
+                "openMenu": "Open menu"
+            },
+            "messages": {
+                "createSuccess": "Survey type created successfully",
+                "updateSuccess": "Survey type updated successfully",
+                "deleteSuccess": "Survey type deleted successfully",
+                "createFailed": "Failed to create survey type",
+                "updateFailed": "Failed to update survey type",
+                "deleteFailed": "Failed to delete survey type",
+                "nameRequired": "Type name is required",
+                "nameTooLong": "Type name is too long"
+            },
+            "defaultTypes": {
+                "customerFeedback": "Customer Feedback",
+                "internal": "Internal",
+                "marketResearch": "Market Research",
+                "employeeSatisfaction": "Employee Satisfaction",
+                "productFeedback": "Product Feedback",
+                "eventFeedback": "Event Feedback"
             }
         }
     }

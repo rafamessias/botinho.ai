@@ -201,8 +201,8 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
             </div>
 
             {/* Main Team Card */}
-            <Card className="border-none">
-                <CardHeader className="space-y-4 lg:space-y-6">
+            <Card className="border-none p-0">
+                <CardHeader className="space-y-4 lg:space-y-6 p-0">
                     {/* Team Selection and Actions */}
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div className="flex items-center gap-4">
@@ -344,7 +344,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
 
                 {/* Team Members Section */}
                 {selectedTeam && (
-                    <CardContent className="pt-0">
+                    <CardContent className="p-0">
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div>

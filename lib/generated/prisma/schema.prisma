@@ -89,8 +89,6 @@ model File {
 
   // Relations
   avatarFor User[] @relation("UserAvatar")
-  team      Team?  @relation("TeamFiles", fields: [teamId], references: [id])
-  teamId    Int?
 
   @@map("files")
 }
@@ -143,9 +141,15 @@ model Team {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  files   File[]       @relation("TeamFiles")
-  members TeamMember[] @relation("TeamMembers")
-  user    User[]       @relation("UserDefaultTeam")
+  members           TeamMember[]       @relation("TeamMembers")
+  user              User[]             @relation("UserDefaultTeam")
+  surveys           Survey[]
+  surveyTypes       SurveyType[]
+  surveysStyle      SurveyStyle[]
+  questions         Question[]
+  questionOptions   QuestionOption[]
+  questionResponses QuestionResponse[]
+  surveyResponses   SurveyResponse[]
 
   @@map("teams")
 }
@@ -169,4 +173,187 @@ model TeamMember {
 
   @@unique([userId, teamId])
   @@map("team_members")
+}
+
+// Survey-related enums
+enum SurveyStatus {
+  draft
+  published
+  archived
+}
+
+enum QuestionFormat {
+  YES_NO
+  STAR_RATING
+  LONG_TEXT
+  STATEMENT
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+}
+
+enum ResponseStatus {
+  pending
+  completed
+  abandoned
+}
+
+// Survey Type model for categorization
+model SurveyType {
+  id        String   @id @default(cuid())
+  name      String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  surveys Survey[]
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("survey_types")
+}
+
+// Survey model
+model Survey {
+  id                     String       @id @default(cuid())
+  name                   String
+  description            String?
+  status                 SurveyStatus @default(draft)
+  enabled                Boolean      @default(true)
+  allowMultipleResponses Boolean      @default(true)
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+
+  // Relations
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  typeId String?
+  type   SurveyType? @relation(fields: [typeId], references: [id])
+
+  questions Question[]
+  style     SurveyStyle?
+  responses SurveyResponse[]
+
+  @@map("surveys")
+}
+
+// Survey Style model for customization
+model SurveyStyle {
+  id                    String   @id @default(cuid())
+  backgroundColor       String   @default("transparent")
+  textColor             String   @default("#222222")
+  buttonBackgroundColor String   @default("#222222")
+  buttonTextColor       String   @default("#ffffff")
+  margin                String   @default("16px 0px")
+  padding               String   @default("16px")
+  borderRadius          String   @default("6px")
+  titleFontSize         String   @default("18px")
+  bodyFontSize          String   @default("16px")
+  fontFamily            String   @default("Inter")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  surveyId String @unique
+  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("survey_styles")
+}
+
+// Question model
+model Question {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  format      QuestionFormat
+  required    Boolean        @default(false)
+  order       Int // For ordering questions
+  yesLabel    String? // For Yes/No questions
+  noLabel     String? // For Yes/No questions
+  buttonLabel String? // For Statement questions
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Relations
+  surveyId String
+  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  options   QuestionOption[]
+  responses QuestionResponse[]
+
+  @@map("questions")
+}
+
+// Question Option model for choice-based questions
+model QuestionOption {
+  id        String   @id @default(cuid())
+  text      String
+  order     Int // For ordering options
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  responses QuestionResponse[]
+
+  @@map("question_options")
+}
+
+// Survey Response model
+model SurveyResponse {
+  id          String         @id @default(cuid())
+  status      ResponseStatus @default(pending)
+  submittedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Relations
+  surveyId String
+  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  questionResponses QuestionResponse[]
+
+  @@map("survey_responses")
+}
+
+// Question Response model
+model QuestionResponse {
+  id           String   @id @default(cuid())
+  isOther      Boolean? @default(false)
+  textValue    String? // For text-based responses
+  numberValue  Int? // For rating responses
+  booleanValue Boolean? // For Yes/No responses
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  optionId String?
+  option   QuestionOption? @relation(fields: [optionId], references: [id])
+
+  responseId String
+  response   SurveyResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("question_responses")
 }

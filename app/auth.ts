@@ -161,6 +161,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 confirmed: true,
                             },
                         })
+
+                        // Create a new team for the user and assign ownership
+                        const newTeam = await prisma.team.create({
+                            data: {
+                                name: `${newUser.firstName || "New"}'s Team`,
+                                members: {
+                                    create: [
+                                        {
+                                            userId: newUser.id,
+                                            isOwner: true,
+                                            isAdmin: true,
+                                            canPost: true,
+                                            canApprove: true,
+                                            teamMemberStatus: 'accepted',
+                                        }
+                                    ]
+                                }
+                            }
+                        });
+
+                        // Update user's default team
+                        await prisma.user.update({
+                            where: { id: newUser.id },
+                            data: { defaultTeamId: newTeam.id }
+                        });
+
                         token.id = newUser.id.toString()
                         token.email = newUser.email
                         token.language = newUser.language

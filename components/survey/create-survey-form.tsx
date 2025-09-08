@@ -10,13 +10,13 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { SurveyDetailsSection } from "@/components/survey/survey-details-section"
 import { QuestionsSection } from "@/components/survey/questions-section"
-import { TargetsSection } from "@/components/survey/targets-section"
 import { StyleSection } from "@/components/survey/style-section"
 
 export const CreateSurveyForm = () => {
     const t = useTranslations("CreateSurvey")
     const [surveyData, setSurveyData] = useState({
         name: "",
+        type: "",
         enabled: true,
         allowMultipleResponses: true,
         questions: [
@@ -24,16 +24,23 @@ export const CreateSurveyForm = () => {
                 id: 1,
                 title: "",
                 description: "",
-                format: "Multiple Choice",
+                format: "Yes/No",
                 required: false,
-                options: []
+                options: [] as string[]
             }
         ],
         targets: [],
         style: {
-            primaryColor: "#3b82f6",
-            fontFamily: "Inter",
-            borderRadius: "8px"
+            backgroundColor: "transparent",
+            textColor: "#222222",
+            buttonBackgroundColor: "#222222",
+            buttonTextColor: "#ffffff",
+            margin: "16px 0px",
+            padding: "16px",
+            borderRadius: "6px",
+            titleFontSize: "18px",
+            bodyFontSize: "16px",
+            fontFamily: "Inter"
         }
     })
 
@@ -48,7 +55,7 @@ export const CreateSurveyForm = () => {
     }
 
     return (
-        <div className="px-4 lg:px-6 max-w-4xl space-y-6">
+        <div className="space-y-6">
             {/* Page Header */}
             <div className="space-y-2">
                 <p className="text-muted-foreground">{t("description")}</p>
@@ -66,12 +73,6 @@ export const CreateSurveyForm = () => {
                 onChange={(questions) => setSurveyData({ ...surveyData, questions })}
             />
 
-            {/* Targets Section */}
-            <TargetsSection
-                targets={surveyData.targets}
-                onChange={(targets) => setSurveyData({ ...surveyData, targets })}
-            />
-
             {/* Style Section */}
             <StyleSection
                 style={surveyData.style}
@@ -79,8 +80,8 @@ export const CreateSurveyForm = () => {
             />
 
             {/* Action Buttons */}
-            <Card>
-                <CardContent className="pt-6">
+            <Card className="border-none px-0 pt-4">
+                <CardContent className="pt-6 p-0">
                     <div className="flex flex-col sm:flex-row gap-3 justify-end">
                         <Button variant="outline" onClick={handleSave}>
                             {t("actions.saveDraft")}

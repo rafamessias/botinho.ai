@@ -891,6 +891,11 @@
                 "label": "Nome",
                 "placeholder": "Digite o nome da pesquisa"
             },
+            "type": {
+                "label": "Tipo de Pesquisa",
+                "placeholder": "Selecione o tipo de pesquisa",
+                "manageTypes": "Gerenciar Tipos"
+            },
             "enabled": {
                 "label": "Ativar Pesquisa",
                 "description": "Tornar esta pesquisa ativa e disponível para respostas"
@@ -903,6 +908,10 @@
         "questions": {
             "title": "Perguntas",
             "addQuestion": "Adicionar Pergunta",
+            "collapseAll": "Recolher Todas",
+            "expandAll": "Expandir Todas",
+            "question": "pergunta",
+            "questions": "perguntas",
             "questionTitle": {
                 "label": "Título",
                 "placeholder": "Digite o título da pergunta"
@@ -914,6 +923,28 @@
             "format": {
                 "label": "Formato",
                 "placeholder": "Selecione o formato da pergunta"
+            },
+            "required": {
+                "label": "Obrigatória",
+                "description": "Tornar esta pergunta obrigatória"
+            },
+            "options": {
+                "label": "Opções",
+                "addOption": "Adicionar Opção",
+                "optionPlaceholder": "Digite o texto da opção",
+                "removeOption": "Remover opção"
+            },
+            "yesNoLabels": {
+                "label": "Rótulos Personalizados",
+                "yesLabel": "Rótulo Sim",
+                "noLabel": "Rótulo Não",
+                "yesPlaceholder": "Digite o rótulo para sim",
+                "noPlaceholder": "Digite o rótulo para não"
+            },
+            "buttonLabel": {
+                "label": "Rótulo do Botão",
+                "buttonLabel": "Texto do Botão",
+                "buttonPlaceholder": "Continuar"
             }
         },
         "targets": {
@@ -924,22 +955,83 @@
         },
         "style": {
             "title": "Estilo",
-            "primaryColor": {
-                "label": "Cor Primária"
+            "collapse": "Recolher",
+            "expand": "Expandir",
+            "backgroundColor": {
+                "label": "Cor de Fundo"
+            },
+            "textColor": {
+                "label": "Cor do Texto"
+            },
+            "buttonBackgroundColor": {
+                "label": "Cor de Fundo do Botão"
+            },
+            "buttonTextColor": {
+                "label": "Cor do Texto do Botão"
+            },
+            "margin": {
+                "label": "Margem"
+            },
+            "padding": {
+                "label": "Preenchimento"
+            },
+            "borderRadius": {
+                "label": "Raio da Borda"
+            },
+            "titleFontSize": {
+                "label": "Tamanho da Fonte do Título"
+            },
+            "bodyFontSize": {
+                "label": "Tamanho da Fonte do Corpo"
             },
             "fontFamily": {
                 "label": "Fonte",
                 "placeholder": "Selecione a fonte"
-            },
-            "borderRadius": {
-                "label": "Raio da Borda",
-                "placeholder": "Selecione o raio da borda"
             },
             "preview": {
                 "label": "Visualização",
                 "title": "Pergunta de Exemplo",
                 "description": "É assim que sua pesquisa aparecerá para os respondentes",
                 "button": "Enviar Resposta"
+            }
+        },
+        "surveyTypes": {
+            "modal": {
+                "title": "Gerenciar Tipos de Pesquisa",
+                "description": "Criar, editar ou excluir tipos de pesquisa",
+                "createNew": "Criar Novo Tipo",
+                "editType": "Editar Tipo",
+                "deleteType": "Excluir Tipo",
+                "typeName": "Nome do Tipo",
+                "typeNamePlaceholder": "Digite o nome do tipo",
+                "save": "Salvar",
+                "cancel": "Cancelar",
+                "delete": "Excluir",
+                "saving": "Salvando...",
+                "deleting": "Excluindo..."
+            },
+            "actions": {
+                "edit": "Editar",
+                "delete": "Excluir",
+                "openMenu": "Abrir menu"
+            },
+            "messages": {
+                "createSuccess": "Tipo de pesquisa criado com sucesso",
+                "updateSuccess": "Tipo de pesquisa atualizado com sucesso",
+                "deleteSuccess": "Tipo de pesquisa excluído com sucesso",
+                "createFailed": "Falha ao criar tipo de pesquisa",
+                "updateFailed": "Falha ao atualizar tipo de pesquisa",
+                "deleteFailed": "Falha ao excluir tipo de pesquisa",
+                "nameRequired": "Nome do tipo é obrigatório",
+                "nameTooLong": "Nome do tipo é muito longo"
+            },
+            "defaultTypes": {
+                "customerFeedback": "Feedback do Cliente",
+                "internal": "Interno",
+                "marketResearch": "Pesquisa de Mercado",
+                "employeeSatisfaction": "Satisfação do Funcionário",
+                "productFeedback": "Feedback do Produto",
+                "eventFeedback": "Feedback do Evento"
             }
         }
     }

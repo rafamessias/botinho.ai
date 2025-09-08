@@ -1,21 +1,24 @@
 "use client"
 
+import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
 interface Style {
-    primaryColor: string
-    fontFamily: string
+    backgroundColor: string
+    textColor: string
+    buttonBackgroundColor: string
+    buttonTextColor: string
+    margin: string
+    padding: string
     borderRadius: string
+    titleFontSize: string
+    bodyFontSize: string
+    fontFamily: string
 }
 
 interface StyleSectionProps {
@@ -23,126 +26,178 @@ interface StyleSectionProps {
     onChange: (style: Style) => void
 }
 
-const fontFamilies = [
-    "Inter",
-    "Roboto",
-    "Open Sans",
-    "Lato",
-    "Montserrat",
-    "Poppins",
-    "Source Sans Pro"
-]
-
-const borderRadiusOptions = [
-    { value: "0px", label: "None" },
-    { value: "4px", label: "Small" },
-    { value: "8px", label: "Medium" },
-    { value: "12px", label: "Large" },
-    { value: "16px", label: "Extra Large" }
-]
-
 export const StyleSection = ({ style, onChange }: StyleSectionProps) => {
     const t = useTranslations("CreateSurvey.style")
+    const [isExpanded, setIsExpanded] = useState(true)
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{t("title")}</CardTitle>
+        <Card className="border-none px-0 pt-4">
+            <CardHeader className="p-0">
+                <div className="flex items-center justify-between">
+                    <CardTitle>{t("title")}</CardTitle>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="flex items-center gap-2"
+                    >
+                        {isExpanded ? (
+                            <>
+                                <ChevronUp className="h-4 w-4" />
+                                {t("collapse")}
+                            </>
+                        ) : (
+                            <>
+                                <ChevronDown className="h-4 w-4" />
+                                {t("expand")}
+                            </>
+                        )}
+                    </Button>
+                </div>
             </CardHeader>
-            <CardContent className="space-y-6">
-                {/* Primary Color */}
-                <div className="space-y-2">
-                    <Label htmlFor="primary-color">{t("primaryColor.label")}</Label>
-                    <div className="flex items-center gap-3">
-                        <Input
-                            id="primary-color"
-                            type="color"
-                            value={style.primaryColor}
-                            onChange={(e) => onChange({ ...style, primaryColor: e.target.value })}
-                            className="w-16 h-10 p-1 border rounded"
-                        />
-                        <Input
-                            value={style.primaryColor}
-                            onChange={(e) => onChange({ ...style, primaryColor: e.target.value })}
-                            placeholder="#3b82f6"
-                            className="flex-1"
-                        />
-                    </div>
-                </div>
-
-                {/* Font Family */}
-                <div className="space-y-2">
-                    <Label htmlFor="font-family">{t("fontFamily.label")}</Label>
-                    <Select
-                        value={style.fontFamily}
-                        onValueChange={(value) => onChange({ ...style, fontFamily: value })}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder={t("fontFamily.placeholder")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {fontFamilies.map((font) => (
-                                <SelectItem key={font} value={font}>
-                                    <span style={{ fontFamily: font }}>{font}</span>
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                {/* Border Radius */}
-                <div className="space-y-2">
-                    <Label htmlFor="border-radius">{t("borderRadius.label")}</Label>
-                    <Select
-                        value={style.borderRadius}
-                        onValueChange={(value) => onChange({ ...style, borderRadius: value })}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder={t("borderRadius.placeholder")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {borderRadiusOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                {/* Preview */}
-                <div className="space-y-2">
-                    <Label>{t("preview.label")}</Label>
-                    <div
-                        className="p-4 border-2 border-dashed rounded-lg"
-                        style={{
-                            backgroundColor: style.primaryColor + "10",
-                            borderColor: style.primaryColor + "30",
-                            borderRadius: style.borderRadius,
-                            fontFamily: style.fontFamily
-                        }}
-                    >
-                        <div
-                            className="text-sm font-medium mb-2"
-                            style={{ color: style.primaryColor }}
-                        >
-                            {t("preview.title")}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                            {t("preview.description")}
-                        </div>
-                        <div
-                            className="mt-3 px-3 py-2 rounded text-sm font-medium text-white"
-                            style={{
-                                backgroundColor: style.primaryColor,
-                                borderRadius: style.borderRadius
-                            }}
-                        >
-                            {t("preview.button")}
+            {isExpanded && (
+                <CardContent className="space-y-6 p-0">
+                    {/* Background Colour */}
+                    <div className="space-y-2">
+                        <Label htmlFor="background-color">{t("backgroundColor.label")}</Label>
+                        <div className="flex items-center gap-3">
+                            <Input
+                                id="background-color"
+                                type="color"
+                                value={style.backgroundColor === "transparent" ? "#ffffff" : style.backgroundColor}
+                                onChange={(e) => onChange({ ...style, backgroundColor: e.target.value })}
+                                className="w-16 h-10 p-1 border rounded"
+                            />
+                            <Input
+                                value={style.backgroundColor}
+                                onChange={(e) => onChange({ ...style, backgroundColor: e.target.value })}
+                                placeholder="transparent"
+                                className="flex-1"
+                            />
                         </div>
                     </div>
-                </div>
-            </CardContent>
+
+                    {/* Text Colour */}
+                    <div className="space-y-2">
+                        <Label htmlFor="text-color">{t("textColor.label")}</Label>
+                        <div className="flex items-center gap-3">
+                            <Input
+                                id="text-color"
+                                type="color"
+                                value={style.textColor}
+                                onChange={(e) => onChange({ ...style, textColor: e.target.value })}
+                                className="w-16 h-10 p-1 border rounded"
+                            />
+                            <Input
+                                value={style.textColor}
+                                onChange={(e) => onChange({ ...style, textColor: e.target.value })}
+                                placeholder="#222222"
+                                className="flex-1"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Button Background Colour */}
+                    <div className="space-y-2">
+                        <Label htmlFor="button-background-color">{t("buttonBackgroundColor.label")}</Label>
+                        <div className="flex items-center gap-3">
+                            <Input
+                                id="button-background-color"
+                                type="color"
+                                value={style.buttonBackgroundColor === "transparent" ? "#ffffff" : style.buttonBackgroundColor}
+                                onChange={(e) => onChange({ ...style, buttonBackgroundColor: e.target.value })}
+                                className="w-16 h-10 p-1 border rounded"
+                            />
+                            <Input
+                                value={style.buttonBackgroundColor}
+                                onChange={(e) => onChange({ ...style, buttonBackgroundColor: e.target.value })}
+                                placeholder="#222222"
+                                className="flex-1"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Button Text Colour */}
+                    <div className="space-y-2">
+                        <Label htmlFor="button-text-color">{t("buttonTextColor.label")}</Label>
+                        <div className="flex items-center gap-3">
+                            <Input
+                                id="button-text-color"
+                                type="color"
+                                value={style.buttonTextColor === "transparent" ? "#ffffff" : style.buttonTextColor}
+                                onChange={(e) => onChange({ ...style, buttonTextColor: e.target.value })}
+                                className="w-16 h-10 p-1 border rounded"
+                            />
+                            <Input
+                                value={style.buttonTextColor}
+                                onChange={(e) => onChange({ ...style, buttonTextColor: e.target.value })}
+                                placeholder="#ffffff"
+                                className="flex-1"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Margin */}
+                    <div className="space-y-2">
+                        <Label htmlFor="margin">{t("margin.label")}</Label>
+                        <Input
+                            id="margin"
+                            value={style.margin}
+                            onChange={(e) => onChange({ ...style, margin: e.target.value })}
+                            placeholder="16px 0px"
+                            className="w-full"
+                        />
+                    </div>
+
+                    {/* Padding */}
+                    <div className="space-y-2">
+                        <Label htmlFor="padding">{t("padding.label")}</Label>
+                        <Input
+                            id="padding"
+                            value={style.padding}
+                            onChange={(e) => onChange({ ...style, padding: e.target.value })}
+                            placeholder="16px"
+                            className="w-full"
+                        />
+                    </div>
+
+                    {/* Border Radius */}
+                    <div className="space-y-2">
+                        <Label htmlFor="border-radius">{t("borderRadius.label")}</Label>
+                        <Input
+                            id="border-radius"
+                            value={style.borderRadius}
+                            onChange={(e) => onChange({ ...style, borderRadius: e.target.value })}
+                            placeholder="6px"
+                            className="w-full"
+                        />
+                    </div>
+
+                    {/* Title Font Size */}
+                    <div className="space-y-2">
+                        <Label htmlFor="title-font-size">{t("titleFontSize.label")}</Label>
+                        <Input
+                            id="title-font-size"
+                            value={style.titleFontSize}
+                            onChange={(e) => onChange({ ...style, titleFontSize: e.target.value })}
+                            placeholder="18px"
+                            className="w-full"
+                        />
+                    </div>
+
+                    {/* Body Font Size */}
+                    <div className="space-y-2">
+                        <Label htmlFor="body-font-size">{t("bodyFontSize.label")}</Label>
+                        <Input
+                            id="body-font-size"
+                            value={style.bodyFontSize}
+                            onChange={(e) => onChange({ ...style, bodyFontSize: e.target.value })}
+                            placeholder="16px"
+                            className="w-full"
+                        />
+                    </div>
+                </CardContent>
+            )}
         </Card>
     )
 }

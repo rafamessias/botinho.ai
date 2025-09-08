@@ -14,7 +14,7 @@ const updateThemeSchema = z.object({
 const updateProfileSchema = z.object({
     firstName: z.string().min(1, "First name is required").max(50, "First name is too long"),
     lastName: z.string().max(50, "Last name is too long").optional(),
-    phone: z.string().min(10, "Phone number must be at least 10 characters").regex(/^[+]?[\d\s\-\(\)]{10,}$/, "Invalid phone number format").optional(),
+    phone: z.string().optional(),
 })
 
 const updateLanguageSchema = z.object({

@@ -12,9 +12,6 @@ import { Input } from "@/components/ui/input"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { IconCamera, IconUser } from "@tabler/icons-react"
 
 import { updateUserProfileAction, updateUserAvatarAction } from "@/components/server-actions/user"
 import { useUser } from "@/components/user-provider"
@@ -30,7 +27,21 @@ export function ProfileForm() {
     const profileFormSchema = React.useMemo(() => z.object({
         firstName: z.string().min(1, t("validation.firstNameRequired")).max(50, t("validation.firstNameTooLong")),
         lastName: z.string().max(50, t("validation.lastNameTooLong")).optional(),
-        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^[+]?[\d\s\-\(\)]{10,}$/, t("validation.phoneInvalid")).optional(),
+        phone: z.string().optional().refine((val) => {
+            // Allow empty, null, undefined, or whitespace-only values
+            if (val === "+1" || val === "+55") return true;
+
+            // If no digits after cleaning, consider it empty (valid)
+            if (val?.length === 0) return true;
+
+            // Remove all non-digit characters to check if there are actual phone digits
+            const digitsOnly = val?.replace(/\D/g, "") || "";
+
+            // If there are digits, validate the phone number format
+            return digitsOnly?.length >= 10 && /^\d+$/.test(digitsOnly);
+        }, {
+            message: t("validation.phoneInvalid")
+        }),
     }), [t])
 
     type ProfileFormValues = z.infer<typeof profileFormSchema>
@@ -106,12 +117,12 @@ export function ProfileForm() {
 
     if (loading || !user) {
         return (
-            <Card>
-                <CardHeader>
+            <Card className="border-none p-0">
+                <CardHeader className="p-0">
                     <CardTitle>{t("title")}</CardTitle>
                     <CardDescription>{t("description")}</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     <div className="space-y-4">
                         <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
                         <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
@@ -126,12 +137,12 @@ export function ProfileForm() {
         <div className="space-y-6">
 
             {/* Profile Information Section */}
-            <Card>
-                <CardHeader>
+            <Card className="border-none p-0">
+                <CardHeader className="p-0">
                     <CardTitle>{t("profile.title")}</CardTitle>
                     <CardDescription>{t("profile.description")}</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -169,7 +180,9 @@ export function ProfileForm() {
                                 id="phone"
                                 placeholder={t("profile.phonePlaceholder")}
                                 value={form.watch("phone")}
-                                onChange={(value) => form.setValue("phone", value, { shouldValidate: true })}
+                                onChange={(value) => {
+                                    form.setValue("phone", value, { shouldValidate: true });
+                                }}
                             />
                             {form.formState.errors.phone && (
                                 <p className="text-sm text-red-500">
