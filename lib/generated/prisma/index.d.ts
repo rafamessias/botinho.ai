@@ -2216,27 +2216,27 @@ export namespace Prisma {
    */
 
   export type TeamCountOutputType = {
-    members: number
-    user: number
-    surveys: number
-    surveyTypes: number
-    surveysStyle: number
-    questions: number
     questionOptions: number
     questionResponses: number
+    questions: number
     surveyResponses: number
+    surveysStyle: number
+    surveyTypes: number
+    surveys: number
+    members: number
+    user: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    members?: boolean | TeamCountOutputTypeCountMembersArgs
-    user?: boolean | TeamCountOutputTypeCountUserArgs
-    surveys?: boolean | TeamCountOutputTypeCountSurveysArgs
-    surveyTypes?: boolean | TeamCountOutputTypeCountSurveyTypesArgs
-    surveysStyle?: boolean | TeamCountOutputTypeCountSurveysStyleArgs
-    questions?: boolean | TeamCountOutputTypeCountQuestionsArgs
     questionOptions?: boolean | TeamCountOutputTypeCountQuestionOptionsArgs
     questionResponses?: boolean | TeamCountOutputTypeCountQuestionResponsesArgs
+    questions?: boolean | TeamCountOutputTypeCountQuestionsArgs
     surveyResponses?: boolean | TeamCountOutputTypeCountSurveyResponsesArgs
+    surveysStyle?: boolean | TeamCountOutputTypeCountSurveysStyleArgs
+    surveyTypes?: boolean | TeamCountOutputTypeCountSurveyTypesArgs
+    surveys?: boolean | TeamCountOutputTypeCountSurveysArgs
+    members?: boolean | TeamCountOutputTypeCountMembersArgs
+    user?: boolean | TeamCountOutputTypeCountUserArgs
   }
 
   // Custom InputTypes
@@ -2248,48 +2248,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the TeamCountOutputType
      */
     select?: TeamCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * TeamCountOutputType without action
-   */
-  export type TeamCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TeamMemberWhereInput
-  }
-
-  /**
-   * TeamCountOutputType without action
-   */
-  export type TeamCountOutputTypeCountUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
-  }
-
-  /**
-   * TeamCountOutputType without action
-   */
-  export type TeamCountOutputTypeCountSurveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SurveyWhereInput
-  }
-
-  /**
-   * TeamCountOutputType without action
-   */
-  export type TeamCountOutputTypeCountSurveyTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SurveyTypeWhereInput
-  }
-
-  /**
-   * TeamCountOutputType without action
-   */
-  export type TeamCountOutputTypeCountSurveysStyleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SurveyStyleWhereInput
-  }
-
-  /**
-   * TeamCountOutputType without action
-   */
-  export type TeamCountOutputTypeCountQuestionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: QuestionWhereInput
   }
 
   /**
@@ -2309,8 +2267,50 @@ export namespace Prisma {
   /**
    * TeamCountOutputType without action
    */
+  export type TeamCountOutputTypeCountQuestionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuestionWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
   export type TeamCountOutputTypeCountSurveyResponsesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SurveyResponseWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountSurveysStyleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyStyleWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountSurveyTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyTypeWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountSurveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamMemberWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -2517,12 +2517,10 @@ export namespace Prisma {
 
   export type UserMinAggregateOutputType = {
     id: number | null
-    idProvider: string | null
     email: string | null
     provider: $Enums.Provider | null
     password: string | null
     resetPasswordToken: string | null
-    resetPasswordExpires: Date | null
     confirmationToken: string | null
     confirmed: boolean | null
     blocked: boolean | null
@@ -2531,21 +2529,21 @@ export namespace Prisma {
     lastName: string | null
     avatarUrl: string | null
     language: $Enums.Language | null
-    theme: $Enums.Theme | null
     createdAt: Date | null
     updatedAt: Date | null
     avatarId: number | null
+    idProvider: string | null
+    resetPasswordExpires: Date | null
+    theme: $Enums.Theme | null
     defaultTeamId: number | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: number | null
-    idProvider: string | null
     email: string | null
     provider: $Enums.Provider | null
     password: string | null
     resetPasswordToken: string | null
-    resetPasswordExpires: Date | null
     confirmationToken: string | null
     confirmed: boolean | null
     blocked: boolean | null
@@ -2554,21 +2552,21 @@ export namespace Prisma {
     lastName: string | null
     avatarUrl: string | null
     language: $Enums.Language | null
-    theme: $Enums.Theme | null
     createdAt: Date | null
     updatedAt: Date | null
     avatarId: number | null
+    idProvider: string | null
+    resetPasswordExpires: Date | null
+    theme: $Enums.Theme | null
     defaultTeamId: number | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
-    idProvider: number
     email: number
     provider: number
     password: number
     resetPasswordToken: number
-    resetPasswordExpires: number
     confirmationToken: number
     confirmed: number
     blocked: number
@@ -2577,10 +2575,12 @@ export namespace Prisma {
     lastName: number
     avatarUrl: number
     language: number
-    theme: number
     createdAt: number
     updatedAt: number
     avatarId: number
+    idProvider: number
+    resetPasswordExpires: number
+    theme: number
     defaultTeamId: number
     _all: number
   }
@@ -2600,12 +2600,10 @@ export namespace Prisma {
 
   export type UserMinAggregateInputType = {
     id?: true
-    idProvider?: true
     email?: true
     provider?: true
     password?: true
     resetPasswordToken?: true
-    resetPasswordExpires?: true
     confirmationToken?: true
     confirmed?: true
     blocked?: true
@@ -2614,21 +2612,21 @@ export namespace Prisma {
     lastName?: true
     avatarUrl?: true
     language?: true
-    theme?: true
     createdAt?: true
     updatedAt?: true
     avatarId?: true
+    idProvider?: true
+    resetPasswordExpires?: true
+    theme?: true
     defaultTeamId?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
-    idProvider?: true
     email?: true
     provider?: true
     password?: true
     resetPasswordToken?: true
-    resetPasswordExpires?: true
     confirmationToken?: true
     confirmed?: true
     blocked?: true
@@ -2637,21 +2635,21 @@ export namespace Prisma {
     lastName?: true
     avatarUrl?: true
     language?: true
-    theme?: true
     createdAt?: true
     updatedAt?: true
     avatarId?: true
+    idProvider?: true
+    resetPasswordExpires?: true
+    theme?: true
     defaultTeamId?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
-    idProvider?: true
     email?: true
     provider?: true
     password?: true
     resetPasswordToken?: true
-    resetPasswordExpires?: true
     confirmationToken?: true
     confirmed?: true
     blocked?: true
@@ -2660,10 +2658,12 @@ export namespace Prisma {
     lastName?: true
     avatarUrl?: true
     language?: true
-    theme?: true
     createdAt?: true
     updatedAt?: true
     avatarId?: true
+    idProvider?: true
+    resetPasswordExpires?: true
+    theme?: true
     defaultTeamId?: true
     _all?: true
   }
@@ -2756,12 +2756,10 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: number
-    idProvider: string | null
     email: string
     provider: $Enums.Provider
     password: string | null
     resetPasswordToken: string | null
-    resetPasswordExpires: Date | null
     confirmationToken: string | null
     confirmed: boolean | null
     blocked: boolean | null
@@ -2770,10 +2768,12 @@ export namespace Prisma {
     lastName: string | null
     avatarUrl: string | null
     language: $Enums.Language
-    theme: $Enums.Theme
     createdAt: Date
     updatedAt: Date
     avatarId: number | null
+    idProvider: string | null
+    resetPasswordExpires: Date | null
+    theme: $Enums.Theme
     defaultTeamId: number | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
@@ -2798,12 +2798,10 @@ export namespace Prisma {
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    idProvider?: boolean
     email?: boolean
     provider?: boolean
     password?: boolean
     resetPasswordToken?: boolean
-    resetPasswordExpires?: boolean
     confirmationToken?: boolean
     confirmed?: boolean
     blocked?: boolean
@@ -2812,27 +2810,27 @@ export namespace Prisma {
     lastName?: boolean
     avatarUrl?: boolean
     language?: boolean
-    theme?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     avatarId?: boolean
+    idProvider?: boolean
+    resetPasswordExpires?: boolean
+    theme?: boolean
     defaultTeamId?: boolean
-    avatar?: boolean | User$avatarArgs<ExtArgs>
-    team?: boolean | User$teamArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     teamMembers?: boolean | User$teamMembersArgs<ExtArgs>
+    avatar?: boolean | User$avatarArgs<ExtArgs>
+    team?: boolean | User$teamArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    idProvider?: boolean
     email?: boolean
     provider?: boolean
     password?: boolean
     resetPasswordToken?: boolean
-    resetPasswordExpires?: boolean
     confirmationToken?: boolean
     confirmed?: boolean
     blocked?: boolean
@@ -2841,10 +2839,12 @@ export namespace Prisma {
     lastName?: boolean
     avatarUrl?: boolean
     language?: boolean
-    theme?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     avatarId?: boolean
+    idProvider?: boolean
+    resetPasswordExpires?: boolean
+    theme?: boolean
     defaultTeamId?: boolean
     avatar?: boolean | User$avatarArgs<ExtArgs>
     team?: boolean | User$teamArgs<ExtArgs>
@@ -2852,12 +2852,10 @@ export namespace Prisma {
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    idProvider?: boolean
     email?: boolean
     provider?: boolean
     password?: boolean
     resetPasswordToken?: boolean
-    resetPasswordExpires?: boolean
     confirmationToken?: boolean
     confirmed?: boolean
     blocked?: boolean
@@ -2866,10 +2864,12 @@ export namespace Prisma {
     lastName?: boolean
     avatarUrl?: boolean
     language?: boolean
-    theme?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     avatarId?: boolean
+    idProvider?: boolean
+    resetPasswordExpires?: boolean
+    theme?: boolean
     defaultTeamId?: boolean
     avatar?: boolean | User$avatarArgs<ExtArgs>
     team?: boolean | User$teamArgs<ExtArgs>
@@ -2877,12 +2877,10 @@ export namespace Prisma {
 
   export type UserSelectScalar = {
     id?: boolean
-    idProvider?: boolean
     email?: boolean
     provider?: boolean
     password?: boolean
     resetPasswordToken?: boolean
-    resetPasswordExpires?: boolean
     confirmationToken?: boolean
     confirmed?: boolean
     blocked?: boolean
@@ -2891,20 +2889,22 @@ export namespace Prisma {
     lastName?: boolean
     avatarUrl?: boolean
     language?: boolean
-    theme?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     avatarId?: boolean
+    idProvider?: boolean
+    resetPasswordExpires?: boolean
+    theme?: boolean
     defaultTeamId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "idProvider" | "email" | "provider" | "password" | "resetPasswordToken" | "resetPasswordExpires" | "confirmationToken" | "confirmed" | "blocked" | "phone" | "firstName" | "lastName" | "avatarUrl" | "language" | "theme" | "createdAt" | "updatedAt" | "avatarId" | "defaultTeamId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "provider" | "password" | "resetPasswordToken" | "confirmationToken" | "confirmed" | "blocked" | "phone" | "firstName" | "lastName" | "avatarUrl" | "language" | "createdAt" | "updatedAt" | "avatarId" | "idProvider" | "resetPasswordExpires" | "theme" | "defaultTeamId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    avatar?: boolean | User$avatarArgs<ExtArgs>
-    team?: boolean | User$teamArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     teamMembers?: boolean | User$teamMembersArgs<ExtArgs>
+    avatar?: boolean | User$avatarArgs<ExtArgs>
+    team?: boolean | User$teamArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2919,20 +2919,18 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      avatar: Prisma.$FilePayload<ExtArgs> | null
-      team: Prisma.$TeamPayload<ExtArgs> | null
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       teamMembers: Prisma.$TeamMemberPayload<ExtArgs>[]
+      avatar: Prisma.$FilePayload<ExtArgs> | null
+      team: Prisma.$TeamPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      idProvider: string | null
       email: string
       provider: $Enums.Provider
       password: string | null
       resetPasswordToken: string | null
-      resetPasswordExpires: Date | null
       confirmationToken: string | null
       confirmed: boolean | null
       blocked: boolean | null
@@ -2941,10 +2939,12 @@ export namespace Prisma {
       lastName: string | null
       avatarUrl: string | null
       language: $Enums.Language
-      theme: $Enums.Theme
       createdAt: Date
       updatedAt: Date
       avatarId: number | null
+      idProvider: string | null
+      resetPasswordExpires: Date | null
+      theme: $Enums.Theme
       defaultTeamId: number | null
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -3340,11 +3340,11 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    avatar<T extends User$avatarArgs<ExtArgs> = {}>(args?: Subset<T, User$avatarArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    team<T extends User$teamArgs<ExtArgs> = {}>(args?: Subset<T, User$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     teamMembers<T extends User$teamMembersArgs<ExtArgs> = {}>(args?: Subset<T, User$teamMembersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    avatar<T extends User$avatarArgs<ExtArgs> = {}>(args?: Subset<T, User$avatarArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    team<T extends User$teamArgs<ExtArgs> = {}>(args?: Subset<T, User$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3375,12 +3375,10 @@ export namespace Prisma {
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'Int'>
-    readonly idProvider: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly provider: FieldRef<"User", 'Provider'>
     readonly password: FieldRef<"User", 'String'>
     readonly resetPasswordToken: FieldRef<"User", 'String'>
-    readonly resetPasswordExpires: FieldRef<"User", 'DateTime'>
     readonly confirmationToken: FieldRef<"User", 'String'>
     readonly confirmed: FieldRef<"User", 'Boolean'>
     readonly blocked: FieldRef<"User", 'Boolean'>
@@ -3389,10 +3387,12 @@ export namespace Prisma {
     readonly lastName: FieldRef<"User", 'String'>
     readonly avatarUrl: FieldRef<"User", 'String'>
     readonly language: FieldRef<"User", 'Language'>
-    readonly theme: FieldRef<"User", 'Theme'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly avatarId: FieldRef<"User", 'Int'>
+    readonly idProvider: FieldRef<"User", 'String'>
+    readonly resetPasswordExpires: FieldRef<"User", 'DateTime'>
+    readonly theme: FieldRef<"User", 'Theme'>
     readonly defaultTeamId: FieldRef<"User", 'Int'>
   }
     
@@ -3790,44 +3790,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.avatar
-   */
-  export type User$avatarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    where?: FileWhereInput
-  }
-
-  /**
-   * User.team
-   */
-  export type User$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Team
-     */
-    select?: TeamSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Team
-     */
-    omit?: TeamOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TeamInclude<ExtArgs> | null
-    where?: TeamWhereInput
-  }
-
-  /**
    * User.accounts
    */
   export type User$accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3897,6 +3859,44 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
+  }
+
+  /**
+   * User.avatar
+   */
+  export type User$avatarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+  }
+
+  /**
+   * User.team
+   */
+  export type User$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    where?: TeamWhereInput
   }
 
   /**
@@ -8340,10 +8340,20 @@ export namespace Prisma {
 
   export type TeamAvgAggregateOutputType = {
     id: number | null
+    ResponseRate: number | null
+    totalActiveSurveys: number | null
+    totalOpenSurveys: number | null
+    totalResponses: number | null
+    totalSurveys: number | null
   }
 
   export type TeamSumAggregateOutputType = {
     id: number | null
+    ResponseRate: number | null
+    totalActiveSurveys: number | null
+    totalOpenSurveys: number | null
+    totalResponses: number | null
+    totalSurveys: number | null
   }
 
   export type TeamMinAggregateOutputType = {
@@ -8352,6 +8362,11 @@ export namespace Prisma {
     description: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    ResponseRate: number | null
+    totalActiveSurveys: number | null
+    totalOpenSurveys: number | null
+    totalResponses: number | null
+    totalSurveys: number | null
   }
 
   export type TeamMaxAggregateOutputType = {
@@ -8360,6 +8375,11 @@ export namespace Prisma {
     description: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    ResponseRate: number | null
+    totalActiveSurveys: number | null
+    totalOpenSurveys: number | null
+    totalResponses: number | null
+    totalSurveys: number | null
   }
 
   export type TeamCountAggregateOutputType = {
@@ -8368,16 +8388,31 @@ export namespace Prisma {
     description: number
     createdAt: number
     updatedAt: number
+    ResponseRate: number
+    totalActiveSurveys: number
+    totalOpenSurveys: number
+    totalResponses: number
+    totalSurveys: number
     _all: number
   }
 
 
   export type TeamAvgAggregateInputType = {
     id?: true
+    ResponseRate?: true
+    totalActiveSurveys?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
+    totalSurveys?: true
   }
 
   export type TeamSumAggregateInputType = {
     id?: true
+    ResponseRate?: true
+    totalActiveSurveys?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
+    totalSurveys?: true
   }
 
   export type TeamMinAggregateInputType = {
@@ -8386,6 +8421,11 @@ export namespace Prisma {
     description?: true
     createdAt?: true
     updatedAt?: true
+    ResponseRate?: true
+    totalActiveSurveys?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
+    totalSurveys?: true
   }
 
   export type TeamMaxAggregateInputType = {
@@ -8394,6 +8434,11 @@ export namespace Prisma {
     description?: true
     createdAt?: true
     updatedAt?: true
+    ResponseRate?: true
+    totalActiveSurveys?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
+    totalSurveys?: true
   }
 
   export type TeamCountAggregateInputType = {
@@ -8402,6 +8447,11 @@ export namespace Prisma {
     description?: true
     createdAt?: true
     updatedAt?: true
+    ResponseRate?: true
+    totalActiveSurveys?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
+    totalSurveys?: true
     _all?: true
   }
 
@@ -8497,6 +8547,11 @@ export namespace Prisma {
     description: string | null
     createdAt: Date
     updatedAt: Date
+    ResponseRate: number
+    totalActiveSurveys: number
+    totalOpenSurveys: number
+    totalResponses: number
+    totalSurveys: number
     _count: TeamCountAggregateOutputType | null
     _avg: TeamAvgAggregateOutputType | null
     _sum: TeamSumAggregateOutputType | null
@@ -8524,15 +8579,20 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    members?: boolean | Team$membersArgs<ExtArgs>
-    user?: boolean | Team$userArgs<ExtArgs>
-    surveys?: boolean | Team$surveysArgs<ExtArgs>
-    surveyTypes?: boolean | Team$surveyTypesArgs<ExtArgs>
-    surveysStyle?: boolean | Team$surveysStyleArgs<ExtArgs>
-    questions?: boolean | Team$questionsArgs<ExtArgs>
+    ResponseRate?: boolean
+    totalActiveSurveys?: boolean
+    totalOpenSurveys?: boolean
+    totalResponses?: boolean
+    totalSurveys?: boolean
     questionOptions?: boolean | Team$questionOptionsArgs<ExtArgs>
     questionResponses?: boolean | Team$questionResponsesArgs<ExtArgs>
+    questions?: boolean | Team$questionsArgs<ExtArgs>
     surveyResponses?: boolean | Team$surveyResponsesArgs<ExtArgs>
+    surveysStyle?: boolean | Team$surveysStyleArgs<ExtArgs>
+    surveyTypes?: boolean | Team$surveyTypesArgs<ExtArgs>
+    surveys?: boolean | Team$surveysArgs<ExtArgs>
+    members?: boolean | Team$membersArgs<ExtArgs>
+    user?: boolean | Team$userArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
 
@@ -8542,6 +8602,11 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    ResponseRate?: boolean
+    totalActiveSurveys?: boolean
+    totalOpenSurveys?: boolean
+    totalResponses?: boolean
+    totalSurveys?: boolean
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8550,6 +8615,11 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    ResponseRate?: boolean
+    totalActiveSurveys?: boolean
+    totalOpenSurveys?: boolean
+    totalResponses?: boolean
+    totalSurveys?: boolean
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectScalar = {
@@ -8558,19 +8628,24 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    ResponseRate?: boolean
+    totalActiveSurveys?: boolean
+    totalOpenSurveys?: boolean
+    totalResponses?: boolean
+    totalSurveys?: boolean
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "updatedAt" | "ResponseRate" | "totalActiveSurveys" | "totalOpenSurveys" | "totalResponses" | "totalSurveys", ExtArgs["result"]["team"]>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    members?: boolean | Team$membersArgs<ExtArgs>
-    user?: boolean | Team$userArgs<ExtArgs>
-    surveys?: boolean | Team$surveysArgs<ExtArgs>
-    surveyTypes?: boolean | Team$surveyTypesArgs<ExtArgs>
-    surveysStyle?: boolean | Team$surveysStyleArgs<ExtArgs>
-    questions?: boolean | Team$questionsArgs<ExtArgs>
     questionOptions?: boolean | Team$questionOptionsArgs<ExtArgs>
     questionResponses?: boolean | Team$questionResponsesArgs<ExtArgs>
+    questions?: boolean | Team$questionsArgs<ExtArgs>
     surveyResponses?: boolean | Team$surveyResponsesArgs<ExtArgs>
+    surveysStyle?: boolean | Team$surveysStyleArgs<ExtArgs>
+    surveyTypes?: boolean | Team$surveyTypesArgs<ExtArgs>
+    surveys?: boolean | Team$surveysArgs<ExtArgs>
+    members?: boolean | Team$membersArgs<ExtArgs>
+    user?: boolean | Team$userArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8579,15 +8654,15 @@ export namespace Prisma {
   export type $TeamPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Team"
     objects: {
-      members: Prisma.$TeamMemberPayload<ExtArgs>[]
-      user: Prisma.$UserPayload<ExtArgs>[]
-      surveys: Prisma.$SurveyPayload<ExtArgs>[]
-      surveyTypes: Prisma.$SurveyTypePayload<ExtArgs>[]
-      surveysStyle: Prisma.$SurveyStylePayload<ExtArgs>[]
-      questions: Prisma.$QuestionPayload<ExtArgs>[]
       questionOptions: Prisma.$QuestionOptionPayload<ExtArgs>[]
       questionResponses: Prisma.$QuestionResponsePayload<ExtArgs>[]
+      questions: Prisma.$QuestionPayload<ExtArgs>[]
       surveyResponses: Prisma.$SurveyResponsePayload<ExtArgs>[]
+      surveysStyle: Prisma.$SurveyStylePayload<ExtArgs>[]
+      surveyTypes: Prisma.$SurveyTypePayload<ExtArgs>[]
+      surveys: Prisma.$SurveyPayload<ExtArgs>[]
+      members: Prisma.$TeamMemberPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -8595,6 +8670,11 @@ export namespace Prisma {
       description: string | null
       createdAt: Date
       updatedAt: Date
+      ResponseRate: number
+      totalActiveSurveys: number
+      totalOpenSurveys: number
+      totalResponses: number
+      totalSurveys: number
     }, ExtArgs["result"]["team"]>
     composites: {}
   }
@@ -8989,15 +9069,15 @@ export namespace Prisma {
    */
   export interface Prisma__TeamClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    members<T extends Team$membersArgs<ExtArgs> = {}>(args?: Subset<T, Team$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    user<T extends Team$userArgs<ExtArgs> = {}>(args?: Subset<T, Team$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    surveys<T extends Team$surveysArgs<ExtArgs> = {}>(args?: Subset<T, Team$surveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    surveyTypes<T extends Team$surveyTypesArgs<ExtArgs> = {}>(args?: Subset<T, Team$surveyTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    surveysStyle<T extends Team$surveysStyleArgs<ExtArgs> = {}>(args?: Subset<T, Team$surveysStyleArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyStylePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    questions<T extends Team$questionsArgs<ExtArgs> = {}>(args?: Subset<T, Team$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     questionOptions<T extends Team$questionOptionsArgs<ExtArgs> = {}>(args?: Subset<T, Team$questionOptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionOptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     questionResponses<T extends Team$questionResponsesArgs<ExtArgs> = {}>(args?: Subset<T, Team$questionResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    questions<T extends Team$questionsArgs<ExtArgs> = {}>(args?: Subset<T, Team$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     surveyResponses<T extends Team$surveyResponsesArgs<ExtArgs> = {}>(args?: Subset<T, Team$surveyResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    surveysStyle<T extends Team$surveysStyleArgs<ExtArgs> = {}>(args?: Subset<T, Team$surveysStyleArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyStylePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    surveyTypes<T extends Team$surveyTypesArgs<ExtArgs> = {}>(args?: Subset<T, Team$surveyTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    surveys<T extends Team$surveysArgs<ExtArgs> = {}>(args?: Subset<T, Team$surveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    members<T extends Team$membersArgs<ExtArgs> = {}>(args?: Subset<T, Team$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends Team$userArgs<ExtArgs> = {}>(args?: Subset<T, Team$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9032,6 +9112,11 @@ export namespace Prisma {
     readonly description: FieldRef<"Team", 'String'>
     readonly createdAt: FieldRef<"Team", 'DateTime'>
     readonly updatedAt: FieldRef<"Team", 'DateTime'>
+    readonly ResponseRate: FieldRef<"Team", 'Int'>
+    readonly totalActiveSurveys: FieldRef<"Team", 'Int'>
+    readonly totalOpenSurveys: FieldRef<"Team", 'Int'>
+    readonly totalResponses: FieldRef<"Team", 'Int'>
+    readonly totalSurveys: FieldRef<"Team", 'Int'>
   }
     
 
@@ -9420,150 +9505,6 @@ export namespace Prisma {
   }
 
   /**
-   * Team.members
-   */
-  export type Team$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TeamMember
-     */
-    select?: TeamMemberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TeamMember
-     */
-    omit?: TeamMemberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TeamMemberInclude<ExtArgs> | null
-    where?: TeamMemberWhereInput
-    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
-    cursor?: TeamMemberWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
-  }
-
-  /**
-   * Team.user
-   */
-  export type Team$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the User
-     */
-    select?: UserSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the User
-     */
-    omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
-    cursor?: UserWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
-  }
-
-  /**
-   * Team.surveys
-   */
-  export type Team$surveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Survey
-     */
-    select?: SurveySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Survey
-     */
-    omit?: SurveyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SurveyInclude<ExtArgs> | null
-    where?: SurveyWhereInput
-    orderBy?: SurveyOrderByWithRelationInput | SurveyOrderByWithRelationInput[]
-    cursor?: SurveyWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SurveyScalarFieldEnum | SurveyScalarFieldEnum[]
-  }
-
-  /**
-   * Team.surveyTypes
-   */
-  export type Team$surveyTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the SurveyType
-     */
-    select?: SurveyTypeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the SurveyType
-     */
-    omit?: SurveyTypeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SurveyTypeInclude<ExtArgs> | null
-    where?: SurveyTypeWhereInput
-    orderBy?: SurveyTypeOrderByWithRelationInput | SurveyTypeOrderByWithRelationInput[]
-    cursor?: SurveyTypeWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SurveyTypeScalarFieldEnum | SurveyTypeScalarFieldEnum[]
-  }
-
-  /**
-   * Team.surveysStyle
-   */
-  export type Team$surveysStyleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the SurveyStyle
-     */
-    select?: SurveyStyleSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the SurveyStyle
-     */
-    omit?: SurveyStyleOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SurveyStyleInclude<ExtArgs> | null
-    where?: SurveyStyleWhereInput
-    orderBy?: SurveyStyleOrderByWithRelationInput | SurveyStyleOrderByWithRelationInput[]
-    cursor?: SurveyStyleWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SurveyStyleScalarFieldEnum | SurveyStyleScalarFieldEnum[]
-  }
-
-  /**
-   * Team.questions
-   */
-  export type Team$questionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Question
-     */
-    select?: QuestionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Question
-     */
-    omit?: QuestionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QuestionInclude<ExtArgs> | null
-    where?: QuestionWhereInput
-    orderBy?: QuestionOrderByWithRelationInput | QuestionOrderByWithRelationInput[]
-    cursor?: QuestionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: QuestionScalarFieldEnum | QuestionScalarFieldEnum[]
-  }
-
-  /**
    * Team.questionOptions
    */
   export type Team$questionOptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9612,6 +9553,30 @@ export namespace Prisma {
   }
 
   /**
+   * Team.questions
+   */
+  export type Team$questionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Question
+     */
+    select?: QuestionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Question
+     */
+    omit?: QuestionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionInclude<ExtArgs> | null
+    where?: QuestionWhereInput
+    orderBy?: QuestionOrderByWithRelationInput | QuestionOrderByWithRelationInput[]
+    cursor?: QuestionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuestionScalarFieldEnum | QuestionScalarFieldEnum[]
+  }
+
+  /**
    * Team.surveyResponses
    */
   export type Team$surveyResponsesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9633,6 +9598,126 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SurveyResponseScalarFieldEnum | SurveyResponseScalarFieldEnum[]
+  }
+
+  /**
+   * Team.surveysStyle
+   */
+  export type Team$surveysStyleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyStyle
+     */
+    select?: SurveyStyleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyStyle
+     */
+    omit?: SurveyStyleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyStyleInclude<ExtArgs> | null
+    where?: SurveyStyleWhereInput
+    orderBy?: SurveyStyleOrderByWithRelationInput | SurveyStyleOrderByWithRelationInput[]
+    cursor?: SurveyStyleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SurveyStyleScalarFieldEnum | SurveyStyleScalarFieldEnum[]
+  }
+
+  /**
+   * Team.surveyTypes
+   */
+  export type Team$surveyTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyType
+     */
+    select?: SurveyTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyType
+     */
+    omit?: SurveyTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyTypeInclude<ExtArgs> | null
+    where?: SurveyTypeWhereInput
+    orderBy?: SurveyTypeOrderByWithRelationInput | SurveyTypeOrderByWithRelationInput[]
+    cursor?: SurveyTypeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SurveyTypeScalarFieldEnum | SurveyTypeScalarFieldEnum[]
+  }
+
+  /**
+   * Team.surveys
+   */
+  export type Team$surveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Survey
+     */
+    select?: SurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Survey
+     */
+    omit?: SurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyInclude<ExtArgs> | null
+    where?: SurveyWhereInput
+    orderBy?: SurveyOrderByWithRelationInput | SurveyOrderByWithRelationInput[]
+    cursor?: SurveyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SurveyScalarFieldEnum | SurveyScalarFieldEnum[]
+  }
+
+  /**
+   * Team.members
+   */
+  export type Team$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamMember
+     */
+    select?: TeamMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamMember
+     */
+    omit?: TeamMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamMemberInclude<ExtArgs> | null
+    where?: TeamMemberWhereInput
+    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
+    cursor?: TeamMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
+  }
+
+  /**
+   * Team.user
+   */
+  export type Team$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -9900,8 +9985,8 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     teamId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9915,8 +10000,8 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     teamId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9930,8 +10015,8 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     teamId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectScalar = {
@@ -9949,23 +10034,23 @@ export namespace Prisma {
 
   export type TeamMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "isAdmin" | "canPost" | "canApprove" | "isOwner" | "teamMemberStatus" | "createdAt" | "updatedAt" | "userId" | "teamId", ExtArgs["result"]["teamMember"]>
   export type TeamMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TeamMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TeamMemberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $TeamMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TeamMember"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       team: Prisma.$TeamPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -10372,8 +10457,8 @@ export namespace Prisma {
    */
   export interface Prisma__TeamMemberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11033,8 +11118,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     teamId?: boolean
-    surveys?: boolean | SurveyType$surveysArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    surveys?: boolean | SurveyType$surveysArgs<ExtArgs>
     _count?: boolean | SurveyTypeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["surveyType"]>
 
@@ -11069,8 +11154,8 @@ export namespace Prisma {
 
   export type SurveyTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isDefault" | "createdAt" | "updatedAt" | "teamId", ExtArgs["result"]["surveyType"]>
   export type SurveyTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    surveys?: boolean | SurveyType$surveysArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    surveys?: boolean | SurveyType$surveysArgs<ExtArgs>
     _count?: boolean | SurveyTypeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SurveyTypeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11083,8 +11168,8 @@ export namespace Prisma {
   export type $SurveyTypePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SurveyType"
     objects: {
-      surveys: Prisma.$SurveyPayload<ExtArgs>[]
       team: Prisma.$TeamPayload<ExtArgs>
+      surveys: Prisma.$SurveyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11487,8 +11572,8 @@ export namespace Prisma {
    */
   export interface Prisma__SurveyTypeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    surveys<T extends SurveyType$surveysArgs<ExtArgs> = {}>(args?: Subset<T, SurveyType$surveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    surveys<T extends SurveyType$surveysArgs<ExtArgs> = {}>(args?: Subset<T, SurveyType$surveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11976,10 +12061,16 @@ export namespace Prisma {
 
   export type SurveyAvgAggregateOutputType = {
     teamId: number | null
+    ResponseRate: number | null
+    totalOpenSurveys: number | null
+    totalResponses: number | null
   }
 
   export type SurveySumAggregateOutputType = {
     teamId: number | null
+    ResponseRate: number | null
+    totalOpenSurveys: number | null
+    totalResponses: number | null
   }
 
   export type SurveyMinAggregateOutputType = {
@@ -11987,12 +12078,14 @@ export namespace Prisma {
     name: string | null
     description: string | null
     status: $Enums.SurveyStatus | null
-    enabled: boolean | null
     allowMultipleResponses: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     teamId: number | null
     typeId: string | null
+    ResponseRate: number | null
+    totalOpenSurveys: number | null
+    totalResponses: number | null
   }
 
   export type SurveyMaxAggregateOutputType = {
@@ -12000,12 +12093,14 @@ export namespace Prisma {
     name: string | null
     description: string | null
     status: $Enums.SurveyStatus | null
-    enabled: boolean | null
     allowMultipleResponses: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     teamId: number | null
     typeId: string | null
+    ResponseRate: number | null
+    totalOpenSurveys: number | null
+    totalResponses: number | null
   }
 
   export type SurveyCountAggregateOutputType = {
@@ -12013,22 +12108,30 @@ export namespace Prisma {
     name: number
     description: number
     status: number
-    enabled: number
     allowMultipleResponses: number
     createdAt: number
     updatedAt: number
     teamId: number
     typeId: number
+    ResponseRate: number
+    totalOpenSurveys: number
+    totalResponses: number
     _all: number
   }
 
 
   export type SurveyAvgAggregateInputType = {
     teamId?: true
+    ResponseRate?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
   }
 
   export type SurveySumAggregateInputType = {
     teamId?: true
+    ResponseRate?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
   }
 
   export type SurveyMinAggregateInputType = {
@@ -12036,12 +12139,14 @@ export namespace Prisma {
     name?: true
     description?: true
     status?: true
-    enabled?: true
     allowMultipleResponses?: true
     createdAt?: true
     updatedAt?: true
     teamId?: true
     typeId?: true
+    ResponseRate?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
   }
 
   export type SurveyMaxAggregateInputType = {
@@ -12049,12 +12154,14 @@ export namespace Prisma {
     name?: true
     description?: true
     status?: true
-    enabled?: true
     allowMultipleResponses?: true
     createdAt?: true
     updatedAt?: true
     teamId?: true
     typeId?: true
+    ResponseRate?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
   }
 
   export type SurveyCountAggregateInputType = {
@@ -12062,12 +12169,14 @@ export namespace Prisma {
     name?: true
     description?: true
     status?: true
-    enabled?: true
     allowMultipleResponses?: true
     createdAt?: true
     updatedAt?: true
     teamId?: true
     typeId?: true
+    ResponseRate?: true
+    totalOpenSurveys?: true
+    totalResponses?: true
     _all?: true
   }
 
@@ -12162,12 +12271,14 @@ export namespace Prisma {
     name: string
     description: string | null
     status: $Enums.SurveyStatus
-    enabled: boolean
     allowMultipleResponses: boolean
     createdAt: Date
     updatedAt: Date
     teamId: number
     typeId: string | null
+    ResponseRate: number
+    totalOpenSurveys: number
+    totalResponses: number
     _count: SurveyCountAggregateOutputType | null
     _avg: SurveyAvgAggregateOutputType | null
     _sum: SurveySumAggregateOutputType | null
@@ -12194,17 +12305,19 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     status?: boolean
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     teamId?: boolean
     typeId?: boolean
+    ResponseRate?: boolean
+    totalOpenSurveys?: boolean
+    totalResponses?: boolean
+    questions?: boolean | Survey$questionsArgs<ExtArgs>
+    responses?: boolean | Survey$responsesArgs<ExtArgs>
+    style?: boolean | Survey$styleArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
     type?: boolean | Survey$typeArgs<ExtArgs>
-    questions?: boolean | Survey$questionsArgs<ExtArgs>
-    style?: boolean | Survey$styleArgs<ExtArgs>
-    responses?: boolean | Survey$responsesArgs<ExtArgs>
     _count?: boolean | SurveyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["survey"]>
 
@@ -12213,12 +12326,14 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     status?: boolean
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     teamId?: boolean
     typeId?: boolean
+    ResponseRate?: boolean
+    totalOpenSurveys?: boolean
+    totalResponses?: boolean
     team?: boolean | TeamDefaultArgs<ExtArgs>
     type?: boolean | Survey$typeArgs<ExtArgs>
   }, ExtArgs["result"]["survey"]>
@@ -12228,12 +12343,14 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     status?: boolean
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     teamId?: boolean
     typeId?: boolean
+    ResponseRate?: boolean
+    totalOpenSurveys?: boolean
+    totalResponses?: boolean
     team?: boolean | TeamDefaultArgs<ExtArgs>
     type?: boolean | Survey$typeArgs<ExtArgs>
   }, ExtArgs["result"]["survey"]>
@@ -12243,21 +12360,23 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     status?: boolean
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     teamId?: boolean
     typeId?: boolean
+    ResponseRate?: boolean
+    totalOpenSurveys?: boolean
+    totalResponses?: boolean
   }
 
-  export type SurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "status" | "enabled" | "allowMultipleResponses" | "createdAt" | "updatedAt" | "teamId" | "typeId", ExtArgs["result"]["survey"]>
+  export type SurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "status" | "allowMultipleResponses" | "createdAt" | "updatedAt" | "teamId" | "typeId" | "ResponseRate" | "totalOpenSurveys" | "totalResponses", ExtArgs["result"]["survey"]>
   export type SurveyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    questions?: boolean | Survey$questionsArgs<ExtArgs>
+    responses?: boolean | Survey$responsesArgs<ExtArgs>
+    style?: boolean | Survey$styleArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
     type?: boolean | Survey$typeArgs<ExtArgs>
-    questions?: boolean | Survey$questionsArgs<ExtArgs>
-    style?: boolean | Survey$styleArgs<ExtArgs>
-    responses?: boolean | Survey$responsesArgs<ExtArgs>
     _count?: boolean | SurveyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SurveyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12272,23 +12391,25 @@ export namespace Prisma {
   export type $SurveyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Survey"
     objects: {
+      questions: Prisma.$QuestionPayload<ExtArgs>[]
+      responses: Prisma.$SurveyResponsePayload<ExtArgs>[]
+      style: Prisma.$SurveyStylePayload<ExtArgs> | null
       team: Prisma.$TeamPayload<ExtArgs>
       type: Prisma.$SurveyTypePayload<ExtArgs> | null
-      questions: Prisma.$QuestionPayload<ExtArgs>[]
-      style: Prisma.$SurveyStylePayload<ExtArgs> | null
-      responses: Prisma.$SurveyResponsePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       description: string | null
       status: $Enums.SurveyStatus
-      enabled: boolean
       allowMultipleResponses: boolean
       createdAt: Date
       updatedAt: Date
       teamId: number
       typeId: string | null
+      ResponseRate: number
+      totalOpenSurveys: number
+      totalResponses: number
     }, ExtArgs["result"]["survey"]>
     composites: {}
   }
@@ -12683,11 +12804,11 @@ export namespace Prisma {
    */
   export interface Prisma__SurveyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    questions<T extends Survey$questionsArgs<ExtArgs> = {}>(args?: Subset<T, Survey$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    responses<T extends Survey$responsesArgs<ExtArgs> = {}>(args?: Subset<T, Survey$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    style<T extends Survey$styleArgs<ExtArgs> = {}>(args?: Subset<T, Survey$styleArgs<ExtArgs>>): Prisma__SurveyStyleClient<$Result.GetResult<Prisma.$SurveyStylePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     type<T extends Survey$typeArgs<ExtArgs> = {}>(args?: Subset<T, Survey$typeArgs<ExtArgs>>): Prisma__SurveyTypeClient<$Result.GetResult<Prisma.$SurveyTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    questions<T extends Survey$questionsArgs<ExtArgs> = {}>(args?: Subset<T, Survey$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    style<T extends Survey$styleArgs<ExtArgs> = {}>(args?: Subset<T, Survey$styleArgs<ExtArgs>>): Prisma__SurveyStyleClient<$Result.GetResult<Prisma.$SurveyStylePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    responses<T extends Survey$responsesArgs<ExtArgs> = {}>(args?: Subset<T, Survey$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12721,12 +12842,14 @@ export namespace Prisma {
     readonly name: FieldRef<"Survey", 'String'>
     readonly description: FieldRef<"Survey", 'String'>
     readonly status: FieldRef<"Survey", 'SurveyStatus'>
-    readonly enabled: FieldRef<"Survey", 'Boolean'>
     readonly allowMultipleResponses: FieldRef<"Survey", 'Boolean'>
     readonly createdAt: FieldRef<"Survey", 'DateTime'>
     readonly updatedAt: FieldRef<"Survey", 'DateTime'>
     readonly teamId: FieldRef<"Survey", 'Int'>
     readonly typeId: FieldRef<"Survey", 'String'>
+    readonly ResponseRate: FieldRef<"Survey", 'Int'>
+    readonly totalOpenSurveys: FieldRef<"Survey", 'Int'>
+    readonly totalResponses: FieldRef<"Survey", 'Int'>
   }
     
 
@@ -13123,25 +13246,6 @@ export namespace Prisma {
   }
 
   /**
-   * Survey.type
-   */
-  export type Survey$typeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the SurveyType
-     */
-    select?: SurveyTypeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the SurveyType
-     */
-    omit?: SurveyTypeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SurveyTypeInclude<ExtArgs> | null
-    where?: SurveyTypeWhereInput
-  }
-
-  /**
    * Survey.questions
    */
   export type Survey$questionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13166,25 +13270,6 @@ export namespace Prisma {
   }
 
   /**
-   * Survey.style
-   */
-  export type Survey$styleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the SurveyStyle
-     */
-    select?: SurveyStyleSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the SurveyStyle
-     */
-    omit?: SurveyStyleOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SurveyStyleInclude<ExtArgs> | null
-    where?: SurveyStyleWhereInput
-  }
-
-  /**
    * Survey.responses
    */
   export type Survey$responsesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13206,6 +13291,44 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SurveyResponseScalarFieldEnum | SurveyResponseScalarFieldEnum[]
+  }
+
+  /**
+   * Survey.style
+   */
+  export type Survey$styleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyStyle
+     */
+    select?: SurveyStyleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyStyle
+     */
+    omit?: SurveyStyleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyStyleInclude<ExtArgs> | null
+    where?: SurveyStyleWhereInput
+  }
+
+  /**
+   * Survey.type
+   */
+  export type Survey$typeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyType
+     */
+    select?: SurveyTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyType
+     */
+    omit?: SurveyTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyTypeInclude<ExtArgs> | null
+    where?: SurveyTypeWhereInput
   }
 
   /**
@@ -13263,6 +13386,7 @@ export namespace Prisma {
     updatedAt: Date | null
     surveyId: string | null
     teamId: number | null
+    border: string | null
   }
 
   export type SurveyStyleMaxAggregateOutputType = {
@@ -13281,6 +13405,7 @@ export namespace Prisma {
     updatedAt: Date | null
     surveyId: string | null
     teamId: number | null
+    border: string | null
   }
 
   export type SurveyStyleCountAggregateOutputType = {
@@ -13299,6 +13424,7 @@ export namespace Prisma {
     updatedAt: number
     surveyId: number
     teamId: number
+    border: number
     _all: number
   }
 
@@ -13327,6 +13453,7 @@ export namespace Prisma {
     updatedAt?: true
     surveyId?: true
     teamId?: true
+    border?: true
   }
 
   export type SurveyStyleMaxAggregateInputType = {
@@ -13345,6 +13472,7 @@ export namespace Prisma {
     updatedAt?: true
     surveyId?: true
     teamId?: true
+    border?: true
   }
 
   export type SurveyStyleCountAggregateInputType = {
@@ -13363,6 +13491,7 @@ export namespace Prisma {
     updatedAt?: true
     surveyId?: true
     teamId?: true
+    border?: true
     _all?: true
   }
 
@@ -13468,6 +13597,7 @@ export namespace Prisma {
     updatedAt: Date
     surveyId: string
     teamId: number
+    border: string
     _count: SurveyStyleCountAggregateOutputType | null
     _avg: SurveyStyleAvgAggregateOutputType | null
     _sum: SurveyStyleSumAggregateOutputType | null
@@ -13505,6 +13635,7 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
+    border?: boolean
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["surveyStyle"]>
@@ -13525,6 +13656,7 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
+    border?: boolean
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["surveyStyle"]>
@@ -13545,6 +13677,7 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
+    border?: boolean
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["surveyStyle"]>
@@ -13565,9 +13698,10 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
+    border?: boolean
   }
 
-  export type SurveyStyleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "backgroundColor" | "textColor" | "buttonBackgroundColor" | "buttonTextColor" | "margin" | "padding" | "borderRadius" | "titleFontSize" | "bodyFontSize" | "fontFamily" | "createdAt" | "updatedAt" | "surveyId" | "teamId", ExtArgs["result"]["surveyStyle"]>
+  export type SurveyStyleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "backgroundColor" | "textColor" | "buttonBackgroundColor" | "buttonTextColor" | "margin" | "padding" | "borderRadius" | "titleFontSize" | "bodyFontSize" | "fontFamily" | "createdAt" | "updatedAt" | "surveyId" | "teamId" | "border", ExtArgs["result"]["surveyStyle"]>
   export type SurveyStyleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
@@ -13603,6 +13737,7 @@ export namespace Prisma {
       updatedAt: Date
       surveyId: string
       teamId: number
+      border: string
     }, ExtArgs["result"]["surveyStyle"]>
     composites: {}
   }
@@ -14043,6 +14178,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"SurveyStyle", 'DateTime'>
     readonly surveyId: FieldRef<"SurveyStyle", 'String'>
     readonly teamId: FieldRef<"SurveyStyle", 'Int'>
+    readonly border: FieldRef<"SurveyStyle", 'String'>
   }
     
 
@@ -14493,6 +14629,7 @@ export namespace Prisma {
     updatedAt: Date | null
     surveyId: string | null
     teamId: number | null
+    addOther: boolean | null
   }
 
   export type QuestionMaxAggregateOutputType = {
@@ -14509,6 +14646,7 @@ export namespace Prisma {
     updatedAt: Date | null
     surveyId: string | null
     teamId: number | null
+    addOther: boolean | null
   }
 
   export type QuestionCountAggregateOutputType = {
@@ -14525,6 +14663,7 @@ export namespace Prisma {
     updatedAt: number
     surveyId: number
     teamId: number
+    addOther: number
     _all: number
   }
 
@@ -14553,6 +14692,7 @@ export namespace Prisma {
     updatedAt?: true
     surveyId?: true
     teamId?: true
+    addOther?: true
   }
 
   export type QuestionMaxAggregateInputType = {
@@ -14569,6 +14709,7 @@ export namespace Prisma {
     updatedAt?: true
     surveyId?: true
     teamId?: true
+    addOther?: true
   }
 
   export type QuestionCountAggregateInputType = {
@@ -14585,6 +14726,7 @@ export namespace Prisma {
     updatedAt?: true
     surveyId?: true
     teamId?: true
+    addOther?: true
     _all?: true
   }
 
@@ -14688,6 +14830,7 @@ export namespace Prisma {
     updatedAt: Date
     surveyId: string
     teamId: number
+    addOther: boolean
     _count: QuestionCountAggregateOutputType | null
     _avg: QuestionAvgAggregateOutputType | null
     _sum: QuestionSumAggregateOutputType | null
@@ -14723,10 +14866,11 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
-    survey?: boolean | SurveyDefaultArgs<ExtArgs>
-    team?: boolean | TeamDefaultArgs<ExtArgs>
+    addOther?: boolean
     options?: boolean | Question$optionsArgs<ExtArgs>
     responses?: boolean | Question$responsesArgs<ExtArgs>
+    survey?: boolean | SurveyDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
     _count?: boolean | QuestionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["question"]>
 
@@ -14744,6 +14888,7 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
+    addOther?: boolean
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["question"]>
@@ -14762,6 +14907,7 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
+    addOther?: boolean
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["question"]>
@@ -14780,14 +14926,15 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
+    addOther?: boolean
   }
 
-  export type QuestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "format" | "required" | "order" | "yesLabel" | "noLabel" | "buttonLabel" | "createdAt" | "updatedAt" | "surveyId" | "teamId", ExtArgs["result"]["question"]>
+  export type QuestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "format" | "required" | "order" | "yesLabel" | "noLabel" | "buttonLabel" | "createdAt" | "updatedAt" | "surveyId" | "teamId" | "addOther", ExtArgs["result"]["question"]>
   export type QuestionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    survey?: boolean | SurveyDefaultArgs<ExtArgs>
-    team?: boolean | TeamDefaultArgs<ExtArgs>
     options?: boolean | Question$optionsArgs<ExtArgs>
     responses?: boolean | Question$responsesArgs<ExtArgs>
+    survey?: boolean | SurveyDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
     _count?: boolean | QuestionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type QuestionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14802,10 +14949,10 @@ export namespace Prisma {
   export type $QuestionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Question"
     objects: {
-      survey: Prisma.$SurveyPayload<ExtArgs>
-      team: Prisma.$TeamPayload<ExtArgs>
       options: Prisma.$QuestionOptionPayload<ExtArgs>[]
       responses: Prisma.$QuestionResponsePayload<ExtArgs>[]
+      survey: Prisma.$SurveyPayload<ExtArgs>
+      team: Prisma.$TeamPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14821,6 +14968,7 @@ export namespace Prisma {
       updatedAt: Date
       surveyId: string
       teamId: number
+      addOther: boolean
     }, ExtArgs["result"]["question"]>
     composites: {}
   }
@@ -15215,10 +15363,10 @@ export namespace Prisma {
    */
   export interface Prisma__QuestionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    survey<T extends SurveyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SurveyDefaultArgs<ExtArgs>>): Prisma__SurveyClient<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     options<T extends Question$optionsArgs<ExtArgs> = {}>(args?: Subset<T, Question$optionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionOptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     responses<T extends Question$responsesArgs<ExtArgs> = {}>(args?: Subset<T, Question$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    survey<T extends SurveyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SurveyDefaultArgs<ExtArgs>>): Prisma__SurveyClient<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15261,6 +15409,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Question", 'DateTime'>
     readonly surveyId: FieldRef<"Question", 'String'>
     readonly teamId: FieldRef<"Question", 'Int'>
+    readonly addOther: FieldRef<"Question", 'Boolean'>
   }
     
 
@@ -15753,6 +15902,7 @@ export namespace Prisma {
     updatedAt: Date | null
     questionId: string | null
     teamId: number | null
+    isOther: boolean | null
   }
 
   export type QuestionOptionMaxAggregateOutputType = {
@@ -15763,6 +15913,7 @@ export namespace Prisma {
     updatedAt: Date | null
     questionId: string | null
     teamId: number | null
+    isOther: boolean | null
   }
 
   export type QuestionOptionCountAggregateOutputType = {
@@ -15773,6 +15924,7 @@ export namespace Prisma {
     updatedAt: number
     questionId: number
     teamId: number
+    isOther: number
     _all: number
   }
 
@@ -15795,6 +15947,7 @@ export namespace Prisma {
     updatedAt?: true
     questionId?: true
     teamId?: true
+    isOther?: true
   }
 
   export type QuestionOptionMaxAggregateInputType = {
@@ -15805,6 +15958,7 @@ export namespace Prisma {
     updatedAt?: true
     questionId?: true
     teamId?: true
+    isOther?: true
   }
 
   export type QuestionOptionCountAggregateInputType = {
@@ -15815,6 +15969,7 @@ export namespace Prisma {
     updatedAt?: true
     questionId?: true
     teamId?: true
+    isOther?: true
     _all?: true
   }
 
@@ -15912,6 +16067,7 @@ export namespace Prisma {
     updatedAt: Date
     questionId: string
     teamId: number
+    isOther: boolean
     _count: QuestionOptionCountAggregateOutputType | null
     _avg: QuestionOptionAvgAggregateOutputType | null
     _sum: QuestionOptionSumAggregateOutputType | null
@@ -15941,6 +16097,7 @@ export namespace Prisma {
     updatedAt?: boolean
     questionId?: boolean
     teamId?: boolean
+    isOther?: boolean
     question?: boolean | QuestionDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
     responses?: boolean | QuestionOption$responsesArgs<ExtArgs>
@@ -15955,6 +16112,7 @@ export namespace Prisma {
     updatedAt?: boolean
     questionId?: boolean
     teamId?: boolean
+    isOther?: boolean
     question?: boolean | QuestionDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["questionOption"]>
@@ -15967,6 +16125,7 @@ export namespace Prisma {
     updatedAt?: boolean
     questionId?: boolean
     teamId?: boolean
+    isOther?: boolean
     question?: boolean | QuestionDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["questionOption"]>
@@ -15979,9 +16138,10 @@ export namespace Prisma {
     updatedAt?: boolean
     questionId?: boolean
     teamId?: boolean
+    isOther?: boolean
   }
 
-  export type QuestionOptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "order" | "createdAt" | "updatedAt" | "questionId" | "teamId", ExtArgs["result"]["questionOption"]>
+  export type QuestionOptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "order" | "createdAt" | "updatedAt" | "questionId" | "teamId" | "isOther", ExtArgs["result"]["questionOption"]>
   export type QuestionOptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     question?: boolean | QuestionDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
@@ -16012,6 +16172,7 @@ export namespace Prisma {
       updatedAt: Date
       questionId: string
       teamId: number
+      isOther: boolean
     }, ExtArgs["result"]["questionOption"]>
     composites: {}
   }
@@ -16445,6 +16606,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"QuestionOption", 'DateTime'>
     readonly questionId: FieldRef<"QuestionOption", 'String'>
     readonly teamId: FieldRef<"QuestionOption", 'Int'>
+    readonly isOther: FieldRef<"QuestionOption", 'Boolean'>
   }
     
 
@@ -17097,9 +17259,9 @@ export namespace Prisma {
     updatedAt?: boolean
     surveyId?: boolean
     teamId?: boolean
+    questionResponses?: boolean | SurveyResponse$questionResponsesArgs<ExtArgs>
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
-    questionResponses?: boolean | SurveyResponse$questionResponsesArgs<ExtArgs>
     _count?: boolean | SurveyResponseCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["surveyResponse"]>
 
@@ -17139,9 +17301,9 @@ export namespace Prisma {
 
   export type SurveyResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "submittedAt" | "createdAt" | "updatedAt" | "surveyId" | "teamId", ExtArgs["result"]["surveyResponse"]>
   export type SurveyResponseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    questionResponses?: boolean | SurveyResponse$questionResponsesArgs<ExtArgs>
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
-    questionResponses?: boolean | SurveyResponse$questionResponsesArgs<ExtArgs>
     _count?: boolean | SurveyResponseCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SurveyResponseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17156,9 +17318,9 @@ export namespace Prisma {
   export type $SurveyResponsePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SurveyResponse"
     objects: {
+      questionResponses: Prisma.$QuestionResponsePayload<ExtArgs>[]
       survey: Prisma.$SurveyPayload<ExtArgs>
       team: Prisma.$TeamPayload<ExtArgs>
-      questionResponses: Prisma.$QuestionResponsePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -17562,9 +17724,9 @@ export namespace Prisma {
    */
   export interface Prisma__SurveyResponseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    questionResponses<T extends SurveyResponse$questionResponsesArgs<ExtArgs> = {}>(args?: Subset<T, SurveyResponse$questionResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     survey<T extends SurveyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SurveyDefaultArgs<ExtArgs>>): Prisma__SurveyClient<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    questionResponses<T extends SurveyResponse$questionResponsesArgs<ExtArgs> = {}>(args?: Subset<T, SurveyResponse$questionResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -18289,8 +18451,8 @@ export namespace Prisma {
     optionId?: boolean
     responseId?: boolean
     teamId?: boolean
-    question?: boolean | QuestionDefaultArgs<ExtArgs>
     option?: boolean | QuestionResponse$optionArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
     response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["questionResponse"]>
@@ -18307,8 +18469,8 @@ export namespace Prisma {
     optionId?: boolean
     responseId?: boolean
     teamId?: boolean
-    question?: boolean | QuestionDefaultArgs<ExtArgs>
     option?: boolean | QuestionResponse$optionArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
     response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["questionResponse"]>
@@ -18325,8 +18487,8 @@ export namespace Prisma {
     optionId?: boolean
     responseId?: boolean
     teamId?: boolean
-    question?: boolean | QuestionDefaultArgs<ExtArgs>
     option?: boolean | QuestionResponse$optionArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
     response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["questionResponse"]>
@@ -18347,20 +18509,20 @@ export namespace Prisma {
 
   export type QuestionResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "isOther" | "textValue" | "numberValue" | "booleanValue" | "createdAt" | "updatedAt" | "questionId" | "optionId" | "responseId" | "teamId", ExtArgs["result"]["questionResponse"]>
   export type QuestionResponseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    question?: boolean | QuestionDefaultArgs<ExtArgs>
     option?: boolean | QuestionResponse$optionArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
     response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }
   export type QuestionResponseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    question?: boolean | QuestionDefaultArgs<ExtArgs>
     option?: boolean | QuestionResponse$optionArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
     response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }
   export type QuestionResponseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    question?: boolean | QuestionDefaultArgs<ExtArgs>
     option?: boolean | QuestionResponse$optionArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
     response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
   }
@@ -18368,8 +18530,8 @@ export namespace Prisma {
   export type $QuestionResponsePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "QuestionResponse"
     objects: {
-      question: Prisma.$QuestionPayload<ExtArgs>
       option: Prisma.$QuestionOptionPayload<ExtArgs> | null
+      question: Prisma.$QuestionPayload<ExtArgs>
       response: Prisma.$SurveyResponsePayload<ExtArgs>
       team: Prisma.$TeamPayload<ExtArgs>
     }
@@ -18779,8 +18941,8 @@ export namespace Prisma {
    */
   export interface Prisma__QuestionResponseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    question<T extends QuestionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, QuestionDefaultArgs<ExtArgs>>): Prisma__QuestionClient<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     option<T extends QuestionResponse$optionArgs<ExtArgs> = {}>(args?: Subset<T, QuestionResponse$optionArgs<ExtArgs>>): Prisma__QuestionOptionClient<$Result.GetResult<Prisma.$QuestionOptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    question<T extends QuestionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, QuestionDefaultArgs<ExtArgs>>): Prisma__QuestionClient<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     response<T extends SurveyResponseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SurveyResponseDefaultArgs<ExtArgs>>): Prisma__SurveyResponseClient<$Result.GetResult<Prisma.$SurveyResponsePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -19272,12 +19434,10 @@ export namespace Prisma {
 
   export const UserScalarFieldEnum: {
     id: 'id',
-    idProvider: 'idProvider',
     email: 'email',
     provider: 'provider',
     password: 'password',
     resetPasswordToken: 'resetPasswordToken',
-    resetPasswordExpires: 'resetPasswordExpires',
     confirmationToken: 'confirmationToken',
     confirmed: 'confirmed',
     blocked: 'blocked',
@@ -19286,10 +19446,12 @@ export namespace Prisma {
     lastName: 'lastName',
     avatarUrl: 'avatarUrl',
     language: 'language',
-    theme: 'theme',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     avatarId: 'avatarId',
+    idProvider: 'idProvider',
+    resetPasswordExpires: 'resetPasswordExpires',
+    theme: 'theme',
     defaultTeamId: 'defaultTeamId'
   };
 
@@ -19354,7 +19516,12 @@ export namespace Prisma {
     name: 'name',
     description: 'description',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    ResponseRate: 'ResponseRate',
+    totalActiveSurveys: 'totalActiveSurveys',
+    totalOpenSurveys: 'totalOpenSurveys',
+    totalResponses: 'totalResponses',
+    totalSurveys: 'totalSurveys'
   };
 
   export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
@@ -19393,12 +19560,14 @@ export namespace Prisma {
     name: 'name',
     description: 'description',
     status: 'status',
-    enabled: 'enabled',
     allowMultipleResponses: 'allowMultipleResponses',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     teamId: 'teamId',
-    typeId: 'typeId'
+    typeId: 'typeId',
+    ResponseRate: 'ResponseRate',
+    totalOpenSurveys: 'totalOpenSurveys',
+    totalResponses: 'totalResponses'
   };
 
   export type SurveyScalarFieldEnum = (typeof SurveyScalarFieldEnum)[keyof typeof SurveyScalarFieldEnum]
@@ -19419,7 +19588,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     surveyId: 'surveyId',
-    teamId: 'teamId'
+    teamId: 'teamId',
+    border: 'border'
   };
 
   export type SurveyStyleScalarFieldEnum = (typeof SurveyStyleScalarFieldEnum)[keyof typeof SurveyStyleScalarFieldEnum]
@@ -19438,7 +19608,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     surveyId: 'surveyId',
-    teamId: 'teamId'
+    teamId: 'teamId',
+    addOther: 'addOther'
   };
 
   export type QuestionScalarFieldEnum = (typeof QuestionScalarFieldEnum)[keyof typeof QuestionScalarFieldEnum]
@@ -19451,7 +19622,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     questionId: 'questionId',
-    teamId: 'teamId'
+    teamId: 'teamId',
+    isOther: 'isOther'
   };
 
   export type QuestionOptionScalarFieldEnum = (typeof QuestionOptionScalarFieldEnum)[keyof typeof QuestionOptionScalarFieldEnum]
@@ -19559,20 +19731,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
-   */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-  /**
-   * Reference to a field of type 'DateTime[]'
-   */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -19590,6 +19748,20 @@ export namespace Prisma {
    * Reference to a field of type 'Language[]'
    */
   export type ListEnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -19685,12 +19857,10 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: IntFilter<"User"> | number
-    idProvider?: StringNullableFilter<"User"> | string | null
     email?: StringFilter<"User"> | string
     provider?: EnumProviderFilter<"User"> | $Enums.Provider
     password?: StringNullableFilter<"User"> | string | null
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
-    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     confirmationToken?: StringNullableFilter<"User"> | string | null
     confirmed?: BoolNullableFilter<"User"> | boolean | null
     blocked?: BoolNullableFilter<"User"> | boolean | null
@@ -19699,26 +19869,26 @@ export namespace Prisma {
     lastName?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
-    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     avatarId?: IntNullableFilter<"User"> | number | null
+    idProvider?: StringNullableFilter<"User"> | string | null
+    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     defaultTeamId?: IntNullableFilter<"User"> | number | null
-    avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     teamMembers?: TeamMemberListRelationFilter
+    avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
-    idProvider?: SortOrderInput | SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrderInput | SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
-    resetPasswordExpires?: SortOrderInput | SortOrder
     confirmationToken?: SortOrderInput | SortOrder
     confirmed?: SortOrderInput | SortOrder
     blocked?: SortOrderInput | SortOrder
@@ -19727,16 +19897,18 @@ export namespace Prisma {
     lastName?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrderInput | SortOrder
+    idProvider?: SortOrderInput | SortOrder
+    resetPasswordExpires?: SortOrderInput | SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrderInput | SortOrder
-    avatar?: FileOrderByWithRelationInput
-    team?: TeamOrderByWithRelationInput
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     teamMembers?: TeamMemberOrderByRelationAggregateInput
+    avatar?: FileOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -19746,11 +19918,9 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    idProvider?: StringNullableFilter<"User"> | string | null
     provider?: EnumProviderFilter<"User"> | $Enums.Provider
     password?: StringNullableFilter<"User"> | string | null
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
-    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     confirmationToken?: StringNullableFilter<"User"> | string | null
     confirmed?: BoolNullableFilter<"User"> | boolean | null
     blocked?: BoolNullableFilter<"User"> | boolean | null
@@ -19758,26 +19928,26 @@ export namespace Prisma {
     lastName?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
-    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     avatarId?: IntNullableFilter<"User"> | number | null
+    idProvider?: StringNullableFilter<"User"> | string | null
+    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     defaultTeamId?: IntNullableFilter<"User"> | number | null
-    avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     teamMembers?: TeamMemberListRelationFilter
+    avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
   }, "id" | "email" | "phone">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
-    idProvider?: SortOrderInput | SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrderInput | SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
-    resetPasswordExpires?: SortOrderInput | SortOrder
     confirmationToken?: SortOrderInput | SortOrder
     confirmed?: SortOrderInput | SortOrder
     blocked?: SortOrderInput | SortOrder
@@ -19786,10 +19956,12 @@ export namespace Prisma {
     lastName?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrderInput | SortOrder
+    idProvider?: SortOrderInput | SortOrder
+    resetPasswordExpires?: SortOrderInput | SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
@@ -19803,12 +19975,10 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"User"> | number
-    idProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
     email?: StringWithAggregatesFilter<"User"> | string
     provider?: EnumProviderWithAggregatesFilter<"User"> | $Enums.Provider
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
     resetPasswordToken?: StringNullableWithAggregatesFilter<"User"> | string | null
-    resetPasswordExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     confirmationToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     confirmed?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
     blocked?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
@@ -19817,10 +19987,12 @@ export namespace Prisma {
     lastName?: StringNullableWithAggregatesFilter<"User"> | string | null
     avatarUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     language?: EnumLanguageWithAggregatesFilter<"User"> | $Enums.Language
-    theme?: EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     avatarId?: IntNullableWithAggregatesFilter<"User"> | number | null
+    idProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
+    resetPasswordExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    theme?: EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
     defaultTeamId?: IntNullableWithAggregatesFilter<"User"> | number | null
   }
 
@@ -20103,15 +20275,20 @@ export namespace Prisma {
     description?: StringNullableFilter<"Team"> | string | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
-    members?: TeamMemberListRelationFilter
-    user?: UserListRelationFilter
-    surveys?: SurveyListRelationFilter
-    surveyTypes?: SurveyTypeListRelationFilter
-    surveysStyle?: SurveyStyleListRelationFilter
-    questions?: QuestionListRelationFilter
+    ResponseRate?: IntFilter<"Team"> | number
+    totalActiveSurveys?: IntFilter<"Team"> | number
+    totalOpenSurveys?: IntFilter<"Team"> | number
+    totalResponses?: IntFilter<"Team"> | number
+    totalSurveys?: IntFilter<"Team"> | number
     questionOptions?: QuestionOptionListRelationFilter
     questionResponses?: QuestionResponseListRelationFilter
+    questions?: QuestionListRelationFilter
     surveyResponses?: SurveyResponseListRelationFilter
+    surveysStyle?: SurveyStyleListRelationFilter
+    surveyTypes?: SurveyTypeListRelationFilter
+    surveys?: SurveyListRelationFilter
+    members?: TeamMemberListRelationFilter
+    user?: UserListRelationFilter
   }
 
   export type TeamOrderByWithRelationInput = {
@@ -20120,15 +20297,20 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    members?: TeamMemberOrderByRelationAggregateInput
-    user?: UserOrderByRelationAggregateInput
-    surveys?: SurveyOrderByRelationAggregateInput
-    surveyTypes?: SurveyTypeOrderByRelationAggregateInput
-    surveysStyle?: SurveyStyleOrderByRelationAggregateInput
-    questions?: QuestionOrderByRelationAggregateInput
+    ResponseRate?: SortOrder
+    totalActiveSurveys?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
+    totalSurveys?: SortOrder
     questionOptions?: QuestionOptionOrderByRelationAggregateInput
     questionResponses?: QuestionResponseOrderByRelationAggregateInput
+    questions?: QuestionOrderByRelationAggregateInput
     surveyResponses?: SurveyResponseOrderByRelationAggregateInput
+    surveysStyle?: SurveyStyleOrderByRelationAggregateInput
+    surveyTypes?: SurveyTypeOrderByRelationAggregateInput
+    surveys?: SurveyOrderByRelationAggregateInput
+    members?: TeamMemberOrderByRelationAggregateInput
+    user?: UserOrderByRelationAggregateInput
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -20140,15 +20322,20 @@ export namespace Prisma {
     description?: StringNullableFilter<"Team"> | string | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
-    members?: TeamMemberListRelationFilter
-    user?: UserListRelationFilter
-    surveys?: SurveyListRelationFilter
-    surveyTypes?: SurveyTypeListRelationFilter
-    surveysStyle?: SurveyStyleListRelationFilter
-    questions?: QuestionListRelationFilter
+    ResponseRate?: IntFilter<"Team"> | number
+    totalActiveSurveys?: IntFilter<"Team"> | number
+    totalOpenSurveys?: IntFilter<"Team"> | number
+    totalResponses?: IntFilter<"Team"> | number
+    totalSurveys?: IntFilter<"Team"> | number
     questionOptions?: QuestionOptionListRelationFilter
     questionResponses?: QuestionResponseListRelationFilter
+    questions?: QuestionListRelationFilter
     surveyResponses?: SurveyResponseListRelationFilter
+    surveysStyle?: SurveyStyleListRelationFilter
+    surveyTypes?: SurveyTypeListRelationFilter
+    surveys?: SurveyListRelationFilter
+    members?: TeamMemberListRelationFilter
+    user?: UserListRelationFilter
   }, "id">
 
   export type TeamOrderByWithAggregationInput = {
@@ -20157,6 +20344,11 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ResponseRate?: SortOrder
+    totalActiveSurveys?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
+    totalSurveys?: SortOrder
     _count?: TeamCountOrderByAggregateInput
     _avg?: TeamAvgOrderByAggregateInput
     _max?: TeamMaxOrderByAggregateInput
@@ -20173,6 +20365,11 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Team"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
+    ResponseRate?: IntWithAggregatesFilter<"Team"> | number
+    totalActiveSurveys?: IntWithAggregatesFilter<"Team"> | number
+    totalOpenSurveys?: IntWithAggregatesFilter<"Team"> | number
+    totalResponses?: IntWithAggregatesFilter<"Team"> | number
+    totalSurveys?: IntWithAggregatesFilter<"Team"> | number
   }
 
   export type TeamMemberWhereInput = {
@@ -20189,8 +20386,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"TeamMember"> | Date | string
     userId?: IntFilter<"TeamMember"> | number
     teamId?: IntFilter<"TeamMember"> | number
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type TeamMemberOrderByWithRelationInput = {
@@ -20204,8 +20401,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     teamId?: SortOrder
-    user?: UserOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -20223,8 +20420,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"TeamMember"> | Date | string
     userId?: IntFilter<"TeamMember"> | number
     teamId?: IntFilter<"TeamMember"> | number
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId_teamId">
 
   export type TeamMemberOrderByWithAggregationInput = {
@@ -20271,8 +20468,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SurveyType"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyType"> | Date | string
     teamId?: IntFilter<"SurveyType"> | number
-    surveys?: SurveyListRelationFilter
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    surveys?: SurveyListRelationFilter
   }
 
   export type SurveyTypeOrderByWithRelationInput = {
@@ -20282,8 +20479,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     teamId?: SortOrder
-    surveys?: SurveyOrderByRelationAggregateInput
     team?: TeamOrderByWithRelationInput
+    surveys?: SurveyOrderByRelationAggregateInput
   }
 
   export type SurveyTypeWhereUniqueInput = Prisma.AtLeast<{
@@ -20296,8 +20493,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SurveyType"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyType"> | Date | string
     teamId?: IntFilter<"SurveyType"> | number
-    surveys?: SurveyListRelationFilter
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    surveys?: SurveyListRelationFilter
   }, "id">
 
   export type SurveyTypeOrderByWithAggregationInput = {
@@ -20334,17 +20531,19 @@ export namespace Prisma {
     name?: StringFilter<"Survey"> | string
     description?: StringNullableFilter<"Survey"> | string | null
     status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
-    enabled?: BoolFilter<"Survey"> | boolean
     allowMultipleResponses?: BoolFilter<"Survey"> | boolean
     createdAt?: DateTimeFilter<"Survey"> | Date | string
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
     teamId?: IntFilter<"Survey"> | number
     typeId?: StringNullableFilter<"Survey"> | string | null
+    ResponseRate?: IntFilter<"Survey"> | number
+    totalOpenSurveys?: IntFilter<"Survey"> | number
+    totalResponses?: IntFilter<"Survey"> | number
+    questions?: QuestionListRelationFilter
+    responses?: SurveyResponseListRelationFilter
+    style?: XOR<SurveyStyleNullableScalarRelationFilter, SurveyStyleWhereInput> | null
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     type?: XOR<SurveyTypeNullableScalarRelationFilter, SurveyTypeWhereInput> | null
-    questions?: QuestionListRelationFilter
-    style?: XOR<SurveyStyleNullableScalarRelationFilter, SurveyStyleWhereInput> | null
-    responses?: SurveyResponseListRelationFilter
   }
 
   export type SurveyOrderByWithRelationInput = {
@@ -20352,17 +20551,19 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     status?: SortOrder
-    enabled?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrderInput | SortOrder
+    ResponseRate?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
+    questions?: QuestionOrderByRelationAggregateInput
+    responses?: SurveyResponseOrderByRelationAggregateInput
+    style?: SurveyStyleOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
     type?: SurveyTypeOrderByWithRelationInput
-    questions?: QuestionOrderByRelationAggregateInput
-    style?: SurveyStyleOrderByWithRelationInput
-    responses?: SurveyResponseOrderByRelationAggregateInput
   }
 
   export type SurveyWhereUniqueInput = Prisma.AtLeast<{
@@ -20373,17 +20574,19 @@ export namespace Prisma {
     name?: StringFilter<"Survey"> | string
     description?: StringNullableFilter<"Survey"> | string | null
     status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
-    enabled?: BoolFilter<"Survey"> | boolean
     allowMultipleResponses?: BoolFilter<"Survey"> | boolean
     createdAt?: DateTimeFilter<"Survey"> | Date | string
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
     teamId?: IntFilter<"Survey"> | number
     typeId?: StringNullableFilter<"Survey"> | string | null
+    ResponseRate?: IntFilter<"Survey"> | number
+    totalOpenSurveys?: IntFilter<"Survey"> | number
+    totalResponses?: IntFilter<"Survey"> | number
+    questions?: QuestionListRelationFilter
+    responses?: SurveyResponseListRelationFilter
+    style?: XOR<SurveyStyleNullableScalarRelationFilter, SurveyStyleWhereInput> | null
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     type?: XOR<SurveyTypeNullableScalarRelationFilter, SurveyTypeWhereInput> | null
-    questions?: QuestionListRelationFilter
-    style?: XOR<SurveyStyleNullableScalarRelationFilter, SurveyStyleWhereInput> | null
-    responses?: SurveyResponseListRelationFilter
   }, "id">
 
   export type SurveyOrderByWithAggregationInput = {
@@ -20391,12 +20594,14 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     status?: SortOrder
-    enabled?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrderInput | SortOrder
+    ResponseRate?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
     _count?: SurveyCountOrderByAggregateInput
     _avg?: SurveyAvgOrderByAggregateInput
     _max?: SurveyMaxOrderByAggregateInput
@@ -20412,12 +20617,14 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Survey"> | string
     description?: StringNullableWithAggregatesFilter<"Survey"> | string | null
     status?: EnumSurveyStatusWithAggregatesFilter<"Survey"> | $Enums.SurveyStatus
-    enabled?: BoolWithAggregatesFilter<"Survey"> | boolean
     allowMultipleResponses?: BoolWithAggregatesFilter<"Survey"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Survey"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Survey"> | Date | string
     teamId?: IntWithAggregatesFilter<"Survey"> | number
     typeId?: StringNullableWithAggregatesFilter<"Survey"> | string | null
+    ResponseRate?: IntWithAggregatesFilter<"Survey"> | number
+    totalOpenSurveys?: IntWithAggregatesFilter<"Survey"> | number
+    totalResponses?: IntWithAggregatesFilter<"Survey"> | number
   }
 
   export type SurveyStyleWhereInput = {
@@ -20439,6 +20646,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"SurveyStyle"> | Date | string
     surveyId?: StringFilter<"SurveyStyle"> | string
     teamId?: IntFilter<"SurveyStyle"> | number
+    border?: StringFilter<"SurveyStyle"> | string
     survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
   }
@@ -20459,6 +20667,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    border?: SortOrder
     survey?: SurveyOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
   }
@@ -20482,6 +20691,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SurveyStyle"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyStyle"> | Date | string
     teamId?: IntFilter<"SurveyStyle"> | number
+    border?: StringFilter<"SurveyStyle"> | string
     survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
   }, "id" | "surveyId">
@@ -20502,6 +20712,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    border?: SortOrder
     _count?: SurveyStyleCountOrderByAggregateInput
     _avg?: SurveyStyleAvgOrderByAggregateInput
     _max?: SurveyStyleMaxOrderByAggregateInput
@@ -20528,6 +20739,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"SurveyStyle"> | Date | string
     surveyId?: StringWithAggregatesFilter<"SurveyStyle"> | string
     teamId?: IntWithAggregatesFilter<"SurveyStyle"> | number
+    border?: StringWithAggregatesFilter<"SurveyStyle"> | string
   }
 
   export type QuestionWhereInput = {
@@ -20547,10 +20759,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Question"> | Date | string
     surveyId?: StringFilter<"Question"> | string
     teamId?: IntFilter<"Question"> | number
-    survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
-    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    addOther?: BoolFilter<"Question"> | boolean
     options?: QuestionOptionListRelationFilter
     responses?: QuestionResponseListRelationFilter
+    survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
   }
 
   export type QuestionOrderByWithRelationInput = {
@@ -20567,10 +20780,11 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
-    survey?: SurveyOrderByWithRelationInput
-    team?: TeamOrderByWithRelationInput
+    addOther?: SortOrder
     options?: QuestionOptionOrderByRelationAggregateInput
     responses?: QuestionResponseOrderByRelationAggregateInput
+    survey?: SurveyOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
   }
 
   export type QuestionWhereUniqueInput = Prisma.AtLeast<{
@@ -20590,10 +20804,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Question"> | Date | string
     surveyId?: StringFilter<"Question"> | string
     teamId?: IntFilter<"Question"> | number
-    survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
-    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    addOther?: BoolFilter<"Question"> | boolean
     options?: QuestionOptionListRelationFilter
     responses?: QuestionResponseListRelationFilter
+    survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
   }, "id">
 
   export type QuestionOrderByWithAggregationInput = {
@@ -20610,6 +20825,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    addOther?: SortOrder
     _count?: QuestionCountOrderByAggregateInput
     _avg?: QuestionAvgOrderByAggregateInput
     _max?: QuestionMaxOrderByAggregateInput
@@ -20634,6 +20850,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Question"> | Date | string
     surveyId?: StringWithAggregatesFilter<"Question"> | string
     teamId?: IntWithAggregatesFilter<"Question"> | number
+    addOther?: BoolWithAggregatesFilter<"Question"> | boolean
   }
 
   export type QuestionOptionWhereInput = {
@@ -20647,6 +20864,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"QuestionOption"> | Date | string
     questionId?: StringFilter<"QuestionOption"> | string
     teamId?: IntFilter<"QuestionOption"> | number
+    isOther?: BoolFilter<"QuestionOption"> | boolean
     question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     responses?: QuestionResponseListRelationFilter
@@ -20660,6 +20878,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     questionId?: SortOrder
     teamId?: SortOrder
+    isOther?: SortOrder
     question?: QuestionOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
     responses?: QuestionResponseOrderByRelationAggregateInput
@@ -20676,6 +20895,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"QuestionOption"> | Date | string
     questionId?: StringFilter<"QuestionOption"> | string
     teamId?: IntFilter<"QuestionOption"> | number
+    isOther?: BoolFilter<"QuestionOption"> | boolean
     question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     responses?: QuestionResponseListRelationFilter
@@ -20689,6 +20909,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     questionId?: SortOrder
     teamId?: SortOrder
+    isOther?: SortOrder
     _count?: QuestionOptionCountOrderByAggregateInput
     _avg?: QuestionOptionAvgOrderByAggregateInput
     _max?: QuestionOptionMaxOrderByAggregateInput
@@ -20707,6 +20928,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"QuestionOption"> | Date | string
     questionId?: StringWithAggregatesFilter<"QuestionOption"> | string
     teamId?: IntWithAggregatesFilter<"QuestionOption"> | number
+    isOther?: BoolWithAggregatesFilter<"QuestionOption"> | boolean
   }
 
   export type SurveyResponseWhereInput = {
@@ -20720,9 +20942,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     surveyId?: StringFilter<"SurveyResponse"> | string
     teamId?: IntFilter<"SurveyResponse"> | number
+    questionResponses?: QuestionResponseListRelationFilter
     survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
-    questionResponses?: QuestionResponseListRelationFilter
   }
 
   export type SurveyResponseOrderByWithRelationInput = {
@@ -20733,9 +20955,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    questionResponses?: QuestionResponseOrderByRelationAggregateInput
     survey?: SurveyOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
-    questionResponses?: QuestionResponseOrderByRelationAggregateInput
   }
 
   export type SurveyResponseWhereUniqueInput = Prisma.AtLeast<{
@@ -20749,9 +20971,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     surveyId?: StringFilter<"SurveyResponse"> | string
     teamId?: IntFilter<"SurveyResponse"> | number
+    questionResponses?: QuestionResponseListRelationFilter
     survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
-    questionResponses?: QuestionResponseListRelationFilter
   }, "id">
 
   export type SurveyResponseOrderByWithAggregationInput = {
@@ -20797,8 +21019,8 @@ export namespace Prisma {
     optionId?: StringNullableFilter<"QuestionResponse"> | string | null
     responseId?: StringFilter<"QuestionResponse"> | string
     teamId?: IntFilter<"QuestionResponse"> | number
-    question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     option?: XOR<QuestionOptionNullableScalarRelationFilter, QuestionOptionWhereInput> | null
+    question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     response?: XOR<SurveyResponseScalarRelationFilter, SurveyResponseWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
   }
@@ -20815,8 +21037,8 @@ export namespace Prisma {
     optionId?: SortOrderInput | SortOrder
     responseId?: SortOrder
     teamId?: SortOrder
-    question?: QuestionOrderByWithRelationInput
     option?: QuestionOptionOrderByWithRelationInput
+    question?: QuestionOrderByWithRelationInput
     response?: SurveyResponseOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
   }
@@ -20836,8 +21058,8 @@ export namespace Prisma {
     optionId?: StringNullableFilter<"QuestionResponse"> | string | null
     responseId?: StringFilter<"QuestionResponse"> | string
     teamId?: IntFilter<"QuestionResponse"> | number
-    question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     option?: XOR<QuestionOptionNullableScalarRelationFilter, QuestionOptionWhereInput> | null
+    question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     response?: XOR<SurveyResponseScalarRelationFilter, SurveyResponseWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
   }, "id">
@@ -20879,12 +21101,10 @@ export namespace Prisma {
   }
 
   export type UserCreateInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -20893,24 +21113,24 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
-    team?: TeamCreateNestedOneWithoutUserInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -20919,10 +21139,12 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
     avatarId?: number | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -20930,12 +21152,10 @@ export namespace Prisma {
   }
 
   export type UserUpdateInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -20944,24 +21164,24 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
-    team?: TeamUpdateOneWithoutUserNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -20970,10 +21190,12 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -20982,12 +21204,10 @@ export namespace Prisma {
 
   export type UserCreateManyInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -20996,20 +21216,20 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
     avatarId?: number | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
   }
 
   export type UserUpdateManyMutationInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -21018,19 +21238,19 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -21039,10 +21259,12 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
@@ -21337,15 +21559,20 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    user?: UserCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
     questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
     questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
     surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateInput = {
@@ -21354,15 +21581,20 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
     questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
     questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
     surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUpdateInput = {
@@ -21370,15 +21602,20 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    user?: UserUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateInput = {
@@ -21387,15 +21624,20 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateManyInput = {
@@ -21404,6 +21646,11 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
   }
 
   export type TeamUpdateManyMutationInput = {
@@ -21411,6 +21658,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
   }
 
   export type TeamUncheckedUpdateManyInput = {
@@ -21419,6 +21671,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
   }
 
   export type TeamMemberCreateInput = {
@@ -21429,8 +21686,8 @@ export namespace Prisma {
     teamMemberStatus: $Enums.TeamMemberStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutTeamMembersInput
     team: TeamCreateNestedOneWithoutMembersInput
+    user: UserCreateNestedOneWithoutTeamMembersInput
   }
 
   export type TeamMemberUncheckedCreateInput = {
@@ -21454,8 +21711,8 @@ export namespace Prisma {
     teamMemberStatus?: EnumTeamMemberStatusFieldUpdateOperationsInput | $Enums.TeamMemberStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTeamMembersNestedInput
     team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+    user?: UserUpdateOneRequiredWithoutTeamMembersNestedInput
   }
 
   export type TeamMemberUncheckedUpdateInput = {
@@ -21513,8 +21770,8 @@ export namespace Prisma {
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    surveys?: SurveyCreateNestedManyWithoutTypeInput
     team: TeamCreateNestedOneWithoutSurveyTypesInput
+    surveys?: SurveyCreateNestedManyWithoutTypeInput
   }
 
   export type SurveyTypeUncheckedCreateInput = {
@@ -21533,8 +21790,8 @@ export namespace Prisma {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveys?: SurveyUpdateManyWithoutTypeNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveyTypesNestedInput
+    surveys?: SurveyUpdateManyWithoutTypeNestedInput
   }
 
   export type SurveyTypeUncheckedUpdateInput = {
@@ -21578,15 +21835,17 @@ export namespace Prisma {
     name: string
     description?: string | null
     status?: $Enums.SurveyStatus
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    questions?: QuestionCreateNestedManyWithoutSurveyInput
+    responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
     team: TeamCreateNestedOneWithoutSurveysInput
     type?: SurveyTypeCreateNestedOneWithoutSurveysInput
-    questions?: QuestionCreateNestedManyWithoutSurveyInput
-    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
-    responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyUncheckedCreateInput = {
@@ -21594,15 +21853,17 @@ export namespace Prisma {
     name: string
     description?: string | null
     status?: $Enums.SurveyStatus
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
-    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
   }
 
   export type SurveyUpdateInput = {
@@ -21610,15 +21871,17 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    questions?: QuestionUpdateManyWithoutSurveyNestedInput
+    responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
     type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
-    questions?: QuestionUpdateManyWithoutSurveyNestedInput
-    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
-    responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateInput = {
@@ -21626,15 +21889,17 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
-    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
   }
 
   export type SurveyCreateManyInput = {
@@ -21642,12 +21907,14 @@ export namespace Prisma {
     name: string
     description?: string | null
     status?: $Enums.SurveyStatus
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
   }
 
   export type SurveyUpdateManyMutationInput = {
@@ -21655,10 +21922,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
   }
 
   export type SurveyUncheckedUpdateManyInput = {
@@ -21666,12 +21935,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
   }
 
   export type SurveyStyleCreateInput = {
@@ -21688,6 +21959,7 @@ export namespace Prisma {
     fontFamily?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    border?: string
     survey: SurveyCreateNestedOneWithoutStyleInput
     team: TeamCreateNestedOneWithoutSurveysStyleInput
   }
@@ -21708,6 +21980,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     surveyId: string
     teamId: number
+    border?: string
   }
 
   export type SurveyStyleUpdateInput = {
@@ -21724,6 +21997,7 @@ export namespace Prisma {
     fontFamily?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    border?: StringFieldUpdateOperationsInput | string
     survey?: SurveyUpdateOneRequiredWithoutStyleNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveysStyleNestedInput
   }
@@ -21744,6 +22018,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    border?: StringFieldUpdateOperationsInput | string
   }
 
   export type SurveyStyleCreateManyInput = {
@@ -21762,6 +22037,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     surveyId: string
     teamId: number
+    border?: string
   }
 
   export type SurveyStyleUpdateManyMutationInput = {
@@ -21778,6 +22054,7 @@ export namespace Prisma {
     fontFamily?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    border?: StringFieldUpdateOperationsInput | string
   }
 
   export type SurveyStyleUncheckedUpdateManyInput = {
@@ -21796,6 +22073,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    border?: StringFieldUpdateOperationsInput | string
   }
 
   export type QuestionCreateInput = {
@@ -21810,10 +22088,11 @@ export namespace Prisma {
     buttonLabel?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    survey: SurveyCreateNestedOneWithoutQuestionsInput
-    team: TeamCreateNestedOneWithoutQuestionsInput
+    addOther?: boolean
     options?: QuestionOptionCreateNestedManyWithoutQuestionInput
     responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
+    survey: SurveyCreateNestedOneWithoutQuestionsInput
+    team: TeamCreateNestedOneWithoutQuestionsInput
   }
 
   export type QuestionUncheckedCreateInput = {
@@ -21830,6 +22109,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     surveyId: string
     teamId: number
+    addOther?: boolean
     options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
   }
@@ -21846,10 +22126,11 @@ export namespace Prisma {
     buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
-    team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
+    addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
+    survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
+    team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
   }
 
   export type QuestionUncheckedUpdateInput = {
@@ -21866,6 +22147,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
   }
@@ -21884,6 +22166,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     surveyId: string
     teamId: number
+    addOther?: boolean
   }
 
   export type QuestionUpdateManyMutationInput = {
@@ -21898,6 +22181,7 @@ export namespace Prisma {
     buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    addOther?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuestionUncheckedUpdateManyInput = {
@@ -21914,6 +22198,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    addOther?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuestionOptionCreateInput = {
@@ -21922,6 +22207,7 @@ export namespace Prisma {
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOther?: boolean
     question: QuestionCreateNestedOneWithoutOptionsInput
     team: TeamCreateNestedOneWithoutQuestionOptionsInput
     responses?: QuestionResponseCreateNestedManyWithoutOptionInput
@@ -21935,6 +22221,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     questionId: string
     teamId: number
+    isOther?: boolean
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutOptionInput
   }
 
@@ -21944,6 +22231,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOther?: BoolFieldUpdateOperationsInput | boolean
     question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionOptionsNestedInput
     responses?: QuestionResponseUpdateManyWithoutOptionNestedInput
@@ -21957,6 +22245,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    isOther?: BoolFieldUpdateOperationsInput | boolean
     responses?: QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput
   }
 
@@ -21968,6 +22257,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     questionId: string
     teamId: number
+    isOther?: boolean
   }
 
   export type QuestionOptionUpdateManyMutationInput = {
@@ -21976,6 +22266,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOther?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuestionOptionUncheckedUpdateManyInput = {
@@ -21986,6 +22277,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    isOther?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SurveyResponseCreateInput = {
@@ -21994,9 +22286,9 @@ export namespace Prisma {
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
     survey: SurveyCreateNestedOneWithoutResponsesInput
     team: TeamCreateNestedOneWithoutSurveyResponsesInput
-    questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseUncheckedCreateInput = {
@@ -22016,9 +22308,9 @@ export namespace Prisma {
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
     survey?: SurveyUpdateOneRequiredWithoutResponsesNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveyResponsesNestedInput
-    questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
   }
 
   export type SurveyResponseUncheckedUpdateInput = {
@@ -22068,8 +22360,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    question: QuestionCreateNestedOneWithoutResponsesInput
     option?: QuestionOptionCreateNestedOneWithoutResponsesInput
+    question: QuestionCreateNestedOneWithoutResponsesInput
     response: SurveyResponseCreateNestedOneWithoutQuestionResponsesInput
     team: TeamCreateNestedOneWithoutQuestionResponsesInput
   }
@@ -22096,8 +22388,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
     option?: QuestionOptionUpdateOneWithoutResponsesNestedInput
+    question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
     response?: SurveyResponseUpdateOneRequiredWithoutQuestionResponsesNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionResponsesNestedInput
   }
@@ -22165,21 +22457,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -22202,15 +22479,19 @@ export namespace Prisma {
     not?: NestedEnumProviderFilter<$PrismaModel> | $Enums.Provider
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type BoolNullableFilter<$PrismaModel = never> = {
@@ -22223,13 +22504,6 @@ export namespace Prisma {
     in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
     notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
     not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
-  }
-
-  export type EnumThemeFilter<$PrismaModel = never> = {
-    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
-    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    not?: NestedEnumThemeFilter<$PrismaModel> | $Enums.Theme
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -22254,14 +22528,22 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type FileNullableScalarRelationFilter = {
-    is?: FileWhereInput | null
-    isNot?: FileWhereInput | null
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type TeamNullableScalarRelationFilter = {
-    is?: TeamWhereInput | null
-    isNot?: TeamWhereInput | null
+  export type EnumThemeFilter<$PrismaModel = never> = {
+    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
+    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    not?: NestedEnumThemeFilter<$PrismaModel> | $Enums.Theme
   }
 
   export type AccountListRelationFilter = {
@@ -22280,6 +22562,16 @@ export namespace Prisma {
     every?: TeamMemberWhereInput
     some?: TeamMemberWhereInput
     none?: TeamMemberWhereInput
+  }
+
+  export type FileNullableScalarRelationFilter = {
+    is?: FileWhereInput | null
+    isNot?: FileWhereInput | null
+  }
+
+  export type TeamNullableScalarRelationFilter = {
+    is?: TeamWhereInput | null
+    isNot?: TeamWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -22301,12 +22593,10 @@ export namespace Prisma {
 
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
-    idProvider?: SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrder
     resetPasswordToken?: SortOrder
-    resetPasswordExpires?: SortOrder
     confirmationToken?: SortOrder
     confirmed?: SortOrder
     blocked?: SortOrder
@@ -22315,10 +22605,12 @@ export namespace Prisma {
     lastName?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrder
+    idProvider?: SortOrder
+    resetPasswordExpires?: SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrder
   }
 
@@ -22330,12 +22622,10 @@ export namespace Prisma {
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
-    idProvider?: SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrder
     resetPasswordToken?: SortOrder
-    resetPasswordExpires?: SortOrder
     confirmationToken?: SortOrder
     confirmed?: SortOrder
     blocked?: SortOrder
@@ -22344,21 +22634,21 @@ export namespace Prisma {
     lastName?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrder
+    idProvider?: SortOrder
+    resetPasswordExpires?: SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
-    idProvider?: SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrder
     resetPasswordToken?: SortOrder
-    resetPasswordExpires?: SortOrder
     confirmationToken?: SortOrder
     confirmed?: SortOrder
     blocked?: SortOrder
@@ -22367,10 +22657,12 @@ export namespace Prisma {
     lastName?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrder
+    idProvider?: SortOrder
+    resetPasswordExpires?: SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrder
   }
 
@@ -22394,24 +22686,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -22442,18 +22716,22 @@ export namespace Prisma {
     _max?: NestedEnumProviderFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -22472,16 +22750,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumLanguageFilter<$PrismaModel>
     _max?: NestedEnumLanguageFilter<$PrismaModel>
-  }
-
-  export type EnumThemeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
-    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    not?: NestedEnumThemeWithAggregatesFilter<$PrismaModel> | $Enums.Theme
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumThemeFilter<$PrismaModel>
-    _max?: NestedEnumThemeFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -22512,6 +22780,30 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumThemeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
+    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    not?: NestedEnumThemeWithAggregatesFilter<$PrismaModel> | $Enums.Theme
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumThemeFilter<$PrismaModel>
+    _max?: NestedEnumThemeFilter<$PrismaModel>
   }
 
   export type UserListRelationFilter = {
@@ -22690,30 +22982,6 @@ export namespace Prisma {
     expires?: SortOrder
   }
 
-  export type SurveyListRelationFilter = {
-    every?: SurveyWhereInput
-    some?: SurveyWhereInput
-    none?: SurveyWhereInput
-  }
-
-  export type SurveyTypeListRelationFilter = {
-    every?: SurveyTypeWhereInput
-    some?: SurveyTypeWhereInput
-    none?: SurveyTypeWhereInput
-  }
-
-  export type SurveyStyleListRelationFilter = {
-    every?: SurveyStyleWhereInput
-    some?: SurveyStyleWhereInput
-    none?: SurveyStyleWhereInput
-  }
-
-  export type QuestionListRelationFilter = {
-    every?: QuestionWhereInput
-    some?: QuestionWhereInput
-    none?: QuestionWhereInput
-  }
-
   export type QuestionOptionListRelationFilter = {
     every?: QuestionOptionWhereInput
     some?: QuestionOptionWhereInput
@@ -22726,26 +22994,34 @@ export namespace Prisma {
     none?: QuestionResponseWhereInput
   }
 
+  export type QuestionListRelationFilter = {
+    every?: QuestionWhereInput
+    some?: QuestionWhereInput
+    none?: QuestionWhereInput
+  }
+
   export type SurveyResponseListRelationFilter = {
     every?: SurveyResponseWhereInput
     some?: SurveyResponseWhereInput
     none?: SurveyResponseWhereInput
   }
 
-  export type SurveyOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type SurveyStyleListRelationFilter = {
+    every?: SurveyStyleWhereInput
+    some?: SurveyStyleWhereInput
+    none?: SurveyStyleWhereInput
   }
 
-  export type SurveyTypeOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type SurveyTypeListRelationFilter = {
+    every?: SurveyTypeWhereInput
+    some?: SurveyTypeWhereInput
+    none?: SurveyTypeWhereInput
   }
 
-  export type SurveyStyleOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type QuestionOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type SurveyListRelationFilter = {
+    every?: SurveyWhereInput
+    some?: SurveyWhereInput
+    none?: SurveyWhereInput
   }
 
   export type QuestionOptionOrderByRelationAggregateInput = {
@@ -22756,7 +23032,23 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type QuestionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type SurveyResponseOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SurveyStyleOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SurveyTypeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SurveyOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22766,10 +23058,20 @@ export namespace Prisma {
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ResponseRate?: SortOrder
+    totalActiveSurveys?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
+    totalSurveys?: SortOrder
   }
 
   export type TeamAvgOrderByAggregateInput = {
     id?: SortOrder
+    ResponseRate?: SortOrder
+    totalActiveSurveys?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
+    totalSurveys?: SortOrder
   }
 
   export type TeamMaxOrderByAggregateInput = {
@@ -22778,6 +23080,11 @@ export namespace Prisma {
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ResponseRate?: SortOrder
+    totalActiveSurveys?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
+    totalSurveys?: SortOrder
   }
 
   export type TeamMinOrderByAggregateInput = {
@@ -22786,10 +23093,20 @@ export namespace Prisma {
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ResponseRate?: SortOrder
+    totalActiveSurveys?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
+    totalSurveys?: SortOrder
   }
 
   export type TeamSumOrderByAggregateInput = {
     id?: SortOrder
+    ResponseRate?: SortOrder
+    totalActiveSurveys?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
+    totalSurveys?: SortOrder
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -22925,14 +23242,14 @@ export namespace Prisma {
     not?: NestedEnumSurveyStatusFilter<$PrismaModel> | $Enums.SurveyStatus
   }
 
-  export type SurveyTypeNullableScalarRelationFilter = {
-    is?: SurveyTypeWhereInput | null
-    isNot?: SurveyTypeWhereInput | null
-  }
-
   export type SurveyStyleNullableScalarRelationFilter = {
     is?: SurveyStyleWhereInput | null
     isNot?: SurveyStyleWhereInput | null
+  }
+
+  export type SurveyTypeNullableScalarRelationFilter = {
+    is?: SurveyTypeWhereInput | null
+    isNot?: SurveyTypeWhereInput | null
   }
 
   export type SurveyCountOrderByAggregateInput = {
@@ -22940,16 +23257,21 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     status?: SortOrder
-    enabled?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrder
+    ResponseRate?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
   }
 
   export type SurveyAvgOrderByAggregateInput = {
     teamId?: SortOrder
+    ResponseRate?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
   }
 
   export type SurveyMaxOrderByAggregateInput = {
@@ -22957,12 +23279,14 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     status?: SortOrder
-    enabled?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrder
+    ResponseRate?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
   }
 
   export type SurveyMinOrderByAggregateInput = {
@@ -22970,16 +23294,21 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     status?: SortOrder
-    enabled?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrder
+    ResponseRate?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
   }
 
   export type SurveySumOrderByAggregateInput = {
     teamId?: SortOrder
+    ResponseRate?: SortOrder
+    totalOpenSurveys?: SortOrder
+    totalResponses?: SortOrder
   }
 
   export type EnumSurveyStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -23013,6 +23342,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    border?: SortOrder
   }
 
   export type SurveyStyleAvgOrderByAggregateInput = {
@@ -23035,6 +23365,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    border?: SortOrder
   }
 
   export type SurveyStyleMinOrderByAggregateInput = {
@@ -23053,6 +23384,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    border?: SortOrder
   }
 
   export type SurveyStyleSumOrderByAggregateInput = {
@@ -23080,6 +23412,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    addOther?: SortOrder
   }
 
   export type QuestionAvgOrderByAggregateInput = {
@@ -23101,6 +23434,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    addOther?: SortOrder
   }
 
   export type QuestionMinOrderByAggregateInput = {
@@ -23117,6 +23451,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     surveyId?: SortOrder
     teamId?: SortOrder
+    addOther?: SortOrder
   }
 
   export type QuestionSumOrderByAggregateInput = {
@@ -23147,6 +23482,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     questionId?: SortOrder
     teamId?: SortOrder
+    isOther?: SortOrder
   }
 
   export type QuestionOptionAvgOrderByAggregateInput = {
@@ -23162,6 +23498,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     questionId?: SortOrder
     teamId?: SortOrder
+    isOther?: SortOrder
   }
 
   export type QuestionOptionMinOrderByAggregateInput = {
@@ -23172,6 +23509,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     questionId?: SortOrder
     teamId?: SortOrder
+    isOther?: SortOrder
   }
 
   export type QuestionOptionSumOrderByAggregateInput = {
@@ -23296,18 +23634,6 @@ export namespace Prisma {
     teamId?: SortOrder
   }
 
-  export type FileCreateNestedOneWithoutAvatarForInput = {
-    create?: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
-    connectOrCreate?: FileCreateOrConnectWithoutAvatarForInput
-    connect?: FileWhereUniqueInput
-  }
-
-  export type TeamCreateNestedOneWithoutUserInput = {
-    create?: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutUserInput
-    connect?: TeamWhereUniqueInput
-  }
-
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -23327,6 +23653,18 @@ export namespace Prisma {
     connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
     createMany?: TeamMemberCreateManyUserInputEnvelope
     connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+  }
+
+  export type FileCreateNestedOneWithoutAvatarForInput = {
+    create?: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
+    connectOrCreate?: FileCreateOrConnectWithoutAvatarForInput
+    connect?: FileWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutUserInput = {
+    create?: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutUserInput
+    connect?: TeamWhereUniqueInput
   }
 
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
@@ -23350,10 +23688,6 @@ export namespace Prisma {
     connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -23362,8 +23696,8 @@ export namespace Prisma {
     set?: $Enums.Provider
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type NullableBoolFieldUpdateOperationsInput = {
@@ -23374,32 +23708,16 @@ export namespace Prisma {
     set?: $Enums.Language
   }
 
-  export type EnumThemeFieldUpdateOperationsInput = {
-    set?: $Enums.Theme
-  }
-
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
 
-  export type FileUpdateOneWithoutAvatarForNestedInput = {
-    create?: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
-    connectOrCreate?: FileCreateOrConnectWithoutAvatarForInput
-    upsert?: FileUpsertWithoutAvatarForInput
-    disconnect?: FileWhereInput | boolean
-    delete?: FileWhereInput | boolean
-    connect?: FileWhereUniqueInput
-    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutAvatarForInput, FileUpdateWithoutAvatarForInput>, FileUncheckedUpdateWithoutAvatarForInput>
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
-  export type TeamUpdateOneWithoutUserNestedInput = {
-    create?: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutUserInput
-    upsert?: TeamUpsertWithoutUserInput
-    disconnect?: TeamWhereInput | boolean
-    delete?: TeamWhereInput | boolean
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutUserInput, TeamUpdateWithoutUserInput>, TeamUncheckedUpdateWithoutUserInput>
+  export type EnumThemeFieldUpdateOperationsInput = {
+    set?: $Enums.Theme
   }
 
   export type AccountUpdateManyWithoutUserNestedInput = {
@@ -23442,6 +23760,26 @@ export namespace Prisma {
     update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+  }
+
+  export type FileUpdateOneWithoutAvatarForNestedInput = {
+    create?: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
+    connectOrCreate?: FileCreateOrConnectWithoutAvatarForInput
+    upsert?: FileUpsertWithoutAvatarForInput
+    disconnect?: FileWhereInput | boolean
+    delete?: FileWhereInput | boolean
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutAvatarForInput, FileUpdateWithoutAvatarForInput>, FileUncheckedUpdateWithoutAvatarForInput>
+  }
+
+  export type TeamUpdateOneWithoutUserNestedInput = {
+    create?: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutUserInput
+    upsert?: TeamUpsertWithoutUserInput
+    disconnect?: TeamWhereInput | boolean
+    delete?: TeamWhereInput | boolean
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutUserInput, TeamUpdateWithoutUserInput>, TeamUncheckedUpdateWithoutUserInput>
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -23572,48 +23910,6 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type TeamMemberCreateNestedManyWithoutTeamInput = {
-    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
-    createMany?: TeamMemberCreateManyTeamInputEnvelope
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-  }
-
-  export type UserCreateNestedManyWithoutTeamInput = {
-    create?: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput> | UserCreateWithoutTeamInput[] | UserUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
-    createMany?: UserCreateManyTeamInputEnvelope
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-  }
-
-  export type SurveyCreateNestedManyWithoutTeamInput = {
-    create?: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput> | SurveyCreateWithoutTeamInput[] | SurveyUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyCreateOrConnectWithoutTeamInput | SurveyCreateOrConnectWithoutTeamInput[]
-    createMany?: SurveyCreateManyTeamInputEnvelope
-    connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-  }
-
-  export type SurveyTypeCreateNestedManyWithoutTeamInput = {
-    create?: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput> | SurveyTypeCreateWithoutTeamInput[] | SurveyTypeUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyTypeCreateOrConnectWithoutTeamInput | SurveyTypeCreateOrConnectWithoutTeamInput[]
-    createMany?: SurveyTypeCreateManyTeamInputEnvelope
-    connect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-  }
-
-  export type SurveyStyleCreateNestedManyWithoutTeamInput = {
-    create?: XOR<SurveyStyleCreateWithoutTeamInput, SurveyStyleUncheckedCreateWithoutTeamInput> | SurveyStyleCreateWithoutTeamInput[] | SurveyStyleUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyStyleCreateOrConnectWithoutTeamInput | SurveyStyleCreateOrConnectWithoutTeamInput[]
-    createMany?: SurveyStyleCreateManyTeamInputEnvelope
-    connect?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
-  }
-
-  export type QuestionCreateNestedManyWithoutTeamInput = {
-    create?: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput> | QuestionCreateWithoutTeamInput[] | QuestionUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: QuestionCreateOrConnectWithoutTeamInput | QuestionCreateOrConnectWithoutTeamInput[]
-    createMany?: QuestionCreateManyTeamInputEnvelope
-    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-  }
-
   export type QuestionOptionCreateNestedManyWithoutTeamInput = {
     create?: XOR<QuestionOptionCreateWithoutTeamInput, QuestionOptionUncheckedCreateWithoutTeamInput> | QuestionOptionCreateWithoutTeamInput[] | QuestionOptionUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutTeamInput | QuestionOptionCreateOrConnectWithoutTeamInput[]
@@ -23628,6 +23924,13 @@ export namespace Prisma {
     connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
   }
 
+  export type QuestionCreateNestedManyWithoutTeamInput = {
+    create?: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput> | QuestionCreateWithoutTeamInput[] | QuestionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: QuestionCreateOrConnectWithoutTeamInput | QuestionCreateOrConnectWithoutTeamInput[]
+    createMany?: QuestionCreateManyTeamInputEnvelope
+    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+  }
+
   export type SurveyResponseCreateNestedManyWithoutTeamInput = {
     create?: XOR<SurveyResponseCreateWithoutTeamInput, SurveyResponseUncheckedCreateWithoutTeamInput> | SurveyResponseCreateWithoutTeamInput[] | SurveyResponseUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: SurveyResponseCreateOrConnectWithoutTeamInput | SurveyResponseCreateOrConnectWithoutTeamInput[]
@@ -23635,46 +23938,39 @@ export namespace Prisma {
     connect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
   }
 
-  export type TeamMemberUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
-    createMany?: TeamMemberCreateManyTeamInputEnvelope
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-  }
-
-  export type UserUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput> | UserCreateWithoutTeamInput[] | UserUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
-    createMany?: UserCreateManyTeamInputEnvelope
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-  }
-
-  export type SurveyUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput> | SurveyCreateWithoutTeamInput[] | SurveyUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyCreateOrConnectWithoutTeamInput | SurveyCreateOrConnectWithoutTeamInput[]
-    createMany?: SurveyCreateManyTeamInputEnvelope
-    connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-  }
-
-  export type SurveyTypeUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput> | SurveyTypeCreateWithoutTeamInput[] | SurveyTypeUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyTypeCreateOrConnectWithoutTeamInput | SurveyTypeCreateOrConnectWithoutTeamInput[]
-    createMany?: SurveyTypeCreateManyTeamInputEnvelope
-    connect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-  }
-
-  export type SurveyStyleUncheckedCreateNestedManyWithoutTeamInput = {
+  export type SurveyStyleCreateNestedManyWithoutTeamInput = {
     create?: XOR<SurveyStyleCreateWithoutTeamInput, SurveyStyleUncheckedCreateWithoutTeamInput> | SurveyStyleCreateWithoutTeamInput[] | SurveyStyleUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: SurveyStyleCreateOrConnectWithoutTeamInput | SurveyStyleCreateOrConnectWithoutTeamInput[]
     createMany?: SurveyStyleCreateManyTeamInputEnvelope
     connect?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
   }
 
-  export type QuestionUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput> | QuestionCreateWithoutTeamInput[] | QuestionUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: QuestionCreateOrConnectWithoutTeamInput | QuestionCreateOrConnectWithoutTeamInput[]
-    createMany?: QuestionCreateManyTeamInputEnvelope
-    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+  export type SurveyTypeCreateNestedManyWithoutTeamInput = {
+    create?: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput> | SurveyTypeCreateWithoutTeamInput[] | SurveyTypeUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyTypeCreateOrConnectWithoutTeamInput | SurveyTypeCreateOrConnectWithoutTeamInput[]
+    createMany?: SurveyTypeCreateManyTeamInputEnvelope
+    connect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+  }
+
+  export type SurveyCreateNestedManyWithoutTeamInput = {
+    create?: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput> | SurveyCreateWithoutTeamInput[] | SurveyUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyCreateOrConnectWithoutTeamInput | SurveyCreateOrConnectWithoutTeamInput[]
+    createMany?: SurveyCreateManyTeamInputEnvelope
+    connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+  }
+
+  export type TeamMemberCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
+    createMany?: TeamMemberCreateManyTeamInputEnvelope
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedManyWithoutTeamInput = {
+    create?: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput> | UserCreateWithoutTeamInput[] | UserUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
+    createMany?: UserCreateManyTeamInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type QuestionOptionUncheckedCreateNestedManyWithoutTeamInput = {
@@ -23691,6 +23987,13 @@ export namespace Prisma {
     connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
   }
 
+  export type QuestionUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput> | QuestionCreateWithoutTeamInput[] | QuestionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: QuestionCreateOrConnectWithoutTeamInput | QuestionCreateOrConnectWithoutTeamInput[]
+    createMany?: QuestionCreateManyTeamInputEnvelope
+    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+  }
+
   export type SurveyResponseUncheckedCreateNestedManyWithoutTeamInput = {
     create?: XOR<SurveyResponseCreateWithoutTeamInput, SurveyResponseUncheckedCreateWithoutTeamInput> | SurveyResponseCreateWithoutTeamInput[] | SurveyResponseUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: SurveyResponseCreateOrConnectWithoutTeamInput | SurveyResponseCreateOrConnectWithoutTeamInput[]
@@ -23698,88 +24001,39 @@ export namespace Prisma {
     connect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
   }
 
-  export type TeamMemberUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
-    upsert?: TeamMemberUpsertWithWhereUniqueWithoutTeamInput | TeamMemberUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: TeamMemberCreateManyTeamInputEnvelope
-    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    update?: TeamMemberUpdateWithWhereUniqueWithoutTeamInput | TeamMemberUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: TeamMemberUpdateManyWithWhereWithoutTeamInput | TeamMemberUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
-  }
-
-  export type UserUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput> | UserCreateWithoutTeamInput[] | UserUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutTeamInput | UserUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: UserCreateManyTeamInputEnvelope
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutTeamInput | UserUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutTeamInput | UserUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
-  }
-
-  export type SurveyUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput> | SurveyCreateWithoutTeamInput[] | SurveyUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyCreateOrConnectWithoutTeamInput | SurveyCreateOrConnectWithoutTeamInput[]
-    upsert?: SurveyUpsertWithWhereUniqueWithoutTeamInput | SurveyUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: SurveyCreateManyTeamInputEnvelope
-    set?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-    disconnect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-    delete?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-    connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-    update?: SurveyUpdateWithWhereUniqueWithoutTeamInput | SurveyUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: SurveyUpdateManyWithWhereWithoutTeamInput | SurveyUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
-  }
-
-  export type SurveyTypeUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput> | SurveyTypeCreateWithoutTeamInput[] | SurveyTypeUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyTypeCreateOrConnectWithoutTeamInput | SurveyTypeCreateOrConnectWithoutTeamInput[]
-    upsert?: SurveyTypeUpsertWithWhereUniqueWithoutTeamInput | SurveyTypeUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: SurveyTypeCreateManyTeamInputEnvelope
-    set?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-    disconnect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-    delete?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-    connect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-    update?: SurveyTypeUpdateWithWhereUniqueWithoutTeamInput | SurveyTypeUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: SurveyTypeUpdateManyWithWhereWithoutTeamInput | SurveyTypeUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: SurveyTypeScalarWhereInput | SurveyTypeScalarWhereInput[]
-  }
-
-  export type SurveyStyleUpdateManyWithoutTeamNestedInput = {
+  export type SurveyStyleUncheckedCreateNestedManyWithoutTeamInput = {
     create?: XOR<SurveyStyleCreateWithoutTeamInput, SurveyStyleUncheckedCreateWithoutTeamInput> | SurveyStyleCreateWithoutTeamInput[] | SurveyStyleUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: SurveyStyleCreateOrConnectWithoutTeamInput | SurveyStyleCreateOrConnectWithoutTeamInput[]
-    upsert?: SurveyStyleUpsertWithWhereUniqueWithoutTeamInput | SurveyStyleUpsertWithWhereUniqueWithoutTeamInput[]
     createMany?: SurveyStyleCreateManyTeamInputEnvelope
-    set?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
-    disconnect?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
-    delete?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
     connect?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
-    update?: SurveyStyleUpdateWithWhereUniqueWithoutTeamInput | SurveyStyleUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: SurveyStyleUpdateManyWithWhereWithoutTeamInput | SurveyStyleUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: SurveyStyleScalarWhereInput | SurveyStyleScalarWhereInput[]
   }
 
-  export type QuestionUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput> | QuestionCreateWithoutTeamInput[] | QuestionUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: QuestionCreateOrConnectWithoutTeamInput | QuestionCreateOrConnectWithoutTeamInput[]
-    upsert?: QuestionUpsertWithWhereUniqueWithoutTeamInput | QuestionUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: QuestionCreateManyTeamInputEnvelope
-    set?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    disconnect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    delete?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    update?: QuestionUpdateWithWhereUniqueWithoutTeamInput | QuestionUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: QuestionUpdateManyWithWhereWithoutTeamInput | QuestionUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
+  export type SurveyTypeUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput> | SurveyTypeCreateWithoutTeamInput[] | SurveyTypeUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyTypeCreateOrConnectWithoutTeamInput | SurveyTypeCreateOrConnectWithoutTeamInput[]
+    createMany?: SurveyTypeCreateManyTeamInputEnvelope
+    connect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+  }
+
+  export type SurveyUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput> | SurveyCreateWithoutTeamInput[] | SurveyUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyCreateOrConnectWithoutTeamInput | SurveyCreateOrConnectWithoutTeamInput[]
+    createMany?: SurveyCreateManyTeamInputEnvelope
+    connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+  }
+
+  export type TeamMemberUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
+    createMany?: TeamMemberCreateManyTeamInputEnvelope
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput> | UserCreateWithoutTeamInput[] | UserUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
+    createMany?: UserCreateManyTeamInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type QuestionOptionUpdateManyWithoutTeamNestedInput = {
@@ -23810,6 +24064,20 @@ export namespace Prisma {
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
   }
 
+  export type QuestionUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput> | QuestionCreateWithoutTeamInput[] | QuestionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: QuestionCreateOrConnectWithoutTeamInput | QuestionCreateOrConnectWithoutTeamInput[]
+    upsert?: QuestionUpsertWithWhereUniqueWithoutTeamInput | QuestionUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: QuestionCreateManyTeamInputEnvelope
+    set?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    disconnect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    delete?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    update?: QuestionUpdateWithWhereUniqueWithoutTeamInput | QuestionUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: QuestionUpdateManyWithWhereWithoutTeamInput | QuestionUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
+  }
+
   export type SurveyResponseUpdateManyWithoutTeamNestedInput = {
     create?: XOR<SurveyResponseCreateWithoutTeamInput, SurveyResponseUncheckedCreateWithoutTeamInput> | SurveyResponseCreateWithoutTeamInput[] | SurveyResponseUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: SurveyResponseCreateOrConnectWithoutTeamInput | SurveyResponseCreateOrConnectWithoutTeamInput[]
@@ -23824,63 +24092,7 @@ export namespace Prisma {
     deleteMany?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
   }
 
-  export type TeamMemberUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
-    upsert?: TeamMemberUpsertWithWhereUniqueWithoutTeamInput | TeamMemberUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: TeamMemberCreateManyTeamInputEnvelope
-    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    update?: TeamMemberUpdateWithWhereUniqueWithoutTeamInput | TeamMemberUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: TeamMemberUpdateManyWithWhereWithoutTeamInput | TeamMemberUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
-  }
-
-  export type UserUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput> | UserCreateWithoutTeamInput[] | UserUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutTeamInput | UserUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: UserCreateManyTeamInputEnvelope
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutTeamInput | UserUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutTeamInput | UserUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
-  }
-
-  export type SurveyUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput> | SurveyCreateWithoutTeamInput[] | SurveyUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyCreateOrConnectWithoutTeamInput | SurveyCreateOrConnectWithoutTeamInput[]
-    upsert?: SurveyUpsertWithWhereUniqueWithoutTeamInput | SurveyUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: SurveyCreateManyTeamInputEnvelope
-    set?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-    disconnect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-    delete?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-    connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
-    update?: SurveyUpdateWithWhereUniqueWithoutTeamInput | SurveyUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: SurveyUpdateManyWithWhereWithoutTeamInput | SurveyUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
-  }
-
-  export type SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput> | SurveyTypeCreateWithoutTeamInput[] | SurveyTypeUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: SurveyTypeCreateOrConnectWithoutTeamInput | SurveyTypeCreateOrConnectWithoutTeamInput[]
-    upsert?: SurveyTypeUpsertWithWhereUniqueWithoutTeamInput | SurveyTypeUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: SurveyTypeCreateManyTeamInputEnvelope
-    set?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-    disconnect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-    delete?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-    connect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
-    update?: SurveyTypeUpdateWithWhereUniqueWithoutTeamInput | SurveyTypeUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: SurveyTypeUpdateManyWithWhereWithoutTeamInput | SurveyTypeUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: SurveyTypeScalarWhereInput | SurveyTypeScalarWhereInput[]
-  }
-
-  export type SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput = {
+  export type SurveyStyleUpdateManyWithoutTeamNestedInput = {
     create?: XOR<SurveyStyleCreateWithoutTeamInput, SurveyStyleUncheckedCreateWithoutTeamInput> | SurveyStyleCreateWithoutTeamInput[] | SurveyStyleUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: SurveyStyleCreateOrConnectWithoutTeamInput | SurveyStyleCreateOrConnectWithoutTeamInput[]
     upsert?: SurveyStyleUpsertWithWhereUniqueWithoutTeamInput | SurveyStyleUpsertWithWhereUniqueWithoutTeamInput[]
@@ -23894,18 +24106,60 @@ export namespace Prisma {
     deleteMany?: SurveyStyleScalarWhereInput | SurveyStyleScalarWhereInput[]
   }
 
-  export type QuestionUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput> | QuestionCreateWithoutTeamInput[] | QuestionUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: QuestionCreateOrConnectWithoutTeamInput | QuestionCreateOrConnectWithoutTeamInput[]
-    upsert?: QuestionUpsertWithWhereUniqueWithoutTeamInput | QuestionUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: QuestionCreateManyTeamInputEnvelope
-    set?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    disconnect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    delete?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    update?: QuestionUpdateWithWhereUniqueWithoutTeamInput | QuestionUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: QuestionUpdateManyWithWhereWithoutTeamInput | QuestionUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
+  export type SurveyTypeUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput> | SurveyTypeCreateWithoutTeamInput[] | SurveyTypeUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyTypeCreateOrConnectWithoutTeamInput | SurveyTypeCreateOrConnectWithoutTeamInput[]
+    upsert?: SurveyTypeUpsertWithWhereUniqueWithoutTeamInput | SurveyTypeUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: SurveyTypeCreateManyTeamInputEnvelope
+    set?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+    disconnect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+    delete?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+    connect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+    update?: SurveyTypeUpdateWithWhereUniqueWithoutTeamInput | SurveyTypeUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: SurveyTypeUpdateManyWithWhereWithoutTeamInput | SurveyTypeUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: SurveyTypeScalarWhereInput | SurveyTypeScalarWhereInput[]
+  }
+
+  export type SurveyUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput> | SurveyCreateWithoutTeamInput[] | SurveyUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyCreateOrConnectWithoutTeamInput | SurveyCreateOrConnectWithoutTeamInput[]
+    upsert?: SurveyUpsertWithWhereUniqueWithoutTeamInput | SurveyUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: SurveyCreateManyTeamInputEnvelope
+    set?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+    disconnect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+    delete?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+    connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+    update?: SurveyUpdateWithWhereUniqueWithoutTeamInput | SurveyUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: SurveyUpdateManyWithWhereWithoutTeamInput | SurveyUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
+  }
+
+  export type TeamMemberUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
+    upsert?: TeamMemberUpsertWithWhereUniqueWithoutTeamInput | TeamMemberUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TeamMemberCreateManyTeamInputEnvelope
+    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    update?: TeamMemberUpdateWithWhereUniqueWithoutTeamInput | TeamMemberUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TeamMemberUpdateManyWithWhereWithoutTeamInput | TeamMemberUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+  }
+
+  export type UserUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput> | UserCreateWithoutTeamInput[] | UserUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutTeamInput | UserUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: UserCreateManyTeamInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutTeamInput | UserUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutTeamInput | UserUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput = {
@@ -23936,6 +24190,20 @@ export namespace Prisma {
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
   }
 
+  export type QuestionUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput> | QuestionCreateWithoutTeamInput[] | QuestionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: QuestionCreateOrConnectWithoutTeamInput | QuestionCreateOrConnectWithoutTeamInput[]
+    upsert?: QuestionUpsertWithWhereUniqueWithoutTeamInput | QuestionUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: QuestionCreateManyTeamInputEnvelope
+    set?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    disconnect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    delete?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    update?: QuestionUpdateWithWhereUniqueWithoutTeamInput | QuestionUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: QuestionUpdateManyWithWhereWithoutTeamInput | QuestionUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
+  }
+
   export type SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput = {
     create?: XOR<SurveyResponseCreateWithoutTeamInput, SurveyResponseUncheckedCreateWithoutTeamInput> | SurveyResponseCreateWithoutTeamInput[] | SurveyResponseUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: SurveyResponseCreateOrConnectWithoutTeamInput | SurveyResponseCreateOrConnectWithoutTeamInput[]
@@ -23950,16 +24218,86 @@ export namespace Prisma {
     deleteMany?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutTeamMembersInput = {
-    create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
-    connect?: UserWhereUniqueInput
+  export type SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<SurveyStyleCreateWithoutTeamInput, SurveyStyleUncheckedCreateWithoutTeamInput> | SurveyStyleCreateWithoutTeamInput[] | SurveyStyleUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyStyleCreateOrConnectWithoutTeamInput | SurveyStyleCreateOrConnectWithoutTeamInput[]
+    upsert?: SurveyStyleUpsertWithWhereUniqueWithoutTeamInput | SurveyStyleUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: SurveyStyleCreateManyTeamInputEnvelope
+    set?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
+    disconnect?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
+    delete?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
+    connect?: SurveyStyleWhereUniqueInput | SurveyStyleWhereUniqueInput[]
+    update?: SurveyStyleUpdateWithWhereUniqueWithoutTeamInput | SurveyStyleUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: SurveyStyleUpdateManyWithWhereWithoutTeamInput | SurveyStyleUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: SurveyStyleScalarWhereInput | SurveyStyleScalarWhereInput[]
+  }
+
+  export type SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput> | SurveyTypeCreateWithoutTeamInput[] | SurveyTypeUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyTypeCreateOrConnectWithoutTeamInput | SurveyTypeCreateOrConnectWithoutTeamInput[]
+    upsert?: SurveyTypeUpsertWithWhereUniqueWithoutTeamInput | SurveyTypeUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: SurveyTypeCreateManyTeamInputEnvelope
+    set?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+    disconnect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+    delete?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+    connect?: SurveyTypeWhereUniqueInput | SurveyTypeWhereUniqueInput[]
+    update?: SurveyTypeUpdateWithWhereUniqueWithoutTeamInput | SurveyTypeUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: SurveyTypeUpdateManyWithWhereWithoutTeamInput | SurveyTypeUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: SurveyTypeScalarWhereInput | SurveyTypeScalarWhereInput[]
+  }
+
+  export type SurveyUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput> | SurveyCreateWithoutTeamInput[] | SurveyUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyCreateOrConnectWithoutTeamInput | SurveyCreateOrConnectWithoutTeamInput[]
+    upsert?: SurveyUpsertWithWhereUniqueWithoutTeamInput | SurveyUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: SurveyCreateManyTeamInputEnvelope
+    set?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+    disconnect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+    delete?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+    connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+    update?: SurveyUpdateWithWhereUniqueWithoutTeamInput | SurveyUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: SurveyUpdateManyWithWhereWithoutTeamInput | SurveyUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
+  }
+
+  export type TeamMemberUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
+    upsert?: TeamMemberUpsertWithWhereUniqueWithoutTeamInput | TeamMemberUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TeamMemberCreateManyTeamInputEnvelope
+    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    update?: TeamMemberUpdateWithWhereUniqueWithoutTeamInput | TeamMemberUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TeamMemberUpdateManyWithWhereWithoutTeamInput | TeamMemberUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput> | UserCreateWithoutTeamInput[] | UserUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutTeamInput | UserUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: UserCreateManyTeamInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutTeamInput | UserUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutTeamInput | UserUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type TeamCreateNestedOneWithoutMembersInput = {
     create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
     connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
     connect?: TeamWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTeamMembersInput = {
+    create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
+    connect?: UserWhereUniqueInput
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -23970,6 +24308,14 @@ export namespace Prisma {
     set?: $Enums.TeamMemberStatus
   }
 
+  export type TeamUpdateOneRequiredWithoutMembersNestedInput = {
+    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
+    upsert?: TeamUpsertWithoutMembersInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMembersInput, TeamUpdateWithoutMembersInput>, TeamUncheckedUpdateWithoutMembersInput>
+  }
+
   export type UserUpdateOneRequiredWithoutTeamMembersNestedInput = {
     create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
     connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
@@ -23978,12 +24324,10 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTeamMembersInput, UserUpdateWithoutTeamMembersInput>, UserUncheckedUpdateWithoutTeamMembersInput>
   }
 
-  export type TeamUpdateOneRequiredWithoutMembersNestedInput = {
-    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
-    upsert?: TeamUpsertWithoutMembersInput
+  export type TeamCreateNestedOneWithoutSurveyTypesInput = {
+    create?: XOR<TeamCreateWithoutSurveyTypesInput, TeamUncheckedCreateWithoutSurveyTypesInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutSurveyTypesInput
     connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMembersInput, TeamUpdateWithoutMembersInput>, TeamUncheckedUpdateWithoutMembersInput>
   }
 
   export type SurveyCreateNestedManyWithoutTypeInput = {
@@ -23993,17 +24337,19 @@ export namespace Prisma {
     connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
   }
 
-  export type TeamCreateNestedOneWithoutSurveyTypesInput = {
-    create?: XOR<TeamCreateWithoutSurveyTypesInput, TeamUncheckedCreateWithoutSurveyTypesInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutSurveyTypesInput
-    connect?: TeamWhereUniqueInput
-  }
-
   export type SurveyUncheckedCreateNestedManyWithoutTypeInput = {
     create?: XOR<SurveyCreateWithoutTypeInput, SurveyUncheckedCreateWithoutTypeInput> | SurveyCreateWithoutTypeInput[] | SurveyUncheckedCreateWithoutTypeInput[]
     connectOrCreate?: SurveyCreateOrConnectWithoutTypeInput | SurveyCreateOrConnectWithoutTypeInput[]
     createMany?: SurveyCreateManyTypeInputEnvelope
     connect?: SurveyWhereUniqueInput | SurveyWhereUniqueInput[]
+  }
+
+  export type TeamUpdateOneRequiredWithoutSurveyTypesNestedInput = {
+    create?: XOR<TeamCreateWithoutSurveyTypesInput, TeamUncheckedCreateWithoutSurveyTypesInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutSurveyTypesInput
+    upsert?: TeamUpsertWithoutSurveyTypesInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutSurveyTypesInput, TeamUpdateWithoutSurveyTypesInput>, TeamUncheckedUpdateWithoutSurveyTypesInput>
   }
 
   export type SurveyUpdateManyWithoutTypeNestedInput = {
@@ -24020,14 +24366,6 @@ export namespace Prisma {
     deleteMany?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
   }
 
-  export type TeamUpdateOneRequiredWithoutSurveyTypesNestedInput = {
-    create?: XOR<TeamCreateWithoutSurveyTypesInput, TeamUncheckedCreateWithoutSurveyTypesInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutSurveyTypesInput
-    upsert?: TeamUpsertWithoutSurveyTypesInput
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutSurveyTypesInput, TeamUpdateWithoutSurveyTypesInput>, TeamUncheckedUpdateWithoutSurveyTypesInput>
-  }
-
   export type SurveyUncheckedUpdateManyWithoutTypeNestedInput = {
     create?: XOR<SurveyCreateWithoutTypeInput, SurveyUncheckedCreateWithoutTypeInput> | SurveyCreateWithoutTypeInput[] | SurveyUncheckedCreateWithoutTypeInput[]
     connectOrCreate?: SurveyCreateOrConnectWithoutTypeInput | SurveyCreateOrConnectWithoutTypeInput[]
@@ -24042,6 +24380,26 @@ export namespace Prisma {
     deleteMany?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
   }
 
+  export type QuestionCreateNestedManyWithoutSurveyInput = {
+    create?: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput> | QuestionCreateWithoutSurveyInput[] | QuestionUncheckedCreateWithoutSurveyInput[]
+    connectOrCreate?: QuestionCreateOrConnectWithoutSurveyInput | QuestionCreateOrConnectWithoutSurveyInput[]
+    createMany?: QuestionCreateManySurveyInputEnvelope
+    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+  }
+
+  export type SurveyResponseCreateNestedManyWithoutSurveyInput = {
+    create?: XOR<SurveyResponseCreateWithoutSurveyInput, SurveyResponseUncheckedCreateWithoutSurveyInput> | SurveyResponseCreateWithoutSurveyInput[] | SurveyResponseUncheckedCreateWithoutSurveyInput[]
+    connectOrCreate?: SurveyResponseCreateOrConnectWithoutSurveyInput | SurveyResponseCreateOrConnectWithoutSurveyInput[]
+    createMany?: SurveyResponseCreateManySurveyInputEnvelope
+    connect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
+  }
+
+  export type SurveyStyleCreateNestedOneWithoutSurveyInput = {
+    create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
+    connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
+    connect?: SurveyStyleWhereUniqueInput
+  }
+
   export type TeamCreateNestedOneWithoutSurveysInput = {
     create?: XOR<TeamCreateWithoutSurveysInput, TeamUncheckedCreateWithoutSurveysInput>
     connectOrCreate?: TeamCreateOrConnectWithoutSurveysInput
@@ -24054,37 +24412,11 @@ export namespace Prisma {
     connect?: SurveyTypeWhereUniqueInput
   }
 
-  export type QuestionCreateNestedManyWithoutSurveyInput = {
-    create?: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput> | QuestionCreateWithoutSurveyInput[] | QuestionUncheckedCreateWithoutSurveyInput[]
-    connectOrCreate?: QuestionCreateOrConnectWithoutSurveyInput | QuestionCreateOrConnectWithoutSurveyInput[]
-    createMany?: QuestionCreateManySurveyInputEnvelope
-    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-  }
-
-  export type SurveyStyleCreateNestedOneWithoutSurveyInput = {
-    create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
-    connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
-    connect?: SurveyStyleWhereUniqueInput
-  }
-
-  export type SurveyResponseCreateNestedManyWithoutSurveyInput = {
-    create?: XOR<SurveyResponseCreateWithoutSurveyInput, SurveyResponseUncheckedCreateWithoutSurveyInput> | SurveyResponseCreateWithoutSurveyInput[] | SurveyResponseUncheckedCreateWithoutSurveyInput[]
-    connectOrCreate?: SurveyResponseCreateOrConnectWithoutSurveyInput | SurveyResponseCreateOrConnectWithoutSurveyInput[]
-    createMany?: SurveyResponseCreateManySurveyInputEnvelope
-    connect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
-  }
-
   export type QuestionUncheckedCreateNestedManyWithoutSurveyInput = {
     create?: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput> | QuestionCreateWithoutSurveyInput[] | QuestionUncheckedCreateWithoutSurveyInput[]
     connectOrCreate?: QuestionCreateOrConnectWithoutSurveyInput | QuestionCreateOrConnectWithoutSurveyInput[]
     createMany?: QuestionCreateManySurveyInputEnvelope
     connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-  }
-
-  export type SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput = {
-    create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
-    connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
-    connect?: SurveyStyleWhereUniqueInput
   }
 
   export type SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput = {
@@ -24094,8 +24426,52 @@ export namespace Prisma {
     connect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
   }
 
+  export type SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput = {
+    create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
+    connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
+    connect?: SurveyStyleWhereUniqueInput
+  }
+
   export type EnumSurveyStatusFieldUpdateOperationsInput = {
     set?: $Enums.SurveyStatus
+  }
+
+  export type QuestionUpdateManyWithoutSurveyNestedInput = {
+    create?: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput> | QuestionCreateWithoutSurveyInput[] | QuestionUncheckedCreateWithoutSurveyInput[]
+    connectOrCreate?: QuestionCreateOrConnectWithoutSurveyInput | QuestionCreateOrConnectWithoutSurveyInput[]
+    upsert?: QuestionUpsertWithWhereUniqueWithoutSurveyInput | QuestionUpsertWithWhereUniqueWithoutSurveyInput[]
+    createMany?: QuestionCreateManySurveyInputEnvelope
+    set?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    disconnect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    delete?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
+    update?: QuestionUpdateWithWhereUniqueWithoutSurveyInput | QuestionUpdateWithWhereUniqueWithoutSurveyInput[]
+    updateMany?: QuestionUpdateManyWithWhereWithoutSurveyInput | QuestionUpdateManyWithWhereWithoutSurveyInput[]
+    deleteMany?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
+  }
+
+  export type SurveyResponseUpdateManyWithoutSurveyNestedInput = {
+    create?: XOR<SurveyResponseCreateWithoutSurveyInput, SurveyResponseUncheckedCreateWithoutSurveyInput> | SurveyResponseCreateWithoutSurveyInput[] | SurveyResponseUncheckedCreateWithoutSurveyInput[]
+    connectOrCreate?: SurveyResponseCreateOrConnectWithoutSurveyInput | SurveyResponseCreateOrConnectWithoutSurveyInput[]
+    upsert?: SurveyResponseUpsertWithWhereUniqueWithoutSurveyInput | SurveyResponseUpsertWithWhereUniqueWithoutSurveyInput[]
+    createMany?: SurveyResponseCreateManySurveyInputEnvelope
+    set?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
+    disconnect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
+    delete?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
+    connect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
+    update?: SurveyResponseUpdateWithWhereUniqueWithoutSurveyInput | SurveyResponseUpdateWithWhereUniqueWithoutSurveyInput[]
+    updateMany?: SurveyResponseUpdateManyWithWhereWithoutSurveyInput | SurveyResponseUpdateManyWithWhereWithoutSurveyInput[]
+    deleteMany?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
+  }
+
+  export type SurveyStyleUpdateOneWithoutSurveyNestedInput = {
+    create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
+    connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
+    upsert?: SurveyStyleUpsertWithoutSurveyInput
+    disconnect?: SurveyStyleWhereInput | boolean
+    delete?: SurveyStyleWhereInput | boolean
+    connect?: SurveyStyleWhereUniqueInput
+    update?: XOR<XOR<SurveyStyleUpdateToOneWithWhereWithoutSurveyInput, SurveyStyleUpdateWithoutSurveyInput>, SurveyStyleUncheckedUpdateWithoutSurveyInput>
   }
 
   export type TeamUpdateOneRequiredWithoutSurveysNestedInput = {
@@ -24116,44 +24492,6 @@ export namespace Prisma {
     update?: XOR<XOR<SurveyTypeUpdateToOneWithWhereWithoutSurveysInput, SurveyTypeUpdateWithoutSurveysInput>, SurveyTypeUncheckedUpdateWithoutSurveysInput>
   }
 
-  export type QuestionUpdateManyWithoutSurveyNestedInput = {
-    create?: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput> | QuestionCreateWithoutSurveyInput[] | QuestionUncheckedCreateWithoutSurveyInput[]
-    connectOrCreate?: QuestionCreateOrConnectWithoutSurveyInput | QuestionCreateOrConnectWithoutSurveyInput[]
-    upsert?: QuestionUpsertWithWhereUniqueWithoutSurveyInput | QuestionUpsertWithWhereUniqueWithoutSurveyInput[]
-    createMany?: QuestionCreateManySurveyInputEnvelope
-    set?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    disconnect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    delete?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    connect?: QuestionWhereUniqueInput | QuestionWhereUniqueInput[]
-    update?: QuestionUpdateWithWhereUniqueWithoutSurveyInput | QuestionUpdateWithWhereUniqueWithoutSurveyInput[]
-    updateMany?: QuestionUpdateManyWithWhereWithoutSurveyInput | QuestionUpdateManyWithWhereWithoutSurveyInput[]
-    deleteMany?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
-  }
-
-  export type SurveyStyleUpdateOneWithoutSurveyNestedInput = {
-    create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
-    connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
-    upsert?: SurveyStyleUpsertWithoutSurveyInput
-    disconnect?: SurveyStyleWhereInput | boolean
-    delete?: SurveyStyleWhereInput | boolean
-    connect?: SurveyStyleWhereUniqueInput
-    update?: XOR<XOR<SurveyStyleUpdateToOneWithWhereWithoutSurveyInput, SurveyStyleUpdateWithoutSurveyInput>, SurveyStyleUncheckedUpdateWithoutSurveyInput>
-  }
-
-  export type SurveyResponseUpdateManyWithoutSurveyNestedInput = {
-    create?: XOR<SurveyResponseCreateWithoutSurveyInput, SurveyResponseUncheckedCreateWithoutSurveyInput> | SurveyResponseCreateWithoutSurveyInput[] | SurveyResponseUncheckedCreateWithoutSurveyInput[]
-    connectOrCreate?: SurveyResponseCreateOrConnectWithoutSurveyInput | SurveyResponseCreateOrConnectWithoutSurveyInput[]
-    upsert?: SurveyResponseUpsertWithWhereUniqueWithoutSurveyInput | SurveyResponseUpsertWithWhereUniqueWithoutSurveyInput[]
-    createMany?: SurveyResponseCreateManySurveyInputEnvelope
-    set?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
-    disconnect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
-    delete?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
-    connect?: SurveyResponseWhereUniqueInput | SurveyResponseWhereUniqueInput[]
-    update?: SurveyResponseUpdateWithWhereUniqueWithoutSurveyInput | SurveyResponseUpdateWithWhereUniqueWithoutSurveyInput[]
-    updateMany?: SurveyResponseUpdateManyWithWhereWithoutSurveyInput | SurveyResponseUpdateManyWithWhereWithoutSurveyInput[]
-    deleteMany?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
-  }
-
   export type QuestionUncheckedUpdateManyWithoutSurveyNestedInput = {
     create?: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput> | QuestionCreateWithoutSurveyInput[] | QuestionUncheckedCreateWithoutSurveyInput[]
     connectOrCreate?: QuestionCreateOrConnectWithoutSurveyInput | QuestionCreateOrConnectWithoutSurveyInput[]
@@ -24168,16 +24506,6 @@ export namespace Prisma {
     deleteMany?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
   }
 
-  export type SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput = {
-    create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
-    connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
-    upsert?: SurveyStyleUpsertWithoutSurveyInput
-    disconnect?: SurveyStyleWhereInput | boolean
-    delete?: SurveyStyleWhereInput | boolean
-    connect?: SurveyStyleWhereUniqueInput
-    update?: XOR<XOR<SurveyStyleUpdateToOneWithWhereWithoutSurveyInput, SurveyStyleUpdateWithoutSurveyInput>, SurveyStyleUncheckedUpdateWithoutSurveyInput>
-  }
-
   export type SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput = {
     create?: XOR<SurveyResponseCreateWithoutSurveyInput, SurveyResponseUncheckedCreateWithoutSurveyInput> | SurveyResponseCreateWithoutSurveyInput[] | SurveyResponseUncheckedCreateWithoutSurveyInput[]
     connectOrCreate?: SurveyResponseCreateOrConnectWithoutSurveyInput | SurveyResponseCreateOrConnectWithoutSurveyInput[]
@@ -24190,6 +24518,16 @@ export namespace Prisma {
     update?: SurveyResponseUpdateWithWhereUniqueWithoutSurveyInput | SurveyResponseUpdateWithWhereUniqueWithoutSurveyInput[]
     updateMany?: SurveyResponseUpdateManyWithWhereWithoutSurveyInput | SurveyResponseUpdateManyWithWhereWithoutSurveyInput[]
     deleteMany?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
+  }
+
+  export type SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput = {
+    create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
+    connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
+    upsert?: SurveyStyleUpsertWithoutSurveyInput
+    disconnect?: SurveyStyleWhereInput | boolean
+    delete?: SurveyStyleWhereInput | boolean
+    connect?: SurveyStyleWhereUniqueInput
+    update?: XOR<XOR<SurveyStyleUpdateToOneWithWhereWithoutSurveyInput, SurveyStyleUpdateWithoutSurveyInput>, SurveyStyleUncheckedUpdateWithoutSurveyInput>
   }
 
   export type SurveyCreateNestedOneWithoutStyleInput = {
@@ -24220,18 +24558,6 @@ export namespace Prisma {
     update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutSurveysStyleInput, TeamUpdateWithoutSurveysStyleInput>, TeamUncheckedUpdateWithoutSurveysStyleInput>
   }
 
-  export type SurveyCreateNestedOneWithoutQuestionsInput = {
-    create?: XOR<SurveyCreateWithoutQuestionsInput, SurveyUncheckedCreateWithoutQuestionsInput>
-    connectOrCreate?: SurveyCreateOrConnectWithoutQuestionsInput
-    connect?: SurveyWhereUniqueInput
-  }
-
-  export type TeamCreateNestedOneWithoutQuestionsInput = {
-    create?: XOR<TeamCreateWithoutQuestionsInput, TeamUncheckedCreateWithoutQuestionsInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutQuestionsInput
-    connect?: TeamWhereUniqueInput
-  }
-
   export type QuestionOptionCreateNestedManyWithoutQuestionInput = {
     create?: XOR<QuestionOptionCreateWithoutQuestionInput, QuestionOptionUncheckedCreateWithoutQuestionInput> | QuestionOptionCreateWithoutQuestionInput[] | QuestionOptionUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutQuestionInput | QuestionOptionCreateOrConnectWithoutQuestionInput[]
@@ -24244,6 +24570,18 @@ export namespace Prisma {
     connectOrCreate?: QuestionResponseCreateOrConnectWithoutQuestionInput | QuestionResponseCreateOrConnectWithoutQuestionInput[]
     createMany?: QuestionResponseCreateManyQuestionInputEnvelope
     connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+  }
+
+  export type SurveyCreateNestedOneWithoutQuestionsInput = {
+    create?: XOR<SurveyCreateWithoutQuestionsInput, SurveyUncheckedCreateWithoutQuestionsInput>
+    connectOrCreate?: SurveyCreateOrConnectWithoutQuestionsInput
+    connect?: SurveyWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutQuestionsInput = {
+    create?: XOR<TeamCreateWithoutQuestionsInput, TeamUncheckedCreateWithoutQuestionsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutQuestionsInput
+    connect?: TeamWhereUniqueInput
   }
 
   export type QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput = {
@@ -24262,22 +24600,6 @@ export namespace Prisma {
 
   export type EnumQuestionFormatFieldUpdateOperationsInput = {
     set?: $Enums.QuestionFormat
-  }
-
-  export type SurveyUpdateOneRequiredWithoutQuestionsNestedInput = {
-    create?: XOR<SurveyCreateWithoutQuestionsInput, SurveyUncheckedCreateWithoutQuestionsInput>
-    connectOrCreate?: SurveyCreateOrConnectWithoutQuestionsInput
-    upsert?: SurveyUpsertWithoutQuestionsInput
-    connect?: SurveyWhereUniqueInput
-    update?: XOR<XOR<SurveyUpdateToOneWithWhereWithoutQuestionsInput, SurveyUpdateWithoutQuestionsInput>, SurveyUncheckedUpdateWithoutQuestionsInput>
-  }
-
-  export type TeamUpdateOneRequiredWithoutQuestionsNestedInput = {
-    create?: XOR<TeamCreateWithoutQuestionsInput, TeamUncheckedCreateWithoutQuestionsInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutQuestionsInput
-    upsert?: TeamUpsertWithoutQuestionsInput
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutQuestionsInput, TeamUpdateWithoutQuestionsInput>, TeamUncheckedUpdateWithoutQuestionsInput>
   }
 
   export type QuestionOptionUpdateManyWithoutQuestionNestedInput = {
@@ -24306,6 +24628,22 @@ export namespace Prisma {
     update?: QuestionResponseUpdateWithWhereUniqueWithoutQuestionInput | QuestionResponseUpdateWithWhereUniqueWithoutQuestionInput[]
     updateMany?: QuestionResponseUpdateManyWithWhereWithoutQuestionInput | QuestionResponseUpdateManyWithWhereWithoutQuestionInput[]
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
+  }
+
+  export type SurveyUpdateOneRequiredWithoutQuestionsNestedInput = {
+    create?: XOR<SurveyCreateWithoutQuestionsInput, SurveyUncheckedCreateWithoutQuestionsInput>
+    connectOrCreate?: SurveyCreateOrConnectWithoutQuestionsInput
+    upsert?: SurveyUpsertWithoutQuestionsInput
+    connect?: SurveyWhereUniqueInput
+    update?: XOR<XOR<SurveyUpdateToOneWithWhereWithoutQuestionsInput, SurveyUpdateWithoutQuestionsInput>, SurveyUncheckedUpdateWithoutQuestionsInput>
+  }
+
+  export type TeamUpdateOneRequiredWithoutQuestionsNestedInput = {
+    create?: XOR<TeamCreateWithoutQuestionsInput, TeamUncheckedCreateWithoutQuestionsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutQuestionsInput
+    upsert?: TeamUpsertWithoutQuestionsInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutQuestionsInput, TeamUpdateWithoutQuestionsInput>, TeamUncheckedUpdateWithoutQuestionsInput>
   }
 
   export type QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput = {
@@ -24406,6 +24744,13 @@ export namespace Prisma {
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
   }
 
+  export type QuestionResponseCreateNestedManyWithoutResponseInput = {
+    create?: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput> | QuestionResponseCreateWithoutResponseInput[] | QuestionResponseUncheckedCreateWithoutResponseInput[]
+    connectOrCreate?: QuestionResponseCreateOrConnectWithoutResponseInput | QuestionResponseCreateOrConnectWithoutResponseInput[]
+    createMany?: QuestionResponseCreateManyResponseInputEnvelope
+    connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+  }
+
   export type SurveyCreateNestedOneWithoutResponsesInput = {
     create?: XOR<SurveyCreateWithoutResponsesInput, SurveyUncheckedCreateWithoutResponsesInput>
     connectOrCreate?: SurveyCreateOrConnectWithoutResponsesInput
@@ -24418,13 +24763,6 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput
   }
 
-  export type QuestionResponseCreateNestedManyWithoutResponseInput = {
-    create?: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput> | QuestionResponseCreateWithoutResponseInput[] | QuestionResponseUncheckedCreateWithoutResponseInput[]
-    connectOrCreate?: QuestionResponseCreateOrConnectWithoutResponseInput | QuestionResponseCreateOrConnectWithoutResponseInput[]
-    createMany?: QuestionResponseCreateManyResponseInputEnvelope
-    connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
-  }
-
   export type QuestionResponseUncheckedCreateNestedManyWithoutResponseInput = {
     create?: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput> | QuestionResponseCreateWithoutResponseInput[] | QuestionResponseUncheckedCreateWithoutResponseInput[]
     connectOrCreate?: QuestionResponseCreateOrConnectWithoutResponseInput | QuestionResponseCreateOrConnectWithoutResponseInput[]
@@ -24434,6 +24772,20 @@ export namespace Prisma {
 
   export type EnumResponseStatusFieldUpdateOperationsInput = {
     set?: $Enums.ResponseStatus
+  }
+
+  export type QuestionResponseUpdateManyWithoutResponseNestedInput = {
+    create?: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput> | QuestionResponseCreateWithoutResponseInput[] | QuestionResponseUncheckedCreateWithoutResponseInput[]
+    connectOrCreate?: QuestionResponseCreateOrConnectWithoutResponseInput | QuestionResponseCreateOrConnectWithoutResponseInput[]
+    upsert?: QuestionResponseUpsertWithWhereUniqueWithoutResponseInput | QuestionResponseUpsertWithWhereUniqueWithoutResponseInput[]
+    createMany?: QuestionResponseCreateManyResponseInputEnvelope
+    set?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+    disconnect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+    delete?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+    connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+    update?: QuestionResponseUpdateWithWhereUniqueWithoutResponseInput | QuestionResponseUpdateWithWhereUniqueWithoutResponseInput[]
+    updateMany?: QuestionResponseUpdateManyWithWhereWithoutResponseInput | QuestionResponseUpdateManyWithWhereWithoutResponseInput[]
+    deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
   }
 
   export type SurveyUpdateOneRequiredWithoutResponsesNestedInput = {
@@ -24452,20 +24804,6 @@ export namespace Prisma {
     update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutSurveyResponsesInput, TeamUpdateWithoutSurveyResponsesInput>, TeamUncheckedUpdateWithoutSurveyResponsesInput>
   }
 
-  export type QuestionResponseUpdateManyWithoutResponseNestedInput = {
-    create?: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput> | QuestionResponseCreateWithoutResponseInput[] | QuestionResponseUncheckedCreateWithoutResponseInput[]
-    connectOrCreate?: QuestionResponseCreateOrConnectWithoutResponseInput | QuestionResponseCreateOrConnectWithoutResponseInput[]
-    upsert?: QuestionResponseUpsertWithWhereUniqueWithoutResponseInput | QuestionResponseUpsertWithWhereUniqueWithoutResponseInput[]
-    createMany?: QuestionResponseCreateManyResponseInputEnvelope
-    set?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
-    disconnect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
-    delete?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
-    connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
-    update?: QuestionResponseUpdateWithWhereUniqueWithoutResponseInput | QuestionResponseUpdateWithWhereUniqueWithoutResponseInput[]
-    updateMany?: QuestionResponseUpdateManyWithWhereWithoutResponseInput | QuestionResponseUpdateManyWithWhereWithoutResponseInput[]
-    deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
-  }
-
   export type QuestionResponseUncheckedUpdateManyWithoutResponseNestedInput = {
     create?: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput> | QuestionResponseCreateWithoutResponseInput[] | QuestionResponseUncheckedCreateWithoutResponseInput[]
     connectOrCreate?: QuestionResponseCreateOrConnectWithoutResponseInput | QuestionResponseCreateOrConnectWithoutResponseInput[]
@@ -24480,16 +24818,16 @@ export namespace Prisma {
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
   }
 
-  export type QuestionCreateNestedOneWithoutResponsesInput = {
-    create?: XOR<QuestionCreateWithoutResponsesInput, QuestionUncheckedCreateWithoutResponsesInput>
-    connectOrCreate?: QuestionCreateOrConnectWithoutResponsesInput
-    connect?: QuestionWhereUniqueInput
-  }
-
   export type QuestionOptionCreateNestedOneWithoutResponsesInput = {
     create?: XOR<QuestionOptionCreateWithoutResponsesInput, QuestionOptionUncheckedCreateWithoutResponsesInput>
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutResponsesInput
     connect?: QuestionOptionWhereUniqueInput
+  }
+
+  export type QuestionCreateNestedOneWithoutResponsesInput = {
+    create?: XOR<QuestionCreateWithoutResponsesInput, QuestionUncheckedCreateWithoutResponsesInput>
+    connectOrCreate?: QuestionCreateOrConnectWithoutResponsesInput
+    connect?: QuestionWhereUniqueInput
   }
 
   export type SurveyResponseCreateNestedOneWithoutQuestionResponsesInput = {
@@ -24504,14 +24842,6 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput
   }
 
-  export type QuestionUpdateOneRequiredWithoutResponsesNestedInput = {
-    create?: XOR<QuestionCreateWithoutResponsesInput, QuestionUncheckedCreateWithoutResponsesInput>
-    connectOrCreate?: QuestionCreateOrConnectWithoutResponsesInput
-    upsert?: QuestionUpsertWithoutResponsesInput
-    connect?: QuestionWhereUniqueInput
-    update?: XOR<XOR<QuestionUpdateToOneWithWhereWithoutResponsesInput, QuestionUpdateWithoutResponsesInput>, QuestionUncheckedUpdateWithoutResponsesInput>
-  }
-
   export type QuestionOptionUpdateOneWithoutResponsesNestedInput = {
     create?: XOR<QuestionOptionCreateWithoutResponsesInput, QuestionOptionUncheckedCreateWithoutResponsesInput>
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutResponsesInput
@@ -24520,6 +24850,14 @@ export namespace Prisma {
     delete?: QuestionOptionWhereInput | boolean
     connect?: QuestionOptionWhereUniqueInput
     update?: XOR<XOR<QuestionOptionUpdateToOneWithWhereWithoutResponsesInput, QuestionOptionUpdateWithoutResponsesInput>, QuestionOptionUncheckedUpdateWithoutResponsesInput>
+  }
+
+  export type QuestionUpdateOneRequiredWithoutResponsesNestedInput = {
+    create?: XOR<QuestionCreateWithoutResponsesInput, QuestionUncheckedCreateWithoutResponsesInput>
+    connectOrCreate?: QuestionCreateOrConnectWithoutResponsesInput
+    upsert?: QuestionUpsertWithoutResponsesInput
+    connect?: QuestionWhereUniqueInput
+    update?: XOR<XOR<QuestionUpdateToOneWithWhereWithoutResponsesInput, QuestionUpdateWithoutResponsesInput>, QuestionUncheckedUpdateWithoutResponsesInput>
   }
 
   export type SurveyResponseUpdateOneRequiredWithoutQuestionResponsesNestedInput = {
@@ -24549,20 +24887,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -24584,15 +24908,18 @@ export namespace Prisma {
     not?: NestedEnumProviderFilter<$PrismaModel> | $Enums.Provider
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedBoolNullableFilter<$PrismaModel = never> = {
@@ -24605,13 +24932,6 @@ export namespace Prisma {
     in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
     notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
     not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
-  }
-
-  export type NestedEnumThemeFilter<$PrismaModel = never> = {
-    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
-    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    not?: NestedEnumThemeFilter<$PrismaModel> | $Enums.Theme
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -24634,6 +24954,24 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumThemeFilter<$PrismaModel = never> = {
+    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
+    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    not?: NestedEnumThemeFilter<$PrismaModel> | $Enums.Theme
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -24663,23 +25001,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -24707,18 +25028,21 @@ export namespace Prisma {
     _max?: NestedEnumProviderFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -24737,16 +25061,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumLanguageFilter<$PrismaModel>
     _max?: NestedEnumLanguageFilter<$PrismaModel>
-  }
-
-  export type NestedEnumThemeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
-    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    not?: NestedEnumThemeWithAggregatesFilter<$PrismaModel> | $Enums.Theme
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumThemeFilter<$PrismaModel>
-    _max?: NestedEnumThemeFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -24788,6 +25102,30 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumThemeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
+    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    not?: NestedEnumThemeWithAggregatesFilter<$PrismaModel> | $Enums.Theme
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumThemeFilter<$PrismaModel>
+    _max?: NestedEnumThemeFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -24869,72 +25207,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumResponseStatusFilter<$PrismaModel>
     _max?: NestedEnumResponseStatusFilter<$PrismaModel>
-  }
-
-  export type FileCreateWithoutAvatarForInput = {
-    name: string
-    url: string
-    publicId?: string | null
-    format?: string | null
-    version?: string | null
-    mimeType?: string | null
-    size?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type FileUncheckedCreateWithoutAvatarForInput = {
-    id?: number
-    name: string
-    url: string
-    publicId?: string | null
-    format?: string | null
-    version?: string | null
-    mimeType?: string | null
-    size?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type FileCreateOrConnectWithoutAvatarForInput = {
-    where: FileWhereUniqueInput
-    create: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
-  }
-
-  export type TeamCreateWithoutUserInput = {
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamUncheckedCreateWithoutUserInput = {
-    id?: number
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamCreateOrConnectWithoutUserInput = {
-    where: TeamWhereUniqueInput
-    create: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -25030,82 +25302,80 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type FileUpsertWithoutAvatarForInput = {
-    update: XOR<FileUpdateWithoutAvatarForInput, FileUncheckedUpdateWithoutAvatarForInput>
+  export type FileCreateWithoutAvatarForInput = {
+    name: string
+    url: string
+    publicId?: string | null
+    format?: string | null
+    version?: string | null
+    mimeType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileUncheckedCreateWithoutAvatarForInput = {
+    id?: number
+    name: string
+    url: string
+    publicId?: string | null
+    format?: string | null
+    version?: string | null
+    mimeType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileCreateOrConnectWithoutAvatarForInput = {
+    where: FileWhereUniqueInput
     create: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
-    where?: FileWhereInput
   }
 
-  export type FileUpdateToOneWithWhereWithoutAvatarForInput = {
-    where?: FileWhereInput
-    data: XOR<FileUpdateWithoutAvatarForInput, FileUncheckedUpdateWithoutAvatarForInput>
+  export type TeamCreateWithoutUserInput = {
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
   }
 
-  export type FileUpdateWithoutAvatarForInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    publicId?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: NullableStringFieldUpdateOperationsInput | string | null
-    version?: NullableStringFieldUpdateOperationsInput | string | null
-    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type TeamUncheckedCreateWithoutUserInput = {
+    id?: number
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
   }
 
-  export type FileUncheckedUpdateWithoutAvatarForInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    publicId?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: NullableStringFieldUpdateOperationsInput | string | null
-    version?: NullableStringFieldUpdateOperationsInput | string | null
-    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TeamUpsertWithoutUserInput = {
-    update: XOR<TeamUpdateWithoutUserInput, TeamUncheckedUpdateWithoutUserInput>
+  export type TeamCreateOrConnectWithoutUserInput = {
+    where: TeamWhereUniqueInput
     create: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
-    where?: TeamWhereInput
-  }
-
-  export type TeamUpdateToOneWithWhereWithoutUserInput = {
-    where?: TeamWhereInput
-    data: XOR<TeamUpdateWithoutUserInput, TeamUncheckedUpdateWithoutUserInput>
-  }
-
-  export type TeamUpdateWithoutUserInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
-    questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
-    questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
-    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
-  }
-
-  export type TeamUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
-    questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
-    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
-    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -25200,13 +25470,99 @@ export namespace Prisma {
     teamId?: IntFilter<"TeamMember"> | number
   }
 
+  export type FileUpsertWithoutAvatarForInput = {
+    update: XOR<FileUpdateWithoutAvatarForInput, FileUncheckedUpdateWithoutAvatarForInput>
+    create: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutAvatarForInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutAvatarForInput, FileUncheckedUpdateWithoutAvatarForInput>
+  }
+
+  export type FileUpdateWithoutAvatarForInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileUncheckedUpdateWithoutAvatarForInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamUpsertWithoutUserInput = {
+    update: XOR<TeamUpdateWithoutUserInput, TeamUncheckedUpdateWithoutUserInput>
+    create: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutUserInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutUserInput, TeamUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TeamUpdateWithoutUserInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
+    questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
+    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
   export type UserCreateWithoutAvatarInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -25215,23 +25571,23 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    team?: TeamCreateNestedOneWithoutUserInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    team?: TeamCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAvatarInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -25240,9 +25596,11 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -25280,12 +25638,10 @@ export namespace Prisma {
     OR?: UserScalarWhereInput[]
     NOT?: UserScalarWhereInput | UserScalarWhereInput[]
     id?: IntFilter<"User"> | number
-    idProvider?: StringNullableFilter<"User"> | string | null
     email?: StringFilter<"User"> | string
     provider?: EnumProviderFilter<"User"> | $Enums.Provider
     password?: StringNullableFilter<"User"> | string | null
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
-    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     confirmationToken?: StringNullableFilter<"User"> | string | null
     confirmed?: BoolNullableFilter<"User"> | boolean | null
     blocked?: BoolNullableFilter<"User"> | boolean | null
@@ -25294,20 +25650,20 @@ export namespace Prisma {
     lastName?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
-    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     avatarId?: IntNullableFilter<"User"> | number | null
+    idProvider?: StringNullableFilter<"User"> | string | null
+    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     defaultTeamId?: IntNullableFilter<"User"> | number | null
   }
 
   export type UserCreateWithoutAccountsInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -25316,23 +25672,23 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
-    team?: TeamCreateNestedOneWithoutUserInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     sessions?: SessionCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -25341,10 +25697,12 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
     avatarId?: number | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -25367,12 +25725,10 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutAccountsInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -25381,23 +25737,23 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
-    team?: TeamUpdateOneWithoutUserNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -25406,22 +25762,22 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -25430,23 +25786,23 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
-    team?: TeamCreateNestedOneWithoutUserInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -25455,10 +25811,12 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
     avatarId?: number | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -25481,12 +25839,10 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutSessionsInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -25495,23 +25851,23 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
-    team?: TeamUpdateOneWithoutUserNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -25520,13 +25876,277 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type QuestionOptionCreateWithoutTeamInput = {
+    id?: string
+    text: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isOther?: boolean
+    question: QuestionCreateNestedOneWithoutOptionsInput
+    responses?: QuestionResponseCreateNestedManyWithoutOptionInput
+  }
+
+  export type QuestionOptionUncheckedCreateWithoutTeamInput = {
+    id?: string
+    text: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionId: string
+    isOther?: boolean
+    responses?: QuestionResponseUncheckedCreateNestedManyWithoutOptionInput
+  }
+
+  export type QuestionOptionCreateOrConnectWithoutTeamInput = {
+    where: QuestionOptionWhereUniqueInput
+    create: XOR<QuestionOptionCreateWithoutTeamInput, QuestionOptionUncheckedCreateWithoutTeamInput>
+  }
+
+  export type QuestionOptionCreateManyTeamInputEnvelope = {
+    data: QuestionOptionCreateManyTeamInput | QuestionOptionCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type QuestionResponseCreateWithoutTeamInput = {
+    id?: string
+    isOther?: boolean | null
+    textValue?: string | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    option?: QuestionOptionCreateNestedOneWithoutResponsesInput
+    question: QuestionCreateNestedOneWithoutResponsesInput
+    response: SurveyResponseCreateNestedOneWithoutQuestionResponsesInput
+  }
+
+  export type QuestionResponseUncheckedCreateWithoutTeamInput = {
+    id?: string
+    isOther?: boolean | null
+    textValue?: string | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionId: string
+    optionId?: string | null
+    responseId: string
+  }
+
+  export type QuestionResponseCreateOrConnectWithoutTeamInput = {
+    where: QuestionResponseWhereUniqueInput
+    create: XOR<QuestionResponseCreateWithoutTeamInput, QuestionResponseUncheckedCreateWithoutTeamInput>
+  }
+
+  export type QuestionResponseCreateManyTeamInputEnvelope = {
+    data: QuestionResponseCreateManyTeamInput | QuestionResponseCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type QuestionCreateWithoutTeamInput = {
+    id?: string
+    title: string
+    description?: string | null
+    format: $Enums.QuestionFormat
+    required?: boolean
+    order: number
+    yesLabel?: string | null
+    noLabel?: string | null
+    buttonLabel?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    addOther?: boolean
+    options?: QuestionOptionCreateNestedManyWithoutQuestionInput
+    responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
+    survey: SurveyCreateNestedOneWithoutQuestionsInput
+  }
+
+  export type QuestionUncheckedCreateWithoutTeamInput = {
+    id?: string
+    title: string
+    description?: string | null
+    format: $Enums.QuestionFormat
+    required?: boolean
+    order: number
+    yesLabel?: string | null
+    noLabel?: string | null
+    buttonLabel?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    surveyId: string
+    addOther?: boolean
+    options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
+    responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
+  }
+
+  export type QuestionCreateOrConnectWithoutTeamInput = {
+    where: QuestionWhereUniqueInput
+    create: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput>
+  }
+
+  export type QuestionCreateManyTeamInputEnvelope = {
+    data: QuestionCreateManyTeamInput | QuestionCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SurveyResponseCreateWithoutTeamInput = {
+    id?: string
+    status?: $Enums.ResponseStatus
+    submittedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
+    survey: SurveyCreateNestedOneWithoutResponsesInput
+  }
+
+  export type SurveyResponseUncheckedCreateWithoutTeamInput = {
+    id?: string
+    status?: $Enums.ResponseStatus
+    submittedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    surveyId: string
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutResponseInput
+  }
+
+  export type SurveyResponseCreateOrConnectWithoutTeamInput = {
+    where: SurveyResponseWhereUniqueInput
+    create: XOR<SurveyResponseCreateWithoutTeamInput, SurveyResponseUncheckedCreateWithoutTeamInput>
+  }
+
+  export type SurveyResponseCreateManyTeamInputEnvelope = {
+    data: SurveyResponseCreateManyTeamInput | SurveyResponseCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SurveyStyleCreateWithoutTeamInput = {
+    id?: string
+    backgroundColor?: string
+    textColor?: string
+    buttonBackgroundColor?: string
+    buttonTextColor?: string
+    margin?: string
+    padding?: string
+    borderRadius?: string
+    titleFontSize?: string
+    bodyFontSize?: string
+    fontFamily?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    border?: string
+    survey: SurveyCreateNestedOneWithoutStyleInput
+  }
+
+  export type SurveyStyleUncheckedCreateWithoutTeamInput = {
+    id?: string
+    backgroundColor?: string
+    textColor?: string
+    buttonBackgroundColor?: string
+    buttonTextColor?: string
+    margin?: string
+    padding?: string
+    borderRadius?: string
+    titleFontSize?: string
+    bodyFontSize?: string
+    fontFamily?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    surveyId: string
+    border?: string
+  }
+
+  export type SurveyStyleCreateOrConnectWithoutTeamInput = {
+    where: SurveyStyleWhereUniqueInput
+    create: XOR<SurveyStyleCreateWithoutTeamInput, SurveyStyleUncheckedCreateWithoutTeamInput>
+  }
+
+  export type SurveyStyleCreateManyTeamInputEnvelope = {
+    data: SurveyStyleCreateManyTeamInput | SurveyStyleCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SurveyTypeCreateWithoutTeamInput = {
+    id?: string
+    name: string
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    surveys?: SurveyCreateNestedManyWithoutTypeInput
+  }
+
+  export type SurveyTypeUncheckedCreateWithoutTeamInput = {
+    id?: string
+    name: string
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTypeInput
+  }
+
+  export type SurveyTypeCreateOrConnectWithoutTeamInput = {
+    where: SurveyTypeWhereUniqueInput
+    create: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput>
+  }
+
+  export type SurveyTypeCreateManyTeamInputEnvelope = {
+    data: SurveyTypeCreateManyTeamInput | SurveyTypeCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SurveyCreateWithoutTeamInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    questions?: QuestionCreateNestedManyWithoutSurveyInput
+    responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
+    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+  }
+
+  export type SurveyUncheckedCreateWithoutTeamInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    typeId?: string | null
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
+    responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+  }
+
+  export type SurveyCreateOrConnectWithoutTeamInput = {
+    where: SurveyWhereUniqueInput
+    create: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput>
+  }
+
+  export type SurveyCreateManyTeamInputEnvelope = {
+    data: SurveyCreateManyTeamInput | SurveyCreateManyTeamInput[]
+    skipDuplicates?: boolean
   }
 
   export type TeamMemberCreateWithoutTeamInput = {
@@ -25563,12 +26183,10 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutTeamInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -25577,23 +26195,23 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
   }
 
   export type UserUncheckedCreateWithoutTeamInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -25602,10 +26220,12 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
     avatarId?: number | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -25621,348 +26241,132 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type SurveyCreateWithoutTeamInput = {
-    id?: string
-    name: string
-    description?: string | null
-    status?: $Enums.SurveyStatus
-    enabled?: boolean
-    allowMultipleResponses?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
-    questions?: QuestionCreateNestedManyWithoutSurveyInput
-    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
-    responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
-  }
-
-  export type SurveyUncheckedCreateWithoutTeamInput = {
-    id?: string
-    name: string
-    description?: string | null
-    status?: $Enums.SurveyStatus
-    enabled?: boolean
-    allowMultipleResponses?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    typeId?: string | null
-    questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
-    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
-    responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
-  }
-
-  export type SurveyCreateOrConnectWithoutTeamInput = {
-    where: SurveyWhereUniqueInput
-    create: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput>
-  }
-
-  export type SurveyCreateManyTeamInputEnvelope = {
-    data: SurveyCreateManyTeamInput | SurveyCreateManyTeamInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type SurveyTypeCreateWithoutTeamInput = {
-    id?: string
-    name: string
-    isDefault?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    surveys?: SurveyCreateNestedManyWithoutTypeInput
-  }
-
-  export type SurveyTypeUncheckedCreateWithoutTeamInput = {
-    id?: string
-    name: string
-    isDefault?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTypeInput
-  }
-
-  export type SurveyTypeCreateOrConnectWithoutTeamInput = {
-    where: SurveyTypeWhereUniqueInput
-    create: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput>
-  }
-
-  export type SurveyTypeCreateManyTeamInputEnvelope = {
-    data: SurveyTypeCreateManyTeamInput | SurveyTypeCreateManyTeamInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type SurveyStyleCreateWithoutTeamInput = {
-    id?: string
-    backgroundColor?: string
-    textColor?: string
-    buttonBackgroundColor?: string
-    buttonTextColor?: string
-    margin?: string
-    padding?: string
-    borderRadius?: string
-    titleFontSize?: string
-    bodyFontSize?: string
-    fontFamily?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    survey: SurveyCreateNestedOneWithoutStyleInput
-  }
-
-  export type SurveyStyleUncheckedCreateWithoutTeamInput = {
-    id?: string
-    backgroundColor?: string
-    textColor?: string
-    buttonBackgroundColor?: string
-    buttonTextColor?: string
-    margin?: string
-    padding?: string
-    borderRadius?: string
-    titleFontSize?: string
-    bodyFontSize?: string
-    fontFamily?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    surveyId: string
-  }
-
-  export type SurveyStyleCreateOrConnectWithoutTeamInput = {
-    where: SurveyStyleWhereUniqueInput
-    create: XOR<SurveyStyleCreateWithoutTeamInput, SurveyStyleUncheckedCreateWithoutTeamInput>
-  }
-
-  export type SurveyStyleCreateManyTeamInputEnvelope = {
-    data: SurveyStyleCreateManyTeamInput | SurveyStyleCreateManyTeamInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type QuestionCreateWithoutTeamInput = {
-    id?: string
-    title: string
-    description?: string | null
-    format: $Enums.QuestionFormat
-    required?: boolean
-    order: number
-    yesLabel?: string | null
-    noLabel?: string | null
-    buttonLabel?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    survey: SurveyCreateNestedOneWithoutQuestionsInput
-    options?: QuestionOptionCreateNestedManyWithoutQuestionInput
-    responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
-  }
-
-  export type QuestionUncheckedCreateWithoutTeamInput = {
-    id?: string
-    title: string
-    description?: string | null
-    format: $Enums.QuestionFormat
-    required?: boolean
-    order: number
-    yesLabel?: string | null
-    noLabel?: string | null
-    buttonLabel?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    surveyId: string
-    options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
-    responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
-  }
-
-  export type QuestionCreateOrConnectWithoutTeamInput = {
-    where: QuestionWhereUniqueInput
-    create: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput>
-  }
-
-  export type QuestionCreateManyTeamInputEnvelope = {
-    data: QuestionCreateManyTeamInput | QuestionCreateManyTeamInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type QuestionOptionCreateWithoutTeamInput = {
-    id?: string
-    text: string
-    order: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    question: QuestionCreateNestedOneWithoutOptionsInput
-    responses?: QuestionResponseCreateNestedManyWithoutOptionInput
-  }
-
-  export type QuestionOptionUncheckedCreateWithoutTeamInput = {
-    id?: string
-    text: string
-    order: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    questionId: string
-    responses?: QuestionResponseUncheckedCreateNestedManyWithoutOptionInput
-  }
-
-  export type QuestionOptionCreateOrConnectWithoutTeamInput = {
+  export type QuestionOptionUpsertWithWhereUniqueWithoutTeamInput = {
     where: QuestionOptionWhereUniqueInput
+    update: XOR<QuestionOptionUpdateWithoutTeamInput, QuestionOptionUncheckedUpdateWithoutTeamInput>
     create: XOR<QuestionOptionCreateWithoutTeamInput, QuestionOptionUncheckedCreateWithoutTeamInput>
   }
 
-  export type QuestionOptionCreateManyTeamInputEnvelope = {
-    data: QuestionOptionCreateManyTeamInput | QuestionOptionCreateManyTeamInput[]
-    skipDuplicates?: boolean
+  export type QuestionOptionUpdateWithWhereUniqueWithoutTeamInput = {
+    where: QuestionOptionWhereUniqueInput
+    data: XOR<QuestionOptionUpdateWithoutTeamInput, QuestionOptionUncheckedUpdateWithoutTeamInput>
   }
 
-  export type QuestionResponseCreateWithoutTeamInput = {
-    id?: string
-    isOther?: boolean | null
-    textValue?: string | null
-    numberValue?: number | null
-    booleanValue?: boolean | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    question: QuestionCreateNestedOneWithoutResponsesInput
-    option?: QuestionOptionCreateNestedOneWithoutResponsesInput
-    response: SurveyResponseCreateNestedOneWithoutQuestionResponsesInput
+  export type QuestionOptionUpdateManyWithWhereWithoutTeamInput = {
+    where: QuestionOptionScalarWhereInput
+    data: XOR<QuestionOptionUpdateManyMutationInput, QuestionOptionUncheckedUpdateManyWithoutTeamInput>
   }
 
-  export type QuestionResponseUncheckedCreateWithoutTeamInput = {
-    id?: string
-    isOther?: boolean | null
-    textValue?: string | null
-    numberValue?: number | null
-    booleanValue?: boolean | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    questionId: string
-    optionId?: string | null
-    responseId: string
+  export type QuestionOptionScalarWhereInput = {
+    AND?: QuestionOptionScalarWhereInput | QuestionOptionScalarWhereInput[]
+    OR?: QuestionOptionScalarWhereInput[]
+    NOT?: QuestionOptionScalarWhereInput | QuestionOptionScalarWhereInput[]
+    id?: StringFilter<"QuestionOption"> | string
+    text?: StringFilter<"QuestionOption"> | string
+    order?: IntFilter<"QuestionOption"> | number
+    createdAt?: DateTimeFilter<"QuestionOption"> | Date | string
+    updatedAt?: DateTimeFilter<"QuestionOption"> | Date | string
+    questionId?: StringFilter<"QuestionOption"> | string
+    teamId?: IntFilter<"QuestionOption"> | number
+    isOther?: BoolFilter<"QuestionOption"> | boolean
   }
 
-  export type QuestionResponseCreateOrConnectWithoutTeamInput = {
+  export type QuestionResponseUpsertWithWhereUniqueWithoutTeamInput = {
     where: QuestionResponseWhereUniqueInput
+    update: XOR<QuestionResponseUpdateWithoutTeamInput, QuestionResponseUncheckedUpdateWithoutTeamInput>
     create: XOR<QuestionResponseCreateWithoutTeamInput, QuestionResponseUncheckedCreateWithoutTeamInput>
   }
 
-  export type QuestionResponseCreateManyTeamInputEnvelope = {
-    data: QuestionResponseCreateManyTeamInput | QuestionResponseCreateManyTeamInput[]
-    skipDuplicates?: boolean
+  export type QuestionResponseUpdateWithWhereUniqueWithoutTeamInput = {
+    where: QuestionResponseWhereUniqueInput
+    data: XOR<QuestionResponseUpdateWithoutTeamInput, QuestionResponseUncheckedUpdateWithoutTeamInput>
   }
 
-  export type SurveyResponseCreateWithoutTeamInput = {
-    id?: string
-    status?: $Enums.ResponseStatus
-    submittedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    survey: SurveyCreateNestedOneWithoutResponsesInput
-    questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
+  export type QuestionResponseUpdateManyWithWhereWithoutTeamInput = {
+    where: QuestionResponseScalarWhereInput
+    data: XOR<QuestionResponseUpdateManyMutationInput, QuestionResponseUncheckedUpdateManyWithoutTeamInput>
   }
 
-  export type SurveyResponseUncheckedCreateWithoutTeamInput = {
-    id?: string
-    status?: $Enums.ResponseStatus
-    submittedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    surveyId: string
-    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutResponseInput
+  export type QuestionResponseScalarWhereInput = {
+    AND?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
+    OR?: QuestionResponseScalarWhereInput[]
+    NOT?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
+    id?: StringFilter<"QuestionResponse"> | string
+    isOther?: BoolNullableFilter<"QuestionResponse"> | boolean | null
+    textValue?: StringNullableFilter<"QuestionResponse"> | string | null
+    numberValue?: IntNullableFilter<"QuestionResponse"> | number | null
+    booleanValue?: BoolNullableFilter<"QuestionResponse"> | boolean | null
+    createdAt?: DateTimeFilter<"QuestionResponse"> | Date | string
+    updatedAt?: DateTimeFilter<"QuestionResponse"> | Date | string
+    questionId?: StringFilter<"QuestionResponse"> | string
+    optionId?: StringNullableFilter<"QuestionResponse"> | string | null
+    responseId?: StringFilter<"QuestionResponse"> | string
+    teamId?: IntFilter<"QuestionResponse"> | number
   }
 
-  export type SurveyResponseCreateOrConnectWithoutTeamInput = {
+  export type QuestionUpsertWithWhereUniqueWithoutTeamInput = {
+    where: QuestionWhereUniqueInput
+    update: XOR<QuestionUpdateWithoutTeamInput, QuestionUncheckedUpdateWithoutTeamInput>
+    create: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput>
+  }
+
+  export type QuestionUpdateWithWhereUniqueWithoutTeamInput = {
+    where: QuestionWhereUniqueInput
+    data: XOR<QuestionUpdateWithoutTeamInput, QuestionUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type QuestionUpdateManyWithWhereWithoutTeamInput = {
+    where: QuestionScalarWhereInput
+    data: XOR<QuestionUpdateManyMutationInput, QuestionUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type QuestionScalarWhereInput = {
+    AND?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
+    OR?: QuestionScalarWhereInput[]
+    NOT?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
+    id?: StringFilter<"Question"> | string
+    title?: StringFilter<"Question"> | string
+    description?: StringNullableFilter<"Question"> | string | null
+    format?: EnumQuestionFormatFilter<"Question"> | $Enums.QuestionFormat
+    required?: BoolFilter<"Question"> | boolean
+    order?: IntFilter<"Question"> | number
+    yesLabel?: StringNullableFilter<"Question"> | string | null
+    noLabel?: StringNullableFilter<"Question"> | string | null
+    buttonLabel?: StringNullableFilter<"Question"> | string | null
+    createdAt?: DateTimeFilter<"Question"> | Date | string
+    updatedAt?: DateTimeFilter<"Question"> | Date | string
+    surveyId?: StringFilter<"Question"> | string
+    teamId?: IntFilter<"Question"> | number
+    addOther?: BoolFilter<"Question"> | boolean
+  }
+
+  export type SurveyResponseUpsertWithWhereUniqueWithoutTeamInput = {
     where: SurveyResponseWhereUniqueInput
+    update: XOR<SurveyResponseUpdateWithoutTeamInput, SurveyResponseUncheckedUpdateWithoutTeamInput>
     create: XOR<SurveyResponseCreateWithoutTeamInput, SurveyResponseUncheckedCreateWithoutTeamInput>
   }
 
-  export type SurveyResponseCreateManyTeamInputEnvelope = {
-    data: SurveyResponseCreateManyTeamInput | SurveyResponseCreateManyTeamInput[]
-    skipDuplicates?: boolean
+  export type SurveyResponseUpdateWithWhereUniqueWithoutTeamInput = {
+    where: SurveyResponseWhereUniqueInput
+    data: XOR<SurveyResponseUpdateWithoutTeamInput, SurveyResponseUncheckedUpdateWithoutTeamInput>
   }
 
-  export type TeamMemberUpsertWithWhereUniqueWithoutTeamInput = {
-    where: TeamMemberWhereUniqueInput
-    update: XOR<TeamMemberUpdateWithoutTeamInput, TeamMemberUncheckedUpdateWithoutTeamInput>
-    create: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput>
+  export type SurveyResponseUpdateManyWithWhereWithoutTeamInput = {
+    where: SurveyResponseScalarWhereInput
+    data: XOR<SurveyResponseUpdateManyMutationInput, SurveyResponseUncheckedUpdateManyWithoutTeamInput>
   }
 
-  export type TeamMemberUpdateWithWhereUniqueWithoutTeamInput = {
-    where: TeamMemberWhereUniqueInput
-    data: XOR<TeamMemberUpdateWithoutTeamInput, TeamMemberUncheckedUpdateWithoutTeamInput>
-  }
-
-  export type TeamMemberUpdateManyWithWhereWithoutTeamInput = {
-    where: TeamMemberScalarWhereInput
-    data: XOR<TeamMemberUpdateManyMutationInput, TeamMemberUncheckedUpdateManyWithoutTeamInput>
-  }
-
-  export type UserUpsertWithWhereUniqueWithoutTeamInput = {
-    where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutTeamInput, UserUncheckedUpdateWithoutTeamInput>
-    create: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput>
-  }
-
-  export type UserUpdateWithWhereUniqueWithoutTeamInput = {
-    where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutTeamInput, UserUncheckedUpdateWithoutTeamInput>
-  }
-
-  export type UserUpdateManyWithWhereWithoutTeamInput = {
-    where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutTeamInput>
-  }
-
-  export type SurveyUpsertWithWhereUniqueWithoutTeamInput = {
-    where: SurveyWhereUniqueInput
-    update: XOR<SurveyUpdateWithoutTeamInput, SurveyUncheckedUpdateWithoutTeamInput>
-    create: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput>
-  }
-
-  export type SurveyUpdateWithWhereUniqueWithoutTeamInput = {
-    where: SurveyWhereUniqueInput
-    data: XOR<SurveyUpdateWithoutTeamInput, SurveyUncheckedUpdateWithoutTeamInput>
-  }
-
-  export type SurveyUpdateManyWithWhereWithoutTeamInput = {
-    where: SurveyScalarWhereInput
-    data: XOR<SurveyUpdateManyMutationInput, SurveyUncheckedUpdateManyWithoutTeamInput>
-  }
-
-  export type SurveyScalarWhereInput = {
-    AND?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
-    OR?: SurveyScalarWhereInput[]
-    NOT?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
-    id?: StringFilter<"Survey"> | string
-    name?: StringFilter<"Survey"> | string
-    description?: StringNullableFilter<"Survey"> | string | null
-    status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
-    enabled?: BoolFilter<"Survey"> | boolean
-    allowMultipleResponses?: BoolFilter<"Survey"> | boolean
-    createdAt?: DateTimeFilter<"Survey"> | Date | string
-    updatedAt?: DateTimeFilter<"Survey"> | Date | string
-    teamId?: IntFilter<"Survey"> | number
-    typeId?: StringNullableFilter<"Survey"> | string | null
-  }
-
-  export type SurveyTypeUpsertWithWhereUniqueWithoutTeamInput = {
-    where: SurveyTypeWhereUniqueInput
-    update: XOR<SurveyTypeUpdateWithoutTeamInput, SurveyTypeUncheckedUpdateWithoutTeamInput>
-    create: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput>
-  }
-
-  export type SurveyTypeUpdateWithWhereUniqueWithoutTeamInput = {
-    where: SurveyTypeWhereUniqueInput
-    data: XOR<SurveyTypeUpdateWithoutTeamInput, SurveyTypeUncheckedUpdateWithoutTeamInput>
-  }
-
-  export type SurveyTypeUpdateManyWithWhereWithoutTeamInput = {
-    where: SurveyTypeScalarWhereInput
-    data: XOR<SurveyTypeUpdateManyMutationInput, SurveyTypeUncheckedUpdateManyWithoutTeamInput>
-  }
-
-  export type SurveyTypeScalarWhereInput = {
-    AND?: SurveyTypeScalarWhereInput | SurveyTypeScalarWhereInput[]
-    OR?: SurveyTypeScalarWhereInput[]
-    NOT?: SurveyTypeScalarWhereInput | SurveyTypeScalarWhereInput[]
-    id?: StringFilter<"SurveyType"> | string
-    name?: StringFilter<"SurveyType"> | string
-    isDefault?: BoolFilter<"SurveyType"> | boolean
-    createdAt?: DateTimeFilter<"SurveyType"> | Date | string
-    updatedAt?: DateTimeFilter<"SurveyType"> | Date | string
-    teamId?: IntFilter<"SurveyType"> | number
+  export type SurveyResponseScalarWhereInput = {
+    AND?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
+    OR?: SurveyResponseScalarWhereInput[]
+    NOT?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
+    id?: StringFilter<"SurveyResponse"> | string
+    status?: EnumResponseStatusFilter<"SurveyResponse"> | $Enums.ResponseStatus
+    submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
+    createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
+    updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
+    surveyId?: StringFilter<"SurveyResponse"> | string
+    teamId?: IntFilter<"SurveyResponse"> | number
   }
 
   export type SurveyStyleUpsertWithWhereUniqueWithoutTeamInput = {
@@ -26000,186 +26404,101 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"SurveyStyle"> | Date | string
     surveyId?: StringFilter<"SurveyStyle"> | string
     teamId?: IntFilter<"SurveyStyle"> | number
+    border?: StringFilter<"SurveyStyle"> | string
   }
 
-  export type QuestionUpsertWithWhereUniqueWithoutTeamInput = {
-    where: QuestionWhereUniqueInput
-    update: XOR<QuestionUpdateWithoutTeamInput, QuestionUncheckedUpdateWithoutTeamInput>
-    create: XOR<QuestionCreateWithoutTeamInput, QuestionUncheckedCreateWithoutTeamInput>
+  export type SurveyTypeUpsertWithWhereUniqueWithoutTeamInput = {
+    where: SurveyTypeWhereUniqueInput
+    update: XOR<SurveyTypeUpdateWithoutTeamInput, SurveyTypeUncheckedUpdateWithoutTeamInput>
+    create: XOR<SurveyTypeCreateWithoutTeamInput, SurveyTypeUncheckedCreateWithoutTeamInput>
   }
 
-  export type QuestionUpdateWithWhereUniqueWithoutTeamInput = {
-    where: QuestionWhereUniqueInput
-    data: XOR<QuestionUpdateWithoutTeamInput, QuestionUncheckedUpdateWithoutTeamInput>
+  export type SurveyTypeUpdateWithWhereUniqueWithoutTeamInput = {
+    where: SurveyTypeWhereUniqueInput
+    data: XOR<SurveyTypeUpdateWithoutTeamInput, SurveyTypeUncheckedUpdateWithoutTeamInput>
   }
 
-  export type QuestionUpdateManyWithWhereWithoutTeamInput = {
-    where: QuestionScalarWhereInput
-    data: XOR<QuestionUpdateManyMutationInput, QuestionUncheckedUpdateManyWithoutTeamInput>
+  export type SurveyTypeUpdateManyWithWhereWithoutTeamInput = {
+    where: SurveyTypeScalarWhereInput
+    data: XOR<SurveyTypeUpdateManyMutationInput, SurveyTypeUncheckedUpdateManyWithoutTeamInput>
   }
 
-  export type QuestionScalarWhereInput = {
-    AND?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
-    OR?: QuestionScalarWhereInput[]
-    NOT?: QuestionScalarWhereInput | QuestionScalarWhereInput[]
-    id?: StringFilter<"Question"> | string
-    title?: StringFilter<"Question"> | string
-    description?: StringNullableFilter<"Question"> | string | null
-    format?: EnumQuestionFormatFilter<"Question"> | $Enums.QuestionFormat
-    required?: BoolFilter<"Question"> | boolean
-    order?: IntFilter<"Question"> | number
-    yesLabel?: StringNullableFilter<"Question"> | string | null
-    noLabel?: StringNullableFilter<"Question"> | string | null
-    buttonLabel?: StringNullableFilter<"Question"> | string | null
-    createdAt?: DateTimeFilter<"Question"> | Date | string
-    updatedAt?: DateTimeFilter<"Question"> | Date | string
-    surveyId?: StringFilter<"Question"> | string
-    teamId?: IntFilter<"Question"> | number
+  export type SurveyTypeScalarWhereInput = {
+    AND?: SurveyTypeScalarWhereInput | SurveyTypeScalarWhereInput[]
+    OR?: SurveyTypeScalarWhereInput[]
+    NOT?: SurveyTypeScalarWhereInput | SurveyTypeScalarWhereInput[]
+    id?: StringFilter<"SurveyType"> | string
+    name?: StringFilter<"SurveyType"> | string
+    isDefault?: BoolFilter<"SurveyType"> | boolean
+    createdAt?: DateTimeFilter<"SurveyType"> | Date | string
+    updatedAt?: DateTimeFilter<"SurveyType"> | Date | string
+    teamId?: IntFilter<"SurveyType"> | number
   }
 
-  export type QuestionOptionUpsertWithWhereUniqueWithoutTeamInput = {
-    where: QuestionOptionWhereUniqueInput
-    update: XOR<QuestionOptionUpdateWithoutTeamInput, QuestionOptionUncheckedUpdateWithoutTeamInput>
-    create: XOR<QuestionOptionCreateWithoutTeamInput, QuestionOptionUncheckedCreateWithoutTeamInput>
+  export type SurveyUpsertWithWhereUniqueWithoutTeamInput = {
+    where: SurveyWhereUniqueInput
+    update: XOR<SurveyUpdateWithoutTeamInput, SurveyUncheckedUpdateWithoutTeamInput>
+    create: XOR<SurveyCreateWithoutTeamInput, SurveyUncheckedCreateWithoutTeamInput>
   }
 
-  export type QuestionOptionUpdateWithWhereUniqueWithoutTeamInput = {
-    where: QuestionOptionWhereUniqueInput
-    data: XOR<QuestionOptionUpdateWithoutTeamInput, QuestionOptionUncheckedUpdateWithoutTeamInput>
+  export type SurveyUpdateWithWhereUniqueWithoutTeamInput = {
+    where: SurveyWhereUniqueInput
+    data: XOR<SurveyUpdateWithoutTeamInput, SurveyUncheckedUpdateWithoutTeamInput>
   }
 
-  export type QuestionOptionUpdateManyWithWhereWithoutTeamInput = {
-    where: QuestionOptionScalarWhereInput
-    data: XOR<QuestionOptionUpdateManyMutationInput, QuestionOptionUncheckedUpdateManyWithoutTeamInput>
+  export type SurveyUpdateManyWithWhereWithoutTeamInput = {
+    where: SurveyScalarWhereInput
+    data: XOR<SurveyUpdateManyMutationInput, SurveyUncheckedUpdateManyWithoutTeamInput>
   }
 
-  export type QuestionOptionScalarWhereInput = {
-    AND?: QuestionOptionScalarWhereInput | QuestionOptionScalarWhereInput[]
-    OR?: QuestionOptionScalarWhereInput[]
-    NOT?: QuestionOptionScalarWhereInput | QuestionOptionScalarWhereInput[]
-    id?: StringFilter<"QuestionOption"> | string
-    text?: StringFilter<"QuestionOption"> | string
-    order?: IntFilter<"QuestionOption"> | number
-    createdAt?: DateTimeFilter<"QuestionOption"> | Date | string
-    updatedAt?: DateTimeFilter<"QuestionOption"> | Date | string
-    questionId?: StringFilter<"QuestionOption"> | string
-    teamId?: IntFilter<"QuestionOption"> | number
+  export type SurveyScalarWhereInput = {
+    AND?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
+    OR?: SurveyScalarWhereInput[]
+    NOT?: SurveyScalarWhereInput | SurveyScalarWhereInput[]
+    id?: StringFilter<"Survey"> | string
+    name?: StringFilter<"Survey"> | string
+    description?: StringNullableFilter<"Survey"> | string | null
+    status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
+    allowMultipleResponses?: BoolFilter<"Survey"> | boolean
+    createdAt?: DateTimeFilter<"Survey"> | Date | string
+    updatedAt?: DateTimeFilter<"Survey"> | Date | string
+    teamId?: IntFilter<"Survey"> | number
+    typeId?: StringNullableFilter<"Survey"> | string | null
+    ResponseRate?: IntFilter<"Survey"> | number
+    totalOpenSurveys?: IntFilter<"Survey"> | number
+    totalResponses?: IntFilter<"Survey"> | number
   }
 
-  export type QuestionResponseUpsertWithWhereUniqueWithoutTeamInput = {
-    where: QuestionResponseWhereUniqueInput
-    update: XOR<QuestionResponseUpdateWithoutTeamInput, QuestionResponseUncheckedUpdateWithoutTeamInput>
-    create: XOR<QuestionResponseCreateWithoutTeamInput, QuestionResponseUncheckedCreateWithoutTeamInput>
+  export type TeamMemberUpsertWithWhereUniqueWithoutTeamInput = {
+    where: TeamMemberWhereUniqueInput
+    update: XOR<TeamMemberUpdateWithoutTeamInput, TeamMemberUncheckedUpdateWithoutTeamInput>
+    create: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput>
   }
 
-  export type QuestionResponseUpdateWithWhereUniqueWithoutTeamInput = {
-    where: QuestionResponseWhereUniqueInput
-    data: XOR<QuestionResponseUpdateWithoutTeamInput, QuestionResponseUncheckedUpdateWithoutTeamInput>
+  export type TeamMemberUpdateWithWhereUniqueWithoutTeamInput = {
+    where: TeamMemberWhereUniqueInput
+    data: XOR<TeamMemberUpdateWithoutTeamInput, TeamMemberUncheckedUpdateWithoutTeamInput>
   }
 
-  export type QuestionResponseUpdateManyWithWhereWithoutTeamInput = {
-    where: QuestionResponseScalarWhereInput
-    data: XOR<QuestionResponseUpdateManyMutationInput, QuestionResponseUncheckedUpdateManyWithoutTeamInput>
+  export type TeamMemberUpdateManyWithWhereWithoutTeamInput = {
+    where: TeamMemberScalarWhereInput
+    data: XOR<TeamMemberUpdateManyMutationInput, TeamMemberUncheckedUpdateManyWithoutTeamInput>
   }
 
-  export type QuestionResponseScalarWhereInput = {
-    AND?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
-    OR?: QuestionResponseScalarWhereInput[]
-    NOT?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
-    id?: StringFilter<"QuestionResponse"> | string
-    isOther?: BoolNullableFilter<"QuestionResponse"> | boolean | null
-    textValue?: StringNullableFilter<"QuestionResponse"> | string | null
-    numberValue?: IntNullableFilter<"QuestionResponse"> | number | null
-    booleanValue?: BoolNullableFilter<"QuestionResponse"> | boolean | null
-    createdAt?: DateTimeFilter<"QuestionResponse"> | Date | string
-    updatedAt?: DateTimeFilter<"QuestionResponse"> | Date | string
-    questionId?: StringFilter<"QuestionResponse"> | string
-    optionId?: StringNullableFilter<"QuestionResponse"> | string | null
-    responseId?: StringFilter<"QuestionResponse"> | string
-    teamId?: IntFilter<"QuestionResponse"> | number
-  }
-
-  export type SurveyResponseUpsertWithWhereUniqueWithoutTeamInput = {
-    where: SurveyResponseWhereUniqueInput
-    update: XOR<SurveyResponseUpdateWithoutTeamInput, SurveyResponseUncheckedUpdateWithoutTeamInput>
-    create: XOR<SurveyResponseCreateWithoutTeamInput, SurveyResponseUncheckedCreateWithoutTeamInput>
-  }
-
-  export type SurveyResponseUpdateWithWhereUniqueWithoutTeamInput = {
-    where: SurveyResponseWhereUniqueInput
-    data: XOR<SurveyResponseUpdateWithoutTeamInput, SurveyResponseUncheckedUpdateWithoutTeamInput>
-  }
-
-  export type SurveyResponseUpdateManyWithWhereWithoutTeamInput = {
-    where: SurveyResponseScalarWhereInput
-    data: XOR<SurveyResponseUpdateManyMutationInput, SurveyResponseUncheckedUpdateManyWithoutTeamInput>
-  }
-
-  export type SurveyResponseScalarWhereInput = {
-    AND?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
-    OR?: SurveyResponseScalarWhereInput[]
-    NOT?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
-    id?: StringFilter<"SurveyResponse"> | string
-    status?: EnumResponseStatusFilter<"SurveyResponse"> | $Enums.ResponseStatus
-    submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
-    createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
-    updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
-    surveyId?: StringFilter<"SurveyResponse"> | string
-    teamId?: IntFilter<"SurveyResponse"> | number
-  }
-
-  export type UserCreateWithoutTeamMembersInput = {
-    idProvider?: string | null
-    email: string
-    provider?: $Enums.Provider
-    password?: string | null
-    resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
-    confirmationToken?: string | null
-    confirmed?: boolean | null
-    blocked?: boolean | null
-    phone?: string | null
-    firstName: string
-    lastName?: string | null
-    avatarUrl?: string | null
-    language: $Enums.Language
-    theme?: $Enums.Theme
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
-    team?: TeamCreateNestedOneWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutTeamMembersInput = {
-    id?: number
-    idProvider?: string | null
-    email: string
-    provider?: $Enums.Provider
-    password?: string | null
-    resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
-    confirmationToken?: string | null
-    confirmed?: boolean | null
-    blocked?: boolean | null
-    phone?: string | null
-    firstName: string
-    lastName?: string | null
-    avatarUrl?: string | null
-    language: $Enums.Language
-    theme?: $Enums.Theme
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarId?: number | null
-    defaultTeamId?: number | null
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutTeamMembersInput = {
+  export type UserUpsertWithWhereUniqueWithoutTeamInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
+    update: XOR<UserUpdateWithoutTeamInput, UserUncheckedUpdateWithoutTeamInput>
+    create: XOR<UserCreateWithoutTeamInput, UserUncheckedCreateWithoutTeamInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutTeamInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutTeamInput, UserUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutTeamInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutTeamInput>
   }
 
   export type TeamCreateWithoutMembersInput = {
@@ -26187,14 +26506,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user?: UserCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
     questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
     questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
     surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMembersInput = {
@@ -26203,14 +26527,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
     questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
     questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
     surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMembersInput = {
@@ -26218,64 +26547,58 @@ export namespace Prisma {
     create: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
   }
 
-  export type UserUpsertWithoutTeamMembersInput = {
-    update: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
+  export type UserCreateWithoutTeamMembersInput = {
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTeamMembersInput = {
+    id?: number
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarId?: number | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    defaultTeamId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTeamMembersInput = {
+    where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutTeamMembersInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
-  }
-
-  export type UserUpdateWithoutTeamMembersInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
-    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
-    team?: TeamUpdateOneWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutTeamMembersInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
-    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
-    defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamUpsertWithoutMembersInput = {
@@ -26294,14 +26617,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
@@ -26310,14 +26638,125 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type UserUpsertWithoutTeamMembersInput = {
+    update: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
+    create: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTeamMembersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
+  }
+
+  export type UserUpdateWithoutTeamMembersInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTeamMembersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TeamCreateWithoutSurveyTypesInput = {
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutSurveyTypesInput = {
+    id?: number
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutSurveyTypesInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutSurveyTypesInput, TeamUncheckedCreateWithoutSurveyTypesInput>
   }
 
   export type SurveyCreateWithoutTypeInput = {
@@ -26325,14 +26764,16 @@ export namespace Prisma {
     name: string
     description?: string | null
     status?: $Enums.SurveyStatus
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSurveysInput
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
     questions?: QuestionCreateNestedManyWithoutSurveyInput
-    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
     responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
+    team: TeamCreateNestedOneWithoutSurveysInput
   }
 
   export type SurveyUncheckedCreateWithoutTypeInput = {
@@ -26340,14 +26781,16 @@ export namespace Prisma {
     name: string
     description?: string | null
     status?: $Enums.SurveyStatus
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
-    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
   }
 
   export type SurveyCreateOrConnectWithoutTypeInput = {
@@ -26358,58 +26801,6 @@ export namespace Prisma {
   export type SurveyCreateManyTypeInputEnvelope = {
     data: SurveyCreateManyTypeInput | SurveyCreateManyTypeInput[]
     skipDuplicates?: boolean
-  }
-
-  export type TeamCreateWithoutSurveyTypesInput = {
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    user?: UserCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamUncheckedCreateWithoutSurveyTypesInput = {
-    id?: number
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamCreateOrConnectWithoutSurveyTypesInput = {
-    where: TeamWhereUniqueInput
-    create: XOR<TeamCreateWithoutSurveyTypesInput, TeamUncheckedCreateWithoutSurveyTypesInput>
-  }
-
-  export type SurveyUpsertWithWhereUniqueWithoutTypeInput = {
-    where: SurveyWhereUniqueInput
-    update: XOR<SurveyUpdateWithoutTypeInput, SurveyUncheckedUpdateWithoutTypeInput>
-    create: XOR<SurveyCreateWithoutTypeInput, SurveyUncheckedCreateWithoutTypeInput>
-  }
-
-  export type SurveyUpdateWithWhereUniqueWithoutTypeInput = {
-    where: SurveyWhereUniqueInput
-    data: XOR<SurveyUpdateWithoutTypeInput, SurveyUncheckedUpdateWithoutTypeInput>
-  }
-
-  export type SurveyUpdateManyWithWhereWithoutTypeInput = {
-    where: SurveyScalarWhereInput
-    data: XOR<SurveyUpdateManyMutationInput, SurveyUncheckedUpdateManyWithoutTypeInput>
   }
 
   export type TeamUpsertWithoutSurveyTypesInput = {
@@ -26428,14 +26819,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    user?: UserUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveyTypesInput = {
@@ -26444,14 +26840,152 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type SurveyUpsertWithWhereUniqueWithoutTypeInput = {
+    where: SurveyWhereUniqueInput
+    update: XOR<SurveyUpdateWithoutTypeInput, SurveyUncheckedUpdateWithoutTypeInput>
+    create: XOR<SurveyCreateWithoutTypeInput, SurveyUncheckedCreateWithoutTypeInput>
+  }
+
+  export type SurveyUpdateWithWhereUniqueWithoutTypeInput = {
+    where: SurveyWhereUniqueInput
+    data: XOR<SurveyUpdateWithoutTypeInput, SurveyUncheckedUpdateWithoutTypeInput>
+  }
+
+  export type SurveyUpdateManyWithWhereWithoutTypeInput = {
+    where: SurveyScalarWhereInput
+    data: XOR<SurveyUpdateManyMutationInput, SurveyUncheckedUpdateManyWithoutTypeInput>
+  }
+
+  export type QuestionCreateWithoutSurveyInput = {
+    id?: string
+    title: string
+    description?: string | null
+    format: $Enums.QuestionFormat
+    required?: boolean
+    order: number
+    yesLabel?: string | null
+    noLabel?: string | null
+    buttonLabel?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    addOther?: boolean
+    options?: QuestionOptionCreateNestedManyWithoutQuestionInput
+    responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
+    team: TeamCreateNestedOneWithoutQuestionsInput
+  }
+
+  export type QuestionUncheckedCreateWithoutSurveyInput = {
+    id?: string
+    title: string
+    description?: string | null
+    format: $Enums.QuestionFormat
+    required?: boolean
+    order: number
+    yesLabel?: string | null
+    noLabel?: string | null
+    buttonLabel?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId: number
+    addOther?: boolean
+    options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
+    responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
+  }
+
+  export type QuestionCreateOrConnectWithoutSurveyInput = {
+    where: QuestionWhereUniqueInput
+    create: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput>
+  }
+
+  export type QuestionCreateManySurveyInputEnvelope = {
+    data: QuestionCreateManySurveyInput | QuestionCreateManySurveyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SurveyResponseCreateWithoutSurveyInput = {
+    id?: string
+    status?: $Enums.ResponseStatus
+    submittedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
+    team: TeamCreateNestedOneWithoutSurveyResponsesInput
+  }
+
+  export type SurveyResponseUncheckedCreateWithoutSurveyInput = {
+    id?: string
+    status?: $Enums.ResponseStatus
+    submittedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId: number
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutResponseInput
+  }
+
+  export type SurveyResponseCreateOrConnectWithoutSurveyInput = {
+    where: SurveyResponseWhereUniqueInput
+    create: XOR<SurveyResponseCreateWithoutSurveyInput, SurveyResponseUncheckedCreateWithoutSurveyInput>
+  }
+
+  export type SurveyResponseCreateManySurveyInputEnvelope = {
+    data: SurveyResponseCreateManySurveyInput | SurveyResponseCreateManySurveyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SurveyStyleCreateWithoutSurveyInput = {
+    id?: string
+    backgroundColor?: string
+    textColor?: string
+    buttonBackgroundColor?: string
+    buttonTextColor?: string
+    margin?: string
+    padding?: string
+    borderRadius?: string
+    titleFontSize?: string
+    bodyFontSize?: string
+    fontFamily?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    border?: string
+    team: TeamCreateNestedOneWithoutSurveysStyleInput
+  }
+
+  export type SurveyStyleUncheckedCreateWithoutSurveyInput = {
+    id?: string
+    backgroundColor?: string
+    textColor?: string
+    buttonBackgroundColor?: string
+    buttonTextColor?: string
+    margin?: string
+    padding?: string
+    borderRadius?: string
+    titleFontSize?: string
+    bodyFontSize?: string
+    fontFamily?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId: number
+    border?: string
+  }
+
+  export type SurveyStyleCreateOrConnectWithoutSurveyInput = {
+    where: SurveyStyleWhereUniqueInput
+    create: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
   }
 
   export type TeamCreateWithoutSurveysInput = {
@@ -26459,14 +26993,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    user?: UserCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
     questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
     questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
     surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveysInput = {
@@ -26475,14 +27014,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
     questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
     questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
     surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveysInput = {
@@ -26513,117 +27057,83 @@ export namespace Prisma {
     create: XOR<SurveyTypeCreateWithoutSurveysInput, SurveyTypeUncheckedCreateWithoutSurveysInput>
   }
 
-  export type QuestionCreateWithoutSurveyInput = {
-    id?: string
-    title: string
-    description?: string | null
-    format: $Enums.QuestionFormat
-    required?: boolean
-    order: number
-    yesLabel?: string | null
-    noLabel?: string | null
-    buttonLabel?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutQuestionsInput
-    options?: QuestionOptionCreateNestedManyWithoutQuestionInput
-    responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
-  }
-
-  export type QuestionUncheckedCreateWithoutSurveyInput = {
-    id?: string
-    title: string
-    description?: string | null
-    format: $Enums.QuestionFormat
-    required?: boolean
-    order: number
-    yesLabel?: string | null
-    noLabel?: string | null
-    buttonLabel?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamId: number
-    options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
-    responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
-  }
-
-  export type QuestionCreateOrConnectWithoutSurveyInput = {
+  export type QuestionUpsertWithWhereUniqueWithoutSurveyInput = {
     where: QuestionWhereUniqueInput
+    update: XOR<QuestionUpdateWithoutSurveyInput, QuestionUncheckedUpdateWithoutSurveyInput>
     create: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput>
   }
 
-  export type QuestionCreateManySurveyInputEnvelope = {
-    data: QuestionCreateManySurveyInput | QuestionCreateManySurveyInput[]
-    skipDuplicates?: boolean
+  export type QuestionUpdateWithWhereUniqueWithoutSurveyInput = {
+    where: QuestionWhereUniqueInput
+    data: XOR<QuestionUpdateWithoutSurveyInput, QuestionUncheckedUpdateWithoutSurveyInput>
   }
 
-  export type SurveyStyleCreateWithoutSurveyInput = {
-    id?: string
-    backgroundColor?: string
-    textColor?: string
-    buttonBackgroundColor?: string
-    buttonTextColor?: string
-    margin?: string
-    padding?: string
-    borderRadius?: string
-    titleFontSize?: string
-    bodyFontSize?: string
-    fontFamily?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSurveysStyleInput
+  export type QuestionUpdateManyWithWhereWithoutSurveyInput = {
+    where: QuestionScalarWhereInput
+    data: XOR<QuestionUpdateManyMutationInput, QuestionUncheckedUpdateManyWithoutSurveyInput>
   }
 
-  export type SurveyStyleUncheckedCreateWithoutSurveyInput = {
-    id?: string
-    backgroundColor?: string
-    textColor?: string
-    buttonBackgroundColor?: string
-    buttonTextColor?: string
-    margin?: string
-    padding?: string
-    borderRadius?: string
-    titleFontSize?: string
-    bodyFontSize?: string
-    fontFamily?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamId: number
-  }
-
-  export type SurveyStyleCreateOrConnectWithoutSurveyInput = {
-    where: SurveyStyleWhereUniqueInput
-    create: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
-  }
-
-  export type SurveyResponseCreateWithoutSurveyInput = {
-    id?: string
-    status?: $Enums.ResponseStatus
-    submittedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSurveyResponsesInput
-    questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
-  }
-
-  export type SurveyResponseUncheckedCreateWithoutSurveyInput = {
-    id?: string
-    status?: $Enums.ResponseStatus
-    submittedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamId: number
-    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutResponseInput
-  }
-
-  export type SurveyResponseCreateOrConnectWithoutSurveyInput = {
+  export type SurveyResponseUpsertWithWhereUniqueWithoutSurveyInput = {
     where: SurveyResponseWhereUniqueInput
+    update: XOR<SurveyResponseUpdateWithoutSurveyInput, SurveyResponseUncheckedUpdateWithoutSurveyInput>
     create: XOR<SurveyResponseCreateWithoutSurveyInput, SurveyResponseUncheckedCreateWithoutSurveyInput>
   }
 
-  export type SurveyResponseCreateManySurveyInputEnvelope = {
-    data: SurveyResponseCreateManySurveyInput | SurveyResponseCreateManySurveyInput[]
-    skipDuplicates?: boolean
+  export type SurveyResponseUpdateWithWhereUniqueWithoutSurveyInput = {
+    where: SurveyResponseWhereUniqueInput
+    data: XOR<SurveyResponseUpdateWithoutSurveyInput, SurveyResponseUncheckedUpdateWithoutSurveyInput>
+  }
+
+  export type SurveyResponseUpdateManyWithWhereWithoutSurveyInput = {
+    where: SurveyResponseScalarWhereInput
+    data: XOR<SurveyResponseUpdateManyMutationInput, SurveyResponseUncheckedUpdateManyWithoutSurveyInput>
+  }
+
+  export type SurveyStyleUpsertWithoutSurveyInput = {
+    update: XOR<SurveyStyleUpdateWithoutSurveyInput, SurveyStyleUncheckedUpdateWithoutSurveyInput>
+    create: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
+    where?: SurveyStyleWhereInput
+  }
+
+  export type SurveyStyleUpdateToOneWithWhereWithoutSurveyInput = {
+    where?: SurveyStyleWhereInput
+    data: XOR<SurveyStyleUpdateWithoutSurveyInput, SurveyStyleUncheckedUpdateWithoutSurveyInput>
+  }
+
+  export type SurveyStyleUpdateWithoutSurveyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    backgroundColor?: StringFieldUpdateOperationsInput | string
+    textColor?: StringFieldUpdateOperationsInput | string
+    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
+    buttonTextColor?: StringFieldUpdateOperationsInput | string
+    margin?: StringFieldUpdateOperationsInput | string
+    padding?: StringFieldUpdateOperationsInput | string
+    borderRadius?: StringFieldUpdateOperationsInput | string
+    titleFontSize?: StringFieldUpdateOperationsInput | string
+    bodyFontSize?: StringFieldUpdateOperationsInput | string
+    fontFamily?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    border?: StringFieldUpdateOperationsInput | string
+    team?: TeamUpdateOneRequiredWithoutSurveysStyleNestedInput
+  }
+
+  export type SurveyStyleUncheckedUpdateWithoutSurveyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    backgroundColor?: StringFieldUpdateOperationsInput | string
+    textColor?: StringFieldUpdateOperationsInput | string
+    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
+    buttonTextColor?: StringFieldUpdateOperationsInput | string
+    margin?: StringFieldUpdateOperationsInput | string
+    padding?: StringFieldUpdateOperationsInput | string
+    borderRadius?: StringFieldUpdateOperationsInput | string
+    titleFontSize?: StringFieldUpdateOperationsInput | string
+    bodyFontSize?: StringFieldUpdateOperationsInput | string
+    fontFamily?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    border?: StringFieldUpdateOperationsInput | string
   }
 
   export type TeamUpsertWithoutSurveysInput = {
@@ -26642,14 +27152,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    user?: UserUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveysInput = {
@@ -26658,14 +27173,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SurveyTypeUpsertWithoutSurveysInput = {
@@ -26697,96 +27217,21 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
   }
 
-  export type QuestionUpsertWithWhereUniqueWithoutSurveyInput = {
-    where: QuestionWhereUniqueInput
-    update: XOR<QuestionUpdateWithoutSurveyInput, QuestionUncheckedUpdateWithoutSurveyInput>
-    create: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput>
-  }
-
-  export type QuestionUpdateWithWhereUniqueWithoutSurveyInput = {
-    where: QuestionWhereUniqueInput
-    data: XOR<QuestionUpdateWithoutSurveyInput, QuestionUncheckedUpdateWithoutSurveyInput>
-  }
-
-  export type QuestionUpdateManyWithWhereWithoutSurveyInput = {
-    where: QuestionScalarWhereInput
-    data: XOR<QuestionUpdateManyMutationInput, QuestionUncheckedUpdateManyWithoutSurveyInput>
-  }
-
-  export type SurveyStyleUpsertWithoutSurveyInput = {
-    update: XOR<SurveyStyleUpdateWithoutSurveyInput, SurveyStyleUncheckedUpdateWithoutSurveyInput>
-    create: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
-    where?: SurveyStyleWhereInput
-  }
-
-  export type SurveyStyleUpdateToOneWithWhereWithoutSurveyInput = {
-    where?: SurveyStyleWhereInput
-    data: XOR<SurveyStyleUpdateWithoutSurveyInput, SurveyStyleUncheckedUpdateWithoutSurveyInput>
-  }
-
-  export type SurveyStyleUpdateWithoutSurveyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    textColor?: StringFieldUpdateOperationsInput | string
-    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
-    buttonTextColor?: StringFieldUpdateOperationsInput | string
-    margin?: StringFieldUpdateOperationsInput | string
-    padding?: StringFieldUpdateOperationsInput | string
-    borderRadius?: StringFieldUpdateOperationsInput | string
-    titleFontSize?: StringFieldUpdateOperationsInput | string
-    bodyFontSize?: StringFieldUpdateOperationsInput | string
-    fontFamily?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSurveysStyleNestedInput
-  }
-
-  export type SurveyStyleUncheckedUpdateWithoutSurveyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    textColor?: StringFieldUpdateOperationsInput | string
-    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
-    buttonTextColor?: StringFieldUpdateOperationsInput | string
-    margin?: StringFieldUpdateOperationsInput | string
-    padding?: StringFieldUpdateOperationsInput | string
-    borderRadius?: StringFieldUpdateOperationsInput | string
-    titleFontSize?: StringFieldUpdateOperationsInput | string
-    bodyFontSize?: StringFieldUpdateOperationsInput | string
-    fontFamily?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamId?: IntFieldUpdateOperationsInput | number
-  }
-
-  export type SurveyResponseUpsertWithWhereUniqueWithoutSurveyInput = {
-    where: SurveyResponseWhereUniqueInput
-    update: XOR<SurveyResponseUpdateWithoutSurveyInput, SurveyResponseUncheckedUpdateWithoutSurveyInput>
-    create: XOR<SurveyResponseCreateWithoutSurveyInput, SurveyResponseUncheckedCreateWithoutSurveyInput>
-  }
-
-  export type SurveyResponseUpdateWithWhereUniqueWithoutSurveyInput = {
-    where: SurveyResponseWhereUniqueInput
-    data: XOR<SurveyResponseUpdateWithoutSurveyInput, SurveyResponseUncheckedUpdateWithoutSurveyInput>
-  }
-
-  export type SurveyResponseUpdateManyWithWhereWithoutSurveyInput = {
-    where: SurveyResponseScalarWhereInput
-    data: XOR<SurveyResponseUpdateManyMutationInput, SurveyResponseUncheckedUpdateManyWithoutSurveyInput>
-  }
-
   export type SurveyCreateWithoutStyleInput = {
     id?: string
     name: string
     description?: string | null
     status?: $Enums.SurveyStatus
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSurveysInput
-    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
     questions?: QuestionCreateNestedManyWithoutSurveyInput
     responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
+    team: TeamCreateNestedOneWithoutSurveysInput
+    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
   }
 
   export type SurveyUncheckedCreateWithoutStyleInput = {
@@ -26794,12 +27239,14 @@ export namespace Prisma {
     name: string
     description?: string | null
     status?: $Enums.SurveyStatus
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
   }
@@ -26814,14 +27261,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    user?: UserCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
     questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
     questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
     surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveysStyleInput = {
@@ -26830,14 +27282,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
     questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
     questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
     surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveysStyleInput = {
@@ -26861,14 +27318,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
-    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
     responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
+    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
+    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
   }
 
   export type SurveyUncheckedUpdateWithoutStyleInput = {
@@ -26876,12 +27335,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
   }
@@ -26902,14 +27363,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    user?: UserUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveysStyleInput = {
@@ -26918,85 +27384,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
     surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
-  }
-
-  export type SurveyCreateWithoutQuestionsInput = {
-    id?: string
-    name: string
-    description?: string | null
-    status?: $Enums.SurveyStatus
-    enabled?: boolean
-    allowMultipleResponses?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSurveysInput
-    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
-    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
-    responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
-  }
-
-  export type SurveyUncheckedCreateWithoutQuestionsInput = {
-    id?: string
-    name: string
-    description?: string | null
-    status?: $Enums.SurveyStatus
-    enabled?: boolean
-    allowMultipleResponses?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamId: number
-    typeId?: string | null
-    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
-    responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
-  }
-
-  export type SurveyCreateOrConnectWithoutQuestionsInput = {
-    where: SurveyWhereUniqueInput
-    create: XOR<SurveyCreateWithoutQuestionsInput, SurveyUncheckedCreateWithoutQuestionsInput>
-  }
-
-  export type TeamCreateWithoutQuestionsInput = {
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    user?: UserCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamUncheckedCreateWithoutQuestionsInput = {
-    id?: number
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamCreateOrConnectWithoutQuestionsInput = {
-    where: TeamWhereUniqueInput
-    create: XOR<TeamCreateWithoutQuestionsInput, TeamUncheckedCreateWithoutQuestionsInput>
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type QuestionOptionCreateWithoutQuestionInput = {
@@ -27005,6 +27405,7 @@ export namespace Prisma {
     order: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOther?: boolean
     team: TeamCreateNestedOneWithoutQuestionOptionsInput
     responses?: QuestionResponseCreateNestedManyWithoutOptionInput
   }
@@ -27016,6 +27417,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
+    isOther?: boolean
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutOptionInput
   }
 
@@ -27065,87 +27467,89 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type SurveyUpsertWithoutQuestionsInput = {
-    update: XOR<SurveyUpdateWithoutQuestionsInput, SurveyUncheckedUpdateWithoutQuestionsInput>
+  export type SurveyCreateWithoutQuestionsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
+    team: TeamCreateNestedOneWithoutSurveysInput
+    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+  }
+
+  export type SurveyUncheckedCreateWithoutQuestionsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId: number
+    typeId?: string | null
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+  }
+
+  export type SurveyCreateOrConnectWithoutQuestionsInput = {
+    where: SurveyWhereUniqueInput
     create: XOR<SurveyCreateWithoutQuestionsInput, SurveyUncheckedCreateWithoutQuestionsInput>
-    where?: SurveyWhereInput
   }
 
-  export type SurveyUpdateToOneWithWhereWithoutQuestionsInput = {
-    where?: SurveyWhereInput
-    data: XOR<SurveyUpdateWithoutQuestionsInput, SurveyUncheckedUpdateWithoutQuestionsInput>
+  export type TeamCreateWithoutQuestionsInput = {
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
   }
 
-  export type SurveyUpdateWithoutQuestionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
-    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
-    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
-    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
-    responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
+  export type TeamUncheckedCreateWithoutQuestionsInput = {
+    id?: number
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
   }
 
-  export type SurveyUncheckedUpdateWithoutQuestionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
-    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamId?: IntFieldUpdateOperationsInput | number
-    typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
-    responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
-  }
-
-  export type TeamUpsertWithoutQuestionsInput = {
-    update: XOR<TeamUpdateWithoutQuestionsInput, TeamUncheckedUpdateWithoutQuestionsInput>
+  export type TeamCreateOrConnectWithoutQuestionsInput = {
+    where: TeamWhereUniqueInput
     create: XOR<TeamCreateWithoutQuestionsInput, TeamUncheckedCreateWithoutQuestionsInput>
-    where?: TeamWhereInput
-  }
-
-  export type TeamUpdateToOneWithWhereWithoutQuestionsInput = {
-    where?: TeamWhereInput
-    data: XOR<TeamUpdateWithoutQuestionsInput, TeamUncheckedUpdateWithoutQuestionsInput>
-  }
-
-  export type TeamUpdateWithoutQuestionsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    user?: UserUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
-    questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
-    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
-  }
-
-  export type TeamUncheckedUpdateWithoutQuestionsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
-    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
-    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type QuestionOptionUpsertWithWhereUniqueWithoutQuestionInput = {
@@ -27180,6 +27584,103 @@ export namespace Prisma {
     data: XOR<QuestionResponseUpdateManyMutationInput, QuestionResponseUncheckedUpdateManyWithoutQuestionInput>
   }
 
+  export type SurveyUpsertWithoutQuestionsInput = {
+    update: XOR<SurveyUpdateWithoutQuestionsInput, SurveyUncheckedUpdateWithoutQuestionsInput>
+    create: XOR<SurveyCreateWithoutQuestionsInput, SurveyUncheckedCreateWithoutQuestionsInput>
+    where?: SurveyWhereInput
+  }
+
+  export type SurveyUpdateToOneWithWhereWithoutQuestionsInput = {
+    where?: SurveyWhereInput
+    data: XOR<SurveyUpdateWithoutQuestionsInput, SurveyUncheckedUpdateWithoutQuestionsInput>
+  }
+
+  export type SurveyUpdateWithoutQuestionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
+    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
+    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+  }
+
+  export type SurveyUncheckedUpdateWithoutQuestionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    typeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
+  }
+
+  export type TeamUpsertWithoutQuestionsInput = {
+    update: XOR<TeamUpdateWithoutQuestionsInput, TeamUncheckedUpdateWithoutQuestionsInput>
+    create: XOR<TeamCreateWithoutQuestionsInput, TeamUncheckedCreateWithoutQuestionsInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutQuestionsInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutQuestionsInput, TeamUncheckedUpdateWithoutQuestionsInput>
+  }
+
+  export type TeamUpdateWithoutQuestionsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
+    questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutQuestionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
+    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
   export type QuestionCreateWithoutOptionsInput = {
     id?: string
     title: string
@@ -27192,9 +27693,10 @@ export namespace Prisma {
     buttonLabel?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    addOther?: boolean
+    responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
     survey: SurveyCreateNestedOneWithoutQuestionsInput
     team: TeamCreateNestedOneWithoutQuestionsInput
-    responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutOptionsInput = {
@@ -27211,6 +27713,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     surveyId: string
     teamId: number
+    addOther?: boolean
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
   }
 
@@ -27224,14 +27727,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutQuestionOptionsInput = {
@@ -27240,14 +27748,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutQuestionOptionsInput = {
@@ -27314,9 +27827,10 @@ export namespace Prisma {
     buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    addOther?: BoolFieldUpdateOperationsInput | boolean
+    responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
     survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
-    responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutOptionsInput = {
@@ -27333,6 +27847,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    addOther?: BoolFieldUpdateOperationsInput | boolean
     responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
@@ -27352,14 +27867,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
-    questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
-    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutQuestionOptionsInput = {
@@ -27368,14 +27888,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
-    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
-    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type QuestionResponseUpsertWithWhereUniqueWithoutOptionInput = {
@@ -27394,77 +27919,6 @@ export namespace Prisma {
     data: XOR<QuestionResponseUpdateManyMutationInput, QuestionResponseUncheckedUpdateManyWithoutOptionInput>
   }
 
-  export type SurveyCreateWithoutResponsesInput = {
-    id?: string
-    name: string
-    description?: string | null
-    status?: $Enums.SurveyStatus
-    enabled?: boolean
-    allowMultipleResponses?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSurveysInput
-    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
-    questions?: QuestionCreateNestedManyWithoutSurveyInput
-    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
-  }
-
-  export type SurveyUncheckedCreateWithoutResponsesInput = {
-    id?: string
-    name: string
-    description?: string | null
-    status?: $Enums.SurveyStatus
-    enabled?: boolean
-    allowMultipleResponses?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamId: number
-    typeId?: string | null
-    questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
-    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
-  }
-
-  export type SurveyCreateOrConnectWithoutResponsesInput = {
-    where: SurveyWhereUniqueInput
-    create: XOR<SurveyCreateWithoutResponsesInput, SurveyUncheckedCreateWithoutResponsesInput>
-  }
-
-  export type TeamCreateWithoutSurveyResponsesInput = {
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    user?: UserCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamUncheckedCreateWithoutSurveyResponsesInput = {
-    id?: number
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
-    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
-  }
-
-  export type TeamCreateOrConnectWithoutSurveyResponsesInput = {
-    where: TeamWhereUniqueInput
-    create: XOR<TeamCreateWithoutSurveyResponsesInput, TeamUncheckedCreateWithoutSurveyResponsesInput>
-  }
-
   export type QuestionResponseCreateWithoutResponseInput = {
     id?: string
     isOther?: boolean | null
@@ -27473,8 +27927,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    question: QuestionCreateNestedOneWithoutResponsesInput
     option?: QuestionOptionCreateNestedOneWithoutResponsesInput
+    question: QuestionCreateNestedOneWithoutResponsesInput
     team: TeamCreateNestedOneWithoutQuestionResponsesInput
   }
 
@@ -27501,6 +27955,107 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SurveyCreateWithoutResponsesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    questions?: QuestionCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
+    team: TeamCreateNestedOneWithoutSurveysInput
+    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+  }
+
+  export type SurveyUncheckedCreateWithoutResponsesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId: number
+    typeId?: string | null
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+  }
+
+  export type SurveyCreateOrConnectWithoutResponsesInput = {
+    where: SurveyWhereUniqueInput
+    create: XOR<SurveyCreateWithoutResponsesInput, SurveyUncheckedCreateWithoutResponsesInput>
+  }
+
+  export type TeamCreateWithoutSurveyResponsesInput = {
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutSurveyResponsesInput = {
+    id?: number
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutSurveyResponsesInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutSurveyResponsesInput, TeamUncheckedCreateWithoutSurveyResponsesInput>
+  }
+
+  export type QuestionResponseUpsertWithWhereUniqueWithoutResponseInput = {
+    where: QuestionResponseWhereUniqueInput
+    update: XOR<QuestionResponseUpdateWithoutResponseInput, QuestionResponseUncheckedUpdateWithoutResponseInput>
+    create: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput>
+  }
+
+  export type QuestionResponseUpdateWithWhereUniqueWithoutResponseInput = {
+    where: QuestionResponseWhereUniqueInput
+    data: XOR<QuestionResponseUpdateWithoutResponseInput, QuestionResponseUncheckedUpdateWithoutResponseInput>
+  }
+
+  export type QuestionResponseUpdateManyWithWhereWithoutResponseInput = {
+    where: QuestionResponseScalarWhereInput
+    data: XOR<QuestionResponseUpdateManyMutationInput, QuestionResponseUncheckedUpdateManyWithoutResponseInput>
+  }
+
   export type SurveyUpsertWithoutResponsesInput = {
     update: XOR<SurveyUpdateWithoutResponsesInput, SurveyUncheckedUpdateWithoutResponsesInput>
     create: XOR<SurveyCreateWithoutResponsesInput, SurveyUncheckedCreateWithoutResponsesInput>
@@ -27517,14 +28072,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
-    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
+    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
+    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
   }
 
   export type SurveyUncheckedUpdateWithoutResponsesInput = {
@@ -27532,12 +28089,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
   }
@@ -27558,14 +28117,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    user?: UserUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveyResponsesInput = {
@@ -27574,30 +28138,46 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
     questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
   }
 
-  export type QuestionResponseUpsertWithWhereUniqueWithoutResponseInput = {
-    where: QuestionResponseWhereUniqueInput
-    update: XOR<QuestionResponseUpdateWithoutResponseInput, QuestionResponseUncheckedUpdateWithoutResponseInput>
-    create: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput>
+  export type QuestionOptionCreateWithoutResponsesInput = {
+    id?: string
+    text: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isOther?: boolean
+    question: QuestionCreateNestedOneWithoutOptionsInput
+    team: TeamCreateNestedOneWithoutQuestionOptionsInput
   }
 
-  export type QuestionResponseUpdateWithWhereUniqueWithoutResponseInput = {
-    where: QuestionResponseWhereUniqueInput
-    data: XOR<QuestionResponseUpdateWithoutResponseInput, QuestionResponseUncheckedUpdateWithoutResponseInput>
+  export type QuestionOptionUncheckedCreateWithoutResponsesInput = {
+    id?: string
+    text: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionId: string
+    teamId: number
+    isOther?: boolean
   }
 
-  export type QuestionResponseUpdateManyWithWhereWithoutResponseInput = {
-    where: QuestionResponseScalarWhereInput
-    data: XOR<QuestionResponseUpdateManyMutationInput, QuestionResponseUncheckedUpdateManyWithoutResponseInput>
+  export type QuestionOptionCreateOrConnectWithoutResponsesInput = {
+    where: QuestionOptionWhereUniqueInput
+    create: XOR<QuestionOptionCreateWithoutResponsesInput, QuestionOptionUncheckedCreateWithoutResponsesInput>
   }
 
   export type QuestionCreateWithoutResponsesInput = {
@@ -27612,9 +28192,10 @@ export namespace Prisma {
     buttonLabel?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    addOther?: boolean
+    options?: QuestionOptionCreateNestedManyWithoutQuestionInput
     survey: SurveyCreateNestedOneWithoutQuestionsInput
     team: TeamCreateNestedOneWithoutQuestionsInput
-    options?: QuestionOptionCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutResponsesInput = {
@@ -27631,37 +28212,13 @@ export namespace Prisma {
     updatedAt?: Date | string
     surveyId: string
     teamId: number
+    addOther?: boolean
     options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionCreateOrConnectWithoutResponsesInput = {
     where: QuestionWhereUniqueInput
     create: XOR<QuestionCreateWithoutResponsesInput, QuestionUncheckedCreateWithoutResponsesInput>
-  }
-
-  export type QuestionOptionCreateWithoutResponsesInput = {
-    id?: string
-    text: string
-    order: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    question: QuestionCreateNestedOneWithoutOptionsInput
-    team: TeamCreateNestedOneWithoutQuestionOptionsInput
-  }
-
-  export type QuestionOptionUncheckedCreateWithoutResponsesInput = {
-    id?: string
-    text: string
-    order: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    questionId: string
-    teamId: number
-  }
-
-  export type QuestionOptionCreateOrConnectWithoutResponsesInput = {
-    where: QuestionOptionWhereUniqueInput
-    create: XOR<QuestionOptionCreateWithoutResponsesInput, QuestionOptionUncheckedCreateWithoutResponsesInput>
   }
 
   export type SurveyResponseCreateWithoutQuestionResponsesInput = {
@@ -27694,14 +28251,19 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
-    surveys?: SurveyCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
-    questions?: QuestionCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutQuestionResponsesInput = {
@@ -27710,19 +28272,57 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
-    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
-    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
-    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
-    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
-    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutQuestionResponsesInput = {
     where: TeamWhereUniqueInput
     create: XOR<TeamCreateWithoutQuestionResponsesInput, TeamUncheckedCreateWithoutQuestionResponsesInput>
+  }
+
+  export type QuestionOptionUpsertWithoutResponsesInput = {
+    update: XOR<QuestionOptionUpdateWithoutResponsesInput, QuestionOptionUncheckedUpdateWithoutResponsesInput>
+    create: XOR<QuestionOptionCreateWithoutResponsesInput, QuestionOptionUncheckedCreateWithoutResponsesInput>
+    where?: QuestionOptionWhereInput
+  }
+
+  export type QuestionOptionUpdateToOneWithWhereWithoutResponsesInput = {
+    where?: QuestionOptionWhereInput
+    data: XOR<QuestionOptionUpdateWithoutResponsesInput, QuestionOptionUncheckedUpdateWithoutResponsesInput>
+  }
+
+  export type QuestionOptionUpdateWithoutResponsesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOther?: BoolFieldUpdateOperationsInput | boolean
+    question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
+    team?: TeamUpdateOneRequiredWithoutQuestionOptionsNestedInput
+  }
+
+  export type QuestionOptionUncheckedUpdateWithoutResponsesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    isOther?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuestionUpsertWithoutResponsesInput = {
@@ -27748,9 +28348,10 @@ export namespace Prisma {
     buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    addOther?: BoolFieldUpdateOperationsInput | boolean
+    options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
     survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
-    options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutResponsesInput = {
@@ -27767,38 +28368,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
-  }
-
-  export type QuestionOptionUpsertWithoutResponsesInput = {
-    update: XOR<QuestionOptionUpdateWithoutResponsesInput, QuestionOptionUncheckedUpdateWithoutResponsesInput>
-    create: XOR<QuestionOptionCreateWithoutResponsesInput, QuestionOptionUncheckedCreateWithoutResponsesInput>
-    where?: QuestionOptionWhereInput
-  }
-
-  export type QuestionOptionUpdateToOneWithWhereWithoutResponsesInput = {
-    where?: QuestionOptionWhereInput
-    data: XOR<QuestionOptionUpdateWithoutResponsesInput, QuestionOptionUncheckedUpdateWithoutResponsesInput>
-  }
-
-  export type QuestionOptionUpdateWithoutResponsesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    order?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
-    team?: TeamUpdateOneRequiredWithoutQuestionOptionsNestedInput
-  }
-
-  export type QuestionOptionUncheckedUpdateWithoutResponsesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    order?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    questionId?: StringFieldUpdateOperationsInput | string
-    teamId?: IntFieldUpdateOperationsInput | number
   }
 
   export type SurveyResponseUpsertWithoutQuestionResponsesInput = {
@@ -27848,14 +28419,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUpdateManyWithoutTeamNestedInput
-    questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
-    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutQuestionResponsesInput = {
@@ -27864,14 +28440,19 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
-    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
-    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
-    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
-    questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
-    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -28003,12 +28584,10 @@ export namespace Prisma {
 
   export type UserCreateManyAvatarInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
@@ -28017,19 +28596,19 @@ export namespace Prisma {
     lastName?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
   }
 
   export type UserUpdateWithoutAvatarInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -28038,23 +28617,23 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneWithoutUserNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAvatarInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -28063,9 +28642,11 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -28074,12 +28655,10 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyWithoutAvatarInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -28088,64 +28667,60 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
-  export type TeamMemberCreateManyTeamInput = {
-    id?: number
-    isAdmin: boolean
-    canPost: boolean
-    canApprove: boolean
-    isOwner: boolean
-    teamMemberStatus: $Enums.TeamMemberStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    userId: number
-  }
-
-  export type UserCreateManyTeamInput = {
-    id?: number
-    idProvider?: string | null
-    email: string
-    provider?: $Enums.Provider
-    password?: string | null
-    resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
-    confirmationToken?: string | null
-    confirmed?: boolean | null
-    blocked?: boolean | null
-    phone?: string | null
-    firstName: string
-    lastName?: string | null
-    avatarUrl?: string | null
-    language: $Enums.Language
-    theme?: $Enums.Theme
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarId?: number | null
-  }
-
-  export type SurveyCreateManyTeamInput = {
+  export type QuestionOptionCreateManyTeamInput = {
     id?: string
-    name: string
+    text: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionId: string
+    isOther?: boolean
+  }
+
+  export type QuestionResponseCreateManyTeamInput = {
+    id?: string
+    isOther?: boolean | null
+    textValue?: string | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionId: string
+    optionId?: string | null
+    responseId: string
+  }
+
+  export type QuestionCreateManyTeamInput = {
+    id?: string
+    title: string
     description?: string | null
-    status?: $Enums.SurveyStatus
-    enabled?: boolean
-    allowMultipleResponses?: boolean
+    format: $Enums.QuestionFormat
+    required?: boolean
+    order: number
+    yesLabel?: string | null
+    noLabel?: string | null
+    buttonLabel?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    typeId?: string | null
+    surveyId: string
+    addOther?: boolean
   }
 
-  export type SurveyTypeCreateManyTeamInput = {
+  export type SurveyResponseCreateManyTeamInput = {
     id?: string
-    name: string
-    isDefault?: boolean
+    status?: $Enums.ResponseStatus
+    submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    surveyId: string
   }
 
   export type SurveyStyleCreateManyTeamInput = {
@@ -28163,52 +28738,343 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     surveyId: string
+    border?: string
   }
 
-  export type QuestionCreateManyTeamInput = {
+  export type SurveyTypeCreateManyTeamInput = {
     id?: string
-    title: string
+    name: string
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SurveyCreateManyTeamInput = {
+    id?: string
+    name: string
     description?: string | null
-    format: $Enums.QuestionFormat
-    required?: boolean
-    order: number
-    yesLabel?: string | null
-    noLabel?: string | null
-    buttonLabel?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    surveyId: string
+    typeId?: string | null
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
   }
 
-  export type QuestionOptionCreateManyTeamInput = {
-    id?: string
-    text: string
-    order: number
+  export type TeamMemberCreateManyTeamInput = {
+    id?: number
+    isAdmin: boolean
+    canPost: boolean
+    canApprove: boolean
+    isOwner: boolean
+    teamMemberStatus: $Enums.TeamMemberStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    questionId: string
+    userId: number
   }
 
-  export type QuestionResponseCreateManyTeamInput = {
-    id?: string
-    isOther?: boolean | null
-    textValue?: string | null
-    numberValue?: number | null
-    booleanValue?: boolean | null
+  export type UserCreateManyTeamInput = {
+    id?: number
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
     createdAt?: Date | string
     updatedAt?: Date | string
-    questionId: string
-    optionId?: string | null
-    responseId: string
+    avatarId?: number | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
   }
 
-  export type SurveyResponseCreateManyTeamInput = {
-    id?: string
-    status?: $Enums.ResponseStatus
-    submittedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    surveyId: string
+  export type QuestionOptionUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOther?: BoolFieldUpdateOperationsInput | boolean
+    question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
+    responses?: QuestionResponseUpdateManyWithoutOptionNestedInput
+  }
+
+  export type QuestionOptionUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    isOther?: BoolFieldUpdateOperationsInput | boolean
+    responses?: QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput
+  }
+
+  export type QuestionOptionUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    isOther?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type QuestionResponseUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    option?: QuestionOptionUpdateOneWithoutResponsesNestedInput
+    question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
+    response?: SurveyResponseUpdateOneRequiredWithoutQuestionResponsesNestedInput
+  }
+
+  export type QuestionResponseUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    responseId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type QuestionResponseUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    responseId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type QuestionUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: EnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat
+    required?: BoolFieldUpdateOperationsInput | boolean
+    order?: IntFieldUpdateOperationsInput | number
+    yesLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    noLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    addOther?: BoolFieldUpdateOperationsInput | boolean
+    options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
+    responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
+    survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
+  }
+
+  export type QuestionUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: EnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat
+    required?: BoolFieldUpdateOperationsInput | boolean
+    order?: IntFieldUpdateOperationsInput | number
+    yesLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    noLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    addOther?: BoolFieldUpdateOperationsInput | boolean
+    options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
+    responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
+  }
+
+  export type QuestionUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: EnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat
+    required?: BoolFieldUpdateOperationsInput | boolean
+    order?: IntFieldUpdateOperationsInput | number
+    yesLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    noLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    addOther?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SurveyResponseUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
+    survey?: SurveyUpdateOneRequiredWithoutResponsesNestedInput
+  }
+
+  export type SurveyResponseUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutResponseNestedInput
+  }
+
+  export type SurveyResponseUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SurveyStyleUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    backgroundColor?: StringFieldUpdateOperationsInput | string
+    textColor?: StringFieldUpdateOperationsInput | string
+    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
+    buttonTextColor?: StringFieldUpdateOperationsInput | string
+    margin?: StringFieldUpdateOperationsInput | string
+    padding?: StringFieldUpdateOperationsInput | string
+    borderRadius?: StringFieldUpdateOperationsInput | string
+    titleFontSize?: StringFieldUpdateOperationsInput | string
+    bodyFontSize?: StringFieldUpdateOperationsInput | string
+    fontFamily?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    border?: StringFieldUpdateOperationsInput | string
+    survey?: SurveyUpdateOneRequiredWithoutStyleNestedInput
+  }
+
+  export type SurveyStyleUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    backgroundColor?: StringFieldUpdateOperationsInput | string
+    textColor?: StringFieldUpdateOperationsInput | string
+    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
+    buttonTextColor?: StringFieldUpdateOperationsInput | string
+    margin?: StringFieldUpdateOperationsInput | string
+    padding?: StringFieldUpdateOperationsInput | string
+    borderRadius?: StringFieldUpdateOperationsInput | string
+    titleFontSize?: StringFieldUpdateOperationsInput | string
+    bodyFontSize?: StringFieldUpdateOperationsInput | string
+    fontFamily?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    border?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SurveyStyleUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    backgroundColor?: StringFieldUpdateOperationsInput | string
+    textColor?: StringFieldUpdateOperationsInput | string
+    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
+    buttonTextColor?: StringFieldUpdateOperationsInput | string
+    margin?: StringFieldUpdateOperationsInput | string
+    padding?: StringFieldUpdateOperationsInput | string
+    borderRadius?: StringFieldUpdateOperationsInput | string
+    titleFontSize?: StringFieldUpdateOperationsInput | string
+    bodyFontSize?: StringFieldUpdateOperationsInput | string
+    fontFamily?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    border?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SurveyTypeUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveys?: SurveyUpdateManyWithoutTypeNestedInput
+  }
+
+  export type SurveyTypeUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveys?: SurveyUncheckedUpdateManyWithoutTypeNestedInput
+  }
+
+  export type SurveyTypeUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SurveyUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    questions?: QuestionUpdateManyWithoutSurveyNestedInput
+    responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
+    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+  }
+
+  export type SurveyUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    typeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
+    responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
+  }
+
+  export type SurveyUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    typeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
   }
 
   export type TeamMemberUpdateWithoutTeamInput = {
@@ -28247,12 +29113,10 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutTeamInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -28261,23 +29125,23 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -28286,10 +29150,12 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -28297,12 +29163,10 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyWithoutTeamInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -28311,275 +29175,12 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avatarId?: NullableIntFieldUpdateOperationsInput | number | null
-  }
-
-  export type SurveyUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
-    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
-    questions?: QuestionUpdateManyWithoutSurveyNestedInput
-    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
-    responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
-  }
-
-  export type SurveyUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
-    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
-    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
-    responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
-  }
-
-  export type SurveyUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
-    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    typeId?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type SurveyTypeUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    isDefault?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveys?: SurveyUpdateManyWithoutTypeNestedInput
-  }
-
-  export type SurveyTypeUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    isDefault?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveys?: SurveyUncheckedUpdateManyWithoutTypeNestedInput
-  }
-
-  export type SurveyTypeUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    isDefault?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SurveyStyleUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    textColor?: StringFieldUpdateOperationsInput | string
-    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
-    buttonTextColor?: StringFieldUpdateOperationsInput | string
-    margin?: StringFieldUpdateOperationsInput | string
-    padding?: StringFieldUpdateOperationsInput | string
-    borderRadius?: StringFieldUpdateOperationsInput | string
-    titleFontSize?: StringFieldUpdateOperationsInput | string
-    bodyFontSize?: StringFieldUpdateOperationsInput | string
-    fontFamily?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    survey?: SurveyUpdateOneRequiredWithoutStyleNestedInput
-  }
-
-  export type SurveyStyleUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    textColor?: StringFieldUpdateOperationsInput | string
-    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
-    buttonTextColor?: StringFieldUpdateOperationsInput | string
-    margin?: StringFieldUpdateOperationsInput | string
-    padding?: StringFieldUpdateOperationsInput | string
-    borderRadius?: StringFieldUpdateOperationsInput | string
-    titleFontSize?: StringFieldUpdateOperationsInput | string
-    bodyFontSize?: StringFieldUpdateOperationsInput | string
-    fontFamily?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveyId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type SurveyStyleUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    textColor?: StringFieldUpdateOperationsInput | string
-    buttonBackgroundColor?: StringFieldUpdateOperationsInput | string
-    buttonTextColor?: StringFieldUpdateOperationsInput | string
-    margin?: StringFieldUpdateOperationsInput | string
-    padding?: StringFieldUpdateOperationsInput | string
-    borderRadius?: StringFieldUpdateOperationsInput | string
-    titleFontSize?: StringFieldUpdateOperationsInput | string
-    bodyFontSize?: StringFieldUpdateOperationsInput | string
-    fontFamily?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveyId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type QuestionUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: EnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat
-    required?: BoolFieldUpdateOperationsInput | boolean
-    order?: IntFieldUpdateOperationsInput | number
-    yesLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    noLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
-    options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
-    responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
-  }
-
-  export type QuestionUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: EnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat
-    required?: BoolFieldUpdateOperationsInput | boolean
-    order?: IntFieldUpdateOperationsInput | number
-    yesLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    noLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveyId?: StringFieldUpdateOperationsInput | string
-    options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
-    responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
-  }
-
-  export type QuestionUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: EnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat
-    required?: BoolFieldUpdateOperationsInput | boolean
-    order?: IntFieldUpdateOperationsInput | number
-    yesLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    noLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveyId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type QuestionOptionUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    order?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
-    responses?: QuestionResponseUpdateManyWithoutOptionNestedInput
-  }
-
-  export type QuestionOptionUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    order?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    questionId?: StringFieldUpdateOperationsInput | string
-    responses?: QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput
-  }
-
-  export type QuestionOptionUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    order?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    questionId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type QuestionResponseUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    textValue?: NullableStringFieldUpdateOperationsInput | string | null
-    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
-    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
-    option?: QuestionOptionUpdateOneWithoutResponsesNestedInput
-    response?: SurveyResponseUpdateOneRequiredWithoutQuestionResponsesNestedInput
-  }
-
-  export type QuestionResponseUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    textValue?: NullableStringFieldUpdateOperationsInput | string | null
-    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
-    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    questionId?: StringFieldUpdateOperationsInput | string
-    optionId?: NullableStringFieldUpdateOperationsInput | string | null
-    responseId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type QuestionResponseUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    textValue?: NullableStringFieldUpdateOperationsInput | string | null
-    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
-    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    questionId?: StringFieldUpdateOperationsInput | string
-    optionId?: NullableStringFieldUpdateOperationsInput | string | null
-    responseId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type SurveyResponseUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    survey?: SurveyUpdateOneRequiredWithoutResponsesNestedInput
-    questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
-  }
-
-  export type SurveyResponseUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveyId?: StringFieldUpdateOperationsInput | string
-    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutResponseNestedInput
-  }
-
-  export type SurveyResponseUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    surveyId?: StringFieldUpdateOperationsInput | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   }
 
   export type SurveyCreateManyTypeInput = {
@@ -28587,11 +29188,13 @@ export namespace Prisma {
     name: string
     description?: string | null
     status?: $Enums.SurveyStatus
-    enabled?: boolean
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
   }
 
   export type SurveyUpdateWithoutTypeInput = {
@@ -28599,14 +29202,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
-    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
     responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
+    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
   }
 
   export type SurveyUncheckedUpdateWithoutTypeInput = {
@@ -28614,14 +29219,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
-    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateManyWithoutTypeInput = {
@@ -28629,11 +29236,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
-    enabled?: BoolFieldUpdateOperationsInput | boolean
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
   }
 
   export type QuestionCreateManySurveyInput = {
@@ -28649,6 +29258,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
+    addOther?: boolean
   }
 
   export type SurveyResponseCreateManySurveyInput = {
@@ -28672,9 +29282,10 @@ export namespace Prisma {
     buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
+    addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
+    team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutSurveyInput = {
@@ -28690,6 +29301,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
+    addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
   }
@@ -28707,6 +29319,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
+    addOther?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SurveyResponseUpdateWithoutSurveyInput = {
@@ -28715,8 +29328,8 @@ export namespace Prisma {
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSurveyResponsesNestedInput
     questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
+    team?: TeamUpdateOneRequiredWithoutSurveyResponsesNestedInput
   }
 
   export type SurveyResponseUncheckedUpdateWithoutSurveyInput = {
@@ -28745,6 +29358,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
+    isOther?: boolean
   }
 
   export type QuestionResponseCreateManyQuestionInput = {
@@ -28766,6 +29380,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOther?: BoolFieldUpdateOperationsInput | boolean
     team?: TeamUpdateOneRequiredWithoutQuestionOptionsNestedInput
     responses?: QuestionResponseUpdateManyWithoutOptionNestedInput
   }
@@ -28777,6 +29392,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
+    isOther?: BoolFieldUpdateOperationsInput | boolean
     responses?: QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput
   }
 
@@ -28787,6 +29403,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
+    isOther?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuestionResponseUpdateWithoutQuestionInput = {
@@ -28901,8 +29518,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
     option?: QuestionOptionUpdateOneWithoutResponsesNestedInput
+    question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionResponsesNestedInput
   }
 

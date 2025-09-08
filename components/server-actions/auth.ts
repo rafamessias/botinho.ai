@@ -3,7 +3,6 @@
 import { signIn, signOut, auth } from "@/app/auth"
 import { prisma } from "@/prisma/lib/prisma"
 import bcrypt from "bcryptjs"
-import { redirect } from "next/navigation"
 import { z } from "zod"
 import { AuthError } from "next-auth"
 import resend from "@/lib/resend"
@@ -13,6 +12,7 @@ import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
 import { Provider, Theme } from "@/lib/generated/prisma"
+import { addDefaultSurveyTypes } from "./team"
 
 // Types for form data
 export interface SignInFormData {
@@ -201,6 +201,8 @@ export const signUpAction = async (formData: SignUpFormData) => {
                     teamMemberStatus: 'accepted',
                 }
             })
+
+            await addDefaultSurveyTypes(team.id)
 
             // Update user's default team
             await tx.user.update({

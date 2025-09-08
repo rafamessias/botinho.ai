@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Check, Crown, Star, Users, Loader2 } from "lucide-react";
 import { createCheckoutSession, createPortalSession } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
+import { Separator } from "../ui/separator";
 
 interface SubscriptionPlan {
     id: string;
@@ -138,8 +139,8 @@ export const SubscriptionPage = () => {
     return (
         <div className="space-y-8">
             {/* Current Plan Section */}
-            <Card className="border-2 border-primary/20">
-                <CardHeader>
+            <Card className="border-none shadow-none">
+                <CardHeader className="p-0">
                     <div className="flex items-center justify-between">
                         <div>
                             <CardTitle className="flex items-center gap-2">
@@ -165,7 +166,7 @@ export const SubscriptionPage = () => {
                         </Button>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">
@@ -183,17 +184,11 @@ export const SubscriptionPage = () => {
                                 {currentSubscription.billingCycle}
                             </p>
                         </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">
-                                {t("currentPlan.nextBilling")}
-                            </p>
-                            <p className="text-lg font-semibold">
-                                {new Date(currentSubscription.nextBilling).toLocaleDateString()}
-                            </p>
-                        </div>
                     </div>
                 </CardContent>
             </Card>
+
+            <Separator />
 
             {/* Billing Toggle */}
             <div className="flex flex-col items-center justify-start space-x-4 h-12">
@@ -224,7 +219,7 @@ export const SubscriptionPage = () => {
                     <Card
                         key={plan.id}
                         className={`relative transition-all duration-200 hover:shadow-lg ${plan.popular
-                            ? "border-2 border-primary shadow-lg scale-105 order-first sm:order-none"
+                            ? "border-2 border-primary shadow-lg sm:scale-105 order-first sm:order-none"
                             : "border hover:border-primary/50"
                             }`}
                     >
@@ -236,7 +231,7 @@ export const SubscriptionPage = () => {
                             </div>
                         )}
 
-                        <CardHeader className="text-center pb-4">
+                        <CardHeader className="text-center pb-4 p-0">
                             <div className="flex justify-center mb-4">
                                 <div className={`p-3 rounded-full ${plan.popular
                                     ? "bg-primary/10 text-primary"
@@ -288,7 +283,7 @@ export const SubscriptionPage = () => {
                             </ul>
                         </CardContent>
 
-                        <CardFooter>
+                        <CardFooter >
                             <Button
                                 className="w-full"
                                 variant={plan.popular ? "default" : "outline"}

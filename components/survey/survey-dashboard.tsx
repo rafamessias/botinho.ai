@@ -1,6 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
 import {
     Card,
     CardDescription,
@@ -9,17 +10,62 @@ import {
     CardTitle
 } from "@/components/ui/card"
 import { SurveyTable } from "@/components/survey/survey-table"
+import { getSurveyStats } from "@/components/server-actions/survey"
+import { Team } from "@/lib/generated/prisma"
 
-// Dummy data for survey statistics
-const surveyStats = {
-    totalSurveys: 24,
-    activeSurveys: 8,
-    totalResponses: 1247,
-    responseRate: 68.5
+interface SurveyStats {
+    totalSurveys: number
+    activeSurveys: number
+    totalResponses: number
+    responseRate: number
 }
 
-export const SurveyDashboard = () => {
+export const SurveyDashboard = ({ currentTeam }: { currentTeam: Team }) => {
     const t = useTranslations("Survey")
+    const [surveyStats, setSurveyStats] = useState<SurveyStats>({
+        totalSurveys: currentTeam?.totalSurveys || 0,
+        activeSurveys: currentTeam?.totalActiveSurveys || 0,
+        totalResponses: currentTeam?.totalResponses || 0,
+        responseRate: currentTeam?.ResponseRate || 0
+    })
+    const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const result = await getSurveyStats()
+                if (result.success && result.stats) {
+                    setSurveyStats(result.stats)
+                }
+            } catch (error) {
+                console.error("Failed to fetch survey stats:", error)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        //fetchStats()
+    }, [])
+
+    if (isLoading) {
+        return (
+            <div className="px-4 lg:px-6 space-y-6">
+                <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+                    {[...Array(4)].map((_, i) => (
+                        <Card key={i} className="@container/card">
+                            <CardHeader>
+                                <CardDescription>Loading...</CardDescription>
+                                <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                                    --
+                                </CardTitle>
+                            </CardHeader>
+                        </Card>
+                    ))}
+                </div>
+                <SurveyTable />
+            </div>
+        )
+    }
 
     return (
         <div className="px-4 lg:px-6 space-y-6">
@@ -63,7 +109,7 @@ export const SurveyDashboard = () => {
                     <CardHeader>
                         <CardDescription>{t("stats.totalResponses.title")}</CardDescription>
                         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                            {surveyStats.totalResponses.toLocaleString()}
+                            {surveyStats.totalResponses}
                         </CardTitle>
                     </CardHeader>
                     <CardFooter className="flex-col items-start gap-1.5 text-sm">

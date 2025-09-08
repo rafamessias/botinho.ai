@@ -36,20 +36,24 @@ import {
 import { GripVertical, Plus, Settings, Trash2, FileText, X, CheckSquare, Star, Type, MessageSquare, Circle, Square, ChevronDown, ChevronUp } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { useRef, useEffect } from "react"
+import { QuestionFormat } from "@/lib/generated/prisma"
 
 interface Question {
-    id: number
+    id: string
     title: string
     description: string
-    format: string
+    format: QuestionFormat
     required: boolean
-    options: string[]
-    ratingMin?: number
-    ratingMax?: number
-    ratingStep?: number
+    order: number
     yesLabel?: string
     noLabel?: string
     buttonLabel?: string
+    options: Array<{
+        id?: string
+        text: string
+        order: number
+        isOther?: boolean
+    }>
 }
 
 interface QuestionsSectionProps {
@@ -57,32 +61,29 @@ interface QuestionsSectionProps {
     onChange: (questions: Question[]) => void
 }
 
-const questionFormats = [
-    "Yes/No",
-    "Star Rating",
-    "Long Text",
-    "Statement",
-    "Single Choice",
-    "Multiple Choice"
+const getQuestionFormats = (t: any) => [
+    { value: QuestionFormat.YES_NO, label: t("formats.yesNo") },
+    { value: QuestionFormat.STAR_RATING, label: t("formats.starRating") },
+    { value: QuestionFormat.LONG_TEXT, label: t("formats.longText") },
+    { value: QuestionFormat.STATEMENT, label: t("formats.statement") },
+    { value: QuestionFormat.SINGLE_CHOICE, label: t("formats.singleChoice") },
+    { value: QuestionFormat.MULTIPLE_CHOICE, label: t("formats.multipleChoice") }
 ]
 
-const getQuestionIcon = (format: string) => {
+const getQuestionIcon = (format: QuestionFormat) => {
     switch (format) {
-        case "Yes/No":
+        case QuestionFormat.YES_NO:
             return CheckSquare
-        case "Star Rating":
+        case QuestionFormat.STAR_RATING:
             return Star
-        case "Long Text":
+        case QuestionFormat.LONG_TEXT:
             return Type
-        case "Statement":
+        case QuestionFormat.STATEMENT:
             return MessageSquare
-        case "Single Choice":
+        case QuestionFormat.SINGLE_CHOICE:
             return Circle
-        case "Multiple Choice":
+        case QuestionFormat.MULTIPLE_CHOICE:
             return Square
-        case "":
-        case undefined:
-        case null:
         default:
             return FileText
     }
@@ -96,8 +97,8 @@ const SortableOptionItem = ({
     onRemove,
     shouldFocus = false
 }: {
-    id: number
-    option: string
+    id: string
+    option: { text: string; order: number; isOther?: boolean }
     index: number
     onUpdate: (index: number, value: string) => void
     onRemove: (index: number) => void
@@ -143,7 +144,7 @@ const SortableOptionItem = ({
             <Input
                 ref={inputRef}
                 placeholder="Enter option text"
-                value={option}
+                value={option.text}
                 onChange={(e) => onUpdate(index, e.target.value)}
                 className="flex-1"
             />
@@ -173,7 +174,7 @@ const QuestionCard = ({
 }: {
     question: Question
     onUpdate: (question: Question) => void
-    onDelete: (id: number) => void
+    onDelete: (id: string) => void
     isFirstQuestion?: boolean
     isNewlyAdded?: boolean
     questionNumber?: number
@@ -222,7 +223,7 @@ const QuestionCard = ({
     }
 
     const handleAddOption = () => {
-        const newOptions = [...question.options, ""]
+        const newOptions = [...question.options, { text: "", order: question.options.length, isOther: false }]
         const newIndex = newOptions.length - 1
         onUpdate({ ...question, options: newOptions })
         setFocusNewOption(newIndex)
@@ -235,30 +236,34 @@ const QuestionCard = ({
 
     const handleUpdateOption = (index: number, value: string) => {
         const newOptions = [...question.options]
-        newOptions[index] = value
+        newOptions[index] = { ...newOptions[index], text: value }
         onUpdate({ ...question, options: newOptions })
     }
 
     const handleRemoveOption = (index: number) => {
         const newOptions = question.options.filter((_, i) => i !== index)
-        onUpdate({ ...question, options: newOptions })
+        // Update order for remaining options
+        const updatedOptions = newOptions.map((option, i) => ({ ...option, order: i }))
+        onUpdate({ ...question, options: updatedOptions })
     }
 
     const handleReorderOptions = (event: DragEndEvent) => {
         const { active, over } = event
 
         if (over && active.id !== over.id) {
-            const oldIndex = question.options.findIndex((_, i) => i === active.id)
-            const newIndex = question.options.findIndex((_, i) => i === over.id)
+            const oldIndex = question.options.findIndex((_, i) => i.toString() === active.id)
+            const newIndex = question.options.findIndex((_, i) => i.toString() === over.id)
 
             const newOptions = arrayMove(question.options, oldIndex, newIndex)
-            onUpdate({ ...question, options: newOptions })
+            // Update order for reordered options
+            const updatedOptions = newOptions.map((option, i) => ({ ...option, order: i }))
+            onUpdate({ ...question, options: updatedOptions })
         }
     }
 
-    const needsOptions = question.format === "Single Choice" || question.format === "Multiple Choice"
-    const needsYesNoLabels = question.format === "Yes/No"
-    const needsButtonLabel = question.format === "Statement"
+    const needsOptions = question.format === QuestionFormat.SINGLE_CHOICE || question.format === QuestionFormat.MULTIPLE_CHOICE
+    const needsYesNoLabels = question.format === QuestionFormat.YES_NO
+    const needsButtonLabel = question.format === QuestionFormat.STATEMENT
 
     // Auto-focus title input for first question when expanded (but not on initial load)
     useEffect(() => {
@@ -370,13 +375,13 @@ const QuestionCard = ({
                                     <Select
                                         value={question.format}
                                         onValueChange={(value) => {
-                                            const updatedQuestion = { ...question, format: value }
+                                            const updatedQuestion = { ...question, format: value as QuestionFormat }
                                             // Reset options when changing format
                                             if (!needsOptions) {
                                                 updatedQuestion.options = []
                                             }
                                             // Set default labels for Yes/No questions
-                                            if (value === "Yes/No") {
+                                            if (value === QuestionFormat.YES_NO) {
                                                 updatedQuestion.yesLabel = "Yes"
                                                 updatedQuestion.noLabel = "No"
                                             }
@@ -387,9 +392,9 @@ const QuestionCard = ({
                                             <SelectValue placeholder={t("format.placeholder")} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {questionFormats.map((format) => (
-                                                <SelectItem key={format} value={format}>
-                                                    {format}
+                                            {getQuestionFormats(t).map((format) => (
+                                                <SelectItem key={format.value} value={format.value}>
+                                                    {format.label}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -430,14 +435,14 @@ const QuestionCard = ({
                                         onDragEnd={handleReorderOptions}
                                     >
                                         <SortableContext
-                                            items={question.options.map((_, index) => index)}
+                                            items={question.options.map((_, index) => index.toString())}
                                             strategy={verticalListSortingStrategy}
                                         >
                                             <div className="space-y-2">
                                                 {question.options.map((option, index) => (
                                                     <SortableOptionItem
                                                         key={index}
-                                                        id={index}
+                                                        id={index.toString()}
                                                         option={option}
                                                         index={index}
                                                         onUpdate={handleUpdateOption}
@@ -515,7 +520,7 @@ const QuestionCard = ({
 
 export const QuestionsSection = ({ questions, onChange }: QuestionsSectionProps) => {
     const t = useTranslations("CreateSurvey.questions")
-    const [newlyAddedQuestionId, setNewlyAddedQuestionId] = useState<number | null>(null)
+    const [newlyAddedQuestionId, setNewlyAddedQuestionId] = useState<string | null>(null)
     const [allExpanded, setAllExpanded] = useState(true)
 
     const sensors = useSensors(
@@ -533,22 +538,25 @@ export const QuestionsSection = ({ questions, onChange }: QuestionsSectionProps)
             const newIndex = questions.findIndex((q) => q.id === over.id)
 
             const newQuestions = arrayMove(questions, oldIndex, newIndex)
-            onChange(newQuestions)
+            // Update the order property for each question to match their new position
+            const updatedQuestions = newQuestions.map((question, index) => ({
+                ...question,
+                order: index
+            }))
+            onChange(updatedQuestions)
         }
     }
 
     const handleAddQuestion = () => {
-        const newId = Math.max(...questions.map(q => q.id), 0) + 1
+        const newId = (Math.max(...questions.map(q => parseInt(q.id) || 0), 0) + 1).toString()
         const newQuestion: Question = {
             id: newId,
             title: "",
             description: "",
-            format: "Yes/No",
+            format: QuestionFormat.YES_NO,
             required: false,
+            order: questions.length,
             options: [],
-            ratingMin: 1,
-            ratingMax: 5,
-            ratingStep: 1,
             yesLabel: "Yes",
             noLabel: "No",
             buttonLabel: "Continue"
@@ -573,9 +581,14 @@ export const QuestionsSection = ({ questions, onChange }: QuestionsSectionProps)
         onChange(newQuestions)
     }
 
-    const handleDeleteQuestion = (id: number) => {
+    const handleDeleteQuestion = (id: string) => {
         const newQuestions = questions.filter(q => q.id !== id)
-        onChange(newQuestions)
+        // Update the order property for each remaining question to maintain sequential order
+        const updatedQuestions = newQuestions.map((question, index) => ({
+            ...question,
+            order: index
+        }))
+        onChange(updatedQuestions)
     }
 
     const toggleAllQuestions = () => {
@@ -585,7 +598,7 @@ export const QuestionsSection = ({ questions, onChange }: QuestionsSectionProps)
     }
 
     return (
-        <Card className="border-none px-0 pt-4">
+        <Card className="border-none px-0 pt-4 shadow-none">
             <CardHeader className="p-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">

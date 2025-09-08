@@ -201,7 +201,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
             </div>
 
             {/* Main Team Card */}
-            <Card className="border-none p-0">
+            <Card className="border-none p-0 shadow-none">
                 <CardHeader className="space-y-4 lg:space-y-6 p-0">
                     {/* Team Selection and Actions */}
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -276,7 +276,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                         <span>{selectedTeam.members.length} member{selectedTeam.members.length !== 1 ? 's' : ''}</span>
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex-col sm:flex-row gap-2">
                                     {isCurrentUserAdmin(selectedTeam) && (
                                         <Button
                                             variant="outline"
@@ -296,7 +296,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                                 <Button
                                                     variant="destructive"
                                                     size="sm"
-                                                    className="w-full sm:w-auto"
+                                                    className="w-full sm:w-auto mt-2 sm:mt-0 ml-0 sm:ml-2"
                                                     disabled={isDeletingTeam}
                                                 >
                                                     <IconTrash className="h-4 w-4 mr-2" />

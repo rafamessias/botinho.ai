@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
   output          = "../lib/generated/prisma"
@@ -15,66 +9,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Language {
-  en
-  pt_BR
-}
-
-enum Provider {
-  google
-  local
-}
-
-enum TeamMemberStatus {
-  invited
-  accepted
-  rejected
-}
-
-enum Theme {
-  light
-  dark
-  system
-}
-
 model User {
-  id                   Int       @id @default(autoincrement())
-  idProvider           String?
-  email                String    @unique
-  provider             Provider  @default(local)
+  id                   Int          @id @default(autoincrement())
+  email                String       @unique
+  provider             Provider     @default(local)
   password             String?
   resetPasswordToken   String?
-  resetPasswordExpires DateTime?
   confirmationToken    String?
   confirmed            Boolean?
   blocked              Boolean?
-  phone                String?   @unique
+  phone                String?      @unique
   firstName            String
   lastName             String?
   avatarUrl            String?
   language             Language
-  theme                Theme     @default(system)
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-
-  // Relations
-  avatar   File? @relation("UserAvatar", fields: [avatarId], references: [id])
-  avatarId Int?
-
-  team          Team? @relation("UserDefaultTeam", fields: [defaultTeamId], references: [id])
-  defaultTeamId Int?
-
-  // NextAuth relations
-  accounts Account[]
-  sessions Session[]
-
-  // Company member relation
-  teamMembers TeamMember[] @relation("UserTeamMembers")
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  avatarId             Int?
+  idProvider           String?
+  resetPasswordExpires DateTime?
+  theme                Theme        @default(system)
+  defaultTeamId        Int?
+  accounts             Account[]
+  sessions             Session[]
+  teamMembers          TeamMember[] @relation("UserTeamMembers")
+  avatar               File?        @relation("UserAvatar", fields: [avatarId], references: [id])
+  team                 Team?        @relation("UserDefaultTeam", fields: [defaultTeamId], references: [id])
 
   @@map("users")
 }
 
-// Update File model to include project image relation
 model File {
   id        Int      @id @default(autoincrement())
   name      String
@@ -86,29 +50,25 @@ model File {
   size      Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // Relations
-  avatarFor User[] @relation("UserAvatar")
+  avatarFor User[]   @relation("UserAvatar")
 
   @@map("files")
 }
 
-// NextAuth.js required models
 model Account {
   id                String  @id @default(cuid())
   userId            Int
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -134,22 +94,25 @@ model VerificationToken {
 }
 
 model Team {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  members           TeamMember[]       @relation("TeamMembers")
-  user              User[]             @relation("UserDefaultTeam")
-  surveys           Survey[]
-  surveyTypes       SurveyType[]
-  surveysStyle      SurveyStyle[]
-  questions         Question[]
-  questionOptions   QuestionOption[]
-  questionResponses QuestionResponse[]
-  surveyResponses   SurveyResponse[]
+  id                 Int                @id @default(autoincrement())
+  name               String
+  description        String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  ResponseRate       Int                @default(0)
+  totalActiveSurveys Int                @default(0)
+  totalOpenSurveys   Int                @default(0)
+  totalResponses     Int                @default(0)
+  totalSurveys       Int                @default(0)
+  questionOptions    QuestionOption[]
+  questionResponses  QuestionResponse[]
+  questions          Question[]
+  surveyResponses    SurveyResponse[]
+  surveysStyle       SurveyStyle[]
+  surveyTypes        SurveyType[]
+  surveys            Survey[]
+  members            TeamMember[]       @relation("TeamMembers")
+  user               User[]             @relation("UserDefaultTeam")
 
   @@map("teams")
 }
@@ -163,19 +126,169 @@ model TeamMember {
   teamMemberStatus TeamMemberStatus
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-
-  // Relations
-  userId Int
-  user   User @relation("UserTeamMembers", fields: [userId], references: [id])
-
-  teamId Int
-  team   Team @relation("TeamMembers", fields: [teamId], references: [id])
+  userId           Int
+  teamId           Int
+  team             Team             @relation("TeamMembers", fields: [teamId], references: [id])
+  user             User             @relation("UserTeamMembers", fields: [userId], references: [id])
 
   @@unique([userId, teamId])
   @@map("team_members")
 }
 
-// Survey-related enums
+model SurveyType {
+  id        String   @id @default(cuid())
+  name      String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  teamId    Int
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  surveys   Survey[]
+
+  @@map("survey_types")
+}
+
+model Survey {
+  id                     String           @id @default(cuid())
+  name                   String
+  description            String?
+  status                 SurveyStatus     @default(draft)
+  allowMultipleResponses Boolean          @default(true)
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+  teamId                 Int
+  typeId                 String?
+  ResponseRate           Int              @default(0)
+  totalOpenSurveys       Int              @default(0)
+  totalResponses         Int              @default(0)
+  questions              Question[]
+  responses              SurveyResponse[]
+  style                  SurveyStyle?
+  team                   Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  type                   SurveyType?      @relation(fields: [typeId], references: [id])
+
+  @@map("surveys")
+}
+
+model SurveyStyle {
+  id                    String   @id @default(cuid())
+  backgroundColor       String   @default("transparent")
+  textColor             String   @default("#222222")
+  buttonBackgroundColor String   @default("#222222")
+  buttonTextColor       String   @default("#ffffff")
+  margin                String   @default("16px 0px")
+  padding               String   @default("16px")
+  borderRadius          String   @default("6px")
+  titleFontSize         String   @default("18px")
+  bodyFontSize          String   @default("16px")
+  fontFamily            String   @default("Inter")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  surveyId              String   @unique
+  teamId                Int
+  border                String   @default("1px solid #222222")
+  survey                Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  team                  Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("survey_styles")
+}
+
+model Question {
+  id          String             @id @default(cuid())
+  title       String
+  description String?
+  format      QuestionFormat
+  required    Boolean            @default(false)
+  order       Int
+  yesLabel    String?
+  noLabel     String?
+  buttonLabel String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  surveyId    String
+  teamId      Int
+  addOther    Boolean            @default(false)
+  options     QuestionOption[]
+  responses   QuestionResponse[]
+  survey      Survey             @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  team        Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("questions")
+}
+
+model QuestionOption {
+  id         String             @id @default(cuid())
+  text       String
+  order      Int
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  questionId String
+  teamId     Int
+  isOther    Boolean            @default(false)
+  question   Question           @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  team       Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  responses  QuestionResponse[]
+
+  @@map("question_options")
+}
+
+model SurveyResponse {
+  id                String             @id @default(cuid())
+  status            ResponseStatus     @default(pending)
+  submittedAt       DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  surveyId          String
+  teamId            Int
+  questionResponses QuestionResponse[]
+  survey            Survey             @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  team              Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("survey_responses")
+}
+
+model QuestionResponse {
+  id           String          @id @default(cuid())
+  isOther      Boolean?        @default(false)
+  textValue    String?
+  numberValue  Int?
+  booleanValue Boolean?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  questionId   String
+  optionId     String?
+  responseId   String
+  teamId       Int
+  option       QuestionOption? @relation(fields: [optionId], references: [id])
+  question     Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  response     SurveyResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  team         Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("question_responses")
+}
+
+enum Language {
+  en
+  pt_BR
+}
+
+enum Provider {
+  google
+  local
+}
+
+enum TeamMemberStatus {
+  invited
+  accepted
+  rejected
+}
+
+enum Theme {
+  light
+  dark
+  system
+}
+
 enum SurveyStatus {
   draft
   published
@@ -195,165 +308,4 @@ enum ResponseStatus {
   pending
   completed
   abandoned
-}
-
-// Survey Type model for categorization
-model SurveyType {
-  id        String   @id @default(cuid())
-  name      String
-  isDefault Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  surveys Survey[]
-
-  teamId Int
-  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@map("survey_types")
-}
-
-// Survey model
-model Survey {
-  id                     String       @id @default(cuid())
-  name                   String
-  description            String?
-  status                 SurveyStatus @default(draft)
-  enabled                Boolean      @default(true)
-  allowMultipleResponses Boolean      @default(true)
-  createdAt              DateTime     @default(now())
-  updatedAt              DateTime     @updatedAt
-
-  // Relations
-  teamId Int
-  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  typeId String?
-  type   SurveyType? @relation(fields: [typeId], references: [id])
-
-  questions Question[]
-  style     SurveyStyle?
-  responses SurveyResponse[]
-
-  @@map("surveys")
-}
-
-// Survey Style model for customization
-model SurveyStyle {
-  id                    String   @id @default(cuid())
-  backgroundColor       String   @default("transparent")
-  textColor             String   @default("#222222")
-  buttonBackgroundColor String   @default("#222222")
-  buttonTextColor       String   @default("#ffffff")
-  margin                String   @default("16px 0px")
-  padding               String   @default("16px")
-  borderRadius          String   @default("6px")
-  titleFontSize         String   @default("18px")
-  bodyFontSize          String   @default("16px")
-  fontFamily            String   @default("Inter")
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-
-  // Relations
-  surveyId String @unique
-  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-
-  teamId Int
-  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@map("survey_styles")
-}
-
-// Question model
-model Question {
-  id          String         @id @default(cuid())
-  title       String
-  description String?
-  format      QuestionFormat
-  required    Boolean        @default(false)
-  order       Int // For ordering questions
-  yesLabel    String? // For Yes/No questions
-  noLabel     String? // For Yes/No questions
-  buttonLabel String? // For Statement questions
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-
-  // Relations
-  surveyId String
-  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-
-  teamId Int
-  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  options   QuestionOption[]
-  responses QuestionResponse[]
-
-  @@map("questions")
-}
-
-// Question Option model for choice-based questions
-model QuestionOption {
-  id        String   @id @default(cuid())
-  text      String
-  order     Int // For ordering options
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  questionId String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  teamId Int
-  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  responses QuestionResponse[]
-
-  @@map("question_options")
-}
-
-// Survey Response model
-model SurveyResponse {
-  id          String         @id @default(cuid())
-  status      ResponseStatus @default(pending)
-  submittedAt DateTime?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-
-  // Relations
-  surveyId String
-  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-
-  teamId Int
-  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  questionResponses QuestionResponse[]
-
-  @@map("survey_responses")
-}
-
-// Question Response model
-model QuestionResponse {
-  id           String   @id @default(cuid())
-  isOther      Boolean? @default(false)
-  textValue    String? // For text-based responses
-  numberValue  Int? // For rating responses
-  booleanValue Boolean? // For Yes/No responses
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Relations
-  questionId String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  optionId String?
-  option   QuestionOption? @relation(fields: [optionId], references: [id])
-
-  responseId String
-  response   SurveyResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
-
-  teamId Int
-  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@map("question_responses")
 }

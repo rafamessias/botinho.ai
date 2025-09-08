@@ -1,6 +1,5 @@
 import { auth } from "@/app/auth"
 import { prisma } from "@/prisma/lib/prisma"
-import { Prisma } from "@/lib/generated/prisma"
 
 /**
  * Prisma wrapper that automatically injects team ID for CRUD operations
@@ -61,10 +60,7 @@ export class PrismaTeamWrapper {
     /**
      * Create a new record with automatic team ID injection
      */
-    async create<T extends { teamId?: number }>(
-        model: any,
-        data: Omit<T, 'teamId'> & { teamId?: number }
-    ): Promise<T> {
+    async create(model: any, args: any): Promise<any> {
         await this.ensureInitialized()
 
         if (this.teamId === null) {
@@ -72,11 +68,12 @@ export class PrismaTeamWrapper {
         }
 
         const dataWithTeamId = {
-            ...data,
+            ...args.data,
             teamId: this.teamId
         }
 
         return await model.create({
+            ...args,
             data: dataWithTeamId
         })
     }
@@ -84,12 +81,7 @@ export class PrismaTeamWrapper {
     /**
      * Find many records filtered by team ID
      */
-    async findMany<T>(
-        model: any,
-        args?: Omit<Prisma.Args<T, 'findMany'>, 'where'> & {
-            where?: Omit<Prisma.Args<T, 'findMany'>['where'], 'teamId'>
-        }
-    ): Promise<T[]> {
+    async findMany(model: any, args: any = {}): Promise<any[]> {
         await this.ensureInitialized()
 
         if (this.teamId === null) {
@@ -97,25 +89,22 @@ export class PrismaTeamWrapper {
         }
 
         const whereClause = {
-            ...args?.where,
+            ...args.where,
             teamId: this.teamId
         }
 
-        return await model.findMany({
+        const result = await model.findMany({
             ...args,
             where: whereClause
         })
+
+        return result
     }
 
     /**
      * Find unique record filtered by team ID
      */
-    async findUnique<T>(
-        model: any,
-        args: Omit<Prisma.Args<T, 'findUnique'>, 'where'> & {
-            where: Omit<Prisma.Args<T, 'findUnique'>['where'], 'teamId'> & { id: number }
-        }
-    ): Promise<T | null> {
+    async findUnique(model: any, args: any): Promise<any> {
         await this.ensureInitialized()
 
         if (this.teamId === null) {
@@ -136,12 +125,7 @@ export class PrismaTeamWrapper {
     /**
      * Find first record filtered by team ID
      */
-    async findFirst<T>(
-        model: any,
-        args?: Omit<Prisma.Args<T, 'findFirst'>, 'where'> & {
-            where?: Omit<Prisma.Args<T, 'findFirst'>['where'], 'teamId'>
-        }
-    ): Promise<T | null> {
+    async findFirst(model: any, args: any = {}): Promise<any> {
         await this.ensureInitialized()
 
         if (this.teamId === null) {
@@ -149,7 +133,7 @@ export class PrismaTeamWrapper {
         }
 
         const whereClause = {
-            ...args?.where,
+            ...args.where,
             teamId: this.teamId
         }
 
@@ -162,78 +146,7 @@ export class PrismaTeamWrapper {
     /**
      * Update a record with team ID validation
      */
-    async update<T extends { teamId?: number }>(
-        model: any,
-        args: {
-            where: { id: number }
-            data: Omit<T, 'teamId' | 'id'>
-        }
-    ): Promise<T> {
-        await this.ensureInitialized()
-
-        if (this.teamId === null) {
-            throw new Error("User has no default team assigned")
-        }
-
-        // First verify the record belongs to the user's team
-        const existingRecord = await model.findUnique({
-            where: { id: args.where.id }
-        })
-
-        if (!existingRecord) {
-            throw new Error("Record not found")
-        }
-
-        if (existingRecord.teamId !== this.teamId) {
-            throw new Error("Access denied: Record does not belong to your team")
-        }
-
-        return await model.update({
-            where: args.where,
-            data: args.data
-        })
-    }
-
-    /**
-     * Delete a record with team ID validation
-     */
-    async delete<T>(
-        model: any,
-        args: { where: { id: number } }
-    ): Promise<T> {
-        await this.ensureInitialized()
-
-        if (this.teamId === null) {
-            throw new Error("User has no default team assigned")
-        }
-
-        // First verify the record belongs to the user's team
-        const existingRecord = await model.findUnique({
-            where: { id: args.where.id }
-        })
-
-        if (!existingRecord) {
-            throw new Error("Record not found")
-        }
-
-        if (existingRecord.teamId !== this.teamId) {
-            throw new Error("Access denied: Record does not belong to your team")
-        }
-
-        return await model.delete({
-            where: args.where
-        })
-    }
-
-    /**
-     * Count records filtered by team ID
-     */
-    async count<T>(
-        model: any,
-        args?: Omit<Prisma.Args<T, 'count'>, 'where'> & {
-            where?: Omit<Prisma.Args<T, 'count'>['where'], 'teamId'>
-        }
-    ): Promise<number> {
+    async update(model: any, args: any): Promise<any> {
         await this.ensureInitialized()
 
         if (this.teamId === null) {
@@ -241,7 +154,91 @@ export class PrismaTeamWrapper {
         }
 
         const whereClause = {
-            ...args?.where,
+            ...args.where,
+            teamId: this.teamId
+        }
+
+        return await model.update({
+            ...args,
+            where: whereClause
+        })
+    }
+
+    /**
+     * Update many records with team ID validation
+     */
+    async updateMany(model: any, args: any): Promise<any> {
+        await this.ensureInitialized()
+
+        if (this.teamId === null) {
+            throw new Error("User has no default team assigned")
+        }
+
+        const whereClause = {
+            ...args.where,
+            teamId: this.teamId
+        }
+
+        return await model.updateMany({
+            ...args,
+            where: whereClause
+        })
+    }
+
+    /**
+     * Delete a record with team ID validation
+     */
+    async delete(model: any, args: any): Promise<any> {
+        await this.ensureInitialized()
+
+        if (this.teamId === null) {
+            throw new Error("User has no default team assigned")
+        }
+
+        const whereClause = {
+            ...args.where,
+            teamId: this.teamId
+        }
+
+        return await model.delete({
+            ...args,
+            where: whereClause
+        })
+    }
+
+    /**
+     * Delete many records with team ID validation
+     */
+    async deleteMany(model: any, args: any = {}): Promise<any> {
+        await this.ensureInitialized()
+
+        if (this.teamId === null) {
+            throw new Error("User has no default team assigned")
+        }
+
+        const whereClause = {
+            ...args.where,
+            teamId: this.teamId
+        }
+
+        return await model.deleteMany({
+            ...args,
+            where: whereClause
+        })
+    }
+
+    /**
+     * Count records filtered by team ID
+     */
+    async count(model: any, args: any = {}): Promise<number> {
+        await this.ensureInitialized()
+
+        if (this.teamId === null) {
+            throw new Error("User has no default team assigned")
+        }
+
+        const whereClause = {
+            ...args.where,
             teamId: this.teamId
         }
 
@@ -254,14 +251,7 @@ export class PrismaTeamWrapper {
     /**
      * Upsert a record with automatic team ID injection
      */
-    async upsert<T extends { teamId?: number }>(
-        model: any,
-        args: {
-            where: { id: number }
-            create: Omit<T, 'teamId'>
-            update: Omit<T, 'teamId' | 'id'>
-        }
-    ): Promise<T> {
+    async upsert(model: any, args: any): Promise<any> {
         await this.ensureInitialized()
 
         if (this.teamId === null) {
@@ -274,9 +264,8 @@ export class PrismaTeamWrapper {
         }
 
         return await model.upsert({
-            where: args.where,
-            create: createData,
-            update: args.update
+            ...args,
+            create: createData
         })
     }
 }

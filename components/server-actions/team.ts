@@ -93,6 +93,8 @@ export const createTeamAction = async (formData: z.infer<typeof createTeamSchema
                 }
             })
 
+            await addDefaultSurveyTypes(team.id)
+
             // Update user's default team
             await tx.user.update({
                 where: { id: user.id },
@@ -637,5 +639,45 @@ export const getUserTeamsAction = async () => {
     } catch (error) {
         console.error("Get user teams error:", error)
         return { success: false, error: "Failed to get teams" }
+    }
+}
+
+/**
+ * Add default survey types to existing teams that don't have any survey types
+ * This can be called manually to migrate existing teams
+ */
+export const addDefaultSurveyTypes = async (teamId: number) => {
+    try {
+        // Default survey type templates
+        const defaultSurveyTypes = [
+            { name: "Product Feedback", isDefault: true },
+            { name: "Customer Satisfaction", isDefault: false },
+            { name: "Employee Engagement", isDefault: false },
+            { name: "Market Research", isDefault: false },
+            { name: "Event Feedback", isDefault: false },
+            { name: "User Experience", isDefault: false }
+        ]
+
+        // Add default survey types to each team
+        for (const surveyType of defaultSurveyTypes) {
+            await prisma.surveyType.create({
+                data: {
+                    name: surveyType.name,
+                    isDefault: surveyType.isDefault,
+                    teamId: teamId
+                }
+            })
+        }
+
+        return {
+            success: true,
+            message: `Added default survey types to team ${teamId}`
+        }
+    } catch (error) {
+        console.error("Error adding default survey types to team:", error)
+        return {
+            success: false,
+            error: `Failed to add default survey types to team ${teamId}`
+        }
     }
 }

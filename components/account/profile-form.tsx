@@ -137,7 +137,7 @@ export function ProfileForm() {
         <div className="space-y-6">
 
             {/* Profile Information Section */}
-            <Card className="border-none p-0">
+            <Card className="border-none p-0 shadow-none">
                 <CardHeader className="p-0">
                     <CardTitle>{t("profile.title")}</CardTitle>
                     <CardDescription>{t("profile.description")}</CardDescription>

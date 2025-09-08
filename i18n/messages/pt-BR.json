@@ -876,6 +876,11 @@
             "messages": {
                 "noResults": "Nenhuma pesquisa encontrada."
             }
+        },
+        "emptyState": {
+            "title": "Nenhuma Equipe Encontrada",
+            "description": "Você precisa criar ou entrar em uma equipe para começar a criar pesquisas.",
+            "createTeamButton": "Ir para Equipes"
         }
     },
     "CreateSurvey": {
@@ -883,7 +888,20 @@
         "description": "Crie uma nova pesquisa para coletar respostas do seu público",
         "actions": {
             "saveDraft": "Salvar Rascunho",
-            "publish": "Publicar"
+            "publish": "Publicar",
+            "saving": "Salvando...",
+            "publishing": "Publicando..."
+        },
+        "messages": {
+            "saveSuccess": "Pesquisa salva como rascunho com sucesso!",
+            "saveError": "Falha ao salvar pesquisa",
+            "publishSuccess": "Pesquisa publicada com sucesso!",
+            "publishError": "Falha ao publicar pesquisa",
+            "unexpectedError": "Ocorreu um erro inesperado"
+        },
+        "defaultQuestion": {
+            "yesLabel": "Sim",
+            "noLabel": "Não"
         },
         "details": {
             "title": "Detalhes da Pesquisa",
@@ -891,14 +909,21 @@
                 "label": "Nome",
                 "placeholder": "Digite o nome da pesquisa"
             },
+            "description": {
+                "label": "Descrição",
+                "placeholder": "Digite a descrição da pesquisa (opcional)"
+            },
             "type": {
                 "label": "Tipo de Pesquisa",
                 "placeholder": "Selecione o tipo de pesquisa",
                 "manageTypes": "Gerenciar Tipos"
             },
-            "enabled": {
-                "label": "Ativar Pesquisa",
-                "description": "Tornar esta pesquisa ativa e disponível para respostas"
+            "status": {
+                "label": "Status",
+                "placeholder": "Selecione o status da pesquisa",
+                "draft": "Rascunho",
+                "published": "Publicada",
+                "archived": "Arquivada"
             },
             "multipleResponses": {
                 "label": "Permitir múltiplas respostas por pessoa",
@@ -945,6 +970,14 @@
                 "label": "Rótulo do Botão",
                 "buttonLabel": "Texto do Botão",
                 "buttonPlaceholder": "Continuar"
+            },
+            "formats": {
+                "yesNo": "Sim/Não",
+                "starRating": "5 Estrelas",
+                "longText": "Texto Longo",
+                "statement": "Declaração",
+                "singleChoice": "Escolha Única",
+                "multipleChoice": "Múltipla Escolha"
             }
         },
         "targets": {
@@ -974,6 +1007,9 @@
             },
             "padding": {
                 "label": "Preenchimento"
+            },
+            "border": {
+                "label": "Borda"
             },
             "borderRadius": {
                 "label": "Raio da Borda"

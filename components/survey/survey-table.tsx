@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { useTranslations } from "next-intl"
+import { useTransition } from "react"
+import { useRouter } from "@/i18n/navigation"
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -63,96 +65,49 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Link } from "@/i18n/navigation"
+import { getSurveys, deleteSurvey, duplicateSurvey, updateSurveyStatus } from "@/components/server-actions/survey"
+import { toast } from "sonner"
+import { SurveyStatus } from "@/lib/generated/prisma"
+
+// Database survey type
+interface DatabaseSurvey {
+    id: string
+    name: string
+    description: string | null
+    status: SurveyStatus
+    enabled: boolean
+    allowMultipleResponses: boolean
+    totalResponses: number
+    ResponseRate: number
+    totalOpenSurveys: number
+    createdAt: Date
+    updatedAt: Date
+    type: {
+        id: string
+        name: string
+    } | null
+    _count: {
+        responses: number
+    }
+}
 
 export const surveySchema = z.object({
-    id: z.number(),
-    title: z.string(),
-    status: z.string(),
+    id: z.string(),
+    name: z.string(),
+    status: z.nativeEnum(SurveyStatus),
     responses: z.number(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-    type: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    type: z.string().nullable(),
 })
-
-// Dummy survey data
-const dummySurveys: z.infer<typeof surveySchema>[] = [
-    {
-        id: 1,
-        title: "Customer Satisfaction Survey",
-        status: "Active",
-        responses: 245,
-        createdAt: "2024-01-15",
-        updatedAt: "2024-01-20",
-        type: "Customer Feedback"
-    },
-    {
-        id: 2,
-        title: "Employee Engagement Survey",
-        status: "Draft",
-        responses: 0,
-        createdAt: "2024-01-18",
-        updatedAt: "2024-01-18",
-        type: "Internal"
-    },
-    {
-        id: 3,
-        title: "Product Feedback Form",
-        status: "Active",
-        responses: 89,
-        createdAt: "2024-01-10",
-        updatedAt: "2024-01-19",
-        type: "Product Research"
-    },
-    {
-        id: 4,
-        title: "Market Research Survey",
-        status: "Completed",
-        responses: 156,
-        createdAt: "2024-01-05",
-        updatedAt: "2024-01-15",
-        type: "Market Research"
-    },
-    {
-        id: 5,
-        title: "Website Usability Test",
-        status: "Active",
-        responses: 67,
-        createdAt: "2024-01-12",
-        updatedAt: "2024-01-21",
-        type: "UX Research"
-    },
-    {
-        id: 6,
-        title: "Event Feedback Survey",
-        status: "Completed",
-        responses: 203,
-        createdAt: "2024-01-08",
-        updatedAt: "2024-01-16",
-        type: "Event Feedback"
-    },
-    {
-        id: 7,
-        title: "Training Evaluation",
-        status: "Draft",
-        responses: 0,
-        createdAt: "2024-01-22",
-        updatedAt: "2024-01-22",
-        type: "Training"
-    },
-    {
-        id: 8,
-        title: "Brand Awareness Study",
-        status: "Active",
-        responses: 134,
-        createdAt: "2024-01-14",
-        updatedAt: "2024-01-20",
-        type: "Brand Research"
-    }
-]
 
 export const SurveyTable = () => {
     const t = useTranslations("Survey")
-    const [data] = React.useState(() => dummySurveys)
+    const router = useRouter()
+    const [isPending, startTransition] = useTransition()
+
+    const [data, setData] = React.useState<DatabaseSurvey[]>([])
+    const [isLoading, setIsLoading] = React.useState(true)
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -162,20 +117,96 @@ export const SurveyTable = () => {
         pageSize: 10,
     })
 
-    const getStatusBadge = (status: string) => {
+    // Fetch surveys on component mount
+    React.useEffect(() => {
+        const fetchSurveys = async () => {
+            try {
+                const result = await getSurveys()
+                if (result.success && result.surveys) {
+                    setData(result.surveys)
+                } else {
+                    toast.error(result.error || "Failed to fetch surveys")
+                }
+            } catch (error) {
+                console.error("Failed to fetch surveys:", error)
+                toast.error("Failed to fetch surveys")
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchSurveys()
+    }, [toast])
+
+    const getStatusBadge = (status: SurveyStatus) => {
         switch (status) {
-            case "Active":
-                return <Badge variant="default" className="bg-green-500 hover:bg-green-600">{status}</Badge>
-            case "Draft":
-                return <Badge variant="secondary">{status}</Badge>
-            case "Completed":
-                return <Badge variant="outline">{status}</Badge>
+            case SurveyStatus.published:
+                return <Badge variant="default" className="bg-green-500 hover:bg-green-600">Published</Badge>
+            case SurveyStatus.draft:
+                return <Badge variant="secondary">Draft</Badge>
+            case SurveyStatus.archived:
+                return <Badge variant="outline">Archived</Badge>
             default:
                 return <Badge variant="outline">{status}</Badge>
         }
     }
 
-    const columns: ColumnDef<z.infer<typeof surveySchema>>[] = [
+    // Action handlers
+    const handleDeleteSurvey = (id: string) => {
+        startTransition(async () => {
+            try {
+                const result = await deleteSurvey(id)
+                if (result.success) {
+                    setData(prev => prev.filter(survey => survey.id !== id))
+                    toast.success("Survey deleted successfully")
+                } else {
+                    toast.error(result.error || "Failed to delete survey")
+                }
+            } catch (error) {
+                toast.error("An unexpected error occurred")
+            }
+        })
+    }
+
+    const handleDuplicateSurvey = (id: string) => {
+        startTransition(async () => {
+            try {
+                const result = await duplicateSurvey(id)
+                if (result.success) {
+                    // Refresh the data
+                    const surveysResult = await getSurveys()
+                    if (surveysResult.success && surveysResult.surveys) {
+                        setData(surveysResult.surveys)
+                    }
+                    toast.success("Survey duplicated successfully")
+                } else {
+                    toast.error(result.error || "Failed to duplicate survey")
+                }
+            } catch (error) {
+                toast.error("An unexpected error occurred")
+            }
+        })
+    }
+
+    const handleUpdateStatus = (id: string, status: SurveyStatus) => {
+        startTransition(async () => {
+            try {
+                const result = await updateSurveyStatus(id, status)
+                if (result.success) {
+                    setData(prev => prev.map(survey =>
+                        survey.id === id ? { ...survey, status } : survey
+                    ))
+                    toast.success("Survey updated successfully")
+                } else {
+                    toast.error(result.error || "Failed to update survey status")
+                }
+            } catch (error) {
+                toast.error("An unexpected error occurred")
+            }
+        })
+    }
+
+    const columns: ColumnDef<DatabaseSurvey>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -203,11 +234,11 @@ export const SurveyTable = () => {
             enableHiding: false,
         },
         {
-            accessorKey: "title",
+            accessorKey: "name",
             header: t("table.columns.title"),
             cell: ({ row }) => (
                 <div className="font-medium">
-                    {row.original.title}
+                    {row.original.name}
                 </div>
             ),
             enableHiding: false,
@@ -217,7 +248,7 @@ export const SurveyTable = () => {
             header: t("table.columns.type"),
             cell: ({ row }) => (
                 <Badge variant="outline" className="text-muted-foreground">
-                    {row.original.type}
+                    {row.original.type?.name || "No Type"}
                 </Badge>
             ),
         },
@@ -231,7 +262,7 @@ export const SurveyTable = () => {
             header: () => <div className="w-full text-right">{t("table.columns.responses")}</div>,
             cell: ({ row }) => (
                 <div className="text-right font-medium">
-                    {row.original.responses.toLocaleString()}
+                    {row.original._count.responses.toLocaleString()}
                 </div>
             ),
         },
@@ -264,26 +295,42 @@ export const SurveyTable = () => {
                             variant="ghost"
                             className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
                             size="icon"
+                            disabled={isPending}
                         >
                             <MoreHorizontal />
                             <span className="sr-only">{t("table.actions.openMenu")}</span>
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuItem>
+                    <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem onClick={() => router.push(`/survey/${row.original.id}`)}>
                             <Eye className="h-4 w-4 mr-2" />
                             {t("table.actions.view")}
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push(`/survey/edit/${row.original.id}`)}>
                             <Edit className="h-4 w-4 mr-2" />
                             {t("table.actions.edit")}
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDuplicateSurvey(row.original.id)}>
                             <Copy className="h-4 w-4 mr-2" />
                             {t("table.actions.duplicate")}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem variant="destructive">
+                        {row.original.status === SurveyStatus.draft && (
+                            <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.published)}>
+                                <Users className="h-4 w-4 mr-2" />
+                                Publish
+                            </DropdownMenuItem>
+                        )}
+                        {row.original.status === SurveyStatus.published && (
+                            <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.archived)}>
+                                <Users className="h-4 w-4 mr-2" />
+                                Archive
+                            </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem
+                            variant="destructive"
+                            onClick={() => handleDeleteSurvey(row.original.id)}
+                        >
                             <Trash2 className="h-4 w-4 mr-2" />
                             {t("table.actions.delete")}
                         </DropdownMenuItem>
@@ -329,6 +376,7 @@ export const SurveyTable = () => {
                     </Badge>
                 </div>
                 <div className="flex w-full sm:w-auto items-center gap-2 justify-end">
+                    {/*}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="sm">
@@ -362,6 +410,7 @@ export const SurveyTable = () => {
                                 })}
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    */}
                     <Button size="sm" asChild>
                         <Link href="/survey/create">
                             <Plus />
@@ -377,9 +426,9 @@ export const SurveyTable = () => {
                 <div className="flex-1">
                     <Input
                         placeholder={t("table.search.placeholder")}
-                        value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
-                            table.getColumn("title")?.setFilterValue(event.target.value)
+                            table.getColumn("name")?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm"
                     />
@@ -395,9 +444,9 @@ export const SurveyTable = () => {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">{t("table.filters.allStatuses")}</SelectItem>
-                        <SelectItem value="Active">{t("table.filters.active")}</SelectItem>
-                        <SelectItem value="Draft">{t("table.filters.draft")}</SelectItem>
-                        <SelectItem value="Completed">{t("table.filters.completed")}</SelectItem>
+                        <SelectItem value={SurveyStatus.published}>Published</SelectItem>
+                        <SelectItem value={SurveyStatus.draft}>Draft</SelectItem>
+                        <SelectItem value={SurveyStatus.archived}>Archived</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -424,7 +473,16 @@ export const SurveyTable = () => {
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
+                                    Loading surveys...
+                                </TableCell>
+                            </TableRow>
+                        ) : table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
@@ -432,7 +490,19 @@ export const SurveyTable = () => {
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            {typeof cell.getValue() === "string"
+                                                ? (
+                                                    <span
+                                                        className="block truncate max-w-xs"
+                                                        title={cell.getValue() as string}
+                                                    >
+                                                        {(cell.getValue() as string).length > 40
+                                                            ? `${(cell.getValue() as string).slice(0, 40)}…`
+                                                            : cell.getValue() as string}
+                                                    </span>
+                                                )
+                                                : flexRender(cell.column.columnDef.cell, cell.getContext())
+                                            }
                                         </TableCell>
                                     ))}
                                 </TableRow>

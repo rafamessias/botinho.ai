@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs"
 import { CredentialsSignin } from "next-auth"
 import WelcomeEmail from "@/emails/WelcomeEmail"
 import resend from "@/lib/resend"
+import { addDefaultSurveyTypes } from "@/components/server-actions/team"
 
 // Add type declarations at the top of the file
 declare module "next-auth" {
@@ -23,6 +24,7 @@ interface User {
     company?: string | null
     language?: string | null
     avatarUrl?: string | null
+    defaultTeamId?: number | null
 }
 
 const locale = async () => {
@@ -114,6 +116,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         name: `${user.firstName} ${user.lastName}`,
                         language: user.language === "pt_BR" ? "pt-BR" : "en",
                         avatarUrl: user?.avatarUrl || user.avatar?.url || null,
+                        defaultTeamId: user.defaultTeamId
                     }
                 } catch (error) {
                     console.error("Auth error:", error)
@@ -133,6 +136,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.name = user.name
                 token.language = (user as any)?.language
                 token.avatarUrl = (user as any)?.avatarUrl
+                token.defaultTeamId = (user as any)?.defaultTeamId
             }
 
             // Handle Google OAuth user creation/update in JWT callback
@@ -187,11 +191,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             data: { defaultTeamId: newTeam.id }
                         });
 
+                        await addDefaultSurveyTypes(newTeam.id)
+
                         token.id = newUser.id.toString()
                         token.email = newUser.email
                         token.language = newUser.language
                         token.avatarUrl = newUser.avatarUrl
                         token.name = `${newUser.firstName} ${newUser.lastName}`
+                        token.defaultTeamId = newTeam.id
 
                         const baseUrl = process.env.HOST;
                         const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <contact@saasframework.com>";
@@ -215,6 +222,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         token.language = existingUser.language === "pt_BR" ? "pt-BR" : "en"
                         token.avatarUrl = existingUser.avatarUrl
                         token.name = `${existingUser.firstName} ${existingUser.lastName}`
+                        token.defaultTeamId = existingUser.defaultTeamId
                     }
                 } catch (error) {
                     console.error('Error handling Google OAuth user:', error);
@@ -244,6 +252,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             token.language = updatedUser.language === "pt_BR" ? "pt-BR" : "en";
                             token.name = `${updatedUser.firstName} ${updatedUser.lastName || ''}`.trim();
                             token.avatarUrl = updatedUser.avatarUrl;
+                            token.defaultTeamId = (user as any)?.defaultTeamId;
                         }
                     }
                 } catch (error) {
@@ -262,7 +271,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     email: token.email as string,
                     name: token.name as string,
                     avatarUrl: token.avatarUrl as string,
-                    language: token.language as string
+                    language: token.language as string,
+                    defaultTeamId: token.defaultTeamId as number
                 }
             }
 

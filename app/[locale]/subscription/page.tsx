@@ -21,7 +21,7 @@ export default async function Subscription() {
                 <SiteHeader title={t("title")} />
                 <div className="flex flex-1 flex-col">
                     <div className="@container/main flex flex-1 flex-col gap-2 max-w-4xl w-full mx-auto">
-                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
                             <p className="text-muted-foreground text-lg">
                                 {t("description")}
                             </p>

@@ -6,8 +6,16 @@ import {
     SidebarInset,
     SidebarProvider,
 } from "@/components/ui/sidebar"
+import { getSurveyTypes } from "@/components/server-actions/survey-types";
 
-export default function CreateSurveyPage() {
+export default async function CreateSurveyPage() {
+
+    const result = await getSurveyTypes()
+    let surveyTypes = []
+    if (result.success && result.surveyTypes) {
+        surveyTypes = result.surveyTypes
+    }
+
     return (
         <SidebarProvider
             style={
@@ -23,7 +31,7 @@ export default function CreateSurveyPage() {
                 <div className="flex flex-1 flex-col">
                     <div className="@container/main flex flex-1 flex-col gap-2">
                         <div className="flex flex-col py-4 px-6 max-w-4xl w-full mx-auto">
-                            <CreateSurveyForm />
+                            <CreateSurveyForm surveyTypes={surveyTypes} />
                         </div>
                     </div>
                 </div>

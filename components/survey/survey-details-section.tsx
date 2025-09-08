@@ -20,65 +20,32 @@ import { SurveyTypesModal, SurveyType } from "./survey-types-modal"
 interface SurveyDetailsSectionProps {
     data: {
         name: string
-        type: string
-        enabled: boolean
+        description?: string
+        typeId?: string
+        status: 'draft' | 'published' | 'archived'
         allowMultipleResponses: boolean
     }
     onChange: (data: Partial<SurveyDetailsSectionProps['data']>) => void
+    surveyTypesData: SurveyType[]
 }
 
-export const SurveyDetailsSection = ({ data, onChange }: SurveyDetailsSectionProps) => {
+export const SurveyDetailsSection = ({ data, onChange, surveyTypesData }: SurveyDetailsSectionProps) => {
     const t = useTranslations("CreateSurvey.details")
-    const tTypes = useTranslations("CreateSurvey.surveyTypes")
     const [isTypesModalOpen, setIsTypesModalOpen] = useState(false)
-
-    // Dummy survey types data
-    const [surveyTypes, setSurveyTypes] = useState<SurveyType[]>([
-        {
-            id: "customer-feedback",
-            name: tTypes("defaultTypes.customerFeedback"),
-            isDefault: true,
-        },
-        {
-            id: "internal",
-            name: tTypes("defaultTypes.internal"),
-            isDefault: true,
-        },
-        {
-            id: "market-research",
-            name: tTypes("defaultTypes.marketResearch"),
-            isDefault: true,
-        },
-        {
-            id: "employee-satisfaction",
-            name: tTypes("defaultTypes.employeeSatisfaction"),
-            isDefault: true,
-        },
-        {
-            id: "product-feedback",
-            name: tTypes("defaultTypes.productFeedback"),
-            isDefault: true,
-        },
-        {
-            id: "event-feedback",
-            name: tTypes("defaultTypes.eventFeedback"),
-            isDefault: true,
-        },
-    ])
+    const [surveyTypes, setSurveyTypes] = useState<SurveyType[]>(surveyTypesData)
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleTypeSelect = (typeId: string) => {
-        onChange({ type: typeId })
+        onChange({ typeId })
     }
 
     const handleSurveyTypesChange = (types: SurveyType[]) => {
         setSurveyTypes(types)
     }
 
-    const selectedType = surveyTypes.find(type => type.id === data.type)
-
     return (
         <>
-            <Card className="border-none p-0">
+            <Card className="border-none p-0 shadow-none">
                 <CardHeader className="p-0">
                     <CardTitle>{t("title")}</CardTitle>
                 </CardHeader>
@@ -92,6 +59,17 @@ export const SurveyDetailsSection = ({ data, onChange }: SurveyDetailsSectionPro
                             placeholder={t("name.placeholder")}
                             value={data.name}
                             onChange={(e) => onChange({ name: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Survey Description */}
+                    <div className="space-y-2">
+                        <Label htmlFor="survey-description">{t("description.label")}</Label>
+                        <Input
+                            id="survey-description"
+                            placeholder={t("description.placeholder")}
+                            value={data.description || ""}
+                            onChange={(e) => onChange({ description: e.target.value })}
                         />
                     </div>
 
@@ -110,15 +88,16 @@ export const SurveyDetailsSection = ({ data, onChange }: SurveyDetailsSectionPro
                             </Button>
                         </div>
                         <Select
-                            value={data.type}
+                            value={data.typeId || ""}
                             onValueChange={handleTypeSelect}
+                            disabled={isLoading}
                         >
-                            <SelectTrigger>
-                                <SelectValue placeholder={t("type.placeholder")} />
+                            <SelectTrigger className="cursor-pointer">
+                                <SelectValue placeholder={isLoading ? "Loading..." : t("type.placeholder")} />
                             </SelectTrigger>
                             <SelectContent>
                                 {surveyTypes.map((type) => (
-                                    <SelectItem key={type.id} value={type.id}>
+                                    <SelectItem key={type.id} value={type.id} className="cursor-pointer">
                                         {type.name}
                                     </SelectItem>
                                 ))}
@@ -126,19 +105,28 @@ export const SurveyDetailsSection = ({ data, onChange }: SurveyDetailsSectionPro
                         </Select>
                     </div>
 
-                    {/* Enable Survey Toggle */}
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <Label htmlFor="enable-survey">{t("enabled.label")}</Label>
-                            <p className="text-sm text-muted-foreground">
-                                {t("enabled.description")}
-                            </p>
-                        </div>
-                        <Switch
-                            id="enable-survey"
-                            checked={data.enabled}
-                            onCheckedChange={(checked) => onChange({ enabled: checked })}
-                        />
+                    {/* Survey Status */}
+                    <div className="space-y-2">
+                        <Label htmlFor="survey-status">{t("status.label")}</Label>
+                        <Select
+                            value={data.status}
+                            onValueChange={(status) => onChange({ status: status as 'draft' | 'published' | 'archived' })}
+                        >
+                            <SelectTrigger className="cursor-pointer">
+                                <SelectValue placeholder={t("status.placeholder")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="draft" className="cursor-pointer">
+                                    {t("status.draft")}
+                                </SelectItem>
+                                <SelectItem value="published" className="cursor-pointer">
+                                    {t("status.published")}
+                                </SelectItem>
+                                <SelectItem value="archived" className="cursor-pointer">
+                                    {t("status.archived")}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     {/* Allow Multiple Responses Toggle */}
@@ -164,7 +152,7 @@ export const SurveyDetailsSection = ({ data, onChange }: SurveyDetailsSectionPro
                 onClose={() => setIsTypesModalOpen(false)}
                 surveyTypes={surveyTypes}
                 onSurveyTypesChange={handleSurveyTypesChange}
-                selectedTypeId={data.type}
+                selectedTypeId={data.typeId}
                 onTypeSelect={handleTypeSelect}
             />
         </>

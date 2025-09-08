@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal, Plus, Edit, Trash2 } from "lucide-react"
 import { toast } from "sonner"
+import { createSurveyType, updateSurveyType, deleteSurveyType } from "@/components/server-actions/survey-types"
 
 export interface SurveyType {
     id: string
@@ -90,24 +91,45 @@ export const SurveyTypesModal = ({
         setIsSubmitting(true)
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 500))
-
             if (isCreating) {
-                const newType: SurveyType = {
-                    id: `type-${Date.now()}`,
-                    name: newTypeName.trim(),
+                // Create new survey type
+                const formData = new FormData()
+                formData.append("name", newTypeName.trim())
+                formData.append("isDefault", "false")
+
+                const result = await createSurveyType(formData)
+
+                if (result.success && result.surveyType) {
+                    const newType: SurveyType = {
+                        id: result.surveyType.id,
+                        name: result.surveyType.name,
+                        isDefault: result.surveyType.isDefault
+                    }
+                    onSurveyTypesChange([...surveyTypes, newType])
+                    toast.success(t("messages.createSuccess"))
+                } else {
+                    toast.error(result.error || t("messages.createFailed"))
                 }
-                onSurveyTypesChange([...surveyTypes, newType])
-                toast.success(t("messages.createSuccess"))
             } else if (editingType) {
-                const updatedTypes = surveyTypes.map(type =>
-                    type.id === editingType.id
-                        ? { ...type, name: newTypeName.trim() }
-                        : type
-                )
-                onSurveyTypesChange(updatedTypes)
-                toast.success(t("messages.updateSuccess"))
+                // Update existing survey type
+                const formData = new FormData()
+                formData.append("id", editingType.id)
+                formData.append("name", newTypeName.trim())
+                formData.append("isDefault", editingType.isDefault?.toString() || "false")
+
+                const result = await updateSurveyType(formData)
+
+                if (result.success && result.surveyType) {
+                    const updatedTypes = surveyTypes.map(type =>
+                        type.id === editingType.id
+                            ? { ...type, name: result.surveyType!.name, isDefault: result.surveyType!.isDefault }
+                            : type
+                    )
+                    onSurveyTypesChange(updatedTypes)
+                    toast.success(t("messages.updateSuccess"))
+                } else {
+                    toast.error(result.error || t("messages.updateFailed"))
+                }
             }
 
             setNewTypeName("")
@@ -130,22 +152,24 @@ export const SurveyTypesModal = ({
         setIsSubmitting(true)
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 500))
+            // Delete survey type from database
+            const result = await deleteSurveyType(deletingType.id)
 
-            // Allow deletion of any type (removed usage check)
+            if (result.success) {
+                const updatedTypes = surveyTypes.filter(
+                    type => type.id !== deletingType.id
+                )
+                onSurveyTypesChange(updatedTypes)
 
-            const updatedTypes = surveyTypes.filter(
-                type => type.id !== deletingType.id
-            )
-            onSurveyTypesChange(updatedTypes)
+                // If the deleted type was selected, clear selection
+                if (selectedTypeId === deletingType.id) {
+                    onTypeSelect("")
+                }
 
-            // If the deleted type was selected, clear selection
-            if (selectedTypeId === deletingType.id) {
-                onTypeSelect("")
+                toast.success(t("messages.deleteSuccess"))
+            } else {
+                toast.error(result.error || t("messages.deleteFailed"))
             }
-
-            toast.success(t("messages.deleteSuccess"))
         } catch (error) {
             toast.error(t("messages.deleteFailed"))
         } finally {

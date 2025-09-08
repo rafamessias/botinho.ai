@@ -876,6 +876,11 @@
             "messages": {
                 "noResults": "No surveys found."
             }
+        },
+        "emptyState": {
+            "title": "No Team Found",
+            "description": "You need to create or join a team to start creating surveys.",
+            "createTeamButton": "Go to Teams"
         }
     },
     "CreateSurvey": {
@@ -883,7 +888,20 @@
         "description": "Create a new survey to collect responses from your audience",
         "actions": {
             "saveDraft": "Save Draft",
-            "publish": "Publish"
+            "publish": "Publish",
+            "saving": "Saving...",
+            "publishing": "Publishing..."
+        },
+        "messages": {
+            "saveSuccess": "Survey saved as draft successfully!",
+            "saveError": "Failed to save survey",
+            "publishSuccess": "Survey published successfully!",
+            "publishError": "Failed to publish survey",
+            "unexpectedError": "An unexpected error occurred"
+        },
+        "defaultQuestion": {
+            "yesLabel": "Yes",
+            "noLabel": "No"
         },
         "details": {
             "title": "Survey Details",
@@ -891,14 +909,21 @@
                 "label": "Name",
                 "placeholder": "Enter survey name"
             },
+            "description": {
+                "label": "Description",
+                "placeholder": "Enter survey description (optional)"
+            },
             "type": {
                 "label": "Survey Type",
                 "placeholder": "Select survey type",
                 "manageTypes": "Manage Types"
             },
-            "enabled": {
-                "label": "Enable Survey",
-                "description": "Make this survey active and available for responses"
+            "status": {
+                "label": "Status",
+                "placeholder": "Select survey status",
+                "draft": "Draft",
+                "published": "Published",
+                "archived": "Archived"
             },
             "multipleResponses": {
                 "label": "Allow multiple responses per person",
@@ -945,6 +970,14 @@
                 "label": "Button Label",
                 "buttonLabel": "Button Text",
                 "buttonPlaceholder": "Continue"
+            },
+            "formats": {
+                "yesNo": "Yes/No",
+                "starRating": "5 Star Rating",
+                "longText": "Long Text",
+                "statement": "Statement",
+                "singleChoice": "Single Choice",
+                "multipleChoice": "Multiple Choice"
             }
         },
         "targets": {
@@ -974,6 +1007,9 @@
             },
             "padding": {
                 "label": "Padding"
+            },
+            "border": {
+                "label": "Border"
             },
             "borderRadius": {
                 "label": "Border Radius"
