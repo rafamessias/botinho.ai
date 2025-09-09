@@ -11,7 +11,29 @@ import {
 } from "@/components/ui/card"
 import { SurveyTable } from "@/components/survey/survey-table"
 import { getSurveyStats } from "@/components/server-actions/survey"
-import { Team } from "@/lib/generated/prisma"
+import { Team, SurveyStatus } from "@/lib/generated/prisma"
+
+// Database survey type (matching the one from survey-table.tsx)
+interface DatabaseSurvey {
+    id: string
+    name: string
+    description: string | null
+    status: SurveyStatus
+    enabled: boolean
+    allowMultipleResponses: boolean
+    totalResponses: number
+    ResponseRate: number
+    totalOpenSurveys: number
+    createdAt: Date
+    updatedAt: Date
+    type: {
+        id: string
+        name: string
+    } | null
+    _count: {
+        responses: number
+    }
+}
 
 interface SurveyStats {
     totalSurveys: number
@@ -20,7 +42,7 @@ interface SurveyStats {
     responseRate: number
 }
 
-export const SurveyDashboard = ({ currentTeam }: { currentTeam: Team }) => {
+export const SurveyDashboard = ({ currentTeam, surveys }: { currentTeam: Team, surveys: DatabaseSurvey[] }) => {
     const t = useTranslations("Survey")
     const [surveyStats, setSurveyStats] = useState<SurveyStats>({
         totalSurveys: currentTeam?.totalSurveys || 0,
@@ -62,7 +84,7 @@ export const SurveyDashboard = ({ currentTeam }: { currentTeam: Team }) => {
                         </Card>
                     ))}
                 </div>
-                <SurveyTable />
+                <SurveyTable surveys={surveys} />
             </div>
         )
     }
@@ -141,7 +163,7 @@ export const SurveyDashboard = ({ currentTeam }: { currentTeam: Team }) => {
             </div>
 
             {/* Survey Table */}
-            <SurveyTable />
+            <SurveyTable surveys={surveys} />
         </div>
     )
 }

@@ -102,6 +102,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
     const t = useTranslations("CreateSurvey")
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
+    const [pendingAction, setPendingAction] = useState<'save' | 'publish' | null>(null)
 
     const [surveyData, setSurveyData] = useState<SurveyData>({
         id: survey.id,
@@ -143,6 +144,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
     })
 
     const handleSave = () => {
+        setPendingAction('save')
         startTransition(async () => {
             try {
                 const formData = new FormData()
@@ -160,15 +162,20 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                     toast.success(t("messages.saveSuccess"))
                     router.push("/survey")
                 } else {
-                    toast.error(result.error || t("messages.saveError"))
+                    console.log(result.error)
+                    toast.error(t("messages.saveError"))
                 }
             } catch (error) {
+                console.log("error save", error)
                 toast.error(t("messages.unexpectedError"))
+            } finally {
+                setPendingAction(null)
             }
         })
     }
 
     const handlePublish = () => {
+        setPendingAction('publish')
         startTransition(async () => {
             try {
                 const formData = new FormData()
@@ -187,10 +194,14 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                     toast.success(t("messages.publishSuccess"))
                     router.push("/survey")
                 } else {
+                    console.log(result.error)
                     toast.error(result.error || t("messages.publishError"))
                 }
             } catch (error) {
+                console.log(error)
                 toast.error(t("messages.unexpectedError"))
+            } finally {
+                setPendingAction(null)
             }
         })
     }
@@ -199,8 +210,8 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
         <div className="space-y-6">
             {/* Page Header */}
             <div className="space-y-2">
-                <p className="text-muted-foreground">{t("description")}</p>
-                <p className="text-xs text-muted-foreground">Survey ID: {surveyData.id}</p>
+                {/* <p className="text-muted-foreground">{t("description")}</p> */}
+                <p className="text-muted-foreground">Survey ID: {surveyData.id}</p>
             </div>
 
             {/* Survey Details Section */}
@@ -241,13 +252,13 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                             onClick={handleSave}
                             disabled={isPending || !surveyData.name.trim() || !surveyData.status}
                         >
-                            {isPending ? t("actions.saving") : t("actions.saveDraft")}
+                            {pendingAction === 'save' ? t("actions.saving") : t("actions.saveDraft")}
                         </Button>
                         <Button
                             onClick={handlePublish}
                             disabled={isPending || !surveyData.name.trim() || surveyData.questions.length === 0 || !surveyData.status}
                         >
-                            {isPending ? t("actions.publishing") : t("actions.publish")}
+                            {pendingAction === 'publish' ? t("actions.publishing") : t("actions.publish")}
                         </Button>
                     </div>
                 </CardContent>

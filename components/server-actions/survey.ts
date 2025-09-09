@@ -98,7 +98,7 @@ export const createSurvey = async (formData: FormData) => {
             })
 
             // Update team survey counts
-            await wrapper.update(tx.team, {
+            await tx.team.update({
                 where: { id: teamId },
                 data: {
                     totalSurveys: { increment: 1 },
@@ -239,7 +239,7 @@ export const updateSurvey = async (formData: FormData) => {
                 }
 
                 if (Object.keys(updateData).length > 0) {
-                    await wrapper.update(tx.team, {
+                    await tx.team.update({
                         where: { id: teamId },
                         data: updateData
                     })
@@ -432,7 +432,7 @@ export const deleteSurvey = async (id: string) => {
                 updateData.totalActiveSurveys = { decrement: 1 }
             }
 
-            await wrapper.update(tx.team, {
+            await tx.team.update({
                 where: { id: survey.teamId },
                 data: updateData
             })
@@ -551,7 +551,7 @@ export const duplicateSurvey = async (id: string) => {
             }
 
             // Update team survey counts for the duplicated survey
-            await wrapper.update(tx.team, {
+            await tx.team.update({
                 where: { id: teamId },
                 data: {
                     totalSurveys: { increment: 1 }
@@ -618,7 +618,7 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
                 }
 
                 if (Object.keys(updateData).length > 0) {
-                    await wrapper.update(tx.team, {
+                    await tx.team.update({
                         where: { id: currentSurvey.teamId },
                         data: updateData
                     })

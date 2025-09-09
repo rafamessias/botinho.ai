@@ -95,7 +95,7 @@ const SortableOptionItem = ({
     index,
     onUpdate,
     onRemove,
-    shouldFocus = false
+    shouldFocus = true
 }: {
     id: string
     option: { text: string; order: number; isOther?: boolean }
@@ -124,6 +124,7 @@ const SortableOptionItem = ({
             ref={setNodeRef}
             style={style}
             className={`flex items-center gap-2 p-2 bg-background border rounded-md ${isDragging ? 'opacity-50 shadow-lg' : ''
+                } ${option.text.trim() === "" ? 'border-red-100 bg-red-50/30' : ''
                 }`}
         >
             {/* Drag Handle */}
@@ -136,17 +137,21 @@ const SortableOptionItem = ({
             </div>
 
             {/* Option Number */}
-            <div className="flex-shrink-0 w-6 h-6 bg-muted rounded-full flex items-center justify-center text-xs font-medium">
+            <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${option.text.trim() === ""
+                ? "bg-red-100 text-red-600 border border-red-300"
+                : "bg-muted"
+                }`}>
                 {index + 1}
             </div>
 
             {/* Option Input */}
             <Input
+                autoFocus={shouldFocus}
                 ref={inputRef}
                 placeholder="Enter option text"
                 value={option.text}
                 onChange={(e) => onUpdate(index, e.target.value)}
-                className="flex-1"
+                className={`flex-1 ${option.text.trim() === "" ? "border-red-100 bg-red-50/30 focus:border-red-500 focus:ring-red-100" : ""}`}
             />
 
             {/* Remove Button */}

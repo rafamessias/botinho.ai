@@ -839,14 +839,17 @@
             "status": {
                 "active": "Active",
                 "draft": "Draft",
-                "completed": "Completed"
+                "published": "Published",
+                "archived": "Archived"
             },
             "actions": {
                 "view": "View",
                 "edit": "Edit",
                 "duplicate": "Duplicate",
                 "delete": "Delete",
-                "openMenu": "Open menu"
+                "openMenu": "Open menu",
+                "publish": "Publish",
+                "archive": "Archive"
             },
             "buttons": {
                 "createSurvey": "Create Survey",
@@ -874,7 +877,24 @@
                 "goToLastPage": "Go to last page"
             },
             "messages": {
-                "noResults": "No surveys found."
+                "noResults": "No surveys found.",
+                "loadingSurveys": "Loading surveys...",
+                "noType": "No Type",
+                "surveyDeletedSuccess": "Survey deleted successfully",
+                "surveyDuplicatedSuccess": "Survey duplicated successfully",
+                "surveyUpdatedSuccess": "Survey updated successfully",
+                "fetchSurveysError": "Failed to fetch surveys",
+                "deleteSurveyError": "Failed to delete survey",
+                "duplicateSurveyError": "Failed to duplicate survey",
+                "updateSurveyError": "Failed to update survey status",
+                "unexpectedError": "An unexpected error occurred"
+            },
+            "deleteDialog": {
+                "title": "Delete Survey",
+                "description": "Are you sure you want to delete \"{surveyName}\"? This action cannot be undone.",
+                "cancel": "Cancel",
+                "delete": "Delete",
+                "deleting": "Deleting..."
             }
         },
         "emptyState": {

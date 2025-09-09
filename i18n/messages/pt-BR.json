@@ -839,14 +839,18 @@
             "status": {
                 "active": "Ativa",
                 "draft": "Rascunho",
-                "completed": "Concluída"
+                "completed": "Concluída",
+                "published": "Publicada",
+                "archived": "Arquivada"
             },
             "actions": {
                 "view": "Visualizar",
                 "edit": "Editar",
                 "duplicate": "Duplicar",
                 "delete": "Excluir",
-                "openMenu": "Abrir menu"
+                "openMenu": "Abrir menu",
+                "publish": "Publicar",
+                "archive": "Arquivar"
             },
             "buttons": {
                 "createSurvey": "Criar Pesquisa",
@@ -874,7 +878,24 @@
                 "goToLastPage": "Ir para última página"
             },
             "messages": {
-                "noResults": "Nenhuma pesquisa encontrada."
+                "noResults": "Nenhuma pesquisa encontrada.",
+                "loadingSurveys": "Carregando pesquisas...",
+                "noType": "Sem Tipo",
+                "surveyDeletedSuccess": "Pesquisa excluída com sucesso",
+                "surveyDuplicatedSuccess": "Pesquisa duplicada com sucesso",
+                "surveyUpdatedSuccess": "Pesquisa atualizada com sucesso",
+                "fetchSurveysError": "Falha ao carregar pesquisas",
+                "deleteSurveyError": "Falha ao excluir pesquisa",
+                "duplicateSurveyError": "Falha ao duplicar pesquisa",
+                "updateSurveyError": "Falha ao atualizar status da pesquisa",
+                "unexpectedError": "Ocorreu um erro inesperado"
+            },
+            "deleteDialog": {
+                "title": "Excluir Pesquisa",
+                "description": "Tem certeza de que deseja excluir \"{surveyName}\"? Esta ação não pode ser desfeita.",
+                "cancel": "Cancelar",
+                "delete": "Excluir",
+                "deleting": "Excluindo..."
             }
         },
         "emptyState": {

@@ -113,9 +113,11 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                     toast.success(t("messages.saveSuccess"))
                     //router.push("/survey")
                 } else {
+                    console.log(result.error)
                     toast.error(result.error || t("messages.saveError"))
                 }
             } catch (error) {
+                console.log(error)
                 toast.error(t("messages.unexpectedError"))
             }
         })
@@ -134,14 +136,15 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                 formData.append("style", JSON.stringify(surveyData.style))
 
                 const result = await createSurvey(formData)
-
                 if (result.success) {
                     toast.success(t("messages.publishSuccess"))
                     //router.push("/survey")
                 } else {
+                    console.log(result.error)
                     toast.error(result.error || t("messages.publishError"))
                 }
             } catch (error) {
+                console.log(error)
                 toast.error(t("messages.unexpectedError"))
             }
         })

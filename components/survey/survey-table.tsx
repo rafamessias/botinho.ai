@@ -47,6 +47,16 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -67,7 +77,7 @@ import {
 import { Link } from "@/i18n/navigation"
 import { getSurveys, deleteSurvey, duplicateSurvey, updateSurveyStatus } from "@/components/server-actions/survey"
 import { toast } from "sonner"
-import { SurveyStatus } from "@/lib/generated/prisma"
+import { SurveyStatus, Survey } from "@/lib/generated/prisma"
 
 // Database survey type
 interface DatabaseSurvey {
@@ -101,13 +111,13 @@ export const surveySchema = z.object({
     type: z.string().nullable(),
 })
 
-export const SurveyTable = () => {
+export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
     const t = useTranslations("Survey")
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
 
-    const [data, setData] = React.useState<DatabaseSurvey[]>([])
-    const [isLoading, setIsLoading] = React.useState(true)
+    const [data, setData] = React.useState<DatabaseSurvey[]>(surveys)
+    const [isLoading, setIsLoading] = React.useState(false)
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -116,54 +126,50 @@ export const SurveyTable = () => {
         pageIndex: 0,
         pageSize: 10,
     })
+    const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
+    const [surveyToDelete, setSurveyToDelete] = React.useState<DatabaseSurvey | null>(null)
 
-    // Fetch surveys on component mount
+    // Update data when surveys prop changes
     React.useEffect(() => {
-        const fetchSurveys = async () => {
-            try {
-                const result = await getSurveys()
-                if (result.success && result.surveys) {
-                    setData(result.surveys)
-                } else {
-                    toast.error(result.error || "Failed to fetch surveys")
-                }
-            } catch (error) {
-                console.error("Failed to fetch surveys:", error)
-                toast.error("Failed to fetch surveys")
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
-        fetchSurveys()
-    }, [toast])
+        setData(surveys)
+    }, [surveys])
 
     const getStatusBadge = (status: SurveyStatus) => {
         switch (status) {
             case SurveyStatus.published:
-                return <Badge variant="default" className="bg-green-500 hover:bg-green-600">Published</Badge>
+                return <Badge variant="default" className="bg-green-500 hover:bg-green-600">{t("table.status.published")}</Badge>
             case SurveyStatus.draft:
-                return <Badge variant="secondary">Draft</Badge>
+                return <Badge variant="secondary">{t("table.status.draft")}</Badge>
             case SurveyStatus.archived:
-                return <Badge variant="outline">Archived</Badge>
+                return <Badge variant="outline">{t("table.status.archived")}</Badge>
             default:
                 return <Badge variant="outline">{status}</Badge>
         }
     }
 
     // Action handlers
-    const handleDeleteSurvey = (id: string) => {
+    const handleDeleteSurveyClick = (survey: DatabaseSurvey) => {
+        setSurveyToDelete(survey)
+        setDeleteDialogOpen(true)
+    }
+
+    const handleDeleteSurvey = () => {
+        if (!surveyToDelete) return
+
         startTransition(async () => {
             try {
-                const result = await deleteSurvey(id)
+                const result = await deleteSurvey(surveyToDelete.id)
                 if (result.success) {
-                    setData(prev => prev.filter(survey => survey.id !== id))
-                    toast.success("Survey deleted successfully")
+                    setData(prev => prev.filter(survey => survey.id !== surveyToDelete.id))
+                    toast.success(t("table.messages.surveyDeletedSuccess"))
                 } else {
-                    toast.error(result.error || "Failed to delete survey")
+                    toast.error(result.error || t("table.messages.deleteSurveyError"))
                 }
             } catch (error) {
-                toast.error("An unexpected error occurred")
+                toast.error(t("table.messages.unexpectedError"))
+            } finally {
+                setDeleteDialogOpen(false)
+                setSurveyToDelete(null)
             }
         })
     }
@@ -173,17 +179,14 @@ export const SurveyTable = () => {
             try {
                 const result = await duplicateSurvey(id)
                 if (result.success) {
-                    // Refresh the data
-                    const surveysResult = await getSurveys()
-                    if (surveysResult.success && surveysResult.surveys) {
-                        setData(surveysResult.surveys)
-                    }
-                    toast.success("Survey duplicated successfully")
+                    // Refresh the page to get updated data
+                    window.location.reload()
+                    toast.success(t("table.messages.surveyDuplicatedSuccess"))
                 } else {
-                    toast.error(result.error || "Failed to duplicate survey")
+                    toast.error(result.error || t("table.messages.duplicateSurveyError"))
                 }
             } catch (error) {
-                toast.error("An unexpected error occurred")
+                toast.error(t("table.messages.unexpectedError"))
             }
         })
     }
@@ -196,12 +199,12 @@ export const SurveyTable = () => {
                     setData(prev => prev.map(survey =>
                         survey.id === id ? { ...survey, status } : survey
                     ))
-                    toast.success("Survey updated successfully")
+                    toast.success(t("table.messages.surveyUpdatedSuccess"))
                 } else {
-                    toast.error(result.error || "Failed to update survey status")
+                    toast.error(result.error || t("table.messages.updateSurveyError"))
                 }
             } catch (error) {
-                toast.error("An unexpected error occurred")
+                toast.error(t("table.messages.unexpectedError"))
             }
         })
     }
@@ -248,7 +251,7 @@ export const SurveyTable = () => {
             header: t("table.columns.type"),
             cell: ({ row }) => (
                 <Badge variant="outline" className="text-muted-foreground">
-                    {row.original.type?.name || "No Type"}
+                    {row.original.type?.name || t("table.messages.noType")}
                 </Badge>
             ),
         },
@@ -318,18 +321,18 @@ export const SurveyTable = () => {
                         {row.original.status === SurveyStatus.draft && (
                             <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.published)}>
                                 <Users className="h-4 w-4 mr-2" />
-                                Publish
+                                {t("table.actions.publish")}
                             </DropdownMenuItem>
                         )}
                         {row.original.status === SurveyStatus.published && (
                             <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.archived)}>
                                 <Users className="h-4 w-4 mr-2" />
-                                Archive
+                                {t("table.actions.archive")}
                             </DropdownMenuItem>
                         )}
                         <DropdownMenuItem
                             variant="destructive"
-                            onClick={() => handleDeleteSurvey(row.original.id)}
+                            onClick={() => handleDeleteSurveyClick(row.original)}
                         >
                             <Trash2 className="h-4 w-4 mr-2" />
                             {t("table.actions.delete")}
@@ -444,9 +447,9 @@ export const SurveyTable = () => {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">{t("table.filters.allStatuses")}</SelectItem>
-                        <SelectItem value={SurveyStatus.published}>Published</SelectItem>
-                        <SelectItem value={SurveyStatus.draft}>Draft</SelectItem>
-                        <SelectItem value={SurveyStatus.archived}>Archived</SelectItem>
+                        <SelectItem value={SurveyStatus.published}>{t("table.status.published")}</SelectItem>
+                        <SelectItem value={SurveyStatus.draft}>{t("table.status.draft")}</SelectItem>
+                        <SelectItem value={SurveyStatus.archived}>{t("table.status.archived")}</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -479,7 +482,7 @@ export const SurveyTable = () => {
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    Loading surveys...
+                                    {t("table.messages.loadingSurveys")}
                                 </TableCell>
                             </TableRow>
                         ) : table.getRowModel().rows?.length ? (
@@ -490,18 +493,20 @@ export const SurveyTable = () => {
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
-                                            {typeof cell.getValue() === "string"
-                                                ? (
-                                                    <span
-                                                        className="block truncate max-w-xs"
-                                                        title={cell.getValue() as string}
-                                                    >
-                                                        {(cell.getValue() as string).length > 40
-                                                            ? `${(cell.getValue() as string).slice(0, 40)}…`
-                                                            : cell.getValue() as string}
-                                                    </span>
-                                                )
-                                                : flexRender(cell.column.columnDef.cell, cell.getContext())
+                                            {cell.column.id === "status"
+                                                ? flexRender(cell.column.columnDef.cell, cell.getContext())
+                                                : typeof cell.getValue() === "string"
+                                                    ? (
+                                                        <span
+                                                            className="block truncate max-w-xs"
+                                                            title={cell.getValue() as string}
+                                                        >
+                                                            {(cell.getValue() as string).length > 40
+                                                                ? `${(cell.getValue() as string).slice(0, 40)}…`
+                                                                : cell.getValue() as string}
+                                                        </span>
+                                                    )
+                                                    : flexRender(cell.column.columnDef.cell, cell.getContext())
                                             }
                                         </TableCell>
                                     ))}
@@ -599,6 +604,30 @@ export const SurveyTable = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t("table.deleteDialog.title")}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {t("table.deleteDialog.description", { surveyName: surveyToDelete?.name || "this survey" })}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isPending}>
+                            {t("table.deleteDialog.cancel")}
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDeleteSurvey}
+                            disabled={isPending}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            {isPending ? t("table.deleteDialog.deleting") : t("table.deleteDialog.delete")}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }
