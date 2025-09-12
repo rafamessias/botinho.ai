@@ -8,7 +8,8 @@
         "navigation": {
             "dashboard": "Painel",
             "surveys": "Pesquisas",
-            "team": "Equipe"
+            "team": "Equipe",
+            "surveyDemo": "Demo de Pesquisa"
         },
         "documents": {
             "dataLibrary": "Biblioteca de Dados"
@@ -1051,6 +1052,9 @@
                 "description": "É assim que sua pesquisa aparecerá para os respondentes",
                 "button": "Enviar Resposta"
             }
+        },
+        "preview": {
+            "title": "Visualização"
         },
         "surveyTypes": {
             "modal": {

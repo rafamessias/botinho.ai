@@ -7,6 +7,7 @@ import {
   IconInnerShadowTop,
   IconListDetails,
   IconUsers,
+  IconDeviceLaptop
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -45,6 +46,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: t("navigation.team"),
         url: "/team",
         icon: IconUsers,
+      },
+      {
+        title: t("navigation.surveyDemo"),
+        url: "/demo",
+        icon: IconDeviceLaptop,
       }
     ],
 

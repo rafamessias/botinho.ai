@@ -8,7 +8,8 @@
         "navigation": {
             "dashboard": "Dashboard",
             "surveys": "Surveys",
-            "team": "Team"
+            "team": "Team",
+            "surveyDemo": "Survey Demo"
         },
         "documents": {
             "dataLibrary": "Data Library"
@@ -1050,6 +1051,9 @@
                 "description": "This is how your survey will look to respondents",
                 "button": "Submit Response"
             }
+        },
+        "preview": {
+            "title": "Preview"
         },
         "surveyTypes": {
             "modal": {

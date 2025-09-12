@@ -12,6 +12,7 @@ import { StyleSection } from "@/components/survey/style-section"
 import { updateSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
+import { SurveyWidget } from "../survey-render/survey-widget"
 
 interface Question {
     id: string
@@ -223,9 +224,10 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
 
             {/* Questions and Style Tabs */}
             <Tabs defaultValue="questions" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="questions" className="cursor-pointer">{t("questions.title")}</TabsTrigger>
                     <TabsTrigger value="style" className="cursor-pointer">{t("style.title")}</TabsTrigger>
+                    <TabsTrigger value="preview" className="cursor-pointer">{t("preview.title")}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="questions" className="mt-6">
@@ -239,6 +241,15 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                     <StyleSection
                         style={surveyData.style}
                         onChange={(style) => setSurveyData({ ...surveyData, style: { ...surveyData.style, ...style } })}
+                    />
+                </TabsContent>
+                <TabsContent value="preview" className="mt-6">
+                    <SurveyWidget
+                        surveyId={surveyData.id}
+                        key={surveyData.id}
+                        testMode={true}
+                        onComplete={() => { }}
+                        onError={() => { }}
                     />
                 </TabsContent>
             </Tabs>

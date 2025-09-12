@@ -92,15 +92,15 @@ export const SurveyDashboard = ({ currentTeam, surveys }: { currentTeam: Team, s
     return (
         <div className="px-4 lg:px-6 space-y-6">
             {/* Statistics Cards */}
-            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-2 gap-3 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 @xl/main:grid-cols-4 @5xl/main:grid-cols-4">
                 <Card className="@container/card">
-                    <CardHeader>
-                        <CardDescription>{t("stats.totalSurveys.title")}</CardDescription>
-                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                    <CardHeader className="pb-2 sm:pb-6">
+                        <CardDescription className="text-xs sm:text-sm">{t("stats.totalSurveys.title")}</CardDescription>
+                        <CardTitle className="text-lg font-semibold tabular-nums sm:text-2xl @[250px]/card:text-3xl">
                             {surveyStats.totalSurveys}
                         </CardTitle>
                     </CardHeader>
-                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                    <CardFooter className="hidden sm:flex flex-col items-start gap-1.5 text-sm">
                         <div className="line-clamp-1 flex gap-2 font-medium">
                             {t("stats.totalSurveys.description")}
                         </div>
@@ -111,13 +111,13 @@ export const SurveyDashboard = ({ currentTeam, surveys }: { currentTeam: Team, s
                 </Card>
 
                 <Card className="@container/card">
-                    <CardHeader>
-                        <CardDescription>{t("stats.activeSurveys.title")}</CardDescription>
-                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                    <CardHeader className="pb-2 sm:pb-6">
+                        <CardDescription className="text-xs sm:text-sm">{t("stats.activeSurveys.title")}</CardDescription>
+                        <CardTitle className="text-lg font-semibold tabular-nums sm:text-2xl @[250px]/card:text-3xl">
                             {surveyStats.activeSurveys}
                         </CardTitle>
                     </CardHeader>
-                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                    <CardFooter className="hidden sm:flex flex-col items-start gap-1.5 text-sm">
                         <div className="line-clamp-1 flex gap-2 font-medium">
                             {t("stats.activeSurveys.description")}
                         </div>
@@ -128,13 +128,13 @@ export const SurveyDashboard = ({ currentTeam, surveys }: { currentTeam: Team, s
                 </Card>
 
                 <Card className="@container/card">
-                    <CardHeader>
-                        <CardDescription>{t("stats.totalResponses.title")}</CardDescription>
-                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                    <CardHeader className="pb-2 sm:pb-6">
+                        <CardDescription className="text-xs sm:text-sm">{t("stats.totalResponses.title")}</CardDescription>
+                        <CardTitle className="text-lg font-semibold tabular-nums sm:text-2xl @[250px]/card:text-3xl">
                             {surveyStats.totalResponses}
                         </CardTitle>
                     </CardHeader>
-                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                    <CardFooter className="hidden sm:flex flex-col items-start gap-1.5 text-sm">
                         <div className="line-clamp-1 flex gap-2 font-medium">
                             {t("stats.totalResponses.description")}
                         </div>
@@ -145,13 +145,13 @@ export const SurveyDashboard = ({ currentTeam, surveys }: { currentTeam: Team, s
                 </Card>
 
                 <Card className="@container/card">
-                    <CardHeader>
-                        <CardDescription>{t("stats.responseRate.title")}</CardDescription>
-                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                    <CardHeader className="pb-2 sm:pb-6">
+                        <CardDescription className="text-xs sm:text-sm">{t("stats.responseRate.title")}</CardDescription>
+                        <CardTitle className="text-lg font-semibold tabular-nums sm:text-2xl @[250px]/card:text-3xl">
                             {surveyStats.responseRate}%
                         </CardTitle>
                     </CardHeader>
-                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                    <CardFooter className="hidden sm:flex flex-col items-start gap-1.5 text-sm">
                         <div className="line-clamp-1 flex gap-2 font-medium">
                             {t("stats.responseRate.description")}
                         </div>

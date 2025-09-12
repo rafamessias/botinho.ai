@@ -210,31 +210,85 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
     }
 
     const columns: ColumnDef<DatabaseSurvey>[] = [
+        /* {
+             id: "select",
+             header: ({ table }) => (
+                 <div className="flex items-center justify-center">
+                     <Checkbox
+                         checked={
+                             table.getIsAllPageRowsSelected() ||
+                             (table.getIsSomePageRowsSelected() && "indeterminate")
+                         }
+                         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                         aria-label="Select all"
+                     />
+                 </div>
+             ),
+             cell: ({ row }) => (
+                 <div className="flex items-center justify-center">
+                     <Checkbox
+                         checked={row.getIsSelected()}
+                         onCheckedChange={(value) => row.toggleSelected(!!value)}
+                         aria-label="Select row"
+                     />
+                 </div>
+             ),
+             enableSorting: false,
+             enableHiding: false,
+         },*/
         {
-            id: "select",
-            header: ({ table }) => (
-                <div className="flex items-center justify-center">
-                    <Checkbox
-                        checked={
-                            table.getIsAllPageRowsSelected() ||
-                            (table.getIsSomePageRowsSelected() && "indeterminate")
-                        }
-                        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                        aria-label="Select all"
-                    />
-                </div>
-            ),
+            id: "actions-mobile",
             cell: ({ row }) => (
-                <div className="flex items-center justify-center">
-                    <Checkbox
-                        checked={row.getIsSelected()}
-                        onCheckedChange={(value) => row.toggleSelected(!!value)}
-                        aria-label="Select row"
-                    />
+                <div className="block md:hidden">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+                                size="icon"
+                                disabled={isPending}
+                            >
+                                <MoreHorizontal />
+                                <span className="sr-only">{t("table.actions.openMenu")}</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onClick={() => router.push(`/survey/${row.original.id}`)}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                {t("table.actions.view")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push(`/survey/edit/${row.original.id}`)}>
+                                <Edit className="h-4 w-4 mr-2" />
+                                {t("table.actions.edit")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDuplicateSurvey(row.original.id)}>
+                                <Copy className="h-4 w-4 mr-2" />
+                                {t("table.actions.duplicate")}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            {row.original.status === SurveyStatus.draft && (
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.published)}>
+                                    <Users className="h-4 w-4 mr-2" />
+                                    {t("table.actions.publish")}
+                                </DropdownMenuItem>
+                            )}
+                            {row.original.status === SurveyStatus.published && (
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.archived)}>
+                                    <Users className="h-4 w-4 mr-2" />
+                                    {t("table.actions.archive")}
+                                </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={() => handleDeleteSurveyClick(row.original)}
+                            >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                {t("table.actions.delete")}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             ),
-            enableSorting: false,
-            enableHiding: false,
         },
         {
             accessorKey: "name",
@@ -290,55 +344,57 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             ),
         },
         {
-            id: "actions",
+            id: "actions-desktop",
             cell: ({ row }) => (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                            size="icon"
-                            disabled={isPending}
-                        >
-                            <MoreHorizontal />
-                            <span className="sr-only">{t("table.actions.openMenu")}</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem onClick={() => router.push(`/survey/${row.original.id}`)}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            {t("table.actions.view")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => router.push(`/survey/edit/${row.original.id}`)}>
-                            <Edit className="h-4 w-4 mr-2" />
-                            {t("table.actions.edit")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDuplicateSurvey(row.original.id)}>
-                            <Copy className="h-4 w-4 mr-2" />
-                            {t("table.actions.duplicate")}
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {row.original.status === SurveyStatus.draft && (
-                            <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.published)}>
-                                <Users className="h-4 w-4 mr-2" />
-                                {t("table.actions.publish")}
+                <div className="hidden md:block">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+                                size="icon"
+                                disabled={isPending}
+                            >
+                                <MoreHorizontal />
+                                <span className="sr-only">{t("table.actions.openMenu")}</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onClick={() => router.push(`/survey/${row.original.id}`)}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                {t("table.actions.view")}
                             </DropdownMenuItem>
-                        )}
-                        {row.original.status === SurveyStatus.published && (
-                            <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.archived)}>
-                                <Users className="h-4 w-4 mr-2" />
-                                {t("table.actions.archive")}
+                            <DropdownMenuItem onClick={() => router.push(`/survey/edit/${row.original.id}`)}>
+                                <Edit className="h-4 w-4 mr-2" />
+                                {t("table.actions.edit")}
                             </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem
-                            variant="destructive"
-                            onClick={() => handleDeleteSurveyClick(row.original)}
-                        >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            {t("table.actions.delete")}
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                            <DropdownMenuItem onClick={() => handleDuplicateSurvey(row.original.id)}>
+                                <Copy className="h-4 w-4 mr-2" />
+                                {t("table.actions.duplicate")}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            {row.original.status === SurveyStatus.draft && (
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.published)}>
+                                    <Users className="h-4 w-4 mr-2" />
+                                    {t("table.actions.publish")}
+                                </DropdownMenuItem>
+                            )}
+                            {row.original.status === SurveyStatus.published && (
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.archived)}>
+                                    <Users className="h-4 w-4 mr-2" />
+                                    {t("table.actions.archive")}
+                                </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={() => handleDeleteSurveyClick(row.original)}
+                            >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                {t("table.actions.delete")}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             ),
         },
     ]
@@ -501,9 +557,16 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                                             className="block truncate max-w-xs"
                                                             title={cell.getValue() as string}
                                                         >
-                                                            {(cell.getValue() as string).length > 40
-                                                                ? `${(cell.getValue() as string).slice(0, 40)}…`
-                                                                : cell.getValue() as string}
+                                                            <span className="sm:hidden">
+                                                                {(cell.getValue() as string).length > 20
+                                                                    ? `${(cell.getValue() as string).slice(0, 20)}…`
+                                                                    : cell.getValue() as string}
+                                                            </span>
+                                                            <span className="hidden sm:block">
+                                                                {(cell.getValue() as string).length > 40
+                                                                    ? `${(cell.getValue() as string).slice(0, 40)}…`
+                                                                    : cell.getValue() as string}
+                                                            </span>
                                                         </span>
                                                     )
                                                     : flexRender(cell.column.columnDef.cell, cell.getContext())
@@ -527,13 +590,15 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between px-4">
+            <div className="flex w-full items-center px-4">
+                {/*
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} {t("table.pagination.of")}{" "}
                     {table.getFilteredRowModel().rows.length} {t("table.pagination.rowsSelected")}
                 </div>
-                <div className="flex w-full items-center gap-8 lg:w-fit">
-                    <div className="hidden items-center gap-2 lg:flex">
+                */}
+                <div className="flex w-full items-center justify-between ">
+                    <div className="hidden items-center justify-start gap-2 lg:flex">
                         <Label htmlFor="rows-per-page" className="text-sm font-medium">
                             {t("table.pagination.rowsPerPage")}
                         </Label>
@@ -557,50 +622,52 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex w-fit items-center justify-center text-sm font-medium">
-                        {t("table.pagination.page")} {table.getState().pagination.pageIndex + 1} {t("table.pagination.of")}{" "}
-                        {table.getPageCount()}
-                    </div>
-                    <div className="ml-auto flex items-center gap-2 lg:ml-0">
-                        <Button
-                            variant="outline"
-                            className="hidden h-8 w-8 p-0 lg:flex"
-                            onClick={() => table.setPageIndex(0)}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            <span className="sr-only">{t("table.pagination.goToFirstPage")}</span>
-                            <ChevronsLeft />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="size-8"
-                            size="icon"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            <span className="sr-only">{t("table.pagination.goToPreviousPage")}</span>
-                            <ChevronLeft />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="size-8"
-                            size="icon"
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage()}
-                        >
-                            <span className="sr-only">{t("table.pagination.goToNextPage")}</span>
-                            <ChevronRight />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="hidden size-8 lg:flex"
-                            size="icon"
-                            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                            disabled={!table.getCanNextPage()}
-                        >
-                            <span className="sr-only">{t("table.pagination.goToLastPage")}</span>
-                            <ChevronsRight />
-                        </Button>
+                    <div className="flex w-full items-center justify-end">
+                        <div className="flex w-fit items-center justify-center text-sm font-medium mr-4">
+                            {t("table.pagination.page")} {table.getState().pagination.pageIndex + 1} {t("table.pagination.of")}{" "}
+                            {table.getPageCount()}
+                        </div>
+                        <div className="ml-auto flex items-center gap-2 lg:ml-0">
+                            <Button
+                                variant="outline"
+                                className="hidden h-8 w-8 p-0 lg:flex"
+                                onClick={() => table.setPageIndex(0)}
+                                disabled={!table.getCanPreviousPage()}
+                            >
+                                <span className="sr-only">{t("table.pagination.goToFirstPage")}</span>
+                                <ChevronsLeft />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="size-8"
+                                size="icon"
+                                onClick={() => table.previousPage()}
+                                disabled={!table.getCanPreviousPage()}
+                            >
+                                <span className="sr-only">{t("table.pagination.goToPreviousPage")}</span>
+                                <ChevronLeft />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="size-8"
+                                size="icon"
+                                onClick={() => table.nextPage()}
+                                disabled={!table.getCanNextPage()}
+                            >
+                                <span className="sr-only">{t("table.pagination.goToNextPage")}</span>
+                                <ChevronRight />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="hidden size-8 lg:flex"
+                                size="icon"
+                                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                                disabled={!table.getCanNextPage()}
+                            >
+                                <span className="sr-only">{t("table.pagination.goToLastPage")}</span>
+                                <ChevronsRight />
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
