@@ -979,7 +979,9 @@
                 "label": "Opções",
                 "addOption": "Adicionar Opção",
                 "optionPlaceholder": "Digite o texto da opção",
-                "removeOption": "Remover opção"
+                "removeOption": "Remover opção",
+                "includeOther": "Incluir opção 'Outro'",
+                "otherOptionText": "Outro"
             },
             "yesNoLabels": {
                 "label": "Rótulos Personalizados",

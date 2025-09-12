@@ -32,7 +32,7 @@ interface Question {
     }>
 }
 
-interface SurveyData {
+export interface SurveyData {
     id: string
     name: string
     description: string
@@ -140,7 +140,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
             borderRadius: "6px",
             titleFontSize: "18px",
             bodyFontSize: "16px",
-            fontFamily: "Inter"
+            fontFamily: ""
         }
     })
 
@@ -161,7 +161,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                 const result = await updateSurvey(formData)
                 if (result.success) {
                     toast.success(t("messages.saveSuccess"))
-                    router.push("/survey")
+                    //router.push("/survey")
                 } else {
                     console.log(result.error)
                     toast.error(t("messages.saveError"))
@@ -245,7 +245,8 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                 </TabsContent>
                 <TabsContent value="preview" className="mt-6">
                     <SurveyWidget
-                        surveyId={surveyData.id}
+                        //surveyId={surveyData.id}
+                        surveyData={surveyData as SurveyData}
                         key={surveyData.id}
                         testMode={true}
                         onComplete={() => { }}

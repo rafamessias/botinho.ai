@@ -48,6 +48,7 @@ interface Question {
     yesLabel?: string
     noLabel?: string
     buttonLabel?: string
+    hasOtherOption?: boolean
     options: Array<{
         id?: string
         text: string
@@ -95,7 +96,8 @@ const SortableOptionItem = ({
     index,
     onUpdate,
     onRemove,
-    shouldFocus = true
+    shouldFocus = true,
+    isOtherEnabled = false
 }: {
     id: string
     option: { text: string; order: number; isOther?: boolean }
@@ -103,6 +105,7 @@ const SortableOptionItem = ({
     onUpdate: (index: number, value: string) => void
     onRemove: (index: number) => void
     shouldFocus?: boolean
+    isOtherEnabled?: boolean
 }) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const {
@@ -154,16 +157,18 @@ const SortableOptionItem = ({
                 className={`flex-1 ${option.text.trim() === "" ? "border-red-100 bg-red-50/30 focus:border-red-500 focus:ring-red-100" : ""}`}
             />
 
-            {/* Remove Button */}
-            <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => onRemove(index)}
-                className="flex-shrink-0"
-            >
-                <X className="h-4 w-4" />
-            </Button>
+            {/* Remove Button - Hide for "Other" option when enabled */}
+            {!(option.isOther && isOtherEnabled) && (
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onRemove(index)}
+                    className="flex-shrink-0"
+                >
+                    <X className="h-4 w-4" />
+                </Button>
+            )}
         </div>
     )
 }
@@ -239,6 +244,25 @@ const QuestionCard = ({
         }, 100)
     }
 
+    const handleToggleOtherOption = (checked: boolean) => {
+        let newOptions = [...question.options]
+
+        if (checked) {
+            // Add "Other" option if it doesn't exist
+            const hasOther = newOptions.some(option => option.isOther)
+            if (!hasOther) {
+                newOptions.push({ text: t("options.otherOptionText"), order: newOptions.length, isOther: true })
+            }
+        } else {
+            // Remove "Other" option if it exists
+            newOptions = newOptions.filter(option => !option.isOther)
+            // Update order for remaining options
+            newOptions = newOptions.map((option, i) => ({ ...option, order: i }))
+        }
+
+        onUpdate({ ...question, hasOtherOption: checked, options: newOptions })
+    }
+
     const handleUpdateOption = (index: number, value: string) => {
         const newOptions = [...question.options]
         newOptions[index] = { ...newOptions[index], text: value }
@@ -246,6 +270,13 @@ const QuestionCard = ({
     }
 
     const handleRemoveOption = (index: number) => {
+        const optionToRemove = question.options[index]
+
+        // Don't allow removing the "Other" option if hasOtherOption is enabled
+        if (optionToRemove.isOther && question.hasOtherOption) {
+            return
+        }
+
         const newOptions = question.options.filter((_, i) => i !== index)
         // Update order for remaining options
         const updatedOptions = newOptions.map((option, i) => ({ ...option, order: i }))
@@ -381,9 +412,10 @@ const QuestionCard = ({
                                         value={question.format}
                                         onValueChange={(value) => {
                                             const updatedQuestion = { ...question, format: value as QuestionFormat }
-                                            // Reset options when changing format
+                                            // Reset options and other option when changing format
                                             if (!needsOptions) {
                                                 updatedQuestion.options = []
+                                                updatedQuestion.hasOtherOption = false
                                             }
                                             // Set default labels for Yes/No questions
                                             if (value === QuestionFormat.YES_NO) {
@@ -434,6 +466,18 @@ const QuestionCard = ({
                                         </Button>
                                     </div>
 
+                                    {/* Other Option Switch */}
+                                    <div className="flex items-center space-x-2">
+                                        <Switch
+                                            id={`other-option-${question.id}`}
+                                            checked={question.hasOtherOption || false}
+                                            onCheckedChange={handleToggleOtherOption}
+                                        />
+                                        <Label htmlFor={`other-option-${question.id}`} className="text-sm">
+                                            {t("options.includeOther")}
+                                        </Label>
+                                    </div>
+
                                     <DndContext
                                         sensors={optionSensors}
                                         collisionDetection={closestCenter}
@@ -453,6 +497,7 @@ const QuestionCard = ({
                                                         onUpdate={handleUpdateOption}
                                                         onRemove={handleRemoveOption}
                                                         shouldFocus={focusNewOption === index}
+                                                        isOtherEnabled={question.hasOtherOption || false}
                                                     />
                                                 ))}
 
@@ -564,7 +609,8 @@ export const QuestionsSection = ({ questions, onChange }: QuestionsSectionProps)
             options: [],
             yesLabel: "Yes",
             noLabel: "No",
-            buttonLabel: "Continue"
+            buttonLabel: "Continue",
+            hasOtherOption: false
         }
         setNewlyAddedQuestionId(newId)
         onChange([...questions, newQuestion])

@@ -330,16 +330,6 @@ export const getSurveys = async () => {
 
         const surveys = await wrapper.findMany(prisma.survey, {
             include: {
-                type: true,
-                style: true,
-                questions: {
-                    include: {
-                        options: {
-                            orderBy: { order: 'asc' }
-                        }
-                    },
-                    orderBy: { order: 'asc' }
-                },
                 _count: {
                     select: {
                         responses: true

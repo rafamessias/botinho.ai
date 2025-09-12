@@ -978,7 +978,9 @@
                 "label": "Options",
                 "addOption": "Add Option",
                 "optionPlaceholder": "Enter option text",
-                "removeOption": "Remove option"
+                "removeOption": "Remove option",
+                "includeOther": "Include 'Other' option",
+                "otherOptionText": "Other"
             },
             "yesNoLabels": {
                 "label": "Custom Labels",

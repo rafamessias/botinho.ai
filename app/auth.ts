@@ -243,7 +243,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 language: true,
                                 firstName: true,
                                 lastName: true,
-                                avatarUrl: true
+                                avatarUrl: true,
+                                defaultTeamId: true
                             }
                         });
 
@@ -252,7 +253,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             token.language = updatedUser.language === "pt_BR" ? "pt-BR" : "en";
                             token.name = `${updatedUser.firstName} ${updatedUser.lastName || ''}`.trim();
                             token.avatarUrl = updatedUser.avatarUrl;
-                            token.defaultTeamId = (user as any)?.defaultTeamId;
+                            token.defaultTeamId = updatedUser.defaultTeamId;
                         }
                     }
                 } catch (error) {

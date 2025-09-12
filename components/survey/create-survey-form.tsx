@@ -2,13 +2,8 @@
 
 import { useState, useTransition } from "react"
 import { useTranslations } from "next-intl"
-import { useRouter } from "@/i18n/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SurveyDetailsSection } from "@/components/survey/survey-details-section"
 import { QuestionsSection } from "@/components/survey/questions-section"
@@ -16,6 +11,7 @@ import { StyleSection } from "@/components/survey/style-section"
 import { createSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
+import { useRouter } from "next/navigation"
 
 interface Question {
     id: string
@@ -59,9 +55,8 @@ interface SurveyData {
 
 export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] }) => {
     const t = useTranslations("CreateSurvey")
-    const router = useRouter()
     const [isPending, startTransition] = useTransition()
-
+    const router = useRouter()
     const [surveyData, setSurveyData] = useState<SurveyData>({
         name: "",
         description: "",
@@ -92,7 +87,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
             borderRadius: "6px",
             titleFontSize: "18px",
             bodyFontSize: "16px",
-            fontFamily: "Inter"
+            fontFamily: ""
         }
     })
 
@@ -111,7 +106,6 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                 const result = await createSurvey(formData)
                 if (result.success) {
                     toast.success(t("messages.saveSuccess"))
-                    //router.push("/survey")
                 } else {
                     console.log(result.error)
                     toast.error(result.error || t("messages.saveError"))
@@ -138,7 +132,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                 const result = await createSurvey(formData)
                 if (result.success) {
                     toast.success(t("messages.publishSuccess"))
-                    //router.push("/survey")
+                    router.push("/survey")
                 } else {
                     console.log(result.error)
                     toast.error(result.error || t("messages.publishError"))

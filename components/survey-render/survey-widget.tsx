@@ -12,6 +12,7 @@ import { Star, CheckCircle, ArrowLeft, ArrowRight } from "lucide-react"
 import { QuestionFormat, SurveyStatus } from "@/lib/generated/prisma"
 import { getSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
+import { SurveyData } from "../survey/edit-survey-form"
 
 interface QuestionOption {
     id: string
@@ -66,7 +67,8 @@ export interface SurveyResponse {
 }
 
 interface SurveyWidgetProps {
-    surveyId: string
+    surveyId?: string
+    surveyData?: Survey | SurveyData
     key: string
     testMode?: boolean
     onComplete?: (responses: SurveyResponse[]) => void
@@ -75,12 +77,13 @@ interface SurveyWidgetProps {
 
 export const SurveyWidget = ({
     surveyId,
+    surveyData,
     key,
     testMode = false,
     onComplete,
     onError
 }: SurveyWidgetProps) => {
-    const [survey, setSurvey] = useState<Survey | null>(null)
+    const [survey, setSurvey] = useState<Survey | SurveyData | null>(null)
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [responses, setResponses] = useState<SurveyResponse[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -91,11 +94,23 @@ export const SurveyWidget = ({
     useEffect(() => {
         const loadSurvey = async () => {
             try {
-                const result = await getSurvey(surveyId)
-                if (result.success && result.survey) {
-                    setSurvey(result.survey)
+                // If surveyData is provided directly, use it
+                if (surveyData) {
+                    setSurvey(surveyData as SurveyData)
+                    setIsLoading(false)
+                    return
+                }
+
+                // Otherwise, load from surveyId
+                if (surveyId) {
+                    const result = await getSurvey(surveyId)
+                    if (result.success && result.survey) {
+                        setSurvey(result.survey)
+                    } else {
+                        onError?.(result.error || "Failed to load survey")
+                    }
                 } else {
-                    onError?.(result.error || "Failed to load survey")
+                    onError?.("Either surveyId or surveyData must be provided")
                 }
             } catch (error) {
                 onError?.(error instanceof Error ? error.message : "Failed to load survey")
@@ -105,7 +120,7 @@ export const SurveyWidget = ({
         }
 
         loadSurvey()
-    }, [surveyId, onError])
+    }, [surveyId, surveyData, onError])
 
     const currentQuestion = survey?.questions[currentQuestionIndex]
     const isLastQuestion = currentQuestionIndex === (survey?.questions.length || 0) - 1
@@ -114,9 +129,13 @@ export const SurveyWidget = ({
     const handleResponseChange = (questionId: string, value: any, optionId?: string, isOther = false) => {
         setResponses(prev => {
             const existingIndex = prev.findIndex(r => r.questionId === questionId)
+
+            // If updating an existing response, preserve the optionId if not provided
+            const finalOptionId = optionId || (existingIndex >= 0 ? prev[existingIndex].optionId : undefined)
+
             const newResponse: SurveyResponse = {
                 questionId,
-                optionId,
+                optionId: finalOptionId,
                 textValue: typeof value === 'string' ? value : undefined,
                 numberValue: typeof value === 'number' ? value : undefined,
                 booleanValue: typeof value === 'boolean' ? value : undefined,
@@ -131,9 +150,29 @@ export const SurveyWidget = ({
                 return [...prev, newResponse]
             }
         })
+
+        // Clear otherText if "Other" option is deselected
+        if (!isOther) {
+            setOtherText(prev => {
+                const updated = { ...prev }
+                delete updated[questionId]
+                return updated
+            })
+        }
     }
 
     const handleMultipleChoiceChange = (questionId: string, optionId: string, checked: boolean) => {
+        // Check if this is the "Other" option being deselected
+        const isOtherOption = currentQuestion?.options.find(opt => opt.id === optionId)?.isOther
+        if (isOtherOption && !checked) {
+            // Clear otherText when "Other" is deselected
+            setOtherText(prev => {
+                const updated = { ...prev }
+                delete updated[questionId]
+                return updated
+            })
+        }
+
         setResponses(prev => {
             const existingResponse = prev.find(r => r.questionId === questionId)
 
@@ -141,20 +180,26 @@ export const SurveyWidget = ({
                 // Update existing response
                 const updated = prev.map(r => {
                     if (r.questionId === questionId) {
+                        const currentOptions = r.optionId ? r.optionId.split(',') : []
+
                         if (checked) {
-                            // Add option to existing responses
-                            return {
-                                ...r,
-                                optionId: r.optionId ? `${r.optionId},${optionId}` : optionId
+                            // Add option if not already present
+                            if (!currentOptions.includes(optionId)) {
+                                currentOptions.push(optionId)
                             }
                         } else {
-                            // Remove option from existing responses
-                            const options = r.optionId?.split(',') || []
-                            const filteredOptions = options.filter(id => id !== optionId)
+                            // Remove option
+                            const filteredOptions = currentOptions.filter(id => id !== optionId)
                             return {
                                 ...r,
                                 optionId: filteredOptions.length > 0 ? filteredOptions.join(',') : undefined
                             }
+                        }
+
+                        const newOptionId = currentOptions.join(',')
+                        return {
+                            ...r,
+                            optionId: newOptionId
                         }
                     }
                     return r
@@ -162,7 +207,8 @@ export const SurveyWidget = ({
                 return updated
             } else if (checked) {
                 // Create new response
-                return [...prev, { questionId, optionId }]
+                const newResponse = { questionId, optionId }
+                return [...prev, newResponse]
             }
 
             return prev
@@ -219,7 +265,7 @@ export const SurveyWidget = ({
         switch (currentQuestion.format) {
             case QuestionFormat.YES_NO:
                 return (
-                    <div className="space-y-4">
+                    <>
                         <RadioGroup
                             value={currentResponse?.booleanValue?.toString()}
                             onValueChange={(value) => handleResponseChange(
@@ -242,85 +288,103 @@ export const SurveyWidget = ({
                                 </Label>
                             </div>
                         </RadioGroup>
-                    </div>
+                    </>
                 )
 
             case QuestionFormat.SINGLE_CHOICE:
                 return (
-                    <div className="space-y-4">
+                    <>
                         <RadioGroup
                             value={currentResponse?.optionId}
                             onValueChange={(value) => handleResponseChange(currentQuestion.id, value, value, false)}
                         >
                             {currentQuestion.options.map((option) => (
                                 <div key={option.id} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={option.id} id={option.id} />
+                                    <RadioGroupItem value={option.id || ''} id={option.id || ''} />
                                     <Label htmlFor={option.id} className="text-base">
                                         {option.text}
                                     </Label>
                                 </div>
                             ))}
                         </RadioGroup>
-                        {currentQuestion.options.some(opt => opt.isOther) && (
-                            <div className="mt-4">
-                                <Input
-                                    placeholder="Please specify..."
-                                    value={otherText[currentQuestion.id] || ''}
-                                    onChange={(e) => setOtherText(prev => ({
-                                        ...prev,
-                                        [currentQuestion.id]: e.target.value
-                                    }))}
-                                />
-                            </div>
-                        )}
-                    </div>
+                        {currentQuestion.options.some(opt => opt.isOther) &&
+                            currentQuestion.options.find(opt => opt.isOther)?.id === currentResponse?.optionId && (
+                                <div className="space-y-2">
+                                    <Input
+                                        autoFocus={true}
+                                        placeholder=""
+                                        value={otherText[currentQuestion.id] || ''}
+                                        onChange={(e) => {
+                                            const value = e.target.value
+                                            setOtherText(prev => ({
+                                                ...prev,
+                                                [currentQuestion.id]: value
+                                            }))
+                                            // Save the "Other" text to the response
+                                            handleResponseChange(currentQuestion.id, value, currentResponse?.optionId, true)
+                                        }}
+                                    />
+                                </div>
+                            )}
+                    </>
                 )
 
             case QuestionFormat.MULTIPLE_CHOICE:
                 return (
-                    <div className="space-y-4">
-                        {currentQuestion.options.map((option) => {
-                            const isChecked = currentResponse?.optionId?.includes(option.id) || false
+                    <>
+                        {currentQuestion.options.map((option, index) => {
+                            const selectedOptions = currentResponse?.optionId?.split(',') || []
+                            const optionId = option.id || `option_${index}`
+                            const isChecked = selectedOptions.includes(optionId)
+
                             return (
-                                <div key={option.id} className="flex items-center space-x-2">
+                                <div key={optionId} className="flex items-center space-x-2">
                                     <Checkbox
-                                        id={option.id}
+                                        id={optionId}
                                         checked={isChecked}
-                                        onCheckedChange={(checked) =>
-                                            handleMultipleChoiceChange(currentQuestion.id, option.id, !!checked)
-                                        }
+                                        onCheckedChange={(checked) => {
+                                            handleMultipleChoiceChange(currentQuestion.id, optionId, !!checked)
+                                        }}
                                     />
-                                    <Label htmlFor={option.id} className="text-base">
+                                    <Label htmlFor={optionId} className="text-base">
                                         {option.text}
                                     </Label>
                                 </div>
                             )
                         })}
-                        {currentQuestion.options.some(opt => opt.isOther) && (
-                            <div className="mt-4">
-                                <Input
-                                    placeholder="Please specify..."
-                                    value={otherText[currentQuestion.id] || ''}
-                                    onChange={(e) => setOtherText(prev => ({
-                                        ...prev,
-                                        [currentQuestion.id]: e.target.value
-                                    }))}
-                                />
-                            </div>
-                        )}
-                    </div>
+                        {currentQuestion.options.some(opt => opt.isOther) &&
+                            currentQuestion.options.find(opt => opt.isOther) &&
+                            currentResponse?.optionId?.split(',').includes(currentQuestion.options.find(opt => opt.isOther)?.id || '') && (
+                                <div className="mt-4">
+                                    <Input
+                                        autoFocus={true}
+                                        placeholder=""
+                                        value={otherText[currentQuestion.id] || ''}
+                                        onChange={(e) => {
+                                            const value = e.target.value
+                                            setOtherText(prev => ({
+                                                ...prev,
+                                                [currentQuestion.id]: value
+                                            }))
+                                            // Save the "Other" text to the response
+                                            handleResponseChange(currentQuestion.id, value, currentResponse?.optionId, true)
+                                        }}
+                                    />
+                                </div>
+                            )}
+                    </>
                 )
 
             case QuestionFormat.STAR_RATING:
                 return (
-                    <div className="space-y-4">
+                    <>
                         <div className="flex justify-center space-x-2">
                             {[1, 2, 3, 4, 5].map((rating) => (
                                 <button
                                     key={rating}
                                     type="button"
                                     onClick={() => handleResponseChange(currentQuestion.id, rating)}
-                                    className="p-2 hover:bg-muted rounded-full transition-colors"
+                                    className="p-1 hover:bg-muted rounded-full transition-colors cursor-pointer"
                                 >
                                     <Star
                                         className={`h-8 w-8 ${currentResponse?.numberValue && rating <= currentResponse.numberValue
@@ -331,39 +395,34 @@ export const SurveyWidget = ({
                                 </button>
                             ))}
                         </div>
-                        <div className="text-center text-sm text-muted-foreground">
-                            {currentResponse?.numberValue ? `${currentResponse.numberValue} star${currentResponse.numberValue !== 1 ? 's' : ''}` : "Click to rate"}
-                        </div>
-                    </div>
+                    </>
                 )
 
             case QuestionFormat.LONG_TEXT:
                 return (
-                    <div className="space-y-4">
+                    <>
                         <Textarea
-                            placeholder="Enter your response..."
+                            autoFocus={true}
+                            placeholder=""
                             value={currentResponse?.textValue || ''}
                             onChange={(e) => handleResponseChange(currentQuestion.id, e.target.value)}
                             rows={4}
                             className="resize-none"
                         />
-                    </div>
+                    </>
                 )
 
             case QuestionFormat.STATEMENT:
                 return (
-                    <div className="space-y-4">
-                        <div className="text-center">
-                            <p className="text-lg font-medium mb-4">{currentQuestion.title}</p>
-                            {currentQuestion.description && (
-                                <p className="text-muted-foreground mb-6">{currentQuestion.description}</p>
-                            )}
+                    <>
+                        <div className="text-start">
+                            <p className="text-lg font-medium mb-4">{currentQuestion.description}</p>
                         </div>
-                    </div>
+                    </>
                 )
 
             default:
-                return <div>Unsupported question format</div>
+                return <p>Unsupported question format</p>
         }
     }
 
@@ -407,10 +466,10 @@ export const SurveyWidget = ({
 
     return (
         <div
-            className="max-w-[300px] mx-auto"
+            className="max-w-[300px] min-h-[300px] mx-auto"
         >
             <Card
-                className="shadow-lg"
+                className="shadow-lg max-w-[300px] min-h-[300px] flex flex-col justify-between"
                 style={{
                     backgroundColor: widgetStyle.backgroundColor === 'transparent' ? 'transparent' : widgetStyle.backgroundColor,
                     fontFamily: widgetStyle.fontFamily,
@@ -421,12 +480,12 @@ export const SurveyWidget = ({
                 }}
             >
 
-                <CardContent className="px-2 space-y-6">
+                <CardContent className="px-2 space-y-2 mb-4">
                     {currentQuestion && (
                         <>
-                            <div>
+                            <div >
                                 <h2
-                                    className="text-lg font-semibold mb-2"
+                                    className="text-lg font-semibold"
                                     style={{
                                         color: widgetStyle.textColor,
                                         fontSize: widgetStyle.titleFontSize
@@ -434,9 +493,9 @@ export const SurveyWidget = ({
                                 >
                                     {currentQuestion.title}
                                 </h2>
-                                {currentQuestion.description && (
+                                {currentQuestion.description && currentQuestion.format !== QuestionFormat.STATEMENT && (
                                     <p
-                                        className="text-muted-foreground mb-4"
+                                        className="text-muted-foreground"
                                         style={{
                                             color: widgetStyle.textColor,
                                             fontSize: widgetStyle.bodyFontSize,
@@ -448,25 +507,26 @@ export const SurveyWidget = ({
                                 )}
                             </div>
 
-                            {renderQuestion()}
+                            <div className="space-y-2 mt-4 flex flex-col justify-center items-start">
+                                {renderQuestion()}
+                            </div>
 
                             {currentQuestion.required && (
-                                <span className="text-red-500 text-xs">*</span>
+                                <span className="text-red-500 text-xs">* Required</span>
                             )}
                         </>
                     )}
                 </CardContent>
 
                 <CardFooter className="px-2 flex flex-col justify-between py-0">
-                    <div className="flex w-full justify-between">
+                    <div className="flex w-full justify-start">
                         <Button
                             variant="outline"
                             onClick={handlePrevious}
                             disabled={isFirstQuestion}
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-2 mr-2"
                         >
                             <ArrowLeft className="h-4 w-4" />
-                            Previous
                         </Button>
 
                         <Button

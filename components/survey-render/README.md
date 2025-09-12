@@ -1,6 +1,6 @@
 # Survey Widget Component
 
-A reusable survey widget component that renders surveys based on survey ID and key, with support for all question types and customizable styling.
+A reusable survey widget component that renders surveys based on survey ID or JSON data, with support for all question types and customizable styling.
 
 ## Features
 
@@ -14,7 +14,7 @@ A reusable survey widget component that renders surveys based on survey ID and k
 
 ## Usage
 
-### Basic Usage
+### Method 1: Using Survey ID
 
 ```tsx
 import { SurveyWidget } from '@/components/survey-render'
@@ -39,6 +39,69 @@ function MyComponent() {
 }
 ```
 
+### Method 2: Using JSON Data
+
+```tsx
+import { SurveyWidget, createSurveyWidgetFromJSON } from '@/components/survey-render'
+
+function MyComponent() {
+  const surveyJSON = {
+    id: "my-survey",
+    name: "Customer Feedback",
+    description: "Help us improve our service",
+    status: "published",
+    questions: [
+      {
+        id: "q1",
+        title: "How satisfied are you?",
+        format: "STAR_RATING",
+        required: true,
+        order: 0,
+        options: []
+      }
+    ],
+    style: {
+      backgroundColor: "#f8fafc",
+      textColor: "#1e293b",
+      buttonBackgroundColor: "#3b82f6",
+      buttonTextColor: "#ffffff",
+      margin: "20px 0px",
+      padding: "24px",
+      border: "1px solid #e2e8f0",
+      borderRadius: "12px",
+      titleFontSize: "20px",
+      bodyFontSize: "16px",
+      fontFamily: "Inter"
+    }
+  }
+
+  const handleComplete = (responses) => {
+    console.log('Survey completed:', responses)
+  }
+
+  const handleError = (error) => {
+    console.error('Survey error:', error)
+  }
+
+  // Option A: Direct JSON data
+  return (
+    <SurveyWidget
+      surveyData={surveyJSON}
+      key="json-survey"
+      onComplete={handleComplete}
+      onError={handleError}
+    />
+  )
+
+  // Option B: Using helper function
+  return createSurveyWidgetFromJSON(surveyJSON, {
+    testMode: true,
+    onComplete: handleComplete,
+    onError: handleError
+  })
+}
+```
+
 ### Test Mode
 
 ```tsx
@@ -55,11 +118,14 @@ function MyComponent() {
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
-| `surveyId` | `string` | Yes | The ID of the survey to render |
+| `surveyId` | `string` | No* | The ID of the survey to render (required if surveyData not provided) |
+| `surveyData` | `Survey` | No* | Direct survey data object (required if surveyId not provided) |
 | `key` | `string` | Yes | A unique key for the widget instance |
 | `testMode` | `boolean` | No | If true, survey runs without saving data (default: false) |
 | `onComplete` | `(responses: SurveyResponse[]) => void` | No | Callback when survey is completed |
 | `onError` | `(error: string) => void` | No | Callback when an error occurs |
+
+*Either `surveyId` or `surveyData` must be provided.
 
 ## Response Format
 
@@ -73,6 +139,49 @@ interface SurveyResponse {
   numberValue?: number
   booleanValue?: boolean
   isOther?: boolean
+}
+```
+
+## JSON Data Structure
+
+When using JSON data, the structure should match the following format:
+
+```typescript
+interface SurveyJSON {
+  id: string
+  name: string
+  description?: string
+  status: "draft" | "published" | "archived"
+  questions: Array<{
+    id: string
+    title: string
+    description?: string
+    format: "YES_NO" | "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "STAR_RATING" | "LONG_TEXT" | "STATEMENT"
+    required: boolean
+    order: number
+    yesLabel?: string
+    noLabel?: string
+    buttonLabel?: string
+    options: Array<{
+      id: string
+      text: string
+      order: number
+      isOther?: boolean
+    }>
+  }>
+  style: {
+    backgroundColor: string
+    textColor: string
+    buttonBackgroundColor: string
+    buttonTextColor: string
+    margin: string
+    padding: string
+    border: string
+    borderRadius: string
+    titleFontSize: string
+    bodyFontSize: string
+    fontFamily: string
+  }
 }
 ```
 
@@ -97,13 +206,22 @@ The widget automatically applies the survey's custom styling including:
 
 ## Demo
 
-Use the `SurveyWidgetDemo` component to test the widget:
+Use the demo components to test the widget:
 
 ```tsx
+// For survey ID-based widgets
 import { SurveyWidgetDemo } from '@/components/survey-render/survey-widget-demo'
 
+// For JSON-based widgets
+import { SurveyWidgetJSONDemo } from '@/components/survey-render/survey-widget-json-demo'
+
 function DemoPage() {
-  return <SurveyWidgetDemo />
+  return (
+    <div>
+      <SurveyWidgetDemo />
+      <SurveyWidgetJSONDemo />
+    </div>
+  )
 }
 ```
 
