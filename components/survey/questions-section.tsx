@@ -299,7 +299,7 @@ const QuestionCard = ({
 
     const needsOptions = question.format === QuestionFormat.SINGLE_CHOICE || question.format === QuestionFormat.MULTIPLE_CHOICE
     const needsYesNoLabels = question.format === QuestionFormat.YES_NO
-    const needsButtonLabel = question.format === QuestionFormat.STATEMENT
+
 
     // Auto-focus title input for first question when expanded (but not on initial load)
     useEffect(() => {
@@ -438,17 +438,19 @@ const QuestionCard = ({
                                     </Select>
                                 </div>
 
-                                {/* Required Toggle */}
-                                <div className="flex items-center h-full space-x-2">
-                                    <Switch
-                                        id={`question-required-${question.id}`}
-                                        checked={question.required}
-                                        onCheckedChange={(checked) => onUpdate({ ...question, required: checked })}
-                                    />
-                                    <Label htmlFor={`question-required-${question.id}`} className="text-sm">
-                                        {t("required.label")}
-                                    </Label>
-                                </div>
+                                {/* Required Toggle - Hide for Statement format */}
+                                {question.format !== QuestionFormat.STATEMENT && (
+                                    <div className="flex items-center h-full space-x-2">
+                                        <Switch
+                                            id={`question-required-${question.id}`}
+                                            checked={question.required}
+                                            onCheckedChange={(checked) => onUpdate({ ...question, required: checked })}
+                                        />
+                                        <Label htmlFor={`question-required-${question.id}`} className="text-sm">
+                                            {t("required.label")}
+                                        </Label>
+                                    </div>
+                                )}
                             </div>
                             {/* Options Section for Single/Multiple Choice */}
                             {needsOptions && (
@@ -541,21 +543,6 @@ const QuestionCard = ({
                                                 onChange={(e) => onUpdate({ ...question, noLabel: e.target.value })}
                                             />
                                         </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Button Label Section for Statement */}
-                            {needsButtonLabel && (
-                                <div className="space-y-3">
-                                    <Label className="text-sm font-medium">{t("buttonLabel.label")}</Label>
-                                    <div className="space-y-2">
-                                        <Input
-                                            id={`button-label-${question.id}`}
-                                            placeholder={t("buttonLabel.buttonPlaceholder")}
-                                            value={question.buttonLabel || ""}
-                                            onChange={(e) => onUpdate({ ...question, buttonLabel: e.target.value })}
-                                        />
                                     </div>
                                 </div>
                             )}

@@ -223,7 +223,7 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                     <CardTitle>Live Preview</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <div className="flex justify-center">
+                    <div className="flex justify-start">
                         <SurveyWidget
                             key={`preview-${JSON.stringify(style)}`}
                             surveyData={{
