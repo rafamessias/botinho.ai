@@ -224,10 +224,9 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
 
             {/* Questions and Style Tabs */}
             <Tabs defaultValue="questions" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="questions" className="cursor-pointer">{t("questions.title")}</TabsTrigger>
                     <TabsTrigger value="style" className="cursor-pointer">{t("style.title")}</TabsTrigger>
-                    <TabsTrigger value="preview" className="cursor-pointer">{t("preview.title")}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="questions" className="mt-6">
@@ -239,18 +238,9 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
 
                 <TabsContent value="style" className="mt-6">
                     <StyleSection
+                        surveyData={surveyData as SurveyData}
                         style={surveyData.style}
                         onChange={(style) => setSurveyData({ ...surveyData, style: { ...surveyData.style, ...style } })}
-                    />
-                </TabsContent>
-                <TabsContent value="preview" className="mt-6">
-                    <SurveyWidget
-                        //surveyId={surveyData.id}
-                        surveyData={surveyData as SurveyData}
-                        key={surveyData.id}
-                        testMode={true}
-                        onComplete={() => { }}
-                        onError={() => { }}
                     />
                 </TabsContent>
             </Tabs>

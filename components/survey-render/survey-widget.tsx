@@ -466,7 +466,7 @@ export const SurveyWidget = ({
 
     return (
         <div
-            className="max-w-[300px] min-h-[300px] mx-auto"
+            className="min-w-[300px] min-h-[300px] mx-auto"
         >
             <Card
                 className="shadow-lg max-w-[300px] min-h-[300px] flex flex-col justify-between"

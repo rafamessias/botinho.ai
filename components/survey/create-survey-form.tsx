@@ -32,6 +32,7 @@ interface Question {
 }
 
 interface SurveyData {
+    id?: string
     name: string
     description: string
     typeId?: string
@@ -58,6 +59,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const [surveyData, setSurveyData] = useState<SurveyData>({
+        id: `new-survey-${new Date().getMilliseconds()}`,
         name: "",
         description: "",
         typeId: "",
@@ -174,6 +176,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
 
                 <TabsContent value="style" className="mt-6">
                     <StyleSection
+                        surveyData={surveyData as SurveyData}
                         style={surveyData.style}
                         onChange={(style) => setSurveyData({ ...surveyData, style: { ...surveyData.style, ...style } })}
                     />

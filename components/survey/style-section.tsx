@@ -1,13 +1,22 @@
 "use client"
 
-import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronUp } from "lucide-react"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { SurveyWidget } from "@/components/survey-render/survey-widget"
+import { SurveyData } from "./edit-survey-form"
+
+interface CreateSurveyData {
+    id?: string
+    name: string
+    description: string
+    typeId?: string
+    status: 'draft' | 'published' | 'archived'
+    allowMultipleResponses: boolean
+    questions: any[]
+    style: Style
+}
 
 interface Style {
     backgroundColor: string
@@ -26,9 +35,10 @@ interface Style {
 interface StyleSectionProps {
     style: Style
     onChange: (style: Style) => void
+    surveyData: CreateSurveyData
 }
 
-export const StyleSection = ({ style, onChange }: StyleSectionProps) => {
+export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps) => {
     const t = useTranslations("CreateSurvey.style")
 
     return (
@@ -213,81 +223,21 @@ export const StyleSection = ({ style, onChange }: StyleSectionProps) => {
                     <CardTitle>Live Preview</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <div
-                        className="p-4 rounded-lg border-2 border-dashed border-gray-300"
-                        style={{
-                            backgroundColor: style.backgroundColor === "transparent" ? "transparent" : style.backgroundColor,
-                            color: style.textColor,
-                            margin: style.margin || "16px 0px",
-                            padding: style.padding || "16px",
-                            border: style.border || "1px solid #222222",
-                            borderRadius: style.borderRadius || "6px",
-                            fontFamily: style.fontFamily || "Arial, sans-serif"
-                        }}
-                    >
-                        <h3
-                            className="font-semibold mb-3"
-                            style={{
-                                fontSize: style.titleFontSize || "18px",
-                                fontFamily: style.fontFamily || "Arial, sans-serif"
+                    <div className="flex justify-center">
+                        <SurveyWidget
+                            key={`preview-${JSON.stringify(style)}`}
+                            surveyData={{
+                                ...surveyData,
+                                id: surveyData.id || "preview-survey"
                             }}
-                        >
-                            How satisfied are you with our service?
-                        </h3>
-                        <p
-                            className="mb-4"
-                            style={{
-                                fontSize: style.bodyFontSize || "16px",
-                                fontFamily: style.fontFamily || "Arial, sans-serif"
+                            testMode={true}
+                            onComplete={(responses) => {
+                                console.log("Preview survey completed:", responses)
                             }}
-                        >
-                            This is a preview of how your survey will look with the current styling applied.
-                        </p>
-
-                        {/* Single Selection Question Preview */}
-                        <div className="mb-6">
-                            <RadioGroup defaultValue="satisfied" >
-                                {[
-                                    { id: "very-satisfied", text: "Very satisfied" },
-                                    { id: "satisfied", text: "Satisfied" },
-                                    { id: "neutral", text: "Neutral" },
-                                    { id: "dissatisfied", text: "Dissatisfied" }
-                                ].map((option) => (
-                                    <div key={option.id} className="flex items-center space-x-2">
-                                        <RadioGroupItem
-                                            value={option.id}
-                                            id={option.id}
-                                            style={{
-                                                accentColor: style.buttonBackgroundColor === "transparent" ? "#222222" : style.buttonBackgroundColor
-                                            }}
-                                        />
-                                        <Label
-                                            htmlFor={option.id}
-                                            className="text-base cursor-pointer"
-                                            style={{
-                                                fontFamily: style.fontFamily || "Arial, sans-serif",
-                                                fontSize: style.bodyFontSize || "16px"
-                                            }}
-                                        >
-                                            {option.text}
-                                        </Label>
-                                    </div>
-                                ))}
-                            </RadioGroup>
-                        </div>
-
-                        <button
-                            className="px-4 py-2 rounded font-medium"
-                            style={{
-                                backgroundColor: style.buttonBackgroundColor === "transparent" ? "transparent" : style.buttonBackgroundColor,
-                                color: style.buttonTextColor,
-                                border: style.buttonBackgroundColor === "transparent" ? "1px solid #222222" : "none",
-                                borderRadius: style.borderRadius || "6px",
-                                fontFamily: style.fontFamily || "Arial, sans-serif"
+                            onError={(error) => {
+                                console.error("Preview survey error:", error)
                             }}
-                        >
-                            Submit Survey
-                        </button>
+                        />
                     </div>
                 </CardContent>
             </Card>
