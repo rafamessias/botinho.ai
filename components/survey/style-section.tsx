@@ -1,11 +1,12 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { SurveyWidget } from "@/components/survey-render/survey-widget"
-import { SurveyData } from "./edit-survey-form"
+
+// We'll handle the widget loading dynamically in the useEffect
 
 interface CreateSurveyData {
     id?: string
@@ -40,6 +41,7 @@ interface StyleSectionProps {
 
 export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps) => {
     const t = useTranslations("CreateSurvey.style")
+
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -220,24 +222,13 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
             {/* Live Preview */}
             <Card className="border-none px-0 pt-4 shadow-none">
                 <CardHeader className="p-0">
-                    <CardTitle>Live Preview</CardTitle>
+                    <div className="flex items-center justify-between">
+                        <CardTitle>Live Preview</CardTitle>
+                    </div>
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="flex justify-start">
-                        <SurveyWidget
-                            key={`preview-${JSON.stringify(style)}`}
-                            surveyData={{
-                                ...surveyData,
-                                id: surveyData.id || "preview-survey"
-                            }}
-                            testMode={true}
-                            onComplete={(responses) => {
-                                console.log("Preview survey completed:", responses)
-                            }}
-                            onError={(error) => {
-                                console.error("Preview survey error:", error)
-                            }}
-                        />
+
                     </div>
                 </CardContent>
             </Card>

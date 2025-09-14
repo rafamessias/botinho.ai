@@ -12,7 +12,6 @@ import { StyleSection } from "@/components/survey/style-section"
 import { updateSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
-import { SurveyWidget } from "../survey-render/survey-widget"
 
 interface Question {
     id: string
