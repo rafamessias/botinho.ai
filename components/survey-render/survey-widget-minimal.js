@@ -19,11 +19,6 @@ class SurveyWidgetMinimal {
     render() {
         if (!this.container) return;
 
-        if (this.isCompleted || this.currentIndex >= this.survey.questions.length) {
-            this.renderComplete();
-            return;
-        }
-
         const question = this.survey.questions[this.currentIndex];
 
         this.container.innerHTML = `
@@ -36,7 +31,10 @@ class SurveyWidgetMinimal {
                         </svg>
                     </div>
                     
-                    <div class="survey-content">
+                    ${this.isCompleted || this.currentIndex >= this.survey.questions.length ? `
+                        ${this.renderComplete()}
+                    ` : `
+                        <div class="survey-content">
                         <div class="question-container">
                             <h2 class="question-title">
                                 ${question.title}
@@ -48,8 +46,12 @@ class SurveyWidgetMinimal {
                             </div>
                         </div>
                     </div>
+                    `}
+
+                   
                     
                     <div class="survey-footer">
+                     ${!this.isCompleted ? `
                         <div class="survey-navigation">
                             ${this.currentIndex > 0 ? `
                                 <button class="survey-btn survey-btn-outline" onclick="window.swMinimal.prev()">
@@ -71,7 +73,8 @@ class SurveyWidgetMinimal {
                                 `}
                             </button>
                         </div>
-                        
+                        ` : ''}
+
                         <div class="survey-branding">
                             <div class="survey-branding-text">
                                 <p>Powered by <a href="https://opineeo.com" target="_blank"><strong>Opineeo</strong></a></p>
@@ -391,8 +394,83 @@ class SurveyWidgetMinimal {
                         font-size: 16px;
                     }
                 }
+
+                .completion-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                width: 100%;
+                height: 100%;
+                position: relative;
+            }
+
+            .completion-animation {
+                margin-bottom: 2rem;
+                position: relative;
+            }
+
+            /* Success circle */
+            .success-circle {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #10b981, #059669);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                animation: scaleIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            }
+
+            .success-circle::before {
+                content: '';
+                position: absolute;
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #10b981, #059669);
+                opacity: 0.3;
+                animation: pulse 2s infinite;
+            }
+
+            /* Success checkmark */
+            .success-checkmark {
+                position: relative;
+                width: 24px;
+                height: 24px;
+                transform: rotate(45deg);
+                z-index: 2;
+            }
+
+            .checkmark-stem {
+                position: absolute;
+                width: 5px;
+                height: 25px;
+                background-color: white;
+                left: 15px;
+                top: -3px;
+                border-radius: 2px;
+                animation: checkmarkStem 0.4s ease-in-out 0.3s both;
+            }
+
+            .checkmark-kick {
+                position: absolute;
+                width: 15px;
+                height: 5px;
+                background-color: white;
+                left: 4px;
+                top: 17px;
+                border-radius: 2px;
+                animation: checkmarkKick 0.4s ease-in-out 0.5s both;
+            }
             </style>
         `;
+
+        // Focus the appropriate input after rendering
+        this.focusInput();
     }
 
     renderQuestion(question) {
@@ -432,22 +510,34 @@ class SurveyWidgetMinimal {
 
     renderSingleChoice(question) {
         const current = this.getResponse(question.id);
+        const otherText = this.getResponse(`${question.id}_other`);
         return question.options.map(option => `
             <label class="radio-option">
-                <input type="radio" name="q_${question.id}" value="${option.id}" ${current === option.id ? 'checked' : ''} onchange="window.swMinimal.setResponse('${question.id}', '${option.id}')">
+                <input type="radio" name="q_${question.id}" value="${option.id}" ${current === option.id ? 'checked' : ''} onchange="window.swMinimal.setResponse('${question.id}', '${option.id}'); window.swMinimal.render();">
                 <span class="radio-option-text">${option.text}</span>
             </label>
+            ${option.isOther ? `
+                <div class="other-input-container" style="margin-left: 1.5rem; margin-top: 0.5rem; ${current === option.id ? '' : 'display: none;'}">
+                    <input type="text" class="other-text-input" placeholder="Please specify..." value="${otherText || ''}" oninput="window.swMinimal.setResponse('${question.id}_other', this.value)" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 16px; color: inherit; background: transparent;">
+                </div>
+            ` : ''}
         `).join('');
     }
 
     renderMultipleChoice(question) {
         const current = this.getResponse(question.id);
         const selected = current ? current.split(',') : [];
+        const otherText = this.getResponse(`${question.id}_other`);
         return question.options.map(option => `
             <label class="checkbox-option">
-                <input type="checkbox" value="${option.id}" ${selected.includes(option.id) ? 'checked' : ''} onchange="window.swMinimal.toggleMultiple('${question.id}', '${option.id}')">
+                <input type="checkbox" value="${option.id}" ${selected.includes(option.id) ? 'checked' : ''} onchange="window.swMinimal.toggleMultiple('${question.id}', '${option.id}'); window.swMinimal.render();">
                 <span class="checkbox-option-text">${option.text}</span>
             </label>
+            ${option.isOther ? `
+                <div class="other-input-container" style="margin-left: 1.5rem; margin-top: 0.5rem; ${selected.includes(option.id) ? '' : 'display: none;'}">
+                    <input type="text" class="other-text-input" placeholder="Please specify..." value="${otherText || ''}" oninput="window.swMinimal.setResponse('${question.id}_other', this.value)" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 16px; color: inherit; background: transparent;">
+                </div>
+            ` : ''}
         `).join('');
     }
 
@@ -456,8 +546,11 @@ class SurveyWidgetMinimal {
         return `
             <div class="star-rating">
                 ${[1, 2, 3, 4, 5].map(star => `
-                    <button type="button" class="star-rating-button ${star <= current ? 'star-selected' : ''}" onclick="window.swMinimal.setResponse('${question.id}', ${star})">
-                        <svg class="star-rating-star" width="24" height="24" viewBox="0 0 24 24" fill="${star <= current ? '#fbbf24' : 'none'}" stroke="${star <= current ? '#fbbf24' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${star <= current ? '#fbbf24' : '#d1d5db'};">
+                    <button type="button" class="star-rating-button ${star <= current ? 'star-selected' : ''}" 
+                            onclick="window.swMinimal.setResponse('${question.id}', ${star}); window.swMinimal.render();"
+                            onmouseover="window.swMinimal.hoverStar('${question.id}', ${star})"
+                            onmouseout="window.swMinimal.unhoverStar('${question.id}')">
+                        <svg class="star-rating-star" width="24" height="24" viewBox="0 0 24 24" fill="${star <= current ? '#fbbf24' : 'none'}" stroke="${star <= current ? '#fbbf24' : '#d1d5db'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26 12,2"/>
                         </svg>
                     </button>
@@ -470,7 +563,7 @@ class SurveyWidgetMinimal {
         const current = this.getResponse(question.id) || '';
         return `
             <div class="long-text-input">
-                <textarea class="long-text-textarea" placeholder="" oninput="window.swMinimal.setResponse('${question.id}', this.value)">${current}</textarea>
+                <textarea class="long-text-textarea" placeholder="" autofocus oninput="window.swMinimal.setResponse('${question.id}', this.value)">${current}</textarea>
             </div>
         `;
     }
@@ -484,19 +577,21 @@ class SurveyWidgetMinimal {
     }
 
     renderComplete() {
-        this.container.innerHTML = `
-            <div class="survey-widget">
-                <div class="survey-card">
-                    <div style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 3rem; color: #10b981;">✓</div>
-                        <p style="margin-top: 1rem; font-size: 1.2rem;">Thank you!</p>
-                    </div>
-                </div>
-            </div>
-        `;
         this.isCompleted = true;
         this.onComplete(this.responses);
         setTimeout(() => this.onClose(), 3000);
+        return `
+        <div class="completion-container">
+                    <div class="completion-animation">
+                        <div class="success-circle">
+                            <div class="success-checkmark">
+                                <div class="checkmark-stem"></div>
+                                <div class="checkmark-kick"></div>
+                            </div>
+                        </div>
+                </div>
+        </div>
+    `;
     }
 
     setResponse(questionId, value) {
@@ -568,6 +663,60 @@ class SurveyWidgetMinimal {
     prev() {
         this.currentIndex--;
         this.render();
+    }
+
+    hoverStar(questionId, starValue) {
+        const starButtons = this.container.querySelectorAll('.star-rating-button');
+        starButtons.forEach((button, index) => {
+            const starNum = index + 1;
+            const svg = button.querySelector('.star-rating-star');
+            if (starNum <= starValue) {
+                svg.setAttribute('fill', '#fbbf24');
+                svg.setAttribute('stroke', '#fbbf24');
+            } else {
+                svg.setAttribute('fill', 'none');
+                svg.setAttribute('stroke', '#d1d5db');
+            }
+        });
+    }
+
+    unhoverStar(questionId) {
+        const current = this.getResponse(questionId) || 0;
+        const starButtons = this.container.querySelectorAll('.star-rating-button');
+        starButtons.forEach((button, index) => {
+            const starNum = index + 1;
+            const svg = button.querySelector('.star-rating-star');
+            if (starNum <= current) {
+                svg.setAttribute('fill', '#fbbf24');
+                svg.setAttribute('stroke', '#fbbf24');
+            } else {
+                svg.setAttribute('fill', 'none');
+                svg.setAttribute('stroke', '#d1d5db');
+            }
+        });
+    }
+
+    focusInput() {
+        // Focus the first visible input after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            const question = this.survey.questions[this.currentIndex];
+
+            // For long text questions, focus the textarea
+            if (question.format === 'LONG_TEXT') {
+                const textarea = this.container.querySelector('.long-text-textarea');
+                if (textarea) {
+                    textarea.focus();
+                    return;
+                }
+            }
+
+            // For other questions with text inputs, focus the first visible "other" input
+            const otherInput = this.container.querySelector('.other-text-input');
+            if (otherInput && otherInput.offsetParent !== null) { // Check if visible
+                otherInput.focus();
+                return;
+            }
+        }, 50);
     }
 
     close() {

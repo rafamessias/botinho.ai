@@ -664,7 +664,7 @@
                 minimalWidgetDemo = window.initSurveyWidgetMinimal({
                     surveyData: {
                         ...sampleSurveyData,
-                        questions: sampleSurveyData.questions,
+                        questions: sampleSurveyData.questions.slice(0, 1),
                         style: {
                             backgroundColor: '#ffffff',
                             textColor: '#222222',
