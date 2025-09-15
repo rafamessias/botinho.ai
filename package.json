@@ -13,9 +13,10 @@
     "email": "email dev",
     "minify-widget": "node scripts/minify-widget.js",
     "minify-minimal-widget": "node scripts/minify-minimal-widget.js",
+    "minify-minimal-widget-v2": "node scripts/minify-minimal-widget-v2.js",
     "build:widget": "npm run minify-widget",
     "build:minimal-widget": "npm run minify-minimal-widget",
-    "build:all-widgets": "npm run minify-widget && npm run minify-minimal-widget"
+    "build:all-widgets": "npm run minify-widget && npm run minify-minimal-widget && npm run minify-minimal-widget-v2"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

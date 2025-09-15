@@ -402,12 +402,11 @@ class SurveyWidgetMinimal {
                 justify-content: center;
                 padding: 2rem;
                 width: 100%;
-                height: 100%;
+                height: 195px;
                 position: relative;
             }
 
             .completion-animation {
-                margin-bottom: 2rem;
                 position: relative;
             }
 

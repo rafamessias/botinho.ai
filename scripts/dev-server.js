@@ -8,7 +8,8 @@ const { exec } = require('child_process');
 const PORT = 3001;
 const DEMO_FILE = path.join(__dirname, '../components/survey-render/demo.html');
 const WIDGET_FILE = path.join(__dirname, '../components/survey-render/survey-widget-vanilla.js');
-const MINIMAL_WIDGET_FILE = path.join(__dirname, '../components/survey-render/survey-widget-minimal.js');
+const MINIMAL_WIDGET_FILE = path.join(__dirname, '../components/survey-render/survey-widget-minimal-v1.js');
+const MINIMAL_V2_WIDGET_FILE = path.join(__dirname, '../components/survey-render/survey-widget-minimal-v2.js');
 
 // MIME types
 const mimeTypes = {
@@ -54,6 +55,20 @@ function watchWidgetFiles() {
         console.log('👀 Watching minimal widget file:', MINIMAL_WIDGET_FILE);
     } else {
         console.log('⚠️  Minimal widget file not found:', MINIMAL_WIDGET_FILE);
+    }
+
+    // Watch minimal v2 widget file
+    if (fs.existsSync(MINIMAL_V2_WIDGET_FILE)) {
+        fs.watchFile(MINIMAL_V2_WIDGET_FILE, { interval: 1000 }, (curr, prev) => {
+            if (curr.mtime !== prev.mtime) {
+                console.log('🔄 Minimal v2 widget file changed, reloading...');
+                lastModified.set(MINIMAL_V2_WIDGET_FILE, curr.mtime);
+                notifyClients();
+            }
+        });
+        console.log('👀 Watching minimal v2 widget file:', MINIMAL_V2_WIDGET_FILE);
+    } else {
+        console.log('⚠️  Minimal v2 widget file not found:', MINIMAL_V2_WIDGET_FILE);
     }
 }
 
@@ -115,6 +130,11 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    if (url === '/survey-widget-minimal-v2.js') {
+        serveFile(MINIMAL_V2_WIDGET_FILE, res);
+        return;
+    }
+
     // Handle other static files
     const filePath = path.join(__dirname, '..', url);
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
@@ -149,7 +169,7 @@ function serveFile(filePath, res) {
         const contentType = mimeTypes[ext] || 'application/octet-stream';
 
         // Add cache busting for widget files
-        if (filePath === WIDGET_FILE || filePath === MINIMAL_WIDGET_FILE) {
+        if (filePath === WIDGET_FILE || filePath === MINIMAL_WIDGET_FILE || filePath === MINIMAL_V2_WIDGET_FILE) {
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
             res.setHeader('Pragma', 'no-cache');
             res.setHeader('Expires', '0');
@@ -221,12 +241,13 @@ server.listen(PORT, () => {
     console.log(`📱 Demo: http://localhost:${PORT}`);
     console.log(`📄 Main Widget: http://localhost:${PORT}/survey-widget-vanilla.js`);
     console.log(`📄 Minimal Widget: http://localhost:${PORT}/survey-widget-minimal.js`);
+    console.log(`📄 Minimal V2 Widget: http://localhost:${PORT}/survey-widget-minimal-v2.js`);
     console.log('');
     console.log('✨ Features:');
     console.log('  • Live reload on widget file changes');
     console.log('  • Cache busting for widget files');
     console.log('  • Hot reload in browser');
-    console.log('  • Both full and minimal widget versions');
+    console.log('  • Full, minimal, and minimal v2 widget versions');
     console.log('');
     console.log('Press Ctrl+C to stop the server');
 

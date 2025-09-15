@@ -4,12 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const { minify } = require('terser');
 
-const INPUT_FILE = path.join(__dirname, '../components/survey-render/survey-widget-minimal-v1.js');
-const OUTPUT_FILE = path.join(__dirname, '../public/survey-widget-minimal-v1.min.js');
+const INPUT_FILE = path.join(__dirname, '../components/survey-render/survey-widget-minimal-v2.js');
+const OUTPUT_FILE = path.join(__dirname, '../public/survey-widget-minimal-v2.min.js');
 
 async function minifyMinimalWidget() {
     try {
-        console.log('📦 Starting minimal survey widget v1 minification...');
+        console.log('📦 Starting minimal survey widget v2 minification...');
 
         // Check if input file exists
         if (!fs.existsSync(INPUT_FILE)) {
