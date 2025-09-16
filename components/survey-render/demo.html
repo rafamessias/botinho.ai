@@ -575,6 +575,7 @@
                     ]
                 }
             ],
+            /*
             style: {
                 id: "demo_style_dark_card_001",
                 backgroundColor: "transparent",
@@ -592,7 +593,7 @@
                 surveyId: "demo_svy_prod_feedback_001",
                 teamId: 7,
                 border: "1px solid #222222"
-            }
+            }*/
         };
 
         // Initialize main survey
@@ -611,19 +612,7 @@
             mainSurvey = window.initSurveyWidget({
                 surveyData: {
                     ...sampleSurveyData
-                    /*style: {
-                        backgroundColor: '#ffffff',
-                        textColor: '#1f2937',
-                        buttonBackgroundColor: '#3b82f6',
-                        buttonTextColor: '#ffffff',
-                        margin: '16px 0px',
-                        padding: '24px',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '8px',
-                        titleFontSize: '20px',
-                        bodyFontSize: '16px',
-                        fontFamily: 'Inter, sans-serif'
-                    }*/
+                    // style: undefined // Remove the style to use pure inheritance
                 },
                 onComplete: (responses) => {
                     console.log('Survey completed!', responses);
