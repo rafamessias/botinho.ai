@@ -153,11 +153,11 @@ export const ApiSettings = () => {
         ]
     }
 
-    const curlExample = `curl -X POST /api/survey/submit \\
+    const curlExample = `curl -X POST /api/survey/v0 \\
   -H "Content-Type: application/json" \\
   -d '${JSON.stringify(examplePayload, null, 2)}'`
 
-    const javascriptExample = `const response = await fetch('/api/survey/submit', {
+    const javascriptExample = `const response = await fetch('/api/survey/v0', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -272,14 +272,14 @@ console.log(result);`
                                         type="button"
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => handleCopyCode(`${window.location.origin}/api/survey/submit`)}
+                                        onClick={() => handleCopyCode(`${window.location.origin}/api/survey/v0`)}
                                         className="px-2 sm:px-3"
                                     >
                                         <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
                                     </Button>
                                 </div>
                                 <div className="bg-muted px-2 py-1.5 rounded text-xs font-mono break-all overflow-hidden overflow-wrap-anywhere sm:px-3 sm:py-2">
-                                    {typeof window !== 'undefined' ? `${window.location.origin}/api/survey/submit` : '/api/survey/submit'}
+                                    {typeof window !== 'undefined' ? `${window.location.origin}/api/survey/v0` : '/api/survey/v0'}
                                 </div>
                             </div>
                         </div>

@@ -21,7 +21,7 @@ The API uses team tokens for authentication. Each team can generate a unique tok
 
 ### Submit Survey Response
 
-**POST** `/api/survey/submit`
+**POST** `/api/survey/v0`
 
 Submits a survey response with question answers.
 
@@ -126,7 +126,7 @@ Submits a survey response with question answers.
 ### JavaScript/Node.js
 
 ```javascript
-const response = await fetch('http://localhost:3000/api/survey/submit', {
+const response = await fetch('http://localhost:3000/api/survey/v0', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ console.log(result);
 ### cURL
 
 ```bash
-curl -X POST http://localhost:3000/api/survey/submit \
+curl -X POST http://localhost:3000/api/survey/v0 \
   -H "Content-Type: application/json" \
   -d '{
     "teamToken": "your-team-token-here",
