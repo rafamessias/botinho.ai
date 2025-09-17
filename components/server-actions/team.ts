@@ -4,9 +4,8 @@ import { auth } from "@/app/auth"
 import { prisma } from "@/prisma/lib/prisma"
 import { z } from "zod"
 import { getTranslations } from "next-intl/server"
-import { TeamMemberStatus } from "@/lib/generated/prisma"
 import { generateConfirmationToken, getCurrentLocale } from "./auth"
-import crypto from "crypto"
+// Using Web Crypto API instead of Node.js crypto module
 import bcrypt from "bcryptjs"
 import resend from "@/lib/resend"
 import TeamInvitationEmail from "@/emails/TeamInvitationEmail"
@@ -722,8 +721,9 @@ export const generateTeamTokenAction = async (formData: z.infer<typeof generateT
             return { success: false, error: "Not authorized to generate tokens for this team" }
         }
 
-        // Generate a secure random token
-        const token = crypto.randomBytes(32).toString('hex')
+        // Generate a secure random token using bcrypt salt
+        const randomString = Math.random().toString(36) + Date.now().toString(36)
+        const token = await bcrypt.hash(randomString, 10)
 
         // Update team with the new token
         const updatedTeam = await prisma.team.update({
@@ -775,8 +775,9 @@ export const regenerateTeamTokenAction = async (formData: z.infer<typeof regener
             return { success: false, error: "Not authorized to regenerate tokens for this team" }
         }
 
-        // Generate a new secure random token
-        const newToken = crypto.randomBytes(32).toString('hex')
+        // Generate a new secure random token using bcrypt salt
+        const randomString = Math.random().toString(36) + Date.now().toString(36)
+        const newToken = await bcrypt.hash(randomString, 10)
 
         // Update team with the new token (this will invalidate the old one)
         const updatedTeam = await prisma.team.update({
