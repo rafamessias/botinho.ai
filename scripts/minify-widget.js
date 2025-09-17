@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const { minify } = require('terser');
 
-const INPUT_FILE = path.join(__dirname, '../components/survey-render/survey-widget-vanilla.js');
-const OUTPUT_FILE = path.join(__dirname, '../public/survey-widget-vanilla.min.js');
+const INPUT_FILE = path.join(__dirname, '../components/survey-render/opineeo-sv-w.js');
+const OUTPUT_FILE = path.join(__dirname, '../public/opineeo-sv-w.min.js');
 
 async function minifyWidget() {
     try {
