@@ -6,21 +6,75 @@ class o {
         this.onClose = o.onClose || (() => { });
         this.autoClose = o.autoClose || 0;
         this.container = null;
+        this.token = o.token || '';
+        this.surveyId = o.surveyId || '';
         this.i = 0;
         this.done = !1;
         this.s = !1;   // submitting state
         this.r = {};   // responses map: qid -> resp object
         this.ot = {};  // "other" free-text map: qid -> string
         this.scopeClass = null;
+        this.loading = !1;  // loading state
+        this.error = null;   // error state
     }
 
-    mount(id) {
+    async mount(id) {
         this.container = document.getElementById(id);
-        if (!this.container || !this.survey) return;
+        if (!this.container) return;
+
+        // If survey data is not provided but token and surveyId are, fetch from API
+        if (!this.survey && this.token && this.surveyId) {
+            await this.fetchSurveyData();
+        }
+
+        if (!this.survey) return;
+
         this.injectCSS();
         this.render();
         this.container.addEventListener("click", (e) => this.onClick(e));
         this.container.addEventListener("input", (e) => this.onInput(e));
+    }
+
+    async fetchSurveyData() {
+        this.loading = !0;
+        this.error = null;
+        this.render();
+
+        try {
+            const apiUrl = 'http://localhost:3000/api/survey/v0';
+            const url = `${apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`;
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to fetch survey data');
+            }
+
+            const data = await response.json();
+
+            if (data.success && data.data && data.data.survey) {
+                this.survey = data.data.survey;
+                // Apply custom CSS from survey data if available
+                if (data.data.survey.customCSS) {
+                    this.customCSS = data.data.survey.customCSS;
+                }
+            } else {
+                throw new Error('Invalid survey data received');
+            }
+        } catch (error) {
+            console.error('Error fetching survey data:', error);
+            this.error = error.message || 'Failed to load survey';
+        } finally {
+            this.loading = !1;
+            this.render();
+        }
     }
 
     injectCSS() {
@@ -128,10 +182,45 @@ class o {
 
     render() {
         if (!this.container) return;
+
         // Apply scope class to container for CSS scoping
         if (this.scopeClass) {
             this.container.className = this.scopeClass;
         }
+
+        // Handle loading state
+        if (this.loading) {
+            this.container.innerHTML =
+                '<div class="sv">'
+                + '<button class="x" data-a="close">×</button>'
+                + '<div class="cc"><div class="ca">' + this.getSpinnerIcon() + '</div><p style="text-align: center; margin-top: 1rem;">Loading survey...</p></div>'
+                + '<div class="ft"><div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>'
+                + '</div>';
+            return;
+        }
+
+        // Handle error state
+        if (this.error) {
+            this.container.innerHTML =
+                '<div class="sv">'
+                + '<button class="x" data-a="close">×</button>'
+                + '<div class="cc"><div class="ca"><p style="color: #ef4444; text-align: center; font-weight: 600;">Error loading survey</p></div><p style="text-align: center; margin-top: 1rem;">' + this.error + '</p></div>'
+                + '<div class="ft"><div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>'
+                + '</div>';
+            return;
+        }
+
+        // Handle case where survey is not available
+        if (!this.survey) {
+            this.container.innerHTML =
+                '<div class="sv">'
+                + '<button class="x" data-a="close">×</button>'
+                + '<div class="cc"><div class="ca"><p style="text-align: center; font-weight: 600;">Survey not available</p></div></div>'
+                + '<div class="ft"><div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>'
+                + '</div>';
+            return;
+        }
+
         const qs = this.survey.questions, last = this.i >= qs.length;
         this.container.innerHTML =
             '<div class="sv">'

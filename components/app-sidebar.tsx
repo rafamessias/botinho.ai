@@ -6,8 +6,7 @@ import {
   IconDashboard,
   IconInnerShadowTop,
   IconListDetails,
-  IconUsers,
-  IconDeviceLaptop
+  IconUsers
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"

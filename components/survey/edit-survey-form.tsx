@@ -12,6 +12,7 @@ import { StyleSection } from "@/components/survey/style-section"
 import { updateSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
+import { Clipboard } from "lucide-react"
 
 interface Question {
     id: string
@@ -217,12 +218,30 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
         })
     }
 
+    const handleCopySurveyId = async () => {
+        await navigator.clipboard.writeText(surveyData.id)
+        toast.success(t("messages.surveyIdCopied") || "Survey ID copied to clipboard")
+    }
+
     return (
         <div className="space-y-6">
             {/* Page Header */}
             <div className="space-y-2">
                 {/* <p className="text-muted-foreground">{t("description")}</p> */}
-                <p className="text-muted-foreground">Survey ID: {surveyData.id}</p>
+                <p
+                    className="text-muted-foreground cursor-pointer select-all transition-colors hover:text-primary focus:text-primary outline-none"
+                    tabIndex={0}
+                    aria-label={t("actions.copySurveyId") || "Copy Survey ID"}
+                    onClick={handleCopySurveyId}
+                    onKeyDown={async (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            handleCopySurveyId()
+                        }
+                    }}
+                    role="button"
+                >
+                    Survey ID: {surveyData.id} <Button variant="outline" size="icon" onClick={handleCopySurveyId}><Clipboard className="h-4 w-4" /></Button>
+                </p>
             </div>
 
             {/* Survey Details Section */}

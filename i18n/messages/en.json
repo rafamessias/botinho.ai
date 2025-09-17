@@ -209,7 +209,11 @@
             "requestBody": "Request Body",
             "successResponse": "Success Response",
             "tokenCopied": "Token copied",
-            "codeCopied": "Code example copied to clipboard",
+            "tokenCopiedDescription": "API token has been copied to clipboard",
+            "codeCopied": "Code copied",
+            "codeCopiedDescription": "Code example copied to clipboard",
+            "endpointCopied": "Endpoint copied",
+            "endpointCopiedDescription": "API endpoint URL copied to clipboard",
             "noTeam": "No team available. Please create or join a team first."
         }
     },
@@ -874,7 +878,8 @@
                 "delete": "Delete",
                 "openMenu": "Open menu",
                 "publish": "Publish",
-                "archive": "Archive"
+                "archive": "Archive",
+                "copySurveyId": "Copy Survey ID"
             },
             "buttons": {
                 "createSurvey": "Create Survey",
@@ -912,7 +917,9 @@
                 "deleteSurveyError": "Failed to delete survey",
                 "duplicateSurveyError": "Failed to duplicate survey",
                 "updateSurveyError": "Failed to update survey status",
-                "unexpectedError": "An unexpected error occurred"
+                "unexpectedError": "An unexpected error occurred",
+                "surveyIdCopied": "Survey ID copied to clipboard",
+                "copyError": "Failed to copy survey ID"
             },
             "deleteDialog": {
                 "title": "Delete Survey",
@@ -935,14 +942,16 @@
             "saveDraft": "Save Draft",
             "publish": "Publish",
             "saving": "Saving...",
-            "publishing": "Publishing..."
+            "publishing": "Publishing...",
+            "copySurveyId": "Copy Survey ID"
         },
         "messages": {
             "saveSuccess": "Survey saved as draft successfully!",
             "saveError": "Failed to save survey",
             "publishSuccess": "Survey published successfully!",
             "publishError": "Failed to publish survey",
-            "unexpectedError": "An unexpected error occurred"
+            "unexpectedError": "An unexpected error occurred",
+            "surveyIdCopied": "Survey ID copied to clipboard"
         },
         "defaultQuestion": {
             "yesLabel": "Yes",

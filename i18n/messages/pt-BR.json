@@ -209,7 +209,11 @@
             "requestBody": "Corpo da Requisição",
             "successResponse": "Resposta de Sucesso",
             "tokenCopied": "Token copiado",
-            "codeCopied": "Exemplo de código copiado para a área de transferência",
+            "tokenCopiedDescription": "Token da API foi copiado para a área de transferência",
+            "codeCopied": "Código copiado",
+            "codeCopiedDescription": "Exemplo de código copiado para a área de transferência",
+            "endpointCopied": "Endpoint copiado",
+            "endpointCopiedDescription": "URL do endpoint da API copiada para a área de transferência",
             "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro."
         }
     },
@@ -875,7 +879,8 @@
                 "delete": "Excluir",
                 "openMenu": "Abrir menu",
                 "publish": "Publicar",
-                "archive": "Arquivar"
+                "archive": "Arquivar",
+                "copySurveyId": "Copiar Survey ID"
             },
             "buttons": {
                 "createSurvey": "Criar Pesquisa",
@@ -913,7 +918,9 @@
                 "deleteSurveyError": "Falha ao excluir pesquisa",
                 "duplicateSurveyError": "Falha ao duplicar pesquisa",
                 "updateSurveyError": "Falha ao atualizar status da pesquisa",
-                "unexpectedError": "Ocorreu um erro inesperado"
+                "unexpectedError": "Ocorreu um erro inesperado",
+                "surveyIdCopied": "ID da pesquisa copiado para a área de transferência",
+                "copyError": "Falha ao copiar ID da pesquisa"
             },
             "deleteDialog": {
                 "title": "Excluir Pesquisa",
@@ -936,14 +943,16 @@
             "saveDraft": "Salvar Rascunho",
             "publish": "Publicar",
             "saving": "Salvando...",
-            "publishing": "Publicando..."
+            "publishing": "Publicando...",
+            "copySurveyId": "Copiar ID da Pesquisa"
         },
         "messages": {
             "saveSuccess": "Pesquisa salva como rascunho com sucesso!",
             "saveError": "Falha ao salvar pesquisa",
             "publishSuccess": "Pesquisa publicada com sucesso!",
             "publishError": "Falha ao publicar pesquisa",
-            "unexpectedError": "Ocorreu um erro inesperado"
+            "unexpectedError": "Ocorreu um erro inesperado",
+            "surveyIdCopied": "ID da pesquisa copiado para a área de transferência"
         },
         "defaultQuestion": {
             "yesLabel": "Sim",

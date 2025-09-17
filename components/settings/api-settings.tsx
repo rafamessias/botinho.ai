@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Copy, Eye, EyeOff, RefreshCw, ExternalLink } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { generateTeamTokenAction, regenerateTeamTokenAction, getTeamTokenAction } from "@/components/server-actions/team"
 import { useUser } from "@/components/user-provider"
 import CodeMirror from '@uiw/react-codemirror'
@@ -27,7 +27,6 @@ export const ApiSettings = () => {
     const [teamTokens, setTeamTokens] = useState<Record<number, string | null>>({})
     const [isGeneratingToken, setIsGeneratingToken] = useState(false)
     const [showApiDocs, setShowApiDocs] = useState(false)
-    const { toast } = useToast()
 
     // Get current user's default team
     const currentTeam = user?.teams?.find((team: any) => team.id === user?.defaultTeamId) || user?.teams?.[0]
@@ -36,19 +35,19 @@ export const ApiSettings = () => {
     const handleCopyToken = () => {
         if (currentTeamToken) {
             navigator.clipboard.writeText(currentTeamToken)
-            toast({
-                title: t("tokenCopied"),
-                description: t("tokenCopied")
-            })
+            toast.success(t("tokenCopied"))
         }
     }
 
     const handleCopyCode = (code: string) => {
         navigator.clipboard.writeText(code)
-        toast({
-            title: t("codeCopied"),
-            description: t("codeCopied")
-        })
+        toast.success(t("codeCopied"))
+    }
+
+    const handleCopyEndpoint = () => {
+        const endpoint = `${window.location.origin}/api/survey/v0`
+        navigator.clipboard.writeText(endpoint)
+        toast.success(t("endpointCopied"))
     }
 
     const handleGenerateToken = async (teamId: number) => {
@@ -58,24 +57,13 @@ export const ApiSettings = () => {
 
             if (result.success) {
                 setTeamTokens(prev => ({ ...prev, [teamId]: result.token || null }))
-                toast({
-                    title: "Success",
-                    description: result.message
-                })
+                toast.success(result.message)
             } else {
-                toast({
-                    title: "Error",
-                    description: result.error || "Failed to generate token",
-                    variant: "destructive"
-                })
+                toast.error(result.error || "Failed to generate token")
             }
         } catch (error) {
             console.error("Generate token error:", error)
-            toast({
-                title: "Error",
-                description: "An unexpected error occurred",
-                variant: "destructive"
-            })
+            toast.error(`An unexpected error occurred ${error}`)
         } finally {
             setIsGeneratingToken(false)
         }
@@ -88,24 +76,13 @@ export const ApiSettings = () => {
 
             if (result.success) {
                 setTeamTokens(prev => ({ ...prev, [teamId]: result.token || null }))
-                toast({
-                    title: "Success",
-                    description: result.message
-                })
+                toast.success(result.message)
             } else {
-                toast({
-                    title: "Error",
-                    description: result.error || "Failed to regenerate token",
-                    variant: "destructive"
-                })
+                toast.error(result.error || "Failed to regenerate token")
             }
         } catch (error) {
             console.error("Regenerate token error:", error)
-            toast({
-                title: "Error",
-                description: "An unexpected error occurred",
-                variant: "destructive"
-            })
+            toast.error(`An unexpected error occurred ${error}`)
         } finally {
             setIsGeneratingToken(false)
         }
@@ -268,19 +245,22 @@ console.log(result);`
                             <div className="space-y-1.5 sm:space-y-2">
                                 <div className="flex gap-1.5 sm:gap-2">
                                     <Badge variant="secondary" className="text-xs px-1.5 py-0.5 sm:px-2 sm:py-1">POST</Badge>
+                                </div>
+                                <div className="flex gap-1.5 sm:gap-2">
+                                    <div className="flex-1 border bg-muted px-2 py-1.5 rounded-md text-xs font-mono break-all overflow-hidden overflow-wrap-anywhere sm:px-3 sm:py-2">
+                                        {typeof window !== 'undefined' ? `${window.location.origin}/api/survey/v0` : '/api/survey/v0'}
+                                    </div>
                                     <Button
                                         type="button"
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => handleCopyCode(`${window.location.origin}/api/survey/v0`)}
+                                        onClick={handleCopyEndpoint}
                                         className="px-2 sm:px-3"
                                     >
                                         <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
                                     </Button>
                                 </div>
-                                <div className="bg-muted px-2 py-1.5 rounded text-xs font-mono break-all overflow-hidden overflow-wrap-anywhere sm:px-3 sm:py-2">
-                                    {typeof window !== 'undefined' ? `${window.location.origin}/api/survey/v0` : '/api/survey/v0'}
-                                </div>
+
                             </div>
                         </div>
 
@@ -325,7 +305,7 @@ console.log(result);`
                                                     <Copy className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                                                 </Button>
                                             </div>
-                                            <div className="w-full max-w-full border rounded overflow-hidden">
+                                            <div className="w-full max-w-full border rounded-md overflow-hidden">
                                                 <div className="h-32 sm:h-40 w-full overflow-auto">
                                                     <CodeMirror
                                                         value={javascriptExample}
@@ -367,7 +347,7 @@ console.log(result);`
                                                     <Copy className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                                                 </Button>
                                             </div>
-                                            <div className="w-full max-w-full border rounded overflow-hidden">
+                                            <div className="w-full max-w-full border rounded-md overflow-hidden">
                                                 <div className="h-32 sm:h-40 w-full overflow-auto">
                                                     <CodeMirror
                                                         value={curlExample}
@@ -417,7 +397,7 @@ console.log(result);`
                                                     <Copy className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                                                 </Button>
                                             </div>
-                                            <div className="w-full max-w-full border rounded overflow-hidden">
+                                            <div className="w-full max-w-full border rounded-md overflow-hidden">
                                                 <div className="h-32 sm:h-40 w-full overflow-auto">
                                                     <CodeMirror
                                                         value={JSON.stringify(examplePayload, null, 2)}
@@ -467,7 +447,7 @@ console.log(result);`
                                                     <Copy className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                                                 </Button>
                                             </div>
-                                            <div className="w-full max-w-full border rounded overflow-hidden">
+                                            <div className="w-full max-w-full border rounded-md overflow-hidden">
                                                 <div className="h-32 sm:h-40 w-full overflow-auto">
                                                     <CodeMirror
                                                         value={JSON.stringify({

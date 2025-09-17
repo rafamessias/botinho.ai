@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/prisma/lib/prisma';
 import { z } from 'zod';
-import { ResponseStatus } from '@/lib/generated/prisma';
+import { ResponseStatus, StyleMode, SurveyStyle } from '@/lib/generated/prisma';
 
 // Validation schema for survey answer submission
 const surveyAnswerSchema = z.object({
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
         if (!team) {
             return NextResponse.json(
-                { error: 'Invalid team token' },
+                { error: 'Invalid token' },
                 { status: 401 }
             );
         }
@@ -152,6 +152,153 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('Error submitting survey response:', error);
+
+        if (error instanceof z.ZodError) {
+            return NextResponse.json(
+                {
+                    error: 'Validation error',
+                    details: error.errors.map(e => ({
+                        field: e.path.join('.'),
+                        message: e.message
+                    }))
+                },
+                { status: 400 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
+    }
+}
+
+// Validation schema for getting survey data
+const getSurveySchema = z.object({
+    token: z.string().min(1, 'Token is required'),
+    surveyId: z.string().min(1, 'Survey ID is required')
+});
+
+// Pseudocode plan:
+// 1. Parse the surveyId from the query string as before.
+// 2. Try to get the token from the Authorization header (Bearer <token>), fallback to X-Team-Token header, fallback to query param for backward compatibility.
+// 3. Validate the token and surveyId using zod.
+// 4. Continue with the same logic as before for fetching the team, survey, and returning the response.
+// 5. If token is missing, return 401 with a clear error message.
+
+export async function GET(request: NextRequest) {
+    try {
+        // Get surveyId from query string
+        const { searchParams } = new URL(request.url);
+        const surveyId = searchParams.get('surveyId');
+
+        // Try to get token from Authorization header (Bearer <token>)
+        let token: string | null = null;
+        const authHeader = request.headers.get('authorization');
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7).trim();
+        }
+
+        // Fallback: try X-Team-Token header
+        if (!token) {
+            const xTeamToken = request.headers.get('x-team-token');
+            if (xTeamToken) {
+                token = xTeamToken.trim();
+            }
+        }
+
+        // Fallback: try query param (for backward compatibility)
+        if (!token) {
+            token = searchParams.get('token');
+        }
+
+        if (!token) {
+            return NextResponse.json(
+                { error: 'Missing token in Authorization header, X-Team-Token header' },
+                { status: 401 }
+            );
+        }
+
+        // Validate query parameters
+        const validatedData = getSurveySchema.parse({ token, surveyId });
+
+        // Validate team token and get team ID
+        const team = await prisma.team.findUnique({
+            where: { token: validatedData.token },
+            select: { id: true, name: true }
+        });
+
+        if (!team) {
+            return NextResponse.json(
+                { error: 'Invalid token' },
+                { status: 401 }
+            );
+        }
+
+        // Get survey with questions and options
+        const survey = await prisma.survey.findFirst({
+            where: {
+                id: validatedData.surveyId,
+                teamId: team.id,
+                status: 'published' // Only return published surveys
+            },
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                allowMultipleResponses: true,
+                style: true,
+                questions: {
+                    orderBy: { order: 'asc' },
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        format: true,
+                        required: true,
+                        order: true,
+                        yesLabel: true,
+                        noLabel: true,
+                        options: {
+                            orderBy: { order: 'asc' },
+                            select: {
+                                id: true,
+                                text: true,
+                                order: true,
+                                isOther: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!survey) {
+            return NextResponse.json(
+                { error: 'Survey not found or not published' },
+                { status: 404 }
+            );
+        }
+
+        const { advancedCSS, styleMode, createdAt, updatedAt, surveyId: surveyIdField, teamId: teamIdField, id, ...styleFields } = survey.style as SurveyStyle;
+        const style = survey.style?.styleMode === StyleMode.advanced ? { advancedCSS, styleMode, id } : { ...styleFields, styleMode, id };
+
+        return NextResponse.json({
+            success: true,
+            data: {
+                survey: {
+                    id: survey.id,
+                    name: survey.name,
+                    description: survey.description,
+                    allowMultipleResponses: survey.allowMultipleResponses,
+                    style: style,
+                    questions: survey.questions
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Error fetching survey:', error);
 
         if (error instanceof z.ZodError) {
             return NextResponse.json(

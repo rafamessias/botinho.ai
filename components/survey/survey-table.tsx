@@ -19,17 +19,15 @@ import {
     VisibilityState,
 } from "@tanstack/react-table"
 import {
-    ChevronDown,
     ChevronLeft,
     ChevronRight,
     ChevronsLeft,
     ChevronsRight,
     MoreHorizontal,
-    Columns,
     Plus,
-    Eye,
     Edit,
     Copy,
+    Clipboard,
     Trash2,
     Calendar,
     Users,
@@ -41,7 +39,6 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
@@ -75,9 +72,9 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Link } from "@/i18n/navigation"
-import { getSurveys, deleteSurvey, duplicateSurvey, updateSurveyStatus } from "@/components/server-actions/survey"
+import { deleteSurvey, duplicateSurvey, updateSurveyStatus } from "@/components/server-actions/survey"
 import { toast } from "sonner"
-import { SurveyStatus, Survey } from "@/lib/generated/prisma"
+import { SurveyStatus } from "@/lib/generated/prisma"
 
 // Database survey type
 interface DatabaseSurvey {
@@ -209,6 +206,15 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
         })
     }
 
+    const handleCopySurveyId = async (surveyId: string) => {
+        try {
+            await navigator.clipboard.writeText(surveyId)
+            toast.success(t("table.messages.surveyIdCopied"))
+        } catch {
+            toast.error(t("table.messages.copyError"))
+        }
+    }
+
     const columns: ColumnDef<DatabaseSurvey>[] = [
         /* {
              id: "select",
@@ -253,9 +259,9 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem onClick={() => router.push(`/survey/${row.original.id}`)}>
-                                <Eye className="h-4 w-4 mr-2" />
-                                {t("table.actions.view")}
+                            <DropdownMenuItem onClick={() => handleCopySurveyId(row.original.id)}>
+                                <Clipboard className="h-4 w-4 mr-2" />
+                                {t("table.actions.copySurveyId")}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push(`/survey/edit/${row.original.id}`)}>
                                 <Edit className="h-4 w-4 mr-2" />
@@ -360,9 +366,9 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem onClick={() => router.push(`/survey/${row.original.id}`)}>
-                                <Eye className="h-4 w-4 mr-2" />
-                                {t("table.actions.view")}
+                            <DropdownMenuItem onClick={() => handleCopySurveyId(row.original.id)}>
+                                <Clipboard className="h-4 w-4 mr-2" />
+                                {t("table.actions.copySurveyId")}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push(`/survey/edit/${row.original.id}`)}>
                                 <Edit className="h-4 w-4 mr-2" />
@@ -426,6 +432,16 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
 
     return (
         <div className="w-full space-y-4">
+
+            {/* Loading Spinner */}
+            {isLoading && (
+                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center">
+                    <div className="flex flex-col items-center space-y-3">
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    </div>
+                </div>
+            )}
+
             {/* Table Header */}
             <div className="flex flex-col items-start sm:flex-row gap-4 sm:justify-between sm:items-center">
                 <div className="flex items-center gap-2">
