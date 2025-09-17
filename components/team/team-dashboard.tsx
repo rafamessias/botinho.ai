@@ -166,6 +166,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
         }
     }
 
+
     if (teams.length === 0) {
         return (
             <div className="max-w-2xl mx-auto text-center">
@@ -378,6 +379,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                         </div>
                     </CardContent>
                 )}
+
             </Card>
 
             {/* Modals */}

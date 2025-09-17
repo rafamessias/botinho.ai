@@ -6,6 +6,7 @@ import { z } from "zod"
 import { getTranslations } from "next-intl/server"
 import { TeamMemberStatus } from "@/lib/generated/prisma"
 import { generateConfirmationToken, getCurrentLocale } from "./auth"
+import crypto from "crypto"
 import bcrypt from "bcryptjs"
 import resend from "@/lib/resend"
 import TeamInvitationEmail from "@/emails/TeamInvitationEmail"
@@ -44,6 +45,14 @@ const removeMemberSchema = z.object({
 })
 
 const deleteTeamSchema = z.object({
+    teamId: z.number(),
+})
+
+const generateTeamTokenSchema = z.object({
+    teamId: z.number(),
+})
+
+const regenerateTeamTokenSchema = z.object({
     teamId: z.number(),
 })
 
@@ -614,7 +623,11 @@ export const getUserTeamsAction = async () => {
                     }
                 }
             },
-            include: {
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                token: true,
                 members: {
                     include: {
                         user: {
@@ -679,5 +692,159 @@ export const addDefaultSurveyTypes = async (teamId: number) => {
             success: false,
             error: `Failed to add default survey types to team ${teamId}`
         }
+    }
+}
+
+/**
+ * Generate a team token for survey submissions
+ */
+export const generateTeamTokenAction = async (formData: z.infer<typeof generateTeamTokenSchema>) => {
+    const t = await getTranslations("Team")
+
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        const validatedData = generateTeamTokenSchema.parse(formData)
+
+        // Check if user is admin of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId: validatedData.teamId,
+                user: { email: session.user.email },
+                isAdmin: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to generate tokens for this team" }
+        }
+
+        // Generate a secure random token
+        const token = crypto.randomBytes(32).toString('hex')
+
+        // Update team with the new token
+        const updatedTeam = await prisma.team.update({
+            where: { id: validatedData.teamId },
+            data: { token }
+        })
+
+        return {
+            success: true,
+            message: t("messages.tokenGenerated"),
+            token: updatedTeam.token
+        }
+
+    } catch (error) {
+        console.error("Generate team token error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("messages.tokenGenerationFailed") }
+    }
+}
+
+/**
+ * Regenerate a team token (invalidate old one and create new one)
+ */
+export const regenerateTeamTokenAction = async (formData: z.infer<typeof regenerateTeamTokenSchema>) => {
+    const t = await getTranslations("Team")
+
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        const validatedData = regenerateTeamTokenSchema.parse(formData)
+
+        // Check if user is admin of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId: validatedData.teamId,
+                user: { email: session.user.email },
+                isAdmin: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to regenerate tokens for this team" }
+        }
+
+        // Generate a new secure random token
+        const newToken = crypto.randomBytes(32).toString('hex')
+
+        // Update team with the new token (this will invalidate the old one)
+        const updatedTeam = await prisma.team.update({
+            where: { id: validatedData.teamId },
+            data: { token: newToken }
+        })
+
+        return {
+            success: true,
+            message: t("messages.tokenRegenerated"),
+            token: updatedTeam.token
+        }
+
+    } catch (error) {
+        console.error("Regenerate team token error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("messages.tokenRegenerationFailed") }
+    }
+}
+
+/**
+ * Get team token (only if user is admin)
+ */
+export const getTeamTokenAction = async (teamId: number) => {
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        // Check if user is admin of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId,
+                user: { email: session.user.email },
+                isAdmin: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to view tokens for this team" }
+        }
+
+        // Get team with token
+        const team = await prisma.team.findUnique({
+            where: { id: teamId },
+            select: { id: true, name: true, token: true }
+        })
+
+        if (!team) {
+            return { success: false, error: "Team not found" }
+        }
+
+        return {
+            success: true,
+            team: {
+                id: team.id,
+                name: team.name,
+                token: team.token
+            }
+        }
+
+    } catch (error) {
+        console.error("Get team token error:", error)
+        return { success: false, error: "Failed to get team token" }
     }
 }

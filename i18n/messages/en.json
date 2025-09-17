@@ -191,6 +191,26 @@
             "dark": "Dark",
             "system": "System",
             "description": "Select your preferred theme for the application"
+        },
+        "api": {
+            "title": "API Configuration",
+            "description": "Manage API tokens and access for survey submissions",
+            "teamToken": "Team Token",
+            "noTokenGenerated": "No token generated",
+            "generateToken": "Generate Token",
+            "regenerateToken": "Regenerate Token",
+            "generating": "Generating...",
+            "regenerating": "Regenerating...",
+            "apiEndpoint": "API Endpoint",
+            "documentation": "API Documentation",
+            "documentationDescription": "View code examples and API reference",
+            "showDocs": "Show Docs",
+            "hideDocs": "Hide Docs",
+            "requestBody": "Request Body",
+            "successResponse": "Success Response",
+            "tokenCopied": "Token copied",
+            "codeCopied": "Code example copied to clipboard",
+            "noTeam": "No team available. Please create or join a team first."
         }
     },
     "SignInForm": {
@@ -687,7 +707,11 @@
             "memberUpdateSuccess": "Member permissions updated successfully",
             "memberUpdateFailed": "Failed to update member permissions",
             "memberRemoveSuccess": "Member removed successfully",
-            "memberRemoveFailed": "Failed to remove member"
+            "memberRemoveFailed": "Failed to remove member",
+            "tokenGenerated": "Team token generated successfully",
+            "tokenGenerationFailed": "Failed to generate team token",
+            "tokenRegenerated": "Team token regenerated successfully",
+            "tokenRegenerationFailed": "Failed to regenerate team token"
         },
         "modals": {
             "editMember": {
@@ -1046,6 +1070,17 @@
             "fontFamily": {
                 "label": "Font Family",
                 "placeholder": "Select font family"
+            },
+            "styleMode": {
+                "label": "Style Mode",
+                "placeholder": "Select style mode",
+                "basic": "Basic",
+                "advanced": "Advanced"
+            },
+            "advancedCSS": {
+                "label": "Advanced CSS",
+                "placeholder": "Enter your custom CSS here...",
+                "description": "Write custom CSS to style your survey. Use classes like .sv, .qt, .qd, .btn, etc."
             },
             "preview": {
                 "label": "Preview",

@@ -191,6 +191,26 @@
             "dark": "Escuro",
             "system": "Sistema",
             "description": "Selecione seu tema preferido para o aplicativo"
+        },
+        "api": {
+            "title": "Configuração da API",
+            "description": "Gerencie tokens da API e acesso para envio de pesquisas",
+            "teamToken": "Token da Equipe",
+            "noTokenGenerated": "Nenhum token gerado",
+            "generateToken": "Gerar Token",
+            "regenerateToken": "Regenerar Token",
+            "generating": "Gerando...",
+            "regenerating": "Regenerando...",
+            "apiEndpoint": "Endpoint da API",
+            "documentation": "Documentação da API",
+            "documentationDescription": "Visualize exemplos de código e referência da API",
+            "showDocs": "Mostrar Docs",
+            "hideDocs": "Ocultar Docs",
+            "requestBody": "Corpo da Requisição",
+            "successResponse": "Resposta de Sucesso",
+            "tokenCopied": "Token copiado",
+            "codeCopied": "Exemplo de código copiado para a área de transferência",
+            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro."
         }
     },
     "SignInForm": {
@@ -687,7 +707,11 @@
             "memberUpdateSuccess": "Permissões do membro atualizadas com sucesso",
             "memberUpdateFailed": "Falha ao atualizar permissões do membro",
             "memberRemoveSuccess": "Membro removido com sucesso",
-            "memberRemoveFailed": "Falha ao remover membro"
+            "memberRemoveFailed": "Falha ao remover membro",
+            "tokenGenerated": "Token da equipe gerado com sucesso",
+            "tokenGenerationFailed": "Falha ao gerar token da equipe",
+            "tokenRegenerated": "Token da equipe regenerado com sucesso",
+            "tokenRegenerationFailed": "Falha ao regenerar token da equipe"
         },
         "modals": {
             "editMember": {
@@ -1047,6 +1071,17 @@
             "fontFamily": {
                 "label": "Fonte",
                 "placeholder": "Selecione a fonte"
+            },
+            "styleMode": {
+                "label": "Modo de Estilo",
+                "placeholder": "Selecione o modo de estilo",
+                "basic": "Básico",
+                "advanced": "Avançado"
+            },
+            "advancedCSS": {
+                "label": "CSS Avançado",
+                "placeholder": "Digite seu CSS personalizado aqui...",
+                "description": "Escreva CSS personalizado para estilizar sua pesquisa. Use classes como .sv, .qt, .qd, .btn, etc."
             },
             "preview": {
                 "label": "Visualização",

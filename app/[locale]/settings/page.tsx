@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
+import { ApiSettings } from "@/components/settings/api-settings"
 import {
     SidebarInset,
     SidebarProvider,
@@ -61,6 +62,8 @@ export default function SettingsPage() {
                                                 <LanguageSelector />
                                             </CardContent>
                                         </Card>
+
+                                        <ApiSettings />
                                     </div>
                                 </div>
                             </div>

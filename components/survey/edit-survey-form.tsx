@@ -51,6 +51,8 @@ export interface SurveyData {
         titleFontSize: string
         bodyFontSize: string
         fontFamily: string
+        styleMode: 'basic' | 'advanced'
+        advancedCSS?: string
     }
 }
 
@@ -90,6 +92,8 @@ interface Survey {
         titleFontSize: string
         bodyFontSize: string
         fontFamily: string
+        styleMode?: 'basic' | 'advanced'
+        advancedCSS?: string
     } | null
 }
 
@@ -128,22 +132,29 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                 isOther: o.isOther
             }))
         })),
-        style: survey.style || {
-            backgroundColor: "transparent",
-            textColor: "#222222",
-            buttonBackgroundColor: "#222222",
-            buttonTextColor: "#ffffff",
+        style: survey.style ? {
+            ...survey.style,
+            styleMode: survey.style.styleMode || 'basic',
+            advancedCSS: survey.style.advancedCSS || ''
+        } : {
+            backgroundColor: "",
+            textColor: "",
+            buttonBackgroundColor: "",
+            buttonTextColor: "",
             margin: "16px 0px",
             padding: "16px",
             border: "1px solid #222222",
             borderRadius: "6px",
             titleFontSize: "18px",
             bodyFontSize: "16px",
-            fontFamily: ""
+            fontFamily: "",
+            styleMode: "basic" as const,
+            advancedCSS: ""
         }
     })
 
     const handleSave = () => {
+        console.log("surveyData", surveyData)
         setPendingAction('save')
         startTransition(async () => {
             try {

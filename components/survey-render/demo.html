@@ -766,7 +766,7 @@
                     <p class="section-subtitle">All supported question formats with examples</p>
                 </div>
 
-                <div class="grid grid-3">
+                <div class="grid grid-3" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
                     <div class="card">
                         <h3>⭐ Star Rating</h3>
                         <p>Perfect for satisfaction surveys and ratings.</p>
@@ -873,6 +873,26 @@
                             "title": "Privacy Notice",
                             "description": "Your responses are confidential and will be used to improve our service.",
                             "options": []
+                            }
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>✅ Validation Test</h3>
+                        <p>Test required "Other" input validation for both single and multiple choice questions.</p>
+                        <div class="demo-container">
+                            <div id="validation-demo"></div>
+                        </div>
+                        <div class="code-block" data-language="JSON">
+                            {
+                            "format": "SINGLE_CHOICE",
+                            "title": "How did you hear about us?",
+                            "required": true,
+                            "options": [
+                            { "id": "google", "text": "Google Search" },
+                            { "id": "other", "text": "Other", "isOther": true }
+                            ]
                             }
                             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
@@ -1367,6 +1387,36 @@
                     order: 1,
                     options: []
                 }]
+            },
+            validation: {
+                id: "validation-demo",
+                name: "Validation Test",
+                questions: [
+                    {
+                        id: "single_other",
+                        title: "How did you hear about us? (Required with Other)",
+                        format: "SINGLE_CHOICE",
+                        required: true,
+                        order: 1,
+                        options: [
+                            { id: "google", text: "Google Search", order: 1, isOther: false },
+                            { id: "social", text: "Social Media", order: 2, isOther: false },
+                            { id: "other", text: "Other", order: 3, isOther: true }
+                        ]
+                    },
+                    {
+                        id: "multiple_other",
+                        title: "What features interest you? (Required with Other)",
+                        format: "MULTIPLE_CHOICE",
+                        required: true,
+                        order: 2,
+                        options: [
+                            { id: "feature1", text: "Mobile App", order: 1, isOther: false },
+                            { id: "feature2", text: "Analytics", order: 2, isOther: false },
+                            { id: "other", text: "Other", order: 3, isOther: true }
+                        ]
+                    }
+                ]
             }
         };
 

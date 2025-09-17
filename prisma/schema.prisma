@@ -97,6 +97,7 @@ model Team {
   id                 Int                @id @default(autoincrement())
   name               String
   description        String?
+  token              String?            @unique
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
   ResponseRate       Int                @default(0)
@@ -171,24 +172,26 @@ model Survey {
 }
 
 model SurveyStyle {
-  id                    String   @id @default(cuid())
-  backgroundColor       String   @default("transparent")
-  textColor             String   @default("#222222")
-  buttonBackgroundColor String   @default("#222222")
-  buttonTextColor       String   @default("#ffffff")
-  margin                String   @default("16px 0px")
-  padding               String   @default("16px")
-  borderRadius          String   @default("6px")
-  titleFontSize         String   @default("18px")
-  bodyFontSize          String   @default("16px")
-  fontFamily            String   @default("Inter")
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  surveyId              String   @unique
+  id                    String    @id @default(cuid())
+  backgroundColor       String    @default("transparent")
+  textColor             String    @default("#222222")
+  buttonBackgroundColor String    @default("#222222")
+  buttonTextColor       String    @default("#ffffff")
+  margin                String    @default("16px 0px")
+  padding               String    @default("16px")
+  borderRadius          String    @default("6px")
+  titleFontSize         String    @default("18px")
+  bodyFontSize          String    @default("16px")
+  fontFamily            String    @default("Inter")
+  styleMode             StyleMode @default(basic)
+  advancedCSS           String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  surveyId              String    @unique
   teamId                Int
-  border                String   @default("1px solid #222222")
-  survey                Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  team                  Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  border                String    @default("1px solid #222222")
+  survey                Survey    @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  team                  Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("survey_styles")
 }
@@ -308,4 +311,9 @@ enum ResponseStatus {
   pending
   completed
   abandoned
+}
+
+enum StyleMode {
+  basic
+  advanced
 }

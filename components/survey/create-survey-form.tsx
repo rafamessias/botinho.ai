@@ -51,6 +51,8 @@ interface SurveyData {
         titleFontSize: string
         bodyFontSize: string
         fontFamily: string
+        styleMode: 'basic' | 'advanced'
+        advancedCSS?: string
     }
 }
 
@@ -79,17 +81,19 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
             }
         ],
         style: {
-            backgroundColor: "transparent",
-            textColor: "#222222",
-            buttonBackgroundColor: "#222222",
-            buttonTextColor: "#ffffff",
+            backgroundColor: "",
+            textColor: "",
+            buttonBackgroundColor: "",
+            buttonTextColor: "",
             margin: "16px 0px",
             padding: "16px",
             border: "1px solid #222222",
             borderRadius: "6px",
             titleFontSize: "18px",
             bodyFontSize: "16px",
-            fontFamily: ""
+            fontFamily: "",
+            styleMode: "basic" as const,
+            advancedCSS: ""
         }
     })
 

@@ -28,15 +28,16 @@ class o {
         const s = document.createElement("style");
         // Identical visuals; shorter names & trimmed props. Keyframes: pop->p, appear->a
         s.textContent =
+            ":root{--sv-primary-color:currentColor;--sv-secondary-bg:rgba(0,0,0,.1);--sv-secondary-border:rgba(0,0,0,.2);--sv-text-color:inherit}" +
             ".sv{position:relative;display:flex;flex-direction:column;justify-content:space-between;background:transparent;color:inherit;margin:16px 0;padding:16px;min-width:300px;min-height:300px;font:inherit;overflow:hidden}" +
             ".x{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;opacity:.7;cursor:pointer;font-size:24px;color:inherit;z-index:999}.x:hover{opacity:1}" +
             ".body{padding:.5rem;margin-bottom:1rem;overflow:hidden;transition:opacity .3s ease}.qc{width:100%;height:100%;padding:0 4px}" +
             ".qt{font-weight:600;margin-bottom:.5rem;font-size:18px}.qd{opacity:.8;margin-bottom:1rem;font-size:16px}.qs{margin-bottom:1rem;font-size:20px}" +
             ".opts{margin-top:1.8rem;display:flex;flex-direction:column;align-items:flex-start}.req{color:#ef4444;font-size:1.2rem}" +
             ".ft{padding:.5rem;display:flex;flex-direction:column}.nav{display:flex}" +
-            ".btn{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font:inherit}" +
-            ".btno{margin-right:.5rem;background:currentColor;opacity:.7}.btno:hover{opacity:.5}" +
-            ".btnp{border:0;background:currentColor}.btnp:hover{opacity:.9}.btn:disabled{opacity:.5;cursor:not-allowed}" +
+            ".btn{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font:inherit;transition:all .2s ease}" +
+            ".btno{margin-right:.5rem;background:var(--sv-secondary-bg);border:1px solid var(--sv-secondary-border);color:var(--sv-text-color)}.btno:hover{background:rgba(0,0,0,.15);border-color:rgba(0,0,0,.3)}" +
+            ".btnp{border:0;background:var(--primary,var(--sv-primary-color));color:#fff}.btnp:hover{opacity:.9}.btn:disabled{opacity:.5;cursor:not-allowed}" +
             ".spinner{animation:spin 1s linear infinite}" +
             ".qtc{position:relative;overflow:hidden;min-height:200px;width:100%;height:auto}.qtc .qc{position:relative;width:100%;height:auto}" +
             ".q-exit-right{animation:oR .3s ease-out forwards}.q-enter-right{animation:iR .4s ease-out forwards}" +
@@ -237,9 +238,8 @@ class o {
             const enterClass = dir === 'right' ? 'q-enter-right' : 'q-enter-left';
             qc.classList.add(enterClass);
             setTimeout(() => qc.classList.remove(enterClass), 400);
-            // Update next button icon
-            const nextBtn = this.container.querySelector('[data-a="next"]');
-            if (nextBtn) nextBtn.innerHTML = this.i === this.survey.questions.length - 1 ? this.getSendIcon() : this.getNextArrowIcon();
+            // Re-render to update navigation buttons based on current question index
+            this.render();
             this.focusInput();
         }, 300);
     }
@@ -270,7 +270,11 @@ class o {
 
         if (a === "next") {
             const q = this.survey.questions[this.i];
-            if (q.required && !this.r[q.id]) { this.shake(); return; }
+            if (!this.isValidQuestion(q)) {
+                this.shake();
+                return;
+            }
+
             if (this.i === this.survey.questions.length - 1) {
                 this.handleSubmit();
             } else {
@@ -323,6 +327,18 @@ class o {
         if (!q) return;
         q.style.animation = "p .25s ease";
         setTimeout(() => q.style.animation = "", 250);
+    }
+
+    isValidQuestion(q) {
+        if (!q.required) return true;
+        if (!this.r[q.id]) return false;
+
+        // Check if required "other" text input is filled
+        if (this.r[q.id].isOther && (!this.ot[q.id] || this.ot[q.id].trim() === '')) {
+            return false;
+        }
+
+        return true;
     }
 
     focusInput() {

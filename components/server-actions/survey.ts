@@ -37,7 +37,9 @@ const surveyStyleSchema = z.object({
     borderRadius: z.string().default("6px"),
     titleFontSize: z.string().default("18px"),
     bodyFontSize: z.string().default("16px"),
-    fontFamily: z.string().default("Inter")
+    fontFamily: z.string().default("Inter"),
+    styleMode: z.enum(["basic", "advanced"]).default("basic"),
+    advancedCSS: z.string().optional()
 })
 
 const createSurveySchema = z.object({
@@ -509,7 +511,9 @@ export const duplicateSurvey = async (id: string) => {
                         borderRadius: originalSurvey.style.borderRadius,
                         titleFontSize: originalSurvey.style.titleFontSize,
                         bodyFontSize: originalSurvey.style.bodyFontSize,
-                        fontFamily: originalSurvey.style.fontFamily
+                        fontFamily: originalSurvey.style.fontFamily,
+                        styleMode: originalSurvey.style.styleMode,
+                        advancedCSS: originalSurvey.style.advancedCSS
                     }
                 })
             }
