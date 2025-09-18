@@ -9,7 +9,8 @@
             "dashboard": "Painel",
             "surveys": "Pesquisas",
             "team": "Equipe",
-            "surveyDemo": "Demo de Pesquisa"
+            "surveyDemo": "Demo de Pesquisa",
+            "settings": "Configurações"
         },
         "documents": {
             "dataLibrary": "Biblioteca de Dados"

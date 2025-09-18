@@ -56,6 +56,14 @@ interface SurveyData {
     }
 }
 
+const getErrorMessages = (error: any): string => {
+    if (Array.isArray(error)) {
+        return error.map(err => err.message).join(', ')
+    }
+    console.log(Array.isArray(error), error)
+    return error
+}
+
 export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] }) => {
     const t = useTranslations("CreateSurvey")
     const [isPending, startTransition] = useTransition()
@@ -114,7 +122,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                     toast.success(t("messages.saveSuccess"))
                 } else {
                     console.log(result.error)
-                    toast.error(result.error || t("messages.saveError"))
+                    toast.error(getErrorMessages(JSON.parse(result.error || "")) || t("messages.saveError"))
                 }
             } catch (error) {
                 console.log(error)
@@ -141,7 +149,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                     router.push("/survey")
                 } else {
                     console.log(result.error)
-                    toast.error(result.error || t("messages.publishError"))
+                    toast.error(getErrorMessages(JSON.parse(result.error || "")) || t("messages.publishError"))
                 }
             } catch (error) {
                 console.log(error)

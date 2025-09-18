@@ -323,11 +323,11 @@ const QuestionCard = ({
                             {...listeners}
                             className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
                         >
-                            <GripVertical className="h-4 w-4 text-muted-foreground" />
+                            <GripVertical className="h-4 w-4" />
                         </div>
 
                         {/* Question Number */}
-                        <div className="flex-shrink-0 w-8 h-8 bg-muted text-white rounded-full flex items-center justify-center text-sm font-medium">
+                        <div className="flex-shrink-0 w-8 h-8 bg-muted rounded-full flex items-center justify-center text-sm font-medium">
                             {questionNumber}
                         </div>
 

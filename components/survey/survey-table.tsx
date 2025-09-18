@@ -402,13 +402,15 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                     {t("table.actions.archive")}
                                 </DropdownMenuItem>
                             )}
-                            <DropdownMenuItem
-                                variant="destructive"
-                                onClick={() => handleDeleteSurveyClick(row.original)}
-                            >
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                {t("table.actions.delete")}
-                            </DropdownMenuItem>
+                            {row.original.status === SurveyStatus.draft && (
+                                <DropdownMenuItem
+                                    variant="destructive"
+                                    onClick={() => handleDeleteSurveyClick(row.original)}
+                                >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    {t("table.actions.delete")}
+                                </DropdownMenuItem>
+                            )}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
@@ -698,7 +700,7 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                         <AlertDialogAction
                             onClick={handleDeleteSurvey}
                             disabled={isPending}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="bg-destructive text-white hover:bg-destructive/90"
                         >
                             {isPending ? t("table.deleteDialog.deleting") : t("table.deleteDialog.delete")}
                         </AlertDialogAction>

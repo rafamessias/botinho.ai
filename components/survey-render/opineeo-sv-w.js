@@ -41,7 +41,7 @@ class o {
         this.render();
 
         try {
-            const apiUrl = 'http://localhost:3000/api/survey/v0';
+            const apiUrl = 'http://app.opineeo.com/api/survey/v0';
             const url = `${apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`;
 
             const response = await fetch(url, {
@@ -188,46 +188,16 @@ class o {
             this.container.className = this.scopeClass;
         }
 
-        // Handle loading state
-        if (this.loading) {
-            this.container.innerHTML =
-                '<div class="sv">'
-                + '<button class="x" data-a="close">×</button>'
-                + '<div class="cc"><div class="ca">' + this.getSpinnerIcon() + '</div><p style="text-align: center; margin-top: 1rem;">Loading survey...</p></div>'
-                + '<div class="ft"><div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>'
-                + '</div>';
-            return;
-        }
-
-        // Handle error state
-        if (this.error) {
-            this.container.innerHTML =
-                '<div class="sv">'
-                + '<button class="x" data-a="close">×</button>'
-                + '<div class="cc"><div class="ca"><p style="color: #ef4444; text-align: center; font-weight: 600;">Error loading survey</p></div><p style="text-align: center; margin-top: 1rem;">' + this.error + '</p></div>'
-                + '<div class="ft"><div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>'
-                + '</div>';
-            return;
-        }
-
-        // Handle case where survey is not available
-        if (!this.survey) {
-            this.container.innerHTML =
-                '<div class="sv">'
-                + '<button class="x" data-a="close">×</button>'
-                + '<div class="cc"><div class="ca"><p style="text-align: center; font-weight: 600;">Survey not available</p></div></div>'
-                + '<div class="ft"><div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>'
-                + '</div>';
-            return;
-        }
-
         const qs = this.survey.questions, last = this.i >= qs.length;
         this.container.innerHTML =
             '<div class="sv">'
             + '<button class="x" data-a="close">×</button>'
-            + (this.done || last ? this.renderDone() : '<div class="qtc">' + this.renderQuestionCard(qs[this.i]) + '</div>')
-            + '<div class="ft">'
-            + (this.done ? '' : '<div class="nav">' + (this.i > 0 ? '<button class="btn btno" data-a="prev">' + this.getPrevArrowIcon() + '</button>' : '') + '<button class="btn btnp" data-a="next" ' + (this.s ? 'disabled' : '') + '>' + (this.s ? this.getSpinnerIcon() : (this.i === qs.length - 1 ? this.getSendIcon() : this.getNextArrowIcon())) + '</button></div>')
+            + (this.loading ? '<div class="cc"><div class="ca">' + this.getSpinnerIcon() + '</div><p style="text-align: center; margin-top: 1rem;">Loading survey...</p></div>' : '')
+            + (this.error ? '<div class="cc"><div class="ca"><p style="color: #ef4444; text-align: center; font-weight: 600;">Error loading survey</p></div><p style="text-align: center; margin-top: 1rem;">' + this.error + '</p></div>' : '')
+            + (!this.survey ? '<div class="cc"><div class="ca"><p style="text-align: center; font-weight: 600;">Survey not available</p></div></div>' : '')
+            + (qs.length > 0 ? (this.done || last ? this.renderDone() : '<div class="qtc">' + this.renderQuestionCard(qs[this.i]) + '</div>')
+                + '<div class="ft">'
+                + (this.done ? '' : '<div class="nav">' + (this.i > 0 ? '<button class="btn btno" data-a="prev">' + this.getPrevArrowIcon() + '</button>' : '') + '<button class="btn btnp" data-a="next" ' + (this.s ? 'disabled' : '') + '>' + (this.s ? this.getSpinnerIcon() : (this.i === qs.length - 1 ? this.getSendIcon() : this.getNextArrowIcon())) + '</button></div>') : '')
             + '<div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div>'
             + '</div></div>';
         this.focusInput();
@@ -235,10 +205,10 @@ class o {
 
     // ---------- Icons ----------
 
-    getPrevArrowIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>'; }
-    getNextArrowIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>'; }
-    getSendIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>'; }
-    getSpinnerIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spinner"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>'; }
+    getPrevArrowIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--secondary-foreground, rgba(0,0,0,.3))" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>'; }
+    getNextArrowIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-foreground, rgba(255,255,255,.7))" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>'; }
+    getSendIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-foreground, rgba(255,255,255,.7))" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>'; }
+    getSpinnerIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-foreground, rgba(255,255,255,.7))" stroke-width="2" class="spinner"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>'; }
 
 
     renderQuestionCard(q) {

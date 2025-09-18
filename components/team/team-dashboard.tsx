@@ -248,7 +248,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                             </Popover>
                         </div>
 
-                        <div className="flex gap-2">
+                        {/*<div className="flex gap-2">
                             <Button
                                 onClick={() => setShowCreateForm(true)}
                                 variant="outline"
@@ -258,7 +258,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                 <span className="hidden sm:inline">{t("createTeam")}</span>
                                 <span className="sm:hidden">Create</span>
                             </Button>
-                        </div>
+                        </div>*/}
                     </div>
 
                     {/* Team Info Section */}
@@ -293,6 +293,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
 
                                     {isCurrentUserOwner(selectedTeam) && (
                                         <AlertDialog>
+                                            {/*
                                             <AlertDialogTrigger asChild>
                                                 <Button
                                                     variant="destructive"
@@ -309,6 +310,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                                     </span>
                                                 </Button>
                                             </AlertDialogTrigger>
+                                            */}
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>{t("deleteTeam")}</AlertDialogTitle>
@@ -316,6 +318,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                                         {t("deleteTeamConfirmation", { teamName: selectedTeam.name })}
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
+                                                {/*
                                                 <AlertDialogFooter>
                                                     <AlertDialogAction
                                                         onClick={() => handleDeleteTeam(selectedTeam.id)}
@@ -326,6 +329,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                                     </AlertDialogAction>
                                                     <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
                                                 </AlertDialogFooter>
+                                                */}
                                             </AlertDialogContent>
                                         </AlertDialog>
                                     )}

@@ -68,12 +68,7 @@ export function NavUser() {
       label: t("subscription"),
       icon: IconCreditCard,
       href: `/${locale}/subscription`,
-    },
-    {
-      label: t("settings"),
-      icon: IconSettings,
-      href: `/${locale}/settings`,
-    },
+    }
   ]
 
   // Helper to truncate string to max 20 chars, adding ... if longer

@@ -113,11 +113,11 @@ export const ApiSettings = () => {
             </CardHeader>
 
             {!currentTeam ? (
-                <CardContent className="px-4 pb-4">
+                <CardContent className="px-4">
                     <p className="text-sm text-muted-foreground">{t("noTeam")}</p>
                 </CardContent>
             ) : (
-                <CardContent className="space-y-3 px-3 pb-4 sm:space-y-4 sm:px-4 w-full">
+                <CardContent className="space-y-3 px-3 sm:space-y-4 sm:px-4 w-full">
                     {/* Team Token Section */}
                     <div className="space-y-3 sm:space-y-4 w-full">
                         <div className="space-y-2 sm:space-y-3 mb-8 sm:mb-0">

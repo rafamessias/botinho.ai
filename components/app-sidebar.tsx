@@ -6,6 +6,7 @@ import {
   IconDashboard,
   IconInnerShadowTop,
   IconListDetails,
+  IconSettings,
   IconUsers
 } from "@tabler/icons-react"
 
@@ -45,7 +46,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: t("navigation.team"),
         url: "/team",
         icon: IconUsers,
-      }
+      },
+      {
+        title: t("navigation.settings"),
+        icon: IconSettings,
+        url: '/settings',
+      },
     ],
 
   }

@@ -9,7 +9,8 @@
             "dashboard": "Dashboard",
             "surveys": "Surveys",
             "team": "Team",
-            "surveyDemo": "Survey Demo"
+            "surveyDemo": "Survey Demo",
+            "settings": "Settings"
         },
         "documents": {
             "dataLibrary": "Data Library"
