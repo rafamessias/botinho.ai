@@ -12,7 +12,7 @@ import { auth } from "@/app/auth"
 import { prisma } from "@/prisma/lib/prisma"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
-import { getSurveys } from "@/components/server-actions/survey"
+import { getSurveysWithPagination } from "@/components/server-actions/survey"
 
 export default async function SurveyPage() {
     const t = await getTranslations("Survey")
@@ -25,9 +25,9 @@ export default async function SurveyPage() {
         }
     })
 
-    // Fetch surveys data on the server
-    const surveysResult = await getSurveys()
-    const surveys = surveysResult.success ? surveysResult.surveys || [] : []
+    // Fetch paginated surveys data on the server
+    const surveysResult = await getSurveysWithPagination({ page: 1, pageSize: 10 })
+    const paginatedData = surveysResult.success ? surveysResult.data : undefined
 
     return (
         <SidebarProvider
@@ -45,7 +45,7 @@ export default async function SurveyPage() {
                     <div className="@container/main flex flex-1 flex-col gap-2">
                         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 max-w-6xl w-full mx-auto">
                             {currentTeam ? (
-                                <SurveyDashboard currentTeam={currentTeam} surveys={surveys} />
+                                <SurveyDashboard currentTeam={currentTeam} initialData={paginatedData} />
                             ) : (
                                 <Card className="flex flex-col items-center justify-center py-12 px-6 text-center">
                                     <CardHeader className="pb-4">

@@ -8,6 +8,7 @@ class o {
         this.container = null;
         this.token = o.token || '';
         this.surveyId = o.surveyId || '';
+        this.apiUrl = 'http://app.opineeo.com/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;   // submitting state
@@ -41,10 +42,7 @@ class o {
         this.render();
 
         try {
-            const apiUrl = 'http://app.opineeo.com/api/survey/v0';
-            const url = `${apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`;
-
-            const response = await fetch(url, {
+            const response = await fetch(`${this.apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -184,9 +182,7 @@ class o {
         if (!this.container) return;
 
         // Apply scope class to container for CSS scoping
-        if (this.scopeClass) {
-            this.container.className = this.scopeClass;
-        }
+        if (this.scopeClass) this.container.className = this.scopeClass;
 
         const qs = this.survey.questions, last = this.i >= qs.length;
         this.container.innerHTML =
@@ -307,7 +303,22 @@ class o {
         this.s = !0;
         this.render();
         try {
-            await new Promise(r => setTimeout(r, 1000));
+            if (this.token) {
+                try {
+                    const response = await fetch(this.apiUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.token}`
+                        },
+                        body: JSON.stringify(this.pack())
+                    });
+                    if (!response.ok) console.error("Failed to submit survey response" + response.statusText);
+                } catch (err) {
+                    console.error('Submission error:', err);
+                }
+            }
+
             this.onComplete(this.pack());
             this.done = !0;
         } catch (err) {

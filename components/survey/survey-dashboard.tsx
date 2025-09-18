@@ -10,7 +10,7 @@ import {
     CardTitle
 } from "@/components/ui/card"
 import { SurveyTable } from "@/components/survey/survey-table"
-import { getSurveyStats } from "@/components/server-actions/survey"
+import { getSurveyStats, getSurveysWithPagination, type PaginatedSurveysResult } from "@/components/server-actions/survey"
 import { Team, SurveyStatus } from "@/lib/generated/prisma"
 
 // Database survey type (matching the one from survey-table.tsx)
@@ -42,7 +42,7 @@ interface SurveyStats {
     responseRate: number
 }
 
-export const SurveyDashboard = ({ currentTeam, surveys }: { currentTeam: Team, surveys: DatabaseSurvey[] }) => {
+export const SurveyDashboard = ({ currentTeam, initialData }: { currentTeam: Team, initialData?: PaginatedSurveysResult }) => {
     const t = useTranslations("Survey")
     const [surveyStats, setSurveyStats] = useState<SurveyStats>({
         totalSurveys: currentTeam?.totalSurveys || 0,
@@ -84,7 +84,7 @@ export const SurveyDashboard = ({ currentTeam, surveys }: { currentTeam: Team, s
                         </Card>
                     ))}
                 </div>
-                <SurveyTable surveys={surveys} />
+                <SurveyTable initialData={initialData} />
             </div>
         )
     }
@@ -163,7 +163,7 @@ export const SurveyDashboard = ({ currentTeam, surveys }: { currentTeam: Team, s
             </div>
 
             {/* Survey Table */}
-            <SurveyTable surveys={surveys} />
+            <SurveyTable initialData={initialData} />
         </div>
     )
 }

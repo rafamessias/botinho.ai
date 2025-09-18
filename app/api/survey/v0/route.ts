@@ -19,6 +19,38 @@ const surveyAnswerSchema = z.object({
 
 export async function POST(request: NextRequest) {
     try {
+
+        // Extract token from Authorization header (Bearer <token>), fallback to X-Team-Token header, fallback to body.teamToken
+        let token: string | null = null;
+        const authHeader = request.headers.get('authorization');
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7).trim();
+        }
+
+        // Fallback: try X-Team-Token header
+        if (!token) {
+            const xTeamToken = request.headers.get('x-team-token');
+            if (xTeamToken) {
+                token = xTeamToken.trim();
+            }
+        }
+
+        // Fallback: try teamToken in body (for backward compatibility)
+        if (!token) {
+            // We need to parse the body to get teamToken, so parse it here and reuse below
+            const body = await request.json();
+            token = body.teamToken;
+            // Re-assign body for later use
+            request.json = async () => body;
+        }
+
+        if (!token) {
+            return NextResponse.json(
+                { error: 'Missing token in Authorization header, X-Team-Token header, or body' },
+                { status: 401 }
+            );
+        }
+
         const body = await request.json();
 
         // Validate request body
@@ -26,7 +58,7 @@ export async function POST(request: NextRequest) {
 
         // Validate team token and get team ID
         const team = await prisma.team.findUnique({
-            where: { token: validatedData.teamToken },
+            where: { token: token },
             select: { id: true, name: true }
         });
 

@@ -12,7 +12,7 @@ import { StyleSection } from "@/components/survey/style-section"
 import { updateSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
-import { Clipboard } from "lucide-react"
+import { ArrowLeft, Clipboard } from "lucide-react"
 
 interface Question {
     id: string
@@ -226,21 +226,24 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
         <div className="space-y-6">
             {/* Page Header */}
             <div className="space-y-2">
-                {/* <p className="text-muted-foreground">{t("description")}</p> */}
-                <p
-                    className="text-muted-foreground cursor-pointer select-all transition-colors hover:text-primary focus:text-primary outline-none"
-                    tabIndex={0}
-                    aria-label={t("actions.copySurveyId") || "Copy Survey ID"}
-                    onClick={handleCopySurveyId}
-                    onKeyDown={async (e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                            handleCopySurveyId()
-                        }
-                    }}
-                    role="button"
-                >
-                    Survey ID: {surveyData.id} <Button variant="outline" size="icon" onClick={handleCopySurveyId}><Clipboard className="h-4 w-4" /></Button>
-                </p>
+                <Button variant="outline" size="icon" onClick={() => router.push("/survey")}><ArrowLeft className="h-4 w-4" /></Button>
+                <div className="flex flex-col items-start sm:items-center sm:flex-row">
+                    <p className="flex items-center flex-row">Survey ID: <Button variant="outline" size="icon" className="ml-2 sm:hidden" onClick={handleCopySurveyId}><Clipboard className="h-4 w-4" /></Button></p>
+                    <p
+                        className="text-muted-foreground cursor-pointer select-all transition-colors hover:text-primary focus:text-primary outline-none sm:ml-2 sm:flex sm:items-center sm:justify-center"
+                        tabIndex={0}
+                        aria-label={t("actions.copySurveyId") || "Copy Survey ID"}
+                        onClick={handleCopySurveyId}
+                        onKeyDown={async (e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                handleCopySurveyId()
+                            }
+                        }}
+                        role="button"
+                    >
+                        {surveyData.id} <Button variant="outline" size="icon" className="ml-2 hidden sm:flex sm:items-center sm:justify-center" onClick={handleCopySurveyId}><Clipboard className="h-4 w-4" /></Button>
+                    </p>
+                </div>
             </div>
 
             {/* Survey Details Section */}

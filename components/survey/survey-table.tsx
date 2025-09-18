@@ -36,7 +36,7 @@ import { z } from "zod"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -72,10 +72,39 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Link } from "@/i18n/navigation"
-import { deleteSurvey, duplicateSurvey, updateSurveyStatus } from "@/components/server-actions/survey"
+import { deleteSurvey, duplicateSurvey, updateSurveyStatus, getSurveysWithPagination, type SurveyFilters, type PaginatedSurveysResult } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { SurveyStatus } from "@/lib/generated/prisma"
 import LoadingComp from "../loading-comp"
+import { useIsMobile } from "@/hooks/use-mobile"
+
+// Custom debounce hook
+const useDebounce = <T extends (...args: any[]) => any>(callback: T, delay: number) => {
+    const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+
+    return React.useCallback((...args: Parameters<T>) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+        timeoutRef.current = setTimeout(() => callback(...args), delay)
+    }, [callback, delay])
+}
+
+// Utility function to determine if a column should be visible based on ID pattern
+const shouldShowColumn = (columnId: string, isMobile: boolean): boolean => {
+    // If column ID contains 'mobile', show only on mobile
+    if (columnId.includes('-mobile')) {
+        return isMobile
+    }
+
+    // If column ID contains 'desktop', show only on desktop
+    if (columnId.includes('-desktop')) {
+        return !isMobile
+    }
+
+    // If no mobile/desktop identifier, show on both
+    return true
+}
 
 // Database survey type
 interface DatabaseSurvey {
@@ -109,28 +138,101 @@ export const surveySchema = z.object({
     type: z.string().nullable(),
 })
 
-export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
+interface SurveyTableProps {
+    initialData?: PaginatedSurveysResult
+    initialFilters?: Partial<SurveyFilters>
+}
+
+export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) => {
     const t = useTranslations("Survey")
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
+    const isMobile = useIsMobile()
 
-    const [data, setData] = React.useState<DatabaseSurvey[]>(surveys)
+    // Server-side state
+    const [paginatedData, setPaginatedData] = React.useState<PaginatedSurveysResult>(
+        initialData || {
+            surveys: [],
+            totalCount: 0,
+            totalPages: 0,
+            currentPage: 1,
+            pageSize: 10,
+            hasNextPage: false,
+            hasPreviousPage: false
+        }
+    )
+    const [filters, setFilters] = React.useState<SurveyFilters>({
+        page: initialFilters?.page || 1,
+        pageSize: initialFilters?.pageSize || 10,
+        search: initialFilters?.search || "",
+        status: initialFilters?.status,
+        sortBy: initialFilters?.sortBy || 'updatedAt',
+        sortOrder: initialFilters?.sortOrder || 'desc'
+    })
+
+    // UI state
     const [isLoading, setIsLoading] = React.useState(false)
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-    const [sorting, setSorting] = React.useState<SortingState>([])
-    const [pagination, setPagination] = React.useState({
-        pageIndex: 0,
-        pageSize: 10,
-    })
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
     const [surveyToDelete, setSurveyToDelete] = React.useState<DatabaseSurvey | null>(null)
 
-    // Update data when surveys prop changes
-    React.useEffect(() => {
-        setData(surveys)
-    }, [surveys])
+    // Input state for debouncing
+    const [searchInput, setSearchInput] = React.useState(filters.search || "")
+    const [statusFilter, setStatusFilter] = React.useState<string>(filters.status || "")
+
+    // Fetch surveys with current filters
+    const fetchSurveys = React.useCallback(async (newFilters: Partial<SurveyFilters> = {}) => {
+        setIsLoading(true)
+        startTransition(async () => {
+            try {
+                const mergedFilters = { ...filters, ...newFilters }
+                const result = await getSurveysWithPagination(mergedFilters)
+                if (result.success && result.data) {
+                    setPaginatedData(result.data)
+                    setFilters(mergedFilters as SurveyFilters)
+                } else {
+                    toast.error(result.error || t("table.messages.fetchSurveysError"))
+                }
+            } catch (error) {
+                toast.error(t("table.messages.unexpectedError"))
+            } finally {
+                setIsLoading(false)
+            }
+        })
+    }, [filters, t])
+
+    // Debounced search handler
+    const debouncedSearch = useDebounce((searchValue: string) => {
+        fetchSurveys({ search: searchValue, page: 1 })
+    }, 500)
+
+    // Handle search input change
+    const handleSearchChange = (value: string) => {
+        setSearchInput(value)
+        debouncedSearch(value)
+    }
+
+    // Handle status filter change
+    const handleStatusFilterChange = (value: string) => {
+        setStatusFilter(value)
+        const statusValue = value === "all" ? undefined : value as SurveyStatus
+        fetchSurveys({ status: statusValue, page: 1 })
+    }
+
+    // Handle pagination changes
+    const handlePageChange = (page: number) => {
+        fetchSurveys({ page })
+    }
+
+    const handlePageSizeChange = (pageSize: number) => {
+        fetchSurveys({ pageSize, page: 1 })
+    }
+
+    // Handle sorting changes
+    const handleSortingChange = (sortBy: SurveyFilters['sortBy'], sortOrder: SurveyFilters['sortOrder']) => {
+        fetchSurveys({ sortBy, sortOrder, page: 1 })
+    }
 
     const getStatusBadge = (status: SurveyStatus) => {
         switch (status) {
@@ -159,7 +261,8 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             try {
                 const result = await deleteSurvey(surveyToDelete.id)
                 if (result.success) {
-                    setData(prev => prev.filter(survey => survey.id !== surveyToDelete.id))
+                    // Refresh data after successful deletion
+                    await fetchSurveys()
                     toast.success(t("table.messages.surveyDeletedSuccess"))
                 } else {
                     toast.error(result.error || t("table.messages.deleteSurveyError"))
@@ -180,8 +283,8 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             try {
                 const result = await duplicateSurvey(id)
                 if (result.success) {
-                    // Refresh the page to get updated data
-                    window.location.reload()
+                    // Refresh data after successful duplication
+                    await fetchSurveys()
                     toast.success(t("table.messages.surveyDuplicatedSuccess"))
                 } else {
                     toast.error(result.error || t("table.messages.duplicateSurveyError"))
@@ -200,9 +303,8 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             try {
                 const result = await updateSurveyStatus(id, status)
                 if (result.success) {
-                    setData(prev => prev.map(survey =>
-                        survey.id === id ? { ...survey, status } : survey
-                    ))
+                    // Refresh data after successful status update
+                    await fetchSurveys()
                     toast.success(t("table.messages.surveyUpdatedSuccess"))
                 } else {
                     toast.error(result.error || t("table.messages.updateSurveyError"))
@@ -256,7 +358,7 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
         {
             id: "actions-mobile",
             cell: ({ row }) => (
-                <div className="block md:hidden">
+                <div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button
@@ -274,15 +376,11 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                 <Clipboard className="h-4 w-4 mr-2" />
                                 {t("table.actions.copySurveyId")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push(`/survey/edit/${row.original.id}`)}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                {t("table.actions.edit")}
-                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleDuplicateSurvey(row.original.id)}>
                                 <Copy className="h-4 w-4 mr-2" />
                                 {t("table.actions.duplicate")}
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
+                            {(row.original.status === SurveyStatus.draft || row.original.status === SurveyStatus.published) && (<DropdownMenuSeparator />)}
                             {row.original.status === SurveyStatus.draft && (
                                 <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.published)}>
                                     <Users className="h-4 w-4 mr-2" />
@@ -295,15 +393,27 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                     {t("table.actions.archive")}
                                 </DropdownMenuItem>
                             )}
-                            <DropdownMenuItem
-                                variant="destructive"
-                                onClick={() => handleDeleteSurveyClick(row.original)}
-                            >
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                {t("table.actions.delete")}
-                            </DropdownMenuItem>
+                            {row.original.status === SurveyStatus.draft && (
+                                <DropdownMenuItem
+                                    variant="destructive"
+                                    onClick={() => handleDeleteSurveyClick(row.original)}
+                                >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    {t("table.actions.delete")}
+                                </DropdownMenuItem>
+                            )}
                         </DropdownMenuContent>
                     </DropdownMenu>
+                </div>
+            ),
+        },
+        {
+            id: "edit-record-mobile",
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Link href={`/survey/edit/${row.original.id}`}>
+                        <Edit className="h-4 w-4" />
+                    </Link>
                 </div>
             ),
         },
@@ -318,6 +428,11 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             enableHiding: false,
         },
         {
+            accessorKey: "status",
+            header: t("table.columns.status"),
+            cell: ({ row }) => getStatusBadge(row.original.status),
+        },
+        {
             accessorKey: "type",
             header: t("table.columns.type"),
             cell: ({ row }) => (
@@ -326,11 +441,7 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                 </Badge>
             ),
         },
-        {
-            accessorKey: "status",
-            header: t("table.columns.status"),
-            cell: ({ row }) => getStatusBadge(row.original.status),
-        },
+
         {
             accessorKey: "responses",
             header: () => <div className="w-full text-right">{t("table.columns.responses")}</div>,
@@ -361,9 +472,19 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             ),
         },
         {
+            id: "edit-record-desktop",
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Link href={`/survey/edit/${row.original.id}`}>
+                        <Edit className="h-4 w-4" />
+                    </Link>
+                </div>
+            ),
+        },
+        {
             id: "actions-desktop",
             cell: ({ row }) => (
-                <div className="hidden md:block">
+                <div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button
@@ -381,15 +502,11 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                 <Clipboard className="h-4 w-4 mr-2" />
                                 {t("table.actions.copySurveyId")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push(`/survey/edit/${row.original.id}`)}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                {t("table.actions.edit")}
-                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleDuplicateSurvey(row.original.id)}>
                                 <Copy className="h-4 w-4 mr-2" />
                                 {t("table.actions.duplicate")}
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
+                            {(row.original.status === SurveyStatus.draft || row.original.status === SurveyStatus.published) && (<DropdownMenuSeparator />)}
                             {row.original.status === SurveyStatus.draft && (
                                 <DropdownMenuItem onClick={() => handleUpdateStatus(row.original.id, SurveyStatus.published)}>
                                     <Users className="h-4 w-4 mr-2" />
@@ -418,29 +535,22 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
         },
     ]
 
+    // Simple table structure without client-side sorting/filtering/pagination
     const table = useReactTable({
-        data,
+        data: paginatedData.surveys,
         columns,
         state: {
-            sorting,
             columnVisibility,
             rowSelection,
-            columnFilters,
-            pagination,
         },
         getRowId: (row) => row.id.toString(),
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
-        onPaginationChange: setPagination,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFacetedRowModel: getFacetedRowModel(),
-        getFacetedUniqueValues: getFacetedUniqueValues(),
+        manualPagination: true,
+        manualSorting: true,
+        manualFiltering: true,
     })
 
     return (
@@ -451,7 +561,7 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                 <div className="flex items-center gap-2">
                     <h2 className="text-lg font-semibold">{t("table.title")}</h2>
                     <Badge variant="secondary" className="ml-2">
-                        {data.length} {t("table.totalSurveys")}
+                        {paginatedData.totalCount} {t("table.totalSurveys")}
                     </Badge>
                 </div>
                 <div className="flex w-full sm:w-auto items-center gap-2 justify-end">
@@ -505,18 +615,14 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                 <div className="flex-1">
                     <Input
                         placeholder={t("table.search.placeholder")}
-                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                        onChange={(event) =>
-                            table.getColumn("name")?.setFilterValue(event.target.value)
-                        }
+                        value={searchInput}
+                        onChange={(event) => handleSearchChange(event.target.value)}
                         className="max-w-sm"
                     />
                 </div>
                 <Select
-                    value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-                    onValueChange={(value) =>
-                        table.getColumn("status")?.setFilterValue(value === "all" ? "" : value)
-                    }
+                    value={statusFilter}
+                    onValueChange={handleStatusFilterChange}
                 >
                     <SelectTrigger className="w-40">
                         <SelectValue placeholder={t("table.filters.status")} />
@@ -537,18 +643,20 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                     <TableHeader className="bg-muted">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id} colSpan={header.colSpan}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    )
-                                })}
+                                {headerGroup.headers
+                                    .filter((header) => shouldShowColumn(header.id, isMobile))
+                                    .map((header) => {
+                                        return (
+                                            <TableHead key={header.id} colSpan={header.colSpan}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                            </TableHead>
+                                        )
+                                    })}
                             </TableRow>
                         ))}
                     </TableHeader>
@@ -559,38 +667,40 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                 >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {cell.column.id === "status"
-                                                ? flexRender(cell.column.columnDef.cell, cell.getContext())
-                                                : typeof cell.getValue() === "string"
-                                                    ? (
-                                                        <span
-                                                            className="block truncate max-w-xs"
-                                                            title={cell.getValue() as string}
-                                                        >
-                                                            <span className="sm:hidden">
-                                                                {(cell.getValue() as string).length > 20
-                                                                    ? `${(cell.getValue() as string).slice(0, 20)}…`
-                                                                    : cell.getValue() as string}
+                                    {row.getVisibleCells()
+                                        .filter((cell) => shouldShowColumn(cell.column.id, isMobile))
+                                        .map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {cell.column.id === "status"
+                                                    ? flexRender(cell.column.columnDef.cell, cell.getContext())
+                                                    : typeof cell.getValue() === "string"
+                                                        ? (
+                                                            <span
+                                                                className="block truncate max-w-xs"
+                                                                title={cell.getValue() as string}
+                                                            >
+                                                                <span className="sm:hidden">
+                                                                    {(cell.getValue() as string).length > 20
+                                                                        ? `${(cell.getValue() as string).slice(0, 20)}…`
+                                                                        : cell.getValue() as string}
+                                                                </span>
+                                                                <span className="hidden sm:block">
+                                                                    {(cell.getValue() as string).length > 35
+                                                                        ? `${(cell.getValue() as string).slice(0, 35)}…`
+                                                                        : cell.getValue() as string}
+                                                                </span>
                                                             </span>
-                                                            <span className="hidden sm:block">
-                                                                {(cell.getValue() as string).length > 40
-                                                                    ? `${(cell.getValue() as string).slice(0, 40)}…`
-                                                                    : cell.getValue() as string}
-                                                            </span>
-                                                        </span>
-                                                    )
-                                                    : flexRender(cell.column.columnDef.cell, cell.getContext())
-                                            }
-                                        </TableCell>
-                                    ))}
+                                                        )
+                                                        : flexRender(cell.column.columnDef.cell, cell.getContext())
+                                                }
+                                            </TableCell>
+                                        ))}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
                                 <TableCell
-                                    colSpan={columns.length}
+                                    colSpan={columns.filter(col => shouldShowColumn(col.id || '', isMobile)).length}
                                     className="h-24 text-center"
                                 >
                                     {t("table.messages.noResults")}
@@ -615,14 +725,14 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                             {t("table.pagination.rowsPerPage")}
                         </Label>
                         <Select
-                            value={`${table.getState().pagination.pageSize}`}
+                            value={`${paginatedData.pageSize}`}
                             onValueChange={(value) => {
-                                table.setPageSize(Number(value))
+                                handlePageSizeChange(Number(value))
                             }}
                         >
                             <SelectTrigger size="sm" className="w-20" id="rows-per-page">
                                 <SelectValue
-                                    placeholder={table.getState().pagination.pageSize}
+                                    placeholder={paginatedData.pageSize}
                                 />
                             </SelectTrigger>
                             <SelectContent side="top">
@@ -636,15 +746,15 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                     </div>
                     <div className="flex w-full items-center justify-end">
                         <div className="flex w-fit items-center justify-center text-sm font-medium mr-4">
-                            {t("table.pagination.page")} {table.getState().pagination.pageIndex + 1} {t("table.pagination.of")}{" "}
-                            {table.getPageCount()}
+                            {t("table.pagination.page")} {paginatedData.currentPage} {t("table.pagination.of")}{" "}
+                            {paginatedData.totalPages}
                         </div>
                         <div className="ml-auto flex items-center gap-2 lg:ml-0">
                             <Button
                                 variant="outline"
                                 className="hidden h-8 w-8 p-0 lg:flex"
-                                onClick={() => table.setPageIndex(0)}
-                                disabled={!table.getCanPreviousPage()}
+                                onClick={() => handlePageChange(1)}
+                                disabled={!paginatedData.hasPreviousPage}
                             >
                                 <span className="sr-only">{t("table.pagination.goToFirstPage")}</span>
                                 <ChevronsLeft />
@@ -653,8 +763,8 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                 variant="outline"
                                 className="size-8"
                                 size="icon"
-                                onClick={() => table.previousPage()}
-                                disabled={!table.getCanPreviousPage()}
+                                onClick={() => handlePageChange(paginatedData.currentPage - 1)}
+                                disabled={!paginatedData.hasPreviousPage}
                             >
                                 <span className="sr-only">{t("table.pagination.goToPreviousPage")}</span>
                                 <ChevronLeft />
@@ -663,8 +773,8 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                 variant="outline"
                                 className="size-8"
                                 size="icon"
-                                onClick={() => table.nextPage()}
-                                disabled={!table.getCanNextPage()}
+                                onClick={() => handlePageChange(paginatedData.currentPage + 1)}
+                                disabled={!paginatedData.hasNextPage}
                             >
                                 <span className="sr-only">{t("table.pagination.goToNextPage")}</span>
                                 <ChevronRight />
@@ -673,8 +783,8 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                                 variant="outline"
                                 className="hidden size-8 lg:flex"
                                 size="icon"
-                                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                                disabled={!table.getCanNextPage()}
+                                onClick={() => handlePageChange(paginatedData.totalPages)}
+                                disabled={!paginatedData.hasNextPage}
                             >
                                 <span className="sr-only">{t("table.pagination.goToLastPage")}</span>
                                 <ChevronsRight />

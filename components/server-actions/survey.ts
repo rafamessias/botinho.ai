@@ -7,6 +7,28 @@ import { prisma } from "@/prisma/lib/prisma"
 import { SurveyStatus, QuestionFormat } from "@/lib/generated/prisma"
 import { z } from "zod"
 
+// Database survey type
+interface DatabaseSurvey {
+    id: string
+    name: string
+    description: string | null
+    status: SurveyStatus
+    enabled: boolean
+    allowMultipleResponses: boolean
+    totalResponses: number
+    ResponseRate: number
+    totalOpenSurveys: number
+    createdAt: Date
+    updatedAt: Date
+    type: {
+        id: string
+        name: string
+    } | null
+    _count: {
+        responses: number
+    }
+}
+
 // Validation schemas
 const questionSchema = z.object({
     id: z.string().optional(),
@@ -349,6 +371,113 @@ export const getSurveys = async () => {
         return { success: true, surveys }
     } catch (error) {
         console.error("Error fetching surveys:", error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Failed to fetch surveys"
+        }
+    }
+}
+
+// Pagination and filter parameters schema
+const surveyFiltersSchema = z.object({
+    page: z.number().min(1).default(1),
+    pageSize: z.number().min(1).max(100).default(10),
+    search: z.string().optional(),
+    status: z.nativeEnum(SurveyStatus).optional(),
+    sortBy: z.enum(['name', 'status', 'createdAt', 'updatedAt', 'responses']).default('updatedAt'),
+    sortOrder: z.enum(['asc', 'desc']).default('desc')
+})
+
+export type SurveyFilters = z.infer<typeof surveyFiltersSchema>
+
+export interface PaginatedSurveysResult {
+    surveys: DatabaseSurvey[]
+    totalCount: number
+    totalPages: number
+    currentPage: number
+    pageSize: number
+    hasNextPage: boolean
+    hasPreviousPage: boolean
+}
+
+// Get surveys with pagination and filtering
+export const getSurveysWithPagination = async (filters: Partial<SurveyFilters> = {}) => {
+    try {
+        const wrapper = getPrismaWrapper()
+
+        // Validate and set default filters
+        const validatedFilters = surveyFiltersSchema.parse(filters)
+
+        // Build where clause for filtering
+        const whereClause: any = {}
+
+        if (validatedFilters.search) {
+            whereClause.OR = [
+                { name: { contains: validatedFilters.search, mode: 'insensitive' } },
+                { description: { contains: validatedFilters.search, mode: 'insensitive' } }
+            ]
+        }
+
+        if (validatedFilters.status) {
+            whereClause.status = validatedFilters.status
+        }
+
+        // Build orderBy clause
+        const orderBy: any = {}
+        if (validatedFilters.sortBy === 'responses') {
+            orderBy._count = { responses: validatedFilters.sortOrder }
+        } else {
+            orderBy[validatedFilters.sortBy] = validatedFilters.sortOrder
+        }
+
+        // Calculate pagination
+        const skip = (validatedFilters.page - 1) * validatedFilters.pageSize
+        const take = validatedFilters.pageSize
+
+        // Execute queries in parallel
+        const [surveys, totalCount] = await Promise.all([
+            wrapper.findMany(prisma.survey, {
+                where: whereClause,
+                include: {
+                    type: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    },
+                    _count: {
+                        select: {
+                            responses: true
+                        }
+                    }
+                },
+                orderBy,
+                skip,
+                take
+            }),
+            wrapper.count(prisma.survey, {
+                where: whereClause
+            })
+        ])
+
+        // Calculate pagination metadata
+        const totalPages = Math.ceil(totalCount / validatedFilters.pageSize)
+        const hasNextPage = validatedFilters.page < totalPages
+        const hasPreviousPage = validatedFilters.page > 1
+
+        const result: PaginatedSurveysResult = {
+            surveys: surveys as DatabaseSurvey[],
+            totalCount,
+            totalPages,
+            currentPage: validatedFilters.page,
+            pageSize: validatedFilters.pageSize,
+            hasNextPage,
+            hasPreviousPage
+        }
+
+        return { success: true, data: result }
+    } catch (error) {
+        console.error("Error fetching surveys with pagination:", error)
         return {
             success: false,
             error: error instanceof Error ? error.message : "Failed to fetch surveys"
