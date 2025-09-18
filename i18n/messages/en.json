@@ -214,7 +214,34 @@
             "codeCopiedDescription": "Code example copied to clipboard",
             "endpointCopied": "Endpoint copied",
             "endpointCopiedDescription": "API endpoint URL copied to clipboard",
-            "noTeam": "No team available. Please create or join a team first."
+            "noTeam": "No team available. Please create or join a team first.",
+            "confirmRegenerateTitle": "Regenerate Token",
+            "confirmRegenerateDescription": "Are you sure you want to regenerate this token? This action cannot be undone and will invalidate the current token.",
+            "confirmRegenerate": "Regenerate Token",
+            "cancel": "Cancel",
+            "widget": {
+                "title": "Survey Widget Integration",
+                "description": "Embed surveys directly on your website with our JavaScript widget",
+                "show": "Show Guide",
+                "hide": "Hide Guide",
+                "codeCopied": "Code copied to clipboard",
+                "htmlSetup": "HTML Setup",
+                "fullExample": "Complete Implementation",
+                "questionFormats": "Question Types Reference",
+                "quickStart": "Quick Start Guide",
+                "tabs": {
+                    "setup": "Setup",
+                    "implementation": "Implementation",
+                    "formats": "Question Types"
+                },
+                "steps": {
+                    "includeScript": "Include the widget script in your HTML",
+                    "createContainer": "Add a container div element",
+                    "configureQuestions": "Configure your survey questions",
+                    "addToken": "Add your team token for submissions",
+                    "mount": "Mount the widget to your container"
+                }
+            }
         }
     },
     "SignInForm": {

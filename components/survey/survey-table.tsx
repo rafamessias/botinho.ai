@@ -75,6 +75,7 @@ import { Link } from "@/i18n/navigation"
 import { deleteSurvey, duplicateSurvey, updateSurveyStatus } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { SurveyStatus } from "@/lib/generated/prisma"
+import LoadingComp from "../loading-comp"
 
 // Database survey type
 interface DatabaseSurvey {
@@ -153,6 +154,7 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
     const handleDeleteSurvey = () => {
         if (!surveyToDelete) return
 
+        setIsLoading(true)
         startTransition(async () => {
             try {
                 const result = await deleteSurvey(surveyToDelete.id)
@@ -167,11 +169,13 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             } finally {
                 setDeleteDialogOpen(false)
                 setSurveyToDelete(null)
+                setIsLoading(false)
             }
         })
     }
 
     const handleDuplicateSurvey = (id: string) => {
+        setIsLoading(true)
         startTransition(async () => {
             try {
                 const result = await duplicateSurvey(id)
@@ -184,11 +188,14 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                 }
             } catch (error) {
                 toast.error(t("table.messages.unexpectedError"))
+            } finally {
+                setIsLoading(false)
             }
         })
     }
 
     const handleUpdateStatus = (id: string, status: SurveyStatus) => {
+        setIsLoading(true)
         startTransition(async () => {
             try {
                 const result = await updateSurveyStatus(id, status)
@@ -202,17 +209,21 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                 }
             } catch (error) {
                 toast.error(t("table.messages.unexpectedError"))
+            } finally {
+                setIsLoading(false)
             }
         })
     }
 
     const handleCopySurveyId = async (surveyId: string) => {
+
         try {
             await navigator.clipboard.writeText(surveyId)
             toast.success(t("table.messages.surveyIdCopied"))
         } catch {
             toast.error(t("table.messages.copyError"))
         }
+
     }
 
     const columns: ColumnDef<DatabaseSurvey>[] = [
@@ -433,15 +444,6 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
     return (
         <div className="w-full space-y-4">
 
-            {/* Loading Spinner */}
-            {isLoading && (
-                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center">
-                    <div className="flex flex-col items-center space-y-3">
-                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                    </div>
-                </div>
-            )}
-
             {/* Table Header */}
             <div className="flex flex-col items-start sm:flex-row gap-4 sm:justify-between sm:items-center">
                 <div className="flex items-center gap-2">
@@ -527,7 +529,8 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
             </div>
 
             {/* Table */}
-            <div className="overflow-hidden rounded-lg border">
+            <div className="overflow-hidden rounded-lg border relative">
+                <LoadingComp isLoadingProp={isLoading} />
                 <Table>
                     <TableHeader className="bg-muted">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -548,16 +551,7 @@ export const SurveyTable = ({ surveys }: { surveys: DatabaseSurvey[] }) => {
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {isLoading ? (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
-                                    {t("table.messages.loadingSurveys")}
-                                </TableCell>
-                            </TableRow>
-                        ) : table.getRowModel().rows?.length ? (
+                        {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}

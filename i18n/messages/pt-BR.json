@@ -214,7 +214,34 @@
             "codeCopiedDescription": "Exemplo de código copiado para a área de transferência",
             "endpointCopied": "Endpoint copiado",
             "endpointCopiedDescription": "URL do endpoint da API copiada para a área de transferência",
-            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro."
+            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
+            "confirmRegenerateTitle": "Regenerar Token",
+            "confirmRegenerateDescription": "Tem certeza de que deseja regenerar este token? Esta ação não pode ser desfeita e invalidará o token atual.",
+            "confirmRegenerate": "Regenerar Token",
+            "cancel": "Cancelar",
+            "widget": {
+                "title": "Integração do Widget de Pesquisa",
+                "description": "Incorpore pesquisas diretamente no seu site com nosso widget JavaScript",
+                "show": "Mostrar Guia",
+                "hide": "Ocultar Guia",
+                "codeCopied": "Código copiado para a área de transferência",
+                "htmlSetup": "Configuração HTML",
+                "fullExample": "Implementação Completa",
+                "questionFormats": "Referência de Tipos de Pergunta",
+                "quickStart": "Guia de Início Rápido",
+                "tabs": {
+                    "setup": "Configuração",
+                    "implementation": "Implementação",
+                    "formats": "Tipos de Pergunta"
+                },
+                "steps": {
+                    "includeScript": "Inclua o script do widget no seu HTML",
+                    "createContainer": "Adicione um elemento div container",
+                    "configureQuestions": "Configure as perguntas da sua pesquisa",
+                    "addToken": "Adicione seu token da equipe para envios",
+                    "mount": "Monte o widget no seu container"
+                }
+            }
         }
     },
     "SignInForm": {

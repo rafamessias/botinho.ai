@@ -155,7 +155,6 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
     })
 
     const handleSave = () => {
-        console.log("surveyData", surveyData)
         setPendingAction('save')
         startTransition(async () => {
             try {
