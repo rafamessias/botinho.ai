@@ -183,6 +183,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                     <QuestionsSection
                         questions={surveyData.questions}
                         onChange={(questions) => setSurveyData({ ...surveyData, questions })}
+                        expandAllQuestions={true}
                     />
                 </TabsContent>
 

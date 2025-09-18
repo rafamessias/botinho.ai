@@ -264,6 +264,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                     <QuestionsSection
                         questions={surveyData.questions}
                         onChange={(questions) => setSurveyData({ ...surveyData, questions })}
+                        expandAllQuestions={false}
                     />
                 </TabsContent>
 

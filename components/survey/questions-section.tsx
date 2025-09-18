@@ -60,6 +60,7 @@ interface Question {
 interface QuestionsSectionProps {
     questions: Question[]
     onChange: (questions: Question[]) => void
+    expandAllQuestions?: boolean
 }
 
 const getQuestionFormats = (t: any) => [
@@ -555,10 +556,10 @@ const QuestionCard = ({
     )
 }
 
-export const QuestionsSection = ({ questions, onChange }: QuestionsSectionProps) => {
+export const QuestionsSection = ({ questions, onChange, expandAllQuestions = true }: QuestionsSectionProps) => {
     const t = useTranslations("CreateSurvey.questions")
     const [newlyAddedQuestionId, setNewlyAddedQuestionId] = useState<string | null>(null)
-    const [allExpanded, setAllExpanded] = useState(true)
+    const [allExpanded, setAllExpanded] = useState(expandAllQuestions)
 
     const sensors = useSensors(
         useSensor(PointerSensor),
