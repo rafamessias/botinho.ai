@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -9,22 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import CodeMirror from '@uiw/react-codemirror'
 import { css } from '@codemirror/lang-css'
 import { oneDark } from '@codemirror/theme-one-dark'
-import Script from "next/script"
-
-// Extend window interface for the survey widget
-declare global {
-    interface Window {
-        initSurveyWidget: (config: {
-            surveyData: any
-            customCSS?: string
-            onComplete?: (responses: any) => void
-            onClose?: () => void
-            autoClose?: number
-        }) => {
-            mount: (containerId: string) => void
-        }
-    }
-}
+import { OpineeoSurvey } from "@/components/survey-render"
 
 interface CreateSurveyData {
     id?: string
@@ -112,12 +97,9 @@ const getDefaultCSSTemplate = () => {
 
 export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps) => {
     const t = useTranslations("CreateSurvey.style")
-    const previewRef = useRef<HTMLDivElement>(null)
-    const widgetRef = useRef<any>(null)
     const [isDark, setIsDark] = useState(false)
     const [displayCSS, setDisplayCSS] = useState('')
     const [isInitialized, setIsInitialized] = useState(false)
-
     // Detect theme
     useEffect(() => {
         const checkTheme = () => {
@@ -203,66 +185,20 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
         `
     }
 
-    // Initialize/update preview widget
-    const initializePreview = () => {
-        if (typeof window === 'undefined' || !previewRef.current) return
-
-        if (!window.initSurveyWidget) {
-            previewRef.current.innerHTML = `
-                <div class="text-gray-500 dark:text-gray-400 text-center">
-                    <p>Widget not loaded yet...</p>
-                    <p class="text-sm mt-2">Please wait for the script to load.</p>
-                </div>
-            `
-            return
-        }
-
-        // Clean up existing widget
-        if (widgetRef.current) {
-            previewRef.current.innerHTML = ''
-        }
-
-        // Create container with unique ID
-        const containerId = 'survey-preview-' + Date.now()
-        previewRef.current.innerHTML = `<div id="${containerId}"></div>`
-
-        // Initialize new widget
-        try {
-            widgetRef.current = window.initSurveyWidget({
-                surveyData: surveyData,
-                customCSS: generateCustomCSS(),
-                onComplete: (responses: any) => {
-                    console.log('Preview completed:', responses)
-                    // Optionally reset the preview after a delay
-                    setTimeout(() => initializePreview(), 2000)
-                },
-                onClose: () => {
-                    console.log('Preview closed')
-                    // Reset the preview when closed
-                    setTimeout(() => initializePreview(), 500)
-                }
-            })
-
-            widgetRef.current.mount(containerId)
-        } catch (error) {
-            console.error('Error initializing preview widget:', error)
-            previewRef.current.innerHTML = `
-                <div class="text-red-500 dark:text-red-400 text-center">
-                    <p>Error loading preview</p>
-                    <p class="text-sm mt-2">Please check the console for details.</p>
-                </div>
-            `
-        }
+    // Handle survey completion in preview
+    const handlePreviewComplete = (responses: any) => {
+        console.log('Preview completed:', responses)
+        // Optionally reset the preview after a delay
+        setTimeout(() => { }, 2000)
     }
 
-    // Update preview when style changes
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            initializePreview()
-        }, 300) // Debounce updates
+    // Handle survey close in preview
+    const handlePreviewClose = () => {
+        console.log('Preview closed')
+        // Reset the preview when closed
+        setTimeout(() => { }, 500)
+    }
 
-        return () => clearTimeout(timeoutId)
-    }, [style, surveyData.name, surveyData.description])
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -511,24 +447,10 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="w-full min-h-[400px] rounded-lg p-4 overflow-hidden">
-                        <div ref={previewRef} className="w-full h-full flex items-center justify-center">
-                            <div className="text-gray-500 dark:text-gray-400">
-                                Loading preview...
-                            </div>
-                        </div>
+                        <OpineeoSurvey surveyData={{ ...surveyData, id: surveyData.id || 'preview-survey' }} customCSS={generateCustomCSS()} onComplete={handlePreviewComplete} onClose={() => handlePreviewClose()} />
                     </div>
                 </CardContent>
             </Card>
-
-            {/* Load the survey widget script */}
-            <Script
-                src="/opineeo-sv-w.min.js"
-                strategy="afterInteractive"
-                onLoad={() => {
-                    // Initialize preview once script is loaded
-                    setTimeout(() => initializePreview(), 100)
-                }}
-            />
         </div>
     )
 }

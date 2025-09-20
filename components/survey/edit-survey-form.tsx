@@ -228,9 +228,9 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
             <div className="space-y-2">
                 <Button variant="outline" size="icon" onClick={() => router.push("/survey")}><ArrowLeft className="h-4 w-4" /></Button>
                 <div className="flex flex-col items-start sm:items-center sm:flex-row">
-                    <p className="flex items-center flex-row">Survey ID: <Button variant="outline" size="icon" className="ml-2 sm:hidden" onClick={handleCopySurveyId}><Clipboard className="h-4 w-4" /></Button></p>
+                    <p className="flex items-center flex-row">Survey ID:</p>
                     <p
-                        className="text-muted-foreground cursor-pointer select-all transition-colors hover:text-primary focus:text-primary outline-none sm:ml-2 sm:flex sm:items-center sm:justify-center"
+                        className="text-muted-foreground cursor-pointer select-all transition-colors hover:text-primary focus:text-primary outline-none sm:ml-2 flex items-center justify-center"
                         tabIndex={0}
                         aria-label={t("actions.copySurveyId") || "Copy Survey ID"}
                         onClick={handleCopySurveyId}
@@ -241,7 +241,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                         }}
                         role="button"
                     >
-                        {surveyData.id} <Button variant="outline" size="icon" className="ml-2 hidden sm:flex sm:items-center sm:justify-center" onClick={handleCopySurveyId}><Clipboard className="h-4 w-4" /></Button>
+                        {surveyData.id} <Button variant="outline" size="icon" className="ml-2 flex items-center justify-center" onClick={handleCopySurveyId}><Clipboard className="h-4 w-4" /></Button>
                     </p>
                 </div>
             </div>
