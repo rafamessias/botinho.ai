@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
-import { Download, Table, BarChart3 } from "lucide-react"
+import { Download, Table, BarChart3, ChevronDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -19,22 +19,20 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import {
-    Table as TableComponent,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -42,7 +40,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { RawDataTable } from "./raw-data-table"
-import { SurveyData, Question, Option, SurveyResponse, ResponseAnswer } from "./types"
+import { SurveyData, Question } from "./types"
 
 interface SurveyResultsProps {
     surveys: SurveyData[]
@@ -52,6 +50,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     const [selectedSurveyId, setSelectedSurveyId] = React.useState<string>("")
     const [viewMode, setViewMode] = React.useState<"charts" | "table">("charts")
     const [isExporting, setIsExporting] = React.useState(false)
+    const [open, setOpen] = React.useState(false)
 
     const selectedSurvey = surveys.find(survey => survey.id === selectedSurveyId)
 
@@ -150,12 +149,14 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     const renderQuestionChart = (question: Question) => {
         if (question.type === "text" || !question.options) return null
 
-        const data = question.options.map(option => ({
-            answer: option.label,
-            count: option.count,
-            percentage: question.options ?
-                ((option.count / question.options.reduce((sum, opt) => sum + opt.count, 0)) * 100).toFixed(1) : 0
-        }))
+        const data = question.options
+            .map(option => ({
+                answer: option.label,
+                count: option.count,
+                percentage: question.options ?
+                    ((option.count / question.options.reduce((sum, opt) => sum + opt.count, 0)) * 100).toFixed(1) : 0
+            }))
+            .sort((a, b) => b.count - a.count) // Sort by count in descending order
 
         const chartConfig = {
             count: {
@@ -274,7 +275,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     return (
         <div className="space-y-6">
             {/* Survey Selection */}
-            <Card className="border-none shadow-none">
+            <Card className="border-none shadow-none m-0">
                 <CardHeader>
                     <CardTitle>Survey Results</CardTitle>
                     <CardDescription>
@@ -284,23 +285,57 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
                 <CardContent>
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                         <div className="flex-1 min-w-0">
-                            <Select value={selectedSurveyId} onValueChange={setSelectedSurveyId}>
-                                <SelectTrigger className="w-full sm:max-w-md">
-                                    <SelectValue placeholder="Select a survey to view results" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {surveys.map((survey) => (
-                                        <SelectItem key={survey.id} value={survey.id}>
-                                            <div className="flex flex-col">
-                                                <span className="font-medium">{survey.title}</span>
-                                                <span className="text-sm text-muted-foreground">
-                                                    {survey.totalResponses} responses • {survey.createdAt}
-                                                </span>
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Popover open={open} onOpenChange={setOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={open}
+                                        className="w-full sm:max-w-md justify-between h-14"
+                                    >
+                                        <div className="flex flex-col items-start min-w-0 flex-1">
+                                            {selectedSurvey ? (
+                                                <>
+                                                    <span className="font-medium truncate">{selectedSurvey.title}</span>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {selectedSurvey.totalResponses} responses • {selectedSurvey.createdAt}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <span className="text-muted-foreground">Select a survey to view results</span>
+                                            )}
+                                        </div>
+                                        <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                                    <Command>
+                                        <CommandInput placeholder="Search surveys..." />
+                                        <CommandList>
+                                            <CommandEmpty>No surveys found.</CommandEmpty>
+                                            <CommandGroup>
+                                                {surveys.map((survey) => (
+                                                    <CommandItem
+                                                        key={survey.id}
+                                                        value={survey.title}
+                                                        onSelect={() => {
+                                                            setSelectedSurveyId(survey.id)
+                                                            setOpen(false)
+                                                        }}
+                                                    >
+                                                        <div className="flex flex-col w-full">
+                                                            <span className="font-medium">{survey.title}</span>
+                                                            <span className="text-sm text-muted-foreground">
+                                                                {survey.totalResponses} responses • {survey.createdAt}
+                                                            </span>
+                                                        </div>
+                                                    </CommandItem>
+                                                ))}
+                                            </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
                         </div>
 
                         {selectedSurvey && (
