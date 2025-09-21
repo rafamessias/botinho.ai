@@ -282,7 +282,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
             </Tabs>
 
             {/* Action Buttons */}
-            <Card className="border-none px-0 pt-4 shadow-none">
+            <Card className="border-none px-0 pt-4 shadow-none bg-transparent">
                 <CardContent className="pt-6 p-0">
                     <div className="flex flex-col sm:flex-row gap-3 justify-end">
                         <Button

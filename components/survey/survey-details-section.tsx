@@ -45,7 +45,7 @@ export const SurveyDetailsSection = ({ data, onChange, surveyTypesData }: Survey
 
     return (
         <>
-            <Card className="border-none p-0 shadow-none">
+            <Card className="border-none p-0 shadow-none bg-transparent">
                 <CardHeader className="p-0">
                     <CardTitle>{t("title")}</CardTitle>
                 </CardHeader>

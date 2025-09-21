@@ -637,7 +637,7 @@ export const QuestionsSection = ({ questions, onChange, expandAllQuestions = tru
     }
 
     return (
-        <Card className="border-none px-0 pt-4 shadow-none">
+        <Card className="border-none px-0 pt-4 shadow-none bg-transparent">
             <CardHeader className="p-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">

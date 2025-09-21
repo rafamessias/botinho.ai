@@ -275,7 +275,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     return (
         <div className="space-y-6">
             {/* Survey Selection */}
-            <Card className="border-none shadow-none m-0">
+            <Card className="border-none shadow-none m-0 bg-transparent">
                 <CardHeader>
                     <CardTitle>Survey Results</CardTitle>
                     <CardDescription>
@@ -376,7 +376,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
 
             {/* Results Display */}
             {!selectedSurvey ? (
-                <Card className="border-none shadow-none">
+                <Card className="border-none shadow-none bg-transparent">
                     <CardContent className="flex items-center justify-center py-12">
                         <div className="text-center">
                             <p className="text-muted-foreground text-lg mb-2">No survey selected</p>
@@ -387,7 +387,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
             ) : (
                 <div className="space-y-6">
                     {/* Survey Info */}
-                    <Card className="border-none shadow-none">
+                    <Card className="border-none shadow-none bg-transparent">
                         <CardHeader>
                             <CardTitle>{selectedSurvey.title}</CardTitle>
                             <CardDescription>{selectedSurvey.description}</CardDescription>

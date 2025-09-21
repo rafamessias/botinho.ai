@@ -4,7 +4,6 @@ import * as React from "react"
 import { useTranslations } from "next-intl"
 import {
   IconDashboard,
-  IconInnerShadowTop,
   IconListDetails,
   IconSettings,
   IconUsers
@@ -21,6 +20,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { BarChart3 } from "lucide-react"
+import { Link } from "@/i18n/navigation"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations("AppSidebar")
@@ -64,10 +65,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">My SaaS</span>
-              </a>
+              <Link href="/">
+                <span className="bg-primary rounded-sm p-1">
+                  <BarChart3 className="h-5 w-5 text-primary-foreground" />
+                </span>
+                <span className="text-base font-semibold">Opineeo</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

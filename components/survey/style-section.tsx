@@ -223,7 +223,7 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="border-none px-0 pt-4 shadow-none">
+            <Card className="border-none px-0 pt-4 shadow-none bg-transparent">
                 <CardHeader className="p-0">
                     <div className="flex items-center justify-between">
                         <CardTitle>{t("title")}</CardTitle>
@@ -464,7 +464,7 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
             </Card>
 
             {/* Live Preview */}
-            <Card className="border-none px-0 pt-4 shadow-none">
+            <Card className="border-none px-0 pt-4 shadow-none bg-transparent">
                 <CardHeader className="p-0">
                     <div className="flex items-center justify-between">
                         <CardTitle>Live Preview</CardTitle>
