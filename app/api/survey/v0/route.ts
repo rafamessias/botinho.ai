@@ -7,6 +7,9 @@ import { ResponseStatus, StyleMode, SurveyStyle } from '@/lib/generated/prisma';
 const surveyAnswerSchema = z.object({
     teamToken: z.string().min(1, 'Team token is required'),
     surveyId: z.string().min(1, 'Survey ID is required'),
+    userId: z.string().optional(),
+    userIp: z.string().optional(),
+    extraInfo: z.string().optional(),
     responses: z.array(z.object({
         questionId: z.string().min(1, 'Question ID is required'),
         optionId: z.string().optional(),
@@ -138,12 +141,16 @@ export async function POST(request: NextRequest) {
                     surveyId: validatedData.surveyId,
                     teamId: team.id,
                     status: ResponseStatus.completed,
-                    submittedAt: new Date()
+                    submittedAt: new Date(),
+                    userId: validatedData.userId || '',
+                    userIp: validatedData.userIp || '',
+                    extraInfo: validatedData.extraInfo || ''
                 }
             });
 
             // Create question responses
             const questionResponses = [];
+            const surveyResponseSummaries = [];
             for (const response of validatedData.responses) {
                 const questionResponse = await tx.questionResponse.create({
                     data: {
@@ -158,6 +165,82 @@ export async function POST(request: NextRequest) {
                     }
                 });
                 questionResponses.push(questionResponse);
+
+                // INSERT_YOUR_CODE
+
+                // For each question response, create or update SurveyResponseSummary
+                // - If optionId exists, summary is per (surveyId, questionId, optionId, teamId)
+                // - If optionId is null, summary is per (surveyId, questionId, null, teamId)
+                // - responseId is the surveyResponse.id just created
+
+                // Use a Set to avoid duplicate (questionId, optionId) in the same submission
+                const summaryKeys = new Set<string>();
+
+                for (const response of validatedData.responses) {
+                    // Determine which unique key to use based on response type
+                    let whereClause: any;
+                    let summaryKey: string;
+
+                    if (response.numberValue !== undefined || response.numberValue !== null) {
+                        // Use numberValue unique key
+                        whereClause = {
+                            surveyId_questionId_numberValue_teamId: {
+                                surveyId: validatedData.surveyId,
+                                questionId: response.questionId,
+                                numberValue: response.numberValue,
+                                teamId: team.id
+                            }
+                        };
+                        summaryKey = `${validatedData.surveyId}|${response.questionId}|number:${response.numberValue}|${team.id}`;
+                    } else if (response.booleanValue !== undefined || response.booleanValue !== null) {
+                        // Use booleanValue unique key
+                        whereClause = {
+                            surveyId_questionId_booleanValue_teamId: {
+                                surveyId: validatedData.surveyId,
+                                questionId: response.questionId,
+                                booleanValue: response.booleanValue,
+                                teamId: team.id
+                            }
+                        };
+                        summaryKey = `${validatedData.surveyId}|${response.questionId}|boolean:${response.booleanValue}|${team.id}`;
+                    } else {
+                        // Use optionId unique key (default)
+                        whereClause = {
+                            surveyId_questionId_optionId_teamId: {
+                                surveyId: validatedData.surveyId,
+                                questionId: response.questionId,
+                                optionId: response.optionId ?? '',
+                                teamId: team.id
+                            }
+                        };
+                        summaryKey = `${validatedData.surveyId}|${response.questionId}|option:${response.optionId ?? 'null'}|${team.id}`;
+                    }
+
+                    if (summaryKeys.has(summaryKey)) continue;
+                    summaryKeys.add(summaryKey);
+
+                    const summary = await tx.surveyResponseSummary.upsert({
+                        where: whereClause,
+                        update: {
+                            responseCount: { increment: 1 },
+                            lastUpdated: new Date()
+                        },
+                        create: {
+                            surveyId: validatedData.surveyId,
+                            questionId: response.questionId,
+                            optionId: response.optionId ?? '',
+                            isOther: response.isOther ?? false,
+                            numberValue: response.numberValue ?? null,
+                            booleanValue: response.booleanValue ?? null,
+                            teamId: team.id,
+                            responseCount: 1,
+                            lastUpdated: new Date(),
+                            responseId: surveyResponse.id
+                        }
+                    });
+
+                    surveyResponseSummaries.push(summary);
+                }
             }
 
             // Update team response count
@@ -168,7 +251,7 @@ export async function POST(request: NextRequest) {
                 }
             });
 
-            return { surveyResponse, questionResponses };
+            return { surveyResponse, questionResponses, surveyResponseSummaries };
         });
 
         return NextResponse.json({

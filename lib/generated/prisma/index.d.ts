@@ -79,6 +79,11 @@ export type QuestionOption = $Result.DefaultSelection<Prisma.$QuestionOptionPayl
  */
 export type SurveyResponse = $Result.DefaultSelection<Prisma.$SurveyResponsePayload>
 /**
+ * Model SurveyResponseSummary
+ * 
+ */
+export type SurveyResponseSummary = $Result.DefaultSelection<Prisma.$SurveyResponseSummaryPayload>
+/**
  * Model QuestionResponse
  * 
  */
@@ -440,6 +445,16 @@ export class PrismaClient<
     * ```
     */
   get surveyResponse(): Prisma.SurveyResponseDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.surveyResponseSummary`: Exposes CRUD operations for the **SurveyResponseSummary** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SurveyResponseSummaries
+    * const surveyResponseSummaries = await prisma.surveyResponseSummary.findMany()
+    * ```
+    */
+  get surveyResponseSummary(): Prisma.SurveyResponseSummaryDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.questionResponse`: Exposes CRUD operations for the **QuestionResponse** model.
@@ -903,6 +918,7 @@ export namespace Prisma {
     Question: 'Question',
     QuestionOption: 'QuestionOption',
     SurveyResponse: 'SurveyResponse',
+    SurveyResponseSummary: 'SurveyResponseSummary',
     QuestionResponse: 'QuestionResponse'
   };
 
@@ -922,7 +938,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "team" | "teamMember" | "surveyType" | "survey" | "surveyStyle" | "question" | "questionOption" | "surveyResponse" | "questionResponse"
+      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "team" | "teamMember" | "surveyType" | "survey" | "surveyStyle" | "question" | "questionOption" | "surveyResponse" | "surveyResponseSummary" | "questionResponse"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1888,6 +1904,80 @@ export namespace Prisma {
           }
         }
       }
+      SurveyResponseSummary: {
+        payload: Prisma.$SurveyResponseSummaryPayload<ExtArgs>
+        fields: Prisma.SurveyResponseSummaryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SurveyResponseSummaryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SurveyResponseSummaryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>
+          }
+          findFirst: {
+            args: Prisma.SurveyResponseSummaryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SurveyResponseSummaryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>
+          }
+          findMany: {
+            args: Prisma.SurveyResponseSummaryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>[]
+          }
+          create: {
+            args: Prisma.SurveyResponseSummaryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>
+          }
+          createMany: {
+            args: Prisma.SurveyResponseSummaryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SurveyResponseSummaryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>[]
+          }
+          delete: {
+            args: Prisma.SurveyResponseSummaryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>
+          }
+          update: {
+            args: Prisma.SurveyResponseSummaryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>
+          }
+          deleteMany: {
+            args: Prisma.SurveyResponseSummaryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SurveyResponseSummaryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SurveyResponseSummaryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>[]
+          }
+          upsert: {
+            args: Prisma.SurveyResponseSummaryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SurveyResponseSummaryPayload>
+          }
+          aggregate: {
+            args: Prisma.SurveyResponseSummaryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSurveyResponseSummary>
+          }
+          groupBy: {
+            args: Prisma.SurveyResponseSummaryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SurveyResponseSummaryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SurveyResponseSummaryCountArgs<ExtArgs>
+            result: $Utils.Optional<SurveyResponseSummaryCountAggregateOutputType> | number
+          }
+        }
+      }
       QuestionResponse: {
         payload: Prisma.$QuestionResponsePayload<ExtArgs>
         fields: Prisma.QuestionResponseFieldRefs
@@ -2067,6 +2157,7 @@ export namespace Prisma {
     question?: QuestionOmit
     questionOption?: QuestionOptionOmit
     surveyResponse?: SurveyResponseOmit
+    surveyResponseSummary?: SurveyResponseSummaryOmit
     questionResponse?: QuestionResponseOmit
   }
 
@@ -2237,6 +2328,7 @@ export namespace Prisma {
     surveys: number
     members: number
     user: number
+    responseSummaries: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2249,6 +2341,7 @@ export namespace Prisma {
     surveys?: boolean | TeamCountOutputTypeCountSurveysArgs
     members?: boolean | TeamCountOutputTypeCountMembersArgs
     user?: boolean | TeamCountOutputTypeCountUserArgs
+    responseSummaries?: boolean | TeamCountOutputTypeCountResponseSummariesArgs
   }
 
   // Custom InputTypes
@@ -2325,6 +2418,13 @@ export namespace Prisma {
     where?: UserWhereInput
   }
 
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountResponseSummariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyResponseSummaryWhereInput
+  }
+
 
   /**
    * Count Type SurveyTypeCountOutputType
@@ -2364,11 +2464,13 @@ export namespace Prisma {
   export type SurveyCountOutputType = {
     questions: number
     responses: number
+    SurveyResponseSummary: number
   }
 
   export type SurveyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questions?: boolean | SurveyCountOutputTypeCountQuestionsArgs
     responses?: boolean | SurveyCountOutputTypeCountResponsesArgs
+    SurveyResponseSummary?: boolean | SurveyCountOutputTypeCountSurveyResponseSummaryArgs
   }
 
   // Custom InputTypes
@@ -2396,6 +2498,13 @@ export namespace Prisma {
     where?: SurveyResponseWhereInput
   }
 
+  /**
+   * SurveyCountOutputType without action
+   */
+  export type SurveyCountOutputTypeCountSurveyResponseSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyResponseSummaryWhereInput
+  }
+
 
   /**
    * Count Type QuestionCountOutputType
@@ -2404,11 +2513,13 @@ export namespace Prisma {
   export type QuestionCountOutputType = {
     options: number
     responses: number
+    SurveyResponseSummary: number
   }
 
   export type QuestionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     options?: boolean | QuestionCountOutputTypeCountOptionsArgs
     responses?: boolean | QuestionCountOutputTypeCountResponsesArgs
+    SurveyResponseSummary?: boolean | QuestionCountOutputTypeCountSurveyResponseSummaryArgs
   }
 
   // Custom InputTypes
@@ -2436,6 +2547,13 @@ export namespace Prisma {
     where?: QuestionResponseWhereInput
   }
 
+  /**
+   * QuestionCountOutputType without action
+   */
+  export type QuestionCountOutputTypeCountSurveyResponseSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyResponseSummaryWhereInput
+  }
+
 
   /**
    * Count Type QuestionOptionCountOutputType
@@ -2443,10 +2561,12 @@ export namespace Prisma {
 
   export type QuestionOptionCountOutputType = {
     responses: number
+    SurveyResponseSummary: number
   }
 
   export type QuestionOptionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     responses?: boolean | QuestionOptionCountOutputTypeCountResponsesArgs
+    SurveyResponseSummary?: boolean | QuestionOptionCountOutputTypeCountSurveyResponseSummaryArgs
   }
 
   // Custom InputTypes
@@ -2467,6 +2587,13 @@ export namespace Prisma {
     where?: QuestionResponseWhereInput
   }
 
+  /**
+   * QuestionOptionCountOutputType without action
+   */
+  export type QuestionOptionCountOutputTypeCountSurveyResponseSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyResponseSummaryWhereInput
+  }
+
 
   /**
    * Count Type SurveyResponseCountOutputType
@@ -2474,10 +2601,12 @@ export namespace Prisma {
 
   export type SurveyResponseCountOutputType = {
     questionResponses: number
+    SurveyResponseSummary: number
   }
 
   export type SurveyResponseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questionResponses?: boolean | SurveyResponseCountOutputTypeCountQuestionResponsesArgs
+    SurveyResponseSummary?: boolean | SurveyResponseCountOutputTypeCountSurveyResponseSummaryArgs
   }
 
   // Custom InputTypes
@@ -2496,6 +2625,13 @@ export namespace Prisma {
    */
   export type SurveyResponseCountOutputTypeCountQuestionResponsesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QuestionResponseWhereInput
+  }
+
+  /**
+   * SurveyResponseCountOutputType without action
+   */
+  export type SurveyResponseCountOutputTypeCountSurveyResponseSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyResponseSummaryWhereInput
   }
 
 
@@ -8613,6 +8749,7 @@ export namespace Prisma {
     surveys?: boolean | Team$surveysArgs<ExtArgs>
     members?: boolean | Team$membersArgs<ExtArgs>
     user?: boolean | Team$userArgs<ExtArgs>
+    responseSummaries?: boolean | Team$responseSummariesArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
 
@@ -8669,6 +8806,7 @@ export namespace Prisma {
     surveys?: boolean | Team$surveysArgs<ExtArgs>
     members?: boolean | Team$membersArgs<ExtArgs>
     user?: boolean | Team$userArgs<ExtArgs>
+    responseSummaries?: boolean | Team$responseSummariesArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8686,6 +8824,7 @@ export namespace Prisma {
       surveys: Prisma.$SurveyPayload<ExtArgs>[]
       members: Prisma.$TeamMemberPayload<ExtArgs>[]
       user: Prisma.$UserPayload<ExtArgs>[]
+      responseSummaries: Prisma.$SurveyResponseSummaryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -9102,6 +9241,7 @@ export namespace Prisma {
     surveys<T extends Team$surveysArgs<ExtArgs> = {}>(args?: Subset<T, Team$surveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     members<T extends Team$membersArgs<ExtArgs> = {}>(args?: Subset<T, Team$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     user<T extends Team$userArgs<ExtArgs> = {}>(args?: Subset<T, Team$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    responseSummaries<T extends Team$responseSummariesArgs<ExtArgs> = {}>(args?: Subset<T, Team$responseSummariesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9743,6 +9883,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Team.responseSummaries
+   */
+  export type Team$responseSummariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    where?: SurveyResponseSummaryWhereInput
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SurveyResponseSummaryScalarFieldEnum | SurveyResponseSummaryScalarFieldEnum[]
   }
 
   /**
@@ -12343,6 +12507,7 @@ export namespace Prisma {
     style?: boolean | Survey$styleArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
     type?: boolean | Survey$typeArgs<ExtArgs>
+    SurveyResponseSummary?: boolean | Survey$SurveyResponseSummaryArgs<ExtArgs>
     _count?: boolean | SurveyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["survey"]>
 
@@ -12402,6 +12567,7 @@ export namespace Prisma {
     style?: boolean | Survey$styleArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
     type?: boolean | Survey$typeArgs<ExtArgs>
+    SurveyResponseSummary?: boolean | Survey$SurveyResponseSummaryArgs<ExtArgs>
     _count?: boolean | SurveyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SurveyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12421,6 +12587,7 @@ export namespace Prisma {
       style: Prisma.$SurveyStylePayload<ExtArgs> | null
       team: Prisma.$TeamPayload<ExtArgs>
       type: Prisma.$SurveyTypePayload<ExtArgs> | null
+      SurveyResponseSummary: Prisma.$SurveyResponseSummaryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12834,6 +13001,7 @@ export namespace Prisma {
     style<T extends Survey$styleArgs<ExtArgs> = {}>(args?: Subset<T, Survey$styleArgs<ExtArgs>>): Prisma__SurveyStyleClient<$Result.GetResult<Prisma.$SurveyStylePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     type<T extends Survey$typeArgs<ExtArgs> = {}>(args?: Subset<T, Survey$typeArgs<ExtArgs>>): Prisma__SurveyTypeClient<$Result.GetResult<Prisma.$SurveyTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    SurveyResponseSummary<T extends Survey$SurveyResponseSummaryArgs<ExtArgs> = {}>(args?: Subset<T, Survey$SurveyResponseSummaryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13354,6 +13522,30 @@ export namespace Prisma {
      */
     include?: SurveyTypeInclude<ExtArgs> | null
     where?: SurveyTypeWhereInput
+  }
+
+  /**
+   * Survey.SurveyResponseSummary
+   */
+  export type Survey$SurveyResponseSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    where?: SurveyResponseSummaryWhereInput
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SurveyResponseSummaryScalarFieldEnum | SurveyResponseSummaryScalarFieldEnum[]
   }
 
   /**
@@ -14935,6 +15127,7 @@ export namespace Prisma {
     responses?: boolean | Question$responsesArgs<ExtArgs>
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    SurveyResponseSummary?: boolean | Question$SurveyResponseSummaryArgs<ExtArgs>
     _count?: boolean | QuestionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["question"]>
 
@@ -14999,6 +15192,7 @@ export namespace Prisma {
     responses?: boolean | Question$responsesArgs<ExtArgs>
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    SurveyResponseSummary?: boolean | Question$SurveyResponseSummaryArgs<ExtArgs>
     _count?: boolean | QuestionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type QuestionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15017,6 +15211,7 @@ export namespace Prisma {
       responses: Prisma.$QuestionResponsePayload<ExtArgs>[]
       survey: Prisma.$SurveyPayload<ExtArgs>
       team: Prisma.$TeamPayload<ExtArgs>
+      SurveyResponseSummary: Prisma.$SurveyResponseSummaryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -15431,6 +15626,7 @@ export namespace Prisma {
     responses<T extends Question$responsesArgs<ExtArgs> = {}>(args?: Subset<T, Question$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     survey<T extends SurveyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SurveyDefaultArgs<ExtArgs>>): Prisma__SurveyClient<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    SurveyResponseSummary<T extends Question$SurveyResponseSummaryArgs<ExtArgs> = {}>(args?: Subset<T, Question$SurveyResponseSummaryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15918,6 +16114,30 @@ export namespace Prisma {
   }
 
   /**
+   * Question.SurveyResponseSummary
+   */
+  export type Question$SurveyResponseSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    where?: SurveyResponseSummaryWhereInput
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SurveyResponseSummaryScalarFieldEnum | SurveyResponseSummaryScalarFieldEnum[]
+  }
+
+  /**
    * Question without action
    */
   export type QuestionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16165,6 +16385,7 @@ export namespace Prisma {
     question?: boolean | QuestionDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
     responses?: boolean | QuestionOption$responsesArgs<ExtArgs>
+    SurveyResponseSummary?: boolean | QuestionOption$SurveyResponseSummaryArgs<ExtArgs>
     _count?: boolean | QuestionOptionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["questionOption"]>
 
@@ -16210,6 +16431,7 @@ export namespace Prisma {
     question?: boolean | QuestionDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
     responses?: boolean | QuestionOption$responsesArgs<ExtArgs>
+    SurveyResponseSummary?: boolean | QuestionOption$SurveyResponseSummaryArgs<ExtArgs>
     _count?: boolean | QuestionOptionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type QuestionOptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16227,6 +16449,7 @@ export namespace Prisma {
       question: Prisma.$QuestionPayload<ExtArgs>
       team: Prisma.$TeamPayload<ExtArgs>
       responses: Prisma.$QuestionResponsePayload<ExtArgs>[]
+      SurveyResponseSummary: Prisma.$SurveyResponseSummaryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -16634,6 +16857,7 @@ export namespace Prisma {
     question<T extends QuestionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, QuestionDefaultArgs<ExtArgs>>): Prisma__QuestionClient<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     responses<T extends QuestionOption$responsesArgs<ExtArgs> = {}>(args?: Subset<T, QuestionOption$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    SurveyResponseSummary<T extends QuestionOption$SurveyResponseSummaryArgs<ExtArgs> = {}>(args?: Subset<T, QuestionOption$SurveyResponseSummaryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17091,6 +17315,30 @@ export namespace Prisma {
   }
 
   /**
+   * QuestionOption.SurveyResponseSummary
+   */
+  export type QuestionOption$SurveyResponseSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    where?: SurveyResponseSummaryWhereInput
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SurveyResponseSummaryScalarFieldEnum | SurveyResponseSummaryScalarFieldEnum[]
+  }
+
+  /**
    * QuestionOption without action
    */
   export type QuestionOptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17307,9 +17555,9 @@ export namespace Prisma {
   export type SurveyResponseGroupByOutputType = {
     id: string
     status: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId: string | null
+    userIp: string | null
+    extraInfo: string | null
     submittedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -17350,6 +17598,7 @@ export namespace Prisma {
     questionResponses?: boolean | SurveyResponse$questionResponsesArgs<ExtArgs>
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    SurveyResponseSummary?: boolean | SurveyResponse$SurveyResponseSummaryArgs<ExtArgs>
     _count?: boolean | SurveyResponseCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["surveyResponse"]>
 
@@ -17401,6 +17650,7 @@ export namespace Prisma {
     questionResponses?: boolean | SurveyResponse$questionResponsesArgs<ExtArgs>
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    SurveyResponseSummary?: boolean | SurveyResponse$SurveyResponseSummaryArgs<ExtArgs>
     _count?: boolean | SurveyResponseCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SurveyResponseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17418,13 +17668,14 @@ export namespace Prisma {
       questionResponses: Prisma.$QuestionResponsePayload<ExtArgs>[]
       survey: Prisma.$SurveyPayload<ExtArgs>
       team: Prisma.$TeamPayload<ExtArgs>
+      SurveyResponseSummary: Prisma.$SurveyResponseSummaryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       status: $Enums.ResponseStatus
-      userId: string
-      userIp: string
-      extraInfo: string
+      userId: string | null
+      userIp: string | null
+      extraInfo: string | null
       submittedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -17827,6 +18078,7 @@ export namespace Prisma {
     questionResponses<T extends SurveyResponse$questionResponsesArgs<ExtArgs> = {}>(args?: Subset<T, SurveyResponse$questionResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     survey<T extends SurveyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SurveyDefaultArgs<ExtArgs>>): Prisma__SurveyClient<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    SurveyResponseSummary<T extends SurveyResponse$SurveyResponseSummaryArgs<ExtArgs> = {}>(args?: Subset<T, SurveyResponse$SurveyResponseSummaryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -18286,6 +18538,30 @@ export namespace Prisma {
   }
 
   /**
+   * SurveyResponse.SurveyResponseSummary
+   */
+  export type SurveyResponse$SurveyResponseSummaryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    where?: SurveyResponseSummaryWhereInput
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SurveyResponseSummaryScalarFieldEnum | SurveyResponseSummaryScalarFieldEnum[]
+  }
+
+  /**
    * SurveyResponse without action
    */
   export type SurveyResponseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18301,6 +18577,1235 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: SurveyResponseInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SurveyResponseSummary
+   */
+
+  export type AggregateSurveyResponseSummary = {
+    _count: SurveyResponseSummaryCountAggregateOutputType | null
+    _avg: SurveyResponseSummaryAvgAggregateOutputType | null
+    _sum: SurveyResponseSummarySumAggregateOutputType | null
+    _min: SurveyResponseSummaryMinAggregateOutputType | null
+    _max: SurveyResponseSummaryMaxAggregateOutputType | null
+  }
+
+  export type SurveyResponseSummaryAvgAggregateOutputType = {
+    numberValue: number | null
+    teamId: number | null
+    responseCount: number | null
+  }
+
+  export type SurveyResponseSummarySumAggregateOutputType = {
+    numberValue: number | null
+    teamId: number | null
+    responseCount: number | null
+  }
+
+  export type SurveyResponseSummaryMinAggregateOutputType = {
+    id: string | null
+    surveyId: string | null
+    questionId: string | null
+    responseId: string | null
+    optionId: string | null
+    isOther: boolean | null
+    numberValue: number | null
+    booleanValue: boolean | null
+    teamId: number | null
+    responseCount: number | null
+    lastUpdated: Date | null
+  }
+
+  export type SurveyResponseSummaryMaxAggregateOutputType = {
+    id: string | null
+    surveyId: string | null
+    questionId: string | null
+    responseId: string | null
+    optionId: string | null
+    isOther: boolean | null
+    numberValue: number | null
+    booleanValue: boolean | null
+    teamId: number | null
+    responseCount: number | null
+    lastUpdated: Date | null
+  }
+
+  export type SurveyResponseSummaryCountAggregateOutputType = {
+    id: number
+    surveyId: number
+    questionId: number
+    responseId: number
+    optionId: number
+    isOther: number
+    numberValue: number
+    booleanValue: number
+    teamId: number
+    responseCount: number
+    lastUpdated: number
+    _all: number
+  }
+
+
+  export type SurveyResponseSummaryAvgAggregateInputType = {
+    numberValue?: true
+    teamId?: true
+    responseCount?: true
+  }
+
+  export type SurveyResponseSummarySumAggregateInputType = {
+    numberValue?: true
+    teamId?: true
+    responseCount?: true
+  }
+
+  export type SurveyResponseSummaryMinAggregateInputType = {
+    id?: true
+    surveyId?: true
+    questionId?: true
+    responseId?: true
+    optionId?: true
+    isOther?: true
+    numberValue?: true
+    booleanValue?: true
+    teamId?: true
+    responseCount?: true
+    lastUpdated?: true
+  }
+
+  export type SurveyResponseSummaryMaxAggregateInputType = {
+    id?: true
+    surveyId?: true
+    questionId?: true
+    responseId?: true
+    optionId?: true
+    isOther?: true
+    numberValue?: true
+    booleanValue?: true
+    teamId?: true
+    responseCount?: true
+    lastUpdated?: true
+  }
+
+  export type SurveyResponseSummaryCountAggregateInputType = {
+    id?: true
+    surveyId?: true
+    questionId?: true
+    responseId?: true
+    optionId?: true
+    isOther?: true
+    numberValue?: true
+    booleanValue?: true
+    teamId?: true
+    responseCount?: true
+    lastUpdated?: true
+    _all?: true
+  }
+
+  export type SurveyResponseSummaryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SurveyResponseSummary to aggregate.
+     */
+    where?: SurveyResponseSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SurveyResponseSummaries to fetch.
+     */
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SurveyResponseSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SurveyResponseSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SurveyResponseSummaries
+    **/
+    _count?: true | SurveyResponseSummaryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SurveyResponseSummaryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SurveyResponseSummarySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SurveyResponseSummaryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SurveyResponseSummaryMaxAggregateInputType
+  }
+
+  export type GetSurveyResponseSummaryAggregateType<T extends SurveyResponseSummaryAggregateArgs> = {
+        [P in keyof T & keyof AggregateSurveyResponseSummary]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSurveyResponseSummary[P]>
+      : GetScalarType<T[P], AggregateSurveyResponseSummary[P]>
+  }
+
+
+
+
+  export type SurveyResponseSummaryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SurveyResponseSummaryWhereInput
+    orderBy?: SurveyResponseSummaryOrderByWithAggregationInput | SurveyResponseSummaryOrderByWithAggregationInput[]
+    by: SurveyResponseSummaryScalarFieldEnum[] | SurveyResponseSummaryScalarFieldEnum
+    having?: SurveyResponseSummaryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SurveyResponseSummaryCountAggregateInputType | true
+    _avg?: SurveyResponseSummaryAvgAggregateInputType
+    _sum?: SurveyResponseSummarySumAggregateInputType
+    _min?: SurveyResponseSummaryMinAggregateInputType
+    _max?: SurveyResponseSummaryMaxAggregateInputType
+  }
+
+  export type SurveyResponseSummaryGroupByOutputType = {
+    id: string
+    surveyId: string
+    questionId: string
+    responseId: string
+    optionId: string | null
+    isOther: boolean | null
+    numberValue: number | null
+    booleanValue: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated: Date
+    _count: SurveyResponseSummaryCountAggregateOutputType | null
+    _avg: SurveyResponseSummaryAvgAggregateOutputType | null
+    _sum: SurveyResponseSummarySumAggregateOutputType | null
+    _min: SurveyResponseSummaryMinAggregateOutputType | null
+    _max: SurveyResponseSummaryMaxAggregateOutputType | null
+  }
+
+  type GetSurveyResponseSummaryGroupByPayload<T extends SurveyResponseSummaryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SurveyResponseSummaryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SurveyResponseSummaryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SurveyResponseSummaryGroupByOutputType[P]>
+            : GetScalarType<T[P], SurveyResponseSummaryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SurveyResponseSummarySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    surveyId?: boolean
+    questionId?: boolean
+    responseId?: boolean
+    optionId?: boolean
+    isOther?: boolean
+    numberValue?: boolean
+    booleanValue?: boolean
+    teamId?: boolean
+    responseCount?: boolean
+    lastUpdated?: boolean
+    survey?: boolean | SurveyDefaultArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    option?: boolean | SurveyResponseSummary$optionArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["surveyResponseSummary"]>
+
+  export type SurveyResponseSummarySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    surveyId?: boolean
+    questionId?: boolean
+    responseId?: boolean
+    optionId?: boolean
+    isOther?: boolean
+    numberValue?: boolean
+    booleanValue?: boolean
+    teamId?: boolean
+    responseCount?: boolean
+    lastUpdated?: boolean
+    survey?: boolean | SurveyDefaultArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    option?: boolean | SurveyResponseSummary$optionArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["surveyResponseSummary"]>
+
+  export type SurveyResponseSummarySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    surveyId?: boolean
+    questionId?: boolean
+    responseId?: boolean
+    optionId?: boolean
+    isOther?: boolean
+    numberValue?: boolean
+    booleanValue?: boolean
+    teamId?: boolean
+    responseCount?: boolean
+    lastUpdated?: boolean
+    survey?: boolean | SurveyDefaultArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    option?: boolean | SurveyResponseSummary$optionArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["surveyResponseSummary"]>
+
+  export type SurveyResponseSummarySelectScalar = {
+    id?: boolean
+    surveyId?: boolean
+    questionId?: boolean
+    responseId?: boolean
+    optionId?: boolean
+    isOther?: boolean
+    numberValue?: boolean
+    booleanValue?: boolean
+    teamId?: boolean
+    responseCount?: boolean
+    lastUpdated?: boolean
+  }
+
+  export type SurveyResponseSummaryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "surveyId" | "questionId" | "responseId" | "optionId" | "isOther" | "numberValue" | "booleanValue" | "teamId" | "responseCount" | "lastUpdated", ExtArgs["result"]["surveyResponseSummary"]>
+  export type SurveyResponseSummaryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    survey?: boolean | SurveyDefaultArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    option?: boolean | SurveyResponseSummary$optionArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
+  }
+  export type SurveyResponseSummaryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    survey?: boolean | SurveyDefaultArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    option?: boolean | SurveyResponseSummary$optionArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
+  }
+  export type SurveyResponseSummaryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    survey?: boolean | SurveyDefaultArgs<ExtArgs>
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    option?: boolean | SurveyResponseSummary$optionArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    response?: boolean | SurveyResponseDefaultArgs<ExtArgs>
+  }
+
+  export type $SurveyResponseSummaryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SurveyResponseSummary"
+    objects: {
+      survey: Prisma.$SurveyPayload<ExtArgs>
+      question: Prisma.$QuestionPayload<ExtArgs>
+      option: Prisma.$QuestionOptionPayload<ExtArgs> | null
+      team: Prisma.$TeamPayload<ExtArgs>
+      response: Prisma.$SurveyResponsePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      surveyId: string
+      questionId: string
+      responseId: string
+      optionId: string | null
+      isOther: boolean | null
+      numberValue: number | null
+      booleanValue: boolean | null
+      teamId: number
+      responseCount: number
+      lastUpdated: Date
+    }, ExtArgs["result"]["surveyResponseSummary"]>
+    composites: {}
+  }
+
+  type SurveyResponseSummaryGetPayload<S extends boolean | null | undefined | SurveyResponseSummaryDefaultArgs> = $Result.GetResult<Prisma.$SurveyResponseSummaryPayload, S>
+
+  type SurveyResponseSummaryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SurveyResponseSummaryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SurveyResponseSummaryCountAggregateInputType | true
+    }
+
+  export interface SurveyResponseSummaryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SurveyResponseSummary'], meta: { name: 'SurveyResponseSummary' } }
+    /**
+     * Find zero or one SurveyResponseSummary that matches the filter.
+     * @param {SurveyResponseSummaryFindUniqueArgs} args - Arguments to find a SurveyResponseSummary
+     * @example
+     * // Get one SurveyResponseSummary
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SurveyResponseSummaryFindUniqueArgs>(args: SelectSubset<T, SurveyResponseSummaryFindUniqueArgs<ExtArgs>>): Prisma__SurveyResponseSummaryClient<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SurveyResponseSummary that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SurveyResponseSummaryFindUniqueOrThrowArgs} args - Arguments to find a SurveyResponseSummary
+     * @example
+     * // Get one SurveyResponseSummary
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SurveyResponseSummaryFindUniqueOrThrowArgs>(args: SelectSubset<T, SurveyResponseSummaryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SurveyResponseSummaryClient<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SurveyResponseSummary that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SurveyResponseSummaryFindFirstArgs} args - Arguments to find a SurveyResponseSummary
+     * @example
+     * // Get one SurveyResponseSummary
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SurveyResponseSummaryFindFirstArgs>(args?: SelectSubset<T, SurveyResponseSummaryFindFirstArgs<ExtArgs>>): Prisma__SurveyResponseSummaryClient<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SurveyResponseSummary that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SurveyResponseSummaryFindFirstOrThrowArgs} args - Arguments to find a SurveyResponseSummary
+     * @example
+     * // Get one SurveyResponseSummary
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SurveyResponseSummaryFindFirstOrThrowArgs>(args?: SelectSubset<T, SurveyResponseSummaryFindFirstOrThrowArgs<ExtArgs>>): Prisma__SurveyResponseSummaryClient<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SurveyResponseSummaries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SurveyResponseSummaryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SurveyResponseSummaries
+     * const surveyResponseSummaries = await prisma.surveyResponseSummary.findMany()
+     * 
+     * // Get first 10 SurveyResponseSummaries
+     * const surveyResponseSummaries = await prisma.surveyResponseSummary.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const surveyResponseSummaryWithIdOnly = await prisma.surveyResponseSummary.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SurveyResponseSummaryFindManyArgs>(args?: SelectSubset<T, SurveyResponseSummaryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SurveyResponseSummary.
+     * @param {SurveyResponseSummaryCreateArgs} args - Arguments to create a SurveyResponseSummary.
+     * @example
+     * // Create one SurveyResponseSummary
+     * const SurveyResponseSummary = await prisma.surveyResponseSummary.create({
+     *   data: {
+     *     // ... data to create a SurveyResponseSummary
+     *   }
+     * })
+     * 
+     */
+    create<T extends SurveyResponseSummaryCreateArgs>(args: SelectSubset<T, SurveyResponseSummaryCreateArgs<ExtArgs>>): Prisma__SurveyResponseSummaryClient<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SurveyResponseSummaries.
+     * @param {SurveyResponseSummaryCreateManyArgs} args - Arguments to create many SurveyResponseSummaries.
+     * @example
+     * // Create many SurveyResponseSummaries
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SurveyResponseSummaryCreateManyArgs>(args?: SelectSubset<T, SurveyResponseSummaryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SurveyResponseSummaries and returns the data saved in the database.
+     * @param {SurveyResponseSummaryCreateManyAndReturnArgs} args - Arguments to create many SurveyResponseSummaries.
+     * @example
+     * // Create many SurveyResponseSummaries
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SurveyResponseSummaries and only return the `id`
+     * const surveyResponseSummaryWithIdOnly = await prisma.surveyResponseSummary.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SurveyResponseSummaryCreateManyAndReturnArgs>(args?: SelectSubset<T, SurveyResponseSummaryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SurveyResponseSummary.
+     * @param {SurveyResponseSummaryDeleteArgs} args - Arguments to delete one SurveyResponseSummary.
+     * @example
+     * // Delete one SurveyResponseSummary
+     * const SurveyResponseSummary = await prisma.surveyResponseSummary.delete({
+     *   where: {
+     *     // ... filter to delete one SurveyResponseSummary
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SurveyResponseSummaryDeleteArgs>(args: SelectSubset<T, SurveyResponseSummaryDeleteArgs<ExtArgs>>): Prisma__SurveyResponseSummaryClient<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SurveyResponseSummary.
+     * @param {SurveyResponseSummaryUpdateArgs} args - Arguments to update one SurveyResponseSummary.
+     * @example
+     * // Update one SurveyResponseSummary
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SurveyResponseSummaryUpdateArgs>(args: SelectSubset<T, SurveyResponseSummaryUpdateArgs<ExtArgs>>): Prisma__SurveyResponseSummaryClient<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SurveyResponseSummaries.
+     * @param {SurveyResponseSummaryDeleteManyArgs} args - Arguments to filter SurveyResponseSummaries to delete.
+     * @example
+     * // Delete a few SurveyResponseSummaries
+     * const { count } = await prisma.surveyResponseSummary.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SurveyResponseSummaryDeleteManyArgs>(args?: SelectSubset<T, SurveyResponseSummaryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SurveyResponseSummaries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SurveyResponseSummaryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SurveyResponseSummaries
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SurveyResponseSummaryUpdateManyArgs>(args: SelectSubset<T, SurveyResponseSummaryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SurveyResponseSummaries and returns the data updated in the database.
+     * @param {SurveyResponseSummaryUpdateManyAndReturnArgs} args - Arguments to update many SurveyResponseSummaries.
+     * @example
+     * // Update many SurveyResponseSummaries
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SurveyResponseSummaries and only return the `id`
+     * const surveyResponseSummaryWithIdOnly = await prisma.surveyResponseSummary.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SurveyResponseSummaryUpdateManyAndReturnArgs>(args: SelectSubset<T, SurveyResponseSummaryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SurveyResponseSummary.
+     * @param {SurveyResponseSummaryUpsertArgs} args - Arguments to update or create a SurveyResponseSummary.
+     * @example
+     * // Update or create a SurveyResponseSummary
+     * const surveyResponseSummary = await prisma.surveyResponseSummary.upsert({
+     *   create: {
+     *     // ... data to create a SurveyResponseSummary
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SurveyResponseSummary we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SurveyResponseSummaryUpsertArgs>(args: SelectSubset<T, SurveyResponseSummaryUpsertArgs<ExtArgs>>): Prisma__SurveyResponseSummaryClient<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SurveyResponseSummaries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SurveyResponseSummaryCountArgs} args - Arguments to filter SurveyResponseSummaries to count.
+     * @example
+     * // Count the number of SurveyResponseSummaries
+     * const count = await prisma.surveyResponseSummary.count({
+     *   where: {
+     *     // ... the filter for the SurveyResponseSummaries we want to count
+     *   }
+     * })
+    **/
+    count<T extends SurveyResponseSummaryCountArgs>(
+      args?: Subset<T, SurveyResponseSummaryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SurveyResponseSummaryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SurveyResponseSummary.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SurveyResponseSummaryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SurveyResponseSummaryAggregateArgs>(args: Subset<T, SurveyResponseSummaryAggregateArgs>): Prisma.PrismaPromise<GetSurveyResponseSummaryAggregateType<T>>
+
+    /**
+     * Group by SurveyResponseSummary.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SurveyResponseSummaryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SurveyResponseSummaryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SurveyResponseSummaryGroupByArgs['orderBy'] }
+        : { orderBy?: SurveyResponseSummaryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SurveyResponseSummaryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSurveyResponseSummaryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SurveyResponseSummary model
+   */
+  readonly fields: SurveyResponseSummaryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SurveyResponseSummary.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SurveyResponseSummaryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    survey<T extends SurveyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SurveyDefaultArgs<ExtArgs>>): Prisma__SurveyClient<$Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    question<T extends QuestionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, QuestionDefaultArgs<ExtArgs>>): Prisma__QuestionClient<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    option<T extends SurveyResponseSummary$optionArgs<ExtArgs> = {}>(args?: Subset<T, SurveyResponseSummary$optionArgs<ExtArgs>>): Prisma__QuestionOptionClient<$Result.GetResult<Prisma.$QuestionOptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    response<T extends SurveyResponseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SurveyResponseDefaultArgs<ExtArgs>>): Prisma__SurveyResponseClient<$Result.GetResult<Prisma.$SurveyResponsePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SurveyResponseSummary model
+   */
+  interface SurveyResponseSummaryFieldRefs {
+    readonly id: FieldRef<"SurveyResponseSummary", 'String'>
+    readonly surveyId: FieldRef<"SurveyResponseSummary", 'String'>
+    readonly questionId: FieldRef<"SurveyResponseSummary", 'String'>
+    readonly responseId: FieldRef<"SurveyResponseSummary", 'String'>
+    readonly optionId: FieldRef<"SurveyResponseSummary", 'String'>
+    readonly isOther: FieldRef<"SurveyResponseSummary", 'Boolean'>
+    readonly numberValue: FieldRef<"SurveyResponseSummary", 'Int'>
+    readonly booleanValue: FieldRef<"SurveyResponseSummary", 'Boolean'>
+    readonly teamId: FieldRef<"SurveyResponseSummary", 'Int'>
+    readonly responseCount: FieldRef<"SurveyResponseSummary", 'Int'>
+    readonly lastUpdated: FieldRef<"SurveyResponseSummary", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SurveyResponseSummary findUnique
+   */
+  export type SurveyResponseSummaryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which SurveyResponseSummary to fetch.
+     */
+    where: SurveyResponseSummaryWhereUniqueInput
+  }
+
+  /**
+   * SurveyResponseSummary findUniqueOrThrow
+   */
+  export type SurveyResponseSummaryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which SurveyResponseSummary to fetch.
+     */
+    where: SurveyResponseSummaryWhereUniqueInput
+  }
+
+  /**
+   * SurveyResponseSummary findFirst
+   */
+  export type SurveyResponseSummaryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which SurveyResponseSummary to fetch.
+     */
+    where?: SurveyResponseSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SurveyResponseSummaries to fetch.
+     */
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SurveyResponseSummaries.
+     */
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SurveyResponseSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SurveyResponseSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SurveyResponseSummaries.
+     */
+    distinct?: SurveyResponseSummaryScalarFieldEnum | SurveyResponseSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * SurveyResponseSummary findFirstOrThrow
+   */
+  export type SurveyResponseSummaryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which SurveyResponseSummary to fetch.
+     */
+    where?: SurveyResponseSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SurveyResponseSummaries to fetch.
+     */
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SurveyResponseSummaries.
+     */
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SurveyResponseSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SurveyResponseSummaries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SurveyResponseSummaries.
+     */
+    distinct?: SurveyResponseSummaryScalarFieldEnum | SurveyResponseSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * SurveyResponseSummary findMany
+   */
+  export type SurveyResponseSummaryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * Filter, which SurveyResponseSummaries to fetch.
+     */
+    where?: SurveyResponseSummaryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SurveyResponseSummaries to fetch.
+     */
+    orderBy?: SurveyResponseSummaryOrderByWithRelationInput | SurveyResponseSummaryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SurveyResponseSummaries.
+     */
+    cursor?: SurveyResponseSummaryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SurveyResponseSummaries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SurveyResponseSummaries.
+     */
+    skip?: number
+    distinct?: SurveyResponseSummaryScalarFieldEnum | SurveyResponseSummaryScalarFieldEnum[]
+  }
+
+  /**
+   * SurveyResponseSummary create
+   */
+  export type SurveyResponseSummaryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SurveyResponseSummary.
+     */
+    data: XOR<SurveyResponseSummaryCreateInput, SurveyResponseSummaryUncheckedCreateInput>
+  }
+
+  /**
+   * SurveyResponseSummary createMany
+   */
+  export type SurveyResponseSummaryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SurveyResponseSummaries.
+     */
+    data: SurveyResponseSummaryCreateManyInput | SurveyResponseSummaryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SurveyResponseSummary createManyAndReturn
+   */
+  export type SurveyResponseSummaryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * The data used to create many SurveyResponseSummaries.
+     */
+    data: SurveyResponseSummaryCreateManyInput | SurveyResponseSummaryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SurveyResponseSummary update
+   */
+  export type SurveyResponseSummaryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SurveyResponseSummary.
+     */
+    data: XOR<SurveyResponseSummaryUpdateInput, SurveyResponseSummaryUncheckedUpdateInput>
+    /**
+     * Choose, which SurveyResponseSummary to update.
+     */
+    where: SurveyResponseSummaryWhereUniqueInput
+  }
+
+  /**
+   * SurveyResponseSummary updateMany
+   */
+  export type SurveyResponseSummaryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SurveyResponseSummaries.
+     */
+    data: XOR<SurveyResponseSummaryUpdateManyMutationInput, SurveyResponseSummaryUncheckedUpdateManyInput>
+    /**
+     * Filter which SurveyResponseSummaries to update
+     */
+    where?: SurveyResponseSummaryWhereInput
+    /**
+     * Limit how many SurveyResponseSummaries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SurveyResponseSummary updateManyAndReturn
+   */
+  export type SurveyResponseSummaryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * The data used to update SurveyResponseSummaries.
+     */
+    data: XOR<SurveyResponseSummaryUpdateManyMutationInput, SurveyResponseSummaryUncheckedUpdateManyInput>
+    /**
+     * Filter which SurveyResponseSummaries to update
+     */
+    where?: SurveyResponseSummaryWhereInput
+    /**
+     * Limit how many SurveyResponseSummaries to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SurveyResponseSummary upsert
+   */
+  export type SurveyResponseSummaryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SurveyResponseSummary to update in case it exists.
+     */
+    where: SurveyResponseSummaryWhereUniqueInput
+    /**
+     * In case the SurveyResponseSummary found by the `where` argument doesn't exist, create a new SurveyResponseSummary with this data.
+     */
+    create: XOR<SurveyResponseSummaryCreateInput, SurveyResponseSummaryUncheckedCreateInput>
+    /**
+     * In case the SurveyResponseSummary was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SurveyResponseSummaryUpdateInput, SurveyResponseSummaryUncheckedUpdateInput>
+  }
+
+  /**
+   * SurveyResponseSummary delete
+   */
+  export type SurveyResponseSummaryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
+    /**
+     * Filter which SurveyResponseSummary to delete.
+     */
+    where: SurveyResponseSummaryWhereUniqueInput
+  }
+
+  /**
+   * SurveyResponseSummary deleteMany
+   */
+  export type SurveyResponseSummaryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SurveyResponseSummaries to delete
+     */
+    where?: SurveyResponseSummaryWhereInput
+    /**
+     * Limit how many SurveyResponseSummaries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SurveyResponseSummary.option
+   */
+  export type SurveyResponseSummary$optionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionOption
+     */
+    select?: QuestionOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionOption
+     */
+    omit?: QuestionOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionOptionInclude<ExtArgs> | null
+    where?: QuestionOptionWhereInput
+  }
+
+  /**
+   * SurveyResponseSummary without action
+   */
+  export type SurveyResponseSummaryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SurveyResponseSummary
+     */
+    select?: SurveyResponseSummarySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SurveyResponseSummary
+     */
+    omit?: SurveyResponseSummaryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SurveyResponseSummaryInclude<ExtArgs> | null
   }
 
 
@@ -19752,6 +21257,23 @@ export namespace Prisma {
   export type SurveyResponseScalarFieldEnum = (typeof SurveyResponseScalarFieldEnum)[keyof typeof SurveyResponseScalarFieldEnum]
 
 
+  export const SurveyResponseSummaryScalarFieldEnum: {
+    id: 'id',
+    surveyId: 'surveyId',
+    questionId: 'questionId',
+    responseId: 'responseId',
+    optionId: 'optionId',
+    isOther: 'isOther',
+    numberValue: 'numberValue',
+    booleanValue: 'booleanValue',
+    teamId: 'teamId',
+    responseCount: 'responseCount',
+    lastUpdated: 'lastUpdated'
+  };
+
+  export type SurveyResponseSummaryScalarFieldEnum = (typeof SurveyResponseSummaryScalarFieldEnum)[keyof typeof SurveyResponseSummaryScalarFieldEnum]
+
+
   export const QuestionResponseScalarFieldEnum: {
     id: 'id',
     isOther: 'isOther',
@@ -20414,6 +21936,7 @@ export namespace Prisma {
     surveys?: SurveyListRelationFilter
     members?: TeamMemberListRelationFilter
     user?: UserListRelationFilter
+    responseSummaries?: SurveyResponseSummaryListRelationFilter
   }
 
   export type TeamOrderByWithRelationInput = {
@@ -20437,6 +21960,7 @@ export namespace Prisma {
     surveys?: SurveyOrderByRelationAggregateInput
     members?: TeamMemberOrderByRelationAggregateInput
     user?: UserOrderByRelationAggregateInput
+    responseSummaries?: SurveyResponseSummaryOrderByRelationAggregateInput
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -20463,6 +21987,7 @@ export namespace Prisma {
     surveys?: SurveyListRelationFilter
     members?: TeamMemberListRelationFilter
     user?: UserListRelationFilter
+    responseSummaries?: SurveyResponseSummaryListRelationFilter
   }, "id" | "token">
 
   export type TeamOrderByWithAggregationInput = {
@@ -20673,6 +22198,7 @@ export namespace Prisma {
     style?: XOR<SurveyStyleNullableScalarRelationFilter, SurveyStyleWhereInput> | null
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     type?: XOR<SurveyTypeNullableScalarRelationFilter, SurveyTypeWhereInput> | null
+    SurveyResponseSummary?: SurveyResponseSummaryListRelationFilter
   }
 
   export type SurveyOrderByWithRelationInput = {
@@ -20693,6 +22219,7 @@ export namespace Prisma {
     style?: SurveyStyleOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
     type?: SurveyTypeOrderByWithRelationInput
+    SurveyResponseSummary?: SurveyResponseSummaryOrderByRelationAggregateInput
   }
 
   export type SurveyWhereUniqueInput = Prisma.AtLeast<{
@@ -20716,6 +22243,7 @@ export namespace Prisma {
     style?: XOR<SurveyStyleNullableScalarRelationFilter, SurveyStyleWhereInput> | null
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     type?: XOR<SurveyTypeNullableScalarRelationFilter, SurveyTypeWhereInput> | null
+    SurveyResponseSummary?: SurveyResponseSummaryListRelationFilter
   }, "id">
 
   export type SurveyOrderByWithAggregationInput = {
@@ -20908,6 +22436,7 @@ export namespace Prisma {
     responses?: QuestionResponseListRelationFilter
     survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    SurveyResponseSummary?: SurveyResponseSummaryListRelationFilter
   }
 
   export type QuestionOrderByWithRelationInput = {
@@ -20929,6 +22458,7 @@ export namespace Prisma {
     responses?: QuestionResponseOrderByRelationAggregateInput
     survey?: SurveyOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
+    SurveyResponseSummary?: SurveyResponseSummaryOrderByRelationAggregateInput
   }
 
   export type QuestionWhereUniqueInput = Prisma.AtLeast<{
@@ -20953,6 +22483,7 @@ export namespace Prisma {
     responses?: QuestionResponseListRelationFilter
     survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    SurveyResponseSummary?: SurveyResponseSummaryListRelationFilter
   }, "id">
 
   export type QuestionOrderByWithAggregationInput = {
@@ -21012,6 +22543,7 @@ export namespace Prisma {
     question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     responses?: QuestionResponseListRelationFilter
+    SurveyResponseSummary?: SurveyResponseSummaryListRelationFilter
   }
 
   export type QuestionOptionOrderByWithRelationInput = {
@@ -21026,6 +22558,7 @@ export namespace Prisma {
     question?: QuestionOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
     responses?: QuestionResponseOrderByRelationAggregateInput
+    SurveyResponseSummary?: SurveyResponseSummaryOrderByRelationAggregateInput
   }
 
   export type QuestionOptionWhereUniqueInput = Prisma.AtLeast<{
@@ -21043,6 +22576,7 @@ export namespace Prisma {
     question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     responses?: QuestionResponseListRelationFilter
+    SurveyResponseSummary?: SurveyResponseSummaryListRelationFilter
   }, "id">
 
   export type QuestionOptionOrderByWithAggregationInput = {
@@ -21081,9 +22615,9 @@ export namespace Prisma {
     NOT?: SurveyResponseWhereInput | SurveyResponseWhereInput[]
     id?: StringFilter<"SurveyResponse"> | string
     status?: EnumResponseStatusFilter<"SurveyResponse"> | $Enums.ResponseStatus
-    userId?: StringFilter<"SurveyResponse"> | string
-    userIp?: StringFilter<"SurveyResponse"> | string
-    extraInfo?: StringFilter<"SurveyResponse"> | string
+    userId?: StringNullableFilter<"SurveyResponse"> | string | null
+    userIp?: StringNullableFilter<"SurveyResponse"> | string | null
+    extraInfo?: StringNullableFilter<"SurveyResponse"> | string | null
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -21092,14 +22626,15 @@ export namespace Prisma {
     questionResponses?: QuestionResponseListRelationFilter
     survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    SurveyResponseSummary?: SurveyResponseSummaryListRelationFilter
   }
 
   export type SurveyResponseOrderByWithRelationInput = {
     id?: SortOrder
     status?: SortOrder
-    userId?: SortOrder
-    userIp?: SortOrder
-    extraInfo?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    userIp?: SortOrderInput | SortOrder
+    extraInfo?: SortOrderInput | SortOrder
     submittedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21108,6 +22643,7 @@ export namespace Prisma {
     questionResponses?: QuestionResponseOrderByRelationAggregateInput
     survey?: SurveyOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
+    SurveyResponseSummary?: SurveyResponseSummaryOrderByRelationAggregateInput
   }
 
   export type SurveyResponseWhereUniqueInput = Prisma.AtLeast<{
@@ -21116,9 +22652,9 @@ export namespace Prisma {
     OR?: SurveyResponseWhereInput[]
     NOT?: SurveyResponseWhereInput | SurveyResponseWhereInput[]
     status?: EnumResponseStatusFilter<"SurveyResponse"> | $Enums.ResponseStatus
-    userId?: StringFilter<"SurveyResponse"> | string
-    userIp?: StringFilter<"SurveyResponse"> | string
-    extraInfo?: StringFilter<"SurveyResponse"> | string
+    userId?: StringNullableFilter<"SurveyResponse"> | string | null
+    userIp?: StringNullableFilter<"SurveyResponse"> | string | null
+    extraInfo?: StringNullableFilter<"SurveyResponse"> | string | null
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -21127,14 +22663,15 @@ export namespace Prisma {
     questionResponses?: QuestionResponseListRelationFilter
     survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    SurveyResponseSummary?: SurveyResponseSummaryListRelationFilter
   }, "id">
 
   export type SurveyResponseOrderByWithAggregationInput = {
     id?: SortOrder
     status?: SortOrder
-    userId?: SortOrder
-    userIp?: SortOrder
-    extraInfo?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    userIp?: SortOrderInput | SortOrder
+    extraInfo?: SortOrderInput | SortOrder
     submittedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21153,14 +22690,116 @@ export namespace Prisma {
     NOT?: SurveyResponseScalarWhereWithAggregatesInput | SurveyResponseScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"SurveyResponse"> | string
     status?: EnumResponseStatusWithAggregatesFilter<"SurveyResponse"> | $Enums.ResponseStatus
-    userId?: StringWithAggregatesFilter<"SurveyResponse"> | string
-    userIp?: StringWithAggregatesFilter<"SurveyResponse"> | string
-    extraInfo?: StringWithAggregatesFilter<"SurveyResponse"> | string
+    userId?: StringNullableWithAggregatesFilter<"SurveyResponse"> | string | null
+    userIp?: StringNullableWithAggregatesFilter<"SurveyResponse"> | string | null
+    extraInfo?: StringNullableWithAggregatesFilter<"SurveyResponse"> | string | null
     submittedAt?: DateTimeNullableWithAggregatesFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SurveyResponse"> | Date | string
     surveyId?: StringWithAggregatesFilter<"SurveyResponse"> | string
     teamId?: IntWithAggregatesFilter<"SurveyResponse"> | number
+  }
+
+  export type SurveyResponseSummaryWhereInput = {
+    AND?: SurveyResponseSummaryWhereInput | SurveyResponseSummaryWhereInput[]
+    OR?: SurveyResponseSummaryWhereInput[]
+    NOT?: SurveyResponseSummaryWhereInput | SurveyResponseSummaryWhereInput[]
+    id?: StringFilter<"SurveyResponseSummary"> | string
+    surveyId?: StringFilter<"SurveyResponseSummary"> | string
+    questionId?: StringFilter<"SurveyResponseSummary"> | string
+    responseId?: StringFilter<"SurveyResponseSummary"> | string
+    optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
+    numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
+    booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
+    teamId?: IntFilter<"SurveyResponseSummary"> | number
+    responseCount?: IntFilter<"SurveyResponseSummary"> | number
+    lastUpdated?: DateTimeFilter<"SurveyResponseSummary"> | Date | string
+    survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
+    question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
+    option?: XOR<QuestionOptionNullableScalarRelationFilter, QuestionOptionWhereInput> | null
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    response?: XOR<SurveyResponseScalarRelationFilter, SurveyResponseWhereInput>
+  }
+
+  export type SurveyResponseSummaryOrderByWithRelationInput = {
+    id?: SortOrder
+    surveyId?: SortOrder
+    questionId?: SortOrder
+    responseId?: SortOrder
+    optionId?: SortOrderInput | SortOrder
+    isOther?: SortOrderInput | SortOrder
+    numberValue?: SortOrderInput | SortOrder
+    booleanValue?: SortOrderInput | SortOrder
+    teamId?: SortOrder
+    responseCount?: SortOrder
+    lastUpdated?: SortOrder
+    survey?: SurveyOrderByWithRelationInput
+    question?: QuestionOrderByWithRelationInput
+    option?: QuestionOptionOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
+    response?: SurveyResponseOrderByWithRelationInput
+  }
+
+  export type SurveyResponseSummaryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    surveyId_questionId_optionId_teamId?: SurveyResponseSummarySurveyIdQuestionIdOptionIdTeamIdCompoundUniqueInput
+    surveyId_questionId_numberValue_teamId?: SurveyResponseSummarySurveyIdQuestionIdNumberValueTeamIdCompoundUniqueInput
+    surveyId_questionId_booleanValue_teamId?: SurveyResponseSummarySurveyIdQuestionIdBooleanValueTeamIdCompoundUniqueInput
+    AND?: SurveyResponseSummaryWhereInput | SurveyResponseSummaryWhereInput[]
+    OR?: SurveyResponseSummaryWhereInput[]
+    NOT?: SurveyResponseSummaryWhereInput | SurveyResponseSummaryWhereInput[]
+    surveyId?: StringFilter<"SurveyResponseSummary"> | string
+    questionId?: StringFilter<"SurveyResponseSummary"> | string
+    responseId?: StringFilter<"SurveyResponseSummary"> | string
+    optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
+    numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
+    booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
+    teamId?: IntFilter<"SurveyResponseSummary"> | number
+    responseCount?: IntFilter<"SurveyResponseSummary"> | number
+    lastUpdated?: DateTimeFilter<"SurveyResponseSummary"> | Date | string
+    survey?: XOR<SurveyScalarRelationFilter, SurveyWhereInput>
+    question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
+    option?: XOR<QuestionOptionNullableScalarRelationFilter, QuestionOptionWhereInput> | null
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    response?: XOR<SurveyResponseScalarRelationFilter, SurveyResponseWhereInput>
+  }, "id" | "surveyId_questionId_optionId_teamId" | "surveyId_questionId_numberValue_teamId" | "surveyId_questionId_booleanValue_teamId">
+
+  export type SurveyResponseSummaryOrderByWithAggregationInput = {
+    id?: SortOrder
+    surveyId?: SortOrder
+    questionId?: SortOrder
+    responseId?: SortOrder
+    optionId?: SortOrderInput | SortOrder
+    isOther?: SortOrderInput | SortOrder
+    numberValue?: SortOrderInput | SortOrder
+    booleanValue?: SortOrderInput | SortOrder
+    teamId?: SortOrder
+    responseCount?: SortOrder
+    lastUpdated?: SortOrder
+    _count?: SurveyResponseSummaryCountOrderByAggregateInput
+    _avg?: SurveyResponseSummaryAvgOrderByAggregateInput
+    _max?: SurveyResponseSummaryMaxOrderByAggregateInput
+    _min?: SurveyResponseSummaryMinOrderByAggregateInput
+    _sum?: SurveyResponseSummarySumOrderByAggregateInput
+  }
+
+  export type SurveyResponseSummaryScalarWhereWithAggregatesInput = {
+    AND?: SurveyResponseSummaryScalarWhereWithAggregatesInput | SurveyResponseSummaryScalarWhereWithAggregatesInput[]
+    OR?: SurveyResponseSummaryScalarWhereWithAggregatesInput[]
+    NOT?: SurveyResponseSummaryScalarWhereWithAggregatesInput | SurveyResponseSummaryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
+    surveyId?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
+    questionId?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
+    responseId?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
+    optionId?: StringNullableWithAggregatesFilter<"SurveyResponseSummary"> | string | null
+    isOther?: BoolNullableWithAggregatesFilter<"SurveyResponseSummary"> | boolean | null
+    numberValue?: IntNullableWithAggregatesFilter<"SurveyResponseSummary"> | number | null
+    booleanValue?: BoolNullableWithAggregatesFilter<"SurveyResponseSummary"> | boolean | null
+    teamId?: IntWithAggregatesFilter<"SurveyResponseSummary"> | number
+    responseCount?: IntWithAggregatesFilter<"SurveyResponseSummary"> | number
+    lastUpdated?: DateTimeWithAggregatesFilter<"SurveyResponseSummary"> | Date | string
   }
 
   export type QuestionResponseWhereInput = {
@@ -21733,6 +23372,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateInput = {
@@ -21756,6 +23396,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUpdateInput = {
@@ -21778,6 +23419,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateInput = {
@@ -21801,6 +23443,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateManyInput = {
@@ -22012,6 +23655,7 @@ export namespace Prisma {
     style?: SurveyStyleCreateNestedOneWithoutSurveyInput
     team: TeamCreateNestedOneWithoutSurveysInput
     type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyUncheckedCreateInput = {
@@ -22030,6 +23674,7 @@ export namespace Prisma {
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
     style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyUpdateInput = {
@@ -22048,6 +23693,7 @@ export namespace Prisma {
     style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
     type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateInput = {
@@ -22066,6 +23712,7 @@ export namespace Prisma {
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyCreateManyInput = {
@@ -22280,6 +23927,7 @@ export namespace Prisma {
     responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
     survey: SurveyCreateNestedOneWithoutQuestionsInput
     team: TeamCreateNestedOneWithoutQuestionsInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateInput = {
@@ -22299,6 +23947,7 @@ export namespace Prisma {
     addOther?: boolean
     options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUpdateInput = {
@@ -22318,6 +23967,7 @@ export namespace Prisma {
     responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
     survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateInput = {
@@ -22337,6 +23987,7 @@ export namespace Prisma {
     addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionCreateManyInput = {
@@ -22398,6 +24049,7 @@ export namespace Prisma {
     question: QuestionCreateNestedOneWithoutOptionsInput
     team: TeamCreateNestedOneWithoutQuestionOptionsInput
     responses?: QuestionResponseCreateNestedManyWithoutOptionInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutOptionInput
   }
 
   export type QuestionOptionUncheckedCreateInput = {
@@ -22410,6 +24062,7 @@ export namespace Prisma {
     teamId: number
     isOther?: boolean
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutOptionInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutOptionInput
   }
 
   export type QuestionOptionUpdateInput = {
@@ -22422,6 +24075,7 @@ export namespace Prisma {
     question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionOptionsNestedInput
     responses?: QuestionResponseUpdateManyWithoutOptionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutOptionNestedInput
   }
 
   export type QuestionOptionUncheckedUpdateInput = {
@@ -22434,6 +24088,7 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
     isOther?: BoolFieldUpdateOperationsInput | boolean
     responses?: QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutOptionNestedInput
   }
 
   export type QuestionOptionCreateManyInput = {
@@ -22470,65 +24125,69 @@ export namespace Prisma {
   export type SurveyResponseCreateInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
     survey: SurveyCreateNestedOneWithoutResponsesInput
     team: TeamCreateNestedOneWithoutSurveyResponsesInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseUncheckedCreateInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     surveyId: string
     teamId: number
     questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutResponseInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
     survey?: SurveyUpdateOneRequiredWithoutResponsesNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveyResponsesNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutResponseNestedInput
   }
 
   export type SurveyResponseUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutResponseNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutResponseNestedInput
   }
 
   export type SurveyResponseCreateManyInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22539,9 +24198,9 @@ export namespace Prisma {
   export type SurveyResponseUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22550,14 +24209,107 @@ export namespace Prisma {
   export type SurveyResponseUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type SurveyResponseSummaryCreateInput = {
+    id?: string
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    responseCount: number
+    lastUpdated?: Date | string
+    survey: SurveyCreateNestedOneWithoutSurveyResponseSummaryInput
+    question: QuestionCreateNestedOneWithoutSurveyResponseSummaryInput
+    option?: QuestionOptionCreateNestedOneWithoutSurveyResponseSummaryInput
+    team: TeamCreateNestedOneWithoutResponseSummariesInput
+    response: SurveyResponseCreateNestedOneWithoutSurveyResponseSummaryInput
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateInput = {
+    id?: string
+    surveyId: string
+    questionId: string
+    responseId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
+  export type SurveyResponseSummaryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    survey?: SurveyUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    question?: QuestionUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    option?: QuestionOptionUpdateOneWithoutSurveyResponseSummaryNestedInput
+    team?: TeamUpdateOneRequiredWithoutResponseSummariesNestedInput
+    response?: SurveyResponseUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SurveyResponseSummaryCreateManyInput = {
+    id?: string
+    surveyId: string
+    questionId: string
+    responseId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
+  export type SurveyResponseSummaryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuestionResponseCreateInput = {
@@ -23232,6 +24984,12 @@ export namespace Prisma {
     none?: SurveyWhereInput
   }
 
+  export type SurveyResponseSummaryListRelationFilter = {
+    every?: SurveyResponseSummaryWhereInput
+    some?: SurveyResponseSummaryWhereInput
+    none?: SurveyResponseSummaryWhereInput
+  }
+
   export type QuestionOptionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -23257,6 +25015,10 @@ export namespace Prisma {
   }
 
   export type SurveyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SurveyResponseSummaryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23828,6 +25590,81 @@ export namespace Prisma {
     isNot?: SurveyResponseWhereInput
   }
 
+  export type SurveyResponseSummarySurveyIdQuestionIdOptionIdTeamIdCompoundUniqueInput = {
+    surveyId: string
+    questionId: string
+    optionId: string
+    teamId: number
+  }
+
+  export type SurveyResponseSummarySurveyIdQuestionIdNumberValueTeamIdCompoundUniqueInput = {
+    surveyId: string
+    questionId: string
+    numberValue: number
+    teamId: number
+  }
+
+  export type SurveyResponseSummarySurveyIdQuestionIdBooleanValueTeamIdCompoundUniqueInput = {
+    surveyId: string
+    questionId: string
+    booleanValue: boolean
+    teamId: number
+  }
+
+  export type SurveyResponseSummaryCountOrderByAggregateInput = {
+    id?: SortOrder
+    surveyId?: SortOrder
+    questionId?: SortOrder
+    responseId?: SortOrder
+    optionId?: SortOrder
+    isOther?: SortOrder
+    numberValue?: SortOrder
+    booleanValue?: SortOrder
+    teamId?: SortOrder
+    responseCount?: SortOrder
+    lastUpdated?: SortOrder
+  }
+
+  export type SurveyResponseSummaryAvgOrderByAggregateInput = {
+    numberValue?: SortOrder
+    teamId?: SortOrder
+    responseCount?: SortOrder
+  }
+
+  export type SurveyResponseSummaryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    surveyId?: SortOrder
+    questionId?: SortOrder
+    responseId?: SortOrder
+    optionId?: SortOrder
+    isOther?: SortOrder
+    numberValue?: SortOrder
+    booleanValue?: SortOrder
+    teamId?: SortOrder
+    responseCount?: SortOrder
+    lastUpdated?: SortOrder
+  }
+
+  export type SurveyResponseSummaryMinOrderByAggregateInput = {
+    id?: SortOrder
+    surveyId?: SortOrder
+    questionId?: SortOrder
+    responseId?: SortOrder
+    optionId?: SortOrder
+    isOther?: SortOrder
+    numberValue?: SortOrder
+    booleanValue?: SortOrder
+    teamId?: SortOrder
+    responseCount?: SortOrder
+    lastUpdated?: SortOrder
+  }
+
+  export type SurveyResponseSummarySumOrderByAggregateInput = {
+    numberValue?: SortOrder
+    teamId?: SortOrder
+    responseCount?: SortOrder
+  }
+
   export type QuestionResponseCountOrderByAggregateInput = {
     id?: SortOrder
     isOther?: SortOrder
@@ -24219,6 +26056,13 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type SurveyResponseSummaryCreateNestedManyWithoutTeamInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutTeamInput, SurveyResponseSummaryUncheckedCreateWithoutTeamInput> | SurveyResponseSummaryCreateWithoutTeamInput[] | SurveyResponseSummaryUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutTeamInput | SurveyResponseSummaryCreateOrConnectWithoutTeamInput[]
+    createMany?: SurveyResponseSummaryCreateManyTeamInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+  }
+
   export type QuestionOptionUncheckedCreateNestedManyWithoutTeamInput = {
     create?: XOR<QuestionOptionCreateWithoutTeamInput, QuestionOptionUncheckedCreateWithoutTeamInput> | QuestionOptionCreateWithoutTeamInput[] | QuestionOptionUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutTeamInput | QuestionOptionCreateOrConnectWithoutTeamInput[]
@@ -24280,6 +26124,13 @@ export namespace Prisma {
     connectOrCreate?: UserCreateOrConnectWithoutTeamInput | UserCreateOrConnectWithoutTeamInput[]
     createMany?: UserCreateManyTeamInputEnvelope
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutTeamInput, SurveyResponseSummaryUncheckedCreateWithoutTeamInput> | SurveyResponseSummaryCreateWithoutTeamInput[] | SurveyResponseSummaryUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutTeamInput | SurveyResponseSummaryCreateOrConnectWithoutTeamInput[]
+    createMany?: SurveyResponseSummaryCreateManyTeamInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
   }
 
   export type QuestionOptionUpdateManyWithoutTeamNestedInput = {
@@ -24408,6 +26259,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type SurveyResponseSummaryUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutTeamInput, SurveyResponseSummaryUncheckedCreateWithoutTeamInput> | SurveyResponseSummaryCreateWithoutTeamInput[] | SurveyResponseSummaryUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutTeamInput | SurveyResponseSummaryCreateOrConnectWithoutTeamInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutTeamInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: SurveyResponseSummaryCreateManyTeamInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutTeamInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutTeamInput | SurveyResponseSummaryUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+  }
+
   export type QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput = {
     create?: XOR<QuestionOptionCreateWithoutTeamInput, QuestionOptionUncheckedCreateWithoutTeamInput> | QuestionOptionCreateWithoutTeamInput[] | QuestionOptionUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutTeamInput | QuestionOptionCreateOrConnectWithoutTeamInput[]
@@ -24534,6 +26399,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutTeamInput, SurveyResponseSummaryUncheckedCreateWithoutTeamInput> | SurveyResponseSummaryCreateWithoutTeamInput[] | SurveyResponseSummaryUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutTeamInput | SurveyResponseSummaryCreateOrConnectWithoutTeamInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutTeamInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: SurveyResponseSummaryCreateManyTeamInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutTeamInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutTeamInput | SurveyResponseSummaryUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+  }
+
   export type TeamCreateNestedOneWithoutMembersInput = {
     create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
     connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
@@ -24658,6 +26537,13 @@ export namespace Prisma {
     connect?: SurveyTypeWhereUniqueInput
   }
 
+  export type SurveyResponseSummaryCreateNestedManyWithoutSurveyInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutSurveyInput, SurveyResponseSummaryUncheckedCreateWithoutSurveyInput> | SurveyResponseSummaryCreateWithoutSurveyInput[] | SurveyResponseSummaryUncheckedCreateWithoutSurveyInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutSurveyInput | SurveyResponseSummaryCreateOrConnectWithoutSurveyInput[]
+    createMany?: SurveyResponseSummaryCreateManySurveyInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+  }
+
   export type QuestionUncheckedCreateNestedManyWithoutSurveyInput = {
     create?: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput> | QuestionCreateWithoutSurveyInput[] | QuestionUncheckedCreateWithoutSurveyInput[]
     connectOrCreate?: QuestionCreateOrConnectWithoutSurveyInput | QuestionCreateOrConnectWithoutSurveyInput[]
@@ -24676,6 +26562,13 @@ export namespace Prisma {
     create?: XOR<SurveyStyleCreateWithoutSurveyInput, SurveyStyleUncheckedCreateWithoutSurveyInput>
     connectOrCreate?: SurveyStyleCreateOrConnectWithoutSurveyInput
     connect?: SurveyStyleWhereUniqueInput
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateNestedManyWithoutSurveyInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutSurveyInput, SurveyResponseSummaryUncheckedCreateWithoutSurveyInput> | SurveyResponseSummaryCreateWithoutSurveyInput[] | SurveyResponseSummaryUncheckedCreateWithoutSurveyInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutSurveyInput | SurveyResponseSummaryCreateOrConnectWithoutSurveyInput[]
+    createMany?: SurveyResponseSummaryCreateManySurveyInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
   }
 
   export type EnumSurveyStatusFieldUpdateOperationsInput = {
@@ -24738,6 +26631,20 @@ export namespace Prisma {
     update?: XOR<XOR<SurveyTypeUpdateToOneWithWhereWithoutSurveysInput, SurveyTypeUpdateWithoutSurveysInput>, SurveyTypeUncheckedUpdateWithoutSurveysInput>
   }
 
+  export type SurveyResponseSummaryUpdateManyWithoutSurveyNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutSurveyInput, SurveyResponseSummaryUncheckedCreateWithoutSurveyInput> | SurveyResponseSummaryCreateWithoutSurveyInput[] | SurveyResponseSummaryUncheckedCreateWithoutSurveyInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutSurveyInput | SurveyResponseSummaryCreateOrConnectWithoutSurveyInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutSurveyInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutSurveyInput[]
+    createMany?: SurveyResponseSummaryCreateManySurveyInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutSurveyInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutSurveyInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutSurveyInput | SurveyResponseSummaryUpdateManyWithWhereWithoutSurveyInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+  }
+
   export type QuestionUncheckedUpdateManyWithoutSurveyNestedInput = {
     create?: XOR<QuestionCreateWithoutSurveyInput, QuestionUncheckedCreateWithoutSurveyInput> | QuestionCreateWithoutSurveyInput[] | QuestionUncheckedCreateWithoutSurveyInput[]
     connectOrCreate?: QuestionCreateOrConnectWithoutSurveyInput | QuestionCreateOrConnectWithoutSurveyInput[]
@@ -24774,6 +26681,20 @@ export namespace Prisma {
     delete?: SurveyStyleWhereInput | boolean
     connect?: SurveyStyleWhereUniqueInput
     update?: XOR<XOR<SurveyStyleUpdateToOneWithWhereWithoutSurveyInput, SurveyStyleUpdateWithoutSurveyInput>, SurveyStyleUncheckedUpdateWithoutSurveyInput>
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutSurveyInput, SurveyResponseSummaryUncheckedCreateWithoutSurveyInput> | SurveyResponseSummaryCreateWithoutSurveyInput[] | SurveyResponseSummaryUncheckedCreateWithoutSurveyInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutSurveyInput | SurveyResponseSummaryCreateOrConnectWithoutSurveyInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutSurveyInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutSurveyInput[]
+    createMany?: SurveyResponseSummaryCreateManySurveyInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutSurveyInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutSurveyInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutSurveyInput | SurveyResponseSummaryUpdateManyWithWhereWithoutSurveyInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
   }
 
   export type SurveyCreateNestedOneWithoutStyleInput = {
@@ -24834,6 +26755,13 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput
   }
 
+  export type SurveyResponseSummaryCreateNestedManyWithoutQuestionInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutQuestionInput, SurveyResponseSummaryUncheckedCreateWithoutQuestionInput> | SurveyResponseSummaryCreateWithoutQuestionInput[] | SurveyResponseSummaryUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutQuestionInput | SurveyResponseSummaryCreateOrConnectWithoutQuestionInput[]
+    createMany?: SurveyResponseSummaryCreateManyQuestionInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+  }
+
   export type QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput = {
     create?: XOR<QuestionOptionCreateWithoutQuestionInput, QuestionOptionUncheckedCreateWithoutQuestionInput> | QuestionOptionCreateWithoutQuestionInput[] | QuestionOptionUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutQuestionInput | QuestionOptionCreateOrConnectWithoutQuestionInput[]
@@ -24846,6 +26774,13 @@ export namespace Prisma {
     connectOrCreate?: QuestionResponseCreateOrConnectWithoutQuestionInput | QuestionResponseCreateOrConnectWithoutQuestionInput[]
     createMany?: QuestionResponseCreateManyQuestionInputEnvelope
     connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateNestedManyWithoutQuestionInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutQuestionInput, SurveyResponseSummaryUncheckedCreateWithoutQuestionInput> | SurveyResponseSummaryCreateWithoutQuestionInput[] | SurveyResponseSummaryUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutQuestionInput | SurveyResponseSummaryCreateOrConnectWithoutQuestionInput[]
+    createMany?: SurveyResponseSummaryCreateManyQuestionInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
   }
 
   export type EnumQuestionFormatFieldUpdateOperationsInput = {
@@ -24896,6 +26831,20 @@ export namespace Prisma {
     update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutQuestionsInput, TeamUpdateWithoutQuestionsInput>, TeamUncheckedUpdateWithoutQuestionsInput>
   }
 
+  export type SurveyResponseSummaryUpdateManyWithoutQuestionNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutQuestionInput, SurveyResponseSummaryUncheckedCreateWithoutQuestionInput> | SurveyResponseSummaryCreateWithoutQuestionInput[] | SurveyResponseSummaryUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutQuestionInput | SurveyResponseSummaryCreateOrConnectWithoutQuestionInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutQuestionInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutQuestionInput[]
+    createMany?: SurveyResponseSummaryCreateManyQuestionInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutQuestionInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutQuestionInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutQuestionInput | SurveyResponseSummaryUpdateManyWithWhereWithoutQuestionInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+  }
+
   export type QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput = {
     create?: XOR<QuestionOptionCreateWithoutQuestionInput, QuestionOptionUncheckedCreateWithoutQuestionInput> | QuestionOptionCreateWithoutQuestionInput[] | QuestionOptionUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutQuestionInput | QuestionOptionCreateOrConnectWithoutQuestionInput[]
@@ -24924,6 +26873,20 @@ export namespace Prisma {
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
   }
 
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutQuestionInput, SurveyResponseSummaryUncheckedCreateWithoutQuestionInput> | SurveyResponseSummaryCreateWithoutQuestionInput[] | SurveyResponseSummaryUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutQuestionInput | SurveyResponseSummaryCreateOrConnectWithoutQuestionInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutQuestionInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutQuestionInput[]
+    createMany?: SurveyResponseSummaryCreateManyQuestionInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutQuestionInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutQuestionInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutQuestionInput | SurveyResponseSummaryUpdateManyWithWhereWithoutQuestionInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+  }
+
   export type QuestionCreateNestedOneWithoutOptionsInput = {
     create?: XOR<QuestionCreateWithoutOptionsInput, QuestionUncheckedCreateWithoutOptionsInput>
     connectOrCreate?: QuestionCreateOrConnectWithoutOptionsInput
@@ -24943,11 +26906,25 @@ export namespace Prisma {
     connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
   }
 
+  export type SurveyResponseSummaryCreateNestedManyWithoutOptionInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutOptionInput, SurveyResponseSummaryUncheckedCreateWithoutOptionInput> | SurveyResponseSummaryCreateWithoutOptionInput[] | SurveyResponseSummaryUncheckedCreateWithoutOptionInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutOptionInput | SurveyResponseSummaryCreateOrConnectWithoutOptionInput[]
+    createMany?: SurveyResponseSummaryCreateManyOptionInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+  }
+
   export type QuestionResponseUncheckedCreateNestedManyWithoutOptionInput = {
     create?: XOR<QuestionResponseCreateWithoutOptionInput, QuestionResponseUncheckedCreateWithoutOptionInput> | QuestionResponseCreateWithoutOptionInput[] | QuestionResponseUncheckedCreateWithoutOptionInput[]
     connectOrCreate?: QuestionResponseCreateOrConnectWithoutOptionInput | QuestionResponseCreateOrConnectWithoutOptionInput[]
     createMany?: QuestionResponseCreateManyOptionInputEnvelope
     connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateNestedManyWithoutOptionInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutOptionInput, SurveyResponseSummaryUncheckedCreateWithoutOptionInput> | SurveyResponseSummaryCreateWithoutOptionInput[] | SurveyResponseSummaryUncheckedCreateWithoutOptionInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutOptionInput | SurveyResponseSummaryCreateOrConnectWithoutOptionInput[]
+    createMany?: SurveyResponseSummaryCreateManyOptionInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
   }
 
   export type QuestionUpdateOneRequiredWithoutOptionsNestedInput = {
@@ -24980,6 +26957,20 @@ export namespace Prisma {
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
   }
 
+  export type SurveyResponseSummaryUpdateManyWithoutOptionNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutOptionInput, SurveyResponseSummaryUncheckedCreateWithoutOptionInput> | SurveyResponseSummaryCreateWithoutOptionInput[] | SurveyResponseSummaryUncheckedCreateWithoutOptionInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutOptionInput | SurveyResponseSummaryCreateOrConnectWithoutOptionInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutOptionInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutOptionInput[]
+    createMany?: SurveyResponseSummaryCreateManyOptionInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutOptionInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutOptionInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutOptionInput | SurveyResponseSummaryUpdateManyWithWhereWithoutOptionInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+  }
+
   export type QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput = {
     create?: XOR<QuestionResponseCreateWithoutOptionInput, QuestionResponseUncheckedCreateWithoutOptionInput> | QuestionResponseCreateWithoutOptionInput[] | QuestionResponseUncheckedCreateWithoutOptionInput[]
     connectOrCreate?: QuestionResponseCreateOrConnectWithoutOptionInput | QuestionResponseCreateOrConnectWithoutOptionInput[]
@@ -24992,6 +26983,20 @@ export namespace Prisma {
     update?: QuestionResponseUpdateWithWhereUniqueWithoutOptionInput | QuestionResponseUpdateWithWhereUniqueWithoutOptionInput[]
     updateMany?: QuestionResponseUpdateManyWithWhereWithoutOptionInput | QuestionResponseUpdateManyWithWhereWithoutOptionInput[]
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutOptionNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutOptionInput, SurveyResponseSummaryUncheckedCreateWithoutOptionInput> | SurveyResponseSummaryCreateWithoutOptionInput[] | SurveyResponseSummaryUncheckedCreateWithoutOptionInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutOptionInput | SurveyResponseSummaryCreateOrConnectWithoutOptionInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutOptionInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutOptionInput[]
+    createMany?: SurveyResponseSummaryCreateManyOptionInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutOptionInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutOptionInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutOptionInput | SurveyResponseSummaryUpdateManyWithWhereWithoutOptionInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
   }
 
   export type QuestionResponseCreateNestedManyWithoutResponseInput = {
@@ -25013,11 +27018,25 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput
   }
 
+  export type SurveyResponseSummaryCreateNestedManyWithoutResponseInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutResponseInput, SurveyResponseSummaryUncheckedCreateWithoutResponseInput> | SurveyResponseSummaryCreateWithoutResponseInput[] | SurveyResponseSummaryUncheckedCreateWithoutResponseInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutResponseInput | SurveyResponseSummaryCreateOrConnectWithoutResponseInput[]
+    createMany?: SurveyResponseSummaryCreateManyResponseInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+  }
+
   export type QuestionResponseUncheckedCreateNestedManyWithoutResponseInput = {
     create?: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput> | QuestionResponseCreateWithoutResponseInput[] | QuestionResponseUncheckedCreateWithoutResponseInput[]
     connectOrCreate?: QuestionResponseCreateOrConnectWithoutResponseInput | QuestionResponseCreateOrConnectWithoutResponseInput[]
     createMany?: QuestionResponseCreateManyResponseInputEnvelope
     connect?: QuestionResponseWhereUniqueInput | QuestionResponseWhereUniqueInput[]
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateNestedManyWithoutResponseInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutResponseInput, SurveyResponseSummaryUncheckedCreateWithoutResponseInput> | SurveyResponseSummaryCreateWithoutResponseInput[] | SurveyResponseSummaryUncheckedCreateWithoutResponseInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutResponseInput | SurveyResponseSummaryCreateOrConnectWithoutResponseInput[]
+    createMany?: SurveyResponseSummaryCreateManyResponseInputEnvelope
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
   }
 
   export type EnumResponseStatusFieldUpdateOperationsInput = {
@@ -25054,6 +27073,20 @@ export namespace Prisma {
     update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutSurveyResponsesInput, TeamUpdateWithoutSurveyResponsesInput>, TeamUncheckedUpdateWithoutSurveyResponsesInput>
   }
 
+  export type SurveyResponseSummaryUpdateManyWithoutResponseNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutResponseInput, SurveyResponseSummaryUncheckedCreateWithoutResponseInput> | SurveyResponseSummaryCreateWithoutResponseInput[] | SurveyResponseSummaryUncheckedCreateWithoutResponseInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutResponseInput | SurveyResponseSummaryCreateOrConnectWithoutResponseInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutResponseInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutResponseInput[]
+    createMany?: SurveyResponseSummaryCreateManyResponseInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutResponseInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutResponseInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutResponseInput | SurveyResponseSummaryUpdateManyWithWhereWithoutResponseInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+  }
+
   export type QuestionResponseUncheckedUpdateManyWithoutResponseNestedInput = {
     create?: XOR<QuestionResponseCreateWithoutResponseInput, QuestionResponseUncheckedCreateWithoutResponseInput> | QuestionResponseCreateWithoutResponseInput[] | QuestionResponseUncheckedCreateWithoutResponseInput[]
     connectOrCreate?: QuestionResponseCreateOrConnectWithoutResponseInput | QuestionResponseCreateOrConnectWithoutResponseInput[]
@@ -25066,6 +27099,92 @@ export namespace Prisma {
     update?: QuestionResponseUpdateWithWhereUniqueWithoutResponseInput | QuestionResponseUpdateWithWhereUniqueWithoutResponseInput[]
     updateMany?: QuestionResponseUpdateManyWithWhereWithoutResponseInput | QuestionResponseUpdateManyWithWhereWithoutResponseInput[]
     deleteMany?: QuestionResponseScalarWhereInput | QuestionResponseScalarWhereInput[]
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutResponseNestedInput = {
+    create?: XOR<SurveyResponseSummaryCreateWithoutResponseInput, SurveyResponseSummaryUncheckedCreateWithoutResponseInput> | SurveyResponseSummaryCreateWithoutResponseInput[] | SurveyResponseSummaryUncheckedCreateWithoutResponseInput[]
+    connectOrCreate?: SurveyResponseSummaryCreateOrConnectWithoutResponseInput | SurveyResponseSummaryCreateOrConnectWithoutResponseInput[]
+    upsert?: SurveyResponseSummaryUpsertWithWhereUniqueWithoutResponseInput | SurveyResponseSummaryUpsertWithWhereUniqueWithoutResponseInput[]
+    createMany?: SurveyResponseSummaryCreateManyResponseInputEnvelope
+    set?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    disconnect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    delete?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
+    update?: SurveyResponseSummaryUpdateWithWhereUniqueWithoutResponseInput | SurveyResponseSummaryUpdateWithWhereUniqueWithoutResponseInput[]
+    updateMany?: SurveyResponseSummaryUpdateManyWithWhereWithoutResponseInput | SurveyResponseSummaryUpdateManyWithWhereWithoutResponseInput[]
+    deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+  }
+
+  export type SurveyCreateNestedOneWithoutSurveyResponseSummaryInput = {
+    create?: XOR<SurveyCreateWithoutSurveyResponseSummaryInput, SurveyUncheckedCreateWithoutSurveyResponseSummaryInput>
+    connectOrCreate?: SurveyCreateOrConnectWithoutSurveyResponseSummaryInput
+    connect?: SurveyWhereUniqueInput
+  }
+
+  export type QuestionCreateNestedOneWithoutSurveyResponseSummaryInput = {
+    create?: XOR<QuestionCreateWithoutSurveyResponseSummaryInput, QuestionUncheckedCreateWithoutSurveyResponseSummaryInput>
+    connectOrCreate?: QuestionCreateOrConnectWithoutSurveyResponseSummaryInput
+    connect?: QuestionWhereUniqueInput
+  }
+
+  export type QuestionOptionCreateNestedOneWithoutSurveyResponseSummaryInput = {
+    create?: XOR<QuestionOptionCreateWithoutSurveyResponseSummaryInput, QuestionOptionUncheckedCreateWithoutSurveyResponseSummaryInput>
+    connectOrCreate?: QuestionOptionCreateOrConnectWithoutSurveyResponseSummaryInput
+    connect?: QuestionOptionWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutResponseSummariesInput = {
+    create?: XOR<TeamCreateWithoutResponseSummariesInput, TeamUncheckedCreateWithoutResponseSummariesInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutResponseSummariesInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type SurveyResponseCreateNestedOneWithoutSurveyResponseSummaryInput = {
+    create?: XOR<SurveyResponseCreateWithoutSurveyResponseSummaryInput, SurveyResponseUncheckedCreateWithoutSurveyResponseSummaryInput>
+    connectOrCreate?: SurveyResponseCreateOrConnectWithoutSurveyResponseSummaryInput
+    connect?: SurveyResponseWhereUniqueInput
+  }
+
+  export type SurveyUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput = {
+    create?: XOR<SurveyCreateWithoutSurveyResponseSummaryInput, SurveyUncheckedCreateWithoutSurveyResponseSummaryInput>
+    connectOrCreate?: SurveyCreateOrConnectWithoutSurveyResponseSummaryInput
+    upsert?: SurveyUpsertWithoutSurveyResponseSummaryInput
+    connect?: SurveyWhereUniqueInput
+    update?: XOR<XOR<SurveyUpdateToOneWithWhereWithoutSurveyResponseSummaryInput, SurveyUpdateWithoutSurveyResponseSummaryInput>, SurveyUncheckedUpdateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type QuestionUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput = {
+    create?: XOR<QuestionCreateWithoutSurveyResponseSummaryInput, QuestionUncheckedCreateWithoutSurveyResponseSummaryInput>
+    connectOrCreate?: QuestionCreateOrConnectWithoutSurveyResponseSummaryInput
+    upsert?: QuestionUpsertWithoutSurveyResponseSummaryInput
+    connect?: QuestionWhereUniqueInput
+    update?: XOR<XOR<QuestionUpdateToOneWithWhereWithoutSurveyResponseSummaryInput, QuestionUpdateWithoutSurveyResponseSummaryInput>, QuestionUncheckedUpdateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type QuestionOptionUpdateOneWithoutSurveyResponseSummaryNestedInput = {
+    create?: XOR<QuestionOptionCreateWithoutSurveyResponseSummaryInput, QuestionOptionUncheckedCreateWithoutSurveyResponseSummaryInput>
+    connectOrCreate?: QuestionOptionCreateOrConnectWithoutSurveyResponseSummaryInput
+    upsert?: QuestionOptionUpsertWithoutSurveyResponseSummaryInput
+    disconnect?: QuestionOptionWhereInput | boolean
+    delete?: QuestionOptionWhereInput | boolean
+    connect?: QuestionOptionWhereUniqueInput
+    update?: XOR<XOR<QuestionOptionUpdateToOneWithWhereWithoutSurveyResponseSummaryInput, QuestionOptionUpdateWithoutSurveyResponseSummaryInput>, QuestionOptionUncheckedUpdateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type TeamUpdateOneRequiredWithoutResponseSummariesNestedInput = {
+    create?: XOR<TeamCreateWithoutResponseSummariesInput, TeamUncheckedCreateWithoutResponseSummariesInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutResponseSummariesInput
+    upsert?: TeamUpsertWithoutResponseSummariesInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutResponseSummariesInput, TeamUpdateWithoutResponseSummariesInput>, TeamUncheckedUpdateWithoutResponseSummariesInput>
+  }
+
+  export type SurveyResponseUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput = {
+    create?: XOR<SurveyResponseCreateWithoutSurveyResponseSummaryInput, SurveyResponseUncheckedCreateWithoutSurveyResponseSummaryInput>
+    connectOrCreate?: SurveyResponseCreateOrConnectWithoutSurveyResponseSummaryInput
+    upsert?: SurveyResponseUpsertWithoutSurveyResponseSummaryInput
+    connect?: SurveyResponseWhereUniqueInput
+    update?: XOR<XOR<SurveyResponseUpdateToOneWithWhereWithoutSurveyResponseSummaryInput, SurveyResponseUpdateWithoutSurveyResponseSummaryInput>, SurveyResponseUncheckedUpdateWithoutSurveyResponseSummaryInput>
   }
 
   export type QuestionOptionCreateNestedOneWithoutResponsesInput = {
@@ -25618,6 +27737,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutUserInput = {
@@ -25640,6 +27760,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutUserInput = {
@@ -25805,6 +27926,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutUserInput = {
@@ -25827,6 +27949,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutAvatarInput = {
@@ -26167,6 +28290,7 @@ export namespace Prisma {
     isOther?: boolean
     question: QuestionCreateNestedOneWithoutOptionsInput
     responses?: QuestionResponseCreateNestedManyWithoutOptionInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutOptionInput
   }
 
   export type QuestionOptionUncheckedCreateWithoutTeamInput = {
@@ -26178,6 +28302,7 @@ export namespace Prisma {
     questionId: string
     isOther?: boolean
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutOptionInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutOptionInput
   }
 
   export type QuestionOptionCreateOrConnectWithoutTeamInput = {
@@ -26242,6 +28367,7 @@ export namespace Prisma {
     options?: QuestionOptionCreateNestedManyWithoutQuestionInput
     responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
     survey: SurveyCreateNestedOneWithoutQuestionsInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutTeamInput = {
@@ -26260,6 +28386,7 @@ export namespace Prisma {
     addOther?: boolean
     options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionCreateOrConnectWithoutTeamInput = {
@@ -26275,27 +28402,29 @@ export namespace Prisma {
   export type SurveyResponseCreateWithoutTeamInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
     survey: SurveyCreateNestedOneWithoutResponsesInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseUncheckedCreateWithoutTeamInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     surveyId: string
     questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutResponseInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseCreateOrConnectWithoutTeamInput = {
@@ -26403,6 +28532,7 @@ export namespace Prisma {
     responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
     style?: SurveyStyleCreateNestedOneWithoutSurveyInput
     type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyUncheckedCreateWithoutTeamInput = {
@@ -26420,6 +28550,7 @@ export namespace Prisma {
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
     style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyCreateOrConnectWithoutTeamInput = {
@@ -26521,6 +28652,42 @@ export namespace Prisma {
 
   export type UserCreateManyTeamInputEnvelope = {
     data: UserCreateManyTeamInput | UserCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SurveyResponseSummaryCreateWithoutTeamInput = {
+    id?: string
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    responseCount: number
+    lastUpdated?: Date | string
+    survey: SurveyCreateNestedOneWithoutSurveyResponseSummaryInput
+    question: QuestionCreateNestedOneWithoutSurveyResponseSummaryInput
+    option?: QuestionOptionCreateNestedOneWithoutSurveyResponseSummaryInput
+    response: SurveyResponseCreateNestedOneWithoutSurveyResponseSummaryInput
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateWithoutTeamInput = {
+    id?: string
+    surveyId: string
+    questionId: string
+    responseId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
+  export type SurveyResponseSummaryCreateOrConnectWithoutTeamInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    create: XOR<SurveyResponseSummaryCreateWithoutTeamInput, SurveyResponseSummaryUncheckedCreateWithoutTeamInput>
+  }
+
+  export type SurveyResponseSummaryCreateManyTeamInputEnvelope = {
+    data: SurveyResponseSummaryCreateManyTeamInput | SurveyResponseSummaryCreateManyTeamInput[]
     skipDuplicates?: boolean
   }
 
@@ -26645,9 +28812,9 @@ export namespace Prisma {
     NOT?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
     id?: StringFilter<"SurveyResponse"> | string
     status?: EnumResponseStatusFilter<"SurveyResponse"> | $Enums.ResponseStatus
-    userId?: StringFilter<"SurveyResponse"> | string
-    userIp?: StringFilter<"SurveyResponse"> | string
-    extraInfo?: StringFilter<"SurveyResponse"> | string
+    userId?: StringNullableFilter<"SurveyResponse"> | string | null
+    userIp?: StringNullableFilter<"SurveyResponse"> | string | null
+    extraInfo?: StringNullableFilter<"SurveyResponse"> | string | null
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -26790,6 +28957,39 @@ export namespace Prisma {
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutTeamInput>
   }
 
+  export type SurveyResponseSummaryUpsertWithWhereUniqueWithoutTeamInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    update: XOR<SurveyResponseSummaryUpdateWithoutTeamInput, SurveyResponseSummaryUncheckedUpdateWithoutTeamInput>
+    create: XOR<SurveyResponseSummaryCreateWithoutTeamInput, SurveyResponseSummaryUncheckedCreateWithoutTeamInput>
+  }
+
+  export type SurveyResponseSummaryUpdateWithWhereUniqueWithoutTeamInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    data: XOR<SurveyResponseSummaryUpdateWithoutTeamInput, SurveyResponseSummaryUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type SurveyResponseSummaryUpdateManyWithWhereWithoutTeamInput = {
+    where: SurveyResponseSummaryScalarWhereInput
+    data: XOR<SurveyResponseSummaryUpdateManyMutationInput, SurveyResponseSummaryUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type SurveyResponseSummaryScalarWhereInput = {
+    AND?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+    OR?: SurveyResponseSummaryScalarWhereInput[]
+    NOT?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
+    id?: StringFilter<"SurveyResponseSummary"> | string
+    surveyId?: StringFilter<"SurveyResponseSummary"> | string
+    questionId?: StringFilter<"SurveyResponseSummary"> | string
+    responseId?: StringFilter<"SurveyResponseSummary"> | string
+    optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
+    numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
+    booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
+    teamId?: IntFilter<"SurveyResponseSummary"> | number
+    responseCount?: IntFilter<"SurveyResponseSummary"> | number
+    lastUpdated?: DateTimeFilter<"SurveyResponseSummary"> | Date | string
+  }
+
   export type TeamCreateWithoutMembersInput = {
     name: string
     description?: string | null
@@ -26809,6 +29009,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMembersInput = {
@@ -26831,6 +29032,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMembersInput = {
@@ -26922,6 +29124,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
@@ -26944,6 +29147,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutTeamMembersInput = {
@@ -27025,6 +29229,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveyTypesInput = {
@@ -27047,6 +29252,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveyTypesInput = {
@@ -27069,6 +29275,7 @@ export namespace Prisma {
     responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
     style?: SurveyStyleCreateNestedOneWithoutSurveyInput
     team: TeamCreateNestedOneWithoutSurveysInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyUncheckedCreateWithoutTypeInput = {
@@ -27086,6 +29293,7 @@ export namespace Prisma {
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
     style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyCreateOrConnectWithoutTypeInput = {
@@ -27128,6 +29336,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveyTypesInput = {
@@ -27150,6 +29359,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SurveyUpsertWithWhereUniqueWithoutTypeInput = {
@@ -27184,6 +29394,7 @@ export namespace Prisma {
     options?: QuestionOptionCreateNestedManyWithoutQuestionInput
     responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
     team: TeamCreateNestedOneWithoutQuestionsInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutSurveyInput = {
@@ -27202,6 +29413,7 @@ export namespace Prisma {
     addOther?: boolean
     options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionCreateOrConnectWithoutSurveyInput = {
@@ -27217,27 +29429,29 @@ export namespace Prisma {
   export type SurveyResponseCreateWithoutSurveyInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
     team: TeamCreateNestedOneWithoutSurveyResponsesInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseUncheckedCreateWithoutSurveyInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
     questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutResponseInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseCreateOrConnectWithoutSurveyInput = {
@@ -27316,6 +29530,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveysInput = {
@@ -27338,6 +29553,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveysInput = {
@@ -27366,6 +29582,42 @@ export namespace Prisma {
   export type SurveyTypeCreateOrConnectWithoutSurveysInput = {
     where: SurveyTypeWhereUniqueInput
     create: XOR<SurveyTypeCreateWithoutSurveysInput, SurveyTypeUncheckedCreateWithoutSurveysInput>
+  }
+
+  export type SurveyResponseSummaryCreateWithoutSurveyInput = {
+    id?: string
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    responseCount: number
+    lastUpdated?: Date | string
+    question: QuestionCreateNestedOneWithoutSurveyResponseSummaryInput
+    option?: QuestionOptionCreateNestedOneWithoutSurveyResponseSummaryInput
+    team: TeamCreateNestedOneWithoutResponseSummariesInput
+    response: SurveyResponseCreateNestedOneWithoutSurveyResponseSummaryInput
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateWithoutSurveyInput = {
+    id?: string
+    questionId: string
+    responseId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
+  export type SurveyResponseSummaryCreateOrConnectWithoutSurveyInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    create: XOR<SurveyResponseSummaryCreateWithoutSurveyInput, SurveyResponseSummaryUncheckedCreateWithoutSurveyInput>
+  }
+
+  export type SurveyResponseSummaryCreateManySurveyInputEnvelope = {
+    data: SurveyResponseSummaryCreateManySurveyInput | SurveyResponseSummaryCreateManySurveyInput[]
+    skipDuplicates?: boolean
   }
 
   export type QuestionUpsertWithWhereUniqueWithoutSurveyInput = {
@@ -27483,6 +29735,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveysInput = {
@@ -27505,6 +29758,7 @@ export namespace Prisma {
     surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SurveyTypeUpsertWithoutSurveysInput = {
@@ -27536,6 +29790,22 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
   }
 
+  export type SurveyResponseSummaryUpsertWithWhereUniqueWithoutSurveyInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    update: XOR<SurveyResponseSummaryUpdateWithoutSurveyInput, SurveyResponseSummaryUncheckedUpdateWithoutSurveyInput>
+    create: XOR<SurveyResponseSummaryCreateWithoutSurveyInput, SurveyResponseSummaryUncheckedCreateWithoutSurveyInput>
+  }
+
+  export type SurveyResponseSummaryUpdateWithWhereUniqueWithoutSurveyInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    data: XOR<SurveyResponseSummaryUpdateWithoutSurveyInput, SurveyResponseSummaryUncheckedUpdateWithoutSurveyInput>
+  }
+
+  export type SurveyResponseSummaryUpdateManyWithWhereWithoutSurveyInput = {
+    where: SurveyResponseSummaryScalarWhereInput
+    data: XOR<SurveyResponseSummaryUpdateManyMutationInput, SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyInput>
+  }
+
   export type SurveyCreateWithoutStyleInput = {
     id?: string
     name: string
@@ -27551,6 +29821,7 @@ export namespace Prisma {
     responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
     team: TeamCreateNestedOneWithoutSurveysInput
     type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyUncheckedCreateWithoutStyleInput = {
@@ -27568,6 +29839,7 @@ export namespace Prisma {
     totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyCreateOrConnectWithoutStyleInput = {
@@ -27594,6 +29866,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveysStyleInput = {
@@ -27616,6 +29889,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveysStyleInput = {
@@ -27649,6 +29923,7 @@ export namespace Prisma {
     responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
     type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateWithoutStyleInput = {
@@ -27666,6 +29941,7 @@ export namespace Prisma {
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyNestedInput
   }
 
   export type TeamUpsertWithoutSurveysStyleInput = {
@@ -27698,6 +29974,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveysStyleInput = {
@@ -27720,6 +29997,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type QuestionOptionCreateWithoutQuestionInput = {
@@ -27731,6 +30009,7 @@ export namespace Prisma {
     isOther?: boolean
     team: TeamCreateNestedOneWithoutQuestionOptionsInput
     responses?: QuestionResponseCreateNestedManyWithoutOptionInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutOptionInput
   }
 
   export type QuestionOptionUncheckedCreateWithoutQuestionInput = {
@@ -27742,6 +30021,7 @@ export namespace Prisma {
     teamId: number
     isOther?: boolean
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutOptionInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutOptionInput
   }
 
   export type QuestionOptionCreateOrConnectWithoutQuestionInput = {
@@ -27805,6 +30085,7 @@ export namespace Prisma {
     style?: SurveyStyleCreateNestedOneWithoutSurveyInput
     team: TeamCreateNestedOneWithoutSurveysInput
     type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyUncheckedCreateWithoutQuestionsInput = {
@@ -27822,6 +30103,7 @@ export namespace Prisma {
     totalResponses?: number
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
     style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyCreateOrConnectWithoutQuestionsInput = {
@@ -27848,6 +30130,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutQuestionsInput = {
@@ -27870,11 +30153,48 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutQuestionsInput = {
     where: TeamWhereUniqueInput
     create: XOR<TeamCreateWithoutQuestionsInput, TeamUncheckedCreateWithoutQuestionsInput>
+  }
+
+  export type SurveyResponseSummaryCreateWithoutQuestionInput = {
+    id?: string
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    responseCount: number
+    lastUpdated?: Date | string
+    survey: SurveyCreateNestedOneWithoutSurveyResponseSummaryInput
+    option?: QuestionOptionCreateNestedOneWithoutSurveyResponseSummaryInput
+    team: TeamCreateNestedOneWithoutResponseSummariesInput
+    response: SurveyResponseCreateNestedOneWithoutSurveyResponseSummaryInput
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateWithoutQuestionInput = {
+    id?: string
+    surveyId: string
+    responseId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
+  export type SurveyResponseSummaryCreateOrConnectWithoutQuestionInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    create: XOR<SurveyResponseSummaryCreateWithoutQuestionInput, SurveyResponseSummaryUncheckedCreateWithoutQuestionInput>
+  }
+
+  export type SurveyResponseSummaryCreateManyQuestionInputEnvelope = {
+    data: SurveyResponseSummaryCreateManyQuestionInput | SurveyResponseSummaryCreateManyQuestionInput[]
+    skipDuplicates?: boolean
   }
 
   export type QuestionOptionUpsertWithWhereUniqueWithoutQuestionInput = {
@@ -27935,6 +30255,7 @@ export namespace Prisma {
     style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
     type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateWithoutQuestionsInput = {
@@ -27952,6 +30273,7 @@ export namespace Prisma {
     totalResponses?: IntFieldUpdateOperationsInput | number
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyNestedInput
   }
 
   export type TeamUpsertWithoutQuestionsInput = {
@@ -27984,6 +30306,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutQuestionsInput = {
@@ -28006,6 +30329,23 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type SurveyResponseSummaryUpsertWithWhereUniqueWithoutQuestionInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    update: XOR<SurveyResponseSummaryUpdateWithoutQuestionInput, SurveyResponseSummaryUncheckedUpdateWithoutQuestionInput>
+    create: XOR<SurveyResponseSummaryCreateWithoutQuestionInput, SurveyResponseSummaryUncheckedCreateWithoutQuestionInput>
+  }
+
+  export type SurveyResponseSummaryUpdateWithWhereUniqueWithoutQuestionInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    data: XOR<SurveyResponseSummaryUpdateWithoutQuestionInput, SurveyResponseSummaryUncheckedUpdateWithoutQuestionInput>
+  }
+
+  export type SurveyResponseSummaryUpdateManyWithWhereWithoutQuestionInput = {
+    where: SurveyResponseSummaryScalarWhereInput
+    data: XOR<SurveyResponseSummaryUpdateManyMutationInput, SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionInput>
   }
 
   export type QuestionCreateWithoutOptionsInput = {
@@ -28024,6 +30364,7 @@ export namespace Prisma {
     responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
     survey: SurveyCreateNestedOneWithoutQuestionsInput
     team: TeamCreateNestedOneWithoutQuestionsInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutOptionsInput = {
@@ -28042,6 +30383,7 @@ export namespace Prisma {
     teamId: number
     addOther?: boolean
     responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionCreateOrConnectWithoutOptionsInput = {
@@ -28068,6 +30410,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutQuestionOptionsInput = {
@@ -28090,6 +30433,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutQuestionOptionsInput = {
@@ -28133,6 +30477,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SurveyResponseSummaryCreateWithoutOptionInput = {
+    id?: string
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    responseCount: number
+    lastUpdated?: Date | string
+    survey: SurveyCreateNestedOneWithoutSurveyResponseSummaryInput
+    question: QuestionCreateNestedOneWithoutSurveyResponseSummaryInput
+    team: TeamCreateNestedOneWithoutResponseSummariesInput
+    response: SurveyResponseCreateNestedOneWithoutSurveyResponseSummaryInput
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateWithoutOptionInput = {
+    id?: string
+    surveyId: string
+    questionId: string
+    responseId: string
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
+  export type SurveyResponseSummaryCreateOrConnectWithoutOptionInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    create: XOR<SurveyResponseSummaryCreateWithoutOptionInput, SurveyResponseSummaryUncheckedCreateWithoutOptionInput>
+  }
+
+  export type SurveyResponseSummaryCreateManyOptionInputEnvelope = {
+    data: SurveyResponseSummaryCreateManyOptionInput | SurveyResponseSummaryCreateManyOptionInput[]
+    skipDuplicates?: boolean
+  }
+
   export type QuestionUpsertWithoutOptionsInput = {
     update: XOR<QuestionUpdateWithoutOptionsInput, QuestionUncheckedUpdateWithoutOptionsInput>
     create: XOR<QuestionCreateWithoutOptionsInput, QuestionUncheckedCreateWithoutOptionsInput>
@@ -28160,6 +30540,7 @@ export namespace Prisma {
     responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
     survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutOptionsInput = {
@@ -28178,6 +30559,7 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
     addOther?: BoolFieldUpdateOperationsInput | boolean
     responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type TeamUpsertWithoutQuestionOptionsInput = {
@@ -28210,6 +30592,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutQuestionOptionsInput = {
@@ -28232,6 +30615,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type QuestionResponseUpsertWithWhereUniqueWithoutOptionInput = {
@@ -28248,6 +30632,22 @@ export namespace Prisma {
   export type QuestionResponseUpdateManyWithWhereWithoutOptionInput = {
     where: QuestionResponseScalarWhereInput
     data: XOR<QuestionResponseUpdateManyMutationInput, QuestionResponseUncheckedUpdateManyWithoutOptionInput>
+  }
+
+  export type SurveyResponseSummaryUpsertWithWhereUniqueWithoutOptionInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    update: XOR<SurveyResponseSummaryUpdateWithoutOptionInput, SurveyResponseSummaryUncheckedUpdateWithoutOptionInput>
+    create: XOR<SurveyResponseSummaryCreateWithoutOptionInput, SurveyResponseSummaryUncheckedCreateWithoutOptionInput>
+  }
+
+  export type SurveyResponseSummaryUpdateWithWhereUniqueWithoutOptionInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    data: XOR<SurveyResponseSummaryUpdateWithoutOptionInput, SurveyResponseSummaryUncheckedUpdateWithoutOptionInput>
+  }
+
+  export type SurveyResponseSummaryUpdateManyWithWhereWithoutOptionInput = {
+    where: SurveyResponseSummaryScalarWhereInput
+    data: XOR<SurveyResponseSummaryUpdateManyMutationInput, SurveyResponseSummaryUncheckedUpdateManyWithoutOptionInput>
   }
 
   export type QuestionResponseCreateWithoutResponseInput = {
@@ -28301,6 +30701,7 @@ export namespace Prisma {
     style?: SurveyStyleCreateNestedOneWithoutSurveyInput
     team: TeamCreateNestedOneWithoutSurveysInput
     type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyUncheckedCreateWithoutResponsesInput = {
@@ -28318,6 +30719,7 @@ export namespace Prisma {
     totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
     style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutSurveyInput
   }
 
   export type SurveyCreateOrConnectWithoutResponsesInput = {
@@ -28344,6 +30746,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveyResponsesInput = {
@@ -28366,11 +30769,48 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveyResponsesInput = {
     where: TeamWhereUniqueInput
     create: XOR<TeamCreateWithoutSurveyResponsesInput, TeamUncheckedCreateWithoutSurveyResponsesInput>
+  }
+
+  export type SurveyResponseSummaryCreateWithoutResponseInput = {
+    id?: string
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    responseCount: number
+    lastUpdated?: Date | string
+    survey: SurveyCreateNestedOneWithoutSurveyResponseSummaryInput
+    question: QuestionCreateNestedOneWithoutSurveyResponseSummaryInput
+    option?: QuestionOptionCreateNestedOneWithoutSurveyResponseSummaryInput
+    team: TeamCreateNestedOneWithoutResponseSummariesInput
+  }
+
+  export type SurveyResponseSummaryUncheckedCreateWithoutResponseInput = {
+    id?: string
+    surveyId: string
+    questionId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
+  export type SurveyResponseSummaryCreateOrConnectWithoutResponseInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    create: XOR<SurveyResponseSummaryCreateWithoutResponseInput, SurveyResponseSummaryUncheckedCreateWithoutResponseInput>
+  }
+
+  export type SurveyResponseSummaryCreateManyResponseInputEnvelope = {
+    data: SurveyResponseSummaryCreateManyResponseInput | SurveyResponseSummaryCreateManyResponseInput[]
+    skipDuplicates?: boolean
   }
 
   export type QuestionResponseUpsertWithWhereUniqueWithoutResponseInput = {
@@ -28415,6 +30855,7 @@ export namespace Prisma {
     style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
     type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateWithoutResponsesInput = {
@@ -28432,6 +30873,7 @@ export namespace Prisma {
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyNestedInput
   }
 
   export type TeamUpsertWithoutSurveyResponsesInput = {
@@ -28464,6 +30906,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveyResponsesInput = {
@@ -28486,6 +30929,445 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type SurveyResponseSummaryUpsertWithWhereUniqueWithoutResponseInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    update: XOR<SurveyResponseSummaryUpdateWithoutResponseInput, SurveyResponseSummaryUncheckedUpdateWithoutResponseInput>
+    create: XOR<SurveyResponseSummaryCreateWithoutResponseInput, SurveyResponseSummaryUncheckedCreateWithoutResponseInput>
+  }
+
+  export type SurveyResponseSummaryUpdateWithWhereUniqueWithoutResponseInput = {
+    where: SurveyResponseSummaryWhereUniqueInput
+    data: XOR<SurveyResponseSummaryUpdateWithoutResponseInput, SurveyResponseSummaryUncheckedUpdateWithoutResponseInput>
+  }
+
+  export type SurveyResponseSummaryUpdateManyWithWhereWithoutResponseInput = {
+    where: SurveyResponseSummaryScalarWhereInput
+    data: XOR<SurveyResponseSummaryUpdateManyMutationInput, SurveyResponseSummaryUncheckedUpdateManyWithoutResponseInput>
+  }
+
+  export type SurveyCreateWithoutSurveyResponseSummaryInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    questions?: QuestionCreateNestedManyWithoutSurveyInput
+    responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleCreateNestedOneWithoutSurveyInput
+    team: TeamCreateNestedOneWithoutSurveysInput
+    type?: SurveyTypeCreateNestedOneWithoutSurveysInput
+  }
+
+  export type SurveyUncheckedCreateWithoutSurveyResponseSummaryInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.SurveyStatus
+    allowMultipleResponses?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId: number
+    typeId?: string | null
+    ResponseRate?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
+    responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
+    style?: SurveyStyleUncheckedCreateNestedOneWithoutSurveyInput
+  }
+
+  export type SurveyCreateOrConnectWithoutSurveyResponseSummaryInput = {
+    where: SurveyWhereUniqueInput
+    create: XOR<SurveyCreateWithoutSurveyResponseSummaryInput, SurveyUncheckedCreateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type QuestionCreateWithoutSurveyResponseSummaryInput = {
+    id?: string
+    title: string
+    description?: string | null
+    format: $Enums.QuestionFormat
+    required?: boolean
+    order: number
+    yesLabel?: string | null
+    noLabel?: string | null
+    buttonLabel?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    addOther?: boolean
+    options?: QuestionOptionCreateNestedManyWithoutQuestionInput
+    responses?: QuestionResponseCreateNestedManyWithoutQuestionInput
+    survey: SurveyCreateNestedOneWithoutQuestionsInput
+    team: TeamCreateNestedOneWithoutQuestionsInput
+  }
+
+  export type QuestionUncheckedCreateWithoutSurveyResponseSummaryInput = {
+    id?: string
+    title: string
+    description?: string | null
+    format: $Enums.QuestionFormat
+    required?: boolean
+    order: number
+    yesLabel?: string | null
+    noLabel?: string | null
+    buttonLabel?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    surveyId: string
+    teamId: number
+    addOther?: boolean
+    options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
+    responses?: QuestionResponseUncheckedCreateNestedManyWithoutQuestionInput
+  }
+
+  export type QuestionCreateOrConnectWithoutSurveyResponseSummaryInput = {
+    where: QuestionWhereUniqueInput
+    create: XOR<QuestionCreateWithoutSurveyResponseSummaryInput, QuestionUncheckedCreateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type QuestionOptionCreateWithoutSurveyResponseSummaryInput = {
+    id?: string
+    text: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isOther?: boolean
+    question: QuestionCreateNestedOneWithoutOptionsInput
+    team: TeamCreateNestedOneWithoutQuestionOptionsInput
+    responses?: QuestionResponseCreateNestedManyWithoutOptionInput
+  }
+
+  export type QuestionOptionUncheckedCreateWithoutSurveyResponseSummaryInput = {
+    id?: string
+    text: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionId: string
+    teamId: number
+    isOther?: boolean
+    responses?: QuestionResponseUncheckedCreateNestedManyWithoutOptionInput
+  }
+
+  export type QuestionOptionCreateOrConnectWithoutSurveyResponseSummaryInput = {
+    where: QuestionOptionWhereUniqueInput
+    create: XOR<QuestionOptionCreateWithoutSurveyResponseSummaryInput, QuestionOptionUncheckedCreateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type TeamCreateWithoutResponseSummariesInput = {
+    name: string
+    description?: string | null
+    token?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutResponseSummariesInput = {
+    id?: number
+    name: string
+    description?: string | null
+    token?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutResponseSummariesInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutResponseSummariesInput, TeamUncheckedCreateWithoutResponseSummariesInput>
+  }
+
+  export type SurveyResponseCreateWithoutSurveyResponseSummaryInput = {
+    id?: string
+    status?: $Enums.ResponseStatus
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
+    submittedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questionResponses?: QuestionResponseCreateNestedManyWithoutResponseInput
+    survey: SurveyCreateNestedOneWithoutResponsesInput
+    team: TeamCreateNestedOneWithoutSurveyResponsesInput
+  }
+
+  export type SurveyResponseUncheckedCreateWithoutSurveyResponseSummaryInput = {
+    id?: string
+    status?: $Enums.ResponseStatus
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
+    submittedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    surveyId: string
+    teamId: number
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutResponseInput
+  }
+
+  export type SurveyResponseCreateOrConnectWithoutSurveyResponseSummaryInput = {
+    where: SurveyResponseWhereUniqueInput
+    create: XOR<SurveyResponseCreateWithoutSurveyResponseSummaryInput, SurveyResponseUncheckedCreateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type SurveyUpsertWithoutSurveyResponseSummaryInput = {
+    update: XOR<SurveyUpdateWithoutSurveyResponseSummaryInput, SurveyUncheckedUpdateWithoutSurveyResponseSummaryInput>
+    create: XOR<SurveyCreateWithoutSurveyResponseSummaryInput, SurveyUncheckedCreateWithoutSurveyResponseSummaryInput>
+    where?: SurveyWhereInput
+  }
+
+  export type SurveyUpdateToOneWithWhereWithoutSurveyResponseSummaryInput = {
+    where?: SurveyWhereInput
+    data: XOR<SurveyUpdateWithoutSurveyResponseSummaryInput, SurveyUncheckedUpdateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type SurveyUpdateWithoutSurveyResponseSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    questions?: QuestionUpdateManyWithoutSurveyNestedInput
+    responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
+    team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
+    type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+  }
+
+  export type SurveyUncheckedUpdateWithoutSurveyResponseSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    typeId?: NullableStringFieldUpdateOperationsInput | string | null
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
+    responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
+    style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
+  }
+
+  export type QuestionUpsertWithoutSurveyResponseSummaryInput = {
+    update: XOR<QuestionUpdateWithoutSurveyResponseSummaryInput, QuestionUncheckedUpdateWithoutSurveyResponseSummaryInput>
+    create: XOR<QuestionCreateWithoutSurveyResponseSummaryInput, QuestionUncheckedCreateWithoutSurveyResponseSummaryInput>
+    where?: QuestionWhereInput
+  }
+
+  export type QuestionUpdateToOneWithWhereWithoutSurveyResponseSummaryInput = {
+    where?: QuestionWhereInput
+    data: XOR<QuestionUpdateWithoutSurveyResponseSummaryInput, QuestionUncheckedUpdateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type QuestionUpdateWithoutSurveyResponseSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: EnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat
+    required?: BoolFieldUpdateOperationsInput | boolean
+    order?: IntFieldUpdateOperationsInput | number
+    yesLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    noLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    addOther?: BoolFieldUpdateOperationsInput | boolean
+    options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
+    responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
+    survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
+    team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
+  }
+
+  export type QuestionUncheckedUpdateWithoutSurveyResponseSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: EnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat
+    required?: BoolFieldUpdateOperationsInput | boolean
+    order?: IntFieldUpdateOperationsInput | number
+    yesLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    noLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    buttonLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    addOther?: BoolFieldUpdateOperationsInput | boolean
+    options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
+    responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
+  }
+
+  export type QuestionOptionUpsertWithoutSurveyResponseSummaryInput = {
+    update: XOR<QuestionOptionUpdateWithoutSurveyResponseSummaryInput, QuestionOptionUncheckedUpdateWithoutSurveyResponseSummaryInput>
+    create: XOR<QuestionOptionCreateWithoutSurveyResponseSummaryInput, QuestionOptionUncheckedCreateWithoutSurveyResponseSummaryInput>
+    where?: QuestionOptionWhereInput
+  }
+
+  export type QuestionOptionUpdateToOneWithWhereWithoutSurveyResponseSummaryInput = {
+    where?: QuestionOptionWhereInput
+    data: XOR<QuestionOptionUpdateWithoutSurveyResponseSummaryInput, QuestionOptionUncheckedUpdateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type QuestionOptionUpdateWithoutSurveyResponseSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOther?: BoolFieldUpdateOperationsInput | boolean
+    question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
+    team?: TeamUpdateOneRequiredWithoutQuestionOptionsNestedInput
+    responses?: QuestionResponseUpdateManyWithoutOptionNestedInput
+  }
+
+  export type QuestionOptionUncheckedUpdateWithoutSurveyResponseSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    isOther?: BoolFieldUpdateOperationsInput | boolean
+    responses?: QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput
+  }
+
+  export type TeamUpsertWithoutResponseSummariesInput = {
+    update: XOR<TeamUpdateWithoutResponseSummariesInput, TeamUncheckedUpdateWithoutResponseSummariesInput>
+    create: XOR<TeamCreateWithoutResponseSummariesInput, TeamUncheckedCreateWithoutResponseSummariesInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutResponseSummariesInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutResponseSummariesInput, TeamUncheckedUpdateWithoutResponseSummariesInput>
+  }
+
+  export type TeamUpdateWithoutResponseSummariesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
+    questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutResponseSummariesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: IntFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
+    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type SurveyResponseUpsertWithoutSurveyResponseSummaryInput = {
+    update: XOR<SurveyResponseUpdateWithoutSurveyResponseSummaryInput, SurveyResponseUncheckedUpdateWithoutSurveyResponseSummaryInput>
+    create: XOR<SurveyResponseCreateWithoutSurveyResponseSummaryInput, SurveyResponseUncheckedCreateWithoutSurveyResponseSummaryInput>
+    where?: SurveyResponseWhereInput
+  }
+
+  export type SurveyResponseUpdateToOneWithWhereWithoutSurveyResponseSummaryInput = {
+    where?: SurveyResponseWhereInput
+    data: XOR<SurveyResponseUpdateWithoutSurveyResponseSummaryInput, SurveyResponseUncheckedUpdateWithoutSurveyResponseSummaryInput>
+  }
+
+  export type SurveyResponseUpdateWithoutSurveyResponseSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
+    survey?: SurveyUpdateOneRequiredWithoutResponsesNestedInput
+    team?: TeamUpdateOneRequiredWithoutSurveyResponsesNestedInput
+  }
+
+  export type SurveyResponseUncheckedUpdateWithoutSurveyResponseSummaryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutResponseNestedInput
   }
 
   export type QuestionOptionCreateWithoutResponsesInput = {
@@ -28497,6 +31379,7 @@ export namespace Prisma {
     isOther?: boolean
     question: QuestionCreateNestedOneWithoutOptionsInput
     team: TeamCreateNestedOneWithoutQuestionOptionsInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutOptionInput
   }
 
   export type QuestionOptionUncheckedCreateWithoutResponsesInput = {
@@ -28508,6 +31391,7 @@ export namespace Prisma {
     questionId: string
     teamId: number
     isOther?: boolean
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutOptionInput
   }
 
   export type QuestionOptionCreateOrConnectWithoutResponsesInput = {
@@ -28531,6 +31415,7 @@ export namespace Prisma {
     options?: QuestionOptionCreateNestedManyWithoutQuestionInput
     survey: SurveyCreateNestedOneWithoutQuestionsInput
     team: TeamCreateNestedOneWithoutQuestionsInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutResponsesInput = {
@@ -28549,6 +31434,7 @@ export namespace Prisma {
     teamId: number
     addOther?: boolean
     options?: QuestionOptionUncheckedCreateNestedManyWithoutQuestionInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionCreateOrConnectWithoutResponsesInput = {
@@ -28559,27 +31445,29 @@ export namespace Prisma {
   export type SurveyResponseCreateWithoutQuestionResponsesInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     survey: SurveyCreateNestedOneWithoutResponsesInput
     team: TeamCreateNestedOneWithoutSurveyResponsesInput
+    SurveyResponseSummary?: SurveyResponseSummaryCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseUncheckedCreateWithoutQuestionResponsesInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     surveyId: string
     teamId: number
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutResponseInput
   }
 
   export type SurveyResponseCreateOrConnectWithoutQuestionResponsesInput = {
@@ -28606,6 +31494,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutQuestionResponsesInput = {
@@ -28628,6 +31517,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutQuestionResponsesInput = {
@@ -28655,6 +31545,7 @@ export namespace Prisma {
     isOther?: BoolFieldUpdateOperationsInput | boolean
     question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionOptionsNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutOptionNestedInput
   }
 
   export type QuestionOptionUncheckedUpdateWithoutResponsesInput = {
@@ -28666,6 +31557,7 @@ export namespace Prisma {
     questionId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
     isOther?: BoolFieldUpdateOperationsInput | boolean
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutOptionNestedInput
   }
 
   export type QuestionUpsertWithoutResponsesInput = {
@@ -28695,6 +31587,7 @@ export namespace Prisma {
     options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
     survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutResponsesInput = {
@@ -28713,6 +31606,7 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
     addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type SurveyResponseUpsertWithoutQuestionResponsesInput = {
@@ -28729,27 +31623,29 @@ export namespace Prisma {
   export type SurveyResponseUpdateWithoutQuestionResponsesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     survey?: SurveyUpdateOneRequiredWithoutResponsesNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveyResponsesNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutResponseNestedInput
   }
 
   export type SurveyResponseUncheckedUpdateWithoutQuestionResponsesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutResponseNestedInput
   }
 
   export type TeamUpsertWithoutQuestionResponsesInput = {
@@ -28782,6 +31678,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutQuestionResponsesInput = {
@@ -28804,6 +31701,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -29068,9 +31966,9 @@ export namespace Prisma {
   export type SurveyResponseCreateManyTeamInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29154,6 +32052,19 @@ export namespace Prisma {
     theme?: $Enums.Theme
   }
 
+  export type SurveyResponseSummaryCreateManyTeamInput = {
+    id?: string
+    surveyId: string
+    questionId: string
+    responseId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
   export type QuestionOptionUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
@@ -29163,6 +32074,7 @@ export namespace Prisma {
     isOther?: BoolFieldUpdateOperationsInput | boolean
     question?: QuestionUpdateOneRequiredWithoutOptionsNestedInput
     responses?: QuestionResponseUpdateManyWithoutOptionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutOptionNestedInput
   }
 
   export type QuestionOptionUncheckedUpdateWithoutTeamInput = {
@@ -29174,6 +32086,7 @@ export namespace Prisma {
     questionId?: StringFieldUpdateOperationsInput | string
     isOther?: BoolFieldUpdateOperationsInput | boolean
     responses?: QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutOptionNestedInput
   }
 
   export type QuestionOptionUncheckedUpdateManyWithoutTeamInput = {
@@ -29241,6 +32154,7 @@ export namespace Prisma {
     options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
     survey?: SurveyUpdateOneRequiredWithoutQuestionsNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutTeamInput = {
@@ -29259,6 +32173,7 @@ export namespace Prisma {
     addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateManyWithoutTeamInput = {
@@ -29280,35 +32195,37 @@ export namespace Prisma {
   export type SurveyResponseUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
     survey?: SurveyUpdateOneRequiredWithoutResponsesNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutResponseNestedInput
   }
 
   export type SurveyResponseUncheckedUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutResponseNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutResponseNestedInput
   }
 
   export type SurveyResponseUncheckedUpdateManyWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29419,6 +32336,7 @@ export namespace Prisma {
     responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
     type?: SurveyTypeUpdateOneWithoutSurveysNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateWithoutTeamInput = {
@@ -29436,6 +32354,7 @@ export namespace Prisma {
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateManyWithoutTeamInput = {
@@ -29558,6 +32477,45 @@ export namespace Prisma {
     theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   }
 
+  export type SurveyResponseSummaryUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    survey?: SurveyUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    question?: QuestionUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    option?: QuestionOptionUpdateOneWithoutSurveyResponseSummaryNestedInput
+    response?: SurveyResponseUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type SurveyCreateManyTypeInput = {
     id?: string
     name: string
@@ -29587,6 +32545,7 @@ export namespace Prisma {
     responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUpdateOneWithoutSurveyNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveysNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateWithoutTypeInput = {
@@ -29604,6 +32563,7 @@ export namespace Prisma {
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
     style?: SurveyStyleUncheckedUpdateOneWithoutSurveyNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyNestedInput
   }
 
   export type SurveyUncheckedUpdateManyWithoutTypeInput = {
@@ -29639,13 +32599,26 @@ export namespace Prisma {
   export type SurveyResponseCreateManySurveyInput = {
     id?: string
     status?: $Enums.ResponseStatus
-    userId: string
-    userIp: string
-    extraInfo: string
+    userId?: string | null
+    userIp?: string | null
+    extraInfo?: string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
+  }
+
+  export type SurveyResponseSummaryCreateManySurveyInput = {
+    id?: string
+    questionId: string
+    responseId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
   }
 
   export type QuestionUpdateWithoutSurveyInput = {
@@ -29664,6 +32637,7 @@ export namespace Prisma {
     options?: QuestionOptionUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUpdateManyWithoutQuestionNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionsNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutSurveyInput = {
@@ -29682,6 +32656,7 @@ export namespace Prisma {
     addOther?: BoolFieldUpdateOperationsInput | boolean
     options?: QuestionOptionUncheckedUpdateManyWithoutQuestionNestedInput
     responses?: QuestionResponseUncheckedUpdateManyWithoutQuestionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateManyWithoutSurveyInput = {
@@ -29703,39 +32678,80 @@ export namespace Prisma {
   export type SurveyResponseUpdateWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionResponses?: QuestionResponseUpdateManyWithoutResponseNestedInput
     team?: TeamUpdateOneRequiredWithoutSurveyResponsesNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutResponseNestedInput
   }
 
   export type SurveyResponseUncheckedUpdateWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     questionResponses?: QuestionResponseUncheckedUpdateManyWithoutResponseNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutResponseNestedInput
   }
 
   export type SurveyResponseUncheckedUpdateManyWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
-    userId?: StringFieldUpdateOperationsInput | string
-    userIp?: StringFieldUpdateOperationsInput | string
-    extraInfo?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userIp?: NullableStringFieldUpdateOperationsInput | string | null
+    extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type SurveyResponseSummaryUpdateWithoutSurveyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    question?: QuestionUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    option?: QuestionOptionUpdateOneWithoutSurveyResponseSummaryNestedInput
+    team?: TeamUpdateOneRequiredWithoutResponseSummariesNestedInput
+    response?: SurveyResponseUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateWithoutSurveyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuestionOptionCreateManyQuestionInput = {
@@ -29761,6 +32777,19 @@ export namespace Prisma {
     teamId: number
   }
 
+  export type SurveyResponseSummaryCreateManyQuestionInput = {
+    id?: string
+    surveyId: string
+    responseId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
+  }
+
   export type QuestionOptionUpdateWithoutQuestionInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
@@ -29770,6 +32799,7 @@ export namespace Prisma {
     isOther?: BoolFieldUpdateOperationsInput | boolean
     team?: TeamUpdateOneRequiredWithoutQuestionOptionsNestedInput
     responses?: QuestionResponseUpdateManyWithoutOptionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUpdateManyWithoutOptionNestedInput
   }
 
   export type QuestionOptionUncheckedUpdateWithoutQuestionInput = {
@@ -29781,6 +32811,7 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
     isOther?: BoolFieldUpdateOperationsInput | boolean
     responses?: QuestionResponseUncheckedUpdateManyWithoutOptionNestedInput
+    SurveyResponseSummary?: SurveyResponseSummaryUncheckedUpdateManyWithoutOptionNestedInput
   }
 
   export type QuestionOptionUncheckedUpdateManyWithoutQuestionInput = {
@@ -29832,6 +32863,45 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
   }
 
+  export type SurveyResponseSummaryUpdateWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    survey?: SurveyUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    option?: QuestionOptionUpdateOneWithoutSurveyResponseSummaryNestedInput
+    team?: TeamUpdateOneRequiredWithoutResponseSummariesNestedInput
+    response?: SurveyResponseUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type QuestionResponseCreateManyOptionInput = {
     id?: string
     isOther?: boolean | null
@@ -29843,6 +32913,19 @@ export namespace Prisma {
     questionId: string
     responseId: string
     teamId: number
+  }
+
+  export type SurveyResponseSummaryCreateManyOptionInput = {
+    id?: string
+    surveyId: string
+    questionId: string
+    responseId: string
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
   }
 
   export type QuestionResponseUpdateWithoutOptionInput = {
@@ -29884,6 +32967,45 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
   }
 
+  export type SurveyResponseSummaryUpdateWithoutOptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    survey?: SurveyUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    question?: QuestionUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    team?: TeamUpdateOneRequiredWithoutResponseSummariesNestedInput
+    response?: SurveyResponseUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateWithoutOptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutOptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    responseId?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type QuestionResponseCreateManyResponseInput = {
     id?: string
     isOther?: boolean | null
@@ -29895,6 +33017,19 @@ export namespace Prisma {
     questionId: string
     optionId?: string | null
     teamId: number
+  }
+
+  export type SurveyResponseSummaryCreateManyResponseInput = {
+    id?: string
+    surveyId: string
+    questionId: string
+    optionId?: string | null
+    isOther?: boolean | null
+    numberValue?: number | null
+    booleanValue?: boolean | null
+    teamId: number
+    responseCount: number
+    lastUpdated?: Date | string
   }
 
   export type QuestionResponseUpdateWithoutResponseInput = {
@@ -29934,6 +33069,45 @@ export namespace Prisma {
     questionId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     teamId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type SurveyResponseSummaryUpdateWithoutResponseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    survey?: SurveyUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    question?: QuestionUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput
+    option?: QuestionOptionUpdateOneWithoutSurveyResponseSummaryNestedInput
+    team?: TeamUpdateOneRequiredWithoutResponseSummariesNestedInput
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateWithoutResponseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SurveyResponseSummaryUncheckedUpdateManyWithoutResponseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    surveyId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    numberValue?: NullableIntFieldUpdateOperationsInput | number | null
+    booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    teamId?: IntFieldUpdateOperationsInput | number
+    responseCount?: IntFieldUpdateOperationsInput | number
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

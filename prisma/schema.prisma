@@ -94,17 +94,17 @@ model VerificationToken {
 }
 
 model Team {
-  id                 Int                @id @default(autoincrement())
+  id                 Int                     @id @default(autoincrement())
   name               String
   description        String?
-  token              String?            @unique
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  ResponseRate       Int                @default(0)
-  totalActiveSurveys Int                @default(0)
-  totalOpenSurveys   Int                @default(0)
-  totalResponses     Int                @default(0)
-  totalSurveys       Int                @default(0)
+  token              String?                 @unique
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  ResponseRate       Int                     @default(0)
+  totalActiveSurveys Int                     @default(0)
+  totalOpenSurveys   Int                     @default(0)
+  totalResponses     Int                     @default(0)
+  totalSurveys       Int                     @default(0)
   questionOptions    QuestionOption[]
   questionResponses  QuestionResponse[]
   questions          Question[]
@@ -112,8 +112,9 @@ model Team {
   surveysStyle       SurveyStyle[]
   surveyTypes        SurveyType[]
   surveys            Survey[]
-  members            TeamMember[]       @relation("TeamMembers")
-  user               User[]             @relation("UserDefaultTeam")
+  members            TeamMember[]            @relation("TeamMembers")
+  user               User[]                  @relation("UserDefaultTeam")
+  responseSummaries  SurveyResponseSummary[]
 
   @@map("teams")
 }
@@ -150,23 +151,24 @@ model SurveyType {
 }
 
 model Survey {
-  id                     String           @id @default(cuid())
+  id                     String                  @id @default(cuid())
   name                   String
   description            String?
-  status                 SurveyStatus     @default(draft)
-  allowMultipleResponses Boolean          @default(true)
-  createdAt              DateTime         @default(now())
-  updatedAt              DateTime         @updatedAt
+  status                 SurveyStatus            @default(draft)
+  allowMultipleResponses Boolean                 @default(true)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
   teamId                 Int
   typeId                 String?
-  ResponseRate           Int              @default(0)
-  totalOpenSurveys       Int              @default(0)
-  totalResponses         Int              @default(0)
+  ResponseRate           Int                     @default(0)
+  totalOpenSurveys       Int                     @default(0)
+  totalResponses         Int                     @default(0)
   questions              Question[]
   responses              SurveyResponse[]
   style                  SurveyStyle?
-  team                   Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  type                   SurveyType?      @relation(fields: [typeId], references: [id])
+  team                   Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  type                   SurveyType?             @relation(fields: [typeId], references: [id])
+  SurveyResponseSummary  SurveyResponseSummary[]
 
   @@map("surveys")
 }
@@ -198,60 +200,92 @@ model SurveyStyle {
 }
 
 model Question {
-  id          String             @id @default(cuid())
-  title       String
-  description String?
-  format      QuestionFormat
-  required    Boolean            @default(false)
-  order       Int
-  yesLabel    String?
-  noLabel     String?
-  buttonLabel String?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  surveyId    String
-  teamId      Int
-  addOther    Boolean            @default(false)
-  options     QuestionOption[]
-  responses   QuestionResponse[]
-  survey      Survey             @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  team        Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  id                    String                  @id @default(cuid())
+  title                 String
+  description           String?
+  format                QuestionFormat
+  required              Boolean                 @default(false)
+  order                 Int
+  yesLabel              String?
+  noLabel               String?
+  buttonLabel           String?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  surveyId              String
+  teamId                Int
+  addOther              Boolean                 @default(false)
+  options               QuestionOption[]
+  responses             QuestionResponse[]
+  survey                Survey                  @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  team                  Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  SurveyResponseSummary SurveyResponseSummary[]
 
   @@map("questions")
 }
 
 model QuestionOption {
-  id         String             @id @default(cuid())
-  text       String
-  order      Int
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
-  questionId String
-  teamId     Int
-  isOther    Boolean            @default(false)
-  question   Question           @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  team       Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  responses  QuestionResponse[]
+  id                    String                  @id @default(cuid())
+  text                  String
+  order                 Int
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  questionId            String
+  teamId                Int
+  isOther               Boolean                 @default(false)
+  question              Question                @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  team                  Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  responses             QuestionResponse[]
+  SurveyResponseSummary SurveyResponseSummary[]
 
   @@map("question_options")
 }
 
 model SurveyResponse {
-  id                String             @id @default(cuid())
-  status            ResponseStatus     @default(pending)
-  userId            String
-  userIp            String
-  extraInfo         String
-  submittedAt       DateTime?
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  surveyId          String
-  teamId            Int
-  questionResponses QuestionResponse[]
-  survey            Survey             @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  team              Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  id                    String                  @id @default(cuid())
+  status                ResponseStatus          @default(pending)
+  userId                String?
+  userIp                String?
+  extraInfo             String?
+  submittedAt           DateTime?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  surveyId              String
+  teamId                Int
+  questionResponses     QuestionResponse[]
+  survey                Survey                  @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  team                  Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  SurveyResponseSummary SurveyResponseSummary[]
 
   @@map("survey_responses")
+}
+
+// The following model stores pre-aggregated summary data for survey responses by question.
+// This enables efficient reporting and avoids recalculating counts on every request.
+
+model SurveyResponseSummary {
+  id            String   @id @default(cuid())
+  surveyId      String
+  questionId    String
+  responseId    String
+  optionId      String? // null for open-ended or non-option questions
+  isOther       Boolean? @default(false)
+  numberValue   Int?
+  booleanValue  Boolean?
+  teamId        Int
+  responseCount Int
+  lastUpdated   DateTime @updatedAt
+
+  // Relations
+  survey   Survey          @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  question Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  option   QuestionOption? @relation(fields: [optionId], references: [id])
+  team     Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  response SurveyResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  @@unique([surveyId, questionId, optionId, teamId])
+  @@unique([surveyId, questionId, numberValue, teamId])
+  @@unique([surveyId, questionId, booleanValue, teamId])
+  @@map("survey_response_summaries")
 }
 
 model QuestionResponse {
