@@ -9,6 +9,8 @@ class o {
         this.container = null;
         this.token = p.token || '';
         this.surveyId = p.surveyId || '';
+        this.userId = p.userId || '';
+        this.extraInfo = p.extraInfo || '';
         this.apiUrl = 'http://app.opineeo.com/api/survey/v0';
         this.i = 0;
         this.done = !1;
@@ -23,6 +25,8 @@ class o {
     async mount(id) {
         this.container = document.getElementById(id);
         if (!this.container) return;
+        // Ensure container is visible
+        this.container.style.display = 'block';
         if (!this.survey && this.token && this.surveyId) await this.fetchSurveyData();
         if (!this.survey) return;
         this.injectCSS();
@@ -174,18 +178,20 @@ class o {
                     const res = await fetch(this.apiUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}` },
-                        body: JSON.stringify(this.pack())
+                        body: JSON.stringify(await this.pack())
                     });
                     if (!res.ok) console.error('Failed to submit survey response' + res.statusText);
                 } catch (e) { console.error('Submission error:', e); }
             }
-            this.onComplete(this.pack());
+            this.onComplete(await this.pack());
             this.done = !0;
         } catch (e) { console.error('Submission error:', e); }
         finally { this.s = !1; this.render(); }
     }
 
     onClick(ev) {
+        // Guard clause: if survey is destroyed, ignore clicks
+        if (!this.survey || !this.container) return;
         const el = ev.target, a = el.dataset.a || el.closest('[data-a]')?.dataset.a; if (!a) return;
         if (a === 'close') return this.close();
         if (a === 'prev') return this.transitionToPrevious();
@@ -222,6 +228,8 @@ class o {
     }
 
     onInput(ev) {
+        // Guard clause: if survey is destroyed, ignore input
+        if (!this.survey || !this.container) return;
         const el = ev.target, a = el.dataset.a; if (!a) return;
         const qid = el.dataset.q;
         if (a === 'other') this.ot[qid] = el.value;
@@ -229,6 +237,7 @@ class o {
     }
 
     shake() {
+        if (!this.container) return;
         const q = this.container.querySelector('.qc'); if (!q) return;
         q.style.animation = 'p .25s ease'; setTimeout(() => q.style.animation = '', 250);
     }
@@ -239,18 +248,70 @@ class o {
     }
 
     focusInput() {
+        if (!this.container) return;
         const q = this.survey.questions[this.i];
-        setTimeout(() => { (q?.format === 'LONG_TEXT' ? this.container.querySelector('.ta') : this.container.querySelector('.other:not([hidden]) .txt'))?.focus(); }, 30);
+        setTimeout(() => {
+            if (!this.container) return;
+            (q?.format === 'LONG_TEXT' ? this.container.querySelector('.ta') : this.container.querySelector('.other:not([hidden]) .txt'))?.focus();
+        }, 30);
     }
 
-    close() { if (this.container) this.container.style.display = 'none'; this.onClose(); }
+    close() {
+        this.destroy();
+        this.onClose();
+        // Remove the widget from DOM
+        if (this.container && this.container.parentNode) {
+            this.container.parentNode.removeChild(this.container);
+        }
+    }
 
-    pack() {
-        return Object.keys(this.r).map(k => {
+    destroy() {
+        // Remove event listeners
+        if (this.container) {
+            ['click', 'input'].forEach(t => this.container.removeEventListener(t, e => this[`on${t[0].toUpperCase()}${t.slice(1)}`](e)));
+        }
+        // Clear container content
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
+        // Reset all state
+        this.container = null;
+        this.survey = null;
+        this.r = {};
+        this.ot = {};
+        this.i = 0;
+        this.done = false;
+        this.s = false;
+        this.loading = false;
+        this.error = null;
+    }
+
+    async pack() {
+        const responses = Object.keys(this.r).map(k => {
             const v = this.r[k], q = this.survey.questions.find(x => x.id === k);
             const resp = v.isOther && this.ot[k] ? { ...v, textValue: this.ot[k] } : v;
             return { ...resp, questionTitle: q?.title || '' };
         });
+
+        const payload = {
+            surveyId: this.surveyId,
+            responses: responses
+        };
+
+        if (this.userId) {
+            payload.userId = this.userId;
+        }
+
+        if (this.extraInfo) {
+            payload.extraInfo = this.extraInfo;
+        }
+
+        try {
+            const res = await fetch("https://api.ipify.org/", { method: 'GET' });
+            if (res.ok) payload.userIp = await res.text();
+        } catch (e) { console.error('Submission error:', e); }
+
+        return payload;
     }
 }
 
@@ -269,7 +330,7 @@ window.initSurveyWidget = i => new o(i);
 
     class OpineeoSurveyElement extends HTMLElement {
         static get observedAttributes() {
-            return ['survey-id', 'token', 'auto-close', 'oncomplete', 'onclose'];
+            return ['survey-id', 'token', 'auto-close', 'user-id', 'extra-info', 'custom-css', 'oncomplete', 'onclose'];
         }
 
         constructor() {
@@ -284,13 +345,12 @@ window.initSurveyWidget = i => new o(i);
             if (!this._mounted) {
                 const c = document.createElement('div');
                 c.id = this._id;
-                this.style.display = this.style.display || 'block';
                 this.appendChild(c);
                 this._mounted = true;
             }
             this._mount();
         }
-        disconnectedCallback() { this._widget?.close?.(); this._widget = null; }
+        disconnectedCallback() { this._widget?.destroy?.(); this._widget = null; }
         attributeChangedCallback() { if (this._mounted) this._mount(); }
 
         get surveyData() { return this._surveyData; }
@@ -308,8 +368,10 @@ window.initSurveyWidget = i => new o(i);
                 surveyId: this.getAttribute('survey-id') || '',
                 token: this.getAttribute('token') || '',
                 autoClose: +(this.getAttribute('auto-close') || 0),
+                userId: this.getAttribute('user-id') || '',
+                extraInfo: this.getAttribute('extra-info') === '',
                 surveyData: this._surveyData,
-                customCSS: this._customCSS,
+                customCSS: this.getAttribute('custom-css') || this._customCSS,
                 onComplete: (data) => {
                     onCompFn?.(data, this);
                     this.dispatchEvent(new CustomEvent('complete', { detail: data }));
@@ -317,6 +379,17 @@ window.initSurveyWidget = i => new o(i);
                 onClose: () => {
                     onClosFn?.(this);
                     this.dispatchEvent(new Event('close'));
+                    // Remove the survey widget from DOM after callbacks
+                    try {
+                        if (this._id && this.isConnected && this.querySelector) {
+                            const surveyContainer = this.querySelector(`#${this._id}`);
+                            if (surveyContainer) {
+                                surveyContainer.remove();
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Error removing survey container:', error);
+                    }
                 }
             };
             this._widget = new o(opts);

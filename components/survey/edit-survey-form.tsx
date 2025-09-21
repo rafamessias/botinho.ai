@@ -53,6 +53,7 @@ export interface SurveyData {
         bodyFontSize: string
         fontFamily: string
         styleMode: 'basic' | 'advanced'
+        basicCSS?: string
         advancedCSS?: string
     }
 }
@@ -94,6 +95,7 @@ interface Survey {
         bodyFontSize: string
         fontFamily: string
         styleMode?: 'basic' | 'advanced'
+        basicCSS?: string
         advancedCSS?: string
     } | null
 }
@@ -136,6 +138,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
         style: survey.style ? {
             ...survey.style,
             styleMode: survey.style.styleMode || 'basic',
+            basicCSS: survey.style.basicCSS || '',
             advancedCSS: survey.style.advancedCSS || ''
         } : {
             backgroundColor: "",
@@ -150,6 +153,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
             bodyFontSize: "16px",
             fontFamily: "",
             styleMode: "basic" as const,
+            basicCSS: "",
             advancedCSS: ""
         }
     })

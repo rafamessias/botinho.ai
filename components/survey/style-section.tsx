@@ -35,6 +35,7 @@ interface Style {
     bodyFontSize: string
     fontFamily: string
     styleMode: 'basic' | 'advanced'
+    basicCSS?: string
     advancedCSS?: string
 }
 
@@ -100,6 +101,8 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
     const [isDark, setIsDark] = useState(false)
     const [displayCSS, setDisplayCSS] = useState('')
     const [isInitialized, setIsInitialized] = useState(false)
+    const isEditingRef = useRef(false)
+    const hasProcessedInitialLoadRef = useRef(false)
     // Detect theme
     useEffect(() => {
         const checkTheme = () => {
@@ -124,17 +127,36 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
         }
     }, [])
 
-    // Handle CSS formatting for display vs storage - only on initial load or mode change
+    // Handle CSS formatting for display vs storage
     useEffect(() => {
-        if (style.styleMode === 'advanced' && !isInitialized) {
-            // Only update display CSS on initial load
-            const formattedCSS = style.advancedCSS ? formatCSS(style.advancedCSS) : getDefaultCSSTemplate()
-            setDisplayCSS(formattedCSS)
+        if (style.styleMode === 'advanced' && !isEditingRef.current) {
+            // Format CSS when switching to advanced mode or when advancedCSS changes (but not during editing)
+            if (style.advancedCSS && style.advancedCSS.trim() !== '') {
+                const formattedCSS = formatCSS(style.advancedCSS)
+                setDisplayCSS(formattedCSS)
+            } else {
+                setDisplayCSS(formatCSS(getDefaultCSSTemplate()))
+            }
             setIsInitialized(true)
+            hasProcessedInitialLoadRef.current = true
         } else if (style.styleMode !== 'advanced') {
             setIsInitialized(false)
+            isEditingRef.current = false
+            hasProcessedInitialLoadRef.current = false
         }
-    }, [style.styleMode, style.advancedCSS, isInitialized])
+    }, [style.styleMode])
+
+    // Generate and save basicCSS when in basic mode
+    useEffect(() => {
+        if (style.styleMode === 'basic') {
+            const generatedCSS = generateCustomCSS()
+            const minifiedCSS = minifyCSS(generatedCSS)
+            // Only update if the basicCSS is different to avoid infinite loops
+            if (style.basicCSS !== minifiedCSS) {
+                onChange({ ...style, basicCSS: minifiedCSS })
+            }
+        }
+    }, [style.styleMode, style.backgroundColor, style.textColor, style.buttonBackgroundColor, style.buttonTextColor, style.margin, style.padding, style.border, style.borderRadius, style.titleFontSize, style.bodyFontSize, style.fontFamily])
 
     // Generate custom CSS based on current style
     const generateCustomCSS = () => {
@@ -189,14 +211,13 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
     const handlePreviewComplete = (responses: any) => {
         console.log('Preview completed:', responses)
         // Optionally reset the preview after a delay
-        setTimeout(() => { }, 2000)
+        setTimeout(() => { setIsInitialized((prev: boolean) => !prev) }, 1000)
     }
 
     // Handle survey close in preview
     const handlePreviewClose = () => {
-        console.log('Preview closed')
-        // Reset the preview when closed
-        setTimeout(() => { }, 500)
+        //console.log('Preview closed')
+        setTimeout(() => { setIsInitialized((prev: boolean) => !prev) }, 500)
     }
 
 
@@ -237,7 +258,11 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                                     key={`css-editor-${style.styleMode}-${isInitialized}`}
                                     value={displayCSS}
                                     onChange={(value) => {
-                                        // Save minified version to database without updating display state
+                                        // Mark as editing to prevent re-formatting
+                                        isEditingRef.current = true
+                                        // Update display state immediately for real-time editing
+                                        setDisplayCSS(value)
+                                        // Save minified version to database
                                         const minifiedCSS = minifyCSS(value)
                                         onChange({ ...style, advancedCSS: minifiedCSS })
                                     }}
@@ -447,7 +472,7 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="w-full min-h-[400px] rounded-lg p-4 overflow-hidden">
-                        <OpineeoSurvey surveyData={{ ...surveyData, id: surveyData.id || 'preview-survey' }} customCSS={generateCustomCSS()} onComplete={handlePreviewComplete} onClose={() => handlePreviewClose()} />
+                        <OpineeoSurvey surveyData={{ ...surveyData, id: surveyData.id || 'preview-survey' }} customCSS={generateCustomCSS()} onComplete={handlePreviewComplete} onClose={() => handlePreviewClose()} userId={"user001"} extraInfo={"info 01"} />
                     </div>
                 </CardContent>
             </Card>

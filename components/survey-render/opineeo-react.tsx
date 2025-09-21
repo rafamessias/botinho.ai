@@ -45,6 +45,10 @@ export interface OpineeoSurveyProps {
     customCSS?: string;
     /** Auto-close delay in milliseconds (0 = no auto-close) */
     autoClose?: number;
+    /** User ID to associate with survey responses */
+    userId?: string;
+    /** Whether to include extra info in survey responses */
+    extraInfo?: string;
     /** Callback when survey is completed */
     onComplete?: (responses: SurveyResponse[]) => void;
     /** Callback when survey is closed */
@@ -94,6 +98,8 @@ export const OpineeoSurvey: React.FC<OpineeoSurveyProps> = ({
     surveyData,
     customCSS,
     autoClose = 0,
+    userId,
+    extraInfo = '',
     onComplete,
     onClose,
     className,
@@ -117,7 +123,7 @@ export const OpineeoSurvey: React.FC<OpineeoSurveyProps> = ({
 
                 // Clean up previous widget
                 if (widgetRef.current) {
-                    widgetRef.current.close?.();
+                    widgetRef.current.destroy?.();
                 }
 
                 // Initialize new widget
@@ -127,6 +133,8 @@ export const OpineeoSurvey: React.FC<OpineeoSurveyProps> = ({
                     surveyData,
                     customCSS,
                     autoClose,
+                    userId,
+                    extraInfo,
                     onComplete: (responses: SurveyResponse[]) => {
                         onComplete?.(responses);
                     },
@@ -151,7 +159,7 @@ export const OpineeoSurvey: React.FC<OpineeoSurveyProps> = ({
         // Cleanup on unmount
         return () => {
             if (widgetRef.current) {
-                widgetRef.current.close?.();
+                widgetRef.current.destroy?.();
                 widgetRef.current = null;
             }
         };
@@ -161,7 +169,8 @@ export const OpineeoSurvey: React.FC<OpineeoSurveyProps> = ({
     useEffect(() => {
         if (widgetRef.current && customCSS !== undefined) {
             // Update CSS without recreating widget
-            widgetRef.current.updateCSS?.(customCSS);
+            widgetRef.current.customCSS = customCSS;
+            widgetRef.current.addCustomStyles?.();
         }
     }, [customCSS]);
 
@@ -185,13 +194,9 @@ export const OpineeoSurvey: React.FC<OpineeoSurveyProps> = ({
     }, [onComplete, onClose]);
 
     return (
-        <div
-            ref={containerRef}
+        <div id={containerId} ref={containerRef}
             className={className}
-            style={style}
-        >
-            <div id={containerId} />
-        </div>
+            style={style} />
     );
 };
 

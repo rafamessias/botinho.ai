@@ -61,6 +61,7 @@ const surveyStyleSchema = z.object({
     bodyFontSize: z.string().default("16px"),
     fontFamily: z.string().default("Inter"),
     styleMode: z.enum(["basic", "advanced"]).default("basic"),
+    basicCSS: z.string().optional(),
     advancedCSS: z.string().optional()
 })
 
@@ -114,7 +115,7 @@ export const createSurvey = async (formData: FormData) => {
                 data: {
                     name: validatedData.name,
                     description: validatedData.description,
-                    typeId: validatedData.typeId,
+                    typeId: validatedData.typeId ? validatedData.typeId : null,
                     status: validatedData.status,
                     allowMultipleResponses: validatedData.allowMultipleResponses,
                     teamId: teamId
@@ -240,7 +241,7 @@ export const updateSurvey = async (formData: FormData) => {
                 data: {
                     name: validatedData.name,
                     description: validatedData.description,
-                    typeId: validatedData.typeId,
+                    typeId: validatedData.typeId ? validatedData.typeId : null,
                     status: validatedData.status,
                     allowMultipleResponses: validatedData.allowMultipleResponses,
                 }
@@ -617,7 +618,7 @@ export const duplicateSurvey = async (id: string) => {
                 data: {
                     name: `${originalSurvey.name} (Copy)`,
                     description: originalSurvey.description,
-                    typeId: originalSurvey.typeId,
+                    typeId: originalSurvey.typeId ? originalSurvey.typeId : null,
                     status: SurveyStatus.draft,
                     allowMultipleResponses: originalSurvey.allowMultipleResponses,
                     teamId: teamId
@@ -642,6 +643,7 @@ export const duplicateSurvey = async (id: string) => {
                         bodyFontSize: originalSurvey.style.bodyFontSize,
                         fontFamily: originalSurvey.style.fontFamily,
                         styleMode: originalSurvey.style.styleMode,
+                        basicCSS: originalSurvey.style.basicCSS,
                         advancedCSS: originalSurvey.style.advancedCSS
                     }
                 })

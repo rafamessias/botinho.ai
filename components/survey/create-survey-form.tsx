@@ -52,6 +52,7 @@ interface SurveyData {
         bodyFontSize: string
         fontFamily: string
         styleMode: 'basic' | 'advanced'
+        basicCSS?: string
         advancedCSS?: string
     }
 }
@@ -72,7 +73,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
         id: `new-survey-${new Date().getMilliseconds()}`,
         name: "",
         description: "",
-        typeId: "",
+        typeId: surveyTypes.length > 0 ? surveyTypes[0].id : "",
         status: "draft",
         allowMultipleResponses: true,
         questions: [
@@ -101,6 +102,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
             bodyFontSize: "16px",
             fontFamily: "",
             styleMode: "basic" as const,
+            basicCSS: "",
             advancedCSS: ""
         }
     })
@@ -111,7 +113,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                 const formData = new FormData()
                 formData.append("name", surveyData.name)
                 formData.append("description", surveyData.description || "")
-                formData.append("typeId", surveyData.typeId || "null")
+                formData.append("typeId", surveyData.typeId || "")
                 formData.append("status", surveyData.status)
                 formData.append("allowMultipleResponses", surveyData.allowMultipleResponses.toString())
                 formData.append("questions", JSON.stringify(surveyData.questions))
@@ -120,6 +122,11 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                 const result = await createSurvey(formData)
                 if (result.success) {
                     toast.success(t("messages.saveSuccess"))
+                    setTimeout(() => {
+                        if (result.surveyId) {
+                            router.push(`/survey/edit/${result.surveyId}`)
+                        }
+                    }, 800)
                 } else {
                     console.log(result.error)
                     toast.error(getErrorMessages(JSON.parse(result.error || "")) || t("messages.saveError"))
@@ -137,7 +144,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                 const formData = new FormData()
                 formData.append("name", surveyData.name)
                 formData.append("description", surveyData.description || "")
-                formData.append("typeId", surveyData.typeId || "null")
+                formData.append("typeId", surveyData.typeId || "")
                 formData.append("status", "published") // Always enable when publishing
                 formData.append("allowMultipleResponses", surveyData.allowMultipleResponses.toString())
                 formData.append("questions", JSON.stringify(surveyData.questions))
@@ -146,7 +153,11 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                 const result = await createSurvey(formData)
                 if (result.success) {
                     toast.success(t("messages.publishSuccess"))
-                    router.push("/survey")
+                    setTimeout(() => {
+                        if (result.surveyId) {
+                            router.push(`/survey/edit/${result.surveyId}`)
+                        }
+                    }, 800)
                 } else {
                     console.log(result.error)
                     toast.error(getErrorMessages(JSON.parse(result.error || "")) || t("messages.publishError"))

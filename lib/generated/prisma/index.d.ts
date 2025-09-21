@@ -13407,6 +13407,7 @@ export namespace Prisma {
     titleFontSize: string | null
     bodyFontSize: string | null
     fontFamily: string | null
+    basicCSS: string | null
     styleMode: $Enums.StyleMode | null
     advancedCSS: string | null
     createdAt: Date | null
@@ -13428,6 +13429,7 @@ export namespace Prisma {
     titleFontSize: string | null
     bodyFontSize: string | null
     fontFamily: string | null
+    basicCSS: string | null
     styleMode: $Enums.StyleMode | null
     advancedCSS: string | null
     createdAt: Date | null
@@ -13449,6 +13451,7 @@ export namespace Prisma {
     titleFontSize: number
     bodyFontSize: number
     fontFamily: number
+    basicCSS: number
     styleMode: number
     advancedCSS: number
     createdAt: number
@@ -13480,6 +13483,7 @@ export namespace Prisma {
     titleFontSize?: true
     bodyFontSize?: true
     fontFamily?: true
+    basicCSS?: true
     styleMode?: true
     advancedCSS?: true
     createdAt?: true
@@ -13501,6 +13505,7 @@ export namespace Prisma {
     titleFontSize?: true
     bodyFontSize?: true
     fontFamily?: true
+    basicCSS?: true
     styleMode?: true
     advancedCSS?: true
     createdAt?: true
@@ -13522,6 +13527,7 @@ export namespace Prisma {
     titleFontSize?: true
     bodyFontSize?: true
     fontFamily?: true
+    basicCSS?: true
     styleMode?: true
     advancedCSS?: true
     createdAt?: true
@@ -13630,6 +13636,7 @@ export namespace Prisma {
     titleFontSize: string
     bodyFontSize: string
     fontFamily: string
+    basicCSS: string
     styleMode: $Enums.StyleMode
     advancedCSS: string | null
     createdAt: Date
@@ -13670,6 +13677,7 @@ export namespace Prisma {
     titleFontSize?: boolean
     bodyFontSize?: boolean
     fontFamily?: boolean
+    basicCSS?: boolean
     styleMode?: boolean
     advancedCSS?: boolean
     createdAt?: boolean
@@ -13693,6 +13701,7 @@ export namespace Prisma {
     titleFontSize?: boolean
     bodyFontSize?: boolean
     fontFamily?: boolean
+    basicCSS?: boolean
     styleMode?: boolean
     advancedCSS?: boolean
     createdAt?: boolean
@@ -13716,6 +13725,7 @@ export namespace Prisma {
     titleFontSize?: boolean
     bodyFontSize?: boolean
     fontFamily?: boolean
+    basicCSS?: boolean
     styleMode?: boolean
     advancedCSS?: boolean
     createdAt?: boolean
@@ -13739,6 +13749,7 @@ export namespace Prisma {
     titleFontSize?: boolean
     bodyFontSize?: boolean
     fontFamily?: boolean
+    basicCSS?: boolean
     styleMode?: boolean
     advancedCSS?: boolean
     createdAt?: boolean
@@ -13748,7 +13759,7 @@ export namespace Prisma {
     border?: boolean
   }
 
-  export type SurveyStyleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "backgroundColor" | "textColor" | "buttonBackgroundColor" | "buttonTextColor" | "margin" | "padding" | "borderRadius" | "titleFontSize" | "bodyFontSize" | "fontFamily" | "styleMode" | "advancedCSS" | "createdAt" | "updatedAt" | "surveyId" | "teamId" | "border", ExtArgs["result"]["surveyStyle"]>
+  export type SurveyStyleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "backgroundColor" | "textColor" | "buttonBackgroundColor" | "buttonTextColor" | "margin" | "padding" | "borderRadius" | "titleFontSize" | "bodyFontSize" | "fontFamily" | "basicCSS" | "styleMode" | "advancedCSS" | "createdAt" | "updatedAt" | "surveyId" | "teamId" | "border", ExtArgs["result"]["surveyStyle"]>
   export type SurveyStyleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
@@ -13780,6 +13791,7 @@ export namespace Prisma {
       titleFontSize: string
       bodyFontSize: string
       fontFamily: string
+      basicCSS: string
       styleMode: $Enums.StyleMode
       advancedCSS: string | null
       createdAt: Date
@@ -14223,6 +14235,7 @@ export namespace Prisma {
     readonly titleFontSize: FieldRef<"SurveyStyle", 'String'>
     readonly bodyFontSize: FieldRef<"SurveyStyle", 'String'>
     readonly fontFamily: FieldRef<"SurveyStyle", 'String'>
+    readonly basicCSS: FieldRef<"SurveyStyle", 'String'>
     readonly styleMode: FieldRef<"SurveyStyle", 'StyleMode'>
     readonly advancedCSS: FieldRef<"SurveyStyle", 'String'>
     readonly createdAt: FieldRef<"SurveyStyle", 'DateTime'>
@@ -17119,6 +17132,9 @@ export namespace Prisma {
   export type SurveyResponseMinAggregateOutputType = {
     id: string | null
     status: $Enums.ResponseStatus | null
+    userId: string | null
+    userIp: string | null
+    extraInfo: string | null
     submittedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -17129,6 +17145,9 @@ export namespace Prisma {
   export type SurveyResponseMaxAggregateOutputType = {
     id: string | null
     status: $Enums.ResponseStatus | null
+    userId: string | null
+    userIp: string | null
+    extraInfo: string | null
     submittedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -17139,6 +17158,9 @@ export namespace Prisma {
   export type SurveyResponseCountAggregateOutputType = {
     id: number
     status: number
+    userId: number
+    userIp: number
+    extraInfo: number
     submittedAt: number
     createdAt: number
     updatedAt: number
@@ -17159,6 +17181,9 @@ export namespace Prisma {
   export type SurveyResponseMinAggregateInputType = {
     id?: true
     status?: true
+    userId?: true
+    userIp?: true
+    extraInfo?: true
     submittedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -17169,6 +17194,9 @@ export namespace Prisma {
   export type SurveyResponseMaxAggregateInputType = {
     id?: true
     status?: true
+    userId?: true
+    userIp?: true
+    extraInfo?: true
     submittedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -17179,6 +17207,9 @@ export namespace Prisma {
   export type SurveyResponseCountAggregateInputType = {
     id?: true
     status?: true
+    userId?: true
+    userIp?: true
+    extraInfo?: true
     submittedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -17276,6 +17307,9 @@ export namespace Prisma {
   export type SurveyResponseGroupByOutputType = {
     id: string
     status: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -17305,6 +17339,9 @@ export namespace Prisma {
   export type SurveyResponseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
+    userId?: boolean
+    userIp?: boolean
+    extraInfo?: boolean
     submittedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -17319,6 +17356,9 @@ export namespace Prisma {
   export type SurveyResponseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
+    userId?: boolean
+    userIp?: boolean
+    extraInfo?: boolean
     submittedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -17331,6 +17371,9 @@ export namespace Prisma {
   export type SurveyResponseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
+    userId?: boolean
+    userIp?: boolean
+    extraInfo?: boolean
     submittedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -17343,6 +17386,9 @@ export namespace Prisma {
   export type SurveyResponseSelectScalar = {
     id?: boolean
     status?: boolean
+    userId?: boolean
+    userIp?: boolean
+    extraInfo?: boolean
     submittedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -17350,7 +17396,7 @@ export namespace Prisma {
     teamId?: boolean
   }
 
-  export type SurveyResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "submittedAt" | "createdAt" | "updatedAt" | "surveyId" | "teamId", ExtArgs["result"]["surveyResponse"]>
+  export type SurveyResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "userId" | "userIp" | "extraInfo" | "submittedAt" | "createdAt" | "updatedAt" | "surveyId" | "teamId", ExtArgs["result"]["surveyResponse"]>
   export type SurveyResponseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questionResponses?: boolean | SurveyResponse$questionResponsesArgs<ExtArgs>
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
@@ -17376,6 +17422,9 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       status: $Enums.ResponseStatus
+      userId: string
+      userIp: string
+      extraInfo: string
       submittedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -17809,6 +17858,9 @@ export namespace Prisma {
   interface SurveyResponseFieldRefs {
     readonly id: FieldRef<"SurveyResponse", 'String'>
     readonly status: FieldRef<"SurveyResponse", 'ResponseStatus'>
+    readonly userId: FieldRef<"SurveyResponse", 'String'>
+    readonly userIp: FieldRef<"SurveyResponse", 'String'>
+    readonly extraInfo: FieldRef<"SurveyResponse", 'String'>
     readonly submittedAt: FieldRef<"SurveyResponse", 'DateTime'>
     readonly createdAt: FieldRef<"SurveyResponse", 'DateTime'>
     readonly updatedAt: FieldRef<"SurveyResponse", 'DateTime'>
@@ -19637,6 +19689,7 @@ export namespace Prisma {
     titleFontSize: 'titleFontSize',
     bodyFontSize: 'bodyFontSize',
     fontFamily: 'fontFamily',
+    basicCSS: 'basicCSS',
     styleMode: 'styleMode',
     advancedCSS: 'advancedCSS',
     createdAt: 'createdAt',
@@ -19686,6 +19739,9 @@ export namespace Prisma {
   export const SurveyResponseScalarFieldEnum: {
     id: 'id',
     status: 'status',
+    userId: 'userId',
+    userIp: 'userIp',
+    extraInfo: 'extraInfo',
     submittedAt: 'submittedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -20715,6 +20771,7 @@ export namespace Prisma {
     titleFontSize?: StringFilter<"SurveyStyle"> | string
     bodyFontSize?: StringFilter<"SurveyStyle"> | string
     fontFamily?: StringFilter<"SurveyStyle"> | string
+    basicCSS?: StringFilter<"SurveyStyle"> | string
     styleMode?: EnumStyleModeFilter<"SurveyStyle"> | $Enums.StyleMode
     advancedCSS?: StringNullableFilter<"SurveyStyle"> | string | null
     createdAt?: DateTimeFilter<"SurveyStyle"> | Date | string
@@ -20738,6 +20795,7 @@ export namespace Prisma {
     titleFontSize?: SortOrder
     bodyFontSize?: SortOrder
     fontFamily?: SortOrder
+    basicCSS?: SortOrder
     styleMode?: SortOrder
     advancedCSS?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -20765,6 +20823,7 @@ export namespace Prisma {
     titleFontSize?: StringFilter<"SurveyStyle"> | string
     bodyFontSize?: StringFilter<"SurveyStyle"> | string
     fontFamily?: StringFilter<"SurveyStyle"> | string
+    basicCSS?: StringFilter<"SurveyStyle"> | string
     styleMode?: EnumStyleModeFilter<"SurveyStyle"> | $Enums.StyleMode
     advancedCSS?: StringNullableFilter<"SurveyStyle"> | string | null
     createdAt?: DateTimeFilter<"SurveyStyle"> | Date | string
@@ -20787,6 +20846,7 @@ export namespace Prisma {
     titleFontSize?: SortOrder
     bodyFontSize?: SortOrder
     fontFamily?: SortOrder
+    basicCSS?: SortOrder
     styleMode?: SortOrder
     advancedCSS?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -20816,6 +20876,7 @@ export namespace Prisma {
     titleFontSize?: StringWithAggregatesFilter<"SurveyStyle"> | string
     bodyFontSize?: StringWithAggregatesFilter<"SurveyStyle"> | string
     fontFamily?: StringWithAggregatesFilter<"SurveyStyle"> | string
+    basicCSS?: StringWithAggregatesFilter<"SurveyStyle"> | string
     styleMode?: EnumStyleModeWithAggregatesFilter<"SurveyStyle"> | $Enums.StyleMode
     advancedCSS?: StringNullableWithAggregatesFilter<"SurveyStyle"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SurveyStyle"> | Date | string
@@ -21020,6 +21081,9 @@ export namespace Prisma {
     NOT?: SurveyResponseWhereInput | SurveyResponseWhereInput[]
     id?: StringFilter<"SurveyResponse"> | string
     status?: EnumResponseStatusFilter<"SurveyResponse"> | $Enums.ResponseStatus
+    userId?: StringFilter<"SurveyResponse"> | string
+    userIp?: StringFilter<"SurveyResponse"> | string
+    extraInfo?: StringFilter<"SurveyResponse"> | string
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -21033,6 +21097,9 @@ export namespace Prisma {
   export type SurveyResponseOrderByWithRelationInput = {
     id?: SortOrder
     status?: SortOrder
+    userId?: SortOrder
+    userIp?: SortOrder
+    extraInfo?: SortOrder
     submittedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21049,6 +21116,9 @@ export namespace Prisma {
     OR?: SurveyResponseWhereInput[]
     NOT?: SurveyResponseWhereInput | SurveyResponseWhereInput[]
     status?: EnumResponseStatusFilter<"SurveyResponse"> | $Enums.ResponseStatus
+    userId?: StringFilter<"SurveyResponse"> | string
+    userIp?: StringFilter<"SurveyResponse"> | string
+    extraInfo?: StringFilter<"SurveyResponse"> | string
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -21062,6 +21132,9 @@ export namespace Prisma {
   export type SurveyResponseOrderByWithAggregationInput = {
     id?: SortOrder
     status?: SortOrder
+    userId?: SortOrder
+    userIp?: SortOrder
+    extraInfo?: SortOrder
     submittedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21080,6 +21153,9 @@ export namespace Prisma {
     NOT?: SurveyResponseScalarWhereWithAggregatesInput | SurveyResponseScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"SurveyResponse"> | string
     status?: EnumResponseStatusWithAggregatesFilter<"SurveyResponse"> | $Enums.ResponseStatus
+    userId?: StringWithAggregatesFilter<"SurveyResponse"> | string
+    userIp?: StringWithAggregatesFilter<"SurveyResponse"> | string
+    extraInfo?: StringWithAggregatesFilter<"SurveyResponse"> | string
     submittedAt?: DateTimeNullableWithAggregatesFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SurveyResponse"> | Date | string
@@ -22047,6 +22123,7 @@ export namespace Prisma {
     titleFontSize?: string
     bodyFontSize?: string
     fontFamily?: string
+    basicCSS?: string
     styleMode?: $Enums.StyleMode
     advancedCSS?: string | null
     createdAt?: Date | string
@@ -22068,6 +22145,7 @@ export namespace Prisma {
     titleFontSize?: string
     bodyFontSize?: string
     fontFamily?: string
+    basicCSS?: string
     styleMode?: $Enums.StyleMode
     advancedCSS?: string | null
     createdAt?: Date | string
@@ -22089,6 +22167,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22110,6 +22189,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22131,6 +22211,7 @@ export namespace Prisma {
     titleFontSize?: string
     bodyFontSize?: string
     fontFamily?: string
+    basicCSS?: string
     styleMode?: $Enums.StyleMode
     advancedCSS?: string | null
     createdAt?: Date | string
@@ -22152,6 +22233,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22171,6 +22253,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22387,6 +22470,9 @@ export namespace Prisma {
   export type SurveyResponseCreateInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22398,6 +22484,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedCreateInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22409,6 +22498,9 @@ export namespace Prisma {
   export type SurveyResponseUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22420,6 +22512,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22431,6 +22526,9 @@ export namespace Prisma {
   export type SurveyResponseCreateManyInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22441,6 +22539,9 @@ export namespace Prisma {
   export type SurveyResponseUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22449,6 +22550,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23452,6 +23556,7 @@ export namespace Prisma {
     titleFontSize?: SortOrder
     bodyFontSize?: SortOrder
     fontFamily?: SortOrder
+    basicCSS?: SortOrder
     styleMode?: SortOrder
     advancedCSS?: SortOrder
     createdAt?: SortOrder
@@ -23477,6 +23582,7 @@ export namespace Prisma {
     titleFontSize?: SortOrder
     bodyFontSize?: SortOrder
     fontFamily?: SortOrder
+    basicCSS?: SortOrder
     styleMode?: SortOrder
     advancedCSS?: SortOrder
     createdAt?: SortOrder
@@ -23498,6 +23604,7 @@ export namespace Prisma {
     titleFontSize?: SortOrder
     bodyFontSize?: SortOrder
     fontFamily?: SortOrder
+    basicCSS?: SortOrder
     styleMode?: SortOrder
     advancedCSS?: SortOrder
     createdAt?: SortOrder
@@ -23657,6 +23764,9 @@ export namespace Prisma {
   export type SurveyResponseCountOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    userId?: SortOrder
+    userIp?: SortOrder
+    extraInfo?: SortOrder
     submittedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23671,6 +23781,9 @@ export namespace Prisma {
   export type SurveyResponseMaxOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    userId?: SortOrder
+    userIp?: SortOrder
+    extraInfo?: SortOrder
     submittedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23681,6 +23794,9 @@ export namespace Prisma {
   export type SurveyResponseMinOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    userId?: SortOrder
+    userIp?: SortOrder
+    extraInfo?: SortOrder
     submittedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26159,6 +26275,9 @@ export namespace Prisma {
   export type SurveyResponseCreateWithoutTeamInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26169,6 +26288,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedCreateWithoutTeamInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26198,6 +26320,7 @@ export namespace Prisma {
     titleFontSize?: string
     bodyFontSize?: string
     fontFamily?: string
+    basicCSS?: string
     styleMode?: $Enums.StyleMode
     advancedCSS?: string | null
     createdAt?: Date | string
@@ -26218,6 +26341,7 @@ export namespace Prisma {
     titleFontSize?: string
     bodyFontSize?: string
     fontFamily?: string
+    basicCSS?: string
     styleMode?: $Enums.StyleMode
     advancedCSS?: string | null
     createdAt?: Date | string
@@ -26521,6 +26645,9 @@ export namespace Prisma {
     NOT?: SurveyResponseScalarWhereInput | SurveyResponseScalarWhereInput[]
     id?: StringFilter<"SurveyResponse"> | string
     status?: EnumResponseStatusFilter<"SurveyResponse"> | $Enums.ResponseStatus
+    userId?: StringFilter<"SurveyResponse"> | string
+    userIp?: StringFilter<"SurveyResponse"> | string
+    extraInfo?: StringFilter<"SurveyResponse"> | string
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -26559,6 +26686,7 @@ export namespace Prisma {
     titleFontSize?: StringFilter<"SurveyStyle"> | string
     bodyFontSize?: StringFilter<"SurveyStyle"> | string
     fontFamily?: StringFilter<"SurveyStyle"> | string
+    basicCSS?: StringFilter<"SurveyStyle"> | string
     styleMode?: EnumStyleModeFilter<"SurveyStyle"> | $Enums.StyleMode
     advancedCSS?: StringNullableFilter<"SurveyStyle"> | string | null
     createdAt?: DateTimeFilter<"SurveyStyle"> | Date | string
@@ -27089,6 +27217,9 @@ export namespace Prisma {
   export type SurveyResponseCreateWithoutSurveyInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27099,6 +27230,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedCreateWithoutSurveyInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27128,6 +27262,7 @@ export namespace Prisma {
     titleFontSize?: string
     bodyFontSize?: string
     fontFamily?: string
+    basicCSS?: string
     styleMode?: $Enums.StyleMode
     advancedCSS?: string | null
     createdAt?: Date | string
@@ -27148,6 +27283,7 @@ export namespace Prisma {
     titleFontSize?: string
     bodyFontSize?: string
     fontFamily?: string
+    basicCSS?: string
     styleMode?: $Enums.StyleMode
     advancedCSS?: string | null
     createdAt?: Date | string
@@ -27287,6 +27423,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27307,6 +27444,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28421,6 +28559,9 @@ export namespace Prisma {
   export type SurveyResponseCreateWithoutQuestionResponsesInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28431,6 +28572,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedCreateWithoutQuestionResponsesInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28585,6 +28729,9 @@ export namespace Prisma {
   export type SurveyResponseUpdateWithoutQuestionResponsesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28595,6 +28742,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedUpdateWithoutQuestionResponsesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28918,6 +29068,9 @@ export namespace Prisma {
   export type SurveyResponseCreateManyTeamInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28936,6 +29089,7 @@ export namespace Prisma {
     titleFontSize?: string
     bodyFontSize?: string
     fontFamily?: string
+    basicCSS?: string
     styleMode?: $Enums.StyleMode
     advancedCSS?: string | null
     createdAt?: Date | string
@@ -29126,6 +29280,9 @@ export namespace Prisma {
   export type SurveyResponseUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29136,6 +29293,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29146,6 +29306,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedUpdateManyWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29164,6 +29327,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29184,6 +29348,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29204,6 +29369,7 @@ export namespace Prisma {
     titleFontSize?: StringFieldUpdateOperationsInput | string
     bodyFontSize?: StringFieldUpdateOperationsInput | string
     fontFamily?: StringFieldUpdateOperationsInput | string
+    basicCSS?: StringFieldUpdateOperationsInput | string
     styleMode?: EnumStyleModeFieldUpdateOperationsInput | $Enums.StyleMode
     advancedCSS?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29473,6 +29639,9 @@ export namespace Prisma {
   export type SurveyResponseCreateManySurveyInput = {
     id?: string
     status?: $Enums.ResponseStatus
+    userId: string
+    userIp: string
+    extraInfo: string
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29534,6 +29703,9 @@ export namespace Prisma {
   export type SurveyResponseUpdateWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29544,6 +29716,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedUpdateWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29554,6 +29729,9 @@ export namespace Prisma {
   export type SurveyResponseUncheckedUpdateManyWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
+    userId?: StringFieldUpdateOperationsInput | string
+    userIp?: StringFieldUpdateOperationsInput | string
+    extraInfo?: StringFieldUpdateOperationsInput | string
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

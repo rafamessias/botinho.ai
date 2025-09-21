@@ -173,16 +173,17 @@ model Survey {
 
 model SurveyStyle {
   id                    String    @id @default(cuid())
-  backgroundColor       String    @default("transparent")
-  textColor             String    @default("#222222")
-  buttonBackgroundColor String    @default("#222222")
-  buttonTextColor       String    @default("#ffffff")
+  backgroundColor       String    @default("")
+  textColor             String    @default("")
+  buttonBackgroundColor String    @default("")
+  buttonTextColor       String    @default("")
   margin                String    @default("16px 0px")
   padding               String    @default("16px")
   borderRadius          String    @default("6px")
   titleFontSize         String    @default("18px")
   bodyFontSize          String    @default("16px")
   fontFamily            String    @default("Inter")
+  basicCSS              String    @default("")
   styleMode             StyleMode @default(basic)
   advancedCSS           String?
   createdAt             DateTime  @default(now())
@@ -238,6 +239,9 @@ model QuestionOption {
 model SurveyResponse {
   id                String             @id @default(cuid())
   status            ResponseStatus     @default(pending)
+  userId            String
+  userIp            String
+  extraInfo         String
   submittedAt       DateTime?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
