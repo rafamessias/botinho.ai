@@ -157,8 +157,8 @@ class o {
         if (!this.container) return;
         const qc = this.container.querySelector('.qtc');
         if (!qc) { this.i = targetIdx; this.render(); return; }
-        const exit = dir === 'right' ? 'q-exit-left' : 'q-exit-right';
-        const enter = dir === 'right' ? 'q-enter-left' : 'q-enter-right';
+        const exit = dir === 'right' ? 'q-exit-right' : 'q-exit-left';
+        const enter = dir === 'right' ? 'q-enter-right' : 'q-enter-left';
         qc.classList.add(exit);
         setTimeout(() => {
             this.i = targetIdx;

@@ -134,7 +134,7 @@ export function NavUser() {
                     router.push(item.href);
                   }}
                 >
-                  <item.icon />
+                  <item.icon className="hover:text-accent" />
                   {item.label}
                 </DropdownMenuItem>
               ))}
@@ -145,7 +145,7 @@ export function NavUser() {
               disabled={isLoggingOut}
               className="cursor-pointer"
             >
-              <IconLogout />
+              <IconLogout className="hover:text-accent" />
               {isLoggingOut ? t("loggingOut") : t("logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>

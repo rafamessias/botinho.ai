@@ -234,9 +234,9 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                                             setOpen(false)
                                                         }}
                                                     >
-                                                        <IconUsers className="mr-2 h-4 w-4" />
+                                                        <IconUsers className="mr-2 h-4 w-4 text-muted" />
                                                         <span className="truncate">{team.name}</span>
-                                                        <span className="ml-auto text-xs text-muted-foreground shrink-0">
+                                                        <span className="ml-auto text-xs shrink-0">
                                                             {team.members.length} member{team.members.length !== 1 ? 's' : ''}
                                                         </span>
                                                     </CommandItem>

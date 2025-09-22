@@ -145,7 +145,7 @@ function TeamSelection() {
               className="w-full justify-between cursor-pointer border h-[38px]"
             >
               <Button
-                variant="ghost"
+                variant="outline"
                 role="combobox"
                 aria-expanded={open}
                 className="w-full justify-between h-auto p-2"
@@ -172,7 +172,7 @@ function TeamSelection() {
                       value={team.name}
                       onSelect={() => handleTeamSelect(team)}
                     >
-                      <IconUsers className="mr-2 h-4 w-4" />
+                      <IconUsers className="mr-2 h-4 w-4 text-foreground" />
                       <span className="truncate">{team.name}</span>
                     </CommandItem>
                   ))}

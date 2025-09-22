@@ -184,25 +184,6 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
-                        {/* Quick Stats */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-primary">{totalResponses}</div>
-                                <div className="text-xs text-muted-foreground">Total</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-primary">{topAnswer.count}</div>
-                                <div className="text-xs text-muted-foreground">Top Answer</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-primary">{topAnswer.percentage}%</div>
-                                <div className="text-xs text-muted-foreground">Top %</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-primary">{data.length}</div>
-                                <div className="text-xs text-muted-foreground">Options</div>
-                            </div>
-                        </div>
 
                         {/* Chart */}
                         <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -293,16 +274,16 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
                                         aria-expanded={open}
                                         className="w-full sm:max-w-md justify-between h-14"
                                     >
-                                        <div className="flex flex-col items-start min-w-0 flex-1">
+                                        <div className="flex flex-col items-start min-w-0 flex-1 hover:text-foreground">
                                             {selectedSurvey ? (
                                                 <>
                                                     <span className="font-medium truncate">{selectedSurvey.title}</span>
-                                                    <span className="text-sm text-muted-foreground">
+                                                    <span className="text-foreground">
                                                         {selectedSurvey.totalResponses} responses • {selectedSurvey.createdAt}
                                                     </span>
                                                 </>
                                             ) : (
-                                                <span className="text-muted-foreground">Select a survey to view results</span>
+                                                <span className="text-foreground">Select a survey to view results</span>
                                             )}
                                         </div>
                                         <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
@@ -325,7 +306,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
                                                     >
                                                         <div className="flex flex-col w-full">
                                                             <span className="font-medium">{survey.title}</span>
-                                                            <span className="text-sm text-muted-foreground">
+                                                            <span className="text-sm text-foreground">
                                                                 {survey.totalResponses} responses • {survey.createdAt}
                                                             </span>
                                                         </div>
