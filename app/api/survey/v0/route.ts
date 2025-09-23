@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
 
                 // Use a Set to avoid duplicate (questionId, optionId) in the same submission
                 const summaryKeys = new Set<string>();
-
+                console.log('validatedData.responses', validatedData.responses);
                 for (const response of validatedData.responses) {
                     // Determine which unique key to use based on response type
                     let whereClause: any;
@@ -373,7 +373,13 @@ export async function GET(request: NextRequest) {
                 name: true,
                 description: true,
                 allowMultipleResponses: true,
-                style: true,
+                style: {
+                    select: {
+                        styleMode: true,
+                        advancedCSS: true,
+                        basicCSS: true
+                    }
+                },
                 questions: {
                     orderBy: { order: 'asc' },
                     select: {

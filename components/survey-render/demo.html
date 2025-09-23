@@ -586,8 +586,8 @@
                         <h4>Demo Credentials (for testing):</h4>
                         <div
                             style="font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; font-size: 0.875rem; margin-top: 0.5rem;">
-                            <strong>Token:</strong> demo-token-123<br>
-                            <strong>Survey ID:</strong> customer-feedback
+                            <strong>Token:</strong> $2b$10$FoQqmsU2UpsXRPbd2RM0G.EsZMiM.R6coMYz9z2qr.6h5VjplkkUy<br>
+                            <strong>Survey ID:</strong> cmfb99sa4000t36flvv6b4zmq
                         </div>
                         <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">
                             <em>Note: These are demo credentials. Replace with your real API credentials for production
@@ -644,7 +644,7 @@
                             &lt;/opineeo-survey&gt;
                         </div>
                         <div class="demo-container" id="html-demo-container">
-                            <opineeo-survey survey-id="cmfb8b1yl000136flyfoqt7nh"
+                            <opineeo-survey survey-id="cmfb99sa4000t36flvv6b4zmq"
                                 token="$2b$10$FoQqmsU2UpsXRPbd2RM0G.EsZMiM.R6coMYz9z2qr.6h5VjplkkUy" auto-close="3000"
                                 oncomplete="handleSurveyComplete" onclose="handleSurveyClose">
                             </opineeo-survey>
@@ -703,7 +703,8 @@
                             &lt;/opineeo-survey&gt;
                         </div>
                         <div class="demo-container" id="styled-demo-container">
-                            <opineeo-survey survey-id="customer-feedback" token="demo-token-123" custom-css="
+                            <opineeo-survey survey-id="cmfb99sa4000t36flvv6b4zmq"
+                                token="$2b$10$FoQqmsU2UpsXRPbd2RM0G.EsZMiM.R6coMYz9z2qr.6h5VjplkkUy" custom-css="
                                     .sv {
                                         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                                         color: white;
@@ -748,7 +749,8 @@
                             });
                         </div>
                         <div class="demo-container" id="event-demo-container">
-                            <opineeo-survey survey-id="customer-feedback" token="demo-token-123"
+                            <opineeo-survey survey-id="cmfb99sa4000t36flvv6b4zmq"
+                                token="$2b$10$FoQqmsU2UpsXRPbd2RM0G.EsZMiM.R6coMYz9z2qr.6h5VjplkkUy"
                                 oncomplete="handleSurveyComplete" onclose="handleSurveyClose">
                             </opineeo-survey>
                         </div>
@@ -772,22 +774,28 @@
         // Global variables for programmatic survey
         let programmaticSurvey = null;
 
-        // Event handling functions
-        function handleSurveyComplete(responses) {
-            console.log('Survey completed:', responses);
-            logEvent('Survey completed with ' + responses.length + ' responses');
+        // Event handling functions - MUST be in global scope for web component to find them
+        window.handleSurveyComplete = function (responses) {
+            console.log('handleSurveyComplete called with:', responses);
+            console.log('Type of responses:', typeof responses);
+            console.log('Is array?', Array.isArray(responses));
+            if (responses && responses.length !== undefined) {
+                logEvent('Survey completed with ' + responses.length + ' responses');
+            } else {
+                logEvent('Survey completed with invalid response data');
+            }
 
             // You can add your own logic here, like:
             // - Send to analytics
             // - Save to database
             // - Show thank you message
             // - Redirect user
-        }
+        };
 
-        function handleSurveyClose() {
+        window.handleSurveyClose = function () {
             console.log('Survey closed');
             logEvent('Survey closed by user');
-        }
+        };
 
         // Event logging function
         function logEvent(message) {
@@ -819,8 +827,8 @@
 
             // Create the survey element
             programmaticSurvey = document.createElement('opineeo-survey');
-            programmaticSurvey.setAttribute('survey-id', 'customer-feedback');
-            programmaticSurvey.setAttribute('token', 'demo-token-123');
+            programmaticSurvey.setAttribute('survey-id', 'cmfb99sa4000t36flvv6b4zmq');
+            programmaticSurvey.setAttribute('token', '$2b$10$FoQqmsU2UpsXRPbd2RM0G.EsZMiM.R6coMYz9z2qr.6h5VjplkkUy');
             programmaticSurvey.setAttribute('auto-close', '3000');
 
             // Add event listeners
@@ -854,11 +862,11 @@
             }
 
             container.innerHTML = `
-                 <div class="empty-state">
-                     <div class="empty-state-icon">⚙️</div>
-                     <p>Click "Create Survey" to see programmatic integration</p>
-                 </div>
-             `;
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚙️</div>
+                    <p>Click "Create Survey" to see programmatic integration</p>
+                </div>
+            `;
             container.classList.remove('has-content');
         }
 
@@ -896,8 +904,8 @@
         document.addEventListener('DOMContentLoaded', function () {
             initTheme();
             console.log('Opineeo Survey Widget Demo loaded successfully!');
-            console.log('All surveys are configured to call the API with demo credentials.');
-            console.log('Replace "demo-token-123" and "customer-feedback" with your real API credentials.');
+            console.log('All surveys are configured to call the local API.');
+            console.log('Event handlers are now properly configured in global scope.');
         });
     </script>
 </body>

@@ -11,7 +11,7 @@ class o {
         this.surveyId = p.surveyId || '';
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
-        this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
+        this.apiUrl = 'http://localhost:3000/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting
@@ -35,16 +35,25 @@ class o {
     }
 
     async fetchSurveyData() {
+        console.log('fetchSurveyData called with surveyId:', this.surveyId, 'token:', this.token);
         //this.loading = !0; this.error = null; this.render();
         try {
-            const res = await fetch(`${this.apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`, {
+            const url = `${this.apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`;
+            console.log('Fetching from URL:', url);
+            const res = await fetch(url, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}` }
             });
+            console.log('Fetch response status:', res.status);
             if (!res.ok) throw new Error((await res.json()).error || 'Failed to fetch survey data');
             const data = await res.json();
+            console.log('Fetched survey data:', data);
             const sv = data?.data?.survey;
-            if (data?.success && sv) { this.survey = sv; if (sv.customCSS) this.customCSS = sv.customCSS; }
+            if (data?.success && sv) {
+                this.survey = sv;
+                if (sv.customCSS) this.customCSS = sv.customCSS;
+                console.log('Survey loaded successfully:', sv);
+            }
             else throw new Error('Invalid survey data received');
         } catch (e) { console.error('Error fetching survey data:', e); this.error = e.message || 'Failed to load survey'; }
         finally { this.loading = !1; this.render(); }
@@ -173,17 +182,19 @@ class o {
     async handleSubmit() {
         this.s = !0; this.render();
         try {
+            const payload = await this.pack();
             if (this.token) {
                 try {
                     const res = await fetch(this.apiUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}` },
-                        body: JSON.stringify(await this.pack())
+                        body: JSON.stringify(payload)
                     });
                     if (!res.ok) console.error('Failed to submit survey response' + res.statusText);
                 } catch (e) { console.error('Submission error:', e); }
             }
-            this.onComplete(await this.pack());
+
+            this.onComplete(payload);
             this.done = !0;
         } catch (e) { console.error('Submission error:', e); }
         finally { this.s = !1; this.render(); }
@@ -322,9 +333,14 @@ window.initSurveyWidget = i => new o(i);
     if (customElements.get('opineeo-survey')) return;
 
     function resolveHandler(path) {
+        console.log('resolveHandler called with path:', path);
         if (!path) return null;
         let ctx = window;
-        for (const key of path.split('.')) ctx = ctx?.[key];
+        for (const key of path.split('.')) {
+            console.log('Looking for key:', key, 'in context:', ctx);
+            ctx = ctx?.[key];
+        }
+        console.log('Final resolved function:', ctx, 'is function?', typeof ctx === 'function');
         return typeof ctx === 'function' ? ctx : null;
     }
 
