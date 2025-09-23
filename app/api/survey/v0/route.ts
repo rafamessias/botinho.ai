@@ -11,7 +11,6 @@ function addCorsHeaders(response: NextResponse) {
     return response;
 }
 
-
 // Validation schema for survey answer submission
 const surveyAnswerSchema = z.object({
     teamToken: z.string().min(1, 'Team token is required'),
