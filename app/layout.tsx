@@ -8,8 +8,8 @@ import { UserProvider } from '@/components/user-provider'
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
-    title: 'saas framework',
-    description: 'Created by Rafael Messias'
+    title: "Opineeo - Extremely Simple Survey Widget for Founders and Devs",
+    description: "Lightweight, customizable survey widget for any website. Easy integration with vanilla JavaScript. Only 15KB minified.",
 }
 
 export default function RootLayout({

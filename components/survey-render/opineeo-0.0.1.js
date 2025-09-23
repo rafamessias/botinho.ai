@@ -11,7 +11,7 @@ class o {
         this.surveyId = p.surveyId || '';
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
-        this.apiUrl = 'http://app.opineeo.com/api/survey/v0';
+        this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting
@@ -35,7 +35,7 @@ class o {
     }
 
     async fetchSurveyData() {
-        this.loading = !0; this.error = null; this.render();
+        //this.loading = !0; this.error = null; this.render();
         try {
             const res = await fetch(`${this.apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`, {
                 method: 'GET',
@@ -330,7 +330,7 @@ window.initSurveyWidget = i => new o(i);
 
     class OpineeoSurveyElement extends HTMLElement {
         static get observedAttributes() {
-            return ['survey-id', 'token', 'auto-close', 'user-id', 'extra-info', 'custom-css', 'oncomplete', 'onclose'];
+            return ['survey-id', 'token', 'auto-close', 'user-id', 'extra-info', 'custom-css', 'oncomplete', 'onclose', 'survey'];
         }
 
         constructor() {
@@ -364,13 +364,24 @@ window.initSurveyWidget = i => new o(i);
             const onCompFn = resolveHandler(onCompName);
             const onClosFn = resolveHandler(onClosName);
 
+            // Parse survey data from survey attribute
+            let surveyDataFromAttr = null;
+            const surveyAttr = this.getAttribute('survey');
+            if (surveyAttr) {
+                try {
+                    surveyDataFromAttr = JSON.parse(surveyAttr);
+                } catch (e) {
+                    console.warn('Invalid JSON in survey attribute:', e);
+                }
+            }
+
             const opts = {
                 surveyId: this.getAttribute('survey-id') || '',
                 token: this.getAttribute('token') || '',
                 autoClose: +(this.getAttribute('auto-close') || 0),
                 userId: this.getAttribute('user-id') || '',
                 extraInfo: this.getAttribute('extra-info') === '',
-                surveyData: this._surveyData,
+                surveyData: surveyDataFromAttr || this._surveyData,
                 customCSS: this.getAttribute('custom-css') || this._customCSS,
                 onComplete: (data) => {
                     onCompFn?.(data, this);

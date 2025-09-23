@@ -1,10 +1,11 @@
+`
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opineeo Survey Widget - Documentation & Demo</title>
+    <title>Opineeo Survey Widget - Demo</title>
     <style>
         * {
             margin: 0;
@@ -109,92 +110,87 @@
             margin: 0 auto;
         }
 
-        .grid {
+        .demo-grid {
             display: grid;
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
         }
 
-        .grid-2 {
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        }
-
-        .grid-3 {
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        }
-
-        .card {
+        .demo-card {
             background: white;
             border: 1px solid #e5e7eb;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
+        .demo-card:hover {
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
         }
 
-        .card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 1rem;
+        .demo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
         }
 
-        .card p {
-            color: #6b7280;
+        .demo-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             margin-bottom: 1.5rem;
         }
 
-        .code-block {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1.5rem;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
-            font-size: 0.875rem;
-            overflow-x: auto;
-            margin: 1rem 0;
-            position: relative;
-        }
-
-        .code-block::before {
-            content: attr(data-language);
-            position: absolute;
-            top: 0.5rem;
-            right: 1rem;
-            background: #e5e7eb;
-            color: #6b7280;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: #3b82f6;
+        .demo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
-        .code-block:hover .copy-btn {
-            opacity: 1;
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
         }
 
-        .copy-btn:hover {
-            background: #2563eb;
+        .demo-description {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .demo-container {
+            background: #f9fafb;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-container.has-content {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
         }
 
         .btn {
@@ -242,75 +238,77 @@
             color: white;
         }
 
-        .demo-container {
+        .demo-actions {
             display: flex;
+            gap: 1rem;
             justify-content: center;
-            margin: 2rem 0;
-            padding: 2rem;
-            background: #f9fafb;
-            border-radius: 12px;
-            border: 2px dashed #d1d5db;
+            flex-wrap: wrap;
         }
 
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin: 2rem 0;
+            margin: 3rem 0;
         }
 
         .feature-item {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 1rem;
+            padding: 1.5rem;
             background: #f9fafb;
-            border-radius: 8px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
         }
 
         .feature-icon {
-            width: 40px;
-            height: 40px;
-            background: #3b82f6;
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
         }
 
-        .toc {
-            background: #f9fafb;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .toc h3 {
-            font-size: 1.25rem;
+        .feature-content h3 {
+            font-size: 1.125rem;
             font-weight: 600;
-            margin-bottom: 1rem;
             color: #1f2937;
+            margin-bottom: 0.25rem;
         }
 
-        .toc ul {
-            list-style: none;
+        .feature-content p {
+            color: #6b7280;
+            font-size: 0.875rem;
         }
 
-        .toc li {
-            margin-bottom: 0.5rem;
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .toc a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
+        .badge-new {
+            background: #10b981;
+            color: white;
         }
 
-        .toc a:hover {
-            color: #2563eb;
+        .badge-demo {
+            background: #8b5cf6;
+            color: white;
         }
 
         .theme-switcher {
@@ -346,31 +344,6 @@
             font-size: 1rem;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .badge-new {
-            background: #10b981;
-            color: white;
-        }
-
-        .badge-feature {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .badge-demo {
-            background: #8b5cf6;
-            color: white;
-        }
-
         /* Dark theme styles */
         [data-theme="dark"] {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
@@ -391,28 +364,17 @@
             color: #f1f5f9;
         }
 
-        [data-theme="dark"] .card {
+        [data-theme="dark"] .demo-card {
             background: #334155;
             border-color: #475569;
             color: #f1f5f9;
         }
 
-        [data-theme="dark"] .card h3 {
+        [data-theme="dark"] .demo-title {
             color: #f1f5f9;
         }
 
-        [data-theme="dark"] .card p {
-            color: #cbd5e1;
-        }
-
-        [data-theme="dark"] .code-block {
-            background: #0f172a;
-            border-color: #334155;
-            color: #f1f5f9;
-        }
-
-        [data-theme="dark"] .code-block::before {
-            background: #334155;
+        [data-theme="dark"] .demo-description {
             color: #cbd5e1;
         }
 
@@ -421,16 +383,25 @@
             border-color: #475569;
         }
 
+        [data-theme="dark"] .demo-container.has-content {
+            background: #475569;
+            border-color: #64748b;
+        }
+
         [data-theme="dark"] .feature-item {
             background: #334155;
         }
 
-        [data-theme="dark"] .toc {
-            background: #334155;
+        [data-theme="dark"] .feature-item:hover {
+            background: #475569;
         }
 
-        [data-theme="dark"] .toc h3 {
+        [data-theme="dark"] .feature-content h3 {
             color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .feature-content p {
+            color: #cbd5e1;
         }
 
         [data-theme="dark"] .section-title {
@@ -473,9 +444,13 @@
                 font-size: 2rem;
             }
 
-            .grid-2,
-            .grid-3 {
+            .demo-grid {
                 grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .demo-card {
+                padding: 1.5rem;
             }
 
             .theme-switcher {
@@ -487,6 +462,87 @@
                 padding: 0.5rem 0.75rem;
                 font-size: 0.75rem;
             }
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .card h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .card ul {
+            color: #6b7280;
+        }
+
+        .card li {
+            margin-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .card {
+            background: #334155;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .card h3,
+        [data-theme="dark"] .card h4 {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .card p,
+        [data-theme="dark"] .card ul {
+            color: #cbd5e1;
         }
     </style>
 </head>
@@ -504,1720 +560,305 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Opineeo Survey Widget</h1>
-            <p>Lightweight, customizable survey widget for any website. Easy integration with vanilla JavaScript.</p>
-            <div class="hero-badge">
-                <span class="badge badge-new">New</span> Version 2.0 - Enhanced API & Performance
-            </div>
         </div>
     </section>
 
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Table of Contents -->
-            <div class="toc">
-                <h3>📋 Documentation Index</h3>
-                <ul>
-                    <li><a href="#quick-start">🚀 Quick Start</a></li>
-                    <li><a href="#basic-usage">📖 Basic Usage</a></li>
-                    <li><a href="#question-types">❓ Question Types</a></li>
-                    <li><a href="#customization">🎨 Customization</a></li>
-                    <li><a href="#advanced-features">⚡ Advanced Features</a></li>
-                    <li><a href="#web-component-usage">🎯 Web Component Usage</a></li>
-                    <li><a href="#live-demo">🎯 Live Demo</a></li>
-                    <li><a href="#api-reference">📚 API Reference</a></li>
-                </ul>
-            </div>
-
-            <!-- Quick Start Section -->
-            <section id="quick-start" class="section">
+            <!-- Getting Started Section -->
+            <section class="section">
                 <div class="section-header">
-                    <h2 class="section-title">🚀 Quick Start</h2>
-                    <p class="section-subtitle">Get up and running in under 2 minutes</p>
+                    <h2 class="section-title">🚀 Getting Started</h2>
+                    <p class="section-subtitle">Add Opineeo surveys to your website in minutes</p>
                 </div>
 
-                <div class="grid grid-2">
-                    <div class="card">
-                        <h3>1. Include the Script</h3>
-                        <p>Add the Opineeo widget script to your HTML page.</p>
-                        <div class="code-block" data-language="HTML">
-                            &lt;script src="opineeo-sv-w.js"&gt;&lt;/script&gt;
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <div class="card" style="max-width: 800px; margin: 0 auto;">
+                    <h3>Step 1: Get Your API Credentials</h3>
+                    <p>To use Opineeo surveys, you'll need:</p>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>API Token:</strong> Your authentication token</li>
+                        <li><strong>Survey ID:</strong> The ID of the survey you want to display</li>
+                    </ul>
+
+                    <div
+                        style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; margin: 1rem 0;">
+                        <h4>Demo Credentials (for testing):</h4>
+                        <div
+                            style="font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; font-size: 0.875rem; margin-top: 0.5rem;">
+                            <strong>Token:</strong> demo-token-123<br>
+                            <strong>Survey ID:</strong> customer-feedback
                         </div>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">
+                            <em>Note: These are demo credentials. Replace with your real API credentials for production
+                                use.</em>
+                        </p>
                     </div>
 
-                    <div class="card">
-                        <h3>2. Use Web Component (Tag-based)</h3>
-                        <p>Simply add the custom element to your HTML.</p>
-                        <div class="code-block" data-language="HTML">
-                            &lt;opineeo-survey
-                            survey-id="my-survey"
-                            token="your-api-token"
-                            auto-close="3000"&gt;
-                            &lt;/opineeo-survey&gt;
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
+                    <h3>Step 2: Include the Script</h3>
+                    <p>Add the Opineeo script to your HTML:</p>
+                    <div
+                        style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; font-size: 0.875rem; overflow-x: auto; margin: 1rem 0;">
+                        &lt;script src="https://cdn.opineeo.com/opineeo-0.0.1.min.js"&gt;&lt;/script&gt;
                     </div>
 
-                    <div class="card">
-                        <h3>3. Programmatic Usage</h3>
-                        <p>Create the component dynamically with JavaScript.</p>
-                        <div class="code-block" data-language="JavaScript">
-                            // Create element programmatically
-                            const surveyEl = document.createElement('opineeo-survey');
-                            surveyEl.setAttribute('survey-id', 'my-survey');
-                            surveyEl.setAttribute('token', 'your-api-token');
-
-                            // Set survey data
-                            surveyEl.surveyData = {
-                            id: 'my-survey',
-                            name: 'Customer Feedback',
-                            questions: [/* your questions */]
-                            };
-
-                            // Add event listeners
-                            surveyEl.addEventListener('complete', (e) => {
-                            console.log('Survey completed!', e.detail);
-                            });
-
-                            // Append to page
-                            document.body.appendChild(surveyEl);
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>4. Done! 🎉</h3>
-                        <p>Your survey widget is now live and ready to collect responses from your users.</p>
-                        <div class="demo-container">
-                            <div id="quick-start-demo"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Basic Usage Section -->
-            <section id="basic-usage" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">📖 Basic Usage</h2>
-                    <p class="section-subtitle">Complete example with all essential features</p>
-                </div>
-
-                <div class="card">
-                    <h3>Complete Implementation Example (Web Component)</h3>
-                    <p>Here's a full example showing how to implement the survey widget using the web component
-                        approach:</p>
-
-                    <div class="code-block" data-language="HTML">
-                        &lt;!-- Include the widget script --&gt;
-                        &lt;script src="opineeo-sv-w.js"&gt;&lt;/script&gt;
-
-                        &lt;!-- Method 1: Direct HTML usage --&gt;
-                        &lt;opineeo-survey
-                        survey-id="customer-feedback-2024"
-                        token="your-api-token"
-                        auto-close="3000"&gt;
+                    <h3>Step 3: Add the Survey</h3>
+                    <p>Use the web component tag anywhere in your HTML:</p>
+                    <div
+                        style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; font-size: 0.875rem; overflow-x: auto; margin: 1rem 0;">
+                        &lt;opineeo-survey<br>
+                        &nbsp;&nbsp;survey-id="your-survey-id"<br>
+                        &nbsp;&nbsp;token="your-api-token"&gt;<br>
                         &lt;/opineeo-survey&gt;
-
-                        &lt;!-- Method 2: Programmatic creation --&gt;
-                        &lt;script&gt;
-                        // Create the survey element
-                        const surveyEl = document.createElement('opineeo-survey');
-                        surveyEl.setAttribute('survey-id', 'customer-feedback-2024');
-                        surveyEl.setAttribute('token', 'your-api-token');
-                        surveyEl.setAttribute('auto-close', '3000');
-
-                        // Set survey data directly (if not using API)
-                        surveyEl.surveyData = {
-                        id: 'customer-feedback-2024',
-                        name: 'Customer Satisfaction Survey',
-                        description: 'Help us improve our service',
-                        status: 'published',
-                        questions: [
-                        {
-                        id: 'satisfaction',
-                        title: 'How satisfied are you with our service?',
-                        description: 'Please rate your overall experience',
-                        format: 'STAR_RATING',
-                        required: true,
-                        order: 1,
-                        options: []
-                        },
-                        {
-                        id: 'contact_method',
-                        title: 'What is your preferred contact method?',
-                        format: 'SINGLE_CHOICE',
-                        required: true,
-                        order: 2,
-                        options: [
-                        { id: 'email', text: 'Email', order: 1, isOther: false },
-                        { id: 'phone', text: 'Phone', order: 2, isOther: false },
-                        { id: 'chat', text: 'Live Chat', order: 3, isOther: false },
-                        { id: 'other', text: 'Other', order: 4, isOther: true }
-                        ]
-                        },
-                        {
-                        id: 'features',
-                        title: 'What features would you like to see?',
-                        format: 'MULTIPLE_CHOICE',
-                        required: false,
-                        order: 3,
-                        options: [
-                        { id: 'mobile', text: 'Mobile App', order: 1, isOther: false },
-                        { id: 'ui', text: 'Better UI/UX', order: 2, isOther: false },
-                        { id: 'integrations', text: 'More Integrations', order: 3, isOther: false }
-                        ]
-                        },
-                        {
-                        id: 'comments',
-                        title: 'Any additional comments?',
-                        format: 'LONG_TEXT',
-                        required: false,
-                        order: 4,
-                        options: []
-                        }
-                        ]
-                        };
-
-                        // Apply custom styling
-                        surveyEl.customCSS = `
-                        .sv {
-                        background: #ffffff;
-                        color: #1f2937;
-                        margin: 16px 0px;
-                        padding: 24px;
-                        border: 1px solid #e5e7eb;
-                        border-radius: 12px;
-                        font-family: Inter, sans-serif;
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                        }
-                        .qt {
-                        font-size: 20px;
-                        font-weight: 600;
-                        color: #1f2937;
-                        }
-                        .qd {
-                        font-size: 16px;
-                        color: #6b7280;
-                        }
-                        .btnp {
-                        background: #3b82f6;
-                        color: #ffffff;
-                        border-radius: 8px;
-                        padding: 12px 24px;
-                        font-weight: 500;
-                        transition: all 0.3s ease;
-                        }
-                        .btnp:hover {
-                        background: #2563eb;
-                        transform: translateY(-1px);
-                        }
-                        `;
-
-                        // Add event listeners
-                        surveyEl.addEventListener('complete', (e) => {
-                        console.log('Survey completed!', e.detail);
-                        // Send responses to your server
-                        fetch('/api/survey-responses', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(e.detail)
-                        });
-                        });
-
-                        surveyEl.addEventListener('close', () => {
-                        console.log('Survey closed');
-                        });
-
-                        // Append to page
-                        document.body.appendChild(surveyEl);
-                        &lt;/script&gt;
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-2">
-                    <div class="card">
-                        <h3>📊 Live Demo</h3>
-                        <p>Try the survey widget in action:</p>
-                        <div class="demo-container">
-                            <div id="basic-demo"></div>
-                        </div>
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <button class="btn btn-primary" onclick="resetBasicDemo()">Reset Demo</button>
-                            <button class="btn btn-secondary" onclick="showBasicResponses()">View Responses</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>🎯 Key Features</h3>
-                        <div class="feature-grid">
-                            <div class="feature-item">
-                                <div class="feature-icon">⚡</div>
-                                <div>
-                                    <strong>Lightweight</strong>
-                                    <br><small>Only 15KB minified</small>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">🎨</div>
-                                <div>
-                                    <strong>Customizable</strong>
-                                    <br><small>Full CSS control</small>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">📱</div>
-                                <div>
-                                    <strong>Responsive</strong>
-                                    <br><small>Mobile-first design</small>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">🔒</div>
-                                <div>
-                                    <strong>Secure</strong>
-                                    <br><small>No external dependencies</small>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Question Types Section -->
-            <section id="question-types" class="section">
+            <!-- Integration Examples Section -->
+            <section class="section">
                 <div class="section-header">
-                    <h2 class="section-title">❓ Question Types</h2>
-                    <p class="section-subtitle">All supported question formats with examples</p>
+                    <h2 class="section-title">🚀 Integration Examples</h2>
+                    <p class="section-subtitle">See how easy it is to add Opineeo surveys to your website</p>
                 </div>
 
-                <div class="grid grid-3" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-                    <div class="card">
-                        <h3>⭐ Star Rating</h3>
-                        <p>Perfect for satisfaction surveys and ratings.</p>
-                        <div class="demo-container">
-                            <div id="star-demo"></div>
+                <div class="demo-grid">
+                    <!-- Method 1: Direct HTML Integration -->
+                    <div class="demo-card">
+                        <div class="demo-header">
+                            <div class="demo-icon">📝</div>
+                            <div>
+                                <h3 class="demo-title">Method 1: Direct HTML</h3>
+                                <span class="badge badge-demo">HTML Tag</span>
+                            </div>
                         </div>
-                        <div class="code-block" data-language="JSON">
-                            {
-                            "format": "STAR_RATING",
-                            "title": "Rate our service",
-                            "required": true,
-                            "options": []
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>✅ Yes/No Questions</h3>
-                        <p>Simple binary choice questions with custom labels.</p>
-                        <div class="demo-container">
-                            <div id="yesno-demo"></div>
-                        </div>
-                        <div class="code-block" data-language="JSON">
-                            {
-                            "format": "YES_NO",
-                            "title": "Would you recommend us?",
-                            "yesLabel": "Yes, definitely",
-                            "noLabel": "Not yet",
-                            "required": true,
-                            "options": []
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>🔘 Single Choice</h3>
-                        <p>Radio button selection with optional "Other" field.</p>
-                        <div class="demo-container">
-                            <div id="single-demo"></div>
-                        </div>
-                        <div class="code-block" data-language="JSON">
-                            {
-                            "format": "SINGLE_CHOICE",
-                            "title": "How did you hear about us?",
-                            "options": [
-                            { "id": "google", "text": "Google Search" },
-                            { "id": "social", "text": "Social Media" },
-                            { "id": "other", "text": "Other", "isOther": true }
-                            ]
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>☑️ Multiple Choice</h3>
-                        <p>Checkbox selection allowing multiple answers.</p>
-                        <div class="demo-container">
-                            <div id="multiple-demo"></div>
-                        </div>
-                        <div class="code-block" data-language="JSON">
-                            {
-                            "format": "MULTIPLE_CHOICE",
-                            "title": "What features interest you?",
-                            "options": [
-                            { "id": "feature1", "text": "Mobile App" },
-                            { "id": "feature2", "text": "Analytics" },
-                            { "id": "feature3", "text": "Integrations" }
-                            ]
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>📝 Long Text</h3>
-                        <p>Free-form text input for detailed feedback.</p>
-                        <div class="demo-container">
-                            <div id="text-demo"></div>
-                        </div>
-                        <div class="code-block" data-language="JSON">
-                            {
-                            "format": "LONG_TEXT",
-                            "title": "Additional comments",
-                            "description": "Tell us more about your experience",
-                            "required": false,
-                            "options": []
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>📄 Statement</h3>
-                        <p>Display informational content or consent text.</p>
-                        <div class="demo-container">
-                            <div id="statement-demo"></div>
-                        </div>
-                        <div class="code-block" data-language="JSON">
-                            {
-                            "format": "STATEMENT",
-                            "title": "Privacy Notice",
-                            "description": "Your responses are confidential and will be used to improve our service.",
-                            "options": []
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>✅ Validation Test</h3>
-                        <p>Test required "Other" input validation for both single and multiple choice questions.</p>
-                        <div class="demo-container">
-                            <div id="validation-demo"></div>
-                        </div>
-                        <div class="code-block" data-language="JSON">
-                            {
-                            "format": "SINGLE_CHOICE",
-                            "title": "How did you hear about us?",
-                            "required": true,
-                            "options": [
-                            { "id": "google", "text": "Google Search" },
-                            { "id": "other", "text": "Other", "isOther": true }
-                            ]
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Customization Section -->
-            <section id="customization" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">🎨 Customization</h2>
-                    <p class="section-subtitle">Style your survey to match your brand</p>
-                </div>
-
-                <div class="grid grid-2">
-                    <div class="card">
-                        <h3>🌈 Theme Examples</h3>
-                        <p>Pre-built themes to get you started quickly:</p>
-
-                        <div class="demo-container">
-                            <div id="theme-demo"></div>
-                        </div>
-
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <button class="btn btn-outline" onclick="switchTheme('modern')">Modern</button>
-                            <button class="btn btn-outline" onclick="switchTheme('dark')">Dark</button>
-                            <button class="btn btn-outline" onclick="switchTheme('minimal')">Minimal</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>🎯 CSS Scoping</h3>
-                        <p>Each survey gets its own CSS scope to prevent conflicts:</p>
-
-                        <div class="code-block" data-language="CSS">
-                            /* Your CSS is automatically scoped to the survey */
-                            .sv-scope-my-survey .sv {
-                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                            border-radius: 20px;
-                            }
-
-                            .sv-scope-my-survey .qt {
-                            color: white;
-                            font-size: 24px;
-                            }
-
-                            .sv-scope-my-survey .btnp {
-                            background: #ff6b6b;
-                            border-radius: 25px;
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>🎨 Custom Styling Guide</h3>
-                        <p>Key CSS classes you can customize:</p>
-
-                        <div class="code-block" data-language="CSS">
-                            /* Main container */
-                            .sv { /* Survey container */ }
-
-                            /* Typography */
-                            .qt { /* Question title */ }
-                            .qd { /* Question description */ }
-
-                            /* Buttons */
-                            .btnp { /* Primary button (Next/Submit) */ }
-                            .btno { /* Secondary button (Previous) */ }
-
-                            /* Input elements */
-                            .rad { /* Radio button container */ }
-                            .chk { /* Checkbox container */ }
-                            .txt { /* Text input */ }
-                            .ta { /* Textarea */ }
-
-                            /* Star rating */
-                            .stars { /* Star container */ }
-                            .star-btn { /* Individual star button */ }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>📱 Responsive Design</h3>
-                        <p>Built-in responsive breakpoints for all devices:</p>
-
-                        <div class="code-block" data-language="CSS">
-                            /* Mobile-first approach */
-                            @media (max-width: 400px) {
-                            .sv {
-                            max-width: 100%;
-                            margin: 8px;
-                            padding: 16px;
-                            }
-                            .qt { font-size: 16px; }
-                            .star { font-size: 20px; }
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Advanced Features Section -->
-            <section id="advanced-features" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">⚡ Advanced Features</h2>
-                    <p class="section-subtitle">Powerful features for complex use cases</p>
-                </div>
-
-                <div class="grid grid-2">
-                    <div class="card">
-                        <h3>🔄 Auto-close Timer</h3>
-                        <p>Automatically close the survey after completion:</p>
-
-                        <div class="code-block" data-language="JavaScript">
-                            const widget = window.initSurveyWidget({
-                            surveyData: surveyData,
-                            autoClose: 3000, // Close after 3 seconds
-                            onComplete: (responses) => {
-                            console.log('Survey completed!', responses);
-                            }
-                            });
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>📊 Response Handling</h3>
-                        <p>Access and process survey responses:</p>
-
-                        <div class="code-block" data-language="JavaScript">
-                            onComplete: (responses) => {
-                            responses.forEach(response => {
-                            console.log(`Question: ${response.questionTitle}`);
-                            console.log(`Value: ${response.textValue || response.numberValue ||
-                            response.booleanValue}`);
-                            console.log(`Option ID: ${response.optionId}`);
-                            });
-
-                            // Send to your server
-                            fetch('/api/survey-responses', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(responses)
-                            });
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>🎛️ Multiple Instances</h3>
-                        <p>Run multiple surveys on the same page:</p>
-
-                        <div class="code-block" data-language="JavaScript">
-                            // First survey
-                            const survey1 = window.initSurveyWidget({
-                            surveyData: { ...data1, id: 'survey-1' },
-                            customCSS: '/* styles for survey 1 */'
-                            });
-                            survey1.mount('container-1');
-
-                            // Second survey with different styling
-                            const survey2 = window.initSurveyWidget({
-                            surveyData: { ...data2, id: 'survey-2' },
-                            customCSS: '/* different styles for survey 2 */'
-                            });
-                            survey2.mount('container-2');
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>🛡️ Error Handling</h3>
-                        <p>Handle errors gracefully:</p>
-
-                        <div class="code-block" data-language="JavaScript">
-                            const widget = window.initSurveyWidget({
-                            surveyData: surveyData,
-                            onError: (error) => {
-                            console.error('Survey error:', error);
-
-                            // Show user-friendly message
-                            alert('Sorry, there was an error loading the survey. Please try again.');
-
-                            // Log to analytics
-                            analytics.track('survey_error', { error: error.message });
-                            }
-                            });
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Web Component Usage Section -->
-            <section id="web-component-usage" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">🎯 Web Component Usage</h2>
-                    <p class="section-subtitle">Compare tag-based vs programmatic approaches</p>
-                </div>
-
-                <div class="grid grid-2">
-                    <div class="card">
-                        <h3>🏷️ Tag-based Usage</h3>
-                        <p>Declarative HTML approach - perfect for static integration:</p>
-
-                        <div class="code-block" data-language="HTML">
-                            &lt;opineeo-survey
-                            survey-id="demo-survey"
-                            auto-close="2000"
-                            on-complete="handleSurveyComplete"
-                            on-close="handleSurveyClose"&gt;
+                        <p class="demo-description">
+                            Simply add the web component tag to your HTML. The survey will load automatically from the
+                            API.
+                        </p>
+                        <div
+                            style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; font-size: 0.875rem; overflow-x: auto; margin: 1rem 0;">
+                            &lt;opineeo-survey<br>
+                            &nbsp;&nbsp;survey-id="customer-feedback"<br>
+                            &nbsp;&nbsp;token="your-api-token"<br>
+                            &nbsp;&nbsp;auto-close="3000"&gt;<br>
                             &lt;/opineeo-survey&gt;
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
-
-                        <div class="demo-container">
-                            <opineeo-survey id="tag-based-demo" auto-close="2000" on-complete="handleTagDemoComplete"
-                                on-close="handleTagDemoClose">
+                        <div class="demo-container" id="html-demo-container">
+                            <opineeo-survey survey-id="customer-feedback" token="demo-token-123" auto-close="3000"
+                                oncomplete="handleSurveyComplete" onclose="handleSurveyClose">
                             </opineeo-survey>
                         </div>
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <button class="btn btn-primary" onclick="refreshTagDemo()">Refresh Demo</button>
-                        </div>
                     </div>
 
-                    <div class="card">
-                        <h3>⚙️ Programmatic Usage</h3>
-                        <p>Dynamic JavaScript approach - ideal for complex integrations:</p>
-
-                        <div class="code-block" data-language="JavaScript">
-                            const survey = document.createElement('opineeo-survey');
-                            survey.surveyData = { /* survey data */ };
-                            survey.customCSS = '/* custom styles */';
+                    <!-- Method 2: Programmatic Integration -->
+                    <div class="demo-card">
+                        <div class="demo-header">
+                            <div class="demo-icon">⚙️</div>
+                            <div>
+                                <h3 class="demo-title">Method 2: JavaScript</h3>
+                                <span class="badge badge-demo">Programmatic</span>
+                            </div>
+                        </div>
+                        <p class="demo-description">
+                            Create the survey widget dynamically with JavaScript for more control.
+                        </p>
+                        <div
+                            style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; font-size: 0.875rem; overflow-x: auto; margin: 1rem 0;">
+                            const survey = document.createElement('opineeo-survey');<br>
+                            survey.setAttribute('survey-id', 'customer-feedback');<br>
+                            survey.setAttribute('token', 'your-api-token');<br>
                             document.body.appendChild(survey);
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
-
-                        <div class="demo-container">
-                            <div id="programmatic-demo"></div>
+                        <div class="demo-container" id="js-demo-container">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">⚙️</div>
+                                <p>Click "Create Survey" to see programmatic integration</p>
+                            </div>
                         </div>
+                        <div class="demo-actions">
+                            <button class="btn btn-primary" onclick="createProgrammaticSurvey()">Create Survey</button>
+                            <button class="btn btn-secondary" onclick="removeProgrammaticSurvey()">Remove</button>
+                        </div>
+                    </div>
 
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <button class="btn btn-primary" onclick="createProgrammaticDemo()">Create Survey</button>
-                            <button class="btn btn-secondary" onclick="removeProgrammaticDemo()">Remove</button>
+                    <!-- Method 3: Custom Styling -->
+                    <div class="demo-card">
+                        <div class="demo-header">
+                            <div class="demo-icon">🎨</div>
+                            <div>
+                                <h3 class="demo-title">Method 3: Custom Styling</h3>
+                                <span class="badge badge-demo">Styled</span>
+                            </div>
+                        </div>
+                        <p class="demo-description">
+                            Apply custom CSS to match your brand. The survey will still load from the API.
+                        </p>
+                        <div
+                            style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; font-size: 0.875rem; overflow-x: auto; margin: 1rem 0;">
+                            &lt;opineeo-survey<br>
+                            &nbsp;&nbsp;survey-id="customer-feedback"<br>
+                            &nbsp;&nbsp;token="your-api-token"<br>
+                            &nbsp;&nbsp;custom-css=".sv { background: #your-brand-color; }"&gt;<br>
+                            &lt;/opineeo-survey&gt;
+                        </div>
+                        <div class="demo-container" id="styled-demo-container">
+                            <opineeo-survey survey-id="customer-feedback" token="demo-token-123" custom-css="
+                                    .sv {
+                                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                        color: white;
+                                        border-radius: 16px;
+                                        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                                    }
+                                    .qt {
+                                        color: white;
+                                        font-weight: 600;
+                                    }
+                                    .btnp {
+                                        background: rgba(255, 255, 255, 0.2);
+                                        border: 1px solid rgba(255, 255, 255, 0.3);
+                                        border-radius: 25px;
+                                        backdrop-filter: blur(10px);
+                                    }
+                                " oncomplete="handleSurveyComplete" onclose="handleSurveyClose">
+                            </opineeo-survey>
+                        </div>
+                    </div>
+
+                    <!-- Method 4: Event Handling -->
+                    <div class="demo-card">
+                        <div class="demo-header">
+                            <div class="demo-icon">📡</div>
+                            <div>
+                                <h3 class="demo-title">Method 4: Event Handling</h3>
+                                <span class="badge badge-demo">Interactive</span>
+                            </div>
+                        </div>
+                        <p class="demo-description">
+                            Handle survey events to integrate with your application logic.
+                        </p>
+                        <div
+                            style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; font-size: 0.875rem; overflow-x: auto; margin: 1rem 0;">
+                            survey.addEventListener('complete', (e) => {<br>
+                            &nbsp;&nbsp;console.log('Survey completed:', e.detail);<br>
+                            &nbsp;&nbsp;// Send to your analytics<br>
+                            });<br>
+                            survey.addEventListener('close', () => {<br>
+                            &nbsp;&nbsp;// Handle survey close<br>
+                            });
+                        </div>
+                        <div class="demo-container" id="event-demo-container">
+                            <opineeo-survey survey-id="customer-feedback" token="demo-token-123"
+                                oncomplete="handleSurveyComplete" onclose="handleSurveyClose">
+                            </opineeo-survey>
+                        </div>
+                        <div
+                            style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; font-size: 0.875rem;">
+                            <strong>Event Log:</strong>
+                            <div id="event-log" style="margin-top: 0.5rem; font-family: monospace; color: #6b7280;">
+                                No events yet...
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
-
-            <!-- Live Demo Section -->
-            <section id="live-demo" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">🎯 Live Demo</h2>
-                    <p class="section-subtitle">Try different configurations in real-time</p>
-                </div>
-
-                <div class="card">
-                    <h3>Interactive Demo</h3>
-                    <p>Test the survey widget with different configurations:</p>
-
-                    <div class="demo-container">
-                        <div id="live-demo-container"></div>
-                    </div>
-
-                    <div style="text-align: center; margin-top: 2rem;">
-                        <button class="btn btn-primary" onclick="loadDemo('satisfaction')">Satisfaction Survey</button>
-                        <button class="btn btn-primary" onclick="loadDemo('feedback')">Product Feedback</button>
-                        <button class="btn btn-primary" onclick="loadDemo('nps')">NPS Survey</button>
-                        <button class="btn btn-secondary" onclick="resetLiveDemo()">Reset</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- API Reference Section -->
-            <section id="api-reference" class="section">
-                <div class="section-header">
-                    <h2 class="section-title">📚 API Reference</h2>
-                    <p class="section-subtitle">Complete API documentation</p>
-                </div>
-
-                <div class="grid grid-2">
-                    <div class="card">
-                        <h3>🔧 Web Component Attributes</h3>
-
-                        <div class="code-block" data-language="HTML">
-                            &lt;opineeo-survey
-                            survey-id="unique-survey-id" <!-- Required: Survey ID -->
-                            token="your-api-token" <!-- Optional: API token -->
-                            auto-close="3000" <!-- Optional: Auto-close delay (ms) -->
-                            on-complete="handleComplete" <!-- Optional: Function to call on completion -->
-                            on-close="handleClose" <!-- Optional: Function to call on close -->
-                            &gt;&lt;/opineeo-survey&gt;
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-
-                        <div class="code-block" data-language="JavaScript">
-                            // Programmatic properties
-                            const surveyEl = document.createElement('opineeo-survey');
-
-                            // Set survey data directly
-                            surveyEl.surveyData = {
-                            id: 'unique-survey-id',
-                            name: 'Survey Name',
-                            description: 'Description',
-                            status: 'published',
-                            questions: [...]
-                            };
-
-                            // Apply custom styling
-                            surveyEl.customCSS = '...';
-
-                            // Event listeners
-                            surveyEl.addEventListener('complete', (e) => {
-                            console.log('Responses:', e.detail);
-                            });
-
-                            surveyEl.addEventListener('close', () => {
-                            console.log('Survey closed');
-                            });
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-
-                        <div class="code-block" data-language="JavaScript">
-                            // Attribute-based callbacks (NEW!)
-                            // Define your callback functions globally
-                            function handleSurveyComplete(responses) {
-                            console.log('Survey completed via attribute:', responses);
-                            // Send to your server
-                            fetch('/api/survey-responses', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(responses)
-                            });
-                            }
-
-                            function handleSurveyClose() {
-                            console.log('Survey closed via attribute');
-                            // Track analytics
-                            analytics.track('survey_closed');
-                            }
-
-                            // Use in HTML
-                            // &lt;opineeo-survey on-complete="handleSurveyComplete"
-                            on-close="handleSurveyClose"&gt;&lt;/opineeo-survey&gt;
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>📝 Question Schema</h3>
-
-                        <div class="code-block" data-language="JSON">
-                            {
-                            "id": "question-id",
-                            "title": "Question text",
-                            "description": "Optional description",
-                            "format": "STAR_RATING|YES_NO|SINGLE_CHOICE|MULTIPLE_CHOICE|LONG_TEXT|STATEMENT",
-                            "required": true,
-                            "order": 1,
-                            "yesLabel": "Yes text", // For YES_NO format
-                            "noLabel": "No text", // For YES_NO format
-                            "buttonLabel": "Continue", // For YES_NO format
-                            "options": [ // For CHOICE formats
-                            {
-                            "id": "option-id",
-                            "text": "Option text",
-                            "order": 1,
-                            "isOther": false
-                            }
-                            ]
-                            }
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>📊 Response Format</h3>
-
-                        <div class="code-block" data-language="JSON">
-                            [
-                            {
-                            "questionId": "question-id",
-                            "questionTitle": "Question text",
-                            "textValue": "Text response", // For text inputs
-                            "numberValue": 5, // For star ratings
-                            "booleanValue": true, // For yes/no
-                            "optionId": "selected-option", // For choices
-                            "isOther": false
-                            }
-                            ]
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>🎨 CSS Classes</h3>
-
-                        <div class="code-block" data-language="CSS">
-                            /* Main container */
-                            .sv-scope-{survey-id} .sv
-
-                            /* Typography */
-                            .sv-scope-{survey-id} .qt /* Question title */
-                            .sv-scope-{survey-id} .qd /* Question description */
-
-                            /* Navigation */
-                            .sv-scope-{survey-id} .btnp /* Primary button */
-                            .sv-scope-{survey-id} .btno /* Secondary button */
-
-                            /* Inputs */
-                            .sv-scope-{survey-id} .rad /* Radio buttons */
-                            .sv-scope-{survey-id} .chk /* Checkboxes */
-                            .sv-scope-{survey-id} .txt /* Text input */
-                            .sv-scope-{survey-id} .ta /* Textarea */
-                            .sv-scope-{survey-id} .stars /* Star rating */
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Footer -->
-            <footer style="text-align: center; padding: 3rem 0; border-top: 1px solid #e5e7eb; margin-top: 4rem;">
-                <h3>Ready to get started?</h3>
-                <p style="color: #6b7280; margin: 1rem 0;">Download the widget and start collecting feedback today.</p>
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="#" class="btn btn-primary">📥 Download Widget</a>
-                    <a href="#" class="btn btn-outline">📖 Full Documentation</a>
-                    <a href="#" class="btn btn-outline">💬 Support</a>
-                </div>
-                <p style="color: #9ca3af; font-size: 0.875rem; margin-top: 2rem;">
-                    Powered by <strong>Opineeo</strong> • Built with ❤️ for developers
-                </p>
-            </footer>
         </div>
     </main>
 
+    <!-- Scripts -->
     <script src="opineeo-0.0.1.js"></script>
+
     <script>
-        // Sample survey data
-        const sampleSurveyData = {
-            id: "demo-customer-feedback",
-            name: "Customer Satisfaction Survey",
-            description: "Help us improve our service by sharing your feedback",
-            status: "published",
-            questions: [
-                {
-                    id: "satisfaction",
-                    title: "How satisfied are you with our service?",
-                    description: "Please rate your overall experience",
-                    format: "STAR_RATING",
-                    required: true,
-                    order: 1,
-                    options: []
-                },
-                {
-                    id: "recommend",
-                    title: "Would you recommend us to a friend?",
-                    description: "Your recommendation means everything to us",
-                    format: "YES_NO",
-                    required: true,
-                    order: 2,
-                    yesLabel: "Yes, definitely",
-                    noLabel: "Not yet",
-                    buttonLabel: "Continue",
-                    options: []
-                },
-                {
-                    id: "contact_method",
-                    title: "What is your preferred contact method?",
-                    format: "SINGLE_CHOICE",
-                    required: true,
-                    order: 3,
-                    options: [
-                        { id: "email", text: "Email", order: 1, isOther: false },
-                        { id: "phone", text: "Phone", order: 2, isOther: false },
-                        { id: "chat", text: "Live Chat", order: 3, isOther: false },
-                        { id: "other", text: "Other", order: 4, isOther: true }
-                    ]
-                },
-                {
-                    id: "features",
-                    title: "What features would you like to see?",
-                    format: "MULTIPLE_CHOICE",
-                    required: false,
-                    order: 4,
-                    options: [
-                        { id: "mobile", text: "Mobile App", order: 1, isOther: false },
-                        { id: "ui", text: "Better UI/UX", order: 2, isOther: false },
-                        { id: "integrations", text: "More Integrations", order: 3, isOther: false }
-                    ]
-                },
-                {
-                    id: "comments",
-                    title: "Any additional comments?",
-                    format: "LONG_TEXT",
-                    required: false,
-                    order: 5,
-                    options: []
+        // Global variables for programmatic survey
+        let programmaticSurvey = null;
+
+        // Event handling functions
+        function handleSurveyComplete(responses) {
+            console.log('Survey completed:', responses);
+            logEvent('Survey completed with ' + responses.length + ' responses');
+
+            // You can add your own logic here, like:
+            // - Send to analytics
+            // - Save to database
+            // - Show thank you message
+            // - Redirect user
+        }
+
+        function handleSurveyClose() {
+            console.log('Survey closed');
+            logEvent('Survey closed by user');
+        }
+
+        // Event logging function
+        function logEvent(message) {
+            const eventLog = document.getElementById('event-log');
+            if (eventLog) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                logEntry.style.marginBottom = '0.25rem';
+                eventLog.appendChild(logEntry);
+
+                // Keep only last 5 events
+                while (eventLog.children.length > 5) {
+                    eventLog.removeChild(eventLog.firstChild);
                 }
-            ]
-        };
 
-        // Demo surveys for different question types
-        const demoSurveys = {
-            star: {
-                id: "star-demo",
-                name: "Rating Demo",
-                questions: [{
-                    id: "rating",
-                    title: "Rate our service",
-                    format: "STAR_RATING",
-                    required: true,
-                    order: 1,
-                    options: []
-                }]
-            },
-            yesno: {
-                id: "yesno-demo",
-                name: "Yes/No Demo",
-                questions: [{
-                    id: "recommend",
-                    title: "Would you recommend us?",
-                    format: "YES_NO",
-                    required: true,
-                    order: 1,
-                    yesLabel: "Yes, definitely",
-                    noLabel: "Not yet",
-                    options: []
-                }]
-            },
-            single: {
-                id: "single-demo",
-                name: "Single Choice Demo",
-                questions: [{
-                    id: "source",
-                    title: "How did you hear about us?",
-                    format: "SINGLE_CHOICE",
-                    required: true,
-                    order: 1,
-                    options: [
-                        { id: "google", text: "Google Search", order: 1, isOther: false },
-                        { id: "social", text: "Social Media", order: 2, isOther: false },
-                        { id: "other", text: "Other", order: 3, isOther: true }
-                    ]
-                }]
-            },
-            multiple: {
-                id: "multiple-demo",
-                name: "Multiple Choice Demo",
-                questions: [{
-                    id: "interests",
-                    title: "What features interest you?",
-                    format: "MULTIPLE_CHOICE",
-                    required: false,
-                    order: 1,
-                    options: [
-                        { id: "feature1", text: "Mobile App", order: 1, isOther: false },
-                        { id: "feature2", text: "Analytics", order: 2, isOther: false },
-                        { id: "feature3", text: "Integrations", order: 3, isOther: false }
-                    ]
-                }]
-            },
-            text: {
-                id: "text-demo",
-                name: "Text Input Demo",
-                questions: [{
-                    id: "feedback",
-                    title: "Additional comments",
-                    description: "Tell us more about your experience",
-                    format: "LONG_TEXT",
-                    required: false,
-                    order: 1,
-                    options: []
-                }]
-            },
-            statement: {
-                id: "statement-demo",
-                name: "Statement Demo",
-                questions: [{
-                    id: "privacy",
-                    title: "Privacy Notice",
-                    description: "Your responses are confidential and will be used to improve our service.",
-                    format: "STATEMENT",
-                    required: false,
-                    order: 1,
-                    options: []
-                }]
-            },
-            validation: {
-                id: "validation-demo",
-                name: "Validation Test",
-                questions: [
-                    {
-                        id: "single_other",
-                        title: "How did you hear about us? (Required with Other)",
-                        format: "SINGLE_CHOICE",
-                        required: true,
-                        order: 1,
-                        options: [
-                            { id: "google", text: "Google Search", order: 1, isOther: false },
-                            { id: "social", text: "Social Media", order: 2, isOther: false },
-                            { id: "other", text: "Other", order: 3, isOther: true }
-                        ]
-                    },
-                    {
-                        id: "multiple_other",
-                        title: "What features interest you? (Required with Other)",
-                        format: "MULTIPLE_CHOICE",
-                        required: true,
-                        order: 2,
-                        options: [
-                            { id: "feature1", text: "Mobile App", order: 1, isOther: false },
-                            { id: "feature2", text: "Analytics", order: 2, isOther: false },
-                            { id: "other", text: "Other", order: 3, isOther: true }
-                        ]
-                    }
-                ]
+                // Scroll to bottom
+                eventLog.scrollTop = eventLog.scrollHeight;
             }
-        };
-
-        // Web component instances
-        let surveyComponents = {};
-
-        // Attribute-based callback functions for demos
-        function handleTagDemoComplete(responses) {
-            console.log('Tag-based demo completed via attribute:', responses);
-            alert('Tag-based survey completed! Check console for response data.');
         }
 
-        function handleTagDemoClose() {
-            console.log('Tag-based demo closed via attribute');
-        }
-
-        // Initialize all demos
-        function initDemos() {
-            console.log('Initializing demo surveys...');
-
-            // Debug: Check if web component is defined
-            console.log('Web component defined:', customElements.get('opineeo-survey'));
-            console.log('Custom elements support:', !!customElements);
-
-            // Quick start demo
-            initSurveyComponent('quick-start-demo', sampleSurveyData, {
-                customCSS: `
-                    .sv {
-                        background: #ffffff;
-                        color: #1f2937;
-                        margin: 16px 0px;
-                        padding: 24px;
-                        border: 1px solid #e5e7eb;
-                        border-radius: 12px;
-                        font-family: Inter, sans-serif;
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                    }
-                    .qt {
-                        font-size: 18px;
-                        font-weight: 600;
-                        color: #1f2937;
-                    }
-                    .qd {
-                        font-size: 14px;
-                        color: #6b7280;
-                    }
-                    .btnp {
-                        background: #3b82f6;
-                        color: #ffffff;
-                        border-radius: 8px;
-                        padding: 12px 24px;
-                        font-weight: 500;
-                    }
-                `,
-                autoClose: 3000
-            });
-
-            // Basic demo
-            initSurveyComponent('basic-demo', sampleSurveyData, {
-                customCSS: `
-                    .sv {
-                        background: #ffffff;
-                        color: #1f2937;
-                        margin: 16px 0px;
-                        padding: 24px;
-                        border: 1px solid #e5e7eb;
-                        border-radius: 12px;
-                        font-family: Inter, sans-serif;
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                    }
-                    .qt {
-                        font-size: 20px;
-                        font-weight: 600;
-                        color: #1f2937;
-                    }
-                    .qd {
-                        font-size: 16px;
-                        color: #6b7280;
-                    }
-                    .btnp {
-                        background: #3b82f6;
-                        color: #ffffff;
-                        border-radius: 8px;
-                        padding: 12px 24px;
-                        font-weight: 500;
-                        transition: all 0.3s ease;
-                    }
-                    .btnp:hover {
-                        background: #2563eb;
-                        transform: translateY(-1px);
-                    }
-                `
-            });
-
-            // Question type demos
-            Object.keys(demoSurveys).forEach(type => {
-                initSurveyComponent(`${type}-demo`, demoSurveys[type], {
-                    customCSS: `
-                        .sv {
-                            background: #ffffff;
-                            color: #1f2937;
-                            margin: 16px 0px;
-                            padding: 20px;
-                            border: 1px solid #e5e7eb;
-                            border-radius: 8px;
-                            font-family: Inter, sans-serif;
-                        }
-                        .qt {
-                            font-size: 16px;
-                            font-weight: 600;
-                        }
-                        .qd {
-                            font-size: 14px;
-                        }
-                        .btnp {
-                            background: #3b82f6;
-                            color: #ffffff;
-                            border-radius: 6px;
-                            padding: 8px 16px;
-                        }
-                    `
-                });
-            });
-
-            // Theme demo
-            initSurveyComponent('theme-demo', {
-                id: "theme-demo",
-                name: "Theme Demo",
-                questions: sampleSurveyData.questions.slice(0, 2)
-            }, {
-                customCSS: getThemeCSS('modern')
-            });
-
-            // Live demo
-            initSurveyComponent('live-demo-container', sampleSurveyData, {
-                customCSS: getThemeCSS('modern')
-            });
-        }
-
-        // Initialize a survey component
-        function initSurveyComponent(containerId, surveyData, options = {}) {
-            const container = document.getElementById(containerId);
+        // Programmatic survey functions
+        function createProgrammaticSurvey() {
+            const container = document.getElementById('js-demo-container');
             if (!container) return;
 
-            // Clear existing content
-            container.innerHTML = '';
+            // Remove existing survey if any
+            removeProgrammaticSurvey();
 
-            // Create the web component
-            const surveyEl = document.createElement('opineeo-survey');
-
-            // Set survey data
-            surveyEl.surveyData = surveyData;
-
-            // Apply custom CSS if provided
-            if (options.customCSS) {
-                surveyEl.customCSS = options.customCSS;
-            }
-
-            // Set auto-close if provided
-            if (options.autoClose) {
-                surveyEl.setAttribute('auto-close', options.autoClose.toString());
-            }
+            // Create the survey element
+            programmaticSurvey = document.createElement('opineeo-survey');
+            programmaticSurvey.setAttribute('survey-id', 'customer-feedback');
+            programmaticSurvey.setAttribute('token', 'demo-token-123');
+            programmaticSurvey.setAttribute('auto-close', '3000');
 
             // Add event listeners
-            surveyEl.addEventListener('complete', (e) => {
-                console.log(`${containerId} completed:`, e.detail);
-                if (options.onComplete) {
-                    options.onComplete(e.detail);
-                }
+            programmaticSurvey.addEventListener('complete', (e) => {
+                console.log('Programmatic survey completed:', e.detail);
+                logEvent('Programmatic survey completed');
+                alert('Programmatic survey completed! Check console for details.');
             });
 
-            surveyEl.addEventListener('close', () => {
-                console.log(`${containerId} closed`);
-                if (options.onClose) {
-                    options.onClose();
-                }
+            programmaticSurvey.addEventListener('close', () => {
+                console.log('Programmatic survey closed');
+                logEvent('Programmatic survey closed');
             });
 
-            // Append to container
-            container.appendChild(surveyEl);
-            surveyComponents[containerId] = surveyEl;
-        }
-
-        // Get theme CSS
-        function getThemeCSS(theme) {
-            const themes = {
-                modern: `
-                    .sv {
-                        background: #ffffff;
-                        color: #1f2937;
-                        margin: 16px 0px;
-                        padding: 24px;
-                        border: 1px solid #e5e7eb;
-                        border-radius: 12px;
-                        font-family: Inter, sans-serif;
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                    }
-                    .qt {
-                        font-size: 20px;
-                        font-weight: 600;
-                        color: #1f2937;
-                    }
-                    .qd {
-                        font-size: 16px;
-                        color: #6b7280;
-                    }
-                    .btnp {
-                        background: #3b82f6;
-                        color: #ffffff;
-                        border-radius: 8px;
-                        padding: 12px 24px;
-                        font-weight: 500;
-                    }
-                `,
-                dark: `
-                    .sv {
-                        background: #1f2937;
-                        color: #f9fafb;
-                        margin: 16px 0px;
-                        padding: 24px;
-                        border: 1px solid #374151;
-                        border-radius: 12px;
-                        font-family: Inter, sans-serif;
-                    }
-                    .qt {
-                        font-size: 20px;
-                        font-weight: 600;
-                        color: #f9fafb;
-                    }
-                    .qd {
-                        font-size: 16px;
-                        color: #d1d5db;
-                    }
-                    .btnp {
-                        background: #3b82f6;
-                        color: #ffffff;
-                        border-radius: 8px;
-                        padding: 12px 24px;
-                        font-weight: 500;
-                    }
-                    .rad, .chk {
-                        color: #f9fafb;
-                    }
-                `,
-                minimal: `
-                    .sv {
-                        background: transparent;
-                        color: #374151;
-                        margin: 0px;
-                        padding: 0px;
-                        border: none;
-                        border-radius: 0px;
-                        font-family: Arial, sans-serif;
-                    }
-                    .qt {
-                        font-size: 18px;
-                        font-weight: 600;
-                        color: #374151;
-                    }
-                    .qd {
-                        font-size: 16px;
-                        color: #6b7280;
-                    }
-                    .btnp {
-                        background: #000000;
-                        color: #ffffff;
-                        border-radius: 0px;
-                        padding: 12px 24px;
-                        font-weight: 500;
-                    }
-                `
-            };
-            return themes[theme] || themes.modern;
-        }
-
-        // Demo functions
-        function switchTheme(theme) {
-            const component = surveyComponents['theme-demo'];
-            if (component) {
-                component.customCSS = getThemeCSS(theme);
-                // The component will automatically re-render when customCSS is updated
-            }
-        }
-
-        function resetBasicDemo() {
-            const container = document.getElementById('basic-demo');
-            if (container) {
-                container.innerHTML = '';
-                initSurveyComponent('basic-demo', sampleSurveyData, {
-                    customCSS: `
-                        .sv {
-                            background: #ffffff;
-                            color: #1f2937;
-                            margin: 16px 0px;
-                            padding: 24px;
-                            border: 1px solid #e5e7eb;
-                            border-radius: 12px;
-                            font-family: Inter, sans-serif;
-                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                        }
-                        .qt {
-                            font-size: 20px;
-                            font-weight: 600;
-                            color: #1f2937;
-                        }
-                        .qd {
-                            font-size: 16px;
-                            color: #6b7280;
-                        }
-                        .btnp {
-                            background: #3b82f6;
-                            color: #ffffff;
-                            border-radius: 8px;
-                            padding: 12px 24px;
-                            font-weight: 500;
-                            transition: all 0.3s ease;
-                        }
-                        .btnp:hover {
-                            background: #2563eb;
-                            transform: translateY(-1px);
-                        }
-                    `
-                });
-            }
-        }
-
-        function showBasicResponses() {
-            // Since we're using web components, responses are handled via events
-            // This function demonstrates how to access responses when they're completed
-            console.log('Survey responses are automatically handled via the "complete" event listener');
-            alert(`Survey responses are handled automatically via event listeners. Check the browser console when completing surveys to see the response data.`);
-        }
-
-        function loadDemo(type) {
-            const demos = {
-                satisfaction: sampleSurveyData,
-                feedback: {
-                    id: "feedback-demo",
-                    name: "Product Feedback",
-                    questions: [
-                        {
-                            id: "overall",
-                            title: "Overall product rating",
-                            format: "STAR_RATING",
-                            required: true,
-                            order: 1,
-                            options: []
-                        },
-                        {
-                            id: "features",
-                            title: "Which features do you use most?",
-                            format: "MULTIPLE_CHOICE",
-                            required: false,
-                            order: 2,
-                            options: [
-                                { id: "feature1", text: "Dashboard", order: 1, isOther: false },
-                                { id: "feature2", text: "Reports", order: 2, isOther: false },
-                                { id: "feature3", text: "Analytics", order: 3, isOther: false }
-                            ]
-                        },
-                        {
-                            id: "improvement",
-                            title: "How can we improve?",
-                            format: "LONG_TEXT",
-                            required: false,
-                            order: 3,
-                            options: []
-                        }
-                    ]
-                },
-                nps: {
-                    id: "nps-demo",
-                    name: "NPS Survey",
-                    questions: [
-                        {
-                            id: "recommend",
-                            title: "How likely are you to recommend us?",
-                            description: "On a scale of 0-10",
-                            format: "STAR_RATING",
-                            required: true,
-                            order: 1,
-                            options: []
-                        },
-                        {
-                            id: "reason",
-                            title: "What's the main reason for your score?",
-                            format: "LONG_TEXT",
-                            required: false,
-                            order: 2,
-                            options: []
-                        }
-                    ]
-                }
-            };
-
-            const container = document.getElementById('live-demo-container');
-            if (container && demos[type]) {
-                initSurveyComponent('live-demo-container', demos[type], {
-                    customCSS: getThemeCSS('modern'),
-                    autoClose: 2000
-                });
-            }
-        }
-
-        function resetLiveDemo() {
-            const container = document.getElementById('live-demo-container');
-            if (container) {
-                container.innerHTML = '';
-            }
-        }
-
-        // Programmatic demo functions
-        function createProgrammaticDemo() {
-            const container = document.getElementById('programmatic-demo');
-            if (!container) {
-                console.error('Programmatic demo container not found');
-                return;
-            }
-
-            console.log('Creating programmatic demo...');
-
-            // Clear existing content
+            // Clear container and add survey
             container.innerHTML = '';
+            container.classList.add('has-content');
+            container.appendChild(programmaticSurvey);
 
-            // Create survey element programmatically
-            const surveyEl = document.createElement('opineeo-survey');
-            console.log('Created survey element:', surveyEl);
-
-            // Set survey data
-            const surveyData = {
-                id: "programmatic-demo",
-                name: "Programmatic Survey Demo",
-                questions: [
-                    {
-                        id: "rating",
-                        title: "Rate this demo",
-                        format: "STAR_RATING",
-                        required: true,
-                        order: 1,
-                        options: []
-                    },
-                    {
-                        id: "feedback",
-                        title: "Any feedback?",
-                        format: "LONG_TEXT",
-                        required: false,
-                        order: 2,
-                        options: []
-                    }
-                ]
-            };
-
-            console.log('Setting programmatic survey data:', surveyData);
-            surveyEl.surveyData = surveyData;
-            console.log('Programmatic survey data set, current value:', surveyEl.surveyData);
-
-            // Apply custom styling
-            surveyEl.customCSS = `
-                .sv {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    margin: 16px 0px;
-                    padding: 24px;
-                    border-radius: 16px;
-                    font-family: Inter, sans-serif;
-                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-                }
-                .qt {
-                    font-size: 20px;
-                    font-weight: 600;
-                    color: white;
-                }
-                .qd {
-                    font-size: 16px;
-                    color: rgba(255, 255, 255, 0.8);
-                }
-                .btnp {
-                    background: rgba(255, 255, 255, 0.2);
-                    color: white;
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                    border-radius: 25px;
-                    padding: 12px 24px;
-                    font-weight: 500;
-                    backdrop-filter: blur(10px);
-                }
-                .btnp:hover {
-                    background: rgba(255, 255, 255, 0.3);
-                    transform: translateY(-1px);
-                }
-                .stars {
-                    justify-content: center;
-                }
-                .star-btn {
-                    background: rgba(255, 255, 255, 0.1);
-                    border-radius: 50%;
-                    backdrop-filter: blur(10px);
-                }
-                .star-btn:hover {
-                    background: rgba(255, 255, 255, 0.2);
-                }
-                .ta {
-                    background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                    color: white;
-                    border-radius: 8px;
-                }
-                .ta::placeholder {
-                    color: rgba(255, 255, 255, 0.6);
-                }
-            `;
-
-            // Set auto-close
-            surveyEl.setAttribute('auto-close', '3000');
-
-            // Add event listeners
-            surveyEl.addEventListener('complete', (e) => {
-                console.log('Programmatic demo completed:', e.detail);
-                alert('Survey completed! Check the browser console for response data.');
-            });
-
-            surveyEl.addEventListener('close', () => {
-                console.log('Programmatic demo closed');
-            });
-
-            // Append to container
-            console.log('Appending survey element to container...');
-            container.appendChild(surveyEl);
-            console.log('Survey element appended, container children:', container.children.length);
+            logEvent('Programmatic survey created');
         }
 
-        function removeProgrammaticDemo() {
-            const container = document.getElementById('programmatic-demo');
-            if (container) {
-                container.innerHTML = '';
+        function removeProgrammaticSurvey() {
+            const container = document.getElementById('js-demo-container');
+            if (!container) return;
+
+            if (programmaticSurvey) {
+                programmaticSurvey.remove();
+                programmaticSurvey = null;
+                logEvent('Programmatic survey removed');
             }
-        }
 
-        // Setup tag-based demo
-        function setupTagBasedDemo() {
-            // Wait for the web component to be defined and connected
-            const setupDemo = () => {
-                const tagDemo = document.getElementById('tag-based-demo');
-                console.log('Checking tag demo element:', tagDemo);
-                console.log('Tag demo element type:', tagDemo?.constructor?.name);
-                console.log('Tag demo connected:', tagDemo?.isConnected);
-
-                if (tagDemo) {
-                    console.log('Setting up tag-based demo:', tagDemo);
-
-                    // Set survey data for the tag-based demo
-                    const surveyData = {
-                        id: "tag-demo",
-                        name: "Tag-based Survey Demo",
-                        questions: [
-                            {
-                                id: "satisfaction",
-                                title: "How satisfied are you with this demo?",
-                                format: "STAR_RATING",
-                                required: true,
-                                order: 1,
-                                options: []
-                            },
-                            {
-                                id: "recommend",
-                                title: "Would you recommend this approach?",
-                                format: "YES_NO",
-                                required: true,
-                                order: 2,
-                                yesLabel: "Yes, definitely",
-                                noLabel: "Not sure",
-                                options: []
-                            }
-                        ]
-                    };
-
-                    console.log('Setting survey data:', surveyData);
-                    tagDemo.surveyData = surveyData;
-                    console.log('Survey data set, current value:', tagDemo.surveyData);
-
-                    // Apply custom styling
-                    tagDemo.customCSS = `
-                        .sv {
-                            background: #f8fafc;
-                            color: #1e293b;
-                            margin: 16px 0px;
-                            padding: 24px;
-                            border: 2px solid #e2e8f0;
-                            border-radius: 12px;
-                            font-family: Inter, sans-serif;
-                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                        }
-                        .qt {
-                            font-size: 18px;
-                            font-weight: 600;
-                            color: #1e293b;
-                        }
-                        .qd {
-                            font-size: 14px;
-                            color: #64748b;
-                        }
-                        .btnp {
-                            background: #10b981;
-                            color: white;
-                            border-radius: 8px;
-                            padding: 12px 24px;
-                            font-weight: 500;
-                            transition: all 0.3s ease;
-                        }
-                        .btnp:hover {
-                            background: #059669;
-                            transform: translateY(-1px);
-                        }
-                        .btno {
-                            background: #f1f5f9;
-                            color: #475569;
-                            border: 1px solid #cbd5e1;
-                            border-radius: 8px;
-                            padding: 12px 24px;
-                            font-weight: 500;
-                        }
-                        .btno:hover {
-                            background: #e2e8f0;
-                        }
-                    `;
-
-                    // Add event listeners
-                    tagDemo.addEventListener('complete', (e) => {
-                        console.log('Tag-based demo completed:', e.detail);
-                        //alert('Tag-based survey completed! Check the browser console for response data.');
-                    });
-
-                    tagDemo.addEventListener('close', () => {
-                        console.log('Tag-based demo closed');
-                    });
-                } else {
-                    // Try again after a short delay
-                    setTimeout(setupDemo, 50);
-                }
-            };
-
-            // Start the setup process
-            setTimeout(setupDemo, 100);
-        }
-
-        // Refresh tag demo function
-        function refreshTagDemo() {
-            console.log('Refreshing tag demo...');
-            const tagDemo = document.getElementById('tag-based-demo');
-            if (tagDemo) {
-                console.log('Tag demo element found:', tagDemo);
-                console.log('Tag demo mounted:', tagDemo._mounted);
-                console.log('Tag demo survey data:', tagDemo.surveyData);
-
-                // Force re-setup
-                setupTagBasedDemo();
-            } else {
-                console.error('Tag demo element not found');
-            }
-        }
-
-        // Copy code function
-        function copyCode(button) {
-            const codeBlock = button.previousElementSibling;
-            const text = codeBlock.textContent.replace(/Copy$/, '').trim();
-
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-                button.style.background = '#10b981';
-
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = '#3b82f6';
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
+            container.innerHTML = `
+                 <div class="empty-state">
+                     <div class="empty-state-icon">⚙️</div>
+                     <p>Click "Create Survey" to see programmatic integration</p>
+                 </div>
+             `;
+            container.classList.remove('has-content');
         }
 
         // Theme management
@@ -2250,30 +891,12 @@
             setTheme(newTheme);
         }
 
-        // Smooth scrolling for navigation links
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function () {
-            // Initialize theme
             initTheme();
-
-            // Initialize all demos
-            initDemos();
-
-            // Setup tag-based demo
-            setupTagBasedDemo();
-
-            // Add smooth scrolling to navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
+            console.log('Opineeo Survey Widget Demo loaded successfully!');
+            console.log('All surveys are configured to call the API with demo credentials.');
+            console.log('Replace "demo-token-123" and "customer-feedback" with your real API credentials.');
         });
     </script>
 </body>

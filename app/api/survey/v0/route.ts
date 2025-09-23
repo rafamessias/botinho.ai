@@ -3,6 +3,15 @@ import { prisma } from '@/prisma/lib/prisma';
 import { z } from 'zod';
 import { ResponseStatus, StyleMode, SurveyStyle } from '@/lib/generated/prisma';
 
+function addCorsHeaders(response: NextResponse) {
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Team-Token');
+    response.headers.set('Access-Control-Max-Age', '86400');
+    return response;
+}
+
+
 // Validation schema for survey answer submission
 const surveyAnswerSchema = z.object({
     teamToken: z.string().min(1, 'Team token is required'),
@@ -19,6 +28,10 @@ const surveyAnswerSchema = z.object({
         isOther: z.boolean().optional().default(false)
     })).min(1, 'At least one response is required')
 });
+
+export async function OPTIONS(request: NextRequest) {
+    return addCorsHeaders(NextResponse.json({}));
+}
 
 export async function POST(request: NextRequest) {
     try {

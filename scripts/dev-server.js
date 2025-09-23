@@ -8,6 +8,7 @@ const { exec } = require('child_process');
 const PORT = 3001;
 const DEMO_FILE = path.join(__dirname, '../components/survey-render/demo.html');
 const WIDGET_FILE = path.join(__dirname, '../components/survey-render/opineeo-0.0.1.js');
+const WIDGET_FILE_MIN = path.join(__dirname, '../public/opineeo-0.0.1.min.js');
 
 // MIME types
 const mimeTypes = {
@@ -37,6 +38,16 @@ function watchWidgetFiles() {
             }
         });
         console.log('👀 Watching main widget file:', WIDGET_FILE);
+        if (fs.existsSync(WIDGET_FILE_MIN)) {
+            console.log('👀 Watching main widget file:', WIDGET_FILE_MIN);
+            fs.watchFile(WIDGET_FILE_MIN, { interval: 1000 }, (curr, prev) => {
+                if (curr.mtime !== prev.mtime) {
+                    console.log('🔄 Main widget file changed, reloading...');
+                    lastModified.set(WIDGET_FILE_MIN, curr.mtime);
+                    notifyClients();
+                }
+            });
+        }
     } else {
         console.log('⚠️  Main widget file not found:', WIDGET_FILE);
     }
@@ -92,6 +103,11 @@ const server = http.createServer((req, res) => {
     // Handle widget files
     if (url === '/opineeo-0.0.1.js') {
         serveFile(WIDGET_FILE, res);
+        return;
+    }
+
+    if (url === '/opineeo-0.0.1.min.js') {
+        serveFile(WIDGET_FILE_MIN, res);
         return;
     }
 
