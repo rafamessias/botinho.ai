@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/prisma/lib/prisma';
 import { z } from 'zod';
-import { ResponseStatus, StyleMode, SurveyStyle } from '@/lib/generated/prisma';
+import { QuestionFormat, ResponseStatus, StyleMode, SurveyStyle } from '@/lib/generated/prisma';
 
 function addCorsHeaders(response: NextResponse) {
     response.headers.set('Access-Control-Allow-Origin', '*');
@@ -19,6 +19,8 @@ const surveyAnswerSchema = z.object({
     extraInfo: z.string().optional(),
     responses: z.array(z.object({
         questionId: z.string().min(1, 'Question ID is required'),
+        questionTitle: z.string().min(1, 'Question Title is required'),
+        questionFormat: z.nativeEnum(QuestionFormat).optional(),
         optionId: z.string().optional(),
         textValue: z.string().optional(),
         numberValue: z.number().optional(),
@@ -160,24 +162,45 @@ export async function POST(request: NextRequest) {
             });
 
             // Create question responses
-            const questionResponses = [];
-            const surveyResponseSummaries = [];
+            const questionResponses: any[] = [];
+            const surveyResponseSummaries: any[] = [];
             for (const response of validatedData.responses) {
-                const questionResponse = await tx.questionResponse.create({
-                    data: {
-                        questionId: response.questionId,
-                        responseId: surveyResponse.id,
-                        teamId: team.id,
-                        optionId: response.optionId,
-                        textValue: response.textValue,
-                        numberValue: response.numberValue,
-                        booleanValue: response.booleanValue,
-                        isOther: response.isOther
+                // If the response is for a MULTIPLE_CHOICE question, split questionId and textValue and save each separately
+                if (response.questionFormat === 'MULTIPLE_CHOICE') {
+                    // Save a questionResponse for each selected value
+                    const optionIds = response.optionId?.split(',') ?? [];
+                    const textValues = response.textValue?.split('_;_') ?? [];
+                    for (let i = 0; i < optionIds.length; i++) {
+                        const questionResponse = await tx.questionResponse.create({
+                            data: {
+                                questionId: response.questionId,
+                                responseId: surveyResponse.id,
+                                teamId: team.id,
+                                optionId: optionIds[i],
+                                textValue: textValues[i],
+                                numberValue: response.numberValue,
+                                booleanValue: response.booleanValue,
+                                isOther: response.isOther
+                            }
+                        });
+                        questionResponses.push(questionResponse);
                     }
-                });
-                questionResponses.push(questionResponse);
-
-                // INSERT_YOUR_CODE
+                } else {
+                    // Default: save as single response
+                    const questionResponse = await tx.questionResponse.create({
+                        data: {
+                            questionId: response.questionId,
+                            responseId: surveyResponse.id,
+                            teamId: team.id,
+                            optionId: response.optionId,
+                            textValue: response.textValue,
+                            numberValue: response.numberValue,
+                            booleanValue: response.booleanValue,
+                            isOther: response.isOther
+                        }
+                    });
+                    questionResponses.push(questionResponse);
+                }
 
                 // For each question response, create or update SurveyResponseSummary
                 // - If optionId exists, summary is per (surveyId, questionId, optionId, teamId)
@@ -185,14 +208,13 @@ export async function POST(request: NextRequest) {
                 // - responseId is the surveyResponse.id just created
 
                 // Use a Set to avoid duplicate (questionId, optionId) in the same submission
-                const summaryKeys = new Set<string>();
                 console.log('validatedData.responses', validatedData.responses);
                 for (const response of validatedData.responses) {
                     // Determine which unique key to use based on response type
                     let whereClause: any;
                     let summaryKey: string;
 
-                    if (response.numberValue !== undefined || response.numberValue !== null) {
+                    if (response.questionFormat === 'STAR_RATING') {
                         // Use numberValue unique key
                         whereClause = {
                             surveyId_questionId_numberValue_teamId: {
@@ -203,7 +225,7 @@ export async function POST(request: NextRequest) {
                             }
                         };
                         summaryKey = `${validatedData.surveyId}|${response.questionId}|number:${response.numberValue}|${team.id}`;
-                    } else if (response.booleanValue !== undefined || response.booleanValue !== null) {
+                    } else if (response.questionFormat === 'YES_NO') {
                         // Use booleanValue unique key
                         whereClause = {
                             surveyId_questionId_booleanValue_teamId: {
@@ -214,21 +236,60 @@ export async function POST(request: NextRequest) {
                             }
                         };
                         summaryKey = `${validatedData.surveyId}|${response.questionId}|boolean:${response.booleanValue}|${team.id}`;
-                    } else {
+                    } else if (response.questionFormat === 'SINGLE_CHOICE') {
                         // Use optionId unique key (default)
                         whereClause = {
                             surveyId_questionId_optionId_teamId: {
                                 surveyId: validatedData.surveyId,
                                 questionId: response.questionId,
-                                optionId: response.optionId ?? '',
+                                optionId: response.optionId || null,
                                 teamId: team.id
                             }
                         };
                         summaryKey = `${validatedData.surveyId}|${response.questionId}|option:${response.optionId ?? 'null'}|${team.id}`;
-                    }
+                    } else if (response.questionFormat === 'MULTIPLE_CHOICE') {
+                        // Use textValue unique key (default)
+                        const optionIds = response.optionId?.split(',') ?? [];
+                        const textValues = response.textValue?.split('_;_') ?? [];
+                        for (let i = 0; i < optionIds.length; i++) {
+                            whereClause = {
+                                surveyId_questionId_optionId_teamId: {
+                                    surveyId: validatedData.surveyId,
+                                    questionId: response.questionId,
+                                    optionId: optionIds[i],
+                                    teamId: team.id
+                                }
+                            };
 
-                    if (summaryKeys.has(summaryKey)) continue;
-                    summaryKeys.add(summaryKey);
+                            const summary = await tx.surveyResponseSummary.upsert({
+                                where: whereClause,
+                                update: {
+                                    responseCount: { increment: 1 },
+                                    lastUpdated: new Date()
+                                },
+                                create: {
+                                    surveyId: validatedData.surveyId,
+                                    questionId: response.questionId,
+                                    optionId: response.optionId || null,
+                                    isOther: response.isOther ?? false,
+                                    numberValue: response.numberValue ?? null,
+                                    booleanValue: response.booleanValue ?? null,
+                                    textValue: textValues[i] ?? null,
+                                    questionTitle: response.questionTitle ?? null,
+                                    teamId: team.id,
+                                    responseCount: 1,
+                                    lastUpdated: new Date(),
+                                    responseId: surveyResponse.id
+                                }
+                            });
+                            summaryKey = `${validatedData.surveyId}|${response.questionId}|option:${optionIds[i]}|${team.id}`;
+                            surveyResponseSummaries.push(summary);
+
+                        }
+                        return;
+                    } else {
+                        return;
+                    }
 
                     const summary = await tx.surveyResponseSummary.upsert({
                         where: whereClause,
@@ -239,7 +300,9 @@ export async function POST(request: NextRequest) {
                         create: {
                             surveyId: validatedData.surveyId,
                             questionId: response.questionId,
-                            optionId: response.optionId ?? '',
+                            optionId: response.optionId || null,
+                            textValue: response.textValue ?? null,
+                            questionTitle: response.questionTitle ?? null,
                             isOther: response.isOther ?? false,
                             numberValue: response.numberValue ?? null,
                             booleanValue: response.booleanValue ?? null,
@@ -263,16 +326,18 @@ export async function POST(request: NextRequest) {
             });
 
             return { surveyResponse, questionResponses, surveyResponseSummaries };
+        }, {
+            timeout: 10000 // 10 seconds timeout
         });
 
         return addCorsHeaders(NextResponse.json({
             success: true,
             message: 'Survey response submitted successfully',
             data: {
-                responseId: result.surveyResponse.id,
+                responseId: result?.surveyResponse.id,
                 surveyId: validatedData.surveyId,
                 teamName: team.name,
-                submittedAt: result.surveyResponse.submittedAt
+                submittedAt: result?.surveyResponse.submittedAt
             }
         }));
 
@@ -370,9 +435,6 @@ export async function GET(request: NextRequest) {
             },
             select: {
                 id: true,
-                name: true,
-                description: true,
-                allowMultipleResponses: true,
                 style: {
                     select: {
                         styleMode: true,
@@ -412,17 +474,14 @@ export async function GET(request: NextRequest) {
             ));
         }
 
-        const { advancedCSS, styleMode, createdAt, updatedAt, surveyId: surveyIdField, teamId: teamIdField, id, ...styleFields } = survey.style as SurveyStyle;
-        const style = survey.style?.styleMode === StyleMode.advanced ? { advancedCSS, styleMode, id } : { ...styleFields, styleMode, id };
+        const { advancedCSS, styleMode, basicCSS } = survey.style as SurveyStyle;
+        const style = styleMode === StyleMode.advanced ? { customCSS: advancedCSS } : { customCSS: basicCSS };
 
         return addCorsHeaders(NextResponse.json({
             success: true,
             data: {
                 survey: {
                     id: survey.id,
-                    name: survey.name,
-                    description: survey.description,
-                    allowMultipleResponses: survey.allowMultipleResponses,
                     style: style,
                     questions: survey.questions
                 }

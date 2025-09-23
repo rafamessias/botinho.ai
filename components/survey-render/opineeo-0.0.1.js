@@ -35,26 +35,24 @@ class o {
     }
 
     async fetchSurveyData() {
-        console.log('fetchSurveyData called with surveyId:', this.surveyId, 'token:', this.token);
         //this.loading = !0; this.error = null; this.render();
         try {
             const url = `${this.apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`;
-            console.log('Fetching from URL:', url);
             const res = await fetch(url, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}` }
             });
-            console.log('Fetch response status:', res.status);
             if (!res.ok) throw new Error((await res.json()).error || 'Failed to fetch survey data');
             const data = await res.json();
-            console.log('Fetched survey data:', data);
             const sv = data?.data?.survey;
             if (data?.success && sv) {
                 this.survey = sv;
                 if (sv.customCSS) this.customCSS = sv.customCSS;
-                console.log('Survey loaded successfully:', sv);
             }
             else throw new Error('Invalid survey data received');
+
+            console.log('Survey loaded successfully:', data);
+
         } catch (e) { console.error('Error fetching survey data:', e); this.error = e.message || 'Failed to load survey'; }
         finally { this.loading = !1; this.render(); }
     }
@@ -194,6 +192,7 @@ class o {
                 } catch (e) { console.error('Submission error:', e); }
             }
 
+            console.log(payload);
             this.onComplete(payload);
             this.done = !0;
         } catch (e) { console.error('Submission error:', e); }
@@ -299,9 +298,58 @@ class o {
 
     async pack() {
         const responses = Object.keys(this.r).map(k => {
-            const v = this.r[k], q = this.survey.questions.find(x => x.id === k);
-            const resp = v.isOther && this.ot[k] ? { ...v, textValue: this.ot[k] } : v;
-            return { ...resp, questionTitle: q?.title || '' };
+            const v = this.r[k];
+            const q = this.survey.questions.find(x => x.id === k);
+
+            let textValue = v.textValue || '';
+
+            // Add textValue for YES_NO, SINGLE_CHOICE, MULTIPLE_CHOICE
+            if (q) {
+                if (q.format === 'YES_NO') {
+                    if (typeof v.booleanValue === 'boolean') {
+                        textValue = v.booleanValue
+                            ? (q.yesLabel || 'Yes')
+                            : (q.noLabel || 'No');
+                    }
+                } else if (q.format === 'MULTIPLE_CHOICE') {
+                    // Find the option label(s)
+                    // For MULTIPLE_CHOICE, optionId is a comma-separated string of IDs
+                    // Handle MULTIPLE_CHOICE: optionId can be a comma-separated string of IDs
+                    const selectedOptionIds = v.optionId
+                        .split(',')
+                        .map(id => id.trim())
+                        .filter(id => !!id);
+
+                    // Defensive: ensure q.options is an array
+                    const optionsArray = Array.isArray(q.options) ? q.options : [];
+
+                    // Find all selected options by id
+                    const selectedOptions = selectedOptionIds
+                        .map(optionId => optionsArray.find(opt => opt.id === optionId))
+                        .filter(opt => !!opt);
+
+                    // Join their text values, fallback to empty string if not found
+                    textValue = selectedOptions.map(opt => opt.text || '').join('_;_');
+
+                } else if (q.format === 'SINGLE_CHOICE') {
+                    // SINGLE_CHOICE: optionId is string
+                    const selectedOption = q.options.find(opt => opt.id === v.optionId);
+                    textValue = selectedOption ? selectedOption.text : '';
+                }
+            }
+
+
+            // If isOther and has other text, override textValue
+            if (v.isOther && this.ot[k]) {
+                textValue = this.ot[k];
+            }
+
+            return {
+                ...v,
+                textValue,
+                questionTitle: q?.title || '',
+                questionFormat: q?.format || ''
+            };
         });
 
         const payload = {
@@ -333,14 +381,12 @@ window.initSurveyWidget = i => new o(i);
     if (customElements.get('opineeo-survey')) return;
 
     function resolveHandler(path) {
-        console.log('resolveHandler called with path:', path);
+
         if (!path) return null;
         let ctx = window;
         for (const key of path.split('.')) {
-            console.log('Looking for key:', key, 'in context:', ctx);
             ctx = ctx?.[key];
         }
-        console.log('Final resolved function:', ctx, 'is function?', typeof ctx === 'function');
         return typeof ctx === 'function' ? ctx : null;
     }
 

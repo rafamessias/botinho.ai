@@ -266,8 +266,10 @@ model SurveyResponseSummary {
   id            String   @id @default(cuid())
   surveyId      String
   questionId    String
+  questionTitle String?
   responseId    String
   optionId      String? // null for open-ended or non-option questions
+  textValue     String?
   isOther       Boolean? @default(false)
   numberValue   Int?
   booleanValue  Boolean?
@@ -289,21 +291,23 @@ model SurveyResponseSummary {
 }
 
 model QuestionResponse {
-  id           String          @id @default(cuid())
-  isOther      Boolean?        @default(false)
-  textValue    String?
-  numberValue  Int?
-  booleanValue Boolean?
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  questionId   String
-  optionId     String?
-  responseId   String
-  teamId       Int
-  option       QuestionOption? @relation(fields: [optionId], references: [id])
-  question     Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  response     SurveyResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
-  team         Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  id             String          @id @default(cuid())
+  isOther        Boolean?        @default(false)
+  textValue      String?
+  numberValue    Int?
+  booleanValue   Boolean?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  questionId     String
+  questionTitle  String?
+  questionFormat QuestionFormat?
+  optionId       String?
+  responseId     String
+  teamId         Int
+  option         QuestionOption? @relation(fields: [optionId], references: [id])
+  question       Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  response       SurveyResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  team           Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@map("question_responses")
 }

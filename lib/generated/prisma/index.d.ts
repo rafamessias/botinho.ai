@@ -18608,8 +18608,10 @@ export namespace Prisma {
     id: string | null
     surveyId: string | null
     questionId: string | null
+    questionTitle: string | null
     responseId: string | null
     optionId: string | null
+    textValue: string | null
     isOther: boolean | null
     numberValue: number | null
     booleanValue: boolean | null
@@ -18622,8 +18624,10 @@ export namespace Prisma {
     id: string | null
     surveyId: string | null
     questionId: string | null
+    questionTitle: string | null
     responseId: string | null
     optionId: string | null
+    textValue: string | null
     isOther: boolean | null
     numberValue: number | null
     booleanValue: boolean | null
@@ -18636,8 +18640,10 @@ export namespace Prisma {
     id: number
     surveyId: number
     questionId: number
+    questionTitle: number
     responseId: number
     optionId: number
+    textValue: number
     isOther: number
     numberValue: number
     booleanValue: number
@@ -18664,8 +18670,10 @@ export namespace Prisma {
     id?: true
     surveyId?: true
     questionId?: true
+    questionTitle?: true
     responseId?: true
     optionId?: true
+    textValue?: true
     isOther?: true
     numberValue?: true
     booleanValue?: true
@@ -18678,8 +18686,10 @@ export namespace Prisma {
     id?: true
     surveyId?: true
     questionId?: true
+    questionTitle?: true
     responseId?: true
     optionId?: true
+    textValue?: true
     isOther?: true
     numberValue?: true
     booleanValue?: true
@@ -18692,8 +18702,10 @@ export namespace Prisma {
     id?: true
     surveyId?: true
     questionId?: true
+    questionTitle?: true
     responseId?: true
     optionId?: true
+    textValue?: true
     isOther?: true
     numberValue?: true
     booleanValue?: true
@@ -18793,8 +18805,10 @@ export namespace Prisma {
     id: string
     surveyId: string
     questionId: string
+    questionTitle: string | null
     responseId: string
     optionId: string | null
+    textValue: string | null
     isOther: boolean | null
     numberValue: number | null
     booleanValue: boolean | null
@@ -18826,8 +18840,10 @@ export namespace Prisma {
     id?: boolean
     surveyId?: boolean
     questionId?: boolean
+    questionTitle?: boolean
     responseId?: boolean
     optionId?: boolean
+    textValue?: boolean
     isOther?: boolean
     numberValue?: boolean
     booleanValue?: boolean
@@ -18845,8 +18861,10 @@ export namespace Prisma {
     id?: boolean
     surveyId?: boolean
     questionId?: boolean
+    questionTitle?: boolean
     responseId?: boolean
     optionId?: boolean
+    textValue?: boolean
     isOther?: boolean
     numberValue?: boolean
     booleanValue?: boolean
@@ -18864,8 +18882,10 @@ export namespace Prisma {
     id?: boolean
     surveyId?: boolean
     questionId?: boolean
+    questionTitle?: boolean
     responseId?: boolean
     optionId?: boolean
+    textValue?: boolean
     isOther?: boolean
     numberValue?: boolean
     booleanValue?: boolean
@@ -18883,8 +18903,10 @@ export namespace Prisma {
     id?: boolean
     surveyId?: boolean
     questionId?: boolean
+    questionTitle?: boolean
     responseId?: boolean
     optionId?: boolean
+    textValue?: boolean
     isOther?: boolean
     numberValue?: boolean
     booleanValue?: boolean
@@ -18893,7 +18915,7 @@ export namespace Prisma {
     lastUpdated?: boolean
   }
 
-  export type SurveyResponseSummaryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "surveyId" | "questionId" | "responseId" | "optionId" | "isOther" | "numberValue" | "booleanValue" | "teamId" | "responseCount" | "lastUpdated", ExtArgs["result"]["surveyResponseSummary"]>
+  export type SurveyResponseSummaryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "surveyId" | "questionId" | "questionTitle" | "responseId" | "optionId" | "textValue" | "isOther" | "numberValue" | "booleanValue" | "teamId" | "responseCount" | "lastUpdated", ExtArgs["result"]["surveyResponseSummary"]>
   export type SurveyResponseSummaryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     question?: boolean | QuestionDefaultArgs<ExtArgs>
@@ -18929,8 +18951,10 @@ export namespace Prisma {
       id: string
       surveyId: string
       questionId: string
+      questionTitle: string | null
       responseId: string
       optionId: string | null
+      textValue: string | null
       isOther: boolean | null
       numberValue: number | null
       booleanValue: boolean | null
@@ -19368,8 +19392,10 @@ export namespace Prisma {
     readonly id: FieldRef<"SurveyResponseSummary", 'String'>
     readonly surveyId: FieldRef<"SurveyResponseSummary", 'String'>
     readonly questionId: FieldRef<"SurveyResponseSummary", 'String'>
+    readonly questionTitle: FieldRef<"SurveyResponseSummary", 'String'>
     readonly responseId: FieldRef<"SurveyResponseSummary", 'String'>
     readonly optionId: FieldRef<"SurveyResponseSummary", 'String'>
+    readonly textValue: FieldRef<"SurveyResponseSummary", 'String'>
     readonly isOther: FieldRef<"SurveyResponseSummary", 'Boolean'>
     readonly numberValue: FieldRef<"SurveyResponseSummary", 'Int'>
     readonly booleanValue: FieldRef<"SurveyResponseSummary", 'Boolean'>
@@ -19840,6 +19866,8 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     questionId: string | null
+    questionTitle: string | null
+    questionFormat: $Enums.QuestionFormat | null
     optionId: string | null
     responseId: string | null
     teamId: number | null
@@ -19854,6 +19882,8 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     questionId: string | null
+    questionTitle: string | null
+    questionFormat: $Enums.QuestionFormat | null
     optionId: string | null
     responseId: string | null
     teamId: number | null
@@ -19868,6 +19898,8 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     questionId: number
+    questionTitle: number
+    questionFormat: number
     optionId: number
     responseId: number
     teamId: number
@@ -19894,6 +19926,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     questionId?: true
+    questionTitle?: true
+    questionFormat?: true
     optionId?: true
     responseId?: true
     teamId?: true
@@ -19908,6 +19942,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     questionId?: true
+    questionTitle?: true
+    questionFormat?: true
     optionId?: true
     responseId?: true
     teamId?: true
@@ -19922,6 +19958,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     questionId?: true
+    questionTitle?: true
+    questionFormat?: true
     optionId?: true
     responseId?: true
     teamId?: true
@@ -20023,6 +20061,8 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     questionId: string
+    questionTitle: string | null
+    questionFormat: $Enums.QuestionFormat | null
     optionId: string | null
     responseId: string
     teamId: number
@@ -20056,6 +20096,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     questionId?: boolean
+    questionTitle?: boolean
+    questionFormat?: boolean
     optionId?: boolean
     responseId?: boolean
     teamId?: boolean
@@ -20074,6 +20116,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     questionId?: boolean
+    questionTitle?: boolean
+    questionFormat?: boolean
     optionId?: boolean
     responseId?: boolean
     teamId?: boolean
@@ -20092,6 +20136,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     questionId?: boolean
+    questionTitle?: boolean
+    questionFormat?: boolean
     optionId?: boolean
     responseId?: boolean
     teamId?: boolean
@@ -20110,12 +20156,14 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     questionId?: boolean
+    questionTitle?: boolean
+    questionFormat?: boolean
     optionId?: boolean
     responseId?: boolean
     teamId?: boolean
   }
 
-  export type QuestionResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "isOther" | "textValue" | "numberValue" | "booleanValue" | "createdAt" | "updatedAt" | "questionId" | "optionId" | "responseId" | "teamId", ExtArgs["result"]["questionResponse"]>
+  export type QuestionResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "isOther" | "textValue" | "numberValue" | "booleanValue" | "createdAt" | "updatedAt" | "questionId" | "questionTitle" | "questionFormat" | "optionId" | "responseId" | "teamId", ExtArgs["result"]["questionResponse"]>
   export type QuestionResponseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     option?: boolean | QuestionResponse$optionArgs<ExtArgs>
     question?: boolean | QuestionDefaultArgs<ExtArgs>
@@ -20152,6 +20200,8 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       questionId: string
+      questionTitle: string | null
+      questionFormat: $Enums.QuestionFormat | null
       optionId: string | null
       responseId: string
       teamId: number
@@ -20590,6 +20640,8 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"QuestionResponse", 'DateTime'>
     readonly updatedAt: FieldRef<"QuestionResponse", 'DateTime'>
     readonly questionId: FieldRef<"QuestionResponse", 'String'>
+    readonly questionTitle: FieldRef<"QuestionResponse", 'String'>
+    readonly questionFormat: FieldRef<"QuestionResponse", 'QuestionFormat'>
     readonly optionId: FieldRef<"QuestionResponse", 'String'>
     readonly responseId: FieldRef<"QuestionResponse", 'String'>
     readonly teamId: FieldRef<"QuestionResponse", 'Int'>
@@ -21261,8 +21313,10 @@ export namespace Prisma {
     id: 'id',
     surveyId: 'surveyId',
     questionId: 'questionId',
+    questionTitle: 'questionTitle',
     responseId: 'responseId',
     optionId: 'optionId',
+    textValue: 'textValue',
     isOther: 'isOther',
     numberValue: 'numberValue',
     booleanValue: 'booleanValue',
@@ -21283,6 +21337,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     questionId: 'questionId',
+    questionTitle: 'questionTitle',
+    questionFormat: 'questionFormat',
     optionId: 'optionId',
     responseId: 'responseId',
     teamId: 'teamId'
@@ -22707,8 +22763,10 @@ export namespace Prisma {
     id?: StringFilter<"SurveyResponseSummary"> | string
     surveyId?: StringFilter<"SurveyResponseSummary"> | string
     questionId?: StringFilter<"SurveyResponseSummary"> | string
+    questionTitle?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     responseId?: StringFilter<"SurveyResponseSummary"> | string
     optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    textValue?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
     numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
     booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
@@ -22726,8 +22784,10 @@ export namespace Prisma {
     id?: SortOrder
     surveyId?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrderInput | SortOrder
     responseId?: SortOrder
     optionId?: SortOrderInput | SortOrder
+    textValue?: SortOrderInput | SortOrder
     isOther?: SortOrderInput | SortOrder
     numberValue?: SortOrderInput | SortOrder
     booleanValue?: SortOrderInput | SortOrder
@@ -22751,8 +22811,10 @@ export namespace Prisma {
     NOT?: SurveyResponseSummaryWhereInput | SurveyResponseSummaryWhereInput[]
     surveyId?: StringFilter<"SurveyResponseSummary"> | string
     questionId?: StringFilter<"SurveyResponseSummary"> | string
+    questionTitle?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     responseId?: StringFilter<"SurveyResponseSummary"> | string
     optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    textValue?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
     numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
     booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
@@ -22770,8 +22832,10 @@ export namespace Prisma {
     id?: SortOrder
     surveyId?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrderInput | SortOrder
     responseId?: SortOrder
     optionId?: SortOrderInput | SortOrder
+    textValue?: SortOrderInput | SortOrder
     isOther?: SortOrderInput | SortOrder
     numberValue?: SortOrderInput | SortOrder
     booleanValue?: SortOrderInput | SortOrder
@@ -22792,8 +22856,10 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
     surveyId?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
     questionId?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
+    questionTitle?: StringNullableWithAggregatesFilter<"SurveyResponseSummary"> | string | null
     responseId?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
     optionId?: StringNullableWithAggregatesFilter<"SurveyResponseSummary"> | string | null
+    textValue?: StringNullableWithAggregatesFilter<"SurveyResponseSummary"> | string | null
     isOther?: BoolNullableWithAggregatesFilter<"SurveyResponseSummary"> | boolean | null
     numberValue?: IntNullableWithAggregatesFilter<"SurveyResponseSummary"> | number | null
     booleanValue?: BoolNullableWithAggregatesFilter<"SurveyResponseSummary"> | boolean | null
@@ -22814,6 +22880,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"QuestionResponse"> | Date | string
     updatedAt?: DateTimeFilter<"QuestionResponse"> | Date | string
     questionId?: StringFilter<"QuestionResponse"> | string
+    questionTitle?: StringNullableFilter<"QuestionResponse"> | string | null
+    questionFormat?: EnumQuestionFormatNullableFilter<"QuestionResponse"> | $Enums.QuestionFormat | null
     optionId?: StringNullableFilter<"QuestionResponse"> | string | null
     responseId?: StringFilter<"QuestionResponse"> | string
     teamId?: IntFilter<"QuestionResponse"> | number
@@ -22832,6 +22900,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrderInput | SortOrder
+    questionFormat?: SortOrderInput | SortOrder
     optionId?: SortOrderInput | SortOrder
     responseId?: SortOrder
     teamId?: SortOrder
@@ -22853,6 +22923,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"QuestionResponse"> | Date | string
     updatedAt?: DateTimeFilter<"QuestionResponse"> | Date | string
     questionId?: StringFilter<"QuestionResponse"> | string
+    questionTitle?: StringNullableFilter<"QuestionResponse"> | string | null
+    questionFormat?: EnumQuestionFormatNullableFilter<"QuestionResponse"> | $Enums.QuestionFormat | null
     optionId?: StringNullableFilter<"QuestionResponse"> | string | null
     responseId?: StringFilter<"QuestionResponse"> | string
     teamId?: IntFilter<"QuestionResponse"> | number
@@ -22871,6 +22943,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrderInput | SortOrder
+    questionFormat?: SortOrderInput | SortOrder
     optionId?: SortOrderInput | SortOrder
     responseId?: SortOrder
     teamId?: SortOrder
@@ -22893,6 +22967,8 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"QuestionResponse"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"QuestionResponse"> | Date | string
     questionId?: StringWithAggregatesFilter<"QuestionResponse"> | string
+    questionTitle?: StringNullableWithAggregatesFilter<"QuestionResponse"> | string | null
+    questionFormat?: EnumQuestionFormatNullableWithAggregatesFilter<"QuestionResponse"> | $Enums.QuestionFormat | null
     optionId?: StringNullableWithAggregatesFilter<"QuestionResponse"> | string | null
     responseId?: StringWithAggregatesFilter<"QuestionResponse"> | string
     teamId?: IntWithAggregatesFilter<"QuestionResponse"> | number
@@ -24221,6 +24297,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryCreateInput = {
     id?: string
+    questionTitle?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -24237,8 +24315,10 @@ export namespace Prisma {
     id?: string
     surveyId: string
     questionId: string
+    questionTitle?: string | null
     responseId: string
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -24249,6 +24329,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -24265,8 +24347,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -24279,8 +24363,10 @@ export namespace Prisma {
     id?: string
     surveyId: string
     questionId: string
+    questionTitle?: string | null
     responseId: string
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -24291,6 +24377,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -24302,8 +24390,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -24320,6 +24410,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     option?: QuestionOptionCreateNestedOneWithoutResponsesInput
     question: QuestionCreateNestedOneWithoutResponsesInput
     response: SurveyResponseCreateNestedOneWithoutQuestionResponsesInput
@@ -24335,6 +24427,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     questionId: string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     optionId?: string | null
     responseId: string
     teamId: number
@@ -24348,6 +24442,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     option?: QuestionOptionUpdateOneWithoutResponsesNestedInput
     question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
     response?: SurveyResponseUpdateOneRequiredWithoutQuestionResponsesNestedInput
@@ -24363,6 +24459,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
@@ -24377,6 +24475,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     questionId: string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     optionId?: string | null
     responseId: string
     teamId: number
@@ -24390,6 +24490,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
   }
 
   export type QuestionResponseUncheckedUpdateManyInput = {
@@ -24401,6 +24503,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
@@ -25615,8 +25719,10 @@ export namespace Prisma {
     id?: SortOrder
     surveyId?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrder
     responseId?: SortOrder
     optionId?: SortOrder
+    textValue?: SortOrder
     isOther?: SortOrder
     numberValue?: SortOrder
     booleanValue?: SortOrder
@@ -25635,8 +25741,10 @@ export namespace Prisma {
     id?: SortOrder
     surveyId?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrder
     responseId?: SortOrder
     optionId?: SortOrder
+    textValue?: SortOrder
     isOther?: SortOrder
     numberValue?: SortOrder
     booleanValue?: SortOrder
@@ -25649,8 +25757,10 @@ export namespace Prisma {
     id?: SortOrder
     surveyId?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrder
     responseId?: SortOrder
     optionId?: SortOrder
+    textValue?: SortOrder
     isOther?: SortOrder
     numberValue?: SortOrder
     booleanValue?: SortOrder
@@ -25665,6 +25775,13 @@ export namespace Prisma {
     responseCount?: SortOrder
   }
 
+  export type EnumQuestionFormatNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.QuestionFormat | EnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumQuestionFormatNullableFilter<$PrismaModel> | $Enums.QuestionFormat | null
+  }
+
   export type QuestionResponseCountOrderByAggregateInput = {
     id?: SortOrder
     isOther?: SortOrder
@@ -25674,6 +25791,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrder
+    questionFormat?: SortOrder
     optionId?: SortOrder
     responseId?: SortOrder
     teamId?: SortOrder
@@ -25693,6 +25812,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrder
+    questionFormat?: SortOrder
     optionId?: SortOrder
     responseId?: SortOrder
     teamId?: SortOrder
@@ -25707,6 +25828,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     questionId?: SortOrder
+    questionTitle?: SortOrder
+    questionFormat?: SortOrder
     optionId?: SortOrder
     responseId?: SortOrder
     teamId?: SortOrder
@@ -25715,6 +25838,16 @@ export namespace Prisma {
   export type QuestionResponseSumOrderByAggregateInput = {
     numberValue?: SortOrder
     teamId?: SortOrder
+  }
+
+  export type EnumQuestionFormatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.QuestionFormat | EnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumQuestionFormatNullableWithAggregatesFilter<$PrismaModel> | $Enums.QuestionFormat | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumQuestionFormatNullableFilter<$PrismaModel>
+    _max?: NestedEnumQuestionFormatNullableFilter<$PrismaModel>
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -27211,6 +27344,10 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput
   }
 
+  export type NullableEnumQuestionFormatFieldUpdateOperationsInput = {
+    set?: $Enums.QuestionFormat | null
+  }
+
   export type QuestionOptionUpdateOneWithoutResponsesNestedInput = {
     create?: XOR<QuestionOptionCreateWithoutResponsesInput, QuestionOptionUncheckedCreateWithoutResponsesInput>
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutResponsesInput
@@ -27593,6 +27730,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumResponseStatusFilter<$PrismaModel>
     _max?: NestedEnumResponseStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumQuestionFormatNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.QuestionFormat | EnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumQuestionFormatNullableFilter<$PrismaModel> | $Enums.QuestionFormat | null
+  }
+
+  export type NestedEnumQuestionFormatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.QuestionFormat | EnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumQuestionFormatNullableWithAggregatesFilter<$PrismaModel> | $Enums.QuestionFormat | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumQuestionFormatNullableFilter<$PrismaModel>
+    _max?: NestedEnumQuestionFormatNullableFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -28323,6 +28477,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     option?: QuestionOptionCreateNestedOneWithoutResponsesInput
     question: QuestionCreateNestedOneWithoutResponsesInput
     response: SurveyResponseCreateNestedOneWithoutQuestionResponsesInput
@@ -28337,6 +28493,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     questionId: string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     optionId?: string | null
     responseId: string
   }
@@ -28657,6 +28815,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryCreateWithoutTeamInput = {
     id?: string
+    questionTitle?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -28672,8 +28832,10 @@ export namespace Prisma {
     id?: string
     surveyId: string
     questionId: string
+    questionTitle?: string | null
     responseId: string
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -28749,6 +28911,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"QuestionResponse"> | Date | string
     updatedAt?: DateTimeFilter<"QuestionResponse"> | Date | string
     questionId?: StringFilter<"QuestionResponse"> | string
+    questionTitle?: StringNullableFilter<"QuestionResponse"> | string | null
+    questionFormat?: EnumQuestionFormatNullableFilter<"QuestionResponse"> | $Enums.QuestionFormat | null
     optionId?: StringNullableFilter<"QuestionResponse"> | string | null
     responseId?: StringFilter<"QuestionResponse"> | string
     teamId?: IntFilter<"QuestionResponse"> | number
@@ -28980,8 +29144,10 @@ export namespace Prisma {
     id?: StringFilter<"SurveyResponseSummary"> | string
     surveyId?: StringFilter<"SurveyResponseSummary"> | string
     questionId?: StringFilter<"SurveyResponseSummary"> | string
+    questionTitle?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     responseId?: StringFilter<"SurveyResponseSummary"> | string
     optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    textValue?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
     numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
     booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
@@ -29586,6 +29752,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryCreateWithoutSurveyInput = {
     id?: string
+    questionTitle?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -29600,8 +29768,10 @@ export namespace Prisma {
   export type SurveyResponseSummaryUncheckedCreateWithoutSurveyInput = {
     id?: string
     questionId: string
+    questionTitle?: string | null
     responseId: string
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30042,6 +30212,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     option?: QuestionOptionCreateNestedOneWithoutResponsesInput
     response: SurveyResponseCreateNestedOneWithoutQuestionResponsesInput
     team: TeamCreateNestedOneWithoutQuestionResponsesInput
@@ -30055,6 +30227,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     optionId?: string | null
     responseId: string
     teamId: number
@@ -30163,6 +30337,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryCreateWithoutQuestionInput = {
     id?: string
+    questionTitle?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30177,8 +30353,10 @@ export namespace Prisma {
   export type SurveyResponseSummaryUncheckedCreateWithoutQuestionInput = {
     id?: string
     surveyId: string
+    questionTitle?: string | null
     responseId: string
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30449,6 +30627,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     question: QuestionCreateNestedOneWithoutResponsesInput
     response: SurveyResponseCreateNestedOneWithoutQuestionResponsesInput
     team: TeamCreateNestedOneWithoutQuestionResponsesInput
@@ -30463,6 +30643,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     questionId: string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     responseId: string
     teamId: number
   }
@@ -30479,6 +30661,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryCreateWithoutOptionInput = {
     id?: string
+    questionTitle?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30494,7 +30678,9 @@ export namespace Prisma {
     id?: string
     surveyId: string
     questionId: string
+    questionTitle?: string | null
     responseId: string
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30658,6 +30844,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     option?: QuestionOptionCreateNestedOneWithoutResponsesInput
     question: QuestionCreateNestedOneWithoutResponsesInput
     team: TeamCreateNestedOneWithoutQuestionResponsesInput
@@ -30672,6 +30860,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     questionId: string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     optionId?: string | null
     teamId: number
   }
@@ -30779,6 +30969,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryCreateWithoutResponseInput = {
     id?: string
+    questionTitle?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30794,7 +30986,9 @@ export namespace Prisma {
     id?: string
     surveyId: string
     questionId: string
+    questionTitle?: string | null
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -31943,6 +32137,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     questionId: string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     optionId?: string | null
     responseId: string
   }
@@ -32056,8 +32252,10 @@ export namespace Prisma {
     id?: string
     surveyId: string
     questionId: string
+    questionTitle?: string | null
     responseId: string
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -32107,6 +32305,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     option?: QuestionOptionUpdateOneWithoutResponsesNestedInput
     question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
     response?: SurveyResponseUpdateOneRequiredWithoutQuestionResponsesNestedInput
@@ -32121,6 +32321,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
   }
@@ -32134,6 +32336,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
   }
@@ -32479,6 +32683,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32494,8 +32700,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32507,8 +32715,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32611,8 +32821,10 @@ export namespace Prisma {
   export type SurveyResponseSummaryCreateManySurveyInput = {
     id?: string
     questionId: string
+    questionTitle?: string | null
     responseId: string
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -32717,6 +32929,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryUpdateWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32731,8 +32945,10 @@ export namespace Prisma {
   export type SurveyResponseSummaryUncheckedUpdateWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32744,8 +32960,10 @@ export namespace Prisma {
   export type SurveyResponseSummaryUncheckedUpdateManyWithoutSurveyInput = {
     id?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32772,6 +32990,8 @@ export namespace Prisma {
     booleanValue?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     optionId?: string | null
     responseId: string
     teamId: number
@@ -32780,8 +33000,10 @@ export namespace Prisma {
   export type SurveyResponseSummaryCreateManyQuestionInput = {
     id?: string
     surveyId: string
+    questionTitle?: string | null
     responseId: string
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -32832,6 +33054,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     option?: QuestionOptionUpdateOneWithoutResponsesNestedInput
     response?: SurveyResponseUpdateOneRequiredWithoutQuestionResponsesNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionResponsesNestedInput
@@ -32845,6 +33069,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
@@ -32858,6 +33084,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
@@ -32865,6 +33093,8 @@ export namespace Prisma {
 
   export type SurveyResponseSummaryUpdateWithoutQuestionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32879,8 +33109,10 @@ export namespace Prisma {
   export type SurveyResponseSummaryUncheckedUpdateWithoutQuestionInput = {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32892,8 +33124,10 @@ export namespace Prisma {
   export type SurveyResponseSummaryUncheckedUpdateManyWithoutQuestionInput = {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32911,6 +33145,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     questionId: string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     responseId: string
     teamId: number
   }
@@ -32919,7 +33155,9 @@ export namespace Prisma {
     id?: string
     surveyId: string
     questionId: string
+    questionTitle?: string | null
     responseId: string
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -32936,6 +33174,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
     response?: SurveyResponseUpdateOneRequiredWithoutQuestionResponsesNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionResponsesNestedInput
@@ -32950,6 +33190,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     responseId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
   }
@@ -32963,12 +33205,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     responseId?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
   }
 
   export type SurveyResponseSummaryUpdateWithoutOptionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32984,7 +33230,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32997,7 +33245,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33015,6 +33265,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     questionId: string
+    questionTitle?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     optionId?: string | null
     teamId: number
   }
@@ -33023,7 +33275,9 @@ export namespace Prisma {
     id?: string
     surveyId: string
     questionId: string
+    questionTitle?: string | null
     optionId?: string | null
+    textValue?: string | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -33040,6 +33294,8 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     option?: QuestionOptionUpdateOneWithoutResponsesNestedInput
     question?: QuestionUpdateOneRequiredWithoutResponsesNestedInput
     team?: TeamUpdateOneRequiredWithoutQuestionResponsesNestedInput
@@ -33054,6 +33310,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     teamId?: IntFieldUpdateOperationsInput | number
   }
@@ -33067,12 +33325,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     teamId?: IntFieldUpdateOperationsInput | number
   }
 
   export type SurveyResponseSummaryUpdateWithoutResponseInput = {
     id?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33088,7 +33350,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33101,7 +33365,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     surveyId?: StringFieldUpdateOperationsInput | string
     questionId?: StringFieldUpdateOperationsInput | string
+    questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
+    textValue?: NullableStringFieldUpdateOperationsInput | string | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
