@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react"
 import { SurveyWidget, SurveyResponse } from "@/components/survey-render/survey-widget"
-import { QuestionFormat, SurveyStatus } from "@/lib/generated/prisma"
+import { QuestionFormat, Survey, SurveyStatus } from "@/lib/generated/prisma"
 
 interface SurveyData {
     id: string
@@ -211,7 +211,7 @@ export const PublicSurveyClient: React.FC<PublicSurveyClientProps> = ({
                 </Card>
 
                 <SurveyWidget
-                    surveyData={survey}
+                    surveyData={survey as any}
                     key={survey.id}
                     onComplete={handleSurveySubmit}
                     onError={setError}

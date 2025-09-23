@@ -60,10 +60,10 @@ export async function POST(request: NextRequest) {
         }
 
         if (!token) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 { error: 'Missing token in Authorization header, X-Team-Token header, or body' },
                 { status: 401 }
-            );
+            ));
         }
 
         const body = await request.json();
@@ -78,10 +78,10 @@ export async function POST(request: NextRequest) {
         });
 
         if (!team) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 { error: 'Invalid token' },
                 { status: 401 }
-            );
+            ));
         }
 
         // Validate survey exists and belongs to the team
@@ -102,10 +102,10 @@ export async function POST(request: NextRequest) {
         });
 
         if (!survey) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 { error: 'Survey not found or not published' },
                 { status: 404 }
-            );
+            ));
         }
 
         // Validate question IDs exist in the survey
@@ -117,10 +117,10 @@ export async function POST(request: NextRequest) {
         );
 
         if (invalidQuestionIds.length > 0) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 { error: `Invalid question IDs: ${invalidQuestionIds.join(', ')}` },
                 { status: 400 }
-            );
+            ));
         }
 
         // Check for required questions that weren't answered
@@ -131,12 +131,12 @@ export async function POST(request: NextRequest) {
         );
 
         if (missingRequiredQuestions.length > 0) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 {
                     error: `Missing required questions: ${missingRequiredQuestions.map(q => q.id).join(', ')}`
                 },
                 { status: 400 }
-            );
+            ));
         }
 
         // If multiple responses are not allowed, check if user already submitted
@@ -266,7 +266,7 @@ export async function POST(request: NextRequest) {
             return { surveyResponse, questionResponses, surveyResponseSummaries };
         });
 
-        return NextResponse.json({
+        return addCorsHeaders(NextResponse.json({
             success: true,
             message: 'Survey response submitted successfully',
             data: {
@@ -275,13 +275,13 @@ export async function POST(request: NextRequest) {
                 teamName: team.name,
                 submittedAt: result.surveyResponse.submittedAt
             }
-        });
+        }));
 
     } catch (error) {
         console.error('Error submitting survey response:', error);
 
         if (error instanceof z.ZodError) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 {
                     error: 'Validation error',
                     details: error.errors.map(e => ({
@@ -290,13 +290,13 @@ export async function POST(request: NextRequest) {
                     }))
                 },
                 { status: 400 }
-            );
+            ));
         }
 
-        return NextResponse.json(
+        return addCorsHeaders(NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }
-        );
+        ));
     }
 }
 
@@ -340,10 +340,10 @@ export async function GET(request: NextRequest) {
         }
 
         if (!token) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 { error: 'Missing token in Authorization header, X-Team-Token header' },
                 { status: 401 }
-            );
+            ));
         }
 
         // Validate query parameters
@@ -356,10 +356,10 @@ export async function GET(request: NextRequest) {
         });
 
         if (!team) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 { error: 'Invalid token' },
                 { status: 401 }
-            );
+            ));
         }
 
         // Get survey with questions and options
@@ -401,16 +401,16 @@ export async function GET(request: NextRequest) {
         });
 
         if (!survey) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 { error: 'Survey not found or not published' },
                 { status: 404 }
-            );
+            ));
         }
 
         const { advancedCSS, styleMode, createdAt, updatedAt, surveyId: surveyIdField, teamId: teamIdField, id, ...styleFields } = survey.style as SurveyStyle;
         const style = survey.style?.styleMode === StyleMode.advanced ? { advancedCSS, styleMode, id } : { ...styleFields, styleMode, id };
 
-        return NextResponse.json({
+        return addCorsHeaders(NextResponse.json({
             success: true,
             data: {
                 survey: {
@@ -422,13 +422,13 @@ export async function GET(request: NextRequest) {
                     questions: survey.questions
                 }
             }
-        });
+        }));
 
     } catch (error) {
         console.error('Error fetching survey:', error);
 
         if (error instanceof z.ZodError) {
-            return NextResponse.json(
+            return addCorsHeaders(NextResponse.json(
                 {
                     error: 'Validation error',
                     details: error.errors.map(e => ({
@@ -437,12 +437,12 @@ export async function GET(request: NextRequest) {
                     }))
                 },
                 { status: 400 }
-            );
+            ));
         }
 
-        return NextResponse.json(
+        return addCorsHeaders(NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }
-        );
+        ));
     }
 }
