@@ -3,6 +3,83 @@ import { prisma } from '@/prisma/lib/prisma';
 import { z } from 'zod';
 import { QuestionFormat, ResponseStatus, StyleMode, SurveyStyle } from '@/lib/generated/prisma';
 
+// Simple in-memory cache for survey data (in production, consider Redis)
+const surveyCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 1 * 60 * 1000; // 1 minutes cache TTL
+
+// Helper function to get cached survey or fetch from database
+const getCachedSurvey = async (surveyId: string, token: string) => {
+    const cacheKey = `${surveyId}-${token}`;
+    const cached = surveyCache.get(cacheKey);
+
+    // Check if cache is valid
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        return cached.data;
+    }
+
+    // Fetch from database
+    const survey = await prisma.survey.findFirst({
+        where: {
+            id: surveyId,
+            team: {
+                token: token
+            },
+            status: 'published'
+        },
+        select: {
+            id: true,
+            team: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            },
+            style: {
+                select: {
+                    styleMode: true,
+                    advancedCSS: true,
+                    basicCSS: true
+                }
+            },
+            questions: {
+                orderBy: { order: 'asc' },
+                select: {
+                    id: true,
+                    title: true,
+                    description: true,
+                    format: true,
+                    required: true,
+                    order: true,
+                    yesLabel: true,
+                    noLabel: true,
+                    options: {
+                        orderBy: { order: 'asc' },
+                        select: {
+                            id: true,
+                            text: true,
+                            order: true,
+                            isOther: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Cache the result if found
+    if (survey) {
+        surveyCache.set(cacheKey, { data: survey, timestamp: Date.now() });
+    }
+
+    return survey;
+};
+
+// Helper function to invalidate cache for a specific survey
+const invalidateSurveyCache = (surveyId: string) => {
+    const keysToDelete = Array.from(surveyCache.keys()).filter(key => key.startsWith(`${surveyId}-`));
+    keysToDelete.forEach(key => surveyCache.delete(key));
+};
+
 function addCorsHeaders(response: NextResponse) {
     response.headers.set('Access-Control-Allow-Origin', '*');
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -364,6 +441,10 @@ export async function POST(request: NextRequest) {
             timeout: 14000 // Increased timeout to 14 seconds
         });
 
+        // PERFORMANCE OPTIMIZATION: Invalidate cache after successful submission
+        // This ensures fresh data on subsequent requests
+        invalidateSurveyCache(validatedData.surveyId);
+
         return addCorsHeaders(NextResponse.json({
             success: true,
             message: 'Survey response submitted successfully',
@@ -413,10 +494,6 @@ const getSurveySchema = z.object({
 
 export async function GET(request: NextRequest) {
     try {
-        // Get surveyId from query string
-        const { searchParams } = new URL(request.url);
-        const surveyId = searchParams.get('surveyId');
-
         // Try to get token from Authorization header (Bearer <token>)
         let token: string | null = null;
         const authHeader = request.headers.get('authorization');
@@ -432,11 +509,6 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // Fallback: try query param (for backward compatibility)
-        if (!token) {
-            token = searchParams.get('token');
-        }
-
         if (!token) {
             return addCorsHeaders(NextResponse.json(
                 { error: 'Missing token in Authorization header, X-Team-Token header' },
@@ -444,70 +516,40 @@ export async function GET(request: NextRequest) {
             ));
         }
 
+        // Get surveyId from query string
+        const { searchParams } = new URL(request.url);
+        const surveyId = searchParams.get('surveyId');
+
         // Validate query parameters
         const validatedData = getSurveySchema.parse({ token, surveyId });
 
-        // Validate team token and get team ID
-        const team = await prisma.team.findUnique({
-            where: { token: validatedData.token },
-            select: { id: true, name: true }
-        });
+        // PERFORMANCE OPTIMIZATION: Use cached survey data with single query
+        // This reduces database round trips and provides caching benefits
+        const survey = await getCachedSurvey(validatedData.surveyId, validatedData.token);
 
-        if (!team) {
-            return addCorsHeaders(NextResponse.json(
-                { error: 'Invalid token' },
-                { status: 401 }
-            ));
-        }
-
-        // Get survey with questions and options
-        const survey = await prisma.survey.findFirst({
-            where: {
-                id: validatedData.surveyId,
-                teamId: team.id,
-                status: 'published' // Only return published surveys
-            },
-            select: {
-                id: true,
-                style: {
-                    select: {
-                        styleMode: true,
-                        advancedCSS: true,
-                        basicCSS: true
-                    }
-                },
-                questions: {
-                    orderBy: { order: 'asc' },
-                    select: {
-                        id: true,
-                        title: true,
-                        description: true,
-                        format: true,
-                        required: true,
-                        order: true,
-                        yesLabel: true,
-                        noLabel: true,
-                        options: {
-                            orderBy: { order: 'asc' },
-                            select: {
-                                id: true,
-                                text: true,
-                                order: true,
-                                isOther: true
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
+        // If survey not found, it could be due to invalid token or survey not found
         if (!survey) {
+            // PERFORMANCE OPTIMIZATION: Only validate token if survey not found
+            // This avoids unnecessary database calls when survey exists
+            const teamExists = await prisma.team.findUnique({
+                where: { token: validatedData.token },
+                select: { id: true }
+            });
+
+            if (!teamExists) {
+                return addCorsHeaders(NextResponse.json(
+                    { error: 'Invalid token' },
+                    { status: 401 }
+                ));
+            }
+
             return addCorsHeaders(NextResponse.json(
                 { error: 'Survey not found or not published' },
                 { status: 404 }
             ));
         }
 
+        // PERFORMANCE OPTIMIZATION: Process style data more efficiently
         const { advancedCSS, styleMode, basicCSS } = survey.style as SurveyStyle;
         const customCSS = styleMode === StyleMode.advanced ? advancedCSS : basicCSS;
 

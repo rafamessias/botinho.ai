@@ -194,7 +194,7 @@ export const config = {
         '/auth/google/callback',
         '/reset-password/confirm',
         '/sign-up/otp',
-        // Match any other routes that should go through middleware
+        // Match any other routes that should go through middleware (exclude API routes)
         '/((?!api|_next/static|_next/image|favicon.ico|.*\\.).*)',
     ],
 };

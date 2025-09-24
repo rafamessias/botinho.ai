@@ -29,7 +29,7 @@ class o {
         // Ensure container is visible
         this.container.style.display = 'block';
         if (!this.survey && this.token && this.surveyId) await this.fetchSurveyData();
-        if (!this.survey) return;
+        if (!this.survey) this.error = 'Survey not found';
         this.initializeScopeClass();
         this.addCustomStyles();
         this.render();
@@ -93,7 +93,7 @@ class o {
         const head = '<div class="sv"><button class="x" data-a="close">×</button>';
         const load = this.loading ? `<div class="cc"><div class="ca">${this.getSLoadingIcon()}</div>` : '';
         const err = this.error ? `<div class="cc"><div class="ca"><p style="color:#ef4444;text-align:center;font-weight:600;">Error loading survey</p></div><p style="text-align:center;margin-top:1rem;">${this.error}</p></div>` : '';
-        const na = !this.survey && !this.loading === !0 ? `<div class="cc"><div class="ca"><p style="text-align:center;font-weight:600;">Survey not available</p></div></div>` : '';
+        const na = !this.survey && !this.loading === !0 && !this.error ? `<div class="cc"><div class="ca"><p style="text-align:center;font-weight:600;">Survey not available</p></div></div>` : '';
         const body = qs.length ? (this.done || last ? this.renderDone() : `<div class="qtc">${this.renderQuestionCard(qs[this.i])}</div>`)
             + `<div class="ft">${this.done ? '' : `<div class="nav">${this.i > 0 ? `<button class="btn btno" data-a="prev">${this.getPrevArrowIcon()}</button>` : ''}<button class="btn btnp" data-a="next" ${this.s ? 'disabled' : ''}>${this.s ? this.getSpinnerIcon() : (this.i === qs.length - 1 ? this.getSendIcon() : this.getNextArrowIcon())}</button></div>`}</div>` : '';
         this.container.innerHTML = head + load + err + na + body + '<div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>';
