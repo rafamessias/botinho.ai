@@ -868,26 +868,11 @@ export const getQuestionResponses = async (surveyId: string) => {
                 }
             },
             include: {
-                question: {
-                    select: {
-                        id: true,
-                        title: true,
-                        format: true,
-                        order: true
-                    }
-                },
-                option: {
-                    select: {
-                        id: true,
-                        text: true
-                    }
-                },
                 response: {
                     select: {
-                        id: true,
-                        submittedAt: true,
-                        status: true,
-                        createdAt: true
+                        userIp: true,
+                        userId: true,
+                        extraInfo: true,
                     }
                 }
             },

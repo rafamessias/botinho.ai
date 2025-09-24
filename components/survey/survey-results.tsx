@@ -42,6 +42,22 @@ import {
 import { RawDataTable } from "./raw-data-table"
 import { SurveyData, Question } from "./types"
 import { getSurveyResponseSummary, getQuestionResponses } from "@/components/server-actions/survey"
+import { SurveyResponseSummary } from "@/lib/generated/prisma"
+
+// Extended type for SurveyResponseSummary with relations
+type SurveyResponseSummaryWithRelations = SurveyResponseSummary & {
+    option?: {
+        id: string
+        text: string
+        order: number
+    } | null
+    question?: {
+        id: string
+        title: string
+        format: any
+        order: number
+    } | null
+}
 
 interface SurveyResultsProps {
     surveys: SurveyData[]
@@ -52,7 +68,8 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     const [viewMode, setViewMode] = React.useState<"charts" | "table">("charts")
     const [isExporting, setIsExporting] = React.useState(false)
     const [open, setOpen] = React.useState(false)
-    const [surveyData, setSurveyData] = React.useState<SurveyData | null>(null)
+    const [surveyData, setSurveyData] = React.useState<SurveyResponseSummaryWithRelations[] | null>(null)
+    const [processedQuestions, setProcessedQuestions] = React.useState<Question[]>([])
     const [rawData, setRawData] = React.useState<any[]>([])
     const [loading, setLoading] = React.useState(false)
 
@@ -72,8 +89,11 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
                 // Fetch summary data for charts
                 const summaryResult = await getSurveyResponseSummary(selectedSurveyId)
                 if (summaryResult.success && summaryResult.summaryData) {
-                    const transformedData = transformSummaryDataToSurveyData(selectedSurvey!, summaryResult.summaryData)
-                    setSurveyData(transformedData)
+                    setSurveyData(summaryResult.summaryData)
+
+                    // Process the summary data into questions format
+                    const questions = processSummaryDataToQuestions(summaryResult.summaryData)
+                    setProcessedQuestions(questions)
                 }
 
                 // Fetch raw data for table view
@@ -91,78 +111,70 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
         fetchSurveyData()
     }, [selectedSurveyId, selectedSurvey])
 
-    // Transform database summary data to SurveyData format
-    const transformSummaryDataToSurveyData = (survey: SurveyData, summaryData: any[]): SurveyData => {
-        // Group summary data by question
+
+    // Process SurveyResponseSummary data into Question format for charts
+    const processSummaryDataToQuestions = (summaryData: SurveyResponseSummaryWithRelations[]): Question[] => {
         const questionsMap = new Map<string, Question>()
 
         summaryData.forEach(item => {
             const questionId = item.questionId
-            const questionTitle = item.questionTitle
+            const questionTitle = item.questionTitle || ''
+            const questionFormat = item.questionFormat || ''
 
             if (!questionsMap.has(questionId)) {
                 questionsMap.set(questionId, {
                     id: questionId,
                     text: questionTitle,
-                    type: 'multiple-choice', // Default type, will be determined by data content
+                    type: questionFormat,
                     options: []
                 })
             }
 
             const question = questionsMap.get(questionId)!
 
-            // Each summary record represents aggregated count for a specific answer
-            // Use responseCount directly as it's already the sum of responses for this answer
-            if (item.optionId) {
+            // Process different types of responses
+            if (questionFormat === 'SINGLE_CHOICE' || questionFormat === 'MULTIPLE_CHOICE') {
                 // Choice-based question (SINGLE_CHOICE, MULTIPLE_CHOICE)
-                const optionText = `Option ${item.optionId}` // Since we don't have option text in summary
                 question.options?.push({
-                    value: item.optionId,
-                    label: optionText,
-                    count: item.responseCount // This is already the aggregated count
+                    value: item.optionId || '',
+                    label: item.isOther ? "Other" : (item.textValue || ''),
+                    count: item.responseCount
                 })
-                question.type = 'multiple-choice'
-            } else if (item.textValue) {
-                // Text-based question (LONG_TEXT, STATEMENT)
-                // For text responses, we can show the actual text values
-                if (!question.responses) question.responses = []
-                question.responses.push(item.textValue)
-                question.type = 'long-text'
-            } else if (item.numberValue !== null) {
+            } else if (questionFormat === 'LONG_TEXT' || questionFormat === 'STATEMENT') {
+                //not being used
+            } else if (questionFormat === 'STAR_RATING') {
                 // Numeric question (STAR_RATING)
                 question.options?.push({
-                    value: item.numberValue.toString(),
+                    value: item.numberValue?.toString() || '0',
                     label: `${item.numberValue} star${item.numberValue !== 1 ? 's' : ''}`,
-                    count: item.responseCount // This is already the aggregated count
+                    count: item.responseCount
                 })
-                question.type = 'star-rating'
-            } else if (item.booleanValue !== null) {
+
+            } else if (questionFormat === 'YES_NO') {
                 // Boolean question (YES_NO)
                 question.options?.push({
-                    value: item.booleanValue.toString(),
-                    label: item.booleanValue ? 'Yes' : 'No',
-                    count: item.responseCount // This is already the aggregated count
+                    value: item.booleanValue?.toString() || '0',
+                    label: item.textValue || '',
+                    count: item.responseCount
                 })
-                question.type = 'yes-no'
+
             }
         })
 
-        return {
-            ...survey,
-            questions: Array.from(questionsMap.values())
-        }
+        const result = Array.from(questionsMap.values())
+        return result
     }
 
     const handleExport = async (format: "csv" | "excel") => {
-        if (!surveyData) return
+        if (!surveyData || !selectedSurvey) return
 
         setIsExporting(true)
 
         try {
             if (format === "csv") {
-                await exportToCSV(surveyData)
+                await exportToCSV()
             } else {
-                await exportToExcel(surveyData)
+                await exportToExcel()
             }
         } catch (error) {
             console.error("Export failed:", error)
@@ -171,96 +183,77 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
         }
     }
 
-    const exportToCSV = async (survey: SurveyData) => {
-        const csvContent = generateCSVContent(survey)
+    const exportToCSV = async () => {
+        const csvContent = generateCSVContent()
         const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
         const link = document.createElement("a")
         const url = URL.createObjectURL(blob)
         link.setAttribute("href", url)
-        link.setAttribute("download", `${survey.title.replace(/\s+/g, "_")}_results.csv`)
+        link.setAttribute("download", `${selectedSurvey!.title.replace(/\s+/g, "_")}_results.csv`)
         link.style.visibility = "hidden"
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
     }
 
-    const exportToExcel = async (survey: SurveyData) => {
+    const exportToExcel = async () => {
         // For Excel export, we'll create a CSV that can be opened in Excel
         // In a real implementation, you'd use a library like xlsx
-        const csvContent = generateCSVContent(survey)
+        const csvContent = generateCSVContent()
         const blob = new Blob([csvContent], { type: "application/vnd.ms-excel;charset=utf-8;" })
         const link = document.createElement("a")
         const url = URL.createObjectURL(blob)
         link.setAttribute("href", url)
-        link.setAttribute("download", `${survey.title.replace(/\s+/g, "_")}_results.xls`)
+        link.setAttribute("download", `${selectedSurvey!.title.replace(/\s+/g, "_")}_results.xls`)
         link.style.visibility = "hidden"
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
     }
 
-    const generateCSVContent = (survey: SurveyData): string => {
-        let csvContent = `Survey: ${survey.title}\n`
-        csvContent += `Total Responses: ${survey.totalResponses}\n`
-        csvContent += `Date: ${survey.createdAt}\n\n`
+    const generateCSVContent = (): string => {
+        let csvContent = `Survey: ${selectedSurvey!.title}\n`
+        csvContent += `Total Responses: ${selectedSurvey!.totalResponses}\n`
+        csvContent += `Date: ${selectedSurvey!.createdAt}\n\n`
 
         if (rawData && rawData.length > 0) {
-            // Raw data format using actual database responses
-            const responseGroups = new Map<string, any[]>()
-
-            // Group responses by response ID
-            rawData.forEach(response => {
-                const responseId = response.response.id
-                if (!responseGroups.has(responseId)) {
-                    responseGroups.set(responseId, [])
-                }
-                responseGroups.get(responseId)!.push(response)
-            })
-
-            // Get unique questions for headers
-            const questions = Array.from(new Set(rawData.map(r => r.question.id)))
-                .map(id => rawData.find(r => r.question.id === id)!.question)
-                .sort((a, b) => a.order - b.order)
-
-            const headers = ["Response #", "Submitted At", "Status", ...questions.map(q => `"${q.title}"`)]
+            // Raw data format using QuestionResponse data with specified fields
+            const headers = [
+                "userIP",
+                "userId",
+                "extraInfo",
+                "questionId",
+                "questionTitle",
+                "questionFormat",
+                "optionId",
+                "isOther",
+                "textValue",
+                "numberValue",
+                "booleanValue",
+                "createdAt"
+            ]
             csvContent += headers.join(",") + "\n"
 
-            let responseIndex = 1
-            responseGroups.forEach((responses, responseId) => {
-                const firstResponse = responses[0]
-                const submittedAt = firstResponse.response.submittedAt
-                    ? new Date(firstResponse.response.submittedAt).toLocaleDateString()
-                    : "Not submitted"
-                const status = firstResponse.response.status
-
+            rawData.forEach(response => {
                 const row = [
-                    responseIndex,
-                    submittedAt,
-                    status,
-                    ...questions.map(question => {
-                        const answer = responses.find(r => r.question.id === question.id)
-                        if (!answer) return `"No response"`
-
-                        let answerText = ""
-                        if (answer.textValue) {
-                            answerText = answer.textValue
-                        } else if (answer.option) {
-                            answerText = answer.option.text
-                        } else if (answer.numberValue !== null) {
-                            answerText = answer.numberValue.toString()
-                        } else if (answer.booleanValue !== null) {
-                            answerText = answer.booleanValue ? "Yes" : "No"
-                        }
-
-                        return `"${answerText.replace(/"/g, '""')}"`
-                    })
+                    response.response?.userIp || "",
+                    response.response?.userId || "",
+                    response.response?.extraInfo || "",
+                    response.questionId || "",
+                    response.question?.title || "",
+                    response.question?.format || "",
+                    response.optionId || "",
+                    response.isOther || false,
+                    response.textValue || "",
+                    response.numberValue || "",
+                    response.booleanValue || "",
+                    response.response?.createdAt ? new Date(response.response.createdAt).toISOString() : ""
                 ]
-                csvContent += row.join(",") + "\n"
-                responseIndex++
+                csvContent += row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(",") + "\n"
             })
         } else {
-            // Fallback to aggregated format if no raw data
-            survey.questions.forEach((question, index) => {
+            // Use processed questions from summary data
+            processedQuestions.forEach((question, index) => {
                 csvContent += `Question ${index + 1}: ${question.text}\n`
 
                 if (question.type === "text" || question.type === "long-text") {
@@ -284,16 +277,21 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     }
 
     const renderQuestionChart = (question: Question) => {
-        if (question.type === "text" || !question.options) return null
+        if (question.type === "text" || question.type === "long-text" || !question.options || question.options.length === 0) {
+            return null
+        }
 
         const data = question.options
             .map(option => ({
                 answer: option.label,
                 count: option.count,
-                percentage: question.options ?
+                percentage: question.options && question.options.length > 0 ?
                     ((option.count / question.options.reduce((sum, opt) => sum + opt.count, 0)) * 100).toFixed(1) : 0
             }))
             .sort((a, b) => b.count - a.count) // Sort by count in descending order
+
+        // Don't render chart if no data
+        if (data.length === 0) return null
 
         const chartConfig = {
             count: {
@@ -304,10 +302,8 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
             },
         } satisfies ChartConfig
 
-        console.log(data)
-
-        const totalResponses = question.options.reduce((sum, option) => sum + option.count, 0)
-        const topAnswer = data.reduce((prev, current) => (prev.count > current.count) ? prev : current)
+        const totalResponses = question.options?.reduce((sum, option) => sum + option.count, 0) || 0
+        const topAnswer = data.length > 0 ? data.reduce((prev, current) => (prev.count > current.count) ? prev : current) : { answer: 'No responses', count: 0, percentage: '0' }
 
         return (
             <Card key={question.id} className="shadow-none">
@@ -543,7 +539,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
                                 </div>
                                 <div>
                                     <span className="font-medium">Questions:</span>
-                                    <span className="ml-2 text-muted-foreground">{surveyData.questions.length}</span>
+                                    <span className="ml-2 text-muted-foreground">{processedQuestions.length}</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -551,9 +547,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
 
                     {/* Questions Results */}
                     {viewMode === "charts" ? (
-                        surveyData.questions.map((question) => renderQuestionChart(question))
+                        processedQuestions.map((question) => renderQuestionChart(question))
                     ) : (
-                        <RawDataTable survey={surveyData} rawData={rawData} />
+                        <RawDataTable survey={selectedSurvey} rawData={rawData} />
                     )}
                 </div>
             )}
