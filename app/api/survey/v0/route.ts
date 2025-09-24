@@ -25,6 +25,11 @@ const surveyAnswerSchema = z.object({
         textValue: z.string().optional(),
         numberValue: z.number().optional(),
         booleanValue: z.boolean().optional(),
+        answers: z.array(z.object({
+            optionId: z.string().optional(),
+            textValue: z.string().optional(),
+            isOther: z.boolean().optional().default(false)
+        })).optional(),
         isOther: z.boolean().optional().default(false)
     })).min(1, 'At least one response is required')
 });
@@ -35,21 +40,20 @@ const processQuestionResponses = (responses: any[], surveyResponseId: string, te
 
     for (const response of responses) {
         if (response.questionFormat === 'MULTIPLE_CHOICE') {
-            const optionIds = response.optionId?.split(',') ?? [];
-            const textValues = response.textValue?.split('_;_') ?? [];
+            const multiAnswers = response.answers;
 
-            for (let i = 0; i < optionIds.length; i++) {
+            for (let i = 0; i < multiAnswers.length; i++) {
                 questionResponseData.push({
                     questionId: response.questionId,
                     questionFormat: response.questionFormat,
                     questionTitle: response.questionTitle,
                     responseId: surveyResponseId,
                     teamId: teamId,
-                    optionId: optionIds[i],
-                    textValue: textValues[i],
+                    optionId: multiAnswers[i].optionId,
+                    textValue: multiAnswers[i].textValue,
                     numberValue: response.numberValue,
                     booleanValue: response.booleanValue,
-                    isOther: response.isOther
+                    isOther: multiAnswers[i].isOther
                 });
             }
         } else {
@@ -59,11 +63,11 @@ const processQuestionResponses = (responses: any[], surveyResponseId: string, te
                 questionTitle: response.questionTitle,
                 responseId: surveyResponseId,
                 teamId: teamId,
-                optionId: response.optionId,
+                optionId: response.optionId || null,
                 textValue: response.textValue,
                 numberValue: response.numberValue,
                 booleanValue: response.booleanValue,
-                isOther: response.isOther
+                isOther: response.isOther || false
             });
         }
     }
@@ -77,18 +81,17 @@ const processSummaryUpdates = (responses: any[], surveyResponseId: string, teamI
 
     for (const response of responses) {
         if (response.questionFormat === 'MULTIPLE_CHOICE') {
-            const optionIds = response.optionId?.split(',') ?? [];
-            const textValues = response.textValue?.split('_;_') ?? [];
+            const multiAnswers = response.answers;
 
-            for (let i = 0; i < optionIds.length; i++) {
+            for (let i = 0; i < multiAnswers.length; i++) {
                 summaryUpdates.push({
                     surveyId,
                     questionId: response.questionId,
-                    optionId: optionIds[i],
-                    textValue: textValues[i],
+                    optionId: multiAnswers[i].optionId,
+                    textValue: multiAnswers[i].textValue,
                     questionTitle: response.questionTitle,
                     questionFormat: response.questionFormat,
-                    isOther: response.isOther ?? false,
+                    isOther: multiAnswers[i].isOther ?? false,
                     numberValue: response.numberValue ?? null,
                     booleanValue: response.booleanValue ?? null,
                     teamId,
@@ -303,7 +306,7 @@ export async function POST(request: NextRequest) {
                     return tx.$executeRaw`
                         INSERT INTO survey_response_summaries 
                         (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
-                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}, ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
                         ON CONFLICT ("surveyId", "questionId", "numberValue", "teamId") 
                         DO UPDATE SET 
                             "responseCount" = survey_response_summaries."responseCount" + 1,
@@ -314,7 +317,7 @@ export async function POST(request: NextRequest) {
                     return tx.$executeRaw`
                         INSERT INTO survey_response_summaries 
                         (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
-                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}, ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
                         ON CONFLICT ("surveyId", "questionId", "booleanValue", "teamId") 
                         DO UPDATE SET 
                             "responseCount" = survey_response_summaries."responseCount" + 1,
@@ -325,7 +328,7 @@ export async function POST(request: NextRequest) {
                     return tx.$executeRaw`
                         INSERT INTO survey_response_summaries 
                         (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
-                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}, ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
                         ON CONFLICT ("surveyId", "questionId", "optionId", "teamId") 
                         DO UPDATE SET 
                             "responseCount" = survey_response_summaries."responseCount" + 1,
