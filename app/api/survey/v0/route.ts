@@ -8,8 +8,8 @@ const surveyCache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_TTL = 1 * 60 * 1000; // 1 minutes cache TTL
 
 // Helper function to get cached survey or fetch from database
-const getCachedSurvey = async (surveyId: string, token: string) => {
-    const cacheKey = `${surveyId}-${token}`;
+const getCachedSurvey = async (surveyId: string, teamId: number) => {
+    const cacheKey = `${surveyId}-${teamId}`;
     const cached = surveyCache.get(cacheKey);
 
     // Check if cache is valid
@@ -21,19 +21,11 @@ const getCachedSurvey = async (surveyId: string, token: string) => {
     const survey = await prisma.survey.findFirst({
         where: {
             id: surveyId,
-            team: {
-                token: token
-            },
+            teamId: teamId,
             status: 'published'
         },
         select: {
             id: true,
-            team: {
-                select: {
-                    id: true,
-                    name: true
-                }
-            },
             style: {
                 select: {
                     styleMode: true,
@@ -111,167 +103,185 @@ const surveyAnswerSchema = z.object({
     })).min(1, 'At least one response is required')
 });
 
-// Helper function to process question responses data
-const processQuestionResponses = (responses: any[], surveyResponseId: string, teamId: number) => {
+// Optimized helper function that processes both question responses and summary updates in a single pass
+const processResponseData = (responses: any[], surveyResponseId: string, teamId: number, surveyId: string) => {
     const questionResponseData: any[] = [];
-
-    for (const response of responses) {
-        if (response.questionFormat === 'MULTIPLE_CHOICE') {
-            const multiAnswers = response.answers;
-
-            for (let i = 0; i < multiAnswers.length; i++) {
-                questionResponseData.push({
-                    questionId: response.questionId,
-                    questionFormat: response.questionFormat,
-                    questionTitle: response.questionTitle,
-                    responseId: surveyResponseId,
-                    teamId: teamId,
-                    optionId: multiAnswers[i].optionId,
-                    textValue: multiAnswers[i].textValue,
-                    numberValue: response.numberValue,
-                    booleanValue: response.booleanValue,
-                    isOther: multiAnswers[i].isOther
-                });
-            }
-        } else {
-            questionResponseData.push({
-                questionId: response.questionId,
-                questionFormat: response.questionFormat,
-                questionTitle: response.questionTitle,
-                responseId: surveyResponseId,
-                teamId: teamId,
-                optionId: response.optionId || null,
-                textValue: response.textValue,
-                numberValue: response.numberValue,
-                booleanValue: response.booleanValue,
-                isOther: response.isOther || false
-            });
-        }
-    }
-
-    return questionResponseData;
-};
-
-// Helper function to process summary updates data
-const processSummaryUpdates = (responses: any[], surveyResponseId: string, teamId: number, surveyId: string) => {
     const summaryUpdates: any[] = [];
 
+    // Single loop to process both arrays
     for (const response of responses) {
-        if (response.questionFormat === 'MULTIPLE_CHOICE') {
-            const multiAnswers = response.answers;
+        const baseData = {
+            questionId: response.questionId,
+            questionFormat: response.questionFormat,
+            questionTitle: response.questionTitle,
+            responseId: surveyResponseId,
+            teamId: teamId,
+            isOther: response.isOther || false
+        };
 
-            for (let i = 0; i < multiAnswers.length; i++) {
+        if (response.questionFormat === 'MULTIPLE_CHOICE' && response.answers) {
+            // Process multiple choice answers
+            for (const answer of response.answers) {
+                const questionResponse = {
+                    ...baseData,
+                    optionId: answer.optionId,
+                    textValue: answer.textValue,
+                    numberValue: response.numberValue,
+                    booleanValue: response.booleanValue,
+                    isOther: answer.isOther
+                };
+                questionResponseData.push(questionResponse);
+
+                // Add to summary updates
                 summaryUpdates.push({
                     surveyId,
                     questionId: response.questionId,
-                    optionId: multiAnswers[i].optionId,
-                    textValue: multiAnswers[i].textValue,
+                    optionId: answer.optionId,
+                    textValue: answer.textValue,
                     questionTitle: response.questionTitle,
                     questionFormat: response.questionFormat,
-                    isOther: multiAnswers[i].isOther ?? false,
+                    isOther: answer.isOther ?? false,
                     numberValue: response.numberValue ?? null,
                     booleanValue: response.booleanValue ?? null,
                     teamId,
                     responseId: surveyResponseId
                 });
             }
-        } else if (response.questionFormat === 'STAR_RATING') {
-            summaryUpdates.push({
-                surveyId,
-                questionId: response.questionId,
-                optionId: null,
-                textValue: response.textValue ?? null,
-                questionTitle: response.questionTitle,
-                questionFormat: response.questionFormat,
-                isOther: response.isOther ?? false,
-                numberValue: response.numberValue ?? null,
-                booleanValue: null,
-                teamId,
-                responseId: surveyResponseId
-            });
-        } else if (response.questionFormat === 'YES_NO') {
-            summaryUpdates.push({
-                surveyId,
-                questionId: response.questionId,
-                optionId: null,
-                textValue: response.textValue ?? null,
-                questionTitle: response.questionTitle,
-                questionFormat: response.questionFormat,
-                isOther: response.isOther ?? false,
-                numberValue: null,
-                booleanValue: response.booleanValue ?? null,
-                teamId,
-                responseId: surveyResponseId
-            });
-        } else if (response.questionFormat === 'SINGLE_CHOICE') {
-            summaryUpdates.push({
-                surveyId,
-                questionId: response.questionId,
+        } else {
+            // Process single response
+            const questionResponse = {
+                ...baseData,
                 optionId: response.optionId || null,
-                textValue: response.textValue ?? null,
-                questionTitle: response.questionTitle,
-                questionFormat: response.questionFormat,
-                isOther: response.isOther ?? false,
-                numberValue: response.numberValue ?? null,
-                booleanValue: response.booleanValue ?? null,
-                teamId,
-                responseId: surveyResponseId
-            });
+                textValue: response.textValue,
+                numberValue: response.numberValue,
+                booleanValue: response.booleanValue
+            };
+            questionResponseData.push(questionResponse);
+
+            // Add to summary updates based on question format
+            if (response.questionFormat === 'STAR_RATING') {
+                summaryUpdates.push({
+                    surveyId,
+                    questionId: response.questionId,
+                    optionId: null,
+                    textValue: response.textValue ?? null,
+                    questionTitle: response.questionTitle,
+                    questionFormat: response.questionFormat,
+                    isOther: response.isOther ?? false,
+                    numberValue: response.numberValue ?? null,
+                    booleanValue: null,
+                    teamId,
+                    responseId: surveyResponseId
+                });
+            } else if (response.questionFormat === 'YES_NO') {
+                summaryUpdates.push({
+                    surveyId,
+                    questionId: response.questionId,
+                    optionId: null,
+                    textValue: response.textValue ?? null,
+                    questionTitle: response.questionTitle,
+                    questionFormat: response.questionFormat,
+                    isOther: response.isOther ?? false,
+                    numberValue: null,
+                    booleanValue: response.booleanValue ?? null,
+                    teamId,
+                    responseId: surveyResponseId
+                });
+            } else if (response.questionFormat === 'SINGLE_CHOICE') {
+                summaryUpdates.push({
+                    surveyId,
+                    questionId: response.questionId,
+                    optionId: response.optionId || null,
+                    textValue: response.textValue ?? null,
+                    questionTitle: response.questionTitle,
+                    questionFormat: response.questionFormat,
+                    isOther: response.isOther ?? false,
+                    numberValue: response.numberValue ?? null,
+                    booleanValue: response.booleanValue ?? null,
+                    teamId,
+                    responseId: surveyResponseId
+                });
+            }
         }
     }
 
-    return summaryUpdates;
+    return { questionResponseData, summaryUpdates };
+};
+
+// Optimized summary update function using individual operations for safety
+const executeBatchSummaryUpdates = async (tx: any, summaryUpdates: any[]) => {
+    if (summaryUpdates.length === 0) return;
+
+    // Execute summary updates in parallel but individually for safety
+    const summaryPromises = summaryUpdates.map(async (summary) => {
+        if (summary.numberValue !== null) {
+            // STAR_RATING - use numberValue unique key
+            return tx.$executeRaw`
+                INSERT INTO survey_response_summaries 
+                (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
+                VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                ON CONFLICT ("surveyId", "questionId", "numberValue", "teamId") 
+                DO UPDATE SET 
+                    "responseCount" = survey_response_summaries."responseCount" + 1,
+                    "lastUpdated" = NOW()
+            `;
+        } else if (summary.booleanValue !== null) {
+            // YES_NO - use booleanValue unique key
+            return tx.$executeRaw`
+                INSERT INTO survey_response_summaries 
+                (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
+                VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                ON CONFLICT ("surveyId", "questionId", "booleanValue", "teamId") 
+                DO UPDATE SET 
+                    "responseCount" = survey_response_summaries."responseCount" + 1,
+                    "lastUpdated" = NOW()
+            `;
+        } else {
+            // SINGLE_CHOICE, MULTIPLE_CHOICE - use optionId unique key
+            return tx.$executeRaw`
+                INSERT INTO survey_response_summaries 
+                (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
+                VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                ON CONFLICT ("surveyId", "questionId", "optionId", "teamId") 
+                DO UPDATE SET 
+                    "responseCount" = survey_response_summaries."responseCount" + 1,
+                    "lastUpdated" = NOW()
+            `;
+        }
+    });
+
+    // Execute all summary updates in parallel
+    await Promise.all(summaryPromises);
 };
 
 export async function OPTIONS(request: NextRequest) {
     return addCorsHeaders(NextResponse.json({}));
 }
 
+
+async function validateToken(request: NextRequest): Promise<{ id: number } | null> {
+    let token: string | null = null;
+    const authHeader = request.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7).trim();
+    }
+
+    if (!token) return null;
+
+    const team = await prisma.team.findUnique({
+        where: { token },
+        select: { id: true }
+    });
+
+    if (!team) return null;
+
+    return team;
+}
+
 export async function POST(request: NextRequest) {
     try {
-
-        // Extract token from Authorization header (Bearer <token>), fallback to X-Team-Token header, fallback to body.teamToken
-        let token: string | null = null;
-        const authHeader = request.headers.get('authorization');
-        if (authHeader && authHeader.startsWith('Bearer ')) {
-            token = authHeader.substring(7).trim();
-        }
-
-        // Fallback: try X-Team-Token header
-        if (!token) {
-            const xTeamToken = request.headers.get('x-team-token');
-            if (xTeamToken) {
-                token = xTeamToken.trim();
-            }
-        }
-
-        // Fallback: try teamToken in body (for backward compatibility)
-        if (!token) {
-            // We need to parse the body to get teamToken, so parse it here and reuse below
-            const body = await request.json();
-            token = body.teamToken;
-            // Re-assign body for later use
-            request.json = async () => body;
-        }
-
-        if (!token) {
-            return addCorsHeaders(NextResponse.json(
-                { error: 'Missing token in Authorization header, X-Team-Token header, or body' },
-                { status: 401 }
-            ));
-        }
-
-        const body = await request.json();
-
-        // Validate request body
-        const validatedData = surveyAnswerSchema.parse(body);
-
-        // Validate team token and get team ID
-        const team = await prisma.team.findUnique({
-            where: { token: token },
-            select: { id: true, name: true }
-        });
-
+        // Early token validation
+        const team = await validateToken(request);
         if (!team) {
             return addCorsHeaders(NextResponse.json(
                 { error: 'Invalid token' },
@@ -279,19 +289,27 @@ export async function POST(request: NextRequest) {
             ));
         }
 
-        // Validate survey exists and belongs to the team
+        // Parse and validate request body
+        const body = await request.json();
+        const validatedData = surveyAnswerSchema.parse(body);
+
+        // Single optimized query to get survey with validation data
         const survey = await prisma.survey.findFirst({
             where: {
                 id: validatedData.surveyId,
                 teamId: team.id,
-                status: 'published' // Only allow submissions to published surveys
+                status: 'published'
             },
             select: {
                 id: true,
                 name: true,
                 allowMultipleResponses: true,
                 questions: {
-                    select: { id: true, required: true, format: true }
+                    select: {
+                        id: true,
+                        required: true,
+                        format: true
+                    }
                 }
             }
         });
@@ -303,13 +321,14 @@ export async function POST(request: NextRequest) {
             ));
         }
 
-        // Validate question IDs exist in the survey
-        const surveyQuestionIds = survey.questions.map(q => q.id);
-        const responseQuestionIds = validatedData.responses.map(r => r.questionId);
+        // Optimized validation in single pass
+        const surveyQuestionIds = new Set(survey.questions.map(q => q.id));
+        const responseQuestionIds = new Set(validatedData.responses.map(r => r.questionId));
 
-        const invalidQuestionIds = responseQuestionIds.filter(
-            questionId => !surveyQuestionIds.includes(questionId)
-        );
+        // Check for invalid question IDs
+        const invalidQuestionIds = validatedData.responses
+            .filter(r => !surveyQuestionIds.has(r.questionId))
+            .map(r => r.questionId);
 
         if (invalidQuestionIds.length > 0) {
             return addCorsHeaders(NextResponse.json(
@@ -318,29 +337,27 @@ export async function POST(request: NextRequest) {
             ));
         }
 
-        // Check for required questions that weren't answered
-        const requiredQuestions = survey.questions.filter(q => q.required);
-        const answeredQuestionIds = new Set(responseQuestionIds);
-        const missingRequiredQuestions = requiredQuestions.filter(
-            q => !answeredQuestionIds.has(q.id)
-        );
+        // Check for missing required questions
+        const requiredQuestionIds = new Set(survey.questions.filter(q => q.required).map(q => q.id));
+        const missingRequiredQuestions = Array.from(requiredQuestionIds)
+            .filter(id => !responseQuestionIds.has(id));
 
         if (missingRequiredQuestions.length > 0) {
             return addCorsHeaders(NextResponse.json(
-                {
-                    error: `Missing required questions: ${missingRequiredQuestions.map(q => q.id).join(', ')}`
-                },
+                { error: `Missing required questions: ${missingRequiredQuestions.join(', ')}` },
                 { status: 400 }
             ));
         }
 
-        // If multiple responses are not allowed, check if user already submitted
-        if (!survey.allowMultipleResponses) {
-            // Note: In a real implementation, you might want to track by IP, user agent, or some other identifier
-            // For now, we'll allow multiple submissions but this could be enhanced
-        }
+        // Process response data in single pass
+        const { questionResponseData, summaryUpdates } = processResponseData(
+            validatedData.responses,
+            '', // Will be set in transaction
+            team.id,
+            validatedData.surveyId
+        );
 
-        // Create survey response and question responses in a transaction
+        // Optimized transaction with batch operations
         const result = await prisma.$transaction(async (tx) => {
             // Create survey response
             const surveyResponse = await tx.surveyResponse.create({
@@ -355,12 +372,9 @@ export async function POST(request: NextRequest) {
                 }
             });
 
-            // Process question responses data for batch creation
-            const questionResponseData = processQuestionResponses(
-                validatedData.responses,
-                surveyResponse.id,
-                team.id
-            );
+            // Update response IDs in the data
+            questionResponseData.forEach(item => item.responseId = surveyResponse.id);
+            summaryUpdates.forEach(item => item.responseId = surveyResponse.id);
 
             // Batch create all question responses
             const questionResponses = await tx.questionResponse.createMany({
@@ -368,69 +382,20 @@ export async function POST(request: NextRequest) {
                 skipDuplicates: true
             });
 
-            // Process summary updates data
-            const summaryUpdates = processSummaryUpdates(
-                validatedData.responses,
-                surveyResponse.id,
-                team.id,
-                validatedData.surveyId
-            );
+            // Execute batch summary updates
+            await executeBatchSummaryUpdates(tx, summaryUpdates);
 
-            // Batch update summaries using raw SQL for better performance
-            const summaryPromises = summaryUpdates.map(async (summary) => {
-                if (summary.numberValue !== null) {
-                    // STAR_RATING - use numberValue unique key
-                    return tx.$executeRaw`
-                        INSERT INTO survey_response_summaries 
-                        (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
-                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
-                        ON CONFLICT ("surveyId", "questionId", "numberValue", "teamId") 
-                        DO UPDATE SET 
-                            "responseCount" = survey_response_summaries."responseCount" + 1,
-                            "lastUpdated" = NOW()
-                    `;
-                } else if (summary.booleanValue !== null) {
-                    // YES_NO - use booleanValue unique key
-                    return tx.$executeRaw`
-                        INSERT INTO survey_response_summaries 
-                        (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
-                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
-                        ON CONFLICT ("surveyId", "questionId", "booleanValue", "teamId") 
-                        DO UPDATE SET 
-                            "responseCount" = survey_response_summaries."responseCount" + 1,
-                            "lastUpdated" = NOW()
-                    `;
-                } else {
-                    // SINGLE_CHOICE, MULTIPLE_CHOICE - use optionId unique key
-                    return tx.$executeRaw`
-                        INSERT INTO survey_response_summaries 
-                        (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
-                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}::"QuestionFormat", ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
-                        ON CONFLICT ("surveyId", "questionId", "optionId", "teamId") 
-                        DO UPDATE SET 
-                            "responseCount" = survey_response_summaries."responseCount" + 1,
-                            "lastUpdated" = NOW()
-                    `;
-                }
-            });
-
-            // Execute all summary updates in parallel
-            await Promise.all(summaryPromises);
-
-            // Update team response count
-            await tx.team.update({
-                where: { id: team.id },
-                data: {
-                    totalResponses: { increment: 1 }
-                }
-            });
-
-            await tx.survey.update({
-                where: { id: validatedData.surveyId },
-                data: {
-                    totalResponses: { increment: 1 }
-                }
-            });
+            // Batch update counters
+            await Promise.all([
+                tx.team.update({
+                    where: { id: team.id },
+                    data: { totalResponses: { increment: 1 } }
+                }),
+                tx.survey.update({
+                    where: { id: validatedData.surveyId },
+                    data: { totalResponses: { increment: 1 } }
+                })
+            ]);
 
             return {
                 surveyResponse,
@@ -438,22 +403,14 @@ export async function POST(request: NextRequest) {
                 summaryUpdates: { count: summaryUpdates.length }
             };
         }, {
-            timeout: 14000 // Increased timeout to 14 seconds
+            timeout: 10000 // Reduced timeout since we're more efficient
         });
 
-        // PERFORMANCE OPTIMIZATION: Invalidate cache after successful submission
-        // This ensures fresh data on subsequent requests
+        // Invalidate cache after successful submission
         invalidateSurveyCache(validatedData.surveyId);
 
         return addCorsHeaders(NextResponse.json({
             success: true,
-            message: 'Survey response submitted successfully',
-            data: {
-                responseId: result?.surveyResponse.id,
-                surveyId: validatedData.surveyId,
-                teamName: team.name,
-                submittedAt: result?.surveyResponse.submittedAt
-            }
         }));
 
     } catch (error) {
@@ -479,12 +436,6 @@ export async function POST(request: NextRequest) {
     }
 }
 
-// Validation schema for getting survey data
-const getSurveySchema = z.object({
-    token: z.string().min(1, 'Token is required'),
-    surveyId: z.string().min(1, 'Survey ID is required')
-});
-
 // Pseudocode plan:
 // 1. Parse the surveyId from the query string as before.
 // 2. Try to get the token from the Authorization header (Bearer <token>), fallback to X-Team-Token header, fallback to query param for backward compatibility.
@@ -494,55 +445,33 @@ const getSurveySchema = z.object({
 
 export async function GET(request: NextRequest) {
     try {
-        // Try to get token from Authorization header (Bearer <token>)
-        let token: string | null = null;
-        const authHeader = request.headers.get('authorization');
-        if (authHeader && authHeader.startsWith('Bearer ')) {
-            token = authHeader.substring(7).trim();
-        }
 
-        // Fallback: try X-Team-Token header
-        if (!token) {
-            const xTeamToken = request.headers.get('x-team-token');
-            if (xTeamToken) {
-                token = xTeamToken.trim();
-            }
-        }
+        const team = await validateToken(request);
 
-        if (!token) {
+        if (!team) {
             return addCorsHeaders(NextResponse.json(
-                { error: 'Missing token in Authorization header, X-Team-Token header' },
+                { error: 'Invalid token' },
                 { status: 401 }
             ));
         }
 
         // Get surveyId from query string
         const { searchParams } = new URL(request.url);
-        const surveyId = searchParams.get('surveyId');
+        const surveyId = searchParams.get('surveyId') || null;
 
-        // Validate query parameters
-        const validatedData = getSurveySchema.parse({ token, surveyId });
+        if (!surveyId) {
+            return addCorsHeaders(NextResponse.json(
+                { error: 'Survey ID is required' },
+                { status: 400 }
+            ));
+        }
 
         // PERFORMANCE OPTIMIZATION: Use cached survey data with single query
         // This reduces database round trips and provides caching benefits
-        const survey = await getCachedSurvey(validatedData.surveyId, validatedData.token);
+        const survey = await getCachedSurvey(surveyId, team.id);
 
         // If survey not found, it could be due to invalid token or survey not found
         if (!survey) {
-            // PERFORMANCE OPTIMIZATION: Only validate token if survey not found
-            // This avoids unnecessary database calls when survey exists
-            const teamExists = await prisma.team.findUnique({
-                where: { token: validatedData.token },
-                select: { id: true }
-            });
-
-            if (!teamExists) {
-                return addCorsHeaders(NextResponse.json(
-                    { error: 'Invalid token' },
-                    { status: 401 }
-                ));
-            }
-
             return addCorsHeaders(NextResponse.json(
                 { error: 'Survey not found or not published' },
                 { status: 404 }

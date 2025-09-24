@@ -11,7 +11,7 @@ class o {
         this.surveyId = p.surveyId || '';
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
-        this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
+        this.apiUrl = 'http://localhost:3002/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting
