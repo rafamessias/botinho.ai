@@ -18612,6 +18612,7 @@ export namespace Prisma {
     responseId: string | null
     optionId: string | null
     textValue: string | null
+    questionFormat: $Enums.QuestionFormat | null
     isOther: boolean | null
     numberValue: number | null
     booleanValue: boolean | null
@@ -18628,6 +18629,7 @@ export namespace Prisma {
     responseId: string | null
     optionId: string | null
     textValue: string | null
+    questionFormat: $Enums.QuestionFormat | null
     isOther: boolean | null
     numberValue: number | null
     booleanValue: boolean | null
@@ -18644,6 +18646,7 @@ export namespace Prisma {
     responseId: number
     optionId: number
     textValue: number
+    questionFormat: number
     isOther: number
     numberValue: number
     booleanValue: number
@@ -18674,6 +18677,7 @@ export namespace Prisma {
     responseId?: true
     optionId?: true
     textValue?: true
+    questionFormat?: true
     isOther?: true
     numberValue?: true
     booleanValue?: true
@@ -18690,6 +18694,7 @@ export namespace Prisma {
     responseId?: true
     optionId?: true
     textValue?: true
+    questionFormat?: true
     isOther?: true
     numberValue?: true
     booleanValue?: true
@@ -18706,6 +18711,7 @@ export namespace Prisma {
     responseId?: true
     optionId?: true
     textValue?: true
+    questionFormat?: true
     isOther?: true
     numberValue?: true
     booleanValue?: true
@@ -18809,6 +18815,7 @@ export namespace Prisma {
     responseId: string
     optionId: string | null
     textValue: string | null
+    questionFormat: $Enums.QuestionFormat | null
     isOther: boolean | null
     numberValue: number | null
     booleanValue: boolean | null
@@ -18844,6 +18851,7 @@ export namespace Prisma {
     responseId?: boolean
     optionId?: boolean
     textValue?: boolean
+    questionFormat?: boolean
     isOther?: boolean
     numberValue?: boolean
     booleanValue?: boolean
@@ -18865,6 +18873,7 @@ export namespace Prisma {
     responseId?: boolean
     optionId?: boolean
     textValue?: boolean
+    questionFormat?: boolean
     isOther?: boolean
     numberValue?: boolean
     booleanValue?: boolean
@@ -18886,6 +18895,7 @@ export namespace Prisma {
     responseId?: boolean
     optionId?: boolean
     textValue?: boolean
+    questionFormat?: boolean
     isOther?: boolean
     numberValue?: boolean
     booleanValue?: boolean
@@ -18907,6 +18917,7 @@ export namespace Prisma {
     responseId?: boolean
     optionId?: boolean
     textValue?: boolean
+    questionFormat?: boolean
     isOther?: boolean
     numberValue?: boolean
     booleanValue?: boolean
@@ -18915,7 +18926,7 @@ export namespace Prisma {
     lastUpdated?: boolean
   }
 
-  export type SurveyResponseSummaryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "surveyId" | "questionId" | "questionTitle" | "responseId" | "optionId" | "textValue" | "isOther" | "numberValue" | "booleanValue" | "teamId" | "responseCount" | "lastUpdated", ExtArgs["result"]["surveyResponseSummary"]>
+  export type SurveyResponseSummaryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "surveyId" | "questionId" | "questionTitle" | "responseId" | "optionId" | "textValue" | "questionFormat" | "isOther" | "numberValue" | "booleanValue" | "teamId" | "responseCount" | "lastUpdated", ExtArgs["result"]["surveyResponseSummary"]>
   export type SurveyResponseSummaryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
     question?: boolean | QuestionDefaultArgs<ExtArgs>
@@ -18955,6 +18966,7 @@ export namespace Prisma {
       responseId: string
       optionId: string | null
       textValue: string | null
+      questionFormat: $Enums.QuestionFormat | null
       isOther: boolean | null
       numberValue: number | null
       booleanValue: boolean | null
@@ -19396,6 +19408,7 @@ export namespace Prisma {
     readonly responseId: FieldRef<"SurveyResponseSummary", 'String'>
     readonly optionId: FieldRef<"SurveyResponseSummary", 'String'>
     readonly textValue: FieldRef<"SurveyResponseSummary", 'String'>
+    readonly questionFormat: FieldRef<"SurveyResponseSummary", 'QuestionFormat'>
     readonly isOther: FieldRef<"SurveyResponseSummary", 'Boolean'>
     readonly numberValue: FieldRef<"SurveyResponseSummary", 'Int'>
     readonly booleanValue: FieldRef<"SurveyResponseSummary", 'Boolean'>
@@ -21317,6 +21330,7 @@ export namespace Prisma {
     responseId: 'responseId',
     optionId: 'optionId',
     textValue: 'textValue',
+    questionFormat: 'questionFormat',
     isOther: 'isOther',
     numberValue: 'numberValue',
     booleanValue: 'booleanValue',
@@ -22767,6 +22781,7 @@ export namespace Prisma {
     responseId?: StringFilter<"SurveyResponseSummary"> | string
     optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     textValue?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    questionFormat?: EnumQuestionFormatNullableFilter<"SurveyResponseSummary"> | $Enums.QuestionFormat | null
     isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
     numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
     booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
@@ -22788,6 +22803,7 @@ export namespace Prisma {
     responseId?: SortOrder
     optionId?: SortOrderInput | SortOrder
     textValue?: SortOrderInput | SortOrder
+    questionFormat?: SortOrderInput | SortOrder
     isOther?: SortOrderInput | SortOrder
     numberValue?: SortOrderInput | SortOrder
     booleanValue?: SortOrderInput | SortOrder
@@ -22815,6 +22831,7 @@ export namespace Prisma {
     responseId?: StringFilter<"SurveyResponseSummary"> | string
     optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     textValue?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    questionFormat?: EnumQuestionFormatNullableFilter<"SurveyResponseSummary"> | $Enums.QuestionFormat | null
     isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
     numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
     booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
@@ -22836,6 +22853,7 @@ export namespace Prisma {
     responseId?: SortOrder
     optionId?: SortOrderInput | SortOrder
     textValue?: SortOrderInput | SortOrder
+    questionFormat?: SortOrderInput | SortOrder
     isOther?: SortOrderInput | SortOrder
     numberValue?: SortOrderInput | SortOrder
     booleanValue?: SortOrderInput | SortOrder
@@ -22860,6 +22878,7 @@ export namespace Prisma {
     responseId?: StringWithAggregatesFilter<"SurveyResponseSummary"> | string
     optionId?: StringNullableWithAggregatesFilter<"SurveyResponseSummary"> | string | null
     textValue?: StringNullableWithAggregatesFilter<"SurveyResponseSummary"> | string | null
+    questionFormat?: EnumQuestionFormatNullableWithAggregatesFilter<"SurveyResponseSummary"> | $Enums.QuestionFormat | null
     isOther?: BoolNullableWithAggregatesFilter<"SurveyResponseSummary"> | boolean | null
     numberValue?: IntNullableWithAggregatesFilter<"SurveyResponseSummary"> | number | null
     booleanValue?: BoolNullableWithAggregatesFilter<"SurveyResponseSummary"> | boolean | null
@@ -24299,6 +24318,7 @@ export namespace Prisma {
     id?: string
     questionTitle?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -24319,6 +24339,7 @@ export namespace Prisma {
     responseId: string
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -24331,6 +24352,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -24351,6 +24373,7 @@ export namespace Prisma {
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -24367,6 +24390,7 @@ export namespace Prisma {
     responseId: string
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -24379,6 +24403,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -24394,6 +24419,7 @@ export namespace Prisma {
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -25684,6 +25710,13 @@ export namespace Prisma {
     _max?: NestedEnumResponseStatusFilter<$PrismaModel>
   }
 
+  export type EnumQuestionFormatNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.QuestionFormat | EnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    in?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumQuestionFormatNullableFilter<$PrismaModel> | $Enums.QuestionFormat | null
+  }
+
   export type QuestionOptionNullableScalarRelationFilter = {
     is?: QuestionOptionWhereInput | null
     isNot?: QuestionOptionWhereInput | null
@@ -25723,6 +25756,7 @@ export namespace Prisma {
     responseId?: SortOrder
     optionId?: SortOrder
     textValue?: SortOrder
+    questionFormat?: SortOrder
     isOther?: SortOrder
     numberValue?: SortOrder
     booleanValue?: SortOrder
@@ -25745,6 +25779,7 @@ export namespace Prisma {
     responseId?: SortOrder
     optionId?: SortOrder
     textValue?: SortOrder
+    questionFormat?: SortOrder
     isOther?: SortOrder
     numberValue?: SortOrder
     booleanValue?: SortOrder
@@ -25761,6 +25796,7 @@ export namespace Prisma {
     responseId?: SortOrder
     optionId?: SortOrder
     textValue?: SortOrder
+    questionFormat?: SortOrder
     isOther?: SortOrder
     numberValue?: SortOrder
     booleanValue?: SortOrder
@@ -25775,11 +25811,14 @@ export namespace Prisma {
     responseCount?: SortOrder
   }
 
-  export type EnumQuestionFormatNullableFilter<$PrismaModel = never> = {
+  export type EnumQuestionFormatNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.QuestionFormat | EnumQuestionFormatFieldRefInput<$PrismaModel> | null
     in?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
     notIn?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumQuestionFormatNullableFilter<$PrismaModel> | $Enums.QuestionFormat | null
+    not?: NestedEnumQuestionFormatNullableWithAggregatesFilter<$PrismaModel> | $Enums.QuestionFormat | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumQuestionFormatNullableFilter<$PrismaModel>
+    _max?: NestedEnumQuestionFormatNullableFilter<$PrismaModel>
   }
 
   export type QuestionResponseCountOrderByAggregateInput = {
@@ -25838,16 +25877,6 @@ export namespace Prisma {
   export type QuestionResponseSumOrderByAggregateInput = {
     numberValue?: SortOrder
     teamId?: SortOrder
-  }
-
-  export type EnumQuestionFormatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.QuestionFormat | EnumQuestionFormatFieldRefInput<$PrismaModel> | null
-    in?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.QuestionFormat[] | ListEnumQuestionFormatFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumQuestionFormatNullableWithAggregatesFilter<$PrismaModel> | $Enums.QuestionFormat | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumQuestionFormatNullableFilter<$PrismaModel>
-    _max?: NestedEnumQuestionFormatNullableFilter<$PrismaModel>
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -27278,6 +27307,10 @@ export namespace Prisma {
     connect?: SurveyResponseWhereUniqueInput
   }
 
+  export type NullableEnumQuestionFormatFieldUpdateOperationsInput = {
+    set?: $Enums.QuestionFormat | null
+  }
+
   export type SurveyUpdateOneRequiredWithoutSurveyResponseSummaryNestedInput = {
     create?: XOR<SurveyCreateWithoutSurveyResponseSummaryInput, SurveyUncheckedCreateWithoutSurveyResponseSummaryInput>
     connectOrCreate?: SurveyCreateOrConnectWithoutSurveyResponseSummaryInput
@@ -27342,10 +27375,6 @@ export namespace Prisma {
     create?: XOR<TeamCreateWithoutQuestionResponsesInput, TeamUncheckedCreateWithoutQuestionResponsesInput>
     connectOrCreate?: TeamCreateOrConnectWithoutQuestionResponsesInput
     connect?: TeamWhereUniqueInput
-  }
-
-  export type NullableEnumQuestionFormatFieldUpdateOperationsInput = {
-    set?: $Enums.QuestionFormat | null
   }
 
   export type QuestionOptionUpdateOneWithoutResponsesNestedInput = {
@@ -28817,6 +28846,7 @@ export namespace Prisma {
     id?: string
     questionTitle?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -28836,6 +28866,7 @@ export namespace Prisma {
     responseId: string
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -29148,6 +29179,7 @@ export namespace Prisma {
     responseId?: StringFilter<"SurveyResponseSummary"> | string
     optionId?: StringNullableFilter<"SurveyResponseSummary"> | string | null
     textValue?: StringNullableFilter<"SurveyResponseSummary"> | string | null
+    questionFormat?: EnumQuestionFormatNullableFilter<"SurveyResponseSummary"> | $Enums.QuestionFormat | null
     isOther?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
     numberValue?: IntNullableFilter<"SurveyResponseSummary"> | number | null
     booleanValue?: BoolNullableFilter<"SurveyResponseSummary"> | boolean | null
@@ -29754,6 +29786,7 @@ export namespace Prisma {
     id?: string
     questionTitle?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -29772,6 +29805,7 @@ export namespace Prisma {
     responseId: string
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30339,6 +30373,7 @@ export namespace Prisma {
     id?: string
     questionTitle?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30357,6 +30392,7 @@ export namespace Prisma {
     responseId: string
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30663,6 +30699,7 @@ export namespace Prisma {
     id?: string
     questionTitle?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30681,6 +30718,7 @@ export namespace Prisma {
     questionTitle?: string | null
     responseId: string
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30971,6 +31009,7 @@ export namespace Prisma {
     id?: string
     questionTitle?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -30989,6 +31028,7 @@ export namespace Prisma {
     questionTitle?: string | null
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -32256,6 +32296,7 @@ export namespace Prisma {
     responseId: string
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -32685,6 +32726,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32704,6 +32746,7 @@ export namespace Prisma {
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32719,6 +32762,7 @@ export namespace Prisma {
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32825,6 +32869,7 @@ export namespace Prisma {
     responseId: string
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -32931,6 +32976,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32949,6 +32995,7 @@ export namespace Prisma {
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -32964,6 +33011,7 @@ export namespace Prisma {
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33004,6 +33052,7 @@ export namespace Prisma {
     responseId: string
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -33095,6 +33144,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33113,6 +33163,7 @@ export namespace Prisma {
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33128,6 +33179,7 @@ export namespace Prisma {
     responseId?: StringFieldUpdateOperationsInput | string
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33158,6 +33210,7 @@ export namespace Prisma {
     questionTitle?: string | null
     responseId: string
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -33215,6 +33268,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33233,6 +33287,7 @@ export namespace Prisma {
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33248,6 +33303,7 @@ export namespace Prisma {
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     responseId?: StringFieldUpdateOperationsInput | string
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33278,6 +33334,7 @@ export namespace Prisma {
     questionTitle?: string | null
     optionId?: string | null
     textValue?: string | null
+    questionFormat?: $Enums.QuestionFormat | null
     isOther?: boolean | null
     numberValue?: number | null
     booleanValue?: boolean | null
@@ -33335,6 +33392,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33353,6 +33411,7 @@ export namespace Prisma {
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33368,6 +33427,7 @@ export namespace Prisma {
     questionTitle?: NullableStringFieldUpdateOperationsInput | string | null
     optionId?: NullableStringFieldUpdateOperationsInput | string | null
     textValue?: NullableStringFieldUpdateOperationsInput | string | null
+    questionFormat?: NullableEnumQuestionFormatFieldUpdateOperationsInput | $Enums.QuestionFormat | null
     isOther?: NullableBoolFieldUpdateOperationsInput | boolean | null
     numberValue?: NullableIntFieldUpdateOperationsInput | number | null
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null

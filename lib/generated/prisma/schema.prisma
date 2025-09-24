@@ -263,19 +263,20 @@ model SurveyResponse {
 // This enables efficient reporting and avoids recalculating counts on every request.
 
 model SurveyResponseSummary {
-  id            String   @id @default(cuid())
-  surveyId      String
-  questionId    String
-  questionTitle String?
-  responseId    String
-  optionId      String? // null for open-ended or non-option questions
-  textValue     String?
-  isOther       Boolean? @default(false)
-  numberValue   Int?
-  booleanValue  Boolean?
-  teamId        Int
-  responseCount Int
-  lastUpdated   DateTime @updatedAt
+  id             String          @id @default(cuid())
+  surveyId       String
+  questionId     String
+  questionTitle  String?
+  responseId     String
+  optionId       String? // null for open-ended or non-option questions
+  textValue      String?
+  questionFormat QuestionFormat?
+  isOther        Boolean?        @default(false)
+  numberValue    Int?
+  booleanValue   Boolean?
+  teamId         Int
+  responseCount  Int
+  lastUpdated    DateTime        @updatedAt
 
   // Relations
   survey   Survey          @relation(fields: [surveyId], references: [id], onDelete: Cascade)

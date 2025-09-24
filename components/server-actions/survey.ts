@@ -806,3 +806,103 @@ export const getSurveyStats = async () => {
         }
     }
 }
+
+// Get published and archived surveys for results page
+export const getPublishedAndArchivedSurveys = async () => {
+    try {
+        const wrapper = getPrismaWrapper()
+
+        const surveys = await wrapper.findMany(prisma.survey, {
+            where: {
+                status: {
+                    in: [SurveyStatus.published, SurveyStatus.archived]
+                }
+            },
+            orderBy: { updatedAt: 'desc' }
+        })
+
+        return { success: true, surveys }
+    } catch (error) {
+        console.error("Error fetching published and archived surveys:", error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Failed to fetch surveys"
+        }
+    }
+}
+
+// Get survey response summary data for dashboard charts
+export const getSurveyResponseSummary = async (surveyId: string) => {
+    try {
+        const wrapper = getPrismaWrapper()
+
+        const summaryData = await wrapper.findMany(prisma.surveyResponseSummary, {
+            where: {
+                surveyId: surveyId
+            },
+            orderBy: [
+                { questionTitle: 'asc' },
+                { textValue: 'asc' }
+            ]
+        })
+
+        return { success: true, summaryData }
+    } catch (error) {
+        console.error("Error fetching survey response summary:", error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Failed to fetch survey response summary"
+        }
+    }
+}
+
+// Get question responses for raw data table
+export const getQuestionResponses = async (surveyId: string) => {
+    try {
+        const wrapper = getPrismaWrapper()
+
+        const responses = await wrapper.findMany(prisma.questionResponse, {
+            where: {
+                response: {
+                    surveyId: surveyId
+                }
+            },
+            include: {
+                question: {
+                    select: {
+                        id: true,
+                        title: true,
+                        format: true,
+                        order: true
+                    }
+                },
+                option: {
+                    select: {
+                        id: true,
+                        text: true
+                    }
+                },
+                response: {
+                    select: {
+                        id: true,
+                        submittedAt: true,
+                        status: true,
+                        createdAt: true
+                    }
+                }
+            },
+            orderBy: [
+                { response: { createdAt: 'desc' } },
+                { question: { order: 'asc' } }
+            ]
+        })
+
+        return { success: true, responses }
+    } catch (error) {
+        console.error("Error fetching question responses:", error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Failed to fetch question responses"
+        }
+    }
+}

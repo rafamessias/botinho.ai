@@ -29,6 +29,120 @@ const surveyAnswerSchema = z.object({
     })).min(1, 'At least one response is required')
 });
 
+// Helper function to process question responses data
+const processQuestionResponses = (responses: any[], surveyResponseId: string, teamId: number) => {
+    const questionResponseData: any[] = [];
+
+    for (const response of responses) {
+        if (response.questionFormat === 'MULTIPLE_CHOICE') {
+            const optionIds = response.optionId?.split(',') ?? [];
+            const textValues = response.textValue?.split('_;_') ?? [];
+
+            for (let i = 0; i < optionIds.length; i++) {
+                questionResponseData.push({
+                    questionId: response.questionId,
+                    questionFormat: response.questionFormat,
+                    questionTitle: response.questionTitle,
+                    responseId: surveyResponseId,
+                    teamId: teamId,
+                    optionId: optionIds[i],
+                    textValue: textValues[i],
+                    numberValue: response.numberValue,
+                    booleanValue: response.booleanValue,
+                    isOther: response.isOther
+                });
+            }
+        } else {
+            questionResponseData.push({
+                questionId: response.questionId,
+                questionFormat: response.questionFormat,
+                questionTitle: response.questionTitle,
+                responseId: surveyResponseId,
+                teamId: teamId,
+                optionId: response.optionId,
+                textValue: response.textValue,
+                numberValue: response.numberValue,
+                booleanValue: response.booleanValue,
+                isOther: response.isOther
+            });
+        }
+    }
+
+    return questionResponseData;
+};
+
+// Helper function to process summary updates data
+const processSummaryUpdates = (responses: any[], surveyResponseId: string, teamId: number, surveyId: string) => {
+    const summaryUpdates: any[] = [];
+
+    for (const response of responses) {
+        if (response.questionFormat === 'MULTIPLE_CHOICE') {
+            const optionIds = response.optionId?.split(',') ?? [];
+            const textValues = response.textValue?.split('_;_') ?? [];
+
+            for (let i = 0; i < optionIds.length; i++) {
+                summaryUpdates.push({
+                    surveyId,
+                    questionId: response.questionId,
+                    optionId: optionIds[i],
+                    textValue: textValues[i],
+                    questionTitle: response.questionTitle,
+                    questionFormat: response.questionFormat,
+                    isOther: response.isOther ?? false,
+                    numberValue: response.numberValue ?? null,
+                    booleanValue: response.booleanValue ?? null,
+                    teamId,
+                    responseId: surveyResponseId
+                });
+            }
+        } else if (response.questionFormat === 'STAR_RATING') {
+            summaryUpdates.push({
+                surveyId,
+                questionId: response.questionId,
+                optionId: null,
+                textValue: response.textValue ?? null,
+                questionTitle: response.questionTitle,
+                questionFormat: response.questionFormat,
+                isOther: response.isOther ?? false,
+                numberValue: response.numberValue ?? null,
+                booleanValue: null,
+                teamId,
+                responseId: surveyResponseId
+            });
+        } else if (response.questionFormat === 'YES_NO') {
+            summaryUpdates.push({
+                surveyId,
+                questionId: response.questionId,
+                optionId: null,
+                textValue: response.textValue ?? null,
+                questionTitle: response.questionTitle,
+                questionFormat: response.questionFormat,
+                isOther: response.isOther ?? false,
+                numberValue: null,
+                booleanValue: response.booleanValue ?? null,
+                teamId,
+                responseId: surveyResponseId
+            });
+        } else if (response.questionFormat === 'SINGLE_CHOICE') {
+            summaryUpdates.push({
+                surveyId,
+                questionId: response.questionId,
+                optionId: response.optionId || null,
+                textValue: response.textValue ?? null,
+                questionTitle: response.questionTitle,
+                questionFormat: response.questionFormat,
+                isOther: response.isOther ?? false,
+                numberValue: response.numberValue ?? null,
+                booleanValue: response.booleanValue ?? null,
+                teamId,
+                responseId: surveyResponseId
+            });
+        }
+    }
+
+    return summaryUpdates;
+};
+
 export async function OPTIONS(request: NextRequest) {
     return addCorsHeaders(NextResponse.json({}));
 }
@@ -161,161 +275,67 @@ export async function POST(request: NextRequest) {
                 }
             });
 
-            // Create question responses
-            const questionResponses: any[] = [];
-            const surveyResponseSummaries: any[] = [];
-            for (const response of validatedData.responses) {
-                // If the response is for a MULTIPLE_CHOICE question, split questionId and textValue and save each separately
-                if (response.questionFormat === 'MULTIPLE_CHOICE') {
-                    // Save a questionResponse for each selected value
-                    const optionIds = response.optionId?.split(',') ?? [];
-                    const textValues = response.textValue?.split('_;_') ?? [];
-                    for (let i = 0; i < optionIds.length; i++) {
-                        const questionResponse = await tx.questionResponse.create({
-                            data: {
-                                questionId: response.questionId,
-                                responseId: surveyResponse.id,
-                                teamId: team.id,
-                                optionId: optionIds[i],
-                                textValue: textValues[i],
-                                numberValue: response.numberValue,
-                                booleanValue: response.booleanValue,
-                                isOther: response.isOther
-                            }
-                        });
-                        questionResponses.push(questionResponse);
-                    }
+            // Process question responses data for batch creation
+            const questionResponseData = processQuestionResponses(
+                validatedData.responses,
+                surveyResponse.id,
+                team.id
+            );
+
+            // Batch create all question responses
+            const questionResponses = await tx.questionResponse.createMany({
+                data: questionResponseData,
+                skipDuplicates: true
+            });
+
+            // Process summary updates data
+            const summaryUpdates = processSummaryUpdates(
+                validatedData.responses,
+                surveyResponse.id,
+                team.id,
+                validatedData.surveyId
+            );
+
+            // Batch update summaries using raw SQL for better performance
+            const summaryPromises = summaryUpdates.map(async (summary) => {
+                if (summary.numberValue !== null) {
+                    // STAR_RATING - use numberValue unique key
+                    return tx.$executeRaw`
+                        INSERT INTO survey_response_summaries 
+                        (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
+                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}, ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                        ON CONFLICT ("surveyId", "questionId", "numberValue", "teamId") 
+                        DO UPDATE SET 
+                            "responseCount" = survey_response_summaries."responseCount" + 1,
+                            "lastUpdated" = NOW()
+                    `;
+                } else if (summary.booleanValue !== null) {
+                    // YES_NO - use booleanValue unique key
+                    return tx.$executeRaw`
+                        INSERT INTO survey_response_summaries 
+                        (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
+                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}, ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                        ON CONFLICT ("surveyId", "questionId", "booleanValue", "teamId") 
+                        DO UPDATE SET 
+                            "responseCount" = survey_response_summaries."responseCount" + 1,
+                            "lastUpdated" = NOW()
+                    `;
                 } else {
-                    // Default: save as single response
-                    const questionResponse = await tx.questionResponse.create({
-                        data: {
-                            questionId: response.questionId,
-                            responseId: surveyResponse.id,
-                            teamId: team.id,
-                            optionId: response.optionId,
-                            textValue: response.textValue,
-                            numberValue: response.numberValue,
-                            booleanValue: response.booleanValue,
-                            isOther: response.isOther
-                        }
-                    });
-                    questionResponses.push(questionResponse);
+                    // SINGLE_CHOICE, MULTIPLE_CHOICE - use optionId unique key
+                    return tx.$executeRaw`
+                        INSERT INTO survey_response_summaries 
+                        (id, "surveyId", "questionId", "optionId", "textValue", "questionTitle", "questionFormat", "isOther", "numberValue", "booleanValue", "teamId", "responseId", "responseCount", "lastUpdated")
+                        VALUES (gen_random_uuid(), ${summary.surveyId}, ${summary.questionId}, ${summary.optionId}, ${summary.textValue}, ${summary.questionTitle}, ${summary.questionFormat}, ${summary.isOther}, ${summary.numberValue}, ${summary.booleanValue}, ${summary.teamId}, ${summary.responseId}, 1, NOW())
+                        ON CONFLICT ("surveyId", "questionId", "optionId", "teamId") 
+                        DO UPDATE SET 
+                            "responseCount" = survey_response_summaries."responseCount" + 1,
+                            "lastUpdated" = NOW()
+                    `;
                 }
+            });
 
-                // For each question response, create or update SurveyResponseSummary
-                // - If optionId exists, summary is per (surveyId, questionId, optionId, teamId)
-                // - If optionId is null, summary is per (surveyId, questionId, null, teamId)
-                // - responseId is the surveyResponse.id just created
-
-                // Use a Set to avoid duplicate (questionId, optionId) in the same submission
-                console.log('validatedData.responses', validatedData.responses);
-                for (const response of validatedData.responses) {
-                    // Determine which unique key to use based on response type
-                    let whereClause: any;
-                    let summaryKey: string;
-
-                    if (response.questionFormat === 'STAR_RATING') {
-                        // Use numberValue unique key
-                        whereClause = {
-                            surveyId_questionId_numberValue_teamId: {
-                                surveyId: validatedData.surveyId,
-                                questionId: response.questionId,
-                                numberValue: response.numberValue,
-                                teamId: team.id
-                            }
-                        };
-                        summaryKey = `${validatedData.surveyId}|${response.questionId}|number:${response.numberValue}|${team.id}`;
-                    } else if (response.questionFormat === 'YES_NO') {
-                        // Use booleanValue unique key
-                        whereClause = {
-                            surveyId_questionId_booleanValue_teamId: {
-                                surveyId: validatedData.surveyId,
-                                questionId: response.questionId,
-                                booleanValue: response.booleanValue,
-                                teamId: team.id
-                            }
-                        };
-                        summaryKey = `${validatedData.surveyId}|${response.questionId}|boolean:${response.booleanValue}|${team.id}`;
-                    } else if (response.questionFormat === 'SINGLE_CHOICE') {
-                        // Use optionId unique key (default)
-                        whereClause = {
-                            surveyId_questionId_optionId_teamId: {
-                                surveyId: validatedData.surveyId,
-                                questionId: response.questionId,
-                                optionId: response.optionId || null,
-                                teamId: team.id
-                            }
-                        };
-                        summaryKey = `${validatedData.surveyId}|${response.questionId}|option:${response.optionId ?? 'null'}|${team.id}`;
-                    } else if (response.questionFormat === 'MULTIPLE_CHOICE') {
-                        // Use textValue unique key (default)
-                        const optionIds = response.optionId?.split(',') ?? [];
-                        const textValues = response.textValue?.split('_;_') ?? [];
-                        for (let i = 0; i < optionIds.length; i++) {
-                            whereClause = {
-                                surveyId_questionId_optionId_teamId: {
-                                    surveyId: validatedData.surveyId,
-                                    questionId: response.questionId,
-                                    optionId: optionIds[i],
-                                    teamId: team.id
-                                }
-                            };
-
-                            const summary = await tx.surveyResponseSummary.upsert({
-                                where: whereClause,
-                                update: {
-                                    responseCount: { increment: 1 },
-                                    lastUpdated: new Date()
-                                },
-                                create: {
-                                    surveyId: validatedData.surveyId,
-                                    questionId: response.questionId,
-                                    optionId: response.optionId || null,
-                                    isOther: response.isOther ?? false,
-                                    numberValue: response.numberValue ?? null,
-                                    booleanValue: response.booleanValue ?? null,
-                                    textValue: textValues[i] ?? null,
-                                    questionTitle: response.questionTitle ?? null,
-                                    teamId: team.id,
-                                    responseCount: 1,
-                                    lastUpdated: new Date(),
-                                    responseId: surveyResponse.id
-                                }
-                            });
-                            summaryKey = `${validatedData.surveyId}|${response.questionId}|option:${optionIds[i]}|${team.id}`;
-                            surveyResponseSummaries.push(summary);
-
-                        }
-                        return;
-                    } else {
-                        return;
-                    }
-
-                    const summary = await tx.surveyResponseSummary.upsert({
-                        where: whereClause,
-                        update: {
-                            responseCount: { increment: 1 },
-                            lastUpdated: new Date()
-                        },
-                        create: {
-                            surveyId: validatedData.surveyId,
-                            questionId: response.questionId,
-                            optionId: response.optionId || null,
-                            textValue: response.textValue ?? null,
-                            questionTitle: response.questionTitle ?? null,
-                            isOther: response.isOther ?? false,
-                            numberValue: response.numberValue ?? null,
-                            booleanValue: response.booleanValue ?? null,
-                            teamId: team.id,
-                            responseCount: 1,
-                            lastUpdated: new Date(),
-                            responseId: surveyResponse.id
-                        }
-                    });
-
-                    surveyResponseSummaries.push(summary);
-                }
-            }
+            // Execute all summary updates in parallel
+            await Promise.all(summaryPromises);
 
             // Update team response count
             await tx.team.update({
@@ -325,9 +345,20 @@ export async function POST(request: NextRequest) {
                 }
             });
 
-            return { surveyResponse, questionResponses, surveyResponseSummaries };
+            await tx.survey.update({
+                where: { id: validatedData.surveyId },
+                data: {
+                    totalResponses: { increment: 1 }
+                }
+            });
+
+            return {
+                surveyResponse,
+                questionResponses: { count: questionResponses.count },
+                summaryUpdates: { count: summaryUpdates.length }
+            };
         }, {
-            timeout: 10000 // 10 seconds timeout
+            timeout: 14000 // Increased timeout to 14 seconds
         });
 
         return addCorsHeaders(NextResponse.json({
@@ -475,16 +506,14 @@ export async function GET(request: NextRequest) {
         }
 
         const { advancedCSS, styleMode, basicCSS } = survey.style as SurveyStyle;
-        const style = styleMode === StyleMode.advanced ? { customCSS: advancedCSS } : { customCSS: basicCSS };
+        const customCSS = styleMode === StyleMode.advanced ? advancedCSS : basicCSS;
 
         return addCorsHeaders(NextResponse.json({
             success: true,
             data: {
-                survey: {
-                    id: survey.id,
-                    style: style,
-                    questions: survey.questions
-                }
+                id: survey.id,
+                style: customCSS,
+                questions: survey.questions
             }
         }));
 

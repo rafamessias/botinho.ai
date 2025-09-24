@@ -11,7 +11,7 @@ class o {
         this.surveyId = p.surveyId || '';
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
-        this.apiUrl = 'http://localhost:3000/api/survey/v0';
+        this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting
@@ -25,17 +25,17 @@ class o {
     async mount(id) {
         this.container = document.getElementById(id);
         if (!this.container) return;
+        this.injectCSS();
         // Ensure container is visible
         this.container.style.display = 'block';
         if (!this.survey && this.token && this.surveyId) await this.fetchSurveyData();
         if (!this.survey) return;
-        this.injectCSS();
         this.render();
         ['click', 'input'].forEach(t => this.container.addEventListener(t, e => this[`on${t[0].toUpperCase()}${t.slice(1)}`](e)));
     }
 
     async fetchSurveyData() {
-        //this.loading = !0; this.error = null; this.render();
+        this.loading = !0; this.render();
         try {
             const url = `${this.apiUrl}?surveyId=${encodeURIComponent(this.surveyId)}`;
             const res = await fetch(url, {
@@ -44,24 +44,26 @@ class o {
             });
             if (!res.ok) throw new Error((await res.json()).error || 'Failed to fetch survey data');
             const data = await res.json();
-            const sv = data?.data?.survey;
+            const sv = data?.data;
             if (data?.success && sv) {
                 this.survey = sv;
-                if (sv.customCSS) this.customCSS = sv.customCSS;
+                if (sv.style) this.customCSS = sv.style;
+                this.initializeScopeClass();
+                this.addCustomStyles();
             }
             else throw new Error('Invalid survey data received');
-
-            console.log('Survey loaded successfully:', data);
 
         } catch (e) { console.error('Error fetching survey data:', e); this.error = e.message || 'Failed to load survey'; }
         finally { this.loading = !1; this.render(); }
     }
 
     injectCSS() {
-        if (this.t) return;
-        const s = document.createElement('style');
-        s.textContent = `:root{--sv-primary-color:currentColor;--sv-secondary-bg:rgba(0,0,0,.1);--sv-secondary-border:rgba(0,0,0,.2);--sv-text-color:inherit}.sv{position:relative;display:flex;flex-direction:column;justify-content:space-between;background:transparent;color:inherit;margin:16px 0;padding:16px;min-width:300px;min-height:300px;font:inherit;overflow:hidden}.x{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;opacity:.7;cursor:pointer;font-size:24px;color:inherit;z-index:999}.x:hover{opacity:1}.body{padding:.5rem;margin-bottom:1rem;overflow:hidden;transition:opacity .3s ease}.qc{width:100%;height:100%;padding:0 4px}.qt{font-weight:600;margin-bottom:.5rem;font-size:18px}.qd{opacity:.8;margin-bottom:1rem;font-size:16px}.qs{margin-bottom:1rem;font-size:20px}.opts{margin-top:1.8rem;display:flex;flex-direction:column;align-items:flex-start}.req{color:#ef4444;font-size:1.2rem}.ft{padding:.5rem;display:flex;flex-direction:column}.nav{display:flex}.btn{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font:inherit;transition:all .2s ease}.btno{margin-right:.5rem;background:var(--sv-secondary-bg);border:1px solid var(--sv-secondary-border);color:var(--sv-text-color)}.btno:hover{background:rgba(0,0,0,.15);border-color:rgba(0,0,0,.3)}.btnp{border:0;background:var(--primary,var(--sv-primary-color));color:#fff}.btnp:hover{opacity:.9}.btn:disabled{opacity:.5;cursor:not-allowed}.spinner{animation:spin 1s linear infinite}.qtc{position:relative;overflow:hidden;min-height:200px;width:100%;height:auto}.qtc .qc{position:relative;width:100%;height:auto}.q-exit-right{animation:oR .3s ease-out forwards}.q-enter-right{animation:iR .4s ease-out forwards}.q-exit-left{animation:oL .3s ease-out forwards}.q-enter-left{animation:iL .4s ease-out forwards}.brand{margin-top:1rem;font-size:.75rem;opacity:.7}.brand a{color:inherit}.rad,.chk{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;cursor:pointer}.txt{width:100%;padding:.5rem;border:1px solid currentColor;border-radius:6px;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.stars{display:flex;justify-content:center;gap:.5rem}.star-btn{padding:.25rem;background:none;border:none;cursor:pointer;border-radius:50%;transition:all .2s ease;display:flex;align-items:center;justify-content:center;outline:0}.star-btn:hover{transform:scale(1.1)}.star-btn.star-sel{background-color:transparent}.star-svg{width:30px;height:30px;transition:all .2s ease}.star-btn:hover .star-svg{transform:scale(1.1)}.star-btn:not(.star-sel) .star-svg{opacity:.3}.ltxt{width:100%}.ta{width:100%;min-height:6rem;resize:none;border:1px solid currentColor;border-radius:6px;padding:.5rem;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.cc{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;min-height:250px;position:relative}.ca{margin-bottom:2rem;position:relative}.sc-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;position:relative;animation:scaleIn .6s cubic-bezier(.68,-.55,.265,1.55);box-shadow:0 8px 25px rgba(16,185,129,.3)}.sc-circle::before{content:'';position:absolute;width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);opacity:.3;animation:pulse 2s infinite}.sc-check{position:relative;width:24px;height:24px;transform:rotate(45deg);z-index:2}.cs{position:absolute;width:5px;height:25px;background-color:#fff;left:15px;top:-3px;border-radius:2px;animation:checkmarkStem .4s ease-in-out .3s both}.ck{position:absolute;width:15px;height:5px;background-color:#fff;left:4px;top:17px;border-radius:2px;animation:checkmarkKick .4s ease-in-out .5s both}@keyframes spin{to{transform:rotate(360deg)}}@keyframes oR{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-100%);opacity:0}}@keyframes iR{0%{transform:translateX(100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes oL{0%{transform:translateX(0);opacity:1}100%{transform:translateX(100%);opacity:0}}@keyframes iL{0%{transform:translateX(-100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes p{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(6px)}}@keyframes a{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}@keyframes scaleIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}@keyframes pulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.1);opacity:.1}}@keyframes checkmarkStem{0%{height:0}100%{height:25px}}@keyframes checkmarkKick{0%{width:0}100%{width:15px}}@media(max-width:400px){.sv{max-width:100%;margin:8px;padding:16px}.qt{font-size:16px}.star{font-size:20px}}`;
-        document.head.appendChild(s);
+        // Only inject the style if it doesn't already exist in the document
+        if (document.getElementById('opineeo-style')) return;
+        const styleElement = document.createElement('style');
+        styleElement.id = 'opineeo-style';
+        styleElement.textContent = `:root{--sv-primary-color:currentColor;--sv-secondary-bg:rgba(0,0,0,.1);--sv-secondary-border:rgba(0,0,0,.2);--sv-text-color:inherit}.sv{position:relative;display:flex;flex-direction:column;justify-content:space-between;background:transparent;color:inherit;margin:16px 0;padding:16px;min-width:300px;min-height:300px;font:inherit;overflow:hidden}.x{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;opacity:.7;cursor:pointer;font-size:24px;color:inherit;z-index:999}.x:hover{opacity:1}.body{padding:.5rem;margin-bottom:1rem;overflow:hidden;transition:opacity .3s ease}.qc{width:100%;height:100%;padding:0 4px}.qt{font-weight:600;margin-bottom:.5rem;font-size:18px}.qd{opacity:.8;margin-bottom:1rem;font-size:16px}.qs{margin-bottom:1rem;font-size:20px}.opts{margin-top:1.8rem;display:flex;flex-direction:column;align-items:flex-start}.req{color:#ef4444;font-size:1.2rem}.ft{padding:.5rem;display:flex;flex-direction:column}.nav{display:flex}.btn{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font:inherit;transition:all .2s ease}.btno{margin-right:.5rem;background:var(--sv-secondary-bg);border:1px solid var(--sv-secondary-border);color:var(--sv-text-color)}.btno:hover{background:rgba(0,0,0,.15);border-color:rgba(0,0,0,.3)}.btnp{border:0;background:var(--primary,var(--sv-primary-color));color:#fff}.btnp:hover{opacity:.9}.btn:disabled{opacity:.5;cursor:not-allowed}.spinner{animation:spin 1s linear infinite}.qtc{position:relative;overflow:hidden;min-height:200px;width:100%;height:auto}.qtc .qc{position:relative;width:100%;height:auto}.q-exit-right{animation:oR .3s ease-out forwards}.q-enter-right{animation:iR .4s ease-out forwards}.q-exit-left{animation:oL .3s ease-out forwards}.q-enter-left{animation:iL .4s ease-out forwards}.brand{margin-top:1rem;font-size:.75rem;opacity:.7}.brand a{color:inherit}.rad,.chk{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;cursor:pointer}.txt{width:100%;padding:.5rem;border:1px solid currentColor;border-radius:6px;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.stars{display:flex;justify-content:center;gap:.5rem}.star-btn{padding:.25rem;background:none;border:none;cursor:pointer;border-radius:50%;transition:all .2s ease;display:flex;align-items:center;justify-content:center;outline:0}.star-btn:hover{transform:scale(1.1)}.star-btn.star-sel{background-color:transparent}.star-svg{width:30px;height:30px;transition:all .2s ease}.star-btn:hover .star-svg{transform:scale(1.1)}.star-btn:not(.star-sel) .star-svg{opacity:.3}.ltxt{width:100%}.ta{width:100%;min-height:6rem;resize:none;border:1px solid currentColor;border-radius:6px;padding:.5rem;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.cc{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;min-height:250px;position:relative}.ca{margin-bottom:2rem;position:relative}.sc-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;position:relative;animation:scaleIn .6s cubic-bezier(.68,-.55,.265,1.55);box-shadow:0 8px 25px rgba(16,185,129,.3)}.sc-circle::before{content:'';position:absolute;width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);opacity:.3;animation:pulse 2s infinite}.sc-check{position:relative;width:24px;height:24px;transform:rotate(45deg);z-index:2}.cs{position:absolute;width:5px;height:25px;background-color:#fff;left:15px;top:-3px;border-radius:2px;animation:checkmarkStem .4s ease-in-out .3s both}.ck{position:absolute;width:15px;height:5px;background-color:#fff;left:4px;top:17px;border-radius:2px;animation:checkmarkKick .4s ease-in-out .5s both}@keyframes spin{to{transform:rotate(360deg)}}@keyframes oR{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-100%);opacity:0}}@keyframes iR{0%{transform:translateX(100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes oL{0%{transform:translateX(0);opacity:1}100%{transform:translateX(100%);opacity:0}}@keyframes iL{0%{transform:translateX(-100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes p{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(6px)}}@keyframes a{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}@keyframes scaleIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}@keyframes pulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.1);opacity:.1}}@keyframes checkmarkStem{0%{height:0}100%{height:25px}}@keyframes checkmarkKick{0%{width:0}100%{width:15px}}@media(max-width:400px){.sv{max-width:100%;margin:8px;padding:16px}.qt{font-size:16px}.star{font-size:20px}}`;
+        document.head.appendChild(styleElement);
         this.t = 1;
         this.initializeScopeClass();
         this.addCustomStyles();
@@ -89,11 +91,11 @@ class o {
     render() {
         if (!this.container) return;
         if (this.scopeClass) this.container.className = this.scopeClass;
-        const qs = this.survey.questions, last = this.i >= qs.length;
+        const qs = this.survey?.questions || [], last = this.i >= qs.length;
         const head = '<div class="sv"><button class="x" data-a="close">×</button>';
-        const load = this.loading ? `<div class="cc"><div class="ca">${this.getSpinnerIcon()}</div><p style="text-align:center;margin-top:1rem;">Loading survey...</p></div>` : '';
+        const load = this.loading ? `<div class="cc"><div class="ca">${this.getSLoadingIcon()}</div>` : '';
         const err = this.error ? `<div class="cc"><div class="ca"><p style="color:#ef4444;text-align:center;font-weight:600;">Error loading survey</p></div><p style="text-align:center;margin-top:1rem;">${this.error}</p></div>` : '';
-        const na = !this.survey ? `<div class="cc"><div class="ca"><p style="text-align:center;font-weight:600;">Survey not available</p></div></div>` : '';
+        const na = !this.survey && !this.loading === !0 ? `<div class="cc"><div class="ca"><p style="text-align:center;font-weight:600;">Survey not available</p></div></div>` : '';
         const body = qs.length ? (this.done || last ? this.renderDone() : `<div class="qtc">${this.renderQuestionCard(qs[this.i])}</div>`)
             + `<div class="ft">${this.done ? '' : `<div class="nav">${this.i > 0 ? `<button class="btn btno" data-a="prev">${this.getPrevArrowIcon()}</button>` : ''}<button class="btn btnp" data-a="next" ${this.s ? 'disabled' : ''}>${this.s ? this.getSpinnerIcon() : (this.i === qs.length - 1 ? this.getSendIcon() : this.getNextArrowIcon())}</button></div>`}</div>` : '';
         this.container.innerHTML = head + load + err + na + body + '<div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>';
@@ -105,6 +107,11 @@ class o {
     getNextArrowIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-foreground, rgba(255,255,255,.7))" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>'; }
     getSendIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-foreground, rgba(255,255,255,.7))" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>'; }
     getSpinnerIcon() { return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-foreground, rgba(255,255,255,.7))" stroke-width="2" class="spinner"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>'; }
+    getSLoadingIcon() {
+        return `<div style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; margin: 0 auto;">
+            <div style="width: 60px; height: 60px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary, #3b82f6); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        </div>`;
+    }
 
     renderQuestionCard(q) {
         return `<div class="body"><div class="qc"><h2 class="qt">${q.title}${q.required ? ' <span class="req">*</span>' : ''}</h2>${q.description && q.format !== 'STATEMENT' ? `<p class="qd">${q.description}</p>` : ''}<div class="opts">${this.renderQuestion(q)}</div></div></div>`;
@@ -191,8 +198,6 @@ class o {
                     if (!res.ok) console.error('Failed to submit survey response' + res.statusText);
                 } catch (e) { console.error('Submission error:', e); }
             }
-
-            console.log(payload);
             this.onComplete(payload);
             this.done = !0;
         } catch (e) { console.error('Submission error:', e); }
@@ -258,7 +263,7 @@ class o {
     }
 
     focusInput() {
-        if (!this.container) return;
+        if (!this.container || !this.survey || !this.survey.questions) return;
         const q = this.survey.questions[this.i];
         setTimeout(() => {
             if (!this.container) return;
@@ -302,6 +307,7 @@ class o {
             const q = this.survey.questions.find(x => x.id === k);
 
             let textValue = v.textValue || '';
+            let answers = null;
 
             // Add textValue for YES_NO, SINGLE_CHOICE, MULTIPLE_CHOICE
             if (q) {
@@ -312,9 +318,7 @@ class o {
                             : (q.noLabel || 'No');
                     }
                 } else if (q.format === 'MULTIPLE_CHOICE') {
-                    // Find the option label(s)
                     // For MULTIPLE_CHOICE, optionId is a comma-separated string of IDs
-                    // Handle MULTIPLE_CHOICE: optionId can be a comma-separated string of IDs
                     const selectedOptionIds = v.optionId
                         .split(',')
                         .map(id => id.trim())
@@ -328,8 +332,24 @@ class o {
                         .map(optionId => optionsArray.find(opt => opt.id === optionId))
                         .filter(opt => !!opt);
 
-                    // Join their text values, fallback to empty string if not found
-                    textValue = selectedOptions.map(opt => opt.text || '').join('_;_');
+                    // Create answers array with optionId, textValue, and isOther for each selected option
+                    answers = selectedOptions.map(opt => {
+                        const answer = {
+                            optionId: opt.id,
+                            textValue: opt.text || '',
+                            isOther: opt.isOther || false
+                        };
+
+                        // If this is an "Other" option and user provided text, use that as textValue
+                        if (opt.isOther && this.ot && this.ot[k]) {
+                            answer.textValue = this.ot[k];
+                        }
+
+                        return answer;
+                    });
+
+                    // Set textValue to empty for multiple choice since we're using answers array
+                    textValue = '';
 
                 } else if (q.format === 'SINGLE_CHOICE') {
                     // SINGLE_CHOICE: optionId is string
@@ -340,16 +360,23 @@ class o {
 
 
             // If isOther and has other text, override textValue
-            if (v.isOther && this.ot[k]) {
+            if (v.isOther && this.ot[k] && q.format !== 'MULTIPLE_CHOICE') {
                 textValue = this.ot[k];
             }
 
-            return {
+            const response = {
                 ...v,
                 textValue,
                 questionTitle: q?.title || '',
                 questionFormat: q?.format || ''
             };
+
+            // Add answers array for multiple choice questions
+            if (q?.format === 'MULTIPLE_CHOICE' && answers) {
+                response.answers = answers;
+            }
+
+            return response;
         });
 
         const payload = {
