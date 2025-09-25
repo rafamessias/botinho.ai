@@ -197,6 +197,10 @@ export function NavMain({
 }) {
   const pathname = usePathname()
   const t = useTranslations("NavMain")
+  const { hasPermission } = useUser()
+  const userHasPermission = hasPermission()
+
+  const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
 
   return (
     <SidebarGroup>
@@ -206,17 +210,19 @@ export function NavMain({
           <TeamSelection />
         </Suspense>
 
-        <SidebarMenu className="mt-2">
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip={t("quickCreate")}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear cursor-pointer"
-            >
-              <IconCirclePlusFilled />
-              <Link href="/survey/create" className="w-full">{t("quickCreate")}</Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        {canCreateSurvey && (
+          <SidebarMenu className="mt-2">
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip={t("quickCreate")}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear cursor-pointer"
+              >
+                <IconCirclePlusFilled />
+                <Link href="/survey/create" className="w-full">{t("quickCreate")}</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
         <SidebarMenu>
           {items.map((item) => {
             // Check if this item is selected based on the current pathname

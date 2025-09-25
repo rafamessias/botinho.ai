@@ -39,10 +39,11 @@ interface Style {
     advancedCSS?: string
 }
 
-interface StyleSectionProps {
+export interface StyleSectionProps {
     style: Style
     onChange: (style: Style) => void
     surveyData: CreateSurveyData
+    readonly?: boolean
 }
 
 // Minify CSS by removing comments, extra whitespace, and unnecessary characters
@@ -101,11 +102,13 @@ const DebouncedStyleInput = memo(({
     value,
     onChange,
     delay = 300,
+    readonly = false,
     ...props
 }: {
     value: string
     onChange: (value: string) => void
     delay?: number
+    readonly?: boolean
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
     const [localValue, setLocalValue] = useState(value)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -115,6 +118,8 @@ const DebouncedStyleInput = memo(({
     }, [value])
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        if (readonly) return
+
         const newValue = e.target.value
         setLocalValue(newValue)
 
@@ -125,7 +130,7 @@ const DebouncedStyleInput = memo(({
         timeoutRef.current = setTimeout(() => {
             onChange(newValue)
         }, delay)
-    }, [onChange, delay])
+    }, [onChange, delay, readonly])
 
     useEffect(() => {
         return () => {
@@ -135,10 +140,10 @@ const DebouncedStyleInput = memo(({
         }
     }, [])
 
-    return <Input {...props} value={localValue} onChange={handleChange} />
+    return <Input {...props} value={localValue} onChange={handleChange} readOnly={readonly} />
 })
 
-export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionProps) => {
+export const StyleSection = memo(({ style, onChange, surveyData, readonly = false }: StyleSectionProps) => {
     const t = useTranslations("CreateSurvey.style")
     const [isDark, setIsDark] = useState(false)
     const [displayCSS, setDisplayCSS] = useState('')
@@ -251,16 +256,19 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
 
     // Optimized change handlers
     const handleStyleModeChange = useCallback((styleMode: 'basic' | 'advanced') => {
+        if (readonly) return
         onChange({ ...style, styleMode })
-    }, [onChange, style])
+    }, [onChange, style, readonly])
 
     const handleAdvancedCSSChange = useCallback((advancedCSS: string) => {
+        if (readonly) return
         onChange({ ...style, advancedCSS })
-    }, [onChange, style])
+    }, [onChange, style, readonly])
 
     const handleBasicStyleChange = useCallback((field: string, value: string) => {
+        if (readonly) return
         onChange({ ...style, [field]: value })
-    }, [onChange, style])
+    }, [onChange, style, readonly])
 
     // Handle survey completion in preview
     const handlePreviewComplete = useCallback((responses: any) => {
@@ -291,6 +299,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                         <Select
                             value={style.styleMode}
                             onValueChange={handleStyleModeChange}
+                            disabled={readonly}
                         >
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder={t("styleMode.placeholder")} />
@@ -311,6 +320,8 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                     key={`css-editor-${style.styleMode}-${isInitialized}`}
                                     value={displayCSS}
                                     onChange={(value) => {
+                                        if (readonly) return
+
                                         // Mark as editing to prevent re-formatting
                                         isEditingRef.current = true
                                         // Update display state immediately for real-time editing
@@ -319,6 +330,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                         const minifiedCSS = minifyCSS(value)
                                         onChange({ ...style, advancedCSS: minifiedCSS })
                                     }}
+                                    editable={!readonly}
                                     placeholder={t("advancedCSS.placeholder")}
                                     height="300px"
                                     extensions={[css()]}
@@ -357,12 +369,14 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                         value={style.backgroundColor === "transparent" ? "#ffffff" : style.backgroundColor}
                                         onChange={(e) => onChange({ ...style, backgroundColor: e.target.value })}
                                         className="w-16 h-10 p-1 border rounded"
+                                        disabled={readonly}
                                     />
                                     <DebouncedStyleInput
                                         value={style.backgroundColor}
                                         onChange={(value) => handleBasicStyleChange('backgroundColor', value)}
                                         placeholder="transparent"
                                         className="flex-1"
+                                        readonly={readonly}
                                     />
                                 </div>
                             </div>
@@ -377,12 +391,14 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                         value={style.textColor}
                                         onChange={(e) => onChange({ ...style, textColor: e.target.value })}
                                         className="w-16 h-10 p-1 border rounded"
+                                        disabled={readonly}
                                     />
                                     <DebouncedStyleInput
                                         value={style.textColor}
                                         onChange={(value) => handleBasicStyleChange('textColor', value)}
                                         placeholder="#222222"
                                         className="flex-1"
+                                        readonly={readonly}
                                     />
                                 </div>
                             </div>
@@ -397,12 +413,14 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                         value={style.buttonBackgroundColor === "transparent" ? "#ffffff" : style.buttonBackgroundColor}
                                         onChange={(e) => onChange({ ...style, buttonBackgroundColor: e.target.value })}
                                         className="w-16 h-10 p-1 border rounded"
+                                        disabled={readonly}
                                     />
                                     <Input
                                         value={style.buttonBackgroundColor}
                                         onChange={(e) => onChange({ ...style, buttonBackgroundColor: e.target.value })}
                                         placeholder="#222222"
                                         className="flex-1"
+                                        readOnly={readonly}
                                     />
                                 </div>
                             </div>
@@ -417,12 +435,14 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                         value={style.buttonTextColor === "transparent" ? "#ffffff" : style.buttonTextColor}
                                         onChange={(e) => onChange({ ...style, buttonTextColor: e.target.value })}
                                         className="w-16 h-10 p-1 border rounded"
+                                        disabled={readonly}
                                     />
                                     <Input
                                         value={style.buttonTextColor}
                                         onChange={(e) => onChange({ ...style, buttonTextColor: e.target.value })}
                                         placeholder="#ffffff"
                                         className="flex-1"
+                                        readOnly={readonly}
                                     />
                                 </div>
                             </div>
@@ -436,6 +456,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                     onChange={(e) => onChange({ ...style, margin: e.target.value })}
                                     placeholder="16px 0px"
                                     className="w-full"
+                                    readOnly={readonly}
                                 />
                             </div>
 
@@ -448,6 +469,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                     onChange={(e) => onChange({ ...style, padding: e.target.value })}
                                     placeholder="16px"
                                     className="w-full"
+                                    readOnly={readonly}
                                 />
                             </div>
 
@@ -461,6 +483,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                     onChange={(e) => onChange({ ...style, border: e.target.value })}
                                     placeholder="1px solid #222222"
                                     className="w-full"
+                                    readOnly={readonly}
                                 />
                             </div>
 
@@ -473,6 +496,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                     onChange={(e) => onChange({ ...style, borderRadius: e.target.value })}
                                     placeholder="6px"
                                     className="w-full"
+                                    readOnly={readonly}
                                 />
                             </div>
 
@@ -485,6 +509,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                     onChange={(e) => onChange({ ...style, titleFontSize: e.target.value })}
                                     placeholder="18px"
                                     className="w-full"
+                                    readOnly={readonly}
                                 />
                             </div>
 
@@ -497,6 +522,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                     onChange={(e) => onChange({ ...style, bodyFontSize: e.target.value })}
                                     placeholder="16px"
                                     className="w-full"
+                                    readOnly={readonly}
                                 />
                             </div>
 
@@ -509,6 +535,7 @@ export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionP
                                     onChange={(e) => onChange({ ...style, fontFamily: e.target.value })}
                                     placeholder="Arial, sans-serif"
                                     className="w-full"
+                                    readOnly={readonly}
                                 />
                             </div>
                         </>

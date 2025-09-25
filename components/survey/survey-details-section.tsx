@@ -27,6 +27,7 @@ interface SurveyDetailsSectionProps {
     }
     onChange: (data: Partial<SurveyDetailsSectionProps['data']>) => void
     surveyTypesData: SurveyType[]
+    readonly?: boolean
 }
 
 // Debounced Input Component
@@ -34,11 +35,13 @@ const DebouncedInput = memo(({
     value,
     onChange,
     delay = 300,
+    readonly = false,
     ...props
 }: {
     value: string
     onChange: (value: string) => void
     delay?: number
+    readonly?: boolean
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
     const [localValue, setLocalValue] = useState(value)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -48,6 +51,8 @@ const DebouncedInput = memo(({
     }, [value])
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        if (readonly) return
+
         const newValue = e.target.value
         setLocalValue(newValue)
 
@@ -58,7 +63,7 @@ const DebouncedInput = memo(({
         timeoutRef.current = setTimeout(() => {
             onChange(newValue)
         }, delay)
-    }, [onChange, delay])
+    }, [onChange, delay, readonly])
 
     useEffect(() => {
         return () => {
@@ -68,10 +73,10 @@ const DebouncedInput = memo(({
         }
     }, [])
 
-    return <Input {...props} value={localValue} onChange={handleChange} />
+    return <Input {...props} value={localValue} onChange={handleChange} readOnly={readonly} />
 })
 
-export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData }: SurveyDetailsSectionProps) => {
+export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData, readonly = false }: SurveyDetailsSectionProps) => {
     const t = useTranslations("CreateSurvey.details")
     const [isTypesModalOpen, setIsTypesModalOpen] = useState(false)
     const [surveyTypes, setSurveyTypes] = useState<SurveyType[]>(surveyTypesData)
@@ -104,11 +109,12 @@ export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData }: S
                     <div className="space-y-2">
                         <Label htmlFor="survey-name">{t("name.label")}</Label>
                         <DebouncedInput
-                            autoFocus
+                            autoFocus={!readonly}
                             id="survey-name"
                             placeholder={t("name.placeholder")}
                             value={data.name}
                             onChange={handleNameChange}
+                            readonly={readonly}
                         />
                     </div>
 
@@ -120,6 +126,7 @@ export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData }: S
                             placeholder={t("description.placeholder")}
                             value={data.description || ""}
                             onChange={handleDescriptionChange}
+                            readonly={readonly}
                         />
                     </div>
 
@@ -127,20 +134,22 @@ export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData }: S
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
                             <Label htmlFor="survey-type">{t("type.label")}</Label>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setIsTypesModalOpen(true)}
-                                className="h-8 px-2 text-xs"
-                            >
-                                <Settings className="h-3 w-3 mr-1" />
-                                {t("type.manageTypes")}
-                            </Button>
+                            {!readonly && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setIsTypesModalOpen(true)}
+                                    className="h-8 px-2 text-xs"
+                                >
+                                    <Settings className="h-3 w-3 mr-1" />
+                                    {t("type.manageTypes")}
+                                </Button>
+                            )}
                         </div>
                         <Select
                             value={data.typeId || ""}
                             onValueChange={handleTypeSelect}
-                            disabled={isLoading}
+                            disabled={isLoading || readonly}
                         >
                             <SelectTrigger className="cursor-pointer">
                                 <SelectValue placeholder={isLoading ? "Loading..." : t("type.placeholder")} />
@@ -161,6 +170,7 @@ export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData }: S
                         <Select
                             value={data.status}
                             onValueChange={(status) => onChange({ status: status as 'draft' | 'published' | 'archived' })}
+                            disabled={readonly}
                         >
                             <SelectTrigger className="cursor-pointer">
                                 <SelectValue placeholder={t("status.placeholder")} />
@@ -191,20 +201,23 @@ export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData }: S
                             id="multiple-responses"
                             checked={data.allowMultipleResponses}
                             onCheckedChange={(checked) => onChange({ allowMultipleResponses: checked })}
+                            disabled={readonly}
                         />
                     </div>
                 </CardContent>
             </Card>
 
             {/* Survey Types Management Modal */}
-            <SurveyTypesModal
-                isOpen={isTypesModalOpen}
-                onClose={() => setIsTypesModalOpen(false)}
-                surveyTypes={surveyTypes}
-                onSurveyTypesChange={handleSurveyTypesChange}
-                selectedTypeId={data.typeId}
-                onTypeSelect={handleTypeSelect}
-            />
+            {!readonly && (
+                <SurveyTypesModal
+                    isOpen={isTypesModalOpen}
+                    onClose={() => setIsTypesModalOpen(false)}
+                    surveyTypes={surveyTypes}
+                    onSurveyTypesChange={handleSurveyTypesChange}
+                    selectedTypeId={data.typeId}
+                    onTypeSelect={handleTypeSelect}
+                />
+            )}
         </>
     )
 })

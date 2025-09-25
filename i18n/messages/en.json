@@ -979,7 +979,8 @@
             "publishSuccess": "Survey published successfully!",
             "publishError": "Failed to publish survey",
             "unexpectedError": "An unexpected error occurred",
-            "surveyIdCopied": "Survey ID copied to clipboard"
+            "surveyIdCopied": "Survey ID copied to clipboard",
+            "readonlyMode": "You don't have permission to edit this survey"
         },
         "defaultQuestion": {
             "yesLabel": "Yes",

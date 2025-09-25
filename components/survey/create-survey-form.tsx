@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,8 @@ import { createSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
 import { useRouter } from "next/navigation"
+import { useUser } from "../user-provider"
+import LoadingComp from "../loading-comp"
 
 interface Question {
     id: string
@@ -69,6 +71,22 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
     const t = useTranslations("CreateSurvey")
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
+    const { hasPermission } = useUser()
+    const [loading, setLoading] = useState(false)
+
+    const userHasPermission = hasPermission()
+    const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
+
+    useEffect(() => {
+        setLoading(true)
+        if (!canCreateSurvey) {
+            router.push("/survey")
+            //    setLoading(false)
+            return // Don't set loading to false if redirecting
+        }
+        setLoading(false)
+    }, [canCreateSurvey, router])
+
     const [surveyData, setSurveyData] = useState<SurveyData>({
         id: `new-survey-${new Date().getMilliseconds()}`,
         name: "",
@@ -110,6 +128,8 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
     const handleSave = () => {
         startTransition(async () => {
             try {
+                if (!canCreateSurvey) return
+
                 const formData = new FormData()
                 formData.append("name", surveyData.name)
                 formData.append("description", surveyData.description || "")
@@ -141,6 +161,8 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
     const handlePublish = () => {
         startTransition(async () => {
             try {
+                if (!canCreateSurvey) return
+
                 const formData = new FormData()
                 formData.append("name", surveyData.name)
                 formData.append("description", surveyData.description || "")
@@ -171,6 +193,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
 
     return (
         <div className="space-y-6">
+            <LoadingComp isLoadingProp={loading} />
             {/* Page Header */}
             <div className="space-y-2">
                 <p className="text-muted-foreground">{t("description")}</p>

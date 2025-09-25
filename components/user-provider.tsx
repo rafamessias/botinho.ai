@@ -61,7 +61,7 @@ interface UserContextType {
     isAuthenticated: boolean
     isActive: boolean
     canAccess: boolean
-    hasPermission: (permission: string) => boolean
+    hasPermission: () => { isAdmin: boolean, canPost: boolean, canApprove: boolean }
 }
 
 // Create context
@@ -151,22 +151,19 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const canAccess = Boolean(user?.canAccess)
 
     // Permission system (can be extended)
-    const hasPermission = (permission: string): boolean => {
-        if (!user || !isActive) return false
+    const hasPermission = (): { isAdmin: boolean, canPost: boolean, canApprove: boolean } => {
+        if (!user || !isActive) return { isAdmin: false, canPost: false, canApprove: false }
 
-        // Basic permission checks - can be extended based on your needs
-        switch (permission) {
-            case "read":
-                return canAccess
-            case "write":
-                return canAccess && Boolean(user.confirmed)
-            case "admin":
-                return canAccess && Boolean(user.confirmed)
-            default:
-                return false
-        }
+        // Assuming user.teams is an array of team objects with members
+        const team = user.teams?.find((t: any) => t.id === user.defaultTeamId)
+        if (!team || !Array.isArray(team.members)) return { isAdmin: false, canPost: false, canApprove: false }
+
+        // Return true if the user has any member records in their default team
+        const userTeamMember = team.members.find((member: any) => member.userId === user.id)
+
+        return { isAdmin: userTeamMember?.isAdmin || false, canPost: userTeamMember?.canPost || false, canApprove: userTeamMember?.canApprove || false }
+
     }
-
     // Context value
     const contextValue: UserContextType = {
         user,
@@ -197,42 +194,3 @@ export const useUser = (): UserContextType => {
     return context
 }
 
-// Access control component
-interface ProtectedProps {
-    children: ReactNode
-    fallback?: ReactNode
-    requireAuth?: boolean
-    requireActive?: boolean
-    requirePermission?: string
-}
-
-export const Protected: React.FC<ProtectedProps> = ({
-    children,
-    fallback = <div>Access denied</div>,
-    requireAuth = true,
-    requireActive = false,
-    requirePermission
-}) => {
-    const { isAuthenticated, isActive, hasPermission, loading } = useUser()
-
-    if (loading) {
-        return <div>Loading...</div>
-    }
-
-    // Check authentication
-    if (requireAuth && !isAuthenticated) {
-        return <>{fallback}</>
-    }
-
-    // Check active status
-    if (requireActive && !isActive) {
-        return <>{fallback}</>
-    }
-
-    // Check specific permission
-    if (requirePermission && !hasPermission(requirePermission)) {
-        return <>{fallback}</>
-    }
-
-    return <>{children}</>
-}

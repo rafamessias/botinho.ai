@@ -12,10 +12,10 @@ To enable OTP verification, set the following environment variables:
 
 ```bash
 # Enable OTP verification (set to 'true' to enable)
-OTP_ENABLED="true"
+OTP_ENABLED="TRUE"
 ```
 
-When `OTP_ENABLED` is set to `false` (default), the system will use the traditional email confirmation flow.
+When `OTP_ENABLED` is set to `FALSE` (default), the system will use the traditional email confirmation flow.
 
 ## How It Works
 

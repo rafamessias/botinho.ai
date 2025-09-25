@@ -81,6 +81,7 @@ import { toast } from "sonner"
 import { SurveyStatus } from "@/lib/generated/prisma"
 import LoadingComp from "../loading-comp"
 import { useIsMobile } from "@/hooks/use-mobile"
+import { useUser } from "../user-provider"
 
 // Custom debounce hook - optimized to prevent callback recreation
 const useDebounce = <T extends (...args: any[]) => any>(callback: T, delay: number) => {
@@ -230,6 +231,9 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
     const isMobile = useIsMobile()
+    const { hasPermission } = useUser()
+    const userHasPermission = hasPermission()
+    const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
 
     // Server-side state
     const [paginatedData, setPaginatedData] = React.useState<PaginatedSurveysResult>(
@@ -774,13 +778,15 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
                         </DropdownMenuContent>
                     </DropdownMenu>
                     */}
-                    <Button size="sm" asChild>
-                        <Link href="/survey/create">
-                            <Plus />
-                            <span className="hidden lg:inline">{t("table.buttons.createSurvey")}</span>
-                            <span className="lg:hidden">Create</span>
-                        </Link>
-                    </Button>
+                    {canCreateSurvey && (
+                        <Button size="sm" asChild>
+                            <Link href="/survey/create">
+                                <Plus />
+                                <span className="hidden lg:inline">{t("table.buttons.createSurvey")}</span>
+                                <span className="lg:hidden">Create</span>
+                            </Link>
+                        </Button>
+                    )}
                 </div>
             </div>
 

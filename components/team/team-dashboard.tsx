@@ -67,10 +67,9 @@ interface TeamDashboardProps {
 export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProps) => {
     const t = useTranslations("Team")
     const tCommon = useTranslations("Common")
-    const { user, refreshUser } = useUser()
+    const { user, refreshUser, hasPermission } = useUser()
     const [teams, setTeams] = useState<Team[]>(initialTeams)
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(initialTeams.length > 0 ? initialTeams[0] : null)
-
 
     // Use current user ID from user context if available, fallback to prop
     const currentUserIdFromContext = user?.id || currentUserId
@@ -112,6 +111,8 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
             }
         }
     }, [user?.teams, pendingNewTeamId])
+
+    const userHasPermission = hasPermission()
 
     const handleTeamUpdate = async (newTeamId?: number) => {
         try {

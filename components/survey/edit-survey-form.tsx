@@ -13,6 +13,7 @@ import { updateSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
 import { ArrowLeft, Clipboard } from "lucide-react"
+import { useUser } from "../user-provider"
 
 interface Question {
     id: string
@@ -110,6 +111,10 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
     const [pendingAction, setPendingAction] = useState<'save' | 'publish' | null>(null)
+    const { hasPermission } = useUser()
+    const userHasPermission = hasPermission()
+    const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
+    const isReadonly = !canCreateSurvey
 
     const [surveyData, setSurveyData] = useState<SurveyData>({
         id: survey.id,
@@ -236,8 +241,8 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
         setSurveyData(prev => ({ ...prev, questions }))
     }, [])
 
-    const handleStyleChange = useCallback((style: Partial<SurveyData['style']>) => {
-        setSurveyData(prev => ({ ...prev, style: { ...prev.style, ...style } }))
+    const handleStyleChange = useCallback((style: SurveyData['style']) => {
+        setSurveyData(prev => ({ ...prev, style }))
     }, [])
 
     // Memoize the survey data to prevent unnecessary re-renders
@@ -272,6 +277,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                 data={memoizedSurveyData}
                 onChange={handleSurveyDetailsChange}
                 surveyTypesData={surveyTypes}
+                readonly={isReadonly}
             />
 
             {/* Questions and Style Tabs */}
@@ -286,6 +292,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                         questions={memoizedSurveyData.questions}
                         onChange={handleQuestionsChange}
                         expandAllQuestions={false}
+                        readonly={isReadonly}
                     />
                 </TabsContent>
 
@@ -294,6 +301,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                         surveyData={memoizedSurveyData as SurveyData}
                         style={memoizedSurveyData.style}
                         onChange={handleStyleChange}
+                        readonly={isReadonly}
                     />
                 </TabsContent>
             </Tabs>
@@ -301,21 +309,27 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
             {/* Action Buttons */}
             <Card className="border-none px-0 pt-4 shadow-none bg-transparent">
                 <CardContent className="pt-6 p-0">
-                    <div className="flex flex-col sm:flex-row gap-3 justify-end">
-                        <Button
-                            variant="outline"
-                            onClick={handleSave}
-                            disabled={isPending || !surveyData.name.trim() || !surveyData.status}
-                        >
-                            {pendingAction === 'save' ? t("actions.saving") : t("actions.saveDraft")}
-                        </Button>
-                        <Button
-                            onClick={handlePublish}
-                            disabled={isPending || !surveyData.name.trim() || surveyData.questions.length === 0 || !surveyData.status}
-                        >
-                            {pendingAction === 'publish' ? t("actions.publishing") : t("actions.publish")}
-                        </Button>
-                    </div>
+                    {canCreateSurvey ? (
+                        <div className="flex flex-col sm:flex-row gap-3 justify-end">
+                            <Button
+                                variant="outline"
+                                onClick={handleSave}
+                                disabled={isPending || !surveyData.name.trim() || !surveyData.status}
+                            >
+                                {pendingAction === 'save' ? t("actions.saving") : t("actions.saveDraft")}
+                            </Button>
+                            <Button
+                                onClick={handlePublish}
+                                disabled={isPending || !surveyData.name.trim() || surveyData.questions.length === 0 || !surveyData.status}
+                            >
+                                {pendingAction === 'publish' ? t("actions.publishing") : t("actions.publish")}
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="text-center text-muted-foreground py-4">
+                            <p>{t("messages.readonlyMode") || "You don't have permission to edit this survey"}</p>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </div>

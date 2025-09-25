@@ -150,7 +150,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
         const hashedPassword = await bcrypt.hash(validatedData.password, 12)
 
         // Generate confirmation token or OTP based on environment
-        const isOTPEnabled = process.env.OTP_ENABLED === 'true'
+        const isOTPEnabled = process.env.OTP_ENABLED === 'TRUE'
         const confirmationToken = isOTPEnabled
             ? Math.floor(100000 + Math.random() * 900000).toString() // 6-digit OTP
             : await generateConfirmationToken() // Random token for email confirmation

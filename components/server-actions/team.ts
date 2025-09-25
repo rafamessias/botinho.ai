@@ -296,7 +296,7 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                 teamId: validatedData.teamId,
                 isAdmin: validatedData.isAdmin,
                 canPost: validatedData.canPost,
-                canApprove: validatedData.canApprove,
+                canApprove: true, //always can read
                 isOwner: false,
                 teamMemberStatus: "invited",
             }
@@ -357,7 +357,7 @@ export const updateMemberAction = async (formData: z.infer<typeof updateMemberSc
             data: {
                 isAdmin: validatedData.isAdmin,
                 canPost: validatedData.canPost,
-                canApprove: validatedData.canApprove,
+                canApprove: true, //always can read
             }
         })
 

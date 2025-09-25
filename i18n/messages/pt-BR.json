@@ -980,7 +980,8 @@
             "publishSuccess": "Pesquisa publicada com sucesso!",
             "publishError": "Falha ao publicar pesquisa",
             "unexpectedError": "Ocorreu um erro inesperado",
-            "surveyIdCopied": "ID da pesquisa copiado para a área de transferência"
+            "surveyIdCopied": "ID da pesquisa copiado para a área de transferência",
+            "readonlyMode": "Você não tem permissão para editar esta pesquisa"
         },
         "defaultQuestion": {
             "yesLabel": "Sim",

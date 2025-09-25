@@ -61,6 +61,7 @@ interface QuestionsSectionProps {
     questions: Question[]
     onChange: (questions: Question[]) => void
     expandAllQuestions?: boolean
+    readonly?: boolean
 }
 
 const getQuestionFormats = (t: any) => [
@@ -96,10 +97,12 @@ const DebouncedQuestionInput = memo(forwardRef<HTMLInputElement, {
     value: string
     onChange: (value: string) => void
     delay?: number
+    readonly?: boolean
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>>(({
     value,
     onChange,
     delay = 300,
+    readonly = false,
     ...props
 }, ref) => {
     const [localValue, setLocalValue] = useState(value)
@@ -110,6 +113,8 @@ const DebouncedQuestionInput = memo(forwardRef<HTMLInputElement, {
     }, [value])
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        if (readonly) return
+
         const newValue = e.target.value
         setLocalValue(newValue)
 
@@ -120,7 +125,7 @@ const DebouncedQuestionInput = memo(forwardRef<HTMLInputElement, {
         timeoutRef.current = setTimeout(() => {
             onChange(newValue)
         }, delay)
-    }, [onChange, delay])
+    }, [onChange, delay, readonly])
 
     useEffect(() => {
         return () => {
@@ -130,7 +135,7 @@ const DebouncedQuestionInput = memo(forwardRef<HTMLInputElement, {
         }
     }, [])
 
-    return <Input ref={ref} {...props} value={localValue} onChange={handleChange} />
+    return <Input ref={ref} {...props} value={localValue} onChange={handleChange} readOnly={readonly} />
 }))
 
 // Debounced Textarea Component for Questions
@@ -138,11 +143,13 @@ const DebouncedQuestionTextarea = memo(({
     value,
     onChange,
     delay = 300,
+    readonly = false,
     ...props
 }: {
     value: string
     onChange: (value: string) => void
     delay?: number
+    readonly?: boolean
 } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'>) => {
     const [localValue, setLocalValue] = useState(value)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -152,6 +159,8 @@ const DebouncedQuestionTextarea = memo(({
     }, [value])
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (readonly) return
+
         const newValue = e.target.value
         setLocalValue(newValue)
 
@@ -162,7 +171,7 @@ const DebouncedQuestionTextarea = memo(({
         timeoutRef.current = setTimeout(() => {
             onChange(newValue)
         }, delay)
-    }, [onChange, delay])
+    }, [onChange, delay, readonly])
 
     useEffect(() => {
         return () => {
@@ -172,7 +181,7 @@ const DebouncedQuestionTextarea = memo(({
         }
     }, [])
 
-    return <Textarea {...props} value={localValue} onChange={handleChange} />
+    return <Textarea {...props} value={localValue} onChange={handleChange} readOnly={readonly} />
 })
 
 const SortableOptionItem = memo(({
@@ -182,7 +191,8 @@ const SortableOptionItem = memo(({
     onUpdate,
     onRemove,
     shouldFocus = true,
-    isOtherEnabled = false
+    isOtherEnabled = false,
+    readonly = false
 }: {
     id: string
     option: { text: string; order: number; isOther?: boolean }
@@ -191,6 +201,7 @@ const SortableOptionItem = memo(({
     onRemove: (index: number) => void
     shouldFocus?: boolean
     isOtherEnabled?: boolean
+    readonly?: boolean
 }) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [localValue, setLocalValue] = useState(option.text)
@@ -201,6 +212,8 @@ const SortableOptionItem = memo(({
     }, [option.text])
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        if (readonly) return
+
         const newValue = e.target.value
         setLocalValue(newValue)
 
@@ -211,7 +224,7 @@ const SortableOptionItem = memo(({
         timeoutRef.current = setTimeout(() => {
             onUpdate(index, newValue)
         }, 300)
-    }, [onUpdate, index])
+    }, [onUpdate, index, readonly])
 
     useEffect(() => {
         return () => {
@@ -243,13 +256,15 @@ const SortableOptionItem = memo(({
                 }`}
         >
             {/* Drag Handle */}
-            <div
-                {...attributes}
-                {...listeners}
-                className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
-            >
-                <GripVertical className="h-4 w-4 text-muted-foreground" />
-            </div>
+            {!readonly && (
+                <div
+                    {...attributes}
+                    {...listeners}
+                    className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
+                >
+                    <GripVertical className="h-4 w-4 text-muted-foreground" />
+                </div>
+            )}
 
             {/* Option Number */}
             <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${option.text.trim() === ""
@@ -261,16 +276,17 @@ const SortableOptionItem = memo(({
 
             {/* Option Input */}
             <Input
-                autoFocus={shouldFocus}
+                autoFocus={shouldFocus && !readonly}
                 ref={inputRef}
                 placeholder="Enter option text"
                 value={localValue}
                 onChange={handleChange}
+                readOnly={readonly}
                 className={`flex-1 ${localValue.trim() === "" ? "border-red-100 bg-red-50/30 focus:border-red-500 focus:ring-red-100" : ""}`}
             />
 
-            {/* Remove Button - Hide for "Other" option when enabled */}
-            {!(option.isOther && isOtherEnabled) && (
+            {/* Remove Button - Hide for "Other" option when enabled or when readonly */}
+            {!readonly && !(option.isOther && isOtherEnabled) && (
                 <Button
                     type="button"
                     variant="ghost"
@@ -292,7 +308,8 @@ const QuestionCard = memo(({
     isFirstQuestion = false,
     isNewlyAdded = false,
     questionNumber = 1,
-    allExpanded = true
+    allExpanded = true,
+    readonly = false
 }: {
     question: Question
     onUpdate: (question: Question) => void
@@ -301,6 +318,7 @@ const QuestionCard = memo(({
     isNewlyAdded?: boolean
     questionNumber?: number
     allExpanded?: boolean
+    readonly?: boolean
 }) => {
     const t = useTranslations("CreateSurvey.questions")
     const [isExpanded, setIsExpanded] = useState(isFirstQuestion || isNewlyAdded)
@@ -345,6 +363,8 @@ const QuestionCard = memo(({
     }
 
     const handleAddOption = () => {
+        if (readonly) return
+
         const newOptions = [...question.options, { id: `new-option-${Math.random()}`, text: "", order: question.options.length, isOther: false }]
         const newIndex = newOptions.length - 1
         onUpdate({ ...question, options: newOptions })
@@ -357,6 +377,8 @@ const QuestionCard = memo(({
     }
 
     const handleToggleOtherOption = (checked: boolean) => {
+        if (readonly) return
+
         let newOptions = [...question.options]
 
         if (checked) {
@@ -376,12 +398,16 @@ const QuestionCard = memo(({
     }
 
     const handleUpdateOption = (index: number, value: string) => {
+        if (readonly) return
+
         const newOptions = [...question.options]
         newOptions[index] = { ...newOptions[index], text: value }
         onUpdate({ ...question, options: newOptions })
     }
 
     const handleRemoveOption = (index: number) => {
+        if (readonly) return
+
         const optionToRemove = question.options[index]
 
         // Don't allow removing the "Other" option if hasOtherOption is enabled
@@ -396,6 +422,8 @@ const QuestionCard = memo(({
     }
 
     const handleReorderOptions = (event: DragEndEvent) => {
+        if (readonly) return
+
         const { active, over } = event
 
         if (over && active.id !== over.id) {
@@ -482,13 +510,15 @@ const QuestionCard = memo(({
                         >
                             {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                         </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => onDelete(question.id)}
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {!readonly && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => onDelete(question.id)}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        )}
                     </div>
                 </div>
 
@@ -515,6 +545,7 @@ const QuestionCard = memo(({
                                     placeholder={t("questionTitle.placeholder")}
                                     value={question.title}
                                     onChange={handleTitleChange}
+                                    readonly={readonly}
                                 />
                             </div>
 
@@ -529,6 +560,7 @@ const QuestionCard = memo(({
                                     value={question.description}
                                     onChange={handleDescriptionChange}
                                     rows={2}
+                                    readonly={readonly}
                                 />
                             </div>
 
@@ -539,6 +571,8 @@ const QuestionCard = memo(({
                                     <Select
                                         value={question.format}
                                         onValueChange={(value) => {
+                                            if (readonly) return
+
                                             const updatedQuestion = { ...question, format: value as QuestionFormat }
                                             // Reset options and other option when changing format
                                             if (!needsOptions) {
@@ -552,6 +586,7 @@ const QuestionCard = memo(({
                                             }
                                             onUpdate(updatedQuestion)
                                         }}
+                                        disabled={readonly}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder={t("format.placeholder")} />
@@ -572,7 +607,11 @@ const QuestionCard = memo(({
                                         <Switch
                                             id={`question-required-${question.id}`}
                                             checked={question.required}
-                                            onCheckedChange={(checked) => onUpdate({ ...question, required: checked })}
+                                            onCheckedChange={(checked) => {
+                                                if (readonly) return
+                                                onUpdate({ ...question, required: checked })
+                                            }}
+                                            disabled={readonly}
                                         />
                                         <Label htmlFor={`question-required-${question.id}`} className="text-sm">
                                             {t("required.label")}
@@ -585,15 +624,17 @@ const QuestionCard = memo(({
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <Label className="text-sm font-medium">{t("options.label")}</Label>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={handleAddOption}
-                                        >
-                                            <Plus className="h-3 w-3 mr-1" />
-                                            {t("options.addOption")}
-                                        </Button>
+                                        {!readonly && (
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={handleAddOption}
+                                            >
+                                                <Plus className="h-3 w-3 mr-1" />
+                                                {t("options.addOption")}
+                                            </Button>
+                                        )}
                                     </div>
 
                                     {/* Other Option Switch */}
@@ -602,43 +643,69 @@ const QuestionCard = memo(({
                                             id={`other-option-${question.id}`}
                                             checked={question.hasOtherOption || false}
                                             onCheckedChange={handleToggleOtherOption}
+                                            disabled={readonly}
                                         />
                                         <Label htmlFor={`other-option-${question.id}`} className="text-sm">
                                             {t("options.includeOther")}
                                         </Label>
                                     </div>
 
-                                    <DndContext
-                                        sensors={optionSensors}
-                                        collisionDetection={closestCenter}
-                                        onDragEnd={handleReorderOptions}
-                                    >
-                                        <SortableContext
-                                            items={question.options.map((_, index) => index.toString())}
-                                            strategy={verticalListSortingStrategy}
-                                        >
-                                            <div className="space-y-2">
-                                                {question.options.map((option, index) => (
-                                                    <SortableOptionItem
-                                                        key={index}
-                                                        id={index.toString()}
-                                                        option={option}
-                                                        index={index}
-                                                        onUpdate={handleUpdateOption}
-                                                        onRemove={handleRemoveOption}
-                                                        shouldFocus={focusNewOption === index}
-                                                        isOtherEnabled={question.hasOtherOption || false}
-                                                    />
-                                                ))}
+                                    {readonly ? (
+                                        <div className="space-y-2">
+                                            {question.options.map((option, index) => (
+                                                <SortableOptionItem
+                                                    key={index}
+                                                    id={index.toString()}
+                                                    option={option}
+                                                    index={index}
+                                                    onUpdate={handleUpdateOption}
+                                                    onRemove={handleRemoveOption}
+                                                    shouldFocus={focusNewOption === index}
+                                                    isOtherEnabled={question.hasOtherOption || false}
+                                                    readonly={readonly}
+                                                />
+                                            ))}
 
-                                                {question.options.length === 0 && (
-                                                    <div className="text-sm text-muted-foreground text-center py-4 border-2 border-dashed border-muted rounded-md">
-                                                        No options added yet. Click "Add Option" to get started.
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </SortableContext>
-                                    </DndContext>
+                                            {question.options.length === 0 && (
+                                                <div className="text-sm text-muted-foreground text-center py-4 border-2 border-dashed border-muted rounded-md">
+                                                    No options added yet. Click "Add Option" to get started.
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <DndContext
+                                            sensors={optionSensors}
+                                            collisionDetection={closestCenter}
+                                            onDragEnd={handleReorderOptions}
+                                        >
+                                            <SortableContext
+                                                items={question.options.map((_, index) => index.toString())}
+                                                strategy={verticalListSortingStrategy}
+                                            >
+                                                <div className="space-y-2">
+                                                    {question.options.map((option, index) => (
+                                                        <SortableOptionItem
+                                                            key={index}
+                                                            id={index.toString()}
+                                                            option={option}
+                                                            index={index}
+                                                            onUpdate={handleUpdateOption}
+                                                            onRemove={handleRemoveOption}
+                                                            shouldFocus={focusNewOption === index}
+                                                            isOtherEnabled={question.hasOtherOption || false}
+                                                            readonly={readonly}
+                                                        />
+                                                    ))}
+
+                                                    {question.options.length === 0 && (
+                                                        <div className="text-sm text-muted-foreground text-center py-4 border-2 border-dashed border-muted rounded-md">
+                                                            No options added yet. Click "Add Option" to get started.
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </SortableContext>
+                                        </DndContext>
+                                    )}
                                 </div>
                             )}
 
@@ -657,6 +724,7 @@ const QuestionCard = memo(({
                                                 placeholder={t("yesNoLabels.yesPlaceholder")}
                                                 value={question.yesLabel || "Yes"}
                                                 onChange={handleYesLabelChange}
+                                                readonly={readonly}
                                             />
                                         </div>
 
@@ -669,6 +737,7 @@ const QuestionCard = memo(({
                                                 placeholder={t("yesNoLabels.noPlaceholder")}
                                                 value={question.noLabel || "No"}
                                                 onChange={handleNoLabelChange}
+                                                readonly={readonly}
                                             />
                                         </div>
                                     </div>
@@ -683,7 +752,7 @@ const QuestionCard = memo(({
     )
 })
 
-export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions = true }: QuestionsSectionProps) => {
+export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions = true, readonly = false }: QuestionsSectionProps) => {
     const t = useTranslations("CreateSurvey.questions")
     const [newlyAddedQuestionId, setNewlyAddedQuestionId] = useState<string | null>(null)
     const [allExpanded, setAllExpanded] = useState(expandAllQuestions)
@@ -696,6 +765,8 @@ export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions 
     )
 
     const handleDragEnd = (event: DragEndEvent) => {
+        if (readonly) return
+
         const { active, over } = event
 
         if (over && active.id !== over.id) {
@@ -713,6 +784,8 @@ export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions 
     }
 
     const handleAddQuestion = () => {
+        if (readonly) return
+
         const newId = (Math.max(...questions.map(q => parseInt(q.id) || 0), 0) + 1).toString()
         const newQuestion: Question = {
             id: newId,
@@ -741,6 +814,8 @@ export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions 
     }
 
     const handleUpdateQuestion = (updatedQuestion: Question) => {
+        if (readonly) return
+
         const newQuestions = questions.map(q =>
             q.id === updatedQuestion.id ? updatedQuestion : q
         )
@@ -748,6 +823,8 @@ export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions 
     }
 
     const handleDeleteQuestion = (id: string) => {
+        if (readonly) return
+
         const newQuestions = questions.filter(q => q.id !== id)
         // Update the order property for each remaining question to maintain sequential order
         const updatedQuestions = newQuestions.map((question, index) => ({
@@ -794,15 +871,8 @@ export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions 
                 </div>
             </CardHeader>
             <CardContent className="space-y-4 p-0">
-                <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                >
-                    <SortableContext
-                        items={questions.map(q => q.id)}
-                        strategy={verticalListSortingStrategy}
-                    >
+                {readonly ? (
+                    <div className="space-y-4">
                         {questions.map((question, index) => (
                             <QuestionCard
                                 key={question.id}
@@ -813,19 +883,47 @@ export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions 
                                 isNewlyAdded={question.id === newlyAddedQuestionId}
                                 questionNumber={index + 1}
                                 allExpanded={allExpanded}
+                                readonly={readonly}
                             />
                         ))}
-                    </SortableContext>
-                </DndContext>
+                    </div>
+                ) : (
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                    >
+                        <SortableContext
+                            items={questions.map(q => q.id)}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            {questions.map((question, index) => (
+                                <QuestionCard
+                                    key={question.id}
+                                    question={question}
+                                    onUpdate={handleUpdateQuestion}
+                                    onDelete={handleDeleteQuestion}
+                                    isFirstQuestion={index === 0}
+                                    isNewlyAdded={question.id === newlyAddedQuestionId}
+                                    questionNumber={index + 1}
+                                    allExpanded={allExpanded}
+                                    readonly={readonly}
+                                />
+                            ))}
+                        </SortableContext>
+                    </DndContext>
+                )}
 
-                <Button
-                    variant="outline"
-                    onClick={handleAddQuestion}
-                    className="w-full"
-                >
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t("addQuestion")}
-                </Button>
+                {!readonly && (
+                    <Button
+                        variant="outline"
+                        onClick={handleAddQuestion}
+                        className="w-full"
+                    >
+                        <Plus className="h-4 w-4 mr-2" />
+                        {t("addQuestion")}
+                    </Button>
+                )}
             </CardContent>
         </Card>
     )

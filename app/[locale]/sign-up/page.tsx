@@ -4,7 +4,7 @@ import { SignUpForm } from "@/components/sign-up/sign-up-form"
 import { Link } from "@/i18n/navigation"
 
 export default function SignUpPage() {
-    const isOTPEnabled = process.env.OTP_ENABLED === 'true'
+    const isOTPEnabled = process.env.OTP_ENABLED === 'TRUE'
 
     return (
         <div className="bg-sidebar flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
