@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useRef, useEffect, memo } from "react"
 import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -29,19 +29,69 @@ interface SurveyDetailsSectionProps {
     surveyTypesData: SurveyType[]
 }
 
-export const SurveyDetailsSection = ({ data, onChange, surveyTypesData }: SurveyDetailsSectionProps) => {
+// Debounced Input Component
+const DebouncedInput = memo(({
+    value,
+    onChange,
+    delay = 300,
+    ...props
+}: {
+    value: string
+    onChange: (value: string) => void
+    delay?: number
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
+    const [localValue, setLocalValue] = useState(value)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+    useEffect(() => {
+        setLocalValue(value)
+    }, [value])
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
+        setLocalValue(newValue)
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            onChange(newValue)
+        }, delay)
+    }, [onChange, delay])
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
+
+    return <Input {...props} value={localValue} onChange={handleChange} />
+})
+
+export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData }: SurveyDetailsSectionProps) => {
     const t = useTranslations("CreateSurvey.details")
     const [isTypesModalOpen, setIsTypesModalOpen] = useState(false)
     const [surveyTypes, setSurveyTypes] = useState<SurveyType[]>(surveyTypesData)
     const [isLoading, setIsLoading] = useState(false)
 
-    const handleTypeSelect = (typeId: string) => {
+    const handleTypeSelect = useCallback((typeId: string) => {
         onChange({ typeId })
-    }
+    }, [onChange])
 
-    const handleSurveyTypesChange = (types: SurveyType[]) => {
+    const handleSurveyTypesChange = useCallback((types: SurveyType[]) => {
         setSurveyTypes(types)
-    }
+    }, [])
+
+    const handleNameChange = useCallback((name: string) => {
+        onChange({ name })
+    }, [onChange])
+
+    const handleDescriptionChange = useCallback((description: string) => {
+        onChange({ description })
+    }, [onChange])
 
     return (
         <>
@@ -53,23 +103,23 @@ export const SurveyDetailsSection = ({ data, onChange, surveyTypesData }: Survey
                     {/* Survey Name */}
                     <div className="space-y-2">
                         <Label htmlFor="survey-name">{t("name.label")}</Label>
-                        <Input
+                        <DebouncedInput
                             autoFocus
                             id="survey-name"
                             placeholder={t("name.placeholder")}
                             value={data.name}
-                            onChange={(e) => onChange({ name: e.target.value })}
+                            onChange={handleNameChange}
                         />
                     </div>
 
                     {/* Survey Description */}
                     <div className="space-y-2">
                         <Label htmlFor="survey-description">{t("description.label")}</Label>
-                        <Input
+                        <DebouncedInput
                             id="survey-description"
                             placeholder={t("description.placeholder")}
                             value={data.description || ""}
-                            onChange={(e) => onChange({ description: e.target.value })}
+                            onChange={handleDescriptionChange}
                         />
                     </div>
 
@@ -157,4 +207,6 @@ export const SurveyDetailsSection = ({ data, onChange, surveyTypesData }: Survey
             />
         </>
     )
-}
+})
+
+SurveyDetailsSection.displayName = "SurveyDetailsSection"

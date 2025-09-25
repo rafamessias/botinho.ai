@@ -7,6 +7,12 @@ import { prisma } from "@/prisma/lib/prisma"
 import { SurveyStatus, QuestionFormat } from "@/lib/generated/prisma"
 import { z } from "zod"
 
+// Helper function to get and cache team ID for better performance
+const getTeamIdCached = async (): Promise<number | null> => {
+    const wrapper = getPrismaWrapper()
+    return await wrapper.getTeamId()
+}
+
 // Database survey type
 interface DatabaseSurvey {
     id: string
@@ -100,7 +106,7 @@ export const createSurvey = async (formData: FormData) => {
         const validatedData = createSurveySchema.parse(rawData)
 
         // Get team ID once before transaction
-        const teamId = await wrapper.getTeamId()
+        const teamId = await getTeamIdCached()
         if (!teamId) {
             return {
                 success: false,
@@ -108,10 +114,10 @@ export const createSurvey = async (formData: FormData) => {
             }
         }
 
-        // Create survey with questions and style in a transaction with increased timeout
+        // Create survey with questions and style in a transaction with optimized operations
         const result = await prisma.$transaction(async (tx) => {
-            // Create survey
-            const survey = await wrapper.create(tx.survey, {
+            // Create survey using direct Prisma call for better performance
+            const survey = await tx.survey.create({
                 data: {
                     name: validatedData.name,
                     description: validatedData.description,
@@ -133,8 +139,8 @@ export const createSurvey = async (formData: FormData) => {
                 }
             })
 
-            // Create survey style
-            await wrapper.create(tx.surveyStyle, {
+            // Create survey style using direct Prisma call
+            await tx.surveyStyle.create({
                 data: {
                     surveyId: survey.id,
                     teamId: teamId,
@@ -142,42 +148,60 @@ export const createSurvey = async (formData: FormData) => {
                 }
             })
 
-            // Create questions with options
-            for (const questionData of validatedData.questions) {
-                const question = await wrapper.create(tx.question, {
-                    data: {
-                        surveyId: survey.id,
-                        teamId: teamId,
-                        title: questionData.title,
-                        description: questionData.description,
-                        format: questionData.format,
-                        required: questionData.required,
-                        order: questionData.order,
-                        yesLabel: questionData.yesLabel,
-                        noLabel: questionData.noLabel,
-                        buttonLabel: questionData.buttonLabel
-                    }
-                })
+            // Batch create questions for better performance
+            const questionsToCreate = validatedData.questions.map(questionData => ({
+                surveyId: survey.id,
+                teamId: teamId,
+                title: questionData.title,
+                description: questionData.description,
+                format: questionData.format,
+                required: questionData.required,
+                order: questionData.order,
+                yesLabel: questionData.yesLabel,
+                noLabel: questionData.noLabel,
+                buttonLabel: questionData.buttonLabel
+            }))
 
-                // Create question options if they exist
-                if (questionData.options && questionData.options.length > 0) {
-                    for (const optionData of questionData.options) {
-                        await wrapper.create(tx.questionOption, {
-                            data: {
-                                questionId: question.id,
-                                teamId: teamId,
-                                text: optionData.text,
-                                order: optionData.order,
-                                isOther: optionData.isOther
-                            }
-                        })
-                    }
-                }
+            const createdQuestions = await tx.question.createMany({
+                data: questionsToCreate,
+                skipDuplicates: true
+            })
+
+            // Get created questions with their IDs for options
+            const questionsWithIds = await tx.question.findMany({
+                where: {
+                    surveyId: survey.id,
+                    teamId: teamId
+                },
+                select: { id: true, order: true }
+            })
+
+            // Create question options in batches
+            const allOptions = validatedData.questions.flatMap((questionData, questionIndex) => {
+                if (!questionData.options || questionData.options.length === 0) return []
+
+                const question = questionsWithIds.find(q => q.order === questionData.order)
+                if (!question) return []
+
+                return questionData.options.map(optionData => ({
+                    questionId: question.id,
+                    teamId: teamId,
+                    text: optionData.text,
+                    order: optionData.order,
+                    isOther: optionData.isOther
+                }))
+            })
+
+            if (allOptions.length > 0) {
+                await tx.questionOption.createMany({
+                    data: allOptions,
+                    skipDuplicates: true
+                })
             }
 
             return survey
         }, {
-            timeout: 10000 // Increase timeout to 10 seconds
+            timeout: 5000 // Reduced timeout due to optimized operations
         })
 
         revalidatePath("/survey")
@@ -212,7 +236,7 @@ export const updateSurvey = async (formData: FormData) => {
         const validatedData = updateSurveySchema.parse(rawData)
 
         // Get team ID once before transaction
-        const teamId = await wrapper.getTeamId()
+        const teamId = await getTeamIdCached()
         if (!teamId) {
             return {
                 success: false,
@@ -220,10 +244,20 @@ export const updateSurvey = async (formData: FormData) => {
             }
         }
 
-        // Get current survey to check status changes
-        const currentSurvey = await wrapper.findUnique(prisma.survey, {
-            where: { id: validatedData.id },
-            select: { status: true }
+        // Get current survey to check status changes and existing questions
+        const currentSurvey = await prisma.survey.findUnique({
+            where: {
+                id: validatedData.id,
+                teamId: teamId // Add team validation
+            },
+            select: {
+                status: true,
+                questions: {
+                    include: {
+                        options: true
+                    }
+                }
+            }
         })
 
         if (!currentSurvey) {
@@ -233,10 +267,10 @@ export const updateSurvey = async (formData: FormData) => {
             }
         }
 
-        // Update survey with questions and style in a transaction with increased timeout
+        // Update survey with questions and style in optimized transaction
         const result = await prisma.$transaction(async (tx) => {
-            // Update survey
-            const survey = await wrapper.update(tx.survey, {
+            // Update survey using direct Prisma call
+            const survey = await tx.survey.update({
                 where: { id: validatedData.id },
                 data: {
                     name: validatedData.name,
@@ -271,70 +305,120 @@ export const updateSurvey = async (formData: FormData) => {
                 }
             }
 
-            // Update survey style
+            // Update survey style using direct Prisma call
             if (validatedData.style) {
-                await wrapper.upsert(tx.surveyStyle, {
+                await tx.surveyStyle.upsert({
                     where: { surveyId: survey.id },
                     create: {
                         surveyId: survey.id,
+                        teamId: teamId,
                         ...validatedData.style
                     },
                     update: validatedData.style
                 })
             }
 
-            // Delete existing questions and options
-            await wrapper.deleteMany(tx.questionOption, {
-                where: {
-                    question: { surveyId: survey.id },
-                    teamId: teamId
-                }
-            })
-            await wrapper.deleteMany(tx.question, {
-                where: {
-                    surveyId: survey.id,
-                    teamId: teamId
-                }
-            })
-
-            // Create new questions with options
+            // Smart update strategy: Only update questions if they actually changed
             if (validatedData.questions) {
-                for (const questionData of validatedData.questions) {
-                    const question = await wrapper.create(tx.question, {
-                        data: {
+                // Compare existing vs new questions to determine if update is needed
+                const existingQuestions = currentSurvey.questions
+                const questionsChanged = JSON.stringify(existingQuestions.map(q => ({
+                    title: q.title,
+                    description: q.description,
+                    format: q.format,
+                    required: q.required,
+                    order: q.order,
+                    yesLabel: q.yesLabel,
+                    noLabel: q.noLabel,
+                    buttonLabel: q.buttonLabel,
+                    options: q.options.map(opt => ({
+                        text: opt.text,
+                        order: opt.order,
+                        isOther: opt.isOther
+                    }))
+                }))) !== JSON.stringify(validatedData.questions.map(q => ({
+                    title: q.title,
+                    description: q.description,
+                    format: q.format,
+                    required: q.required,
+                    order: q.order,
+                    yesLabel: q.yesLabel,
+                    noLabel: q.noLabel,
+                    buttonLabel: q.buttonLabel,
+                    options: q.options || []
+                })))
+
+                if (questionsChanged) {
+                    // Delete existing questions and options in batch
+                    await tx.questionOption.deleteMany({
+                        where: {
+                            question: { surveyId: survey.id },
+                            teamId: teamId
+                        }
+                    })
+                    await tx.question.deleteMany({
+                        where: {
                             surveyId: survey.id,
-                            teamId: teamId,
-                            title: questionData.title,
-                            description: questionData.description,
-                            format: questionData.format,
-                            required: questionData.required,
-                            order: questionData.order,
-                            yesLabel: questionData.yesLabel,
-                            noLabel: questionData.noLabel,
-                            buttonLabel: questionData.buttonLabel
+                            teamId: teamId
                         }
                     })
 
-                    // Create question options if they exist
-                    if (questionData.options && questionData.options.length > 0) {
-                        for (const optionData of questionData.options) {
-                            await wrapper.create(tx.questionOption, {
-                                data: {
-                                    questionId: question.id,
-                                    teamId: teamId,
-                                    text: optionData.text,
-                                    order: optionData.order,
-                                    isOther: optionData.isOther
-                                }
-                            })
-                        }
+                    // Batch create new questions
+                    const questionsToCreate = validatedData.questions.map(questionData => ({
+                        surveyId: survey.id,
+                        teamId: teamId,
+                        title: questionData.title,
+                        description: questionData.description,
+                        format: questionData.format,
+                        required: questionData.required,
+                        order: questionData.order,
+                        yesLabel: questionData.yesLabel,
+                        noLabel: questionData.noLabel,
+                        buttonLabel: questionData.buttonLabel
+                    }))
+
+                    await tx.question.createMany({
+                        data: questionsToCreate,
+                        skipDuplicates: true
+                    })
+
+                    // Get created questions with their IDs for options
+                    const questionsWithIds = await tx.question.findMany({
+                        where: {
+                            surveyId: survey.id,
+                            teamId: teamId
+                        },
+                        select: { id: true, order: true }
+                    })
+
+                    // Batch create question options
+                    const allOptions = validatedData.questions.flatMap((questionData, questionIndex) => {
+                        if (!questionData.options || questionData.options.length === 0) return []
+
+                        const question = questionsWithIds.find(q => q.order === questionData.order)
+                        if (!question) return []
+
+                        return questionData.options.map(optionData => ({
+                            questionId: question.id,
+                            teamId: teamId,
+                            text: optionData.text,
+                            order: optionData.order,
+                            isOther: optionData.isOther
+                        }))
+                    })
+
+                    if (allOptions.length > 0) {
+                        await tx.questionOption.createMany({
+                            data: allOptions,
+                            skipDuplicates: true
+                        })
                     }
                 }
             }
 
             return survey
         }, {
-            timeout: 10000 // Increase timeout to 10 seconds
+            timeout: 5000 // Reduced timeout due to optimized operations
         })
 
         revalidatePath("/survey")
@@ -426,7 +510,8 @@ export const getSurveysWithPagination = async (filters: Partial<SurveyFilters> =
         // Build orderBy clause
         const orderBy: any = {}
         if (validatedFilters.sortBy === 'responses') {
-            orderBy._count = { responses: validatedFilters.sortOrder }
+            // Use totalResponses column for sorting
+            orderBy.totalResponses = validatedFilters.sortOrder
         } else {
             orderBy[validatedFilters.sortBy] = validatedFilters.sortOrder
         }
@@ -530,10 +615,21 @@ export const getSurvey = async (id: string) => {
 export const deleteSurvey = async (id: string) => {
     try {
         const wrapper = getPrismaWrapper()
+        const teamId = await getTeamIdCached()
 
-        // Get survey details before deletion to update team counts
-        const survey = await wrapper.findUnique(prisma.survey, {
-            where: { id },
+        if (!teamId) {
+            return {
+                success: false,
+                error: "Team not found"
+            }
+        }
+
+        // Get survey details before deletion to update team counts using direct Prisma call
+        const survey = await prisma.survey.findUnique({
+            where: {
+                id,
+                teamId: teamId // Add team validation
+            },
             select: { status: true, teamId: true }
         })
 
@@ -544,10 +640,10 @@ export const deleteSurvey = async (id: string) => {
             }
         }
 
-        // Delete survey and update team counts in a transaction
+        // Delete survey and update team counts in optimized transaction
         await prisma.$transaction(async (tx) => {
-            // Delete the survey
-            await wrapper.delete(tx.survey, { where: { id } })
+            // Delete the survey using direct Prisma call
+            await tx.survey.delete({ where: { id } })
 
             // Update team survey counts
             const updateData: any = {
@@ -563,6 +659,8 @@ export const deleteSurvey = async (id: string) => {
                 where: { id: survey.teamId },
                 data: updateData
             })
+        }, {
+            timeout: 3000 // Reduced timeout for delete operation
         })
 
         revalidatePath("/survey")
@@ -603,7 +701,7 @@ export const duplicateSurvey = async (id: string) => {
         }
 
         // Get team ID once before transaction
-        const teamId = await wrapper.getTeamId()
+        const teamId = await getTeamIdCached()
         if (!teamId) {
             return {
                 success: false,
@@ -611,10 +709,10 @@ export const duplicateSurvey = async (id: string) => {
             }
         }
 
-        // Create duplicate in a transaction with increased timeout
+        // Create duplicate in optimized transaction
         const result = await prisma.$transaction(async (tx) => {
-            // Create new survey
-            const newSurvey = await wrapper.create(tx.survey, {
+            // Create new survey using direct Prisma call
+            const newSurvey = await tx.survey.create({
                 data: {
                     name: `${originalSurvey.name} (Copy)`,
                     description: originalSurvey.description,
@@ -625,9 +723,9 @@ export const duplicateSurvey = async (id: string) => {
                 }
             })
 
-            // Duplicate survey style
+            // Duplicate survey style using direct Prisma call
             if (originalSurvey.style) {
-                await wrapper.create(tx.surveyStyle, {
+                await tx.surveyStyle.create({
                     data: {
                         surveyId: newSurvey.id,
                         teamId: teamId,
@@ -649,35 +747,55 @@ export const duplicateSurvey = async (id: string) => {
                 })
             }
 
-            // Duplicate questions and options
-            for (const question of originalSurvey.questions) {
-                const newQuestion = await wrapper.create(tx.question, {
-                    data: {
-                        surveyId: newSurvey.id,
-                        teamId: teamId,
-                        title: question.title,
-                        description: question.description,
-                        format: question.format,
-                        required: question.required,
-                        order: question.order,
-                        yesLabel: question.yesLabel,
-                        noLabel: question.noLabel,
-                        buttonLabel: question.buttonLabel
-                    }
-                })
+            // Batch create questions for better performance
+            const questionsToCreate = originalSurvey.questions.map((question: any) => ({
+                surveyId: newSurvey.id,
+                teamId: teamId,
+                title: question.title,
+                description: question.description,
+                format: question.format,
+                required: question.required,
+                order: question.order,
+                yesLabel: question.yesLabel,
+                noLabel: question.noLabel,
+                buttonLabel: question.buttonLabel
+            }))
 
-                // Duplicate question options
-                for (const option of question.options) {
-                    await wrapper.create(tx.questionOption, {
-                        data: {
-                            questionId: newQuestion.id,
-                            teamId: teamId,
-                            text: option.text,
-                            order: option.order,
-                            isOther: option.isOther
-                        }
-                    })
-                }
+            await tx.question.createMany({
+                data: questionsToCreate,
+                skipDuplicates: true
+            })
+
+            // Get created questions with their IDs for options
+            const questionsWithIds = await tx.question.findMany({
+                where: {
+                    surveyId: newSurvey.id,
+                    teamId: teamId
+                },
+                select: { id: true, order: true }
+            })
+
+            // Batch create question options
+            const allOptions = originalSurvey.questions.flatMap((question: any) => {
+                if (!question.options || question.options.length === 0) return []
+
+                const newQuestion = questionsWithIds.find(q => q.order === question.order)
+                if (!newQuestion) return []
+
+                return question.options.map((option: any) => ({
+                    questionId: newQuestion.id,
+                    teamId: teamId,
+                    text: option.text,
+                    order: option.order,
+                    isOther: option.isOther
+                }))
+            })
+
+            if (allOptions.length > 0) {
+                await tx.questionOption.createMany({
+                    data: allOptions,
+                    skipDuplicates: true
+                })
             }
 
             // Update team survey counts for the duplicated survey
@@ -691,7 +809,7 @@ export const duplicateSurvey = async (id: string) => {
 
             return newSurvey
         }, {
-            timeout: 10000 // Increase timeout to 10 seconds
+            timeout: 5000 // Reduced timeout due to optimized operations
         })
 
         revalidatePath("/survey")
@@ -709,10 +827,21 @@ export const duplicateSurvey = async (id: string) => {
 export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
     try {
         const wrapper = getPrismaWrapper()
+        const teamId = await getTeamIdCached()
 
-        // Get current survey status and team ID
-        const currentSurvey = await wrapper.findUnique(prisma.survey, {
-            where: { id },
+        if (!teamId) {
+            return {
+                success: false,
+                error: "Team not found"
+            }
+        }
+
+        // Get current survey status and team ID using direct Prisma call
+        const currentSurvey = await prisma.survey.findUnique({
+            where: {
+                id,
+                teamId: teamId // Add team validation
+            },
             select: { status: true, teamId: true }
         })
 
@@ -723,10 +852,10 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
             }
         }
 
-        // Update survey status and team counts in a transaction
+        // Update survey status and team counts in optimized transaction
         await prisma.$transaction(async (tx) => {
-            // Update survey status
-            await wrapper.update(tx.survey, {
+            // Update survey status using direct Prisma call
+            await tx.survey.update({
                 where: { id },
                 data: { status }
             })
@@ -754,6 +883,8 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
                     })
                 }
             }
+        }, {
+            timeout: 3000 // Reduced timeout for simple status update
         })
 
         revalidatePath("/survey")

@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 
-const PORT = 3001;
+const PORT = 4001;
 const DEMO_FILE = path.join(__dirname, '../components/survey-render/demo.html');
 const WIDGET_FILE = path.join(__dirname, '../components/survey-render/opineeo-0.0.1.js');
 const WIDGET_FILE_MIN = path.join(__dirname, '../public/opineeo-0.0.1.min.js');

@@ -31,6 +31,10 @@ import {
     Trash2,
     Calendar,
     Users,
+    ArrowUpDown,
+    ArrowUp,
+    ArrowDown,
+    X,
 } from "lucide-react"
 import { z } from "zod"
 
@@ -78,16 +82,22 @@ import { SurveyStatus } from "@/lib/generated/prisma"
 import LoadingComp from "../loading-comp"
 import { useIsMobile } from "@/hooks/use-mobile"
 
-// Custom debounce hook
+// Custom debounce hook - optimized to prevent callback recreation
 const useDebounce = <T extends (...args: any[]) => any>(callback: T, delay: number) => {
     const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+    const callbackRef = React.useRef(callback)
+
+    // Update callback ref when it changes
+    React.useEffect(() => {
+        callbackRef.current = callback
+    }, [callback])
 
     return React.useCallback((...args: Parameters<T>) => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current)
         }
-        timeoutRef.current = setTimeout(() => callback(...args), delay)
-    }, [callback, delay])
+        timeoutRef.current = setTimeout(() => callbackRef.current(...args), delay)
+    }, [delay]) // Only depend on delay, not callback
 }
 
 // Utility function to determine if a column should be visible based on ID pattern
@@ -105,6 +115,78 @@ const shouldShowColumn = (columnId: string, isMobile: boolean): boolean => {
     // If no mobile/desktop identifier, show on both
     return true
 }
+
+
+// Memoized table cell component to prevent unnecessary re-renders (only for non-action columns)
+const MemoizedTableCell = React.memo(({ cell }: { cell: any }) => (
+    <TableCell key={cell.id}>
+        {cell.column.id === "status"
+            ? flexRender(cell.column.columnDef.cell, cell.getContext())
+            : typeof cell.getValue() === "string"
+                ? (
+                    <span
+                        className="block truncate max-w-xs"
+                        title={cell.getValue() as string}
+                    >
+                        <span className="sm:hidden">
+                            {(cell.getValue() as string).length > 20
+                                ? `${(cell.getValue() as string).slice(0, 20)}…`
+                                : cell.getValue() as string}
+                        </span>
+                        <span className="hidden sm:block">
+                            {(cell.getValue() as string).length > 35
+                                ? `${(cell.getValue() as string).slice(0, 35)}…`
+                                : cell.getValue() as string}
+                        </span>
+                    </span>
+                )
+                : flexRender(cell.column.columnDef.cell, cell.getContext())
+        }
+    </TableCell>
+))
+MemoizedTableCell.displayName = "MemoizedTableCell"
+
+// Sortable header component
+const SortableHeader = React.memo(({
+    columnId,
+    children,
+    onSort,
+    sorting
+}: {
+    columnId: string,
+    children: React.ReactNode,
+    onSort: (columnId: string) => void,
+    sorting: SortingState
+}) => {
+    const currentSort = sorting.find(s => s.id === columnId)
+    const isSorted = !!currentSort
+    const isDesc = currentSort?.desc ?? false
+
+    const getSortIcon = () => {
+        if (!isSorted) return <ArrowUpDown className="h-4 w-4 opacity-50" />
+        return isDesc ? <ArrowDown className="h-4 w-4" /> : <ArrowUp className="h-4 w-4" />
+    }
+
+    return (
+        <div
+            className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 px-2 py-1 rounded transition-colors"
+            onClick={() => onSort(columnId)}
+            role="button"
+            tabIndex={0}
+            aria-label={`Sort by ${columnId} ${isSorted ? (isDesc ? 'descending' : 'ascending') : ''}`}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onSort(columnId)
+                }
+            }}
+        >
+            {children}
+            {getSortIcon()}
+        </div>
+    )
+})
+SortableHeader.displayName = "SortableHeader"
 
 // Database survey type
 interface DatabaseSurvey {
@@ -176,65 +258,107 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
     const [surveyToDelete, setSurveyToDelete] = React.useState<DatabaseSurvey | null>(null)
+    const [actionLoading, setActionLoading] = React.useState<string | null>(null) // Track which action is loading
+
+    // Sorting state
+    const [sorting, setSorting] = React.useState<SortingState>([
+        { id: 'updatedAt', desc: true } // Default sort by updatedAt descending
+    ])
 
     // Input state for debouncing
     const [searchInput, setSearchInput] = React.useState(filters.search || "")
     const [statusFilter, setStatusFilter] = React.useState<string>(filters.status || "")
 
-    // Fetch surveys with current filters
+    // Use refs to avoid dependency issues
+    const filtersRef = React.useRef(filters)
+    const tRef = React.useRef(t)
+
+    // Update refs when values change
+    React.useEffect(() => {
+        filtersRef.current = filters
+    }, [filters])
+
+    React.useEffect(() => {
+        tRef.current = t
+    }, [t])
+
+    // Fetch surveys with current filters - optimized to avoid dependency on filters
     const fetchSurveys = React.useCallback(async (newFilters: Partial<SurveyFilters> = {}) => {
         setIsLoading(true)
         startTransition(async () => {
             try {
-                const mergedFilters = { ...filters, ...newFilters }
+                const currentFilters = filtersRef.current
+                const mergedFilters = { ...currentFilters, ...newFilters }
                 const result = await getSurveysWithPagination(mergedFilters)
                 if (result.success && result.data) {
                     setPaginatedData(result.data)
                     setFilters(mergedFilters as SurveyFilters)
                 } else {
-                    toast.error(result.error || t("table.messages.fetchSurveysError"))
+                    toast.error(result.error || tRef.current("table.messages.fetchSurveysError"))
                 }
             } catch (error) {
-                toast.error(t("table.messages.unexpectedError"))
+                toast.error(tRef.current("table.messages.unexpectedError"))
             } finally {
                 setIsLoading(false)
             }
         })
-    }, [filters, t])
+    }, []) // No dependencies to prevent recreation
 
-    // Debounced search handler
+    // Debounced search handler - optimized delay for better UX
     const debouncedSearch = useDebounce((searchValue: string) => {
         fetchSurveys({ search: searchValue, page: 1 })
-    }, 500)
+    }, 300) // Reduced from 500ms to 300ms for better responsiveness
 
-    // Handle search input change
-    const handleSearchChange = (value: string) => {
+    // Memoized event handlers to prevent child component re-renders
+    const handleSearchChange = React.useCallback((value: string) => {
         setSearchInput(value)
         debouncedSearch(value)
-    }
+    }, [debouncedSearch])
 
-    // Handle status filter change
-    const handleStatusFilterChange = (value: string) => {
+    const handleStatusFilterChange = React.useCallback((value: string) => {
         setStatusFilter(value)
         const statusValue = value === "all" ? undefined : value as SurveyStatus
         fetchSurveys({ status: statusValue, page: 1 })
-    }
+    }, [fetchSurveys])
 
-    // Handle pagination changes
-    const handlePageChange = (page: number) => {
+    const handlePageChange = React.useCallback((page: number) => {
         fetchSurveys({ page })
-    }
+    }, [fetchSurveys])
 
-    const handlePageSizeChange = (pageSize: number) => {
+    const handlePageSizeChange = React.useCallback((pageSize: number) => {
         fetchSurveys({ pageSize, page: 1 })
-    }
+    }, [fetchSurveys])
 
-    // Handle sorting changes
-    const handleSortingChange = (sortBy: SurveyFilters['sortBy'], sortOrder: SurveyFilters['sortOrder']) => {
+    const handleSortingChange = React.useCallback((sortBy: SurveyFilters['sortBy'], sortOrder: SurveyFilters['sortOrder']) => {
         fetchSurveys({ sortBy, sortOrder, page: 1 })
-    }
+    }, [fetchSurveys])
 
-    const getStatusBadge = (status: SurveyStatus) => {
+    // Handle column sorting
+    const handleColumnSort = React.useCallback((columnId: string) => {
+        const currentSort = sorting.find(s => s.id === columnId)
+        let newSortOrder: 'asc' | 'desc' = 'desc'
+
+        if (currentSort) {
+            // Toggle between desc -> asc -> desc
+            newSortOrder = currentSort.desc ? 'asc' : 'desc'
+        }
+
+        // Update sorting state
+        setSorting([{ id: columnId, desc: newSortOrder === 'desc' }])
+
+        // Map columnId to the correct sortBy value for the server
+        let sortBy: SurveyFilters['sortBy']
+        if (columnId === 'totalResponses') {
+            sortBy = 'responses' // Server expects 'responses' but sorts by totalResponses
+        } else {
+            sortBy = columnId as SurveyFilters['sortBy']
+        }
+
+        fetchSurveys({ sortBy, sortOrder: newSortOrder, page: 1 })
+    }, [sorting, fetchSurveys])
+
+    // Memoized status badge function
+    const getStatusBadge = React.useCallback((status: SurveyStatus) => {
         switch (status) {
             case SurveyStatus.published:
                 return <Badge variant="default" className="bg-green-500 hover:bg-green-600">{t("table.status.published")}</Badge>
@@ -245,15 +369,15 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
             default:
                 return <Badge variant="outline">{status}</Badge>
         }
-    }
+    }, [t])
 
-    // Action handlers
-    const handleDeleteSurveyClick = (survey: DatabaseSurvey) => {
+    // Memoized action handlers to prevent child component re-renders
+    const handleDeleteSurveyClick = React.useCallback((survey: DatabaseSurvey) => {
         setSurveyToDelete(survey)
         setDeleteDialogOpen(true)
-    }
+    }, [])
 
-    const handleDeleteSurvey = () => {
+    const handleDeleteSurvey = React.useCallback(() => {
         if (!surveyToDelete) return
 
         setIsLoading(true)
@@ -263,72 +387,71 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
                 if (result.success) {
                     // Refresh data after successful deletion
                     await fetchSurveys()
-                    toast.success(t("table.messages.surveyDeletedSuccess"))
+                    toast.success(tRef.current("table.messages.surveyDeletedSuccess"))
                 } else {
-                    toast.error(result.error || t("table.messages.deleteSurveyError"))
+                    toast.error(result.error || tRef.current("table.messages.deleteSurveyError"))
                 }
             } catch (error) {
-                toast.error(t("table.messages.unexpectedError"))
+                toast.error(tRef.current("table.messages.unexpectedError"))
             } finally {
                 setDeleteDialogOpen(false)
                 setSurveyToDelete(null)
                 setIsLoading(false)
             }
         })
-    }
+    }, [surveyToDelete, fetchSurveys])
 
-    const handleDuplicateSurvey = (id: string) => {
-        setIsLoading(true)
+    const handleDuplicateSurvey = React.useCallback((id: string) => {
+        setActionLoading(id)
         startTransition(async () => {
             try {
                 const result = await duplicateSurvey(id)
                 if (result.success) {
                     // Refresh data after successful duplication
                     await fetchSurveys()
-                    toast.success(t("table.messages.surveyDuplicatedSuccess"))
+                    toast.success(tRef.current("table.messages.surveyDuplicatedSuccess"))
                 } else {
-                    toast.error(result.error || t("table.messages.duplicateSurveyError"))
+                    toast.error(result.error || tRef.current("table.messages.duplicateSurveyError"))
                 }
             } catch (error) {
-                toast.error(t("table.messages.unexpectedError"))
+                toast.error(tRef.current("table.messages.unexpectedError"))
             } finally {
-                setIsLoading(false)
+                setActionLoading(null)
             }
         })
-    }
+    }, [fetchSurveys])
 
-    const handleUpdateStatus = (id: string, status: SurveyStatus) => {
-        setIsLoading(true)
+    const handleUpdateStatus = React.useCallback((id: string, status: SurveyStatus) => {
+        setActionLoading(id)
         startTransition(async () => {
             try {
                 const result = await updateSurveyStatus(id, status)
                 if (result.success) {
                     // Refresh data after successful status update
                     await fetchSurveys()
-                    toast.success(t("table.messages.surveyUpdatedSuccess"))
+                    toast.success(tRef.current("table.messages.surveyUpdatedSuccess"))
                 } else {
-                    toast.error(result.error || t("table.messages.updateSurveyError"))
+                    toast.error(result.error || tRef.current("table.messages.updateSurveyError"))
                 }
             } catch (error) {
-                toast.error(t("table.messages.unexpectedError"))
+                toast.error(tRef.current("table.messages.unexpectedError"))
             } finally {
-                setIsLoading(false)
+                setActionLoading(null)
             }
         })
-    }
+    }, [fetchSurveys])
 
-    const handleCopySurveyId = async (surveyId: string) => {
-
+    const handleCopySurveyId = React.useCallback(async (surveyId: string) => {
         try {
             await navigator.clipboard.writeText(surveyId)
-            toast.success(t("table.messages.surveyIdCopied"))
+            toast.success(tRef.current("table.messages.surveyIdCopied"))
         } catch {
-            toast.error(t("table.messages.copyError"))
+            toast.error(tRef.current("table.messages.copyError"))
         }
+    }, [])
 
-    }
-
-    const columns: ColumnDef<DatabaseSurvey>[] = [
+    // Memoized columns definition to prevent recreation on every render
+    const columns: ColumnDef<DatabaseSurvey>[] = React.useMemo(() => [
         /* {
              id: "select",
              header: ({ table }) => (
@@ -365,7 +488,7 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
                                 variant="ghost"
                                 className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
                                 size="icon"
-                                disabled={isPending}
+                                disabled={actionLoading === row.original.id}
                             >
                                 <MoreHorizontal />
                                 <span className="sr-only">{t("table.actions.openMenu")}</span>
@@ -419,7 +542,15 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
         },
         {
             accessorKey: "name",
-            header: t("table.columns.title"),
+            header: ({ column }) => (
+                <SortableHeader
+                    columnId={column.id}
+                    onSort={handleColumnSort}
+                    sorting={sorting}
+                >
+                    {t("table.columns.title")}
+                </SortableHeader>
+            ),
             cell: ({ row }) => (
                 <div className="font-medium">
                     {row.original.name}
@@ -429,7 +560,15 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
         },
         {
             accessorKey: "status",
-            header: t("table.columns.status"),
+            header: ({ column }) => (
+                <SortableHeader
+                    columnId={column.id}
+                    onSort={handleColumnSort}
+                    sorting={sorting}
+                >
+                    {t("table.columns.status")}
+                </SortableHeader>
+            ),
             cell: ({ row }) => getStatusBadge(row.original.status),
         },
         {
@@ -441,19 +580,34 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
                 </Badge>
             ),
         },
-
         {
-            accessorKey: "responses",
-            header: () => <div className="w-full text-right">{t("table.columns.responses")}</div>,
+            accessorKey: "totalResponses",
+            header: ({ column }) => (
+                <SortableHeader
+                    columnId={column.id}
+                    onSort={handleColumnSort}
+                    sorting={sorting}
+                >
+                    <div className="w-full text-right">{t("table.columns.responses")}</div>
+                </SortableHeader>
+            ),
             cell: ({ row }) => (
                 <div className="text-right font-medium">
-                    {row.original._count.responses.toLocaleString()}
+                    {row.original.totalResponses.toLocaleString()}
                 </div>
             ),
         },
         {
             accessorKey: "createdAt",
-            header: t("table.columns.createdAt"),
+            header: ({ column }) => (
+                <SortableHeader
+                    columnId={column.id}
+                    onSort={handleColumnSort}
+                    sorting={sorting}
+                >
+                    {t("table.columns.createdAt")}
+                </SortableHeader>
+            ),
             cell: ({ row }) => (
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="h-4 w-4" />
@@ -463,7 +617,15 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
         },
         {
             accessorKey: "updatedAt",
-            header: t("table.columns.updatedAt"),
+            header: ({ column }) => (
+                <SortableHeader
+                    columnId={column.id}
+                    onSort={handleColumnSort}
+                    sorting={sorting}
+                >
+                    {t("table.columns.updatedAt")}
+                </SortableHeader>
+            ),
             cell: ({ row }) => (
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="h-4 w-4" />
@@ -491,7 +653,7 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
                                 variant="ghost"
                                 className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
                                 size="icon"
-                                disabled={isPending}
+                                disabled={actionLoading === row.original.id}
                             >
                                 <MoreHorizontal />
                                 <span className="sr-only">{t("table.actions.openMenu")}</span>
@@ -533,24 +695,36 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
                 </div>
             ),
         },
-    ]
+    ], [t, actionLoading, handleCopySurveyId, handleDuplicateSurvey, handleUpdateStatus, handleDeleteSurveyClick, getStatusBadge, handleColumnSort, sorting])
 
-    // Simple table structure without client-side sorting/filtering/pagination
+    // Optimized table configuration for better performance
     const table = useReactTable({
         data: paginatedData.surveys,
         columns,
         state: {
             columnVisibility,
             rowSelection,
+            sorting,
         },
         getRowId: (row) => row.id.toString(),
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onColumnVisibilityChange: setColumnVisibility,
+        onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         manualPagination: true,
         manualSorting: true,
         manualFiltering: true,
+        // Performance optimizations
+        enableGlobalFilter: false,
+        enableColumnFilters: false,
+        enableMultiSort: false,
+        enableSubRowSelection: false,
+        enableGrouping: false,
+        enableExpanding: false,
+        enableHiding: false,
+        enableSorting: true, // Enable sorting for our custom implementation
+        enablePinning: false,
     })
 
     return (
@@ -612,13 +786,16 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
 
             {/* Search and Filters */}
             <div className="flex items-center gap-4">
-                <div className="flex-1">
+                <div className="flex-1 flex items-center gap-2">
                     <Input
                         placeholder={t("table.search.placeholder")}
                         value={searchInput}
                         onChange={(event) => handleSearchChange(event.target.value)}
                         className="max-w-sm"
                     />
+                    <Button variant="ghost" size="icon" onClick={() => { handleSearchChange(""); setSearchInput(""); }} className="-ml-11">
+                        <X />
+                    </Button>
                 </div>
                 <Select
                     value={statusFilter}
@@ -668,33 +845,20 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells()
-                                        .filter((cell) => shouldShowColumn(cell.column.id, isMobile))
-                                        .map((cell) => (
-                                            <TableCell key={cell.id}>
-                                                {cell.column.id === "status"
-                                                    ? flexRender(cell.column.columnDef.cell, cell.getContext())
-                                                    : typeof cell.getValue() === "string"
-                                                        ? (
-                                                            <span
-                                                                className="block truncate max-w-xs"
-                                                                title={cell.getValue() as string}
-                                                            >
-                                                                <span className="sm:hidden">
-                                                                    {(cell.getValue() as string).length > 20
-                                                                        ? `${(cell.getValue() as string).slice(0, 20)}…`
-                                                                        : cell.getValue() as string}
-                                                                </span>
-                                                                <span className="hidden sm:block">
-                                                                    {(cell.getValue() as string).length > 35
-                                                                        ? `${(cell.getValue() as string).slice(0, 35)}…`
-                                                                        : cell.getValue() as string}
-                                                                </span>
-                                                            </span>
-                                                        )
-                                                        : flexRender(cell.column.columnDef.cell, cell.getContext())
-                                                }
-                                            </TableCell>
-                                        ))}
+                                        .filter((cell: any) => shouldShowColumn(cell.column.id, isMobile))
+                                        .map((cell: any) => {
+                                            // Don't memoize action columns to ensure dropdown menus work properly
+                                            if (cell.column.id.includes('actions') || cell.column.id.includes('edit-record')) {
+                                                return (
+                                                    <TableCell key={cell.id}>
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </TableCell>
+                                                )
+                                            }
+
+                                            // Memoize other cells for performance
+                                            return <MemoizedTableCell key={cell.id} cell={cell} />
+                                        })}
                                 </TableRow>
                             ))
                         ) : (

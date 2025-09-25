@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useCallback, useMemo } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { Card, CardContent } from "@/components/ui/card"
@@ -128,6 +128,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
             yesLabel: q.yesLabel || undefined,
             noLabel: q.noLabel || undefined,
             buttonLabel: q.buttonLabel || undefined,
+            hasOtherOption: q.options.some(option => option.isOther),
             options: q.options.map(o => ({
                 id: o.id,
                 text: o.text,
@@ -158,7 +159,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
         }
     })
 
-    const handleSave = () => {
+    const handleSave = useCallback(() => {
         setPendingAction('save')
         startTransition(async () => {
             try {
@@ -187,9 +188,9 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                 setPendingAction(null)
             }
         })
-    }
+    }, [surveyData, t])
 
-    const handlePublish = () => {
+    const handlePublish = useCallback(() => {
         setPendingAction('publish')
         startTransition(async () => {
             try {
@@ -219,12 +220,28 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                 setPendingAction(null)
             }
         })
-    }
+    }, [surveyData, t, router])
 
-    const handleCopySurveyId = async () => {
+    const handleCopySurveyId = useCallback(async () => {
         await navigator.clipboard.writeText(surveyData.id)
         toast.success(t("messages.surveyIdCopied") || "Survey ID copied to clipboard")
-    }
+    }, [surveyData.id, t])
+
+    // Optimized change handlers to prevent unnecessary re-renders
+    const handleSurveyDetailsChange = useCallback((data: Partial<SurveyData>) => {
+        setSurveyData(prev => ({ ...prev, ...data }))
+    }, [])
+
+    const handleQuestionsChange = useCallback((questions: Question[]) => {
+        setSurveyData(prev => ({ ...prev, questions }))
+    }, [])
+
+    const handleStyleChange = useCallback((style: Partial<SurveyData['style']>) => {
+        setSurveyData(prev => ({ ...prev, style: { ...prev.style, ...style } }))
+    }, [])
+
+    // Memoize the survey data to prevent unnecessary re-renders
+    const memoizedSurveyData = useMemo(() => surveyData, [surveyData])
 
     return (
         <div className="space-y-6">
@@ -252,8 +269,8 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
 
             {/* Survey Details Section */}
             <SurveyDetailsSection
-                data={surveyData}
-                onChange={(data) => setSurveyData({ ...surveyData, ...data })}
+                data={memoizedSurveyData}
+                onChange={handleSurveyDetailsChange}
                 surveyTypesData={surveyTypes}
             />
 
@@ -266,17 +283,17 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
 
                 <TabsContent value="questions" className="mt-6">
                     <QuestionsSection
-                        questions={surveyData.questions}
-                        onChange={(questions) => setSurveyData({ ...surveyData, questions })}
+                        questions={memoizedSurveyData.questions}
+                        onChange={handleQuestionsChange}
                         expandAllQuestions={false}
                     />
                 </TabsContent>
 
                 <TabsContent value="style" className="mt-6">
                     <StyleSection
-                        surveyData={surveyData as SurveyData}
-                        style={surveyData.style}
-                        onChange={(style) => setSurveyData({ ...surveyData, style: { ...surveyData.style, ...style } })}
+                        surveyData={memoizedSurveyData as SurveyData}
+                        style={memoizedSurveyData.style}
+                        onChange={handleStyleChange}
                     />
                 </TabsContent>
             </Tabs>

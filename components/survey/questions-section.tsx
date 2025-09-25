@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, memo, forwardRef } from "react"
 import { useTranslations } from "next-intl"
 import {
     DndContext,
@@ -91,7 +91,91 @@ const getQuestionIcon = (format: QuestionFormat) => {
     }
 }
 
-const SortableOptionItem = ({
+// Debounced Input Component for Questions
+const DebouncedQuestionInput = memo(forwardRef<HTMLInputElement, {
+    value: string
+    onChange: (value: string) => void
+    delay?: number
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>>(({
+    value,
+    onChange,
+    delay = 300,
+    ...props
+}, ref) => {
+    const [localValue, setLocalValue] = useState(value)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+    useEffect(() => {
+        setLocalValue(value)
+    }, [value])
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
+        setLocalValue(newValue)
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            onChange(newValue)
+        }, delay)
+    }, [onChange, delay])
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
+
+    return <Input ref={ref} {...props} value={localValue} onChange={handleChange} />
+}))
+
+// Debounced Textarea Component for Questions
+const DebouncedQuestionTextarea = memo(({
+    value,
+    onChange,
+    delay = 300,
+    ...props
+}: {
+    value: string
+    onChange: (value: string) => void
+    delay?: number
+} & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'>) => {
+    const [localValue, setLocalValue] = useState(value)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+    useEffect(() => {
+        setLocalValue(value)
+    }, [value])
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newValue = e.target.value
+        setLocalValue(newValue)
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            onChange(newValue)
+        }, delay)
+    }, [onChange, delay])
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
+
+    return <Textarea {...props} value={localValue} onChange={handleChange} />
+})
+
+const SortableOptionItem = memo(({
     id,
     option,
     index,
@@ -109,6 +193,33 @@ const SortableOptionItem = ({
     isOtherEnabled?: boolean
 }) => {
     const inputRef = useRef<HTMLInputElement>(null)
+    const [localValue, setLocalValue] = useState(option.text)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+    useEffect(() => {
+        setLocalValue(option.text)
+    }, [option.text])
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
+        setLocalValue(newValue)
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            onUpdate(index, newValue)
+        }, 300)
+    }, [onUpdate, index])
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
     const {
         attributes,
         listeners,
@@ -153,9 +264,9 @@ const SortableOptionItem = ({
                 autoFocus={shouldFocus}
                 ref={inputRef}
                 placeholder="Enter option text"
-                value={option.text}
-                onChange={(e) => onUpdate(index, e.target.value)}
-                className={`flex-1 ${option.text.trim() === "" ? "border-red-100 bg-red-50/30 focus:border-red-500 focus:ring-red-100" : ""}`}
+                value={localValue}
+                onChange={handleChange}
+                className={`flex-1 ${localValue.trim() === "" ? "border-red-100 bg-red-50/30 focus:border-red-500 focus:ring-red-100" : ""}`}
             />
 
             {/* Remove Button - Hide for "Other" option when enabled */}
@@ -172,9 +283,9 @@ const SortableOptionItem = ({
             )}
         </div>
     )
-}
+})
 
-const QuestionCard = ({
+const QuestionCard = memo(({
     question,
     onUpdate,
     onDelete,
@@ -234,7 +345,7 @@ const QuestionCard = ({
     }
 
     const handleAddOption = () => {
-        const newOptions = [...question.options, { text: "", order: question.options.length, isOther: false }]
+        const newOptions = [...question.options, { id: `new-option-${Math.random()}`, text: "", order: question.options.length, isOther: false }]
         const newIndex = newOptions.length - 1
         onUpdate({ ...question, options: newOptions })
         setFocusNewOption(newIndex)
@@ -252,7 +363,7 @@ const QuestionCard = ({
             // Add "Other" option if it doesn't exist
             const hasOther = newOptions.some(option => option.isOther)
             if (!hasOther) {
-                newOptions.push({ text: t("options.otherOptionText"), order: newOptions.length, isOther: true })
+                newOptions.push({ id: `new-option-${Math.random()}`, text: t("options.otherOptionText"), order: newOptions.length, isOther: true })
             }
         } else {
             // Remove "Other" option if it exists
@@ -301,6 +412,22 @@ const QuestionCard = ({
     const needsOptions = question.format === QuestionFormat.SINGLE_CHOICE || question.format === QuestionFormat.MULTIPLE_CHOICE
     const needsYesNoLabels = question.format === QuestionFormat.YES_NO
 
+    // Optimized change handlers
+    const handleTitleChange = useCallback((title: string) => {
+        onUpdate({ ...question, title })
+    }, [onUpdate, question])
+
+    const handleDescriptionChange = useCallback((description: string) => {
+        onUpdate({ ...question, description })
+    }, [onUpdate, question])
+
+    const handleYesLabelChange = useCallback((yesLabel: string) => {
+        onUpdate({ ...question, yesLabel })
+    }, [onUpdate, question])
+
+    const handleNoLabelChange = useCallback((noLabel: string) => {
+        onUpdate({ ...question, noLabel })
+    }, [onUpdate, question])
 
     // Auto-focus title input for first question when expanded (but not on initial load)
     useEffect(() => {
@@ -382,12 +509,12 @@ const QuestionCard = ({
                             {/* Question Title */}
                             <div className="space-y-2 mt-4">
                                 <Label htmlFor={`question-title-${question.id}`}>{t("questionTitle.label")}</Label>
-                                <Input
+                                <DebouncedQuestionInput
                                     ref={titleInputRef}
                                     id={`question-title-${question.id}`}
                                     placeholder={t("questionTitle.placeholder")}
                                     value={question.title}
-                                    onChange={(e) => onUpdate({ ...question, title: e.target.value })}
+                                    onChange={handleTitleChange}
                                 />
                             </div>
 
@@ -396,11 +523,11 @@ const QuestionCard = ({
                                 <Label htmlFor={`question-description-${question.id}`}>
                                     {t("description.label")}
                                 </Label>
-                                <Textarea
+                                <DebouncedQuestionTextarea
                                     id={`question-description-${question.id}`}
                                     placeholder={t("description.placeholder")}
                                     value={question.description}
-                                    onChange={(e) => onUpdate({ ...question, description: e.target.value })}
+                                    onChange={handleDescriptionChange}
                                     rows={2}
                                 />
                             </div>
@@ -525,11 +652,11 @@ const QuestionCard = ({
                                             <Label htmlFor={`yes-label-${question.id}`} className="text-xs">
                                                 {t("yesNoLabels.yesLabel")}
                                             </Label>
-                                            <Input
+                                            <DebouncedQuestionInput
                                                 id={`yes-label-${question.id}`}
                                                 placeholder={t("yesNoLabels.yesPlaceholder")}
                                                 value={question.yesLabel || "Yes"}
-                                                onChange={(e) => onUpdate({ ...question, yesLabel: e.target.value })}
+                                                onChange={handleYesLabelChange}
                                             />
                                         </div>
 
@@ -537,11 +664,11 @@ const QuestionCard = ({
                                             <Label htmlFor={`no-label-${question.id}`} className="text-xs">
                                                 {t("yesNoLabels.noLabel")}
                                             </Label>
-                                            <Input
+                                            <DebouncedQuestionInput
                                                 id={`no-label-${question.id}`}
                                                 placeholder={t("yesNoLabels.noPlaceholder")}
                                                 value={question.noLabel || "No"}
-                                                onChange={(e) => onUpdate({ ...question, noLabel: e.target.value })}
+                                                onChange={handleNoLabelChange}
                                             />
                                         </div>
                                     </div>
@@ -554,9 +681,9 @@ const QuestionCard = ({
             </CardContent>
         </Card >
     )
-}
+})
 
-export const QuestionsSection = ({ questions, onChange, expandAllQuestions = true }: QuestionsSectionProps) => {
+export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions = true }: QuestionsSectionProps) => {
     const t = useTranslations("CreateSurvey.questions")
     const [newlyAddedQuestionId, setNewlyAddedQuestionId] = useState<string | null>(null)
     const [allExpanded, setAllExpanded] = useState(expandAllQuestions)
@@ -702,4 +829,8 @@ export const QuestionsSection = ({ questions, onChange, expandAllQuestions = tru
             </CardContent>
         </Card>
     )
-}
+})
+
+QuestionsSection.displayName = "QuestionsSection"
+QuestionCard.displayName = "QuestionCard"
+SortableOptionItem.displayName = "SortableOptionItem"

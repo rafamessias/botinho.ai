@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState, useCallback, useMemo, memo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -96,7 +96,49 @@ const getDefaultCSSTemplate = () => {
     return `.sv{position:relative;display:flex;flex-direction:column;justify-content:space-between;background:transparent;color:inherit;margin:16px 0;padding:16px;min-width:300px;min-height:300px;font:inherit;overflow:hidden}.x{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;opacity:.7;cursor:pointer;font-size:24px;color:inherit;z-index:999}.x:hover{opacity:1}.body{padding:.5rem;margin-bottom:1rem;overflow:hidden;transition:opacity .3s ease}.qc{width:100%;height:100%;padding:0 4px}.qt{font-weight:600;margin-bottom:.5rem;font-size:18px}.qd{opacity:.8;margin-bottom:1rem;font-size:16px}.qs{margin-bottom:1rem;font-size:20px}.opts{margin-top:1.8rem;display:flex;flex-direction:column;align-items:flex-start}.req{color:#ef4444;font-size:1.2rem}.ft{padding:.5rem;display:flex;flex-direction:column}.nav{display:flex}.btn{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font:inherit}.btno{margin-right:.5rem;background:var(--sv-secondary-bg);border:1px solid var(--sv-secondary-border);color:var(--sv-text-color)}.btno:hover{opacity:.5}.btnp{border:0;background:var(--primary,var(--sv-primary-color));color:#fff}.btnp:hover{opacity:.9}.btn:disabled{opacity:.5;cursor:not-allowed}.spinner{animation:spin 1s linear infinite}.qtc{position:relative;overflow:hidden;min-height:200px;width:100%;height:auto}.qtc .qc{position:relative;width:100%;height:auto}.q-exit-right{animation:oR .3s ease-out forwards}.q-enter-right{animation:iR .4s ease-out forwards}.q-exit-left{animation:oL .3s ease-out forwards}.q-enter-left{animation:iL .4s ease-out forwards}.brand{margin-top:1rem;font-size:.75rem;opacity:.7}.brand a{color:inherit}.rad,.chk{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;cursor:pointer}.txt{width:100%;padding:.5rem;border:1px solid currentColor;border-radius:6px;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.stars{display:flex;justify-content:center;gap:.5rem}.star-btn{padding:.25rem;background:none;border:none;cursor:pointer;border-radius:50%;transition:all .2s ease;display:flex;align-items:center;justify-content:center;outline:0}.star-btn:hover{transform:scale(1.1)}.star-btn.star-sel{background-color:transparent}.star-svg{width:30px;height:30px;transition:all .2s ease}.star-btn:hover .star-svg{transform:scale(1.1)}.star-btn:not(.star-sel) .star-svg{opacity:.3}.ltxt{width:100%}.ta{width:100%;min-height:6rem;resize:none;border:1px solid currentColor;border-radius:6px;padding:.5rem;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.cc{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;min-height:250px;position:relative}.ca{margin-bottom:2rem;position:relative}.sc-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;position:relative;animation:scaleIn .6s cubic-bezier(.68,-.55,.265,1.55);box-shadow:0 8px 25px rgba(16,185,129,.3)}.sc-circle::before{content:'';position:absolute;width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);opacity:.3;animation:pulse 2s infinite}.sc-check{position:relative;width:24px;height:24px;transform:rotate(45deg);z-index:2}.cs{position:absolute;width:5px;height:25px;background-color:#fff;left:15px;top:-3px;border-radius:2px;animation:checkmarkStem .4s ease-in-out .3s both}.ck{position:absolute;width:15px;height:5px;background-color:#fff;left:4px;top:17px;border-radius:2px;animation:checkmarkKick .4s ease-in-out .5s both}@keyframes spin{to{transform:rotate(360deg)}}@keyframes oR{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-100%);opacity:0}}@keyframes iR{0%{transform:translateX(100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes oL{0%{transform:translateX(0);opacity:1}100%{transform:translateX(100%);opacity:0}}@keyframes iL{0%{transform:translateX(-100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes p{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(6px)}}@keyframes a{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}@keyframes scaleIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}@keyframes pulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.1);opacity:.1}}@keyframes checkmarkStem{0%{height:0}100%{height:25px}}@keyframes checkmarkKick{0%{width:0}100%{width:15px}}@media(max-width:400px){.sv{max-width:100%;margin:8px;padding:16px}.qt{font-size:16px}.star{font-size:20px}}`;
 };
 
-export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps) => {
+// Debounced Input Component for Style Section
+const DebouncedStyleInput = memo(({
+    value,
+    onChange,
+    delay = 300,
+    ...props
+}: {
+    value: string
+    onChange: (value: string) => void
+    delay?: number
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
+    const [localValue, setLocalValue] = useState(value)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+    useEffect(() => {
+        setLocalValue(value)
+    }, [value])
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
+        setLocalValue(newValue)
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            onChange(newValue)
+        }, delay)
+    }, [onChange, delay])
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
+
+    return <Input {...props} value={localValue} onChange={handleChange} />
+})
+
+export const StyleSection = memo(({ style, onChange, surveyData }: StyleSectionProps) => {
     const t = useTranslations("CreateSurvey.style")
     const [isDark, setIsDark] = useState(false)
     const [displayCSS, setDisplayCSS] = useState('')
@@ -146,20 +188,8 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
         }
     }, [style.styleMode])
 
-    // Generate and save basicCSS when in basic mode
-    useEffect(() => {
-        if (style.styleMode === 'basic') {
-            const generatedCSS = generateCustomCSS()
-            const minifiedCSS = minifyCSS(generatedCSS)
-            // Only update if the basicCSS is different to avoid infinite loops
-            if (style.basicCSS !== minifiedCSS) {
-                onChange({ ...style, basicCSS: minifiedCSS })
-            }
-        }
-    }, [style.styleMode, style.backgroundColor, style.textColor, style.buttonBackgroundColor, style.buttonTextColor, style.margin, style.padding, style.border, style.borderRadius, style.titleFontSize, style.bodyFontSize, style.fontFamily])
-
-    // Generate custom CSS based on current style
-    const generateCustomCSS = () => {
+    // Generate custom CSS based on current style - memoized for performance
+    const generateCustomCSS = useMemo(() => {
         if (style.styleMode === 'advanced' && style.advancedCSS) {
             return style.advancedCSS
         }
@@ -205,20 +235,45 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                 font-family: ${style.fontFamily} !important;
             }
         `
-    }
+    }, [style.styleMode, style.advancedCSS, style.backgroundColor, style.textColor, style.margin, style.padding, style.border, style.borderRadius, style.fontFamily, style.titleFontSize, style.bodyFontSize, style.buttonBackgroundColor, style.buttonTextColor])
+
+    // Generate and save basicCSS when in basic mode
+    useEffect(() => {
+        if (style.styleMode === 'basic') {
+            const generatedCSS = generateCustomCSS
+            const minifiedCSS = minifyCSS(generatedCSS)
+            // Only update if the basicCSS is different to avoid infinite loops
+            if (style.basicCSS !== minifiedCSS) {
+                onChange({ ...style, basicCSS: minifiedCSS })
+            }
+        }
+    }, [style.styleMode, style.backgroundColor, style.textColor, style.buttonBackgroundColor, style.buttonTextColor, style.margin, style.padding, style.border, style.borderRadius, style.titleFontSize, style.bodyFontSize, style.fontFamily, generateCustomCSS, onChange, style])
+
+    // Optimized change handlers
+    const handleStyleModeChange = useCallback((styleMode: 'basic' | 'advanced') => {
+        onChange({ ...style, styleMode })
+    }, [onChange, style])
+
+    const handleAdvancedCSSChange = useCallback((advancedCSS: string) => {
+        onChange({ ...style, advancedCSS })
+    }, [onChange, style])
+
+    const handleBasicStyleChange = useCallback((field: string, value: string) => {
+        onChange({ ...style, [field]: value })
+    }, [onChange, style])
 
     // Handle survey completion in preview
-    const handlePreviewComplete = (responses: any) => {
+    const handlePreviewComplete = useCallback((responses: any) => {
         console.log('Preview completed:', responses)
         // Optionally reset the preview after a delay
         setTimeout(() => { setIsInitialized((prev: boolean) => !prev) }, 1000)
-    }
+    }, [])
 
     // Handle survey close in preview
-    const handlePreviewClose = () => {
+    const handlePreviewClose = useCallback(() => {
         //console.log('Preview closed')
         setTimeout(() => { setIsInitialized((prev: boolean) => !prev) }, 500)
-    }
+    }, [])
 
 
     return (
@@ -235,9 +290,7 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                         <Label htmlFor="style-mode">{t("styleMode.label")}</Label>
                         <Select
                             value={style.styleMode}
-                            onValueChange={(value: 'basic' | 'advanced') =>
-                                onChange({ ...style, styleMode: value })
-                            }
+                            onValueChange={handleStyleModeChange}
                         >
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder={t("styleMode.placeholder")} />
@@ -305,9 +358,9 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                                         onChange={(e) => onChange({ ...style, backgroundColor: e.target.value })}
                                         className="w-16 h-10 p-1 border rounded"
                                     />
-                                    <Input
+                                    <DebouncedStyleInput
                                         value={style.backgroundColor}
-                                        onChange={(e) => onChange({ ...style, backgroundColor: e.target.value })}
+                                        onChange={(value) => handleBasicStyleChange('backgroundColor', value)}
                                         placeholder="transparent"
                                         className="flex-1"
                                     />
@@ -325,9 +378,9 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                                         onChange={(e) => onChange({ ...style, textColor: e.target.value })}
                                         className="w-16 h-10 p-1 border rounded"
                                     />
-                                    <Input
+                                    <DebouncedStyleInput
                                         value={style.textColor}
-                                        onChange={(e) => onChange({ ...style, textColor: e.target.value })}
+                                        onChange={(value) => handleBasicStyleChange('textColor', value)}
                                         placeholder="#222222"
                                         className="flex-1"
                                     />
@@ -472,10 +525,12 @@ export const StyleSection = ({ style, onChange, surveyData }: StyleSectionProps)
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="w-full min-h-[400px] rounded-lg p-4 overflow-hidden">
-                        <OpineeoSurvey surveyData={{ ...surveyData, id: surveyData.id || 'preview-survey' }} customCSS={generateCustomCSS()} onComplete={handlePreviewComplete} onClose={() => handlePreviewClose()} userId={"user001"} extraInfo={"info 01"} />
+                        <OpineeoSurvey surveyData={{ ...surveyData, id: surveyData.id || 'preview-survey' }} customCSS={generateCustomCSS} onComplete={handlePreviewComplete} onClose={() => handlePreviewClose()} userId={"user001"} extraInfo={"info 01"} />
                     </div>
                 </CardContent>
             </Card>
         </div>
     )
-}
+})
+
+StyleSection.displayName = "StyleSection"
