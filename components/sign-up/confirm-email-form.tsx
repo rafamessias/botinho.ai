@@ -252,7 +252,7 @@ export function ConfirmEmailForm({
             <div className="text-center text-xs text-muted-foreground space-y-2">
                 <p>
                     {t("help.needHelp")} {" "}
-                    <a href="mailto:support@example.com" className="underline underline-offset-4 hover:text-foreground">
+                    <a href="mailto:contact@opineeo.com" className="underline underline-offset-4 hover:text-foreground">
                         {t("help.contactSupport")}
                     </a>
                 </p>

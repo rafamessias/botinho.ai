@@ -30,26 +30,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 
-interface UserTeam {
-  id: number
-  name: string
-  description?: string | null
-  members: Array<{
-    id: number
-    isAdmin: boolean
-    canPost: boolean
-    canApprove: boolean
-    isOwner: boolean
-    teamMemberStatus: string
-    user: {
-      id: number
-      firstName: string
-      lastName: string
-      email: string
-      avatarUrl?: string | null
-    }
-  }>
-}
+import { UserTeam } from "@/components/user-provider"
 
 // Loading component for team selection
 function TeamSelectionLoading() {

@@ -246,7 +246,7 @@
         }
     },
     "SignInForm": {
-        "title": "Bem-vindo de volta",
+        "title": "Bem-vindo",
         "description": "Faça login com sua conta do Google",
         "googleButton": "Entrar com Google",
         "orContinueWith": "Ou continue com",

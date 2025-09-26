@@ -71,6 +71,10 @@ export default async function middleware(request: NextRequest) {
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
 
+    if (pathname.includes('/sign-up/confirm')) {
+        return intlResponse;
+    }
+
     const session = await auth();
 
     const user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };

@@ -32,7 +32,8 @@ export class PrismaTeamWrapper {
                 throw new Error("User not found")
             }
 
-            this.teamId = user.defaultTeamId
+
+            this.teamId = user.defaultTeamId || 0
             this.initialized = true
         } catch (error) {
             console.error("Failed to initialize Prisma wrapper:", error)
@@ -55,6 +56,44 @@ export class PrismaTeamWrapper {
     async getTeamId(): Promise<number | null> {
         await this.ensureInitialized()
         return this.teamId
+    }
+
+    /**
+     * Refresh the team ID from the database
+     * Useful when the user's default team has been changed
+     */
+    async refreshTeamId(): Promise<void> {
+        try {
+            const session = await auth()
+
+            if (!session?.user?.email) {
+                throw new Error("User not authenticated")
+            }
+
+            // Get user with default team ID
+            const user = await prisma.user.findUnique({
+                where: { email: session.user.email },
+                select: { defaultTeamId: true }
+            })
+
+            if (!user) {
+                throw new Error("User not found")
+            }
+
+            this.teamId = user.defaultTeamId || 0
+        } catch (error) {
+            console.error("Failed to refresh team ID:", error)
+            throw new Error("Failed to refresh team information")
+        }
+    }
+
+    /**
+     * Reset the wrapper to force re-initialization
+     * Useful when user's team context has changed
+     */
+    reset(): void {
+        this.teamId = null
+        this.initialized = false
     }
 
     /**
@@ -287,4 +326,24 @@ export const getPrismaWrapper = (): PrismaTeamWrapper => {
         wrapperInstance = new PrismaTeamWrapper()
     }
     return wrapperInstance
+}
+
+/**
+ * Reset the singleton wrapper instance
+ * Useful when user's team context has changed and you want to force re-initialization
+ */
+export const resetPrismaWrapper = (): void => {
+    if (wrapperInstance) {
+        wrapperInstance.reset()
+    }
+}
+
+/**
+ * Refresh the team ID in the singleton wrapper instance
+ * Useful when user's default team has been updated
+ */
+export const refreshPrismaWrapperTeamId = async (): Promise<void> => {
+    if (wrapperInstance) {
+        await wrapperInstance.refreshTeamId()
+    }
 }

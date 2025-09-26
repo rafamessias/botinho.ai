@@ -246,7 +246,7 @@
         }
     },
     "SignInForm": {
-        "title": "Welcome back",
+        "title": "Welcome",
         "description": "Login with your Google account",
         "googleButton": "Login with Google",
         "orContinueWith": "Or continue with",

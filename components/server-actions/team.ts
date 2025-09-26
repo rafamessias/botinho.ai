@@ -221,23 +221,17 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
             where: { email: validatedData.email }
         })
 
+        const currentLocale = await getCurrentLocale();
+        const confirmationToken = await generateConfirmationToken();
+        let invitedUserPassword;
+        const firstName = validatedData.email.trim().split('@')[0];
+
         if (!invitedUser) {
 
-
-            const invitedUserPassword = await generateConfirmationToken(12, 10)
+            invitedUserPassword = await generateConfirmationToken(12, 10)
 
             // Hash password
             const hashedPassword = await bcrypt.hash(invitedUserPassword, 12)
-
-            // Generate confirmation token
-            const confirmationToken = await generateConfirmationToken()
-
-            // Get current locale
-            const currentLocale = await getCurrentLocale()
-
-            // Split name into first and last name
-            const firstName = validatedData.email.trim().split('@')[0]
-
 
             // Create a placeholder user for the invitation
             invitedUser = await prisma.user.create({
@@ -255,38 +249,18 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                 }
             })
 
-            // Send invitation email
-            const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
-            const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
-            const invitationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}&teamId=${validatedData.teamId}`
-
-            const { data, error } = await resend.emails.send({
-                from: fromEmail,
-                to: [validatedData.email],
-                subject: currentLocale === 'pt-BR' ? 'Convite para se juntar à equipe' : 'Invitation to join team',
-                react: await TeamInvitationEmail({
-                    userName: firstName,
-                    invitationUrl: invitationUrl,
-                    lang: currentLocale,
-                    baseUrl,
-                    teamName: teamMember.team.name,
-                    inviterName: session.user.email,
-                    password: invitedUserPassword,
-                }),
+        } else {
+            // Check if user is already a member
+            const existingMember = await prisma.teamMember.findFirst({
+                where: {
+                    teamId: validatedData.teamId,
+                    userId: invitedUser.id,
+                }
             })
 
-        }
-
-        // Check if user is already a member
-        const existingMember = await prisma.teamMember.findFirst({
-            where: {
-                teamId: validatedData.teamId,
-                userId: invitedUser.id,
+            if (existingMember) {
+                return { success: false, error: "User is already a member of this team" }
             }
-        })
-
-        if (existingMember) {
-            return { success: false, error: "User is already a member of this team" }
         }
 
         // Create team member invitation
@@ -295,11 +269,40 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                 userId: invitedUser.id,
                 teamId: validatedData.teamId,
                 isAdmin: validatedData.isAdmin,
-                canPost: validatedData.canPost,
+                canPost: validatedData.isAdmin ? true : validatedData.canPost,
                 canApprove: true, //always can read
                 isOwner: false,
                 teamMemberStatus: "invited",
             }
+        })
+
+
+        if (!invitedUserPassword) {
+            //update user with confirmation token
+            await prisma.user.update({
+                where: { id: invitedUser.id },
+                data: { confirmationToken }
+            })
+        }
+
+        // Send invitation email
+        const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
+        const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>"
+        const invitationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}&teamId=${validatedData.teamId}`
+
+        const { data, error } = await resend.emails.send({
+            from: fromEmail,
+            to: [validatedData.email],
+            subject: currentLocale === 'pt-BR' ? 'Convite para se juntar à equipe' : 'Invitation to join team',
+            react: await TeamInvitationEmail({
+                userName: firstName,
+                invitationUrl: invitationUrl,
+                lang: currentLocale,
+                baseUrl,
+                teamName: teamMember.team.name,
+                inviterName: session.user.email,
+                ...(invitedUserPassword && { password: invitedUserPassword }),
+            }),
         })
 
         return {
@@ -356,7 +359,7 @@ export const updateMemberAction = async (formData: z.infer<typeof updateMemberSc
             },
             data: {
                 isAdmin: validatedData.isAdmin,
-                canPost: validatedData.canPost,
+                canPost: validatedData.isAdmin ? true : validatedData.canPost,
                 canApprove: true, //always can read
             }
         })
@@ -428,6 +431,12 @@ export const removeMemberAction = async (formData: z.infer<typeof removeMemberSc
             }
         })
 
+        //update user to remove default team
+        await prisma.user.update({
+            where: { id: validatedData.userId },
+            data: { defaultTeamId: null }
+        })
+
         return {
             success: true,
             message: t("messages.memberRemoveSuccess"),
@@ -450,6 +459,9 @@ export const removeMemberAction = async (formData: z.infer<typeof removeMemberSc
 export const deleteTeamAction = async (formData: z.infer<typeof deleteTeamSchema>) => {
     const t = await getTranslations("Team")
 
+    //avoid deleting
+    return { success: false, error: "Deleting teams is not allowed" };
+    /*
     try {
         const session = await auth()
         if (!session?.user?.email) {
@@ -545,6 +557,7 @@ export const deleteTeamAction = async (formData: z.infer<typeof deleteTeamSchema
 
         return { success: false, error: t("messages.deleteFailed") }
     }
+    */
 }
 
 /**
@@ -607,7 +620,7 @@ export const getTeamAction = async (teamId: number) => {
 /**
  * Get all teams for the current user
  */
-export const getUserTeamsAction = async () => {
+export const getUserTeamsAction = async (onlyMyTeamsMembers: boolean = false) => {
     try {
         const session = await auth()
         if (!session?.user?.email) {
@@ -616,18 +629,36 @@ export const getUserTeamsAction = async () => {
 
         const teams = await prisma.team.findMany({
             where: {
-                members: {
-                    some: {
-                        user: { email: session.user.email }
+                ...(onlyMyTeamsMembers && {
+                    members: {
+                        some: {
+                            user: { email: session.user.email },
+                            teamMemberStatus: "accepted"
+                        }
                     }
-                }
+                }),
+                ...(!onlyMyTeamsMembers && {
+                    members: {
+                        some: {
+                            user: { email: session.user.email },
+                        }
+                    }
+                })
             },
             select: {
                 id: true,
                 name: true,
                 description: true,
                 token: true,
+                totalSurveys: true,
+                totalActiveSurveys: true,
+                totalResponses: true,
                 members: {
+                    ...(onlyMyTeamsMembers && {
+                        where: {
+                            teamMemberStatus: "accepted"
+                        }
+                    }),
                     include: {
                         user: {
                             select: {

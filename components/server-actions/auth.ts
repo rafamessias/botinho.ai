@@ -217,7 +217,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
 
         // Send confirmation email or OTP based on environment
         const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/sign-up/otp?otp=${confirmationToken}&email=${validatedData.email}&phone=${validatedData.phone}`
-        const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+        const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>"
 
         try {
             if (isOTPEnabled) {
@@ -337,7 +337,7 @@ export const confirmEmailAction = async (token: string, teamId: number) => {
         const user = await prisma.user.findFirst({
             where: {
                 confirmationToken: token,
-                confirmed: false,
+                //confirmed: false,
             }
         })
 
@@ -414,7 +414,7 @@ export const resendConfirmationEmailAction = async (email: string) => {
 
         // Send confirmation email
         const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
-        const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+        const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>"
         const confirmationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}`
 
         const { data, error } = await resend.emails.send({
@@ -553,7 +553,7 @@ export const resetPasswordAction = async (email: string) => {
 
             // Send reset password email
             const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
-            const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+            const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>"
             const resetUrl = `${baseUrl}/${currentLocale}/reset-password/confirm?token=${resetPasswordToken}`
 
             try {

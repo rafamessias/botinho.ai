@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import { Download, Table, BarChart3, ChevronDown } from "lucide-react"
+import { Link } from "@/i18n/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -41,8 +42,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { RawDataTable } from "./raw-data-table"
 import { SurveyData, Question } from "./types"
-import { getSurveyResponseSummary, getQuestionResponses } from "@/components/server-actions/survey"
+import { getSurveyResponseSummary, getQuestionResponses, getPublishedAndArchivedSurveys } from "@/components/server-actions/survey"
 import { SurveyResponseSummary } from "@/lib/generated/prisma"
+import { useUser } from "../user-provider"
 
 // Extended type for SurveyResponseSummary with relations
 type SurveyResponseSummaryWithRelations = SurveyResponseSummary & {
@@ -72,8 +74,31 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     const [processedQuestions, setProcessedQuestions] = React.useState<Question[]>([])
     const [rawData, setRawData] = React.useState<any[]>([])
     const [loading, setLoading] = React.useState(false)
+    const [selectedSurvey, setSelectedSurvey] = React.useState<SurveyData | null>(surveys.find(survey => survey.id === selectedSurveyId) || null)
+    const { user } = useUser()
 
-    const selectedSurvey = surveys.find(survey => survey.id === selectedSurveyId)
+
+    React.useEffect(() => {
+        const fetchSurveys = async () => {
+            const surveysResult = await getPublishedAndArchivedSurveys()
+
+            // Transform the database surveys to match the expected format
+            const surveys = surveysResult.success && surveysResult.surveys ? surveysResult.surveys.map(survey => ({
+                id: survey.id,
+                title: survey.name.length > 45 ? survey.name.slice(0, 45) + "..." : survey.name,
+                description: survey.description || "",
+                createdAt: survey.createdAt.toLocaleDateString(),
+                totalResponses: survey.totalResponses,
+                status: survey.status,
+                type: survey.type?.name || "Default",
+                questions: [] // Will be populated when survey is selected
+            })) : []
+            setSelectedSurvey(surveys.find(survey => survey.id === selectedSurveyId) || null)
+        }
+
+        fetchSurveys()
+
+    }, [user?.defaultTeamId])
 
     // Fetch survey data when a survey is selected
     React.useEffect(() => {
@@ -378,10 +403,15 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
 
     if (surveys.length === 0) {
         return (
-            <Card>
+            <Card className="border-none shadow-none bg-transparent">
                 <CardContent className="flex items-center justify-center py-12">
                     <div className="text-center">
                         <p className="text-muted-foreground">No surveys available</p>
+                        <Button asChild className="mt-4">
+                            <Link href="/survey/create">
+                                Create Survey
+                            </Link>
+                        </Button>
                     </div>
                 </CardContent>
             </Card>

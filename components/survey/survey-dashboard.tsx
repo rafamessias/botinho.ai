@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     Card,
     CardDescription,
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card"
 import { SurveyTable } from "@/components/survey/survey-table"
 import { type PaginatedSurveysResult } from "@/components/server-actions/survey"
-import { Team } from "@/lib/generated/prisma"
+import { useUser, UserTeam } from "../user-provider"
 
 
 interface SurveyStats {
@@ -20,14 +20,27 @@ interface SurveyStats {
     totalResponses: number
 }
 
-export const SurveyDashboard = ({ currentTeam, initialData }: { currentTeam: Team, initialData?: PaginatedSurveysResult }) => {
+export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurveysResult }) => {
     const t = useTranslations("Survey")
+    const { user } = useUser()
+    const [isLoading, setIsLoading] = useState(false)
+
+    const currentTeam = user?.teams?.find((team: UserTeam) => team.id === user?.defaultTeamId)
+
     const [surveyStats, setSurveyStats] = useState<SurveyStats>({
         totalSurveys: currentTeam?.totalSurveys || 0,
         activeSurveys: currentTeam?.totalActiveSurveys || 0,
         totalResponses: currentTeam?.totalResponses || 0,
     })
-    const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        setSurveyStats({
+            totalSurveys: currentTeam?.totalSurveys || 0,
+            activeSurveys: currentTeam?.totalActiveSurveys || 0,
+            totalResponses: currentTeam?.totalResponses || 0,
+        })
+    }, [currentTeam])
+
 
     if (isLoading) {
         return (

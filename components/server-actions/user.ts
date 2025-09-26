@@ -298,6 +298,10 @@ export const updateDefaultTeamAction = async (teamId: number) => {
             data: { defaultTeamId: teamId }
         })
 
+        // Refresh the Prisma wrapper's team ID to reflect the change
+        const { refreshPrismaWrapperTeamId } = await import("@/lib/prisma-wrapper")
+        await refreshPrismaWrapperTeamId()
+
         return {
             success: true,
             user: updatedUser

@@ -234,7 +234,7 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
     const { hasPermission } = useUser()
     const userHasPermission = hasPermission()
     const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
-
+    const { user } = useUser()
     // Server-side state
     const [paginatedData, setPaginatedData] = React.useState<PaginatedSurveysResult>(
         initialData || {
@@ -276,6 +276,11 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
     // Use refs to avoid dependency issues
     const filtersRef = React.useRef(filters)
     const tRef = React.useRef(t)
+
+    React.useEffect(() => {
+        fetchSurveys()
+        console.log(user?.defaultTeamId)
+    }, [user?.defaultTeamId])
 
     // Update refs when values change
     React.useEffect(() => {

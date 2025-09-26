@@ -7,11 +7,14 @@ import { useTheme } from "next-themes"
 import { Theme } from "@/lib/generated/prisma"
 import { getUserTeamsAction } from "./server-actions/team"
 
-interface UserTeam {
+export interface UserTeam {
     id: number
     name: string
     description?: string | null
-    members: Array<{
+    totalSurveys: number
+    totalActiveSurveys: number
+    totalResponses: number
+    members?: Array<{
         id: number
         isAdmin: boolean
         canPost: boolean
@@ -96,7 +99,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
             if (result.success && result.user) {
                 if (teamsUpdate) {
-                    const resultTeams = await getUserTeamsAction()
+                    const resultTeams = await getUserTeamsAction(true)
                     if (resultTeams && resultTeams?.success && resultTeams?.teams) {
                         setUser({ ...result.user, teams: resultTeams.teams as UserTeam[] })
                     } else {
@@ -156,7 +159,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
         // Assuming user.teams is an array of team objects with members
         const team = user.teams?.find((t: any) => t.id === user.defaultTeamId)
-        if (!team || !Array.isArray(team.members)) return { isAdmin: false, canPost: false, canApprove: false }
+        if (!team || !team.members || !Array.isArray(team.members)) return { isAdmin: false, canPost: false, canApprove: false }
 
         // Return true if the user has any member records in their default team
         const userTeamMember = team.members.find((member: any) => member.userId === user.id)

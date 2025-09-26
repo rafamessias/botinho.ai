@@ -88,6 +88,32 @@ const project = await wrapper.upsert(prisma.project, {
 const teamId = await wrapper.getTeamId()
 ```
 
+### Refreshing Team ID
+
+When a user's default team changes, you can refresh the wrapper's team ID:
+
+```typescript
+// Refresh the team ID from the database
+await wrapper.refreshTeamId()
+
+// Or use the singleton helper
+import { refreshPrismaWrapperTeamId } from '@/lib/prisma-wrapper'
+await refreshPrismaWrapperTeamId()
+```
+
+### Resetting the Wrapper
+
+To force complete re-initialization:
+
+```typescript
+// Reset the wrapper instance
+wrapper.reset()
+
+// Or use the singleton helper
+import { resetPrismaWrapper } from '@/lib/prisma-wrapper'
+resetPrismaWrapper()
+```
+
 ## Prerequisites
 
 1. **User Model**: Your user model must have a `defaultTeamId` field
