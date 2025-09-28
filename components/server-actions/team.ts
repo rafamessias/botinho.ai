@@ -101,7 +101,13 @@ export const createTeamAction = async (formData: z.infer<typeof createTeamSchema
                 }
             })
 
-            await addDefaultSurveyTypes(team.id)
+            // Add default survey types to the team using createMany for efficiency
+            let defaultSurveyTypes = [{ name: "Product Feedback", isDefault: true, teamId: team.id }]
+            defaultSurveyTypes.push(...["Customer Satisfaction", "Employee Engagement", "Market Research", "Event Feedback", "User Experience"].map(name => ({ name, isDefault: false, teamId: team.id })))
+
+            await tx.surveyType.createMany({
+                data: defaultSurveyTypes
+            })
 
             // Update user's default team
             await tx.user.update({

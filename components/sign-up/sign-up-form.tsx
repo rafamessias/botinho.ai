@@ -43,7 +43,7 @@ export function SignUpForm({
     const signUpSchema = z.object({
         name: z.string().min(2, t("validation.nameMinLength")),
         email: z.string().email(t("validation.emailRequired")),
-        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^\+\d{10,15}$/, t("validation.phoneInvalid")),
+        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^\+\d{10,15}$/, t("validation.phoneInvalid")).optional(),
         password: z.string().min(6, t("validation.passwordMinLength")),
         confirmPassword: z.string().min(6, t("validation.confirmPasswordMinLength")),
     }).refine((data) => data.password === data.confirmPassword, {
@@ -77,7 +77,7 @@ export function SignUpForm({
                     // Redirect to OTP page with email and phone parameters
                     const params = new URLSearchParams({
                         email: data.email,
-                        phone: data.phone
+                        phone: data.phone || ""
                     })
                     router.push(`/${locale}/sign-up/otp?${params.toString()}`)
                 } else {

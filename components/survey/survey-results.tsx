@@ -62,10 +62,10 @@ type SurveyResponseSummaryWithRelations = SurveyResponseSummary & {
 }
 
 interface SurveyResultsProps {
-    surveys: SurveyData[]
+    serverSurveys: SurveyData[] | null
 }
 
-export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
+export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) => {
     const [selectedSurveyId, setSelectedSurveyId] = React.useState<string>("")
     const [viewMode, setViewMode] = React.useState<"charts" | "table">("charts")
     const [isExporting, setIsExporting] = React.useState(false)
@@ -74,16 +74,16 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     const [processedQuestions, setProcessedQuestions] = React.useState<Question[]>([])
     const [rawData, setRawData] = React.useState<any[]>([])
     const [loading, setLoading] = React.useState(false)
-    const [selectedSurvey, setSelectedSurvey] = React.useState<SurveyData | null>(surveys.find(survey => survey.id === selectedSurveyId) || null)
+    const [selectedSurvey, setSelectedSurvey] = React.useState<SurveyData | null>(serverSurveys?.find(survey => survey.id === selectedSurveyId) || null)
+    const [surveys, setSurveys] = React.useState<SurveyData[]>(serverSurveys || [])
     const { user } = useUser()
-
 
     React.useEffect(() => {
         const fetchSurveys = async () => {
             const surveysResult = await getPublishedAndArchivedSurveys()
 
             // Transform the database surveys to match the expected format
-            const surveys = surveysResult.success && surveysResult.surveys ? surveysResult.surveys.map(survey => ({
+            const surveyResults = surveysResult.success && surveysResult.surveys ? surveysResult.surveys.map(survey => ({
                 id: survey.id,
                 title: survey.name.length > 45 ? survey.name.slice(0, 45) + "..." : survey.name,
                 description: survey.description || "",
@@ -93,7 +93,10 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
                 type: survey.type?.name || "Default",
                 questions: [] // Will be populated when survey is selected
             })) : []
-            setSelectedSurvey(surveys.find(survey => survey.id === selectedSurveyId) || null)
+
+            setSelectedSurvey(surveyResults.find(survey => survey.id === selectedSurveyId) || null)
+            setSurveys(surveyResults);
+
         }
 
         fetchSurveys()
@@ -103,9 +106,11 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
     // Fetch survey data when a survey is selected
     React.useEffect(() => {
         const fetchSurveyData = async () => {
+
             if (!selectedSurveyId) {
                 setSurveyData(null)
                 setRawData([])
+                setProcessedQuestions([])
                 return
             }
 
@@ -136,6 +141,15 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ surveys }) => {
         fetchSurveyData()
     }, [selectedSurveyId, selectedSurvey])
 
+    // Update selectedSurvey when selectedSurveyId changes
+    React.useEffect(() => {
+        if (selectedSurveyId && surveys.length > 0) {
+            const foundSurvey = surveys.find(survey => survey.id === selectedSurveyId)
+            setSelectedSurvey(foundSurvey || null)
+        } else if (!selectedSurveyId) {
+            setSelectedSurvey(null)
+        }
+    }, [selectedSurveyId, surveys])
 
     // Process SurveyResponseSummary data into Question format for charts
     const processSummaryDataToQuestions = (summaryData: SurveyResponseSummaryWithRelations[]): Question[] => {

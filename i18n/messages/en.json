@@ -166,6 +166,7 @@
     },
     "Common": {
         "loading": "Loading...",
+        "deleting": "Deleting...",
         "save": "Save",
         "saving": "Saving...",
         "cancel": "Cancel",
@@ -276,7 +277,7 @@
         "namePlaceholder": "John Doe",
         "email": "Email",
         "emailPlaceholder": "m@example.com",
-        "phone": "Phone Number",
+        "phone": "Phone Number (optional)",
         "phonePlaceholder": "+1 (555) 123-4567",
         "password": "Password",
         "passwordPlaceholder": "Enter your password",
@@ -610,7 +611,9 @@
             "avatarUpdated": "Profile picture updated successfully",
             "updateFailed": "Failed to update profile",
             "avatarUpdateFailed": "Failed to update profile picture",
-            "unexpectedError": "An unexpected error occurred"
+            "unexpectedError": "An unexpected error occurred",
+            "accountDeleted": "Account deleted successfully",
+            "deleteFailed": "Failed to delete account"
         },
         "validation": {
             "firstNameRequired": "First name is required",
@@ -618,6 +621,26 @@
             "lastNameTooLong": "Last name is too long",
             "phoneMinLength": "Phone number must be at least 10 characters",
             "phoneInvalid": "Invalid phone number format"
+        },
+        "deleteAccount": {
+            "title": "Delete Account",
+            "description": "Permanently delete your account and all associated data",
+            "warning": "This action cannot be undone. All your data, surveys, and team memberships will be permanently deleted.",
+            "button": "Delete Account",
+            "modal": {
+                "title": "Delete Account",
+                "description": "This action cannot be undone. This will permanently delete your account and remove all data from our servers.",
+                "emailLabel": "Type your email to confirm",
+                "emailNote": "You must type your exact email address to confirm deletion",
+                "confirm": "Yes, delete my account",
+                "consequences": {
+                    "title": "What happens when you delete your account:",
+                    "account": "Your account will be permanently deleted",
+                    "teams": "If you own any teams, all members will be removed and teams will be deactivated",
+                    "data": "All your surveys, responses, and data will be permanently deleted",
+                    "irreversible": "This action is irreversible and cannot be undone"
+                }
+            }
         }
     },
     "CompanyInvitation": {

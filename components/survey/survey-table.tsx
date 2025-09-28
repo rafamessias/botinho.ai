@@ -119,7 +119,7 @@ const shouldShowColumn = (columnId: string, isMobile: boolean): boolean => {
 
 
 // Memoized table cell component to prevent unnecessary re-renders (only for non-action columns)
-const MemoizedTableCell = React.memo(({ cell }: { cell: any }) => (
+const MemoizedTableCell = ({ cell }: { cell: any }) => (
     <TableCell key={cell.id}>
         {cell.column.id === "status"
             ? flexRender(cell.column.columnDef.cell, cell.getContext())
@@ -144,7 +144,7 @@ const MemoizedTableCell = React.memo(({ cell }: { cell: any }) => (
                 : flexRender(cell.column.columnDef.cell, cell.getContext())
         }
     </TableCell>
-))
+)
 MemoizedTableCell.displayName = "MemoizedTableCell"
 
 // Sortable header component
@@ -279,7 +279,6 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
 
     React.useEffect(() => {
         fetchSurveys()
-        console.log(user?.defaultTeamId)
     }, [user?.defaultTeamId])
 
     // Update refs when values change

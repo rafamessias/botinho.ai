@@ -29,7 +29,7 @@ export const SurveyWidgetDocs = ({ currentTeamToken }: SurveyWidgetDocsProps) =>
 <head>
     <title>Survey Widget Example</title>
     <!-- 1. Include the widget script -->
-    <script src="${baseUrl}/opineeo-sv-w.min.js"></script>
+    <script src="${baseUrl}/opineeo-0.0.1.min.js"></script>
 </head>
 <body>
     <!-- 2. Create container -->

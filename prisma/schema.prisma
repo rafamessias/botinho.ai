@@ -36,6 +36,12 @@ model User {
   avatar               File?        @relation("UserAvatar", fields: [avatarId], references: [id])
   team                 Team?        @relation("UserDefaultTeam", fields: [defaultTeamId], references: [id])
 
+  @@index([email])
+  @@index([phone])
+  @@index([resetPasswordToken])
+  @@index([confirmationToken])
+  @@index([defaultTeamId])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -116,6 +122,8 @@ model Team {
   user               User[]                  @relation("UserDefaultTeam")
   responseSummaries  SurveyResponseSummary[]
 
+  @@index([token])
+  @@index([createdAt])
   @@map("teams")
 }
 
@@ -134,6 +142,11 @@ model TeamMember {
   user             User             @relation("UserTeamMembers", fields: [userId], references: [id])
 
   @@unique([userId, teamId])
+  @@index([userId])
+  @@index([teamId])
+  @@index([teamMemberStatus])
+  @@index([isAdmin])
+  @@index([isOwner])
   @@map("team_members")
 }
 
@@ -147,6 +160,9 @@ model SurveyType {
   team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   surveys   Survey[]
 
+  @@index([teamId])
+  @@index([isDefault])
+  @@index([name])
   @@map("survey_types")
 }
 
@@ -170,6 +186,11 @@ model Survey {
   type                   SurveyType?             @relation(fields: [typeId], references: [id])
   SurveyResponseSummary  SurveyResponseSummary[]
 
+  @@index([teamId])
+  @@index([typeId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([teamId, status])
   @@map("surveys")
 }
 
@@ -220,6 +241,10 @@ model Question {
   team                  Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   SurveyResponseSummary SurveyResponseSummary[]
 
+  @@index([surveyId])
+  @@index([teamId])
+  @@index([surveyId, order])
+  @@index([format])
   @@map("questions")
 }
 
@@ -237,6 +262,10 @@ model QuestionOption {
   responses             QuestionResponse[]
   SurveyResponseSummary SurveyResponseSummary[]
 
+  @@index([questionId])
+  @@index([teamId])
+  @@index([questionId, order])
+  @@index([isOther])
   @@map("question_options")
 }
 
@@ -256,6 +285,13 @@ model SurveyResponse {
   team                  Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   SurveyResponseSummary SurveyResponseSummary[]
 
+  @@index([surveyId])
+  @@index([teamId])
+  @@index([status])
+  @@index([userId])
+  @@index([submittedAt])
+  @@index([surveyId, status])
+  @@index([teamId, status])
   @@map("survey_responses")
 }
 
@@ -288,6 +324,13 @@ model SurveyResponseSummary {
   @@unique([surveyId, questionId, optionId, teamId])
   @@unique([surveyId, questionId, numberValue, teamId])
   @@unique([surveyId, questionId, booleanValue, teamId])
+  @@index([surveyId])
+  @@index([questionId])
+  @@index([teamId])
+  @@index([responseId])
+  @@index([optionId])
+  @@index([questionFormat])
+  @@index([lastUpdated])
   @@map("survey_response_summaries")
 }
 
@@ -310,6 +353,12 @@ model QuestionResponse {
   response       SurveyResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
   team           Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
+  @@index([questionId])
+  @@index([responseId])
+  @@index([teamId])
+  @@index([optionId])
+  @@index([questionFormat])
+  @@index([questionId, optionId])
   @@map("question_responses")
 }
 

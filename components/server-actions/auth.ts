@@ -12,7 +12,6 @@ import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
 import { Provider, Theme } from "@/lib/generated/prisma"
-import { addDefaultSurveyTypes } from "./team"
 
 // Types for form data
 export interface SignInFormData {
@@ -23,7 +22,7 @@ export interface SignInFormData {
 export interface SignUpFormData {
     name: string
     email: string
-    phone: string
+    phone?: string
     password: string
     confirmPassword: string
 }
@@ -37,7 +36,7 @@ const signInSchema = z.object({
 const signUpSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Invalid email address"),
-    phone: z.string().min(10, "Phone number must be at least 10 characters").regex(/^[+]?[\d\s\-\(\)]{10,}$/, "Invalid phone number format"),
+    phone: z.string().min(10, "Phone number must be at least 10 characters").regex(/^[+]?[\d\s\-\(\)]{10,}$/, "Invalid phone number format").optional(),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm password must be at least 6 characters"),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -132,7 +131,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
             where: {
                 OR: [
                     { email: validatedData.email },
-                    { phone: validatedData.phone }
+                    { phone: validatedData.phone || "" }
                 ]
             }
         })
@@ -141,7 +140,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
             if (existingUser.email === validatedData.email) {
                 return { success: false, error: t("emailExists") }
             }
-            if (existingUser.phone === validatedData.phone) {
+            if (validatedData.phone && existingUser.phone === validatedData.phone) {
                 return { success: false, error: t("phoneExists") }
             }
         }
@@ -170,7 +169,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
                 data: {
                     email: validatedData.email,
                     password: hashedPassword,
-                    phone: validatedData.phone,
+                    phone: validatedData.phone || null,
                     firstName,
                     lastName,
                     provider: 'local',
@@ -202,7 +201,13 @@ export const signUpAction = async (formData: SignUpFormData) => {
                 }
             })
 
-            await addDefaultSurveyTypes(team.id)
+            // Add default survey types to the team using createMany for efficiency
+            let defaultSurveyTypes = [{ name: "Product Feedback", isDefault: true, teamId: team.id }]
+            defaultSurveyTypes.push(...["Customer Satisfaction", "Employee Engagement", "Market Research", "Event Feedback", "User Experience"].map(name => ({ name, isDefault: false, teamId: team.id })))
+
+            await tx.surveyType.createMany({
+                data: defaultSurveyTypes
+            })
 
             // Update user's default team
             await tx.user.update({

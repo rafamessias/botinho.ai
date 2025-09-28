@@ -298,10 +298,6 @@ export const updateDefaultTeamAction = async (teamId: number) => {
             data: { defaultTeamId: teamId }
         })
 
-        // Refresh the Prisma wrapper's team ID to reflect the change
-        const { refreshPrismaWrapperTeamId } = await import("@/lib/prisma-wrapper")
-        await refreshPrismaWrapperTeamId()
-
         return {
             success: true,
             user: updatedUser
@@ -310,5 +306,94 @@ export const updateDefaultTeamAction = async (teamId: number) => {
     } catch (error) {
         console.error("Update default team error:", error)
         return { success: false, error: "Failed to update default team" }
+    }
+}
+
+/**
+ * Server action to delete user account
+ */
+export const deleteUserAccountAction = async (userEmail: string) => {
+    const t = await getTranslations("AuthErrors")
+
+    try {
+        // Get current session
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        // Verify the email matches the current user
+        if (session.user.email !== userEmail) {
+            return { success: false, error: "Email does not match your account" }
+        }
+
+        // Find user by email
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            include: {
+                teamMembers: {
+                    include: {
+                        team: true
+                    }
+                }
+            }
+        })
+
+        if (!user) {
+            return { success: false, error: "User not found" }
+        }
+
+        // Get current date in dd_mm_yyyy format
+        const now = new Date()
+        const day = String(now.getDate()).padStart(2, '0')
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const year = String(now.getFullYear())
+        const milliseconds = String(now.getTime())
+        const dateStr = `${day}_${month}_${year}_${milliseconds}`
+
+        // Create new email with prefix
+        const newEmail = `deleted_${dateStr}_${user.email}`
+
+        // Use transaction to ensure all operations succeed or fail together
+        await prisma.$transaction(async (tx) => {
+            // Find teams where user is owner
+            const ownedTeams = user.teamMembers.filter(member => member.isOwner)
+
+            // For each owned team, remove all members except the current user and set team as inactive
+            for (const ownedTeam of ownedTeams) {
+                // Remove all team members except the owner
+                await tx.teamMember.deleteMany({
+                    where: {
+                        teamId: ownedTeam.teamId,
+                        userId: { not: user.id }
+                    }
+                })
+
+                // Set team as inactive (we'll add the active field later)
+                // For now, we'll just update the team name to indicate it's inactive
+                await tx.team.update({
+                    where: { id: ownedTeam.teamId },
+                    data: {
+                        name: `[INACTIVE] ${ownedTeam.team.name}`,
+                        description: `Team deactivated due to owner account deletion on ${dateStr}`
+                    }
+                })
+            }
+
+            // Update user: set blocked to true and rename email
+            await tx.user.update({
+                where: { id: user.id },
+                data: {
+                    blocked: true,
+                    email: newEmail,
+                }
+            })
+        })
+
+        return { success: true, message: "Account deleted successfully" }
+
+    } catch (error) {
+        console.error("Delete account error:", error)
+        return { success: false, error: t("unexpectedError") }
     }
 }

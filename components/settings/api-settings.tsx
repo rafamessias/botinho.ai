@@ -22,11 +22,12 @@ import { SurveyWidgetDocs } from "./survey-widget-docs"
 
 export const ApiSettings = () => {
     const t = useTranslations("Settings.api")
-    const { user } = useUser()
+    const { user, hasPermission } = useUser()
     const [showToken, setShowToken] = useState(false)
     const [teamTokens, setTeamTokens] = useState<Record<number, string | null>>({})
     const [isGeneratingToken, setIsGeneratingToken] = useState(false)
     const [showRegenerateModal, setShowRegenerateModal] = useState(false)
+    const { isAdmin } = hasPermission()
 
     // Get current user's default team
     const currentTeam = user?.teams?.find((team: any) => team.id === user?.defaultTeamId) || user?.teams?.[0]
@@ -127,7 +128,7 @@ export const ApiSettings = () => {
                                     <div className="flex-1 relative">
                                         <Input
                                             id="team-token"
-                                            type={showToken ? "text" : "password"}
+                                            type={showToken || !currentTeamToken ? "text" : "password"}
                                             value={currentTeamToken || t("noTokenGenerated")}
                                             readOnly
                                             className="pr-10 text-xs sm:pr-12 sm:text-sm"
@@ -154,53 +155,54 @@ export const ApiSettings = () => {
                                         </Button>
                                     )}
                                 </div>
-                                <div className="flex sm:justify-end gap-1.5 sm:gap-2">
-                                    {!currentTeamToken ? (
-                                        <Button
-                                            onClick={() => handleGenerateToken(currentTeam.id)}
-                                            disabled={isGeneratingToken}
-                                            className="flex-1 sm:flex-none"
-                                            size="sm"
-                                        >
-                                            {isGeneratingToken ? (
-                                                <>
-                                                    <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
-                                                    <span className="text-xs sm:text-sm">{t("generating")}</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <span className="text-xs sm:text-sm">{t("generateToken")}</span>
-                                                </>
-                                            )}
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            onClick={() => setShowRegenerateModal(true)}
-                                            variant="default"
-                                            disabled={isGeneratingToken}
-                                            className="flex-1 sm:flex-none"
-                                            size="sm"
-                                        >
-                                            {isGeneratingToken ? (
-                                                <>
-                                                    <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
-                                                    <span className="text-xs sm:text-sm">{t("regenerating")}</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <span className="text-xs sm:text-sm">{t("regenerateToken")}</span>
-                                                </>
-                                            )}
-                                        </Button>
-                                    )}
-                                </div>
+                                {isAdmin && (
+                                    <div className="flex sm:justify-end gap-1.5 sm:gap-2">
+                                        {!currentTeamToken ? (
+                                            <Button
+                                                onClick={() => handleGenerateToken(currentTeam.id)}
+                                                disabled={isGeneratingToken}
+                                                className="flex-1 sm:flex-none"
+                                                size="sm"
+                                            >
+                                                {isGeneratingToken ? (
+                                                    <>
+                                                        <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
+                                                        <span className="text-xs sm:text-sm">{t("generating")}</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span className="text-xs sm:text-sm">{t("generateToken")}</span>
+                                                    </>
+                                                )}
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                onClick={() => setShowRegenerateModal(true)}
+                                                variant="default"
+                                                disabled={isGeneratingToken}
+                                                className="flex-1 sm:flex-none"
+                                                size="sm"
+                                            >
+                                                {isGeneratingToken ? (
+                                                    <>
+                                                        <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
+                                                        <span className="text-xs sm:text-sm">{t("regenerating")}</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span className="text-xs sm:text-sm">{t("regenerateToken")}</span>
+                                                    </>
+                                                )}
+                                            </Button>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
-
                     </div>
 
-                </CardContent>
-            )}
+                </CardContent>)}
+
 
             {/* Survey Widget Documentation */}
             <SurveyWidgetDocs currentTeamToken={currentTeamToken} />
@@ -242,6 +244,6 @@ export const ApiSettings = () => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </Card>
+        </Card >
     )
 }

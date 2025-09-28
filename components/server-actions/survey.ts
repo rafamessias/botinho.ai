@@ -1,16 +1,14 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
-import { getPrismaWrapper } from "@/lib/prisma-wrapper"
+import { getPrismaWrapper, getCurrentTeamId } from "@/lib/prisma-wrapper"
 import { prisma } from "@/prisma/lib/prisma"
 import { SurveyStatus, QuestionFormat } from "@/lib/generated/prisma"
 import { z } from "zod"
 
 // Helper function to get and cache team ID for better performance
 const getTeamIdCached = async (): Promise<number | null> => {
-    const wrapper = getPrismaWrapper()
-    return await wrapper.getTeamId()
+    return await getCurrentTeamId()
 }
 
 // Database survey type

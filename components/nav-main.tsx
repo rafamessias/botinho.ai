@@ -76,6 +76,7 @@ function TeamSelection() {
     try {
       const result = await updateDefaultTeamAction(team.id)
       if (result.success) {
+
         // Refresh user data to get updated defaultTeamId
         await refreshUser(false)
         toast.success(t("messages.teamsUpdated"))

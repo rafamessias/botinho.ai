@@ -6,15 +6,17 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { AlertTriangle } from "lucide-react"
 
-import { updateUserProfileAction, updateUserAvatarAction } from "@/components/server-actions/user"
+import { updateUserProfileAction, updateUserAvatarAction, deleteUserAccountAction } from "@/components/server-actions/user"
 import { useUser } from "@/components/user-provider"
+import { logoutAction } from "../server-actions/auth"
 
 export function ProfileForm() {
     const t = useTranslations("Profile")
@@ -22,6 +24,9 @@ export function ProfileForm() {
     const { user, loading, refreshUser } = useUser()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isAvatarUpdating, setIsAvatarUpdating] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [deleteEmail, setDeleteEmail] = useState("")
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
     // Profile form validation schema
     const profileFormSchema = React.useMemo(() => z.object({
@@ -112,6 +117,31 @@ export function ProfileForm() {
             toast.error(t("messages.unexpectedError"))
         } finally {
             setIsAvatarUpdating(false)
+        }
+    }
+
+    const handleDeleteAccount = async () => {
+        if (!user) return
+
+        try {
+            setIsDeleting(true)
+
+            const result = await deleteUserAccountAction(deleteEmail)
+
+            if (result.success) {
+                toast.success(t("messages.accountDeleted"))
+                // Redirect to sign out or home page
+                logoutAction(`/sign-in`)
+            } else {
+                toast.error(result.error || t("messages.deleteFailed"))
+            }
+        } catch (error) {
+            console.error("Account deletion error:", error)
+            toast.error(t("messages.unexpectedError"))
+        } finally {
+            setIsDeleting(false)
+            setIsDeleteModalOpen(false)
+            setDeleteEmail("")
         }
     }
 
@@ -216,6 +246,92 @@ export function ProfileForm() {
                             </Button>
                         </div>
                     </form>
+                </CardContent>
+            </Card>
+
+            {/* Delete Account Section */}
+            <Card className="border-destructive/20 border-2 shadow-none p-4">
+                <CardHeader className="p-0">
+                    <CardTitle className="text-destructive">{t("deleteAccount.title")}</CardTitle>
+                    <CardDescription>{t("deleteAccount.description")}</CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                            {t("deleteAccount.warning")}
+                        </p>
+
+                        <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="destructive" className="w-full sm:w-auto">
+                                    {t("deleteAccount.button")}
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-md">
+                                <DialogHeader>
+                                    <DialogTitle className="flex items-center gap-2 text-destructive">
+                                        <AlertTriangle className="h-5 w-5" />
+                                        {t("deleteAccount.modal.title")}
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                        {t("deleteAccount.modal.description")}
+                                    </DialogDescription>
+                                </DialogHeader>
+
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="deleteEmail">
+                                            {t("deleteAccount.modal.emailLabel")}
+                                        </Label>
+                                        <Input
+                                            id="deleteEmail"
+                                            type="email"
+                                            placeholder={user.email}
+                                            value={deleteEmail}
+                                            onChange={(e) => setDeleteEmail(e.target.value)}
+                                            className="font-mono"
+                                        />
+                                        <p className="text-xs text-muted-foreground">
+                                            {t("deleteAccount.modal.emailNote")}
+                                        </p>
+                                    </div>
+
+                                    <div className="rounded-lg bg-destructive/10 p-4">
+                                        <h4 className="font-medium text-destructive mb-2">
+                                            {t("deleteAccount.modal.consequences.title")}
+                                        </h4>
+                                        <ul className="text-sm text-muted-foreground space-y-1">
+                                            <li>• {t("deleteAccount.modal.consequences.account")}</li>
+                                            <li>• {t("deleteAccount.modal.consequences.teams")}</li>
+                                            <li>• {t("deleteAccount.modal.consequences.data")}</li>
+                                            <li>• {t("deleteAccount.modal.consequences.irreversible")}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <DialogFooter className="flex-col sm:flex-row gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            setIsDeleteModalOpen(false)
+                                            setDeleteEmail("")
+                                        }}
+                                        disabled={isDeleting}
+                                    >
+                                        {commonT("cancel")}
+                                    </Button>
+                                    <Button
+                                        variant="destructive"
+                                        onClick={handleDeleteAccount}
+                                        disabled={isDeleting || deleteEmail !== user.email}
+                                        className="min-w-[100px]"
+                                    >
+                                        {isDeleting ? commonT("deleting") : t("deleteAccount.modal.confirm")}
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </CardContent>
             </Card>
         </div>
