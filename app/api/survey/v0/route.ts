@@ -83,6 +83,7 @@ function addCorsHeaders(response: NextResponse) {
 // Validation schema for survey answer submission
 const surveyAnswerSchema = z.object({
     surveyId: z.string().min(1, 'Survey ID is required'),
+    responseToken: z.string().min(1, 'Response Token is required'),
     userId: z.string().optional(),
     userIp: z.string().optional(),
     extraInfo: z.string().optional(),
@@ -294,32 +295,41 @@ export async function POST(request: NextRequest) {
         const validatedData = surveyAnswerSchema.parse(body);
 
         // Single optimized query to get survey with validation data
-        const survey = await prisma.survey.findFirst({
+        const surveyResponse = await prisma.surveyResponse.findFirst({
             where: {
-                id: validatedData.surveyId,
-                teamId: team.id,
-                status: 'published'
+                id: validatedData.responseToken,
+                surveyId: validatedData.surveyId,
+                origin: request.headers.get('origin') || '',
+                status: 'pending',
+                expiresAt: {
+                    gt: new Date()
+                }
             },
-            select: {
-                id: true,
-                name: true,
-                allowMultipleResponses: true,
-                questions: {
+            include: {
+                survey: {
                     select: {
                         id: true,
-                        required: true,
-                        format: true
+                        questions: {
+                            select: {
+                                id: true,
+                                required: true,
+                                format: true
+                            }
+                        }
                     }
                 }
-            }
+            },
+
         });
 
-        if (!survey) {
+        if (!surveyResponse) {
             return addCorsHeaders(NextResponse.json(
-                { error: 'Survey not found or not published' },
+                { error: 'Survey response not found or expired' },
                 { status: 404 }
             ));
         }
+
+        const survey = surveyResponse.survey;
 
         // Optimized validation in single pass
         const surveyQuestionIds = new Set(survey.questions.map(q => q.id));
@@ -354,21 +364,21 @@ export async function POST(request: NextRequest) {
             validatedData.responses,
             '', // Will be set in transaction
             team.id,
-            validatedData.surveyId
+            survey.id
         );
 
         // Optimized transaction with batch operations
-        const result = await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx) => {
             // Create survey response
-            const surveyResponse = await tx.surveyResponse.create({
+            await tx.surveyResponse.update({
+                where: { id: surveyResponse.id },
                 data: {
-                    surveyId: validatedData.surveyId,
-                    teamId: team.id,
                     status: ResponseStatus.completed,
                     submittedAt: new Date(),
                     userId: validatedData.userId || '',
-                    userIp: validatedData.userIp || '',
-                    extraInfo: validatedData.extraInfo || ''
+                    userIp: request.headers.get('x-forwarded-for') || '',
+                    extraInfo: validatedData.extraInfo || '',
+                    origin: request.headers.get('origin') || ''
                 }
             });
 
@@ -392,7 +402,7 @@ export async function POST(request: NextRequest) {
                     data: { totalResponses: { increment: 1 } }
                 }),
                 tx.survey.update({
-                    where: { id: validatedData.surveyId },
+                    where: { id: survey.id },
                     data: { totalResponses: { increment: 1 } }
                 })
             ]);
@@ -407,7 +417,7 @@ export async function POST(request: NextRequest) {
         });
 
         // Invalidate cache after successful submission
-        invalidateSurveyCache(validatedData.surveyId);
+        invalidateSurveyCache(survey.id);
 
         return addCorsHeaders(NextResponse.json({
             success: true,
@@ -482,10 +492,29 @@ export async function GET(request: NextRequest) {
         const { advancedCSS, styleMode, basicCSS } = survey.style as SurveyStyle;
         const customCSS = styleMode === StyleMode.advanced ? advancedCSS : basicCSS;
 
+        // 2 minutes from now
+        //const expiresAt = new Date(Date.now() + 1000 * 60 * 2);
+        const expiresAt = new Date(Date.now() + 1000 * 10);
+
+        // Create a new survey response for this survey and team
+        const newSurveyResponse = await prisma.surveyResponse.create({
+            data: {
+                surveyId: survey.id,
+                teamId: team.id,
+                status: ResponseStatus.pending,
+                userIp: request.headers.get('x-forwarded-for') || "",
+                origin: request.headers.get('origin') || "",
+                expiresAt: expiresAt,
+            },
+            select: {
+                id: true,
+            }
+        });
+
         return addCorsHeaders(NextResponse.json({
             success: true,
             data: {
-                id: survey.id,
+                responseToken: newSurveyResponse.id,
                 style: customCSS,
                 questions: survey.questions
             }

@@ -8,10 +8,11 @@ class o {
         this.autoClose = p.autoClose || 0;
         this.container = null;
         this.token = p.token || '';
+        this.responseToken = p.responseToken || '';
         this.surveyId = p.surveyId || '';
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
-        this.apiUrl = 'http://localhost:3000/api/survey/v0';
+        this.apiUrl = 'https://api.opineeo.com/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting
@@ -47,6 +48,7 @@ class o {
             if (!res.ok) throw new Error((await res.json()).error || 'Failed to fetch survey data');
             const data = await res.json();
             const sv = data?.data;
+            this.responseToken = sv.responseToken;
             if (data?.success && sv) {
                 this.survey = sv;
                 if (sv.style) this.customCSS = sv.style;
@@ -186,14 +188,15 @@ class o {
         this.s = !0; this.render();
         try {
             const payload = await this.pack();
-            if (this.token) {
+            if (this.token && this.responseToken) {
                 try {
                     const res = await fetch(this.apiUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}` },
                         body: JSON.stringify(payload)
                     });
-                    if (!res.ok) console.error('Failed to submit survey response' + res.statusText);
+                    const data = await res.json();
+                    if (!res.ok) console.error('Failed to submit survey response: ' + data.error);
                 } catch (e) { console.error('Submission error:', e); }
             }
             this.onComplete(payload);
@@ -378,6 +381,7 @@ class o {
         });
 
         const payload = {
+            responseToken: this.responseToken,
             surveyId: this.surveyId,
             responses: responses
         };
@@ -389,11 +393,6 @@ class o {
         if (this.extraInfo) {
             payload.extraInfo = this.extraInfo;
         }
-
-        try {
-            const res = await fetch("https://api.ipify.org/", { method: 'GET' });
-            if (res.ok) payload.userIp = await res.text();
-        } catch (e) { console.error('Submission error:', e); }
 
         return payload;
     }

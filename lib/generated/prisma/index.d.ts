@@ -17383,6 +17383,8 @@ export namespace Prisma {
     userId: string | null
     userIp: string | null
     extraInfo: string | null
+    origin: string | null
+    expiresAt: Date | null
     submittedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -17396,6 +17398,8 @@ export namespace Prisma {
     userId: string | null
     userIp: string | null
     extraInfo: string | null
+    origin: string | null
+    expiresAt: Date | null
     submittedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -17409,6 +17413,8 @@ export namespace Prisma {
     userId: number
     userIp: number
     extraInfo: number
+    origin: number
+    expiresAt: number
     submittedAt: number
     createdAt: number
     updatedAt: number
@@ -17432,6 +17438,8 @@ export namespace Prisma {
     userId?: true
     userIp?: true
     extraInfo?: true
+    origin?: true
+    expiresAt?: true
     submittedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -17445,6 +17453,8 @@ export namespace Prisma {
     userId?: true
     userIp?: true
     extraInfo?: true
+    origin?: true
+    expiresAt?: true
     submittedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -17458,6 +17468,8 @@ export namespace Prisma {
     userId?: true
     userIp?: true
     extraInfo?: true
+    origin?: true
+    expiresAt?: true
     submittedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -17558,6 +17570,8 @@ export namespace Prisma {
     userId: string | null
     userIp: string | null
     extraInfo: string | null
+    origin: string | null
+    expiresAt: Date | null
     submittedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -17590,6 +17604,8 @@ export namespace Prisma {
     userId?: boolean
     userIp?: boolean
     extraInfo?: boolean
+    origin?: boolean
+    expiresAt?: boolean
     submittedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -17608,6 +17624,8 @@ export namespace Prisma {
     userId?: boolean
     userIp?: boolean
     extraInfo?: boolean
+    origin?: boolean
+    expiresAt?: boolean
     submittedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -17623,6 +17641,8 @@ export namespace Prisma {
     userId?: boolean
     userIp?: boolean
     extraInfo?: boolean
+    origin?: boolean
+    expiresAt?: boolean
     submittedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -17638,6 +17658,8 @@ export namespace Prisma {
     userId?: boolean
     userIp?: boolean
     extraInfo?: boolean
+    origin?: boolean
+    expiresAt?: boolean
     submittedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -17645,7 +17667,7 @@ export namespace Prisma {
     teamId?: boolean
   }
 
-  export type SurveyResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "userId" | "userIp" | "extraInfo" | "submittedAt" | "createdAt" | "updatedAt" | "surveyId" | "teamId", ExtArgs["result"]["surveyResponse"]>
+  export type SurveyResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "userId" | "userIp" | "extraInfo" | "origin" | "expiresAt" | "submittedAt" | "createdAt" | "updatedAt" | "surveyId" | "teamId", ExtArgs["result"]["surveyResponse"]>
   export type SurveyResponseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questionResponses?: boolean | SurveyResponse$questionResponsesArgs<ExtArgs>
     survey?: boolean | SurveyDefaultArgs<ExtArgs>
@@ -17676,6 +17698,8 @@ export namespace Prisma {
       userId: string | null
       userIp: string | null
       extraInfo: string | null
+      origin: string | null
+      expiresAt: Date | null
       submittedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -18113,6 +18137,8 @@ export namespace Prisma {
     readonly userId: FieldRef<"SurveyResponse", 'String'>
     readonly userIp: FieldRef<"SurveyResponse", 'String'>
     readonly extraInfo: FieldRef<"SurveyResponse", 'String'>
+    readonly origin: FieldRef<"SurveyResponse", 'String'>
+    readonly expiresAt: FieldRef<"SurveyResponse", 'DateTime'>
     readonly submittedAt: FieldRef<"SurveyResponse", 'DateTime'>
     readonly createdAt: FieldRef<"SurveyResponse", 'DateTime'>
     readonly updatedAt: FieldRef<"SurveyResponse", 'DateTime'>
@@ -21312,6 +21338,8 @@ export namespace Prisma {
     userId: 'userId',
     userIp: 'userIp',
     extraInfo: 'extraInfo',
+    origin: 'origin',
+    expiresAt: 'expiresAt',
     submittedAt: 'submittedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -22688,6 +22716,8 @@ export namespace Prisma {
     userId?: StringNullableFilter<"SurveyResponse"> | string | null
     userIp?: StringNullableFilter<"SurveyResponse"> | string | null
     extraInfo?: StringNullableFilter<"SurveyResponse"> | string | null
+    origin?: StringNullableFilter<"SurveyResponse"> | string | null
+    expiresAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -22705,6 +22735,8 @@ export namespace Prisma {
     userId?: SortOrderInput | SortOrder
     userIp?: SortOrderInput | SortOrder
     extraInfo?: SortOrderInput | SortOrder
+    origin?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
     submittedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -22725,6 +22757,8 @@ export namespace Prisma {
     userId?: StringNullableFilter<"SurveyResponse"> | string | null
     userIp?: StringNullableFilter<"SurveyResponse"> | string | null
     extraInfo?: StringNullableFilter<"SurveyResponse"> | string | null
+    origin?: StringNullableFilter<"SurveyResponse"> | string | null
+    expiresAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -22742,6 +22776,8 @@ export namespace Prisma {
     userId?: SortOrderInput | SortOrder
     userIp?: SortOrderInput | SortOrder
     extraInfo?: SortOrderInput | SortOrder
+    origin?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
     submittedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -22763,6 +22799,8 @@ export namespace Prisma {
     userId?: StringNullableWithAggregatesFilter<"SurveyResponse"> | string | null
     userIp?: StringNullableWithAggregatesFilter<"SurveyResponse"> | string | null
     extraInfo?: StringNullableWithAggregatesFilter<"SurveyResponse"> | string | null
+    origin?: StringNullableWithAggregatesFilter<"SurveyResponse"> | string | null
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"SurveyResponse"> | Date | string | null
     submittedAt?: DateTimeNullableWithAggregatesFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SurveyResponse"> | Date | string
@@ -24223,6 +24261,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -24238,6 +24278,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -24253,6 +24295,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24268,6 +24312,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24283,6 +24329,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -24296,6 +24344,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24307,6 +24357,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25659,6 +25711,8 @@ export namespace Prisma {
     userId?: SortOrder
     userIp?: SortOrder
     extraInfo?: SortOrder
+    origin?: SortOrder
+    expiresAt?: SortOrder
     submittedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25676,6 +25730,8 @@ export namespace Prisma {
     userId?: SortOrder
     userIp?: SortOrder
     extraInfo?: SortOrder
+    origin?: SortOrder
+    expiresAt?: SortOrder
     submittedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -25689,6 +25745,8 @@ export namespace Prisma {
     userId?: SortOrder
     userIp?: SortOrder
     extraInfo?: SortOrder
+    origin?: SortOrder
+    expiresAt?: SortOrder
     submittedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28592,6 +28650,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28606,6 +28666,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29010,6 +29072,8 @@ export namespace Prisma {
     userId?: StringNullableFilter<"SurveyResponse"> | string | null
     userIp?: StringNullableFilter<"SurveyResponse"> | string | null
     extraInfo?: StringNullableFilter<"SurveyResponse"> | string | null
+    origin?: StringNullableFilter<"SurveyResponse"> | string | null
+    expiresAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     submittedAt?: DateTimeNullableFilter<"SurveyResponse"> | Date | string | null
     createdAt?: DateTimeFilter<"SurveyResponse"> | Date | string
     updatedAt?: DateTimeFilter<"SurveyResponse"> | Date | string
@@ -29630,6 +29694,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29644,6 +29710,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31351,6 +31419,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31365,6 +31435,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31582,6 +31654,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31596,6 +31670,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31682,6 +31758,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31696,6 +31774,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31860,6 +31940,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31874,6 +31956,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32205,6 +32289,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32443,6 +32529,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32457,6 +32545,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32471,6 +32561,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32856,6 +32948,8 @@ export namespace Prisma {
     userId?: string | null
     userIp?: string | null
     extraInfo?: string | null
+    origin?: string | null
+    expiresAt?: Date | string | null
     submittedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32938,6 +33032,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32952,6 +33048,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32966,6 +33064,8 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     userIp?: NullableStringFieldUpdateOperationsInput | string | null
     extraInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    origin?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

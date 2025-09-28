@@ -190,6 +190,7 @@ export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData, rea
                     </div>
 
                     {/* Allow Multiple Responses Toggle */}
+                    {/*
                     <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                             <Label htmlFor="multiple-responses">{t("multipleResponses.label")}</Label>
@@ -204,6 +205,7 @@ export const SurveyDetailsSection = memo(({ data, onChange, surveyTypesData, rea
                             disabled={readonly}
                         />
                     </div>
+                    */}
                 </CardContent>
             </Card>
 
