@@ -548,9 +548,15 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
             ) : loading ? (
                 <Card className="border-none shadow-none bg-transparent">
                     <CardContent className="flex items-center justify-center py-12">
-                        <div className="text-center">
-                            <p className="text-muted-foreground text-lg mb-2">Loading survey data...</p>
-                            <p className="text-muted-foreground">Please wait while we fetch the results</p>
+                        <div className="flex flex-col items-center justify-center w-full">
+                            <div className="relative flex items-center justify-center w-20 h-20">
+                                <span
+                                    className="relative inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-muted-foreground border-t-transparent"
+                                    role="status"
+                                    aria-label="Loading"
+                                    tabIndex={0}
+                                />
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -564,7 +570,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                     </CardContent>
                 </Card>
             ) : (
-                <div className="space-y-6">
+                <div className="">
                     {/* Survey Info */}
                     <Card className="border-none shadow-none bg-transparent">
                         <CardHeader>
@@ -591,7 +597,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
 
                     {/* Questions Results */}
                     {viewMode === "charts" ? (
-                        processedQuestions.map((question) => renderQuestionChart(question))
+                        <div className="px-6 space-y-6">
+                            {processedQuestions.map((question) => renderQuestionChart(question))}
+                        </div>
                     ) : (
                         <RawDataTable survey={selectedSurvey} rawData={rawData} />
                     )}

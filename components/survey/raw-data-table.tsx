@@ -25,7 +25,7 @@ interface RawDataTableProps {
 }
 
 export const RawDataTable: React.FC<RawDataTableProps> = ({ survey, rawData }) => {
-    console.log(rawData)
+
     if (!rawData || rawData.length === 0) {
         return (
             <Card className="shadow-none border-none">
@@ -59,7 +59,7 @@ export const RawDataTable: React.FC<RawDataTableProps> = ({ survey, rawData }) =
             <CardHeader>
                 <CardTitle>Raw Response Data</CardTitle>
                 <CardDescription>
-                    Individual question responses ({rawData.length} total responses)
+                    Question response's entries ({rawData.length} total)
                 </CardDescription>
             </CardHeader>
             <CardContent>
