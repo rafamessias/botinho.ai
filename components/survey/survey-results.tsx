@@ -344,6 +344,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
         const totalResponses = question.options?.reduce((sum, option) => sum + option.count, 0) || 0
         const topAnswer = data.length > 0 ? data.reduce((prev, current) => (prev.count > current.count) ? prev : current) : { answer: 'No responses', count: 0, percentage: '0' }
 
+        // Calculate dynamic height based on number of bars (60px per bar, max 300px)
+        const dynamicHeight = Math.min(data.length * 60, 300)
+
         return (
             <Card key={question.id} className="shadow-none">
                 <CardHeader>
@@ -360,7 +363,11 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                     <div className="space-y-4">
 
                         {/* Chart */}
-                        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                        <ChartContainer
+                            config={chartConfig}
+                            className="w-full"
+                            style={{ height: `${dynamicHeight}px` }}
+                        >
                             <BarChart
                                 accessibilityLayer
                                 data={data}
@@ -368,6 +375,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                                 margin={{
                                     right: 32,
                                 }}
+                                maxBarSize={60}
                             >
                                 <CartesianGrid horizontal={false} />
                                 <YAxis
@@ -387,9 +395,8 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                                 <Bar
                                     dataKey="count"
                                     layout="vertical"
-                                    fill="var(--primary)"
+                                    fill="var(--color-chart-1)"
                                     radius={4}
-                                    height={24}
                                 >
                                     <LabelList
                                         dataKey="answer"
@@ -551,7 +558,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                         <div className="flex flex-col items-center justify-center w-full">
                             <div className="relative flex items-center justify-center w-20 h-20">
                                 <span
-                                    className="relative inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-muted-foreground border-t-transparent"
+                                    className="relative inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"
                                     role="status"
                                     aria-label="Loading"
                                     tabIndex={0}
