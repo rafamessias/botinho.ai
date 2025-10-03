@@ -121,6 +121,7 @@ model Team {
   members            TeamMember[]            @relation("TeamMembers")
   user               User[]                  @relation("UserDefaultTeam")
   responseSummaries  SurveyResponseSummary[]
+  subscription       CustomerSubscription?
 
   @@index([token])
   @@index([createdAt])
@@ -364,6 +365,54 @@ model QuestionResponse {
   @@map("question_responses")
 }
 
+model SubscriptionPlan {
+  id               String                 @id @default(cuid())
+  planType         PlanType
+  price            Decimal                @db.Decimal(10, 2)
+  currency         String                 @default("USD")
+  billingInterval  BillingInterval        @default(monthly)
+  maxActiveSurveys Int
+  maxResponses     Int
+  removeBranding   Boolean                @default(false)
+  allowApiAccess   Boolean                @default(false)
+  allowExport      Boolean                @default(false)
+  isActive         Boolean                @default(true)
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  subscriptions    CustomerSubscription[]
+
+  @@index([planType])
+  @@index([isActive])
+  @@index([billingInterval])
+  @@map("subscription_plans")
+}
+
+model CustomerSubscription {
+  id                   String             @id @default(cuid())
+  teamId               Int                @unique
+  planId               String
+  status               SubscriptionStatus @default(active)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  trialStart           DateTime?
+  trialEnd             DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  team                 Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
+
+  @@index([teamId])
+  @@index([planId])
+  @@index([status])
+  @@index([stripeCustomerId])
+  @@index([stripeSubscriptionId])
+  @@index([currentPeriodEnd])
+  @@map("customer_subscriptions")
+}
+
 enum Language {
   en
   pt_BR
@@ -410,4 +459,27 @@ enum ResponseStatus {
 enum StyleMode {
   basic
   advanced
+}
+
+enum PlanType {
+  FREE
+  STARTER
+  PRO
+  BUSINESS
+  ENTERPRISE
+}
+
+enum BillingInterval {
+  monthly
+  yearly
+}
+
+enum SubscriptionStatus {
+  active
+  canceled
+  past_due
+  trialing
+  incomplete
+  incomplete_expired
+  unpaid
 }
