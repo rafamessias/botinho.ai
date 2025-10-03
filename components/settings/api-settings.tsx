@@ -14,40 +14,117 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react"
 import { toast } from "sonner"
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { useTheme } from "next-themes"
 import { generateTeamTokenAction, regenerateTeamTokenAction, getTeamTokenAction } from "@/components/server-actions/team"
 import { useUser } from "@/components/user-provider"
-import { SurveyWidgetDocs } from "./survey-widget-docs"
 
 export const ApiSettings = () => {
     const t = useTranslations("Settings.api")
     const { user, hasPermission } = useUser()
-    const [showToken, setShowToken] = useState(false)
-    const [teamTokens, setTeamTokens] = useState<Record<number, string | null>>({})
-    const [isGeneratingToken, setIsGeneratingToken] = useState(false)
+    const { theme } = useTheme()
+    const [showSurveyToken, setShowSurveyToken] = useState(false)
+    const [showApiToken, setShowApiToken] = useState(false)
+    const [teamTokens, setTeamTokens] = useState<Record<number, { tokenSurvery: string | null, tokenApi: string | null }>>({})
+    const [isGeneratingSurveyToken, setIsGeneratingSurveyToken] = useState(false)
+    const [isGeneratingApiToken, setIsGeneratingApiToken] = useState(false)
     const [showRegenerateModal, setShowRegenerateModal] = useState(false)
+    const [regenerateTokenType, setRegenerateTokenType] = useState<"survey" | "api">("survey")
     const { isAdmin } = hasPermission()
+
+    const handleCopyCode = (code: string) => {
+        navigator.clipboard.writeText(code)
+        toast.success(t("codeCopied"))
+    }
 
     // Get current user's default team
     const currentTeam = user?.teams?.find((team: any) => team.id === user?.defaultTeamId) || user?.teams?.[0]
-    const currentTeamToken = currentTeam ? teamTokens[currentTeam.id] : null
+    const currentTeamTokens = currentTeam ? teamTokens[currentTeam.id] : null
+    const currentSurveyToken = currentTeamTokens?.tokenSurvery || null
+    const currentApiToken = currentTeamTokens?.tokenApi || null
 
-    const handleCopyToken = () => {
-        if (currentTeamToken) {
-            navigator.clipboard.writeText(currentTeamToken)
+    // Code snippets for each token type
+    const surveyWidgetCode = `<!-- Survey Widget Integration -->
+<script src="https://app.opineeo.com/opineeo-0.0.1.min.js"></script>
+<script>
+function handleSurveyComplete(data) {
+  console.log('Survey completed:', data);
+}
+
+function handleSurveyClose() {
+  console.log('Survey closed');
+}
+</script>
+
+<!-- Survey container -->
+<opineeo-survey
+  survey-id="your-survey-id"
+  token="${currentSurveyToken || 'YOUR_SURVEY_TOKEN'}"
+  auto-close="3000"
+  oncomplete="handleSurveyComplete"
+  onclose="handleSurveyClose"
+></opineeo-survey>`
+
+    const apiIntegrationCode = `// API Integration Example
+const submitSurveyResponse = async (surveyData) => {
+  try {
+    const response = await fetch('https://app.opineeo.com/api/survey/v0/results', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${currentApiToken || 'YOUR_API_TOKEN'}'
+      },
+      body: JSON.stringify({
+        surveyId: "your-survey-id",
+      })
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      console.log('Survey submitted successfully:', result);
+    }
+  } catch (error) {
+    console.error('Error submitting survey:', error);
+  }
+};`
+
+    const handleCopySurveyToken = () => {
+        if (currentSurveyToken) {
+            navigator.clipboard.writeText(currentSurveyToken)
+            toast.success(t("tokenCopied"))
+        }
+    }
+
+    const handleCopyApiToken = () => {
+        if (currentApiToken) {
+            navigator.clipboard.writeText(currentApiToken)
             toast.success(t("tokenCopied"))
         }
     }
 
 
-    const handleGenerateToken = async (teamId: number) => {
+    const handleGenerateToken = async (teamId: number, tokenType: "survey" | "api") => {
         try {
-            setIsGeneratingToken(true)
-            const result = await generateTeamTokenAction({ teamId })
+            if (tokenType === "survey") {
+                setIsGeneratingSurveyToken(true)
+            } else {
+                setIsGeneratingApiToken(true)
+            }
+
+            const result = await generateTeamTokenAction({ teamId, tokenType })
 
             if (result.success) {
-                setTeamTokens(prev => ({ ...prev, [teamId]: result.token || null }))
+                setTeamTokens(prev => ({
+                    ...prev,
+                    [teamId]: {
+                        ...prev[teamId],
+                        [tokenType === "api" ? "tokenApi" : "tokenSurvery"]: result.token || null
+                    }
+                }))
                 toast.success(result.message)
             } else {
                 toast.error(result.error || "Failed to generate token")
@@ -56,18 +133,33 @@ export const ApiSettings = () => {
             console.error("Generate token error:", error)
             toast.error(`An unexpected error occurred ${error}`)
         } finally {
-            setIsGeneratingToken(false)
+            if (tokenType === "survey") {
+                setIsGeneratingSurveyToken(false)
+            } else {
+                setIsGeneratingApiToken(false)
+            }
         }
     }
 
-    const handleRegenerateToken = async (teamId: number) => {
+    const handleRegenerateToken = async (teamId: number, tokenType: "survey" | "api") => {
         try {
-            setIsGeneratingToken(true)
+            console.log("Regenerating token for", tokenType)
+            if (tokenType === "survey") {
+                setIsGeneratingSurveyToken(true)
+            } else {
+                setIsGeneratingApiToken(true)
+            }
             setShowRegenerateModal(false)
-            const result = await regenerateTeamTokenAction({ teamId })
+            const result = await regenerateTeamTokenAction({ teamId, tokenType })
 
             if (result.success) {
-                setTeamTokens(prev => ({ ...prev, [teamId]: result.token || null }))
+                setTeamTokens(prev => ({
+                    ...prev,
+                    [teamId]: {
+                        ...prev[teamId],
+                        [tokenType === "api" ? "tokenApi" : "tokenSurvery"]: result.token || null
+                    }
+                }))
                 toast.success(result.message)
             } else {
                 toast.error(result.error || "Failed to regenerate token")
@@ -76,31 +168,41 @@ export const ApiSettings = () => {
             console.error("Regenerate token error:", error)
             toast.error(`An unexpected error occurred ${error}`)
         } finally {
-            setIsGeneratingToken(false)
+            if (tokenType === "survey") {
+                setIsGeneratingSurveyToken(false)
+            } else {
+                setIsGeneratingApiToken(false)
+            }
         }
     }
 
     const handleConfirmRegenerate = () => {
         if (currentTeam) {
-            handleRegenerateToken(currentTeam.id)
+            handleRegenerateToken(currentTeam.id, regenerateTokenType)
         }
     }
 
-    const loadTeamToken = async (teamId: number) => {
+    const loadTeamTokens = async (teamId: number) => {
         try {
             const result = await getTeamTokenAction(teamId)
             if (result.success) {
-                setTeamTokens(prev => ({ ...prev, [teamId]: result.team?.token || null }))
+                setTeamTokens(prev => ({
+                    ...prev,
+                    [teamId]: {
+                        tokenSurvery: result.team?.tokenSurvery || null,
+                        tokenApi: result.team?.tokenApi || null
+                    }
+                }))
             }
         } catch (error) {
-            console.error("Load token error:", error)
+            console.error("Load tokens error:", error)
         }
     }
 
-    // Load token when component mounts
+    // Load tokens when component mounts
     useEffect(() => {
         if (currentTeam && !teamTokens[currentTeam.id]) {
-            loadTeamToken(currentTeam.id)
+            loadTeamTokens(currentTeam.id)
         }
     }, [currentTeam])
 
@@ -118,94 +220,292 @@ export const ApiSettings = () => {
                     <p className="text-sm text-muted-foreground">{t("noTeam")}</p>
                 </CardContent>
             ) : (
-                <CardContent className="space-y-3 px-3 sm:space-y-4 sm:px-4 w-full">
-                    {/* Team Token Section */}
-                    <div className="space-y-3 sm:space-y-4 w-full">
-                        <div className="space-y-2 sm:space-y-3 mb-8 sm:mb-0">
-                            <Label htmlFor="team-token" className="text-sm font-medium">{t("teamToken")}</Label>
-                            <div className="space-y-2">
-                                <div className="flex gap-1.5 sm:gap-2">
-                                    <div className="flex-1 relative">
-                                        <Input
-                                            id="team-token"
-                                            type={showToken || !currentTeamToken ? "text" : "password"}
-                                            value={currentTeamToken || t("noTokenGenerated")}
-                                            readOnly
-                                            className="pr-10 text-xs sm:pr-12 sm:text-sm"
-                                        />
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="absolute right-0.5 top-0.5 h-6 w-6 p-0 sm:right-1 sm:top-1 sm:h-7 sm:w-7"
-                                            onClick={() => setShowToken(!showToken)}
-                                        >
-                                            {showToken ? <EyeOff className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : <Eye className="h-2.5 w-2.5 sm:h-3 sm:w-3" />}
-                                        </Button>
+                <CardContent className="px-3 sm:px-4 w-full">
+                    <Tabs defaultValue="survey" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
+                            <TabsTrigger value="survey" className="text-xs sm:text-sm">
+                                {t("tabs.surveyToken")}
+                            </TabsTrigger>
+                            <TabsTrigger value="api" className="text-xs sm:text-sm">
+                                {t("tabs.apiToken")}
+                            </TabsTrigger>
+                        </TabsList>
+
+                        {/* Survey Token Tab */}
+                        <TabsContent value="survey" className="space-y-4 sm:space-y-6">
+                            <div className="space-y-3 sm:space-y-4">
+                                <div className="space-y-2 sm:space-y-3">
+                                    <Label htmlFor="survey-token" className="text-sm font-medium">{t("surveyToken")}</Label>
+                                    <div className="space-y-2">
+                                        <div className="flex gap-1.5 sm:gap-2">
+                                            <div className="flex-1 relative">
+                                                <Input
+                                                    id="survey-token"
+                                                    type={showSurveyToken || !currentSurveyToken ? "text" : "password"}
+                                                    value={currentSurveyToken || t("noTokenGenerated")}
+                                                    readOnly
+                                                    className="pr-10 text-xs sm:pr-12 sm:text-sm"
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="absolute right-0.5 top-0.5 h-6 w-6 p-0 sm:right-1 sm:top-1 sm:h-7 sm:w-7"
+                                                    onClick={() => setShowSurveyToken(!showSurveyToken)}
+                                                >
+                                                    {showSurveyToken ? <EyeOff className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : <Eye className="h-2.5 w-2.5 sm:h-3 sm:w-3" />}
+                                                </Button>
+                                            </div>
+                                            {currentSurveyToken && (
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={handleCopySurveyToken}
+                                                    className="px-2 sm:px-3"
+                                                >
+                                                    <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                                                </Button>
+                                            )}
+                                        </div>
+                                        {isAdmin && (
+                                            <div className="flex sm:justify-end gap-1.5 sm:gap-2">
+                                                {!currentSurveyToken ? (
+                                                    <Button
+                                                        onClick={() => handleGenerateToken(currentTeam.id, "survey")}
+                                                        disabled={isGeneratingSurveyToken}
+                                                        className="flex-1 sm:flex-none"
+                                                        size="sm"
+                                                    >
+                                                        {isGeneratingSurveyToken ? (
+                                                            <>
+                                                                <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
+                                                                <span className="text-xs sm:text-sm">{t("generating")}</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <span className="text-xs sm:text-sm">{t("generateToken")}</span>
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        onClick={() => {
+                                                            setRegenerateTokenType("survey")
+                                                            setShowRegenerateModal(true)
+                                                        }}
+                                                        variant="default"
+                                                        disabled={isGeneratingSurveyToken}
+                                                        className="flex-1 sm:flex-none"
+                                                        size="sm"
+                                                    >
+                                                        {isGeneratingSurveyToken ? (
+                                                            <>
+                                                                <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
+                                                                <span className="text-xs sm:text-sm">{t("regenerating")}</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <span className="text-xs sm:text-sm">{t("regenerateToken")}</span>
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
-                                    {currentTeamToken && (
+                                </div>
+                            </div>
+
+                            {/* Survey Widget Code Snippet */}
+                            <div className="space-y-3 sm:space-y-4">
+                                <div className="space-y-2 sm:space-y-3">
+                                    <Label className="text-sm font-medium">{t("codeSnippets.surveyWidget.title")}</Label>
+                                    <p className="text-xs sm:text-sm text-muted-foreground">{t("codeSnippets.surveyWidget.description")}</p>
+                                    <div className="relative">
+                                        <div className="rounded-lg overflow-hidden border">
+                                            <SyntaxHighlighter
+                                                language="html"
+                                                style={theme === 'dark' ? oneDark : oneLight}
+                                                customStyle={{
+                                                    margin: 0,
+                                                    fontSize: '0.75rem',
+                                                    lineHeight: '1.5',
+                                                    padding: '0.75rem',
+                                                    background: 'transparent',
+                                                    color: 'inherit',
+                                                    borderRadius: '0.5rem'
+                                                }}
+                                                codeTagProps={{
+                                                    style: {
+                                                        fontSize: '0.75rem',
+                                                        fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
+                                                    }
+                                                }}
+                                                wrapLines={true}
+                                                wrapLongLines={true}
+                                                PreTag={({ children, ...props }) => (
+                                                    <pre className="text-xs sm:text-sm" {...props}>
+                                                        {children}
+                                                    </pre>
+                                                )}
+                                            >
+                                                {surveyWidgetCode}
+                                            </SyntaxHighlighter>
+                                        </div>
                                         <Button
                                             type="button"
                                             variant="outline"
                                             size="sm"
-                                            onClick={handleCopyToken}
-                                            className="px-2 sm:px-3"
+                                            onClick={() => handleCopyCode(surveyWidgetCode)}
+                                            className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm"
                                         >
-                                            <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                                            <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                                            <span className="text-xs sm:text-sm">{t("codeSnippets.surveyWidget.copyCode")}</span>
                                         </Button>
-                                    )}
+                                    </div>
                                 </div>
-                                {isAdmin && (
-                                    <div className="flex sm:justify-end gap-1.5 sm:gap-2">
-                                        {!currentTeamToken ? (
-                                            <Button
-                                                onClick={() => handleGenerateToken(currentTeam.id)}
-                                                disabled={isGeneratingToken}
-                                                className="flex-1 sm:flex-none"
-                                                size="sm"
-                                            >
-                                                {isGeneratingToken ? (
-                                                    <>
-                                                        <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
-                                                        <span className="text-xs sm:text-sm">{t("generating")}</span>
-                                                    </>
+                            </div>
+                        </TabsContent>
+
+                        {/* API Token Tab */}
+                        <TabsContent value="api" className="space-y-4 sm:space-y-6">
+                            <div className="space-y-3 sm:space-y-4">
+                                <div className="space-y-2 sm:space-y-3">
+                                    <Label htmlFor="api-token" className="text-sm font-medium">{t("apiToken")}</Label>
+                                    <div className="space-y-2">
+                                        <div className="flex gap-1.5 sm:gap-2">
+                                            <div className="flex-1 relative">
+                                                <Input
+                                                    id="api-token"
+                                                    type={showApiToken || !currentApiToken ? "text" : "password"}
+                                                    value={currentApiToken || t("noTokenGenerated")}
+                                                    readOnly
+                                                    className="pr-10 text-xs sm:pr-12 sm:text-sm"
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="absolute right-0.5 top-0.5 h-6 w-6 p-0 sm:right-1 sm:top-1 sm:h-7 sm:w-7"
+                                                    onClick={() => setShowApiToken(!showApiToken)}
+                                                >
+                                                    {showApiToken ? <EyeOff className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : <Eye className="h-2.5 w-2.5 sm:h-3 sm:w-3" />}
+                                                </Button>
+                                            </div>
+                                            {currentApiToken && (
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={handleCopyApiToken}
+                                                    className="px-2 sm:px-3"
+                                                >
+                                                    <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                                                </Button>
+                                            )}
+                                        </div>
+                                        {isAdmin && (
+                                            <div className="flex sm:justify-end gap-1.5 sm:gap-2">
+                                                {!currentApiToken ? (
+                                                    <Button
+                                                        onClick={() => handleGenerateToken(currentTeam.id, "api")}
+                                                        disabled={isGeneratingApiToken}
+                                                        className="flex-1 sm:flex-none"
+                                                        size="sm"
+                                                    >
+                                                        {isGeneratingApiToken ? (
+                                                            <>
+                                                                <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
+                                                                <span className="text-xs sm:text-sm">{t("generating")}</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <span className="text-xs sm:text-sm">{t("generateToken")}</span>
+                                                            </>
+                                                        )}
+                                                    </Button>
                                                 ) : (
-                                                    <>
-                                                        <span className="text-xs sm:text-sm">{t("generateToken")}</span>
-                                                    </>
+                                                    <Button
+                                                        onClick={() => {
+                                                            setRegenerateTokenType("api")
+                                                            setShowRegenerateModal(true)
+                                                        }}
+                                                        variant="default"
+                                                        disabled={isGeneratingApiToken}
+                                                        className="flex-1 sm:flex-none"
+                                                        size="sm"
+                                                    >
+                                                        {isGeneratingApiToken ? (
+                                                            <>
+                                                                <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
+                                                                <span className="text-xs sm:text-sm">{t("regenerating")}</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <span className="text-xs sm:text-sm">{t("regenerateToken")}</span>
+                                                            </>
+                                                        )}
+                                                    </Button>
                                                 )}
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                onClick={() => setShowRegenerateModal(true)}
-                                                variant="default"
-                                                disabled={isGeneratingToken}
-                                                className="flex-1 sm:flex-none"
-                                                size="sm"
-                                            >
-                                                {isGeneratingToken ? (
-                                                    <>
-                                                        <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
-                                                        <span className="text-xs sm:text-sm">{t("regenerating")}</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <span className="text-xs sm:text-sm">{t("regenerateToken")}</span>
-                                                    </>
-                                                )}
-                                            </Button>
+                                            </div>
                                         )}
                                     </div>
-                                )}
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
+                            {/* API Integration Code Snippet */}
+                            <div className="space-y-3 sm:space-y-4">
+                                <div className="space-y-2 sm:space-y-3">
+                                    <Label className="text-sm font-medium">{t("codeSnippets.apiIntegration.title")}</Label>
+                                    <p className="text-xs sm:text-sm text-muted-foreground">{t("codeSnippets.apiIntegration.description")}</p>
+                                    <div className="relative">
+                                        <div className="rounded-lg overflow-hidden border">
+                                            <SyntaxHighlighter
+                                                language="javascript"
+                                                style={theme === 'dark' ? oneDark : oneLight}
+                                                customStyle={{
+                                                    margin: 0,
+                                                    fontSize: '0.75rem',
+                                                    lineHeight: '1.5',
+                                                    padding: '0.75rem',
+                                                    background: 'transparent',
+                                                    color: 'inherit',
+                                                    borderRadius: '0.5rem'
+                                                }}
+                                                codeTagProps={{
+                                                    style: {
+                                                        fontSize: '0.75rem',
+                                                        fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
+                                                    }
+                                                }}
+                                                wrapLines={true}
+                                                wrapLongLines={true}
+                                                PreTag={({ children, ...props }) => (
+                                                    <pre className="text-xs sm:text-sm" {...props}>
+                                                        {children}
+                                                    </pre>
+                                                )}
+                                            >
+                                                {apiIntegrationCode}
+                                            </SyntaxHighlighter>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => handleCopyCode(apiIntegrationCode)}
+                                            className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm"
+                                        >
+                                            <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                                            <span className="text-xs sm:text-sm">{t("codeSnippets.apiIntegration.copyCode")}</span>
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                 </CardContent>)}
-
-
-            {/* Survey Widget Documentation */}
-            <SurveyWidgetDocs currentTeamToken={currentTeamToken} />
 
             {/* Regenerate Token Confirmation Modal */}
             <Dialog open={showRegenerateModal} onOpenChange={setShowRegenerateModal}>
@@ -229,10 +529,10 @@ export const ApiSettings = () => {
                             type="button"
                             variant="destructive"
                             onClick={handleConfirmRegenerate}
-                            disabled={isGeneratingToken}
+                            disabled={regenerateTokenType === "survey" ? isGeneratingSurveyToken : isGeneratingApiToken}
                             className="w-full sm:w-auto"
                         >
-                            {isGeneratingToken ? (
+                            {(regenerateTokenType === "survey" ? isGeneratingSurveyToken : isGeneratingApiToken) ? (
                                 <>
                                     <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
                                     {t("regenerating")}

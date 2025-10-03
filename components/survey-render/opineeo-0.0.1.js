@@ -12,7 +12,8 @@ class o {
         this.surveyId = p.surveyId || '';
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
-        this.apiUrl = 'https://api.opineeo.com/api/survey/v0';
+        this.branding = p.branding || true;
+        this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting
@@ -49,6 +50,7 @@ class o {
             const data = await res.json();
             const sv = data?.data;
             this.responseToken = sv.responseToken;
+            this.branding = sv.branding;
             if (data?.success && sv) {
                 this.survey = sv;
                 if (sv.style) this.customCSS = sv.style;
@@ -94,11 +96,10 @@ class o {
         const qs = this.survey?.questions || [], last = this.i >= qs.length;
         const head = '<div class="sv"><button class="x" data-a="close">×</button>';
         const load = this.loading ? `<div class="cc"><div class="ca">${this.getSLoadingIcon()}</div>` : '';
-        const err = this.error ? `<div class="cc"><div class="ca"><p style="color:#ef4444;text-align:center;font-weight:600;">Error loading survey</p></div><p style="text-align:center;margin-top:1rem;">${this.error}</p></div>` : '';
-        const na = !this.survey && !this.loading === !0 && !this.error ? `<div class="cc"><div class="ca"><p style="text-align:center;font-weight:600;">Survey not available</p></div></div>` : '';
+        const unavailableFeedback = this.error || (!this.survey && !this.loading) ? `<div class="cc"><div class="ca">${this.getUnavailableIcon()}</div><p>Survey not available</p></div>` : '';
         const body = qs.length ? (this.done || last ? this.renderDone() : `<div class="qtc">${this.renderQuestionCard(qs[this.i])}</div>`)
             + `<div class="ft">${this.done ? '' : `<div class="nav">${this.i > 0 ? `<button class="btn btno" data-a="prev">${this.getPrevArrowIcon()}</button>` : ''}<button class="btn btnp" data-a="next" ${this.s ? 'disabled' : ''}>${this.s ? this.getSpinnerIcon() : (this.i === qs.length - 1 ? this.getSendIcon() : this.getNextArrowIcon())}</button></div>`}</div>` : '';
-        this.container.innerHTML = head + load + err + na + body + '<div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>';
+        this.container.innerHTML = head + load + unavailableFeedback + body + (this.branding ? '<div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>' : '');
         this.focusInput();
     }
 
@@ -111,6 +112,9 @@ class o {
         return `<div style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; margin: 0 auto;">
             <div style="width: 60px; height: 60px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary, #3b82f6); border-radius: 50%; animation: spin 1s linear infinite;"></div>
         </div>`;
+    }
+    getUnavailableIcon() {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M12 15h.01"/><path d="M12 7v4"/></svg>`;
     }
 
     renderQuestionCard(q) {

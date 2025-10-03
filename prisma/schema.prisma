@@ -103,10 +103,12 @@ model Team {
   id                 Int                     @id @default(autoincrement())
   name               String
   description        String?
-  token              String?                 @unique
+  tokenSurvery       String?                 @unique
+  tokenApi           String?                 @unique
+  branding           Boolean                 @default(true)
   createdAt          DateTime                @default(now())
   updatedAt          DateTime                @updatedAt
-  ResponseRate       Int                     @default(0)
+  ResponseRate       Float                   @default(0)
   totalActiveSurveys Int                     @default(0)
   totalOpenSurveys   Int                     @default(0)
   totalResponses     Int                     @default(0)
@@ -122,8 +124,10 @@ model Team {
   user               User[]                  @relation("UserDefaultTeam")
   responseSummaries  SurveyResponseSummary[]
   subscription       CustomerSubscription?
+  usageTracking      UsageTracking[]
 
-  @@index([token])
+  @@index([tokenSurvery])
+  @@index([tokenApi])
   @@index([createdAt])
   @@map("teams")
 }
@@ -177,7 +181,7 @@ model Survey {
   updatedAt              DateTime                @updatedAt
   teamId                 Int
   typeId                 String?
-  ResponseRate           Int                     @default(0)
+  ResponseRate           Float                   @default(0)
   totalOpenSurveys       Int                     @default(0)
   totalResponses         Int                     @default(0)
   questions              Question[]
@@ -403,6 +407,7 @@ model CustomerSubscription {
   updatedAt            DateTime           @updatedAt
   team                 Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
   plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
+  usageTracking        UsageTracking[]
 
   @@index([teamId])
   @@index([planId])
@@ -411,6 +416,31 @@ model CustomerSubscription {
   @@index([stripeSubscriptionId])
   @@index([currentPeriodEnd])
   @@map("customer_subscriptions")
+}
+
+model UsageTracking {
+  id             String               @id @default(cuid())
+  teamId         Int
+  subscriptionId String
+  metricType     UsageMetricType
+  currentUsage   Int                  @default(0)
+  limitValue     Int
+  periodStart    DateTime             @default(now())
+  periodEnd      DateTime
+  lastResetDate  DateTime?
+  lastUpdated    DateTime             @default(now())
+  createdAt      DateTime             @default(now())
+  team           Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  subscription   CustomerSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, metricType, periodStart])
+  @@index([teamId])
+  @@index([subscriptionId])
+  @@index([metricType])
+  @@index([periodStart])
+  @@index([periodEnd])
+  @@index([lastUpdated])
+  @@map("usage_tracking")
 }
 
 enum Language {
@@ -482,4 +512,9 @@ enum SubscriptionStatus {
   incomplete
   incomplete_expired
   unpaid
+}
+
+enum UsageMetricType {
+  ACTIVE_SURVEYS
+  TOTAL_RESPONSES
 }

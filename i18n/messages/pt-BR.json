@@ -197,7 +197,8 @@
         "api": {
             "title": "Configuração da API",
             "description": "Gerencie tokens da API e acesso para envio de pesquisas",
-            "teamToken": "Token da Equipe",
+            "surveyToken": "Token de Pesquisa",
+            "apiToken": "Token da API",
             "noTokenGenerated": "Nenhum token gerado",
             "generateToken": "Gerar Token",
             "regenerateToken": "Regenerar Token",
@@ -221,6 +222,24 @@
             "confirmRegenerateDescription": "Tem certeza de que deseja regenerar este token? Esta ação não pode ser desfeita e invalidará o token atual.",
             "confirmRegenerate": "Regenerar Token",
             "cancel": "Cancelar",
+            "tabs": {
+                "surveyToken": "Token de Pesquisa",
+                "apiToken": "Token da API"
+            },
+            "codeSnippets": {
+                "surveyWidget": {
+                    "title": "Integração do Widget de Pesquisa",
+                    "description": "Use este token para incorporar pesquisas diretamente no seu site",
+                    "example": "Exemplo do Widget de Pesquisa",
+                    "copyCode": "Copiar Código"
+                },
+                "apiIntegration": {
+                    "title": "Integração da API",
+                    "description": "Use este token para enviar respostas de pesquisa via API",
+                    "example": "Exemplo de Integração da API",
+                    "copyCode": "Copiar Código"
+                }
+            },
             "widget": {
                 "title": "Integração do Widget de Pesquisa",
                 "description": "Incorpore pesquisas diretamente no seu site com nosso widget JavaScript",

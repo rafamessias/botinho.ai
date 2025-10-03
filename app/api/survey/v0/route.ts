@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/prisma/lib/prisma';
 import { z } from 'zod';
-import { QuestionFormat, ResponseStatus, StyleMode, SurveyStyle } from '@/lib/generated/prisma';
+import { QuestionFormat, ResponseStatus, StyleMode, Survey, SurveyStyle, UsageMetricType } from '@/lib/generated/prisma';
+import { validateSubscriptionAndUsage, getStatusCodeForError, invalidateSubscriptionCache } from '@/lib/services/subscription-validation';
+import { updateUsageTrackingInTransaction } from '@/lib/services/usage-tracking';
 
 // Simple in-memory cache for survey data (in production, consider Redis)
 const surveyCache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_TTL = 1 * 60 * 1000; // 1 minutes cache TTL
+
 
 // Helper function to get cached survey or fetch from database
 const getCachedSurvey = async (surveyId: string, teamId: number) => {
@@ -26,6 +29,9 @@ const getCachedSurvey = async (surveyId: string, teamId: number) => {
         },
         select: {
             id: true,
+            totalOpenSurveys: true,
+            totalResponses: true,
+            ResponseRate: true,
             style: {
                 select: {
                     styleMode: true,
@@ -260,7 +266,7 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 
-async function validateToken(request: NextRequest): Promise<{ id: number } | null> {
+async function validateToken(request: NextRequest): Promise<{ id: number, branding: boolean } | null> {
     let token: string | null = null;
     const authHeader = request.headers.get('authorization');
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -270,8 +276,8 @@ async function validateToken(request: NextRequest): Promise<{ id: number } | nul
     if (!token) return null;
 
     const team = await prisma.team.findUnique({
-        where: { token },
-        select: { id: true }
+        where: { tokenSurvery: token },
+        select: { id: true, branding: true }
     });
 
     if (!team) return null;
@@ -287,6 +293,26 @@ export async function POST(request: NextRequest) {
             return addCorsHeaders(NextResponse.json(
                 { error: 'Invalid token' },
                 { status: 401 }
+            ));
+        }
+
+        // PERFORMANCE OPTIMIZATION: Validate subscription and usage limits early
+        // This prevents unnecessary processing if the team has exceeded their limits
+        const subscriptionValidation = await validateSubscriptionAndUsage(team.id);
+
+        if (!subscriptionValidation.canProceed) {
+            const errorCode = subscriptionValidation.error?.code;
+            const statusCode = getStatusCodeForError(errorCode as any);
+
+            return addCorsHeaders(NextResponse.json(
+                {
+                    error: subscriptionValidation.error?.message || 'Subscription limit exceeded',
+                    code: errorCode,
+                    details: subscriptionValidation.error?.details,
+                    usage: subscriptionValidation.usage,
+                    subscription: subscriptionValidation.subscription
+                },
+                { status: statusCode }
             ));
         }
 
@@ -309,6 +335,9 @@ export async function POST(request: NextRequest) {
                 survey: {
                     select: {
                         id: true,
+                        totalOpenSurveys: true,
+                        totalResponses: true,
+                        ResponseRate: true,
                         questions: {
                             select: {
                                 id: true,
@@ -407,6 +436,9 @@ export async function POST(request: NextRequest) {
                 })
             ]);
 
+            // Update usage tracking within the transaction
+            await updateUsageTrackingInTransaction(tx, team.id, subscriptionValidation.subscription.id);
+
             return {
                 surveyResponse,
                 questionResponses: { count: questionResponses.count },
@@ -416,8 +448,12 @@ export async function POST(request: NextRequest) {
             timeout: 10000 // Reduced timeout since we're more efficient
         });
 
-        // Invalidate cache after successful submission
+        // Update totalOpenSurveys and ResponseRate for the survey
+        await updateSurveyStats(survey as { id: string, totalOpenSurveys: number, totalResponses: number });
+
+        // Invalidate caches after successful submission
         invalidateSurveyCache(survey.id);
+        invalidateSubscriptionCache(team.id);
 
         return addCorsHeaders(NextResponse.json({
             success: true,
@@ -476,6 +512,28 @@ export async function GET(request: NextRequest) {
             ));
         }
 
+
+        // PERFORMANCE OPTIMIZATION: Validate subscription and usage limits early
+        // This prevents unnecessary processing if the team has exceeded their limits
+        const subscriptionValidation = await validateSubscriptionAndUsage(team.id);
+
+        if (!subscriptionValidation.canProceed) {
+            const errorCode = subscriptionValidation.error?.code;
+            const statusCode = getStatusCodeForError(errorCode as any);
+
+            return addCorsHeaders(NextResponse.json(
+                {
+                    error: subscriptionValidation.error?.message || 'Subscription limit exceeded',
+                    code: errorCode,
+                    details: subscriptionValidation.error?.details,
+                    usage: subscriptionValidation.usage,
+                    subscription: subscriptionValidation.subscription
+                },
+                { status: statusCode }
+            ));
+        }
+
+
         // PERFORMANCE OPTIMIZATION: Use cached survey data with single query
         // This reduces database round trips and provides caching benefits
         const survey = await getCachedSurvey(surveyId, team.id);
@@ -511,12 +569,16 @@ export async function GET(request: NextRequest) {
             }
         });
 
+        // Update totalOpenSurveys and ResponseRate for the survey
+        await updateSurveyStats(survey as { id: string, totalOpenSurveys: number, totalResponses: number });
+
         return addCorsHeaders(NextResponse.json({
             success: true,
             data: {
                 responseToken: newSurveyResponse.id,
                 style: customCSS,
-                questions: survey.questions
+                questions: survey.questions,
+                branding: team.branding
             }
         }));
 
@@ -541,4 +603,22 @@ export async function GET(request: NextRequest) {
             { status: 500 }
         ));
     }
+}
+
+async function updateSurveyStats(survey: { id: string, totalOpenSurveys: number, totalResponses: number }) {
+    let responseRate = 0;
+    const denominator = survey.totalOpenSurveys + survey.totalResponses;
+    if (denominator > 0) {
+        responseRate = (survey.totalResponses / denominator) * 100;
+    }
+
+    // Update the survey model with new values
+    await prisma.survey.update({
+        where: { id: survey.id },
+        data: {
+            totalOpenSurveys: survey.totalOpenSurveys,
+            totalResponses: survey.totalResponses,
+            ResponseRate: responseRate,
+        }
+    });
 }

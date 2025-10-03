@@ -197,7 +197,8 @@
         "api": {
             "title": "API Configuration",
             "description": "Manage API tokens and access for survey submissions",
-            "teamToken": "Team Token",
+            "surveyToken": "Survey Token",
+            "apiToken": "API Token",
             "noTokenGenerated": "No token generated",
             "generateToken": "Generate Token",
             "regenerateToken": "Regenerate Token",
@@ -221,6 +222,24 @@
             "confirmRegenerateDescription": "Are you sure you want to regenerate this token? This action cannot be undone and will invalidate the current token.",
             "confirmRegenerate": "Regenerate Token",
             "cancel": "Cancel",
+            "tabs": {
+                "surveyToken": "Survey Token",
+                "apiToken": "API Token"
+            },
+            "codeSnippets": {
+                "surveyWidget": {
+                    "title": "Survey Widget Integration",
+                    "description": "Use this token to embed surveys directly on your website",
+                    "example": "Survey Widget Example",
+                    "copyCode": "Copy Code"
+                },
+                "apiIntegration": {
+                    "title": "API Integration",
+                    "description": "Use this token to submit survey responses via API",
+                    "example": "API Integration Example",
+                    "copyCode": "Copy Code"
+                }
+            },
             "widget": {
                 "title": "Survey Widget Integration",
                 "description": "Embed surveys directly on your website with our JavaScript widget",

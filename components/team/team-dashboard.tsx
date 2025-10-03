@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { IconPlus, IconEdit, IconUsers, IconChevronDown, IconTrash } from "@tabler/icons-react"
+import { IconPlus, IconEdit, IconUsers, IconChevronDown, IconTrash, IconCheck } from "@tabler/icons-react"
 import { toast } from "sonner"
 import { TeamForm } from "@/components/team/team-form"
 import { InviteMemberForm } from "@/components/team/invite-member-form"
@@ -35,8 +35,8 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { cn } from "@/lib/utils"
-import { deleteTeamAction } from "@/components/server-actions/team"
+//import { cn } from "@/lib/utils"
+//import { deleteTeamAction } from "@/components/server-actions/team"
 
 interface Team {
     id: number
@@ -145,6 +145,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
         return isOwner
     }
 
+    /*
     const handleDeleteTeam = async (teamId: number) => {
         try {
             setIsDeletingTeam(true)
@@ -166,7 +167,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
             setIsDeletingTeam(false)
         }
     }
-
+    */
 
     if (teams.length === 0) {
         return (

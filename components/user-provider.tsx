@@ -14,6 +14,7 @@ export interface UserTeam {
     totalSurveys: number
     totalActiveSurveys: number
     totalResponses: number
+    ResponseRate: number
     members?: Array<{
         id: number
         isAdmin: boolean

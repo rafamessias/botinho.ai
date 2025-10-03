@@ -98,6 +98,11 @@ export type SubscriptionPlan = $Result.DefaultSelection<Prisma.$SubscriptionPlan
  * 
  */
 export type CustomerSubscription = $Result.DefaultSelection<Prisma.$CustomerSubscriptionPayload>
+/**
+ * Model UsageTracking
+ * 
+ */
+export type UsageTracking = $Result.DefaultSelection<Prisma.$UsageTrackingPayload>
 
 /**
  * Enums
@@ -206,6 +211,14 @@ export const SubscriptionStatus: {
 
 export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
 
+
+export const UsageMetricType: {
+  ACTIVE_SURVEYS: 'ACTIVE_SURVEYS',
+  TOTAL_RESPONSES: 'TOTAL_RESPONSES'
+};
+
+export type UsageMetricType = (typeof UsageMetricType)[keyof typeof UsageMetricType]
+
 }
 
 export type Language = $Enums.Language
@@ -251,6 +264,10 @@ export const BillingInterval: typeof $Enums.BillingInterval
 export type SubscriptionStatus = $Enums.SubscriptionStatus
 
 export const SubscriptionStatus: typeof $Enums.SubscriptionStatus
+
+export type UsageMetricType = $Enums.UsageMetricType
+
+export const UsageMetricType: typeof $Enums.UsageMetricType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -539,6 +556,16 @@ export class PrismaClient<
     * ```
     */
   get customerSubscription(): Prisma.CustomerSubscriptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.usageTracking`: Exposes CRUD operations for the **UsageTracking** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UsageTrackings
+    * const usageTrackings = await prisma.usageTracking.findMany()
+    * ```
+    */
+  get usageTracking(): Prisma.UsageTrackingDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -995,7 +1022,8 @@ export namespace Prisma {
     SurveyResponseSummary: 'SurveyResponseSummary',
     QuestionResponse: 'QuestionResponse',
     SubscriptionPlan: 'SubscriptionPlan',
-    CustomerSubscription: 'CustomerSubscription'
+    CustomerSubscription: 'CustomerSubscription',
+    UsageTracking: 'UsageTracking'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1014,7 +1042,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "team" | "teamMember" | "surveyType" | "survey" | "surveyStyle" | "question" | "questionOption" | "surveyResponse" | "surveyResponseSummary" | "questionResponse" | "subscriptionPlan" | "customerSubscription"
+      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "team" | "teamMember" | "surveyType" | "survey" | "surveyStyle" | "question" | "questionOption" | "surveyResponse" | "surveyResponseSummary" | "questionResponse" | "subscriptionPlan" | "customerSubscription" | "usageTracking"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2276,6 +2304,80 @@ export namespace Prisma {
           }
         }
       }
+      UsageTracking: {
+        payload: Prisma.$UsageTrackingPayload<ExtArgs>
+        fields: Prisma.UsageTrackingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UsageTrackingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UsageTrackingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          findFirst: {
+            args: Prisma.UsageTrackingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UsageTrackingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          findMany: {
+            args: Prisma.UsageTrackingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>[]
+          }
+          create: {
+            args: Prisma.UsageTrackingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          createMany: {
+            args: Prisma.UsageTrackingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UsageTrackingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>[]
+          }
+          delete: {
+            args: Prisma.UsageTrackingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          update: {
+            args: Prisma.UsageTrackingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          deleteMany: {
+            args: Prisma.UsageTrackingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UsageTrackingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UsageTrackingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>[]
+          }
+          upsert: {
+            args: Prisma.UsageTrackingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          aggregate: {
+            args: Prisma.UsageTrackingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUsageTracking>
+          }
+          groupBy: {
+            args: Prisma.UsageTrackingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UsageTrackingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UsageTrackingCountArgs<ExtArgs>
+            result: $Utils.Optional<UsageTrackingCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2385,6 +2487,7 @@ export namespace Prisma {
     questionResponse?: QuestionResponseOmit
     subscriptionPlan?: SubscriptionPlanOmit
     customerSubscription?: CustomerSubscriptionOmit
+    usageTracking?: UsageTrackingOmit
   }
 
   /* Types for Logging */
@@ -2555,6 +2658,7 @@ export namespace Prisma {
     members: number
     user: number
     responseSummaries: number
+    usageTracking: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2568,6 +2672,7 @@ export namespace Prisma {
     members?: boolean | TeamCountOutputTypeCountMembersArgs
     user?: boolean | TeamCountOutputTypeCountUserArgs
     responseSummaries?: boolean | TeamCountOutputTypeCountResponseSummariesArgs
+    usageTracking?: boolean | TeamCountOutputTypeCountUsageTrackingArgs
   }
 
   // Custom InputTypes
@@ -2649,6 +2754,13 @@ export namespace Prisma {
    */
   export type TeamCountOutputTypeCountResponseSummariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SurveyResponseSummaryWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountUsageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UsageTrackingWhereInput
   }
 
 
@@ -2889,6 +3001,37 @@ export namespace Prisma {
    */
   export type SubscriptionPlanCountOutputTypeCountSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CustomerSubscriptionWhereInput
+  }
+
+
+  /**
+   * Count Type CustomerSubscriptionCountOutputType
+   */
+
+  export type CustomerSubscriptionCountOutputType = {
+    usageTracking: number
+  }
+
+  export type CustomerSubscriptionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    usageTracking?: boolean | CustomerSubscriptionCountOutputTypeCountUsageTrackingArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CustomerSubscriptionCountOutputType without action
+   */
+  export type CustomerSubscriptionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscriptionCountOutputType
+     */
+    select?: CustomerSubscriptionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CustomerSubscriptionCountOutputType without action
+   */
+  export type CustomerSubscriptionCountOutputTypeCountUsageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UsageTrackingWhereInput
   }
 
 
@@ -8765,7 +8908,9 @@ export namespace Prisma {
     id: number | null
     name: string | null
     description: string | null
-    token: string | null
+    tokenSurvery: string | null
+    tokenApi: string | null
+    branding: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     ResponseRate: number | null
@@ -8779,7 +8924,9 @@ export namespace Prisma {
     id: number | null
     name: string | null
     description: string | null
-    token: string | null
+    tokenSurvery: string | null
+    tokenApi: string | null
+    branding: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     ResponseRate: number | null
@@ -8793,7 +8940,9 @@ export namespace Prisma {
     id: number
     name: number
     description: number
-    token: number
+    tokenSurvery: number
+    tokenApi: number
+    branding: number
     createdAt: number
     updatedAt: number
     ResponseRate: number
@@ -8827,7 +8976,9 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
-    token?: true
+    tokenSurvery?: true
+    tokenApi?: true
+    branding?: true
     createdAt?: true
     updatedAt?: true
     ResponseRate?: true
@@ -8841,7 +8992,9 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
-    token?: true
+    tokenSurvery?: true
+    tokenApi?: true
+    branding?: true
     createdAt?: true
     updatedAt?: true
     ResponseRate?: true
@@ -8855,7 +9008,9 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
-    token?: true
+    tokenSurvery?: true
+    tokenApi?: true
+    branding?: true
     createdAt?: true
     updatedAt?: true
     ResponseRate?: true
@@ -8956,7 +9111,9 @@ export namespace Prisma {
     id: number
     name: string
     description: string | null
-    token: string | null
+    tokenSurvery: string | null
+    tokenApi: string | null
+    branding: boolean
     createdAt: Date
     updatedAt: Date
     ResponseRate: number
@@ -8989,7 +9146,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
-    token?: boolean
+    tokenSurvery?: boolean
+    tokenApi?: boolean
+    branding?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     ResponseRate?: boolean
@@ -9008,6 +9167,7 @@ export namespace Prisma {
     user?: boolean | Team$userArgs<ExtArgs>
     responseSummaries?: boolean | Team$responseSummariesArgs<ExtArgs>
     subscription?: boolean | Team$subscriptionArgs<ExtArgs>
+    usageTracking?: boolean | Team$usageTrackingArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
 
@@ -9015,7 +9175,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
-    token?: boolean
+    tokenSurvery?: boolean
+    tokenApi?: boolean
+    branding?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     ResponseRate?: boolean
@@ -9029,7 +9191,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
-    token?: boolean
+    tokenSurvery?: boolean
+    tokenApi?: boolean
+    branding?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     ResponseRate?: boolean
@@ -9043,7 +9207,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
-    token?: boolean
+    tokenSurvery?: boolean
+    tokenApi?: boolean
+    branding?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     ResponseRate?: boolean
@@ -9053,7 +9219,7 @@ export namespace Prisma {
     totalSurveys?: boolean
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "token" | "createdAt" | "updatedAt" | "ResponseRate" | "totalActiveSurveys" | "totalOpenSurveys" | "totalResponses" | "totalSurveys", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "tokenSurvery" | "tokenApi" | "branding" | "createdAt" | "updatedAt" | "ResponseRate" | "totalActiveSurveys" | "totalOpenSurveys" | "totalResponses" | "totalSurveys", ExtArgs["result"]["team"]>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questionOptions?: boolean | Team$questionOptionsArgs<ExtArgs>
     questionResponses?: boolean | Team$questionResponsesArgs<ExtArgs>
@@ -9066,6 +9232,7 @@ export namespace Prisma {
     user?: boolean | Team$userArgs<ExtArgs>
     responseSummaries?: boolean | Team$responseSummariesArgs<ExtArgs>
     subscription?: boolean | Team$subscriptionArgs<ExtArgs>
+    usageTracking?: boolean | Team$usageTrackingArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -9085,12 +9252,15 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>[]
       responseSummaries: Prisma.$SurveyResponseSummaryPayload<ExtArgs>[]
       subscription: Prisma.$CustomerSubscriptionPayload<ExtArgs> | null
+      usageTracking: Prisma.$UsageTrackingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
       description: string | null
-      token: string | null
+      tokenSurvery: string | null
+      tokenApi: string | null
+      branding: boolean
       createdAt: Date
       updatedAt: Date
       ResponseRate: number
@@ -9503,6 +9673,7 @@ export namespace Prisma {
     user<T extends Team$userArgs<ExtArgs> = {}>(args?: Subset<T, Team$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     responseSummaries<T extends Team$responseSummariesArgs<ExtArgs> = {}>(args?: Subset<T, Team$responseSummariesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     subscription<T extends Team$subscriptionArgs<ExtArgs> = {}>(args?: Subset<T, Team$subscriptionArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    usageTracking<T extends Team$usageTrackingArgs<ExtArgs> = {}>(args?: Subset<T, Team$usageTrackingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9535,10 +9706,12 @@ export namespace Prisma {
     readonly id: FieldRef<"Team", 'Int'>
     readonly name: FieldRef<"Team", 'String'>
     readonly description: FieldRef<"Team", 'String'>
-    readonly token: FieldRef<"Team", 'String'>
+    readonly tokenSurvery: FieldRef<"Team", 'String'>
+    readonly tokenApi: FieldRef<"Team", 'String'>
+    readonly branding: FieldRef<"Team", 'Boolean'>
     readonly createdAt: FieldRef<"Team", 'DateTime'>
     readonly updatedAt: FieldRef<"Team", 'DateTime'>
-    readonly ResponseRate: FieldRef<"Team", 'Int'>
+    readonly ResponseRate: FieldRef<"Team", 'Float'>
     readonly totalActiveSurveys: FieldRef<"Team", 'Int'>
     readonly totalOpenSurveys: FieldRef<"Team", 'Int'>
     readonly totalResponses: FieldRef<"Team", 'Int'>
@@ -10187,6 +10360,30 @@ export namespace Prisma {
      */
     include?: CustomerSubscriptionInclude<ExtArgs> | null
     where?: CustomerSubscriptionWhereInput
+  }
+
+  /**
+   * Team.usageTracking
+   */
+  export type Team$usageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    where?: UsageTrackingWhereInput
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    cursor?: UsageTrackingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
   }
 
   /**
@@ -13320,7 +13517,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Survey", 'DateTime'>
     readonly teamId: FieldRef<"Survey", 'Int'>
     readonly typeId: FieldRef<"Survey", 'String'>
-    readonly ResponseRate: FieldRef<"Survey", 'Int'>
+    readonly ResponseRate: FieldRef<"Survey", 'Float'>
     readonly totalOpenSurveys: FieldRef<"Survey", 'Int'>
     readonly totalResponses: FieldRef<"Survey", 'Int'>
   }
@@ -22877,6 +23074,8 @@ export namespace Prisma {
     updatedAt?: boolean
     team?: boolean | TeamDefaultArgs<ExtArgs>
     plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
+    usageTracking?: boolean | CustomerSubscription$usageTrackingArgs<ExtArgs>
+    _count?: boolean | CustomerSubscriptionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customerSubscription"]>
 
   export type CustomerSubscriptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -22935,6 +23134,8 @@ export namespace Prisma {
   export type CustomerSubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     team?: boolean | TeamDefaultArgs<ExtArgs>
     plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
+    usageTracking?: boolean | CustomerSubscription$usageTrackingArgs<ExtArgs>
+    _count?: boolean | CustomerSubscriptionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerSubscriptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     team?: boolean | TeamDefaultArgs<ExtArgs>
@@ -22950,6 +23151,7 @@ export namespace Prisma {
     objects: {
       team: Prisma.$TeamPayload<ExtArgs>
       plan: Prisma.$SubscriptionPlanPayload<ExtArgs>
+      usageTracking: Prisma.$UsageTrackingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -23361,6 +23563,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     plan<T extends SubscriptionPlanDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SubscriptionPlanDefaultArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    usageTracking<T extends CustomerSubscription$usageTrackingArgs<ExtArgs> = {}>(args?: Subset<T, CustomerSubscription$usageTrackingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23799,6 +24002,30 @@ export namespace Prisma {
   }
 
   /**
+   * CustomerSubscription.usageTracking
+   */
+  export type CustomerSubscription$usageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    where?: UsageTrackingWhereInput
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    cursor?: UsageTrackingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
+  }
+
+  /**
    * CustomerSubscription without action
    */
   export type CustomerSubscriptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -23814,6 +24041,1192 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CustomerSubscriptionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UsageTracking
+   */
+
+  export type AggregateUsageTracking = {
+    _count: UsageTrackingCountAggregateOutputType | null
+    _avg: UsageTrackingAvgAggregateOutputType | null
+    _sum: UsageTrackingSumAggregateOutputType | null
+    _min: UsageTrackingMinAggregateOutputType | null
+    _max: UsageTrackingMaxAggregateOutputType | null
+  }
+
+  export type UsageTrackingAvgAggregateOutputType = {
+    teamId: number | null
+    currentUsage: number | null
+    limitValue: number | null
+  }
+
+  export type UsageTrackingSumAggregateOutputType = {
+    teamId: number | null
+    currentUsage: number | null
+    limitValue: number | null
+  }
+
+  export type UsageTrackingMinAggregateOutputType = {
+    id: string | null
+    teamId: number | null
+    subscriptionId: string | null
+    metricType: $Enums.UsageMetricType | null
+    currentUsage: number | null
+    limitValue: number | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    lastResetDate: Date | null
+    lastUpdated: Date | null
+    createdAt: Date | null
+  }
+
+  export type UsageTrackingMaxAggregateOutputType = {
+    id: string | null
+    teamId: number | null
+    subscriptionId: string | null
+    metricType: $Enums.UsageMetricType | null
+    currentUsage: number | null
+    limitValue: number | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    lastResetDate: Date | null
+    lastUpdated: Date | null
+    createdAt: Date | null
+  }
+
+  export type UsageTrackingCountAggregateOutputType = {
+    id: number
+    teamId: number
+    subscriptionId: number
+    metricType: number
+    currentUsage: number
+    limitValue: number
+    periodStart: number
+    periodEnd: number
+    lastResetDate: number
+    lastUpdated: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UsageTrackingAvgAggregateInputType = {
+    teamId?: true
+    currentUsage?: true
+    limitValue?: true
+  }
+
+  export type UsageTrackingSumAggregateInputType = {
+    teamId?: true
+    currentUsage?: true
+    limitValue?: true
+  }
+
+  export type UsageTrackingMinAggregateInputType = {
+    id?: true
+    teamId?: true
+    subscriptionId?: true
+    metricType?: true
+    currentUsage?: true
+    limitValue?: true
+    periodStart?: true
+    periodEnd?: true
+    lastResetDate?: true
+    lastUpdated?: true
+    createdAt?: true
+  }
+
+  export type UsageTrackingMaxAggregateInputType = {
+    id?: true
+    teamId?: true
+    subscriptionId?: true
+    metricType?: true
+    currentUsage?: true
+    limitValue?: true
+    periodStart?: true
+    periodEnd?: true
+    lastResetDate?: true
+    lastUpdated?: true
+    createdAt?: true
+  }
+
+  export type UsageTrackingCountAggregateInputType = {
+    id?: true
+    teamId?: true
+    subscriptionId?: true
+    metricType?: true
+    currentUsage?: true
+    limitValue?: true
+    periodStart?: true
+    periodEnd?: true
+    lastResetDate?: true
+    lastUpdated?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UsageTrackingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UsageTracking to aggregate.
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UsageTrackings to fetch.
+     */
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UsageTrackingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UsageTrackings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UsageTrackings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UsageTrackings
+    **/
+    _count?: true | UsageTrackingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UsageTrackingAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UsageTrackingSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UsageTrackingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UsageTrackingMaxAggregateInputType
+  }
+
+  export type GetUsageTrackingAggregateType<T extends UsageTrackingAggregateArgs> = {
+        [P in keyof T & keyof AggregateUsageTracking]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUsageTracking[P]>
+      : GetScalarType<T[P], AggregateUsageTracking[P]>
+  }
+
+
+
+
+  export type UsageTrackingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UsageTrackingWhereInput
+    orderBy?: UsageTrackingOrderByWithAggregationInput | UsageTrackingOrderByWithAggregationInput[]
+    by: UsageTrackingScalarFieldEnum[] | UsageTrackingScalarFieldEnum
+    having?: UsageTrackingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UsageTrackingCountAggregateInputType | true
+    _avg?: UsageTrackingAvgAggregateInputType
+    _sum?: UsageTrackingSumAggregateInputType
+    _min?: UsageTrackingMinAggregateInputType
+    _max?: UsageTrackingMaxAggregateInputType
+  }
+
+  export type UsageTrackingGroupByOutputType = {
+    id: string
+    teamId: number
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage: number
+    limitValue: number
+    periodStart: Date
+    periodEnd: Date
+    lastResetDate: Date | null
+    lastUpdated: Date
+    createdAt: Date
+    _count: UsageTrackingCountAggregateOutputType | null
+    _avg: UsageTrackingAvgAggregateOutputType | null
+    _sum: UsageTrackingSumAggregateOutputType | null
+    _min: UsageTrackingMinAggregateOutputType | null
+    _max: UsageTrackingMaxAggregateOutputType | null
+  }
+
+  type GetUsageTrackingGroupByPayload<T extends UsageTrackingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UsageTrackingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UsageTrackingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UsageTrackingGroupByOutputType[P]>
+            : GetScalarType<T[P], UsageTrackingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UsageTrackingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    subscriptionId?: boolean
+    metricType?: boolean
+    currentUsage?: boolean
+    limitValue?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    lastResetDate?: boolean
+    lastUpdated?: boolean
+    createdAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["usageTracking"]>
+
+  export type UsageTrackingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    subscriptionId?: boolean
+    metricType?: boolean
+    currentUsage?: boolean
+    limitValue?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    lastResetDate?: boolean
+    lastUpdated?: boolean
+    createdAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["usageTracking"]>
+
+  export type UsageTrackingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    subscriptionId?: boolean
+    metricType?: boolean
+    currentUsage?: boolean
+    limitValue?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    lastResetDate?: boolean
+    lastUpdated?: boolean
+    createdAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["usageTracking"]>
+
+  export type UsageTrackingSelectScalar = {
+    id?: boolean
+    teamId?: boolean
+    subscriptionId?: boolean
+    metricType?: boolean
+    currentUsage?: boolean
+    limitValue?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    lastResetDate?: boolean
+    lastUpdated?: boolean
+    createdAt?: boolean
+  }
+
+  export type UsageTrackingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "subscriptionId" | "metricType" | "currentUsage" | "limitValue" | "periodStart" | "periodEnd" | "lastResetDate" | "lastUpdated" | "createdAt", ExtArgs["result"]["usageTracking"]>
+  export type UsageTrackingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }
+  export type UsageTrackingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }
+  export type UsageTrackingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }
+
+  export type $UsageTrackingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UsageTracking"
+    objects: {
+      team: Prisma.$TeamPayload<ExtArgs>
+      subscription: Prisma.$CustomerSubscriptionPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      teamId: number
+      subscriptionId: string
+      metricType: $Enums.UsageMetricType
+      currentUsage: number
+      limitValue: number
+      periodStart: Date
+      periodEnd: Date
+      lastResetDate: Date | null
+      lastUpdated: Date
+      createdAt: Date
+    }, ExtArgs["result"]["usageTracking"]>
+    composites: {}
+  }
+
+  type UsageTrackingGetPayload<S extends boolean | null | undefined | UsageTrackingDefaultArgs> = $Result.GetResult<Prisma.$UsageTrackingPayload, S>
+
+  type UsageTrackingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UsageTrackingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UsageTrackingCountAggregateInputType | true
+    }
+
+  export interface UsageTrackingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UsageTracking'], meta: { name: 'UsageTracking' } }
+    /**
+     * Find zero or one UsageTracking that matches the filter.
+     * @param {UsageTrackingFindUniqueArgs} args - Arguments to find a UsageTracking
+     * @example
+     * // Get one UsageTracking
+     * const usageTracking = await prisma.usageTracking.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UsageTrackingFindUniqueArgs>(args: SelectSubset<T, UsageTrackingFindUniqueArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UsageTracking that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UsageTrackingFindUniqueOrThrowArgs} args - Arguments to find a UsageTracking
+     * @example
+     * // Get one UsageTracking
+     * const usageTracking = await prisma.usageTracking.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UsageTrackingFindUniqueOrThrowArgs>(args: SelectSubset<T, UsageTrackingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UsageTracking that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingFindFirstArgs} args - Arguments to find a UsageTracking
+     * @example
+     * // Get one UsageTracking
+     * const usageTracking = await prisma.usageTracking.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UsageTrackingFindFirstArgs>(args?: SelectSubset<T, UsageTrackingFindFirstArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UsageTracking that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingFindFirstOrThrowArgs} args - Arguments to find a UsageTracking
+     * @example
+     * // Get one UsageTracking
+     * const usageTracking = await prisma.usageTracking.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UsageTrackingFindFirstOrThrowArgs>(args?: SelectSubset<T, UsageTrackingFindFirstOrThrowArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UsageTrackings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UsageTrackings
+     * const usageTrackings = await prisma.usageTracking.findMany()
+     * 
+     * // Get first 10 UsageTrackings
+     * const usageTrackings = await prisma.usageTracking.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const usageTrackingWithIdOnly = await prisma.usageTracking.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UsageTrackingFindManyArgs>(args?: SelectSubset<T, UsageTrackingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UsageTracking.
+     * @param {UsageTrackingCreateArgs} args - Arguments to create a UsageTracking.
+     * @example
+     * // Create one UsageTracking
+     * const UsageTracking = await prisma.usageTracking.create({
+     *   data: {
+     *     // ... data to create a UsageTracking
+     *   }
+     * })
+     * 
+     */
+    create<T extends UsageTrackingCreateArgs>(args: SelectSubset<T, UsageTrackingCreateArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UsageTrackings.
+     * @param {UsageTrackingCreateManyArgs} args - Arguments to create many UsageTrackings.
+     * @example
+     * // Create many UsageTrackings
+     * const usageTracking = await prisma.usageTracking.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UsageTrackingCreateManyArgs>(args?: SelectSubset<T, UsageTrackingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UsageTrackings and returns the data saved in the database.
+     * @param {UsageTrackingCreateManyAndReturnArgs} args - Arguments to create many UsageTrackings.
+     * @example
+     * // Create many UsageTrackings
+     * const usageTracking = await prisma.usageTracking.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UsageTrackings and only return the `id`
+     * const usageTrackingWithIdOnly = await prisma.usageTracking.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UsageTrackingCreateManyAndReturnArgs>(args?: SelectSubset<T, UsageTrackingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UsageTracking.
+     * @param {UsageTrackingDeleteArgs} args - Arguments to delete one UsageTracking.
+     * @example
+     * // Delete one UsageTracking
+     * const UsageTracking = await prisma.usageTracking.delete({
+     *   where: {
+     *     // ... filter to delete one UsageTracking
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UsageTrackingDeleteArgs>(args: SelectSubset<T, UsageTrackingDeleteArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UsageTracking.
+     * @param {UsageTrackingUpdateArgs} args - Arguments to update one UsageTracking.
+     * @example
+     * // Update one UsageTracking
+     * const usageTracking = await prisma.usageTracking.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UsageTrackingUpdateArgs>(args: SelectSubset<T, UsageTrackingUpdateArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UsageTrackings.
+     * @param {UsageTrackingDeleteManyArgs} args - Arguments to filter UsageTrackings to delete.
+     * @example
+     * // Delete a few UsageTrackings
+     * const { count } = await prisma.usageTracking.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UsageTrackingDeleteManyArgs>(args?: SelectSubset<T, UsageTrackingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UsageTrackings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UsageTrackings
+     * const usageTracking = await prisma.usageTracking.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UsageTrackingUpdateManyArgs>(args: SelectSubset<T, UsageTrackingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UsageTrackings and returns the data updated in the database.
+     * @param {UsageTrackingUpdateManyAndReturnArgs} args - Arguments to update many UsageTrackings.
+     * @example
+     * // Update many UsageTrackings
+     * const usageTracking = await prisma.usageTracking.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UsageTrackings and only return the `id`
+     * const usageTrackingWithIdOnly = await prisma.usageTracking.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UsageTrackingUpdateManyAndReturnArgs>(args: SelectSubset<T, UsageTrackingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UsageTracking.
+     * @param {UsageTrackingUpsertArgs} args - Arguments to update or create a UsageTracking.
+     * @example
+     * // Update or create a UsageTracking
+     * const usageTracking = await prisma.usageTracking.upsert({
+     *   create: {
+     *     // ... data to create a UsageTracking
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UsageTracking we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UsageTrackingUpsertArgs>(args: SelectSubset<T, UsageTrackingUpsertArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UsageTrackings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingCountArgs} args - Arguments to filter UsageTrackings to count.
+     * @example
+     * // Count the number of UsageTrackings
+     * const count = await prisma.usageTracking.count({
+     *   where: {
+     *     // ... the filter for the UsageTrackings we want to count
+     *   }
+     * })
+    **/
+    count<T extends UsageTrackingCountArgs>(
+      args?: Subset<T, UsageTrackingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UsageTrackingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UsageTracking.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UsageTrackingAggregateArgs>(args: Subset<T, UsageTrackingAggregateArgs>): Prisma.PrismaPromise<GetUsageTrackingAggregateType<T>>
+
+    /**
+     * Group by UsageTracking.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UsageTrackingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UsageTrackingGroupByArgs['orderBy'] }
+        : { orderBy?: UsageTrackingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UsageTrackingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUsageTrackingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UsageTracking model
+   */
+  readonly fields: UsageTrackingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UsageTracking.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UsageTrackingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    subscription<T extends CustomerSubscriptionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerSubscriptionDefaultArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UsageTracking model
+   */
+  interface UsageTrackingFieldRefs {
+    readonly id: FieldRef<"UsageTracking", 'String'>
+    readonly teamId: FieldRef<"UsageTracking", 'Int'>
+    readonly subscriptionId: FieldRef<"UsageTracking", 'String'>
+    readonly metricType: FieldRef<"UsageTracking", 'UsageMetricType'>
+    readonly currentUsage: FieldRef<"UsageTracking", 'Int'>
+    readonly limitValue: FieldRef<"UsageTracking", 'Int'>
+    readonly periodStart: FieldRef<"UsageTracking", 'DateTime'>
+    readonly periodEnd: FieldRef<"UsageTracking", 'DateTime'>
+    readonly lastResetDate: FieldRef<"UsageTracking", 'DateTime'>
+    readonly lastUpdated: FieldRef<"UsageTracking", 'DateTime'>
+    readonly createdAt: FieldRef<"UsageTracking", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UsageTracking findUnique
+   */
+  export type UsageTrackingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTracking to fetch.
+     */
+    where: UsageTrackingWhereUniqueInput
+  }
+
+  /**
+   * UsageTracking findUniqueOrThrow
+   */
+  export type UsageTrackingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTracking to fetch.
+     */
+    where: UsageTrackingWhereUniqueInput
+  }
+
+  /**
+   * UsageTracking findFirst
+   */
+  export type UsageTrackingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTracking to fetch.
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UsageTrackings to fetch.
+     */
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UsageTrackings.
+     */
+    cursor?: UsageTrackingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UsageTrackings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UsageTrackings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UsageTrackings.
+     */
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
+  }
+
+  /**
+   * UsageTracking findFirstOrThrow
+   */
+  export type UsageTrackingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTracking to fetch.
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UsageTrackings to fetch.
+     */
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UsageTrackings.
+     */
+    cursor?: UsageTrackingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UsageTrackings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UsageTrackings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UsageTrackings.
+     */
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
+  }
+
+  /**
+   * UsageTracking findMany
+   */
+  export type UsageTrackingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTrackings to fetch.
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UsageTrackings to fetch.
+     */
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UsageTrackings.
+     */
+    cursor?: UsageTrackingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UsageTrackings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UsageTrackings.
+     */
+    skip?: number
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
+  }
+
+  /**
+   * UsageTracking create
+   */
+  export type UsageTrackingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UsageTracking.
+     */
+    data: XOR<UsageTrackingCreateInput, UsageTrackingUncheckedCreateInput>
+  }
+
+  /**
+   * UsageTracking createMany
+   */
+  export type UsageTrackingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UsageTrackings.
+     */
+    data: UsageTrackingCreateManyInput | UsageTrackingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UsageTracking createManyAndReturn
+   */
+  export type UsageTrackingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * The data used to create many UsageTrackings.
+     */
+    data: UsageTrackingCreateManyInput | UsageTrackingCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UsageTracking update
+   */
+  export type UsageTrackingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UsageTracking.
+     */
+    data: XOR<UsageTrackingUpdateInput, UsageTrackingUncheckedUpdateInput>
+    /**
+     * Choose, which UsageTracking to update.
+     */
+    where: UsageTrackingWhereUniqueInput
+  }
+
+  /**
+   * UsageTracking updateMany
+   */
+  export type UsageTrackingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UsageTrackings.
+     */
+    data: XOR<UsageTrackingUpdateManyMutationInput, UsageTrackingUncheckedUpdateManyInput>
+    /**
+     * Filter which UsageTrackings to update
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * Limit how many UsageTrackings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UsageTracking updateManyAndReturn
+   */
+  export type UsageTrackingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * The data used to update UsageTrackings.
+     */
+    data: XOR<UsageTrackingUpdateManyMutationInput, UsageTrackingUncheckedUpdateManyInput>
+    /**
+     * Filter which UsageTrackings to update
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * Limit how many UsageTrackings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UsageTracking upsert
+   */
+  export type UsageTrackingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UsageTracking to update in case it exists.
+     */
+    where: UsageTrackingWhereUniqueInput
+    /**
+     * In case the UsageTracking found by the `where` argument doesn't exist, create a new UsageTracking with this data.
+     */
+    create: XOR<UsageTrackingCreateInput, UsageTrackingUncheckedCreateInput>
+    /**
+     * In case the UsageTracking was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UsageTrackingUpdateInput, UsageTrackingUncheckedUpdateInput>
+  }
+
+  /**
+   * UsageTracking delete
+   */
+  export type UsageTrackingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter which UsageTracking to delete.
+     */
+    where: UsageTrackingWhereUniqueInput
+  }
+
+  /**
+   * UsageTracking deleteMany
+   */
+  export type UsageTrackingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UsageTrackings to delete
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * Limit how many UsageTrackings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UsageTracking without action
+   */
+  export type UsageTrackingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
   }
 
 
@@ -23914,7 +25327,9 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     description: 'description',
-    token: 'token',
+    tokenSurvery: 'tokenSurvery',
+    tokenApi: 'tokenApi',
+    branding: 'branding',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     ResponseRate: 'ResponseRate',
@@ -24127,6 +25542,23 @@ export namespace Prisma {
   export type CustomerSubscriptionScalarFieldEnum = (typeof CustomerSubscriptionScalarFieldEnum)[keyof typeof CustomerSubscriptionScalarFieldEnum]
 
 
+  export const UsageTrackingScalarFieldEnum: {
+    id: 'id',
+    teamId: 'teamId',
+    subscriptionId: 'subscriptionId',
+    metricType: 'metricType',
+    currentUsage: 'currentUsage',
+    limitValue: 'limitValue',
+    periodStart: 'periodStart',
+    periodEnd: 'periodEnd',
+    lastResetDate: 'lastResetDate',
+    lastUpdated: 'lastUpdated',
+    createdAt: 'createdAt'
+  };
+
+  export type UsageTrackingScalarFieldEnum = (typeof UsageTrackingScalarFieldEnum)[keyof typeof UsageTrackingScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -24244,6 +25676,20 @@ export namespace Prisma {
    * Reference to a field of type 'Theme[]'
    */
   export type ListEnumThemeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Theme[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 
@@ -24374,16 +25820,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
+   * Reference to a field of type 'UsageMetricType'
    */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+  export type EnumUsageMetricTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UsageMetricType'>
     
 
 
   /**
-   * Reference to a field of type 'Float[]'
+   * Reference to a field of type 'UsageMetricType[]'
    */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+  export type ListEnumUsageMetricTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UsageMetricType[]'>
     
   /**
    * Deep Input Types
@@ -24811,10 +26257,12 @@ export namespace Prisma {
     id?: IntFilter<"Team"> | number
     name?: StringFilter<"Team"> | string
     description?: StringNullableFilter<"Team"> | string | null
-    token?: StringNullableFilter<"Team"> | string | null
+    tokenSurvery?: StringNullableFilter<"Team"> | string | null
+    tokenApi?: StringNullableFilter<"Team"> | string | null
+    branding?: BoolFilter<"Team"> | boolean
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
-    ResponseRate?: IntFilter<"Team"> | number
+    ResponseRate?: FloatFilter<"Team"> | number
     totalActiveSurveys?: IntFilter<"Team"> | number
     totalOpenSurveys?: IntFilter<"Team"> | number
     totalResponses?: IntFilter<"Team"> | number
@@ -24830,13 +26278,16 @@ export namespace Prisma {
     user?: UserListRelationFilter
     responseSummaries?: SurveyResponseSummaryListRelationFilter
     subscription?: XOR<CustomerSubscriptionNullableScalarRelationFilter, CustomerSubscriptionWhereInput> | null
+    usageTracking?: UsageTrackingListRelationFilter
   }
 
   export type TeamOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
-    token?: SortOrderInput | SortOrder
+    tokenSurvery?: SortOrderInput | SortOrder
+    tokenApi?: SortOrderInput | SortOrder
+    branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     ResponseRate?: SortOrder
@@ -24855,19 +26306,22 @@ export namespace Prisma {
     user?: UserOrderByRelationAggregateInput
     responseSummaries?: SurveyResponseSummaryOrderByRelationAggregateInput
     subscription?: CustomerSubscriptionOrderByWithRelationInput
+    usageTracking?: UsageTrackingOrderByRelationAggregateInput
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    token?: string
+    tokenSurvery?: string
+    tokenApi?: string
     AND?: TeamWhereInput | TeamWhereInput[]
     OR?: TeamWhereInput[]
     NOT?: TeamWhereInput | TeamWhereInput[]
     name?: StringFilter<"Team"> | string
     description?: StringNullableFilter<"Team"> | string | null
+    branding?: BoolFilter<"Team"> | boolean
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
-    ResponseRate?: IntFilter<"Team"> | number
+    ResponseRate?: FloatFilter<"Team"> | number
     totalActiveSurveys?: IntFilter<"Team"> | number
     totalOpenSurveys?: IntFilter<"Team"> | number
     totalResponses?: IntFilter<"Team"> | number
@@ -24883,13 +26337,16 @@ export namespace Prisma {
     user?: UserListRelationFilter
     responseSummaries?: SurveyResponseSummaryListRelationFilter
     subscription?: XOR<CustomerSubscriptionNullableScalarRelationFilter, CustomerSubscriptionWhereInput> | null
-  }, "id" | "token">
+    usageTracking?: UsageTrackingListRelationFilter
+  }, "id" | "tokenSurvery" | "tokenApi">
 
   export type TeamOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
-    token?: SortOrderInput | SortOrder
+    tokenSurvery?: SortOrderInput | SortOrder
+    tokenApi?: SortOrderInput | SortOrder
+    branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     ResponseRate?: SortOrder
@@ -24911,10 +26368,12 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Team"> | number
     name?: StringWithAggregatesFilter<"Team"> | string
     description?: StringNullableWithAggregatesFilter<"Team"> | string | null
-    token?: StringNullableWithAggregatesFilter<"Team"> | string | null
+    tokenSurvery?: StringNullableWithAggregatesFilter<"Team"> | string | null
+    tokenApi?: StringNullableWithAggregatesFilter<"Team"> | string | null
+    branding?: BoolWithAggregatesFilter<"Team"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
-    ResponseRate?: IntWithAggregatesFilter<"Team"> | number
+    ResponseRate?: FloatWithAggregatesFilter<"Team"> | number
     totalActiveSurveys?: IntWithAggregatesFilter<"Team"> | number
     totalOpenSurveys?: IntWithAggregatesFilter<"Team"> | number
     totalResponses?: IntWithAggregatesFilter<"Team"> | number
@@ -25085,7 +26544,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
     teamId?: IntFilter<"Survey"> | number
     typeId?: StringNullableFilter<"Survey"> | string | null
-    ResponseRate?: IntFilter<"Survey"> | number
+    ResponseRate?: FloatFilter<"Survey"> | number
     totalOpenSurveys?: IntFilter<"Survey"> | number
     totalResponses?: IntFilter<"Survey"> | number
     questions?: QuestionListRelationFilter
@@ -25130,7 +26589,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
     teamId?: IntFilter<"Survey"> | number
     typeId?: StringNullableFilter<"Survey"> | string | null
-    ResponseRate?: IntFilter<"Survey"> | number
+    ResponseRate?: FloatFilter<"Survey"> | number
     totalOpenSurveys?: IntFilter<"Survey"> | number
     totalResponses?: IntFilter<"Survey"> | number
     questions?: QuestionListRelationFilter
@@ -25174,7 +26633,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Survey"> | Date | string
     teamId?: IntWithAggregatesFilter<"Survey"> | number
     typeId?: StringNullableWithAggregatesFilter<"Survey"> | string | null
-    ResponseRate?: IntWithAggregatesFilter<"Survey"> | number
+    ResponseRate?: FloatWithAggregatesFilter<"Survey"> | number
     totalOpenSurveys?: IntWithAggregatesFilter<"Survey"> | number
     totalResponses?: IntWithAggregatesFilter<"Survey"> | number
   }
@@ -25944,6 +27403,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     plan?: XOR<SubscriptionPlanScalarRelationFilter, SubscriptionPlanWhereInput>
+    usageTracking?: UsageTrackingListRelationFilter
   }
 
   export type CustomerSubscriptionOrderByWithRelationInput = {
@@ -25962,6 +27422,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     team?: TeamOrderByWithRelationInput
     plan?: SubscriptionPlanOrderByWithRelationInput
+    usageTracking?: UsageTrackingOrderByRelationAggregateInput
   }
 
   export type CustomerSubscriptionWhereUniqueInput = Prisma.AtLeast<{
@@ -25983,6 +27444,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     plan?: XOR<SubscriptionPlanScalarRelationFilter, SubscriptionPlanWhereInput>
+    usageTracking?: UsageTrackingListRelationFilter
   }, "id" | "teamId" | "stripeCustomerId" | "stripeSubscriptionId">
 
   export type CustomerSubscriptionOrderByWithAggregationInput = {
@@ -26023,6 +27485,97 @@ export namespace Prisma {
     trialEnd?: DateTimeNullableWithAggregatesFilter<"CustomerSubscription"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"CustomerSubscription"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CustomerSubscription"> | Date | string
+  }
+
+  export type UsageTrackingWhereInput = {
+    AND?: UsageTrackingWhereInput | UsageTrackingWhereInput[]
+    OR?: UsageTrackingWhereInput[]
+    NOT?: UsageTrackingWhereInput | UsageTrackingWhereInput[]
+    id?: StringFilter<"UsageTracking"> | string
+    teamId?: IntFilter<"UsageTracking"> | number
+    subscriptionId?: StringFilter<"UsageTracking"> | string
+    metricType?: EnumUsageMetricTypeFilter<"UsageTracking"> | $Enums.UsageMetricType
+    currentUsage?: IntFilter<"UsageTracking"> | number
+    limitValue?: IntFilter<"UsageTracking"> | number
+    periodStart?: DateTimeFilter<"UsageTracking"> | Date | string
+    periodEnd?: DateTimeFilter<"UsageTracking"> | Date | string
+    lastResetDate?: DateTimeNullableFilter<"UsageTracking"> | Date | string | null
+    lastUpdated?: DateTimeFilter<"UsageTracking"> | Date | string
+    createdAt?: DateTimeFilter<"UsageTracking"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    subscription?: XOR<CustomerSubscriptionScalarRelationFilter, CustomerSubscriptionWhereInput>
+  }
+
+  export type UsageTrackingOrderByWithRelationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrderInput | SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+    team?: TeamOrderByWithRelationInput
+    subscription?: CustomerSubscriptionOrderByWithRelationInput
+  }
+
+  export type UsageTrackingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    teamId_metricType_periodStart?: UsageTrackingTeamIdMetricTypePeriodStartCompoundUniqueInput
+    AND?: UsageTrackingWhereInput | UsageTrackingWhereInput[]
+    OR?: UsageTrackingWhereInput[]
+    NOT?: UsageTrackingWhereInput | UsageTrackingWhereInput[]
+    teamId?: IntFilter<"UsageTracking"> | number
+    subscriptionId?: StringFilter<"UsageTracking"> | string
+    metricType?: EnumUsageMetricTypeFilter<"UsageTracking"> | $Enums.UsageMetricType
+    currentUsage?: IntFilter<"UsageTracking"> | number
+    limitValue?: IntFilter<"UsageTracking"> | number
+    periodStart?: DateTimeFilter<"UsageTracking"> | Date | string
+    periodEnd?: DateTimeFilter<"UsageTracking"> | Date | string
+    lastResetDate?: DateTimeNullableFilter<"UsageTracking"> | Date | string | null
+    lastUpdated?: DateTimeFilter<"UsageTracking"> | Date | string
+    createdAt?: DateTimeFilter<"UsageTracking"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    subscription?: XOR<CustomerSubscriptionScalarRelationFilter, CustomerSubscriptionWhereInput>
+  }, "id" | "teamId_metricType_periodStart">
+
+  export type UsageTrackingOrderByWithAggregationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrderInput | SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+    _count?: UsageTrackingCountOrderByAggregateInput
+    _avg?: UsageTrackingAvgOrderByAggregateInput
+    _max?: UsageTrackingMaxOrderByAggregateInput
+    _min?: UsageTrackingMinOrderByAggregateInput
+    _sum?: UsageTrackingSumOrderByAggregateInput
+  }
+
+  export type UsageTrackingScalarWhereWithAggregatesInput = {
+    AND?: UsageTrackingScalarWhereWithAggregatesInput | UsageTrackingScalarWhereWithAggregatesInput[]
+    OR?: UsageTrackingScalarWhereWithAggregatesInput[]
+    NOT?: UsageTrackingScalarWhereWithAggregatesInput | UsageTrackingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UsageTracking"> | string
+    teamId?: IntWithAggregatesFilter<"UsageTracking"> | number
+    subscriptionId?: StringWithAggregatesFilter<"UsageTracking"> | string
+    metricType?: EnumUsageMetricTypeWithAggregatesFilter<"UsageTracking"> | $Enums.UsageMetricType
+    currentUsage?: IntWithAggregatesFilter<"UsageTracking"> | number
+    limitValue?: IntWithAggregatesFilter<"UsageTracking"> | number
+    periodStart?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
+    periodEnd?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
+    lastResetDate?: DateTimeNullableWithAggregatesFilter<"UsageTracking"> | Date | string | null
+    lastUpdated?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -26482,7 +28035,9 @@ export namespace Prisma {
   export type TeamCreateInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -26501,13 +28056,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -26526,15 +28084,18 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -26550,16 +28111,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -26575,13 +28139,16 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateManyInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -26594,10 +28161,12 @@ export namespace Prisma {
   export type TeamUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -26608,10 +28177,12 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -26816,7 +28387,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -26837,7 +28408,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -26869,7 +28440,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
   }
@@ -26884,7 +28455,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
   }
@@ -27716,6 +29287,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     team: TeamCreateNestedOneWithoutSubscriptionInput
     plan: SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutSubscriptionInput
   }
 
   export type CustomerSubscriptionUncheckedCreateInput = {
@@ -27732,6 +29304,7 @@ export namespace Prisma {
     trialEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutSubscriptionInput
   }
 
   export type CustomerSubscriptionUpdateInput = {
@@ -27748,6 +29321,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     team?: TeamUpdateOneRequiredWithoutSubscriptionNestedInput
     plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
   }
 
   export type CustomerSubscriptionUncheckedUpdateInput = {
@@ -27764,6 +29338,7 @@ export namespace Prisma {
     trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput
   }
 
   export type CustomerSubscriptionCreateManyInput = {
@@ -27810,6 +29385,102 @@ export namespace Prisma {
     trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingCreateInput = {
+    id?: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+    team: TeamCreateNestedOneWithoutUsageTrackingInput
+    subscription: CustomerSubscriptionCreateNestedOneWithoutUsageTrackingInput
+  }
+
+  export type UsageTrackingUncheckedCreateInput = {
+    id?: string
+    teamId: number
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutUsageTrackingNestedInput
+    subscription?: CustomerSubscriptionUpdateOneRequiredWithoutUsageTrackingNestedInput
+  }
+
+  export type UsageTrackingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    subscriptionId?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingCreateManyInput = {
+    id?: string
+    teamId: number
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    subscriptionId?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -28348,6 +30019,22 @@ export namespace Prisma {
     expires?: SortOrder
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type QuestionOptionListRelationFilter = {
     every?: QuestionOptionWhereInput
     some?: QuestionOptionWhereInput
@@ -28401,6 +30088,12 @@ export namespace Prisma {
     isNot?: CustomerSubscriptionWhereInput | null
   }
 
+  export type UsageTrackingListRelationFilter = {
+    every?: UsageTrackingWhereInput
+    some?: UsageTrackingWhereInput
+    none?: UsageTrackingWhereInput
+  }
+
   export type QuestionOptionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -28433,11 +30126,17 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type UsageTrackingOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type TeamCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    token?: SortOrder
+    tokenSurvery?: SortOrder
+    tokenApi?: SortOrder
+    branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     ResponseRate?: SortOrder
@@ -28460,7 +30159,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    token?: SortOrder
+    tokenSurvery?: SortOrder
+    tokenApi?: SortOrder
+    branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     ResponseRate?: SortOrder
@@ -28474,7 +30175,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    token?: SortOrder
+    tokenSurvery?: SortOrder
+    tokenApi?: SortOrder
+    branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     ResponseRate?: SortOrder
@@ -28493,9 +30196,28 @@ export namespace Prisma {
     totalSurveys?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type EnumTeamMemberStatusFilter<$PrismaModel = never> = {
@@ -28564,14 +30286,6 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     teamId?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type EnumTeamMemberStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -29375,6 +31089,88 @@ export namespace Prisma {
     _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
   }
 
+  export type EnumUsageMetricTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.UsageMetricType | EnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUsageMetricTypeFilter<$PrismaModel> | $Enums.UsageMetricType
+  }
+
+  export type CustomerSubscriptionScalarRelationFilter = {
+    is?: CustomerSubscriptionWhereInput
+    isNot?: CustomerSubscriptionWhereInput
+  }
+
+  export type UsageTrackingTeamIdMetricTypePeriodStartCompoundUniqueInput = {
+    teamId: number
+    metricType: $Enums.UsageMetricType
+    periodStart: Date | string
+  }
+
+  export type UsageTrackingCountOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UsageTrackingAvgOrderByAggregateInput = {
+    teamId?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+  }
+
+  export type UsageTrackingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UsageTrackingMinOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UsageTrackingSumOrderByAggregateInput = {
+    teamId?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+  }
+
+  export type EnumUsageMetricTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UsageMetricType | EnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUsageMetricTypeWithAggregatesFilter<$PrismaModel> | $Enums.UsageMetricType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
+    _max?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
+  }
+
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -29727,6 +31523,13 @@ export namespace Prisma {
     connect?: CustomerSubscriptionWhereUniqueInput
   }
 
+  export type UsageTrackingCreateNestedManyWithoutTeamInput = {
+    create?: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput> | UsageTrackingCreateWithoutTeamInput[] | UsageTrackingUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutTeamInput | UsageTrackingCreateOrConnectWithoutTeamInput[]
+    createMany?: UsageTrackingCreateManyTeamInputEnvelope
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+  }
+
   export type QuestionOptionUncheckedCreateNestedManyWithoutTeamInput = {
     create?: XOR<QuestionOptionCreateWithoutTeamInput, QuestionOptionUncheckedCreateWithoutTeamInput> | QuestionOptionCreateWithoutTeamInput[] | QuestionOptionUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutTeamInput | QuestionOptionCreateOrConnectWithoutTeamInput[]
@@ -29801,6 +31604,25 @@ export namespace Prisma {
     create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
     connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput
     connect?: CustomerSubscriptionWhereUniqueInput
+  }
+
+  export type UsageTrackingUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput> | UsageTrackingCreateWithoutTeamInput[] | UsageTrackingUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutTeamInput | UsageTrackingCreateOrConnectWithoutTeamInput[]
+    createMany?: UsageTrackingCreateManyTeamInputEnvelope
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type QuestionOptionUpdateManyWithoutTeamNestedInput = {
@@ -29953,6 +31775,20 @@ export namespace Prisma {
     update?: XOR<XOR<CustomerSubscriptionUpdateToOneWithWhereWithoutTeamInput, CustomerSubscriptionUpdateWithoutTeamInput>, CustomerSubscriptionUncheckedUpdateWithoutTeamInput>
   }
 
+  export type UsageTrackingUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput> | UsageTrackingCreateWithoutTeamInput[] | UsageTrackingUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutTeamInput | UsageTrackingCreateOrConnectWithoutTeamInput[]
+    upsert?: UsageTrackingUpsertWithWhereUniqueWithoutTeamInput | UsageTrackingUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: UsageTrackingCreateManyTeamInputEnvelope
+    set?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    disconnect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    delete?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    update?: UsageTrackingUpdateWithWhereUniqueWithoutTeamInput | UsageTrackingUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: UsageTrackingUpdateManyWithWhereWithoutTeamInput | UsageTrackingUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+  }
+
   export type QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput = {
     create?: XOR<QuestionOptionCreateWithoutTeamInput, QuestionOptionUncheckedCreateWithoutTeamInput> | QuestionOptionCreateWithoutTeamInput[] | QuestionOptionUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: QuestionOptionCreateOrConnectWithoutTeamInput | QuestionOptionCreateOrConnectWithoutTeamInput[]
@@ -30103,6 +31939,20 @@ export namespace Prisma {
     update?: XOR<XOR<CustomerSubscriptionUpdateToOneWithWhereWithoutTeamInput, CustomerSubscriptionUpdateWithoutTeamInput>, CustomerSubscriptionUncheckedUpdateWithoutTeamInput>
   }
 
+  export type UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput> | UsageTrackingCreateWithoutTeamInput[] | UsageTrackingUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutTeamInput | UsageTrackingCreateOrConnectWithoutTeamInput[]
+    upsert?: UsageTrackingUpsertWithWhereUniqueWithoutTeamInput | UsageTrackingUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: UsageTrackingCreateManyTeamInputEnvelope
+    set?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    disconnect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    delete?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    update?: UsageTrackingUpdateWithWhereUniqueWithoutTeamInput | UsageTrackingUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: UsageTrackingUpdateManyWithWhereWithoutTeamInput | UsageTrackingUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+  }
+
   export type TeamCreateNestedOneWithoutMembersInput = {
     create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
     connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
@@ -30113,10 +31963,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
     connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type EnumTeamMemberStatusFieldUpdateOperationsInput = {
@@ -31009,6 +32855,20 @@ export namespace Prisma {
     connect?: SubscriptionPlanWhereUniqueInput
   }
 
+  export type UsageTrackingCreateNestedManyWithoutSubscriptionInput = {
+    create?: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput> | UsageTrackingCreateWithoutSubscriptionInput[] | UsageTrackingUncheckedCreateWithoutSubscriptionInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutSubscriptionInput | UsageTrackingCreateOrConnectWithoutSubscriptionInput[]
+    createMany?: UsageTrackingCreateManySubscriptionInputEnvelope
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+  }
+
+  export type UsageTrackingUncheckedCreateNestedManyWithoutSubscriptionInput = {
+    create?: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput> | UsageTrackingCreateWithoutSubscriptionInput[] | UsageTrackingUncheckedCreateWithoutSubscriptionInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutSubscriptionInput | UsageTrackingCreateOrConnectWithoutSubscriptionInput[]
+    createMany?: UsageTrackingCreateManySubscriptionInputEnvelope
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+  }
+
   export type EnumSubscriptionStatusFieldUpdateOperationsInput = {
     set?: $Enums.SubscriptionStatus
   }
@@ -31027,6 +32887,66 @@ export namespace Prisma {
     upsert?: SubscriptionPlanUpsertWithoutSubscriptionsInput
     connect?: SubscriptionPlanWhereUniqueInput
     update?: XOR<XOR<SubscriptionPlanUpdateToOneWithWhereWithoutSubscriptionsInput, SubscriptionPlanUpdateWithoutSubscriptionsInput>, SubscriptionPlanUncheckedUpdateWithoutSubscriptionsInput>
+  }
+
+  export type UsageTrackingUpdateManyWithoutSubscriptionNestedInput = {
+    create?: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput> | UsageTrackingCreateWithoutSubscriptionInput[] | UsageTrackingUncheckedCreateWithoutSubscriptionInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutSubscriptionInput | UsageTrackingCreateOrConnectWithoutSubscriptionInput[]
+    upsert?: UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput | UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput[]
+    createMany?: UsageTrackingCreateManySubscriptionInputEnvelope
+    set?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    disconnect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    delete?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    update?: UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput | UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput[]
+    updateMany?: UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput | UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput[]
+    deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+  }
+
+  export type UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput = {
+    create?: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput> | UsageTrackingCreateWithoutSubscriptionInput[] | UsageTrackingUncheckedCreateWithoutSubscriptionInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutSubscriptionInput | UsageTrackingCreateOrConnectWithoutSubscriptionInput[]
+    upsert?: UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput | UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput[]
+    createMany?: UsageTrackingCreateManySubscriptionInputEnvelope
+    set?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    disconnect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    delete?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    update?: UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput | UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput[]
+    updateMany?: UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput | UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput[]
+    deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+  }
+
+  export type TeamCreateNestedOneWithoutUsageTrackingInput = {
+    create?: XOR<TeamCreateWithoutUsageTrackingInput, TeamUncheckedCreateWithoutUsageTrackingInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutUsageTrackingInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type CustomerSubscriptionCreateNestedOneWithoutUsageTrackingInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput>
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutUsageTrackingInput
+    connect?: CustomerSubscriptionWhereUniqueInput
+  }
+
+  export type EnumUsageMetricTypeFieldUpdateOperationsInput = {
+    set?: $Enums.UsageMetricType
+  }
+
+  export type TeamUpdateOneRequiredWithoutUsageTrackingNestedInput = {
+    create?: XOR<TeamCreateWithoutUsageTrackingInput, TeamUncheckedCreateWithoutUsageTrackingInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutUsageTrackingInput
+    upsert?: TeamUpsertWithoutUsageTrackingInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutUsageTrackingInput, TeamUpdateWithoutUsageTrackingInput>, TeamUncheckedUpdateWithoutUsageTrackingInput>
+  }
+
+  export type CustomerSubscriptionUpdateOneRequiredWithoutUsageTrackingNestedInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput>
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutUsageTrackingInput
+    upsert?: CustomerSubscriptionUpsertWithoutUsageTrackingInput
+    connect?: CustomerSubscriptionWhereUniqueInput
+    update?: XOR<XOR<CustomerSubscriptionUpdateToOneWithWhereWithoutUsageTrackingInput, CustomerSubscriptionUpdateWithoutUsageTrackingInput>, CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -31286,19 +33206,35 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type NestedEnumTeamMemberStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.TeamMemberStatus | EnumTeamMemberStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TeamMemberStatus[] | ListEnumTeamMemberStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TeamMemberStatus[] | ListEnumTeamMemberStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTeamMemberStatusFilter<$PrismaModel> | $Enums.TeamMemberStatus
-  }
-
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTeamMemberStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TeamMemberStatus | EnumTeamMemberStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TeamMemberStatus[] | ListEnumTeamMemberStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TeamMemberStatus[] | ListEnumTeamMemberStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTeamMemberStatusFilter<$PrismaModel> | $Enums.TeamMemberStatus
   }
 
   export type NestedEnumTeamMemberStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -31474,6 +33410,23 @@ export namespace Prisma {
     _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumUsageMetricTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.UsageMetricType | EnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUsageMetricTypeFilter<$PrismaModel> | $Enums.UsageMetricType
+  }
+
+  export type NestedEnumUsageMetricTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UsageMetricType | EnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUsageMetricTypeWithAggregatesFilter<$PrismaModel> | $Enums.UsageMetricType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
+    _max?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
+  }
+
   export type AccountCreateWithoutUserInput = {
     id?: string
     type: string
@@ -31600,7 +33553,9 @@ export namespace Prisma {
   export type TeamCreateWithoutUserInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -31618,13 +33573,16 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutUserInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -31642,6 +33600,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutUserInput = {
@@ -31791,10 +33750,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutUserInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -31809,16 +33770,19 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -31833,6 +33797,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserCreateWithoutAvatarInput = {
@@ -32601,6 +34566,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     plan: SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutSubscriptionInput
   }
 
   export type CustomerSubscriptionUncheckedCreateWithoutTeamInput = {
@@ -32616,11 +34582,48 @@ export namespace Prisma {
     trialEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutSubscriptionInput
   }
 
   export type CustomerSubscriptionCreateOrConnectWithoutTeamInput = {
     where: CustomerSubscriptionWhereUniqueInput
     create: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
+  }
+
+  export type UsageTrackingCreateWithoutTeamInput = {
+    id?: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+    subscription: CustomerSubscriptionCreateNestedOneWithoutUsageTrackingInput
+  }
+
+  export type UsageTrackingUncheckedCreateWithoutTeamInput = {
+    id?: string
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingCreateOrConnectWithoutTeamInput = {
+    where: UsageTrackingWhereUniqueInput
+    create: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput>
+  }
+
+  export type UsageTrackingCreateManyTeamInputEnvelope = {
+    data: UsageTrackingCreateManyTeamInput | UsageTrackingCreateManyTeamInput[]
+    skipDuplicates?: boolean
   }
 
   export type QuestionOptionUpsertWithWhereUniqueWithoutTeamInput = {
@@ -32856,7 +34859,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
     teamId?: IntFilter<"Survey"> | number
     typeId?: StringNullableFilter<"Survey"> | string | null
-    ResponseRate?: IntFilter<"Survey"> | number
+    ResponseRate?: FloatFilter<"Survey"> | number
     totalOpenSurveys?: IntFilter<"Survey"> | number
     totalResponses?: IntFilter<"Survey"> | number
   }
@@ -32953,6 +34956,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
   }
 
   export type CustomerSubscriptionUncheckedUpdateWithoutTeamInput = {
@@ -32968,12 +34972,48 @@ export namespace Prisma {
     trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type UsageTrackingUpsertWithWhereUniqueWithoutTeamInput = {
+    where: UsageTrackingWhereUniqueInput
+    update: XOR<UsageTrackingUpdateWithoutTeamInput, UsageTrackingUncheckedUpdateWithoutTeamInput>
+    create: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput>
+  }
+
+  export type UsageTrackingUpdateWithWhereUniqueWithoutTeamInput = {
+    where: UsageTrackingWhereUniqueInput
+    data: XOR<UsageTrackingUpdateWithoutTeamInput, UsageTrackingUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type UsageTrackingUpdateManyWithWhereWithoutTeamInput = {
+    where: UsageTrackingScalarWhereInput
+    data: XOR<UsageTrackingUpdateManyMutationInput, UsageTrackingUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type UsageTrackingScalarWhereInput = {
+    AND?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+    OR?: UsageTrackingScalarWhereInput[]
+    NOT?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+    id?: StringFilter<"UsageTracking"> | string
+    teamId?: IntFilter<"UsageTracking"> | number
+    subscriptionId?: StringFilter<"UsageTracking"> | string
+    metricType?: EnumUsageMetricTypeFilter<"UsageTracking"> | $Enums.UsageMetricType
+    currentUsage?: IntFilter<"UsageTracking"> | number
+    limitValue?: IntFilter<"UsageTracking"> | number
+    periodStart?: DateTimeFilter<"UsageTracking"> | Date | string
+    periodEnd?: DateTimeFilter<"UsageTracking"> | Date | string
+    lastResetDate?: DateTimeNullableFilter<"UsageTracking"> | Date | string | null
+    lastUpdated?: DateTimeFilter<"UsageTracking"> | Date | string
+    createdAt?: DateTimeFilter<"UsageTracking"> | Date | string
   }
 
   export type TeamCreateWithoutMembersInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -32991,13 +35031,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMembersInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -33015,6 +35058,7 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMembersInput = {
@@ -33090,10 +35134,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutMembersInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -33108,16 +35154,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -33132,6 +35181,7 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type UserUpsertWithoutTeamMembersInput = {
@@ -33197,7 +35247,9 @@ export namespace Prisma {
   export type TeamCreateWithoutSurveyTypesInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -33215,13 +35267,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveyTypesInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -33239,6 +35294,7 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveyTypesInput = {
@@ -33306,10 +35362,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutSurveyTypesInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -33324,16 +35382,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveyTypesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -33348,6 +35409,7 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SurveyUpsertWithWhereUniqueWithoutTypeInput = {
@@ -33506,7 +35568,9 @@ export namespace Prisma {
   export type TeamCreateWithoutSurveysInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -33524,13 +35588,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveysInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -33548,6 +35615,7 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveysInput = {
@@ -33719,10 +35787,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutSurveysInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -33737,16 +35807,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveysInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -33761,6 +35834,7 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SurveyTypeUpsertWithoutSurveysInput = {
@@ -33852,7 +35926,9 @@ export namespace Prisma {
   export type TeamCreateWithoutSurveysStyleInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -33870,13 +35946,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveysStyleInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -33894,6 +35973,7 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveysStyleInput = {
@@ -33920,7 +36000,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -33940,7 +36020,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -33962,10 +36042,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutSurveysStyleInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -33980,16 +36062,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveysStyleInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34004,6 +36089,7 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type QuestionOptionCreateWithoutQuestionInput = {
@@ -34124,7 +36210,9 @@ export namespace Prisma {
   export type TeamCreateWithoutQuestionsInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -34142,13 +36230,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutQuestionsInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -34166,6 +36257,7 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutQuestionsInput = {
@@ -34266,7 +36358,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
@@ -34286,7 +36378,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
@@ -34308,10 +36400,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutQuestionsInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34326,16 +36420,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutQuestionsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34350,6 +36447,7 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SurveyResponseSummaryUpsertWithWhereUniqueWithoutQuestionInput = {
@@ -34414,7 +36512,9 @@ export namespace Prisma {
   export type TeamCreateWithoutQuestionOptionsInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -34432,13 +36532,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutQuestionOptionsInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -34456,6 +36559,7 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutQuestionOptionsInput = {
@@ -34608,10 +36712,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutQuestionOptionsInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34626,16 +36732,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutQuestionOptionsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34650,6 +36759,7 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type QuestionResponseUpsertWithWhereUniqueWithoutOptionInput = {
@@ -34768,7 +36878,9 @@ export namespace Prisma {
   export type TeamCreateWithoutSurveyResponsesInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -34786,13 +36898,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSurveyResponsesInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -34810,6 +36925,7 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSurveyResponsesInput = {
@@ -34894,7 +37010,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -34914,7 +37030,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -34936,10 +37052,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutSurveyResponsesInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34954,16 +37072,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSurveyResponsesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34978,6 +37099,7 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SurveyResponseSummaryUpsertWithWhereUniqueWithoutResponseInput = {
@@ -35112,7 +37234,9 @@ export namespace Prisma {
   export type TeamCreateWithoutResponseSummariesInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -35130,13 +37254,16 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutResponseSummariesInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -35154,6 +37281,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutResponseSummariesInput = {
@@ -35217,7 +37345,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -35237,7 +37365,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -35343,10 +37471,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutResponseSummariesInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35361,16 +37491,19 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutResponseSummariesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35385,6 +37518,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SurveyResponseUpsertWithoutSurveyResponseSummaryInput = {
@@ -35542,7 +37676,9 @@ export namespace Prisma {
   export type TeamCreateWithoutQuestionResponsesInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -35560,13 +37696,16 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutQuestionResponsesInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -35584,6 +37723,7 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
     subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutQuestionResponsesInput = {
@@ -35732,10 +37872,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutQuestionResponsesInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35750,16 +37892,19 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutQuestionResponsesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35774,6 +37919,7 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
     subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CustomerSubscriptionCreateWithoutPlanInput = {
@@ -35789,6 +37935,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     team: TeamCreateNestedOneWithoutSubscriptionInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutSubscriptionInput
   }
 
   export type CustomerSubscriptionUncheckedCreateWithoutPlanInput = {
@@ -35804,6 +37951,7 @@ export namespace Prisma {
     trialEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutSubscriptionInput
   }
 
   export type CustomerSubscriptionCreateOrConnectWithoutPlanInput = {
@@ -35854,7 +38002,9 @@ export namespace Prisma {
   export type TeamCreateWithoutSubscriptionInput = {
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -35872,13 +38022,16 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutSubscriptionInput = {
     id?: number
     name: string
     description?: string | null
-    token?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     ResponseRate?: number
@@ -35896,6 +38049,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutSubscriptionInput = {
@@ -35940,6 +38094,42 @@ export namespace Prisma {
     create: XOR<SubscriptionPlanCreateWithoutSubscriptionsInput, SubscriptionPlanUncheckedCreateWithoutSubscriptionsInput>
   }
 
+  export type UsageTrackingCreateWithoutSubscriptionInput = {
+    id?: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+    team: TeamCreateNestedOneWithoutUsageTrackingInput
+  }
+
+  export type UsageTrackingUncheckedCreateWithoutSubscriptionInput = {
+    id?: string
+    teamId: number
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingCreateOrConnectWithoutSubscriptionInput = {
+    where: UsageTrackingWhereUniqueInput
+    create: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput>
+  }
+
+  export type UsageTrackingCreateManySubscriptionInputEnvelope = {
+    data: UsageTrackingCreateManySubscriptionInput | UsageTrackingCreateManySubscriptionInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TeamUpsertWithoutSubscriptionInput = {
     update: XOR<TeamUpdateWithoutSubscriptionInput, TeamUncheckedUpdateWithoutSubscriptionInput>
     create: XOR<TeamCreateWithoutSubscriptionInput, TeamUncheckedCreateWithoutSubscriptionInput>
@@ -35954,10 +38144,12 @@ export namespace Prisma {
   export type TeamUpdateWithoutSubscriptionInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35972,16 +38164,19 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutSubscriptionInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    token?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35996,6 +38191,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type SubscriptionPlanUpsertWithoutSubscriptionsInput = {
@@ -36037,6 +38233,224 @@ export namespace Prisma {
     allowApiAccess?: BoolFieldUpdateOperationsInput | boolean
     allowExport?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput = {
+    where: UsageTrackingWhereUniqueInput
+    update: XOR<UsageTrackingUpdateWithoutSubscriptionInput, UsageTrackingUncheckedUpdateWithoutSubscriptionInput>
+    create: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput>
+  }
+
+  export type UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput = {
+    where: UsageTrackingWhereUniqueInput
+    data: XOR<UsageTrackingUpdateWithoutSubscriptionInput, UsageTrackingUncheckedUpdateWithoutSubscriptionInput>
+  }
+
+  export type UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput = {
+    where: UsageTrackingScalarWhereInput
+    data: XOR<UsageTrackingUpdateManyMutationInput, UsageTrackingUncheckedUpdateManyWithoutSubscriptionInput>
+  }
+
+  export type TeamCreateWithoutUsageTrackingInput = {
+    name: string
+    description?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseCreateNestedManyWithoutTeamInput
+    questions?: QuestionCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeCreateNestedManyWithoutTeamInput
+    surveys?: SurveyCreateNestedManyWithoutTeamInput
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
+    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutUsageTrackingInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenSurvery?: string | null
+    tokenApi?: string | null
+    branding?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ResponseRate?: number
+    totalActiveSurveys?: number
+    totalOpenSurveys?: number
+    totalResponses?: number
+    totalSurveys?: number
+    questionOptions?: QuestionOptionUncheckedCreateNestedManyWithoutTeamInput
+    questionResponses?: QuestionResponseUncheckedCreateNestedManyWithoutTeamInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutTeamInput
+    surveyResponses?: SurveyResponseUncheckedCreateNestedManyWithoutTeamInput
+    surveysStyle?: SurveyStyleUncheckedCreateNestedManyWithoutTeamInput
+    surveyTypes?: SurveyTypeUncheckedCreateNestedManyWithoutTeamInput
+    surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
+    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutUsageTrackingInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutUsageTrackingInput, TeamUncheckedCreateWithoutUsageTrackingInput>
+  }
+
+  export type CustomerSubscriptionCreateWithoutUsageTrackingInput = {
+    id?: string
+    status?: $Enums.SubscriptionStatus
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutSubscriptionInput
+    plan: SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput
+  }
+
+  export type CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput = {
+    id?: string
+    teamId: number
+    planId: string
+    status?: $Enums.SubscriptionStatus
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerSubscriptionCreateOrConnectWithoutUsageTrackingInput = {
+    where: CustomerSubscriptionWhereUniqueInput
+    create: XOR<CustomerSubscriptionCreateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput>
+  }
+
+  export type TeamUpsertWithoutUsageTrackingInput = {
+    update: XOR<TeamUpdateWithoutUsageTrackingInput, TeamUncheckedUpdateWithoutUsageTrackingInput>
+    create: XOR<TeamCreateWithoutUsageTrackingInput, TeamUncheckedCreateWithoutUsageTrackingInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutUsageTrackingInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutUsageTrackingInput, TeamUncheckedUpdateWithoutUsageTrackingInput>
+  }
+
+  export type TeamUpdateWithoutUsageTrackingInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUpdateManyWithoutTeamNestedInput
+    questionResponses?: QuestionResponseUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
+    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutUsageTrackingInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    branding?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    totalActiveSurveys?: IntFieldUpdateOperationsInput | number
+    totalOpenSurveys?: IntFieldUpdateOperationsInput | number
+    totalResponses?: IntFieldUpdateOperationsInput | number
+    totalSurveys?: IntFieldUpdateOperationsInput | number
+    questionOptions?: QuestionOptionUncheckedUpdateManyWithoutTeamNestedInput
+    questionResponses?: QuestionResponseUncheckedUpdateManyWithoutTeamNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutTeamNestedInput
+    surveyResponses?: SurveyResponseUncheckedUpdateManyWithoutTeamNestedInput
+    surveysStyle?: SurveyStyleUncheckedUpdateManyWithoutTeamNestedInput
+    surveyTypes?: SurveyTypeUncheckedUpdateManyWithoutTeamNestedInput
+    surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
+    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+  }
+
+  export type CustomerSubscriptionUpsertWithoutUsageTrackingInput = {
+    update: XOR<CustomerSubscriptionUpdateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput>
+    create: XOR<CustomerSubscriptionCreateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput>
+    where?: CustomerSubscriptionWhereInput
+  }
+
+  export type CustomerSubscriptionUpdateToOneWithWhereWithoutUsageTrackingInput = {
+    where?: CustomerSubscriptionWhereInput
+    data: XOR<CustomerSubscriptionUpdateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput>
+  }
+
+  export type CustomerSubscriptionUpdateWithoutUsageTrackingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutSubscriptionNestedInput
+    plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    planId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -36409,6 +38823,19 @@ export namespace Prisma {
     lastUpdated?: Date | string
   }
 
+  export type UsageTrackingCreateManyTeamInput = {
+    id?: string
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
   export type QuestionOptionUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
@@ -36685,7 +39112,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -36704,7 +39131,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -36722,7 +39149,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
   }
@@ -36881,6 +39308,45 @@ export namespace Prisma {
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UsageTrackingUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscription?: CustomerSubscriptionUpdateOneRequiredWithoutUsageTrackingNestedInput
+  }
+
+  export type UsageTrackingUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriptionId?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriptionId?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type SurveyCreateManyTypeInput = {
     id?: string
     name: string
@@ -36903,7 +39369,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -36922,7 +39388,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -36940,7 +39406,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
-    ResponseRate?: IntFieldUpdateOperationsInput | number
+    ResponseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
   }
@@ -37583,6 +40049,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     team?: TeamUpdateOneRequiredWithoutSubscriptionNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
   }
 
   export type CustomerSubscriptionUncheckedUpdateWithoutPlanInput = {
@@ -37598,6 +40065,7 @@ export namespace Prisma {
     trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput
   }
 
   export type CustomerSubscriptionUncheckedUpdateManyWithoutPlanInput = {
@@ -37613,6 +40081,58 @@ export namespace Prisma {
     trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingCreateManySubscriptionInput = {
+    id?: string
+    teamId: number
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingUpdateWithoutSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutUsageTrackingNestedInput
+  }
+
+  export type UsageTrackingUncheckedUpdateWithoutSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUncheckedUpdateManyWithoutSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

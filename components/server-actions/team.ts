@@ -49,10 +49,12 @@ const deleteTeamSchema = z.object({
 
 const generateTeamTokenSchema = z.object({
     teamId: z.number(),
+    tokenType: z.enum(["survey", "api"]).default("survey"),
 })
 
 const regenerateTeamTokenSchema = z.object({
     teamId: z.number(),
+    tokenType: z.enum(["survey", "api"]).default("survey"),
 })
 
 /**
@@ -655,10 +657,11 @@ export const getUserTeamsAction = async (onlyMyTeamsMembers: boolean = false) =>
                 id: true,
                 name: true,
                 description: true,
-                token: true,
+                tokenSurvery: true,
                 totalSurveys: true,
                 totalActiveSurveys: true,
                 totalResponses: true,
+                ResponseRate: true,
                 members: {
                     ...(onlyMyTeamsMembers && {
                         where: {
@@ -762,16 +765,20 @@ export const generateTeamTokenAction = async (formData: z.infer<typeof generateT
         const randomString = Math.random().toString(36) + Date.now().toString(36)
         const token = await bcrypt.hash(randomString, 10)
 
-        // Update team with the new token
+        // Update team with the new token based on type
+        const updateData = validatedData.tokenType === "api"
+            ? { tokenApi: token }
+            : { tokenSurvery: token }
+
         const updatedTeam = await prisma.team.update({
             where: { id: validatedData.teamId },
-            data: { token }
+            data: updateData
         })
 
         return {
             success: true,
             message: t("messages.tokenGenerated"),
-            token: updatedTeam.token
+            token: validatedData.tokenType === "api" ? updatedTeam.tokenApi : updatedTeam.tokenSurvery
         }
 
     } catch (error) {
@@ -816,16 +823,20 @@ export const regenerateTeamTokenAction = async (formData: z.infer<typeof regener
         const randomString = Math.random().toString(36) + Date.now().toString(36)
         const newToken = await bcrypt.hash(randomString, 10)
 
-        // Update team with the new token (this will invalidate the old one)
+        // Update team with the new token based on type (this will invalidate the old one)
+        const updateData = validatedData.tokenType === "api"
+            ? { tokenApi: newToken }
+            : { tokenSurvery: newToken }
+
         const updatedTeam = await prisma.team.update({
             where: { id: validatedData.teamId },
-            data: { token: newToken }
+            data: updateData
         })
 
         return {
             success: true,
             message: t("messages.tokenRegenerated"),
-            token: updatedTeam.token
+            token: validatedData.tokenType === "api" ? updatedTeam.tokenApi : updatedTeam.tokenSurvery
         }
 
     } catch (error) {
@@ -862,10 +873,10 @@ export const getTeamTokenAction = async (teamId: number) => {
             return { success: false, error: "Not authorized to view tokens for this team" }
         }
 
-        // Get team with token
+        // Get team with tokens
         const team = await prisma.team.findUnique({
             where: { id: teamId },
-            select: { id: true, name: true, token: true }
+            select: { id: true, name: true, tokenSurvery: true, tokenApi: true }
         })
 
         if (!team) {
@@ -877,7 +888,8 @@ export const getTeamTokenAction = async (teamId: number) => {
             team: {
                 id: team.id,
                 name: team.name,
-                token: team.token
+                tokenSurvery: team.tokenSurvery,
+                tokenApi: team.tokenApi
             }
         }
 

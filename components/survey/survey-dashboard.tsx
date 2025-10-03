@@ -18,6 +18,7 @@ interface SurveyStats {
     totalSurveys: number
     activeSurveys: number
     totalResponses: number
+    responseRate: number
 }
 
 export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurveysResult }) => {
@@ -31,6 +32,7 @@ export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurvey
         totalSurveys: currentTeam?.totalSurveys || 0,
         activeSurveys: currentTeam?.totalActiveSurveys || 0,
         totalResponses: currentTeam?.totalResponses || 0,
+        responseRate: currentTeam?.ResponseRate || 0,
     })
 
     useEffect(() => {
@@ -38,6 +40,7 @@ export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurvey
             totalSurveys: currentTeam?.totalSurveys || 0,
             activeSurveys: currentTeam?.totalActiveSurveys || 0,
             totalResponses: currentTeam?.totalResponses || 0,
+            responseRate: currentTeam?.ResponseRate || 0,
         })
     }, [currentTeam])
 
@@ -65,7 +68,7 @@ export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurvey
     return (
         <div className="px-4 lg:px-6 space-y-6">
             {/* Statistics Cards */}
-            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-2 gap-3 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 @xl/main:grid-cols-3 @5xl/main:grid-cols-3">
+            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-2 gap-3 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 @xl/main:grid-cols-4 @5xl/main:grid-cols-4">
                 <Card className="@container/card">
                     <CardHeader className="pb-2 sm:pb-6">
                         <CardDescription className="text-xs sm:text-sm">{t("stats.totalSurveys.title")}</CardDescription>
@@ -113,6 +116,22 @@ export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurvey
                         </div>
                         <div className="text-xs text-muted-foreground">
                             {t("stats.totalResponses.subtitle")}
+                        </div>
+                    </CardFooter>
+                </Card>
+                <Card className="@container/card">
+                    <CardHeader className="pb-2 sm:pb-6">
+                        <CardDescription className="text-xs sm:text-sm">{t("stats.responseRate.title")}</CardDescription>
+                        <CardTitle className="text-lg font-semibold tabular-nums sm:text-2xl @[250px]/card:text-3xl">
+                            {surveyStats.responseRate}
+                        </CardTitle>
+                    </CardHeader>
+                    <CardFooter className="hidden sm:flex flex-col items-start gap-1.5 text-sm">
+                        <div className="line-clamp-1 flex gap-2 font-medium">
+                            {t("stats.responseRate.description")}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                            {t("stats.responseRate.subtitle")}
                         </div>
                     </CardFooter>
                 </Card>
