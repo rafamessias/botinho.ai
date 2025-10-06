@@ -63,8 +63,8 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
 
         if (success) {
             toast({
-                title: "Success!",
-                description: "Your subscription has been activated successfully.",
+                title: t("toast.success.title"),
+                description: t("toast.success.description"),
             });
             // Remove URL parameters
             window.history.replaceState({}, document.title, window.location.pathname);
@@ -72,8 +72,8 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
 
         if (canceled) {
             toast({
-                title: "Cancelled",
-                description: "Subscription process was cancelled.",
+                title: t("toast.cancelled.title"),
+                description: t("toast.cancelled.description"),
                 variant: "destructive",
             });
             // Remove URL parameters
@@ -88,8 +88,8 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
         } catch (error) {
             console.error('Error creating portal session:', error);
             toast({
-                title: "Error",
-                description: "Failed to open subscription management. Please try again.",
+                title: t("toast.error.title"),
+                description: t("toast.error.description"),
                 variant: "destructive",
             });
         } finally {
@@ -119,9 +119,9 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
     const getMetricLabel = (metricType: string) => {
         switch (metricType) {
             case 'ACTIVE_SURVEYS':
-                return 'Active Surveys';
+                return t("page.activeSurveys");
             case 'TOTAL_RESPONSES':
-                return 'Total Responses';
+                return t("page.totalResponses");
             default:
                 return metricType;
         }
@@ -130,11 +130,11 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
     const getStatusBadge = (status: string) => {
         switch (status.toLowerCase()) {
             case 'active':
-                return <Badge variant="default" className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
+                return <Badge variant="default" className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />{t("page.active")}</Badge>;
             case 'trialing':
-                return <Badge variant="secondary" className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />Trial</Badge>;
+                return <Badge variant="secondary" className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />{t("page.trial")}</Badge>;
             case 'canceled':
-                return <Badge variant="destructive"><AlertTriangle className="h-3 w-3 mr-1" />Canceled</Badge>;
+                return <Badge variant="destructive"><AlertTriangle className="h-3 w-3 mr-1" />{t("page.canceled")}</Badge>;
             default:
                 return <Badge variant="outline">{status}</Badge>;
         }
@@ -149,9 +149,9 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
             <div className="space-y-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Unable to Load Subscription Data</CardTitle>
+                        <CardTitle>{t("page.unableToLoadData")}</CardTitle>
                         <CardDescription>
-                            {subscriptionData.error || "An error occurred while loading your subscription information."}
+                            {subscriptionData.error || t("page.errorLoadingData")}
                         </CardDescription>
                     </CardHeader>
                 </Card>
@@ -164,9 +164,9 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
             <div className="space-y-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle>No Subscription Found</CardTitle>
+                        <CardTitle>{t("page.noSubscriptionFound")}</CardTitle>
                         <CardDescription>
-                            You don't have an active subscription. Please subscribe to a plan to view usage metrics.
+                            {t("page.noSubscriptionDescription")}
                         </CardDescription>
                     </CardHeader>
                 </Card>
@@ -182,7 +182,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                     <CardTitle className="relative flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                             <Calendar className="h-5 w-5" />
-                            Subscription Overview
+                            {t("page.title")}
                         </div>
                         <div className="absolute right-0 flex items-center gap-2">
                             <Button
@@ -194,7 +194,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                 {isLoading ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Loading...
+                                        {t("page.loading")}
                                     </>
                                 ) : (
                                     t("currentPlan.manageSubscription")
@@ -203,27 +203,27 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                         </div>
                     </CardTitle>
                     <CardDescription>
-                        Current plan details and billing information
+                        {t("page.description")}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Plan</p>
+                            <p className="text-sm font-medium text-muted-foreground">{t("page.plan")}</p>
                             <p className="text-lg font-semibold capitalize">
-                                {subscription.plan?.planType || 'Unknown'}
+                                {subscription.plan?.planType || t("page.unknown")}
                             </p>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Status</p>
+                            <p className="text-sm font-medium text-muted-foreground">{t("page.status")}</p>
                             <div className="mt-1">
                                 {getStatusBadge(subscription.status)}
                             </div>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Billing Cycle</p>
+                            <p className="text-sm font-medium text-muted-foreground">{t("page.billingCycle")}</p>
                             <p className="text-lg font-semibold capitalize">
-                                {subscription.billingInterval || 'Monthly'}
+                                {subscription.billingInterval || t("page.monthly")}
                             </p>
                         </div>
                     </div>
@@ -231,16 +231,16 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                     {subscription.currentPeriodStart && subscription.currentPeriodEnd && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
                             <div>
-                                <p className="text-sm font-medium text-muted-foreground">Current Period</p>
+                                <p className="text-sm font-medium text-muted-foreground">{t("page.currentPeriod")}</p>
                                 <p className="text-sm">
                                     {formatDate(subscription.currentPeriodStart)} - {formatDate(subscription.currentPeriodEnd)}
                                 </p>
                             </div>
                             {subscription.cancelAtPeriodEnd && (
                                 <div>
-                                    <p className="text-sm font-medium text-muted-foreground">Cancellation</p>
+                                    <p className="text-sm font-medium text-muted-foreground">{t("page.cancellation")}</p>
                                     <p className="text-sm text-orange-600">
-                                        Will cancel at period end
+                                        {t("page.willCancelAtPeriodEnd")}
                                     </p>
                                 </div>
                             )}
@@ -255,10 +255,10 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <BarChart3 className="h-5 w-5" />
-                            Usage Metrics
+                            {t("page.usageMetrics")}
                         </CardTitle>
                         <CardDescription>
-                            Current usage for this billing period
+                            {t("page.currentUsage")}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
@@ -273,7 +273,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                     </div>
                                     <div className="text-right">
                                         <span className="text-sm font-medium">
-                                            {metric.currentUsage.toLocaleString()} / {metric.limit === -1 ? '∞' : metric.limit.toLocaleString()}
+                                            {metric.currentUsage.toLocaleString()} / {metric.limit === -1 ? t("page.unlimited") : metric.limit.toLocaleString()}
                                         </span>
                                         {metric.limit !== -1 && (
                                             <span className="text-xs text-muted-foreground ml-2">
@@ -291,11 +291,11 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                         />
                                         <div className="flex justify-between text-xs text-muted-foreground">
                                             <span>
-                                                {metric.remaining > 0 ? `${metric.remaining.toLocaleString()} remaining` : 'Limit reached'}
+                                                {metric.remaining > 0 ? `${metric.remaining.toLocaleString()} ${t("page.remaining")}` : t("page.limitReached")}
                                             </span>
                                             {metric.isOverLimit && (
                                                 <span className="text-red-600 font-medium">
-                                                    Over limit
+                                                    {t("page.overLimit")}
                                                 </span>
                                             )}
                                         </div>
@@ -311,9 +311,9 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
             {subscription.plan && (
                 <Card>
                     <CardHeader>
-                        <CardTitle>Plan Features</CardTitle>
+                        <CardTitle>{t("page.planFeatures")}</CardTitle>
                         <CardDescription>
-                            Features included in your current plan
+                            {t("page.featuresIncluded")}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -322,19 +322,19 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                 <div className="flex items-center gap-2">
                                     <CheckCircle className="h-4 w-4 text-green-600" />
                                     <span className="text-sm">
-                                        Max Active Surveys: {subscription.plan.maxActiveSurveys === -1 ? 'Unlimited' : subscription.plan.maxActiveSurveys.toLocaleString()}
+                                        {t("page.maxActiveSurveys")}: {subscription.plan.maxActiveSurveys === -1 ? t("page.unlimited") : subscription.plan.maxActiveSurveys.toLocaleString()}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <CheckCircle className="h-4 w-4 text-green-600" />
                                     <span className="text-sm">
-                                        Max Responses: {subscription.plan.maxResponses === -1 ? 'Unlimited' : subscription.plan.maxResponses.toLocaleString()}
+                                        {t("page.maxResponses")}: {subscription.plan.maxResponses === -1 ? t("page.unlimited") : subscription.plan.maxResponses.toLocaleString()}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <CheckCircle className="h-4 w-4 text-green-600" />
                                     <span className="text-sm">
-                                        Analytics
+                                        {t("page.analytics")}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -344,7 +344,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                         <AlertTriangle className="h-4 w-4 text-gray-400" />
                                     )}
                                     <span className="text-sm">
-                                        Remove Branding
+                                        {t("page.removeBranding")}
                                     </span>
                                 </div>
                             </div>
@@ -356,7 +356,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                         <AlertTriangle className="h-4 w-4 text-gray-400" />
                                     )}
                                     <span className="text-sm">
-                                        Exports
+                                        {t("page.exports")}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -366,7 +366,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                         <AlertTriangle className="h-4 w-4 text-gray-400" />
                                     )}
                                     <span className="text-sm">
-                                        APIs
+                                        {t("page.apis")}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -376,8 +376,8 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                         <AlertTriangle className="h-4 w-4 text-gray-400" />
                                     )}
                                     <span className="text-sm">
-                                        Public Page Survey
-                                        <span className="text-xs text-muted-foreground ml-1">(coming soon)</span>
+                                        {t("page.publicPageSurvey")}
+                                        <span className="text-xs text-muted-foreground ml-1">{t("page.comingSoon")}</span>
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -387,7 +387,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                         <AlertTriangle className="h-4 w-4 text-gray-400" />
                                     )}
                                     <span className="text-sm">
-                                        Priority Support
+                                        {t("page.prioritySupport")}
                                     </span>
                                 </div>
                             </div>

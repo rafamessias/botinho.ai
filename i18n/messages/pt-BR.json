@@ -897,6 +897,59 @@
             "subscriptionFailed": "Falha ao atualizar assinatura",
             "trialStarted": "Teste grátis iniciado com sucesso",
             "contactSales": "Entre em contato com nossa equipe de vendas para preços personalizados"
+        },
+        "page": {
+            "title": "Visão Geral da Assinatura",
+            "description": "Detalhes do plano atual e informações de cobrança",
+            "loading": "Carregando...",
+            "plan": "Plano",
+            "status": "Status",
+            "billingCycle": "Ciclo de Cobrança",
+            "currentPeriod": "Período Atual",
+            "cancellation": "Cancelamento",
+            "willCancelAtPeriodEnd": "Será cancelado no final do período",
+            "usageMetrics": "Métricas de Uso",
+            "currentUsage": "Uso atual para este período de cobrança",
+            "planFeatures": "Recursos do Plano",
+            "featuresIncluded": "Recursos incluídos no seu plano atual",
+            "maxActiveSurveys": "Máx. Pesquisas Ativas",
+            "maxResponses": "Máx. Respostas",
+            "analytics": "Análises",
+            "removeBranding": "Remover Marca",
+            "exports": "Exportações",
+            "apis": "APIs",
+            "publicPageSurvey": "Pesquisa de Página Pública",
+            "comingSoon": "(em breve)",
+            "prioritySupport": "Suporte Prioritário",
+            "unlimited": "Ilimitado",
+            "remaining": "restantes",
+            "limitReached": "Limite atingido",
+            "overLimit": "Acima do limite",
+            "unableToLoadData": "Não foi possível Carregar Dados da Assinatura",
+            "errorLoadingData": "Ocorreu um erro ao carregar suas informações de assinatura.",
+            "noSubscriptionFound": "Nenhuma Assinatura Encontrada",
+            "noSubscriptionDescription": "Você não tem uma assinatura ativa. Assine um plano para visualizar métricas de uso.",
+            "activeSurveys": "Pesquisas Ativas",
+            "totalResponses": "Total de Respostas",
+            "unknown": "Desconhecido",
+            "monthly": "Mensal",
+            "active": "Ativo",
+            "trial": "Teste",
+            "canceled": "Cancelado"
+        },
+        "toast": {
+            "success": {
+                "title": "Sucesso!",
+                "description": "Sua assinatura foi ativada com sucesso."
+            },
+            "cancelled": {
+                "title": "Cancelado",
+                "description": "Processo de assinatura foi cancelado."
+            },
+            "error": {
+                "title": "Erro",
+                "description": "Falha ao abrir gerenciamento de assinatura. Tente novamente."
+            }
         }
     },
     "Survey": {

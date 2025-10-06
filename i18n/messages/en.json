@@ -897,6 +897,59 @@
             "subscriptionFailed": "Failed to update subscription",
             "trialStarted": "Free trial started successfully",
             "contactSales": "Contact our sales team for custom pricing"
+        },
+        "page": {
+            "title": "Subscription Overview",
+            "description": "Current plan details and billing information",
+            "loading": "Loading...",
+            "plan": "Plan",
+            "status": "Status",
+            "billingCycle": "Billing Cycle",
+            "currentPeriod": "Current Period",
+            "cancellation": "Cancellation",
+            "willCancelAtPeriodEnd": "Will cancel at period end",
+            "usageMetrics": "Usage Metrics",
+            "currentUsage": "Current usage for this billing period",
+            "planFeatures": "Plan Features",
+            "featuresIncluded": "Features included in your current plan",
+            "maxActiveSurveys": "Max Active Surveys",
+            "maxResponses": "Max Responses",
+            "analytics": "Analytics",
+            "removeBranding": "Remove Branding",
+            "exports": "Exports",
+            "apis": "APIs",
+            "publicPageSurvey": "Public Page Survey",
+            "comingSoon": "(coming soon)",
+            "prioritySupport": "Priority Support",
+            "unlimited": "Unlimited",
+            "remaining": "remaining",
+            "limitReached": "Limit reached",
+            "overLimit": "Over limit",
+            "unableToLoadData": "Unable to Load Subscription Data",
+            "errorLoadingData": "An error occurred while loading your subscription information.",
+            "noSubscriptionFound": "No Subscription Found",
+            "noSubscriptionDescription": "You don't have an active subscription. Please subscribe to a plan to view usage metrics.",
+            "activeSurveys": "Active Surveys",
+            "totalResponses": "Total Responses",
+            "unknown": "Unknown",
+            "monthly": "Monthly",
+            "active": "Active",
+            "trial": "Trial",
+            "canceled": "Canceled"
+        },
+        "toast": {
+            "success": {
+                "title": "Success!",
+                "description": "Your subscription has been activated successfully."
+            },
+            "cancelled": {
+                "title": "Cancelled",
+                "description": "Subscription process was cancelled."
+            },
+            "error": {
+                "title": "Error",
+                "description": "Failed to open subscription management. Please try again."
+            }
         }
     },
     "Survey": {

@@ -92,6 +92,16 @@ export const getSubscriptionData = async () => {
             };
         }
 
+        // Serialize Decimal fields to numbers for client-side compatibility
+        const serializedSubscription = {
+            ...subscriptionResult.data,
+            plan: subscriptionResult.data.plan ? {
+                ...subscriptionResult.data.plan,
+                priceMonthly: subscriptionResult.data.plan.priceMonthly ? Number(subscriptionResult.data.plan.priceMonthly) : 0,
+                priceYearly: subscriptionResult.data.plan.priceYearly ? Number(subscriptionResult.data.plan.priceYearly) : 0,
+            } : null
+        };
+
         // Get usage metrics
         let usageReport = null;
         try {
@@ -104,7 +114,7 @@ export const getSubscriptionData = async () => {
         return {
             success: true,
             data: {
-                subscription: subscriptionResult.data,
+                subscription: serializedSubscription,
                 usage: usageReport
             }
         };
