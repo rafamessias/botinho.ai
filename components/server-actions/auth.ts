@@ -11,8 +11,9 @@ import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
 import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
-import { Provider, Theme, SubscriptionStatus } from "@/lib/generated/prisma"
+import { Provider, Theme, SubscriptionStatus, PlanType } from "@/lib/generated/prisma"
 import { createCustomerSubscription } from "@/lib/customer-subscription"
+import { createCheckoutSession } from "@/lib/stripe-service"
 
 // Types for form data
 export interface SignInFormData {
@@ -78,8 +79,68 @@ export const signInAction = async (formData: SignInFormData) => {
             return { success: false, error: result.error }
         }
 
-        // If successful, return success and let client handle redirect
-        return { success: true }
+        // If successful, check subscription and handle checkout if needed
+        console.log('Checking subscription for user:', validatedData.email)
+        const subscriptionCheck = await checkSubscriptionAndRedirect(validatedData.email)
+        console.log('Subscription check result:', subscriptionCheck)
+
+        if (subscriptionCheck?.success && subscriptionCheck.needsCheckout && subscriptionCheck.planType) {
+            console.log('Creating checkout session for plan:', subscriptionCheck.planType)
+
+            // Get user's team and existing subscription
+            const user = await prisma.user.findUnique({
+                where: { email: validatedData.email },
+                include: {
+                    team: {
+                        include: {
+                            subscription: true
+                        }
+                    }
+                }
+            })
+
+            if (!user?.defaultTeamId) {
+                console.error('No team found for user:', validatedData.email)
+                return {
+                    success: true,
+                    needsCheckout: false,
+                    error: 'No team found for user'
+                }
+            }
+
+            // Get existing CustomerSubscription ID if it exists
+            const existingSubscriptionId = user.team?.subscription?.id
+            console.log('Existing CustomerSubscription ID:', existingSubscriptionId)
+
+            // Create checkout session server-side
+            const checkoutResult = await createCheckoutSessionAction(
+                subscriptionCheck.planType as PlanType,
+                'monthly',
+                validatedData.email,
+                user.defaultTeamId,
+                existingSubscriptionId
+            )
+            console.log('Checkout session result:', checkoutResult)
+
+            if (checkoutResult.success && checkoutResult.checkoutUrl) {
+                return {
+                    success: true,
+                    needsCheckout: true,
+                    checkoutUrl: checkoutResult.checkoutUrl
+                }
+            } else {
+                console.error('Failed to create checkout session server-side:', checkoutResult.error)
+                // Return success but without checkout URL - client will handle fallback
+                return {
+                    success: true,
+                    needsCheckout: false,
+                    error: 'Failed to create checkout session'
+                }
+            }
+        }
+
+        // No checkout needed, return success
+        return { success: true, needsCheckout: false }
     } catch (error) {
         // NextAuth throws NEXT_REDIRECT which is expected behavior for redirects
         if (error instanceof Error && error.message === "NEXT_REDIRECT") {
@@ -122,6 +183,8 @@ export const signInAction = async (formData: SignInFormData) => {
  */
 export const checkSubscriptionAndRedirect = async (userEmail: string) => {
     try {
+        console.log('Checking subscription for user email:', userEmail)
+
         // Get user with their team and subscription
         const user = await prisma.user.findUnique({
             where: { email: userEmail },
@@ -138,6 +201,12 @@ export const checkSubscriptionAndRedirect = async (userEmail: string) => {
             }
         })
 
+        console.log('User found:', !!user, 'Team found:', !!user?.team)
+        console.log('Subscription found:', !!user?.team?.subscription)
+        console.log('Subscription status:', user?.team?.subscription?.status)
+        console.log('Plan found:', !!user?.team?.subscription?.plan)
+        console.log('Plan type:', user?.team?.subscription?.plan?.planType)
+
         if (!user || !user.team) {
             return { success: false, error: "User or team not found" }
         }
@@ -147,22 +216,25 @@ export const checkSubscriptionAndRedirect = async (userEmail: string) => {
         // If no subscription or subscription is pending, redirect to Stripe checkout
         if (!subscription || subscription.status === 'pending') {
             // Find the plan to redirect to
-            let planToRedirect = 'free'
+            let planToRedirect = 'FREE' // Use database enum value, not mapped string
 
             if (subscription && subscription.plan) {
-                planToRedirect = subscription.plan.planType.toLowerCase()
+                // Use the original database plan type directly
+                planToRedirect = subscription.plan.planType
             }
+
+            console.log('Plan to redirect to:', planToRedirect)
 
             // Return redirect information
             return {
                 success: true,
                 needsCheckout: true,
-                planId: planToRedirect,
-                redirectUrl: `/api/stripe/create-checkout-session`
+                planType: planToRedirect
             }
         }
 
         // If subscription is active, no redirect needed
+        console.log('Subscription is active, no checkout needed')
         return {
             success: true,
             needsCheckout: false
@@ -279,7 +351,6 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
         const newUser = result.user
         const team = result.team
 
-        console.log("planParam", planParam)
         // Create CustomerSubscription if plan parameter is provided
         if (planParam && planParam !== 'free') {
             try {
@@ -804,9 +875,40 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
             // Check if user needs subscription after successful sign-in
             const subscriptionCheck = await checkSubscriptionAndRedirect(email || "")
 
-            if (subscriptionCheck?.success && subscriptionCheck.needsCheckout && subscriptionCheck.planId) {
+            if (subscriptionCheck?.success && subscriptionCheck.needsCheckout && subscriptionCheck.planType) {
+                // Get user's team and existing subscription
+                const user = await prisma.user.findUnique({
+                    where: { email: email || "" },
+                    include: {
+                        team: {
+                            include: {
+                                subscription: true
+                            }
+                        }
+                    }
+                })
+
+                if (!user?.defaultTeamId) {
+                    console.error('No team found for user in OTP flow:', email)
+                    return {
+                        success: true,
+                        message: t("accountConfirmed"),
+                        needsCheckout: false
+                    }
+                }
+
+                // Get existing CustomerSubscription ID if it exists
+                const existingSubscriptionId = user.team?.subscription?.id
+                console.log('Existing CustomerSubscription ID in OTP flow:', existingSubscriptionId)
+
                 // Create checkout session server-side
-                const checkoutResult = await createCheckoutSessionAction(subscriptionCheck.planId, 'monthly')
+                const checkoutResult = await createCheckoutSessionAction(
+                    subscriptionCheck.planType as PlanType,
+                    'monthly',
+                    email || "",
+                    user.defaultTeamId,
+                    existingSubscriptionId
+                )
 
                 if (checkoutResult.success) {
                     return {
@@ -856,30 +958,26 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
 /**
  * Server action to create Stripe checkout session
  */
-export const createCheckoutSessionAction = async (planId: string, billingCycle: string = 'monthly') => {
+export const createCheckoutSessionAction = async (planType: PlanType, billingCycle: string = 'monthly', userEmail?: string, teamId?: number, customerSubscriptionId?: string) => {
     try {
-        const response = await fetch(`${process.env.NEXTAUTH_URL}/api/stripe/create-checkout-session`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                planId,
-                billingCycle
-            }),
+        const result = await createCheckoutSession({
+            planId: planType as PlanType,
+            billingCycle: billingCycle as 'monthly' | 'yearly',
+            userEmail: userEmail,
+            teamId: teamId,
+            customerSubscriptionId: customerSubscriptionId
         })
+        console.log('result', result)
 
-        if (!response.ok) {
-            throw new Error('Failed to create checkout session')
+        if (!result.success) {
+            return { success: false, error: result.error || 'Failed to create checkout session' }
         }
 
-        const data = await response.json()
-
-        if (!data.url) {
-            throw new Error('No checkout URL received')
+        if (!result.url) {
+            return { success: false, error: 'No checkout URL received' }
         }
 
-        return { success: true, checkoutUrl: data.url }
+        return { success: true, checkoutUrl: result.url }
     } catch (error) {
         console.error('Error creating checkout session:', error)
         return { success: false, error: 'Failed to create checkout session' }

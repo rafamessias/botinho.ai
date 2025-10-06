@@ -811,7 +811,7 @@
     },
     "Subscription": {
         "title": "Planos de Assinatura",
-        "description": "Escolha o plano perfeito para suas necessidades",
+        "description": "Gerencie sua assinatura e cobrança",
         "currentPlan": {
             "title": "Plano Atual",
             "description": "Detalhes da sua assinatura atual",

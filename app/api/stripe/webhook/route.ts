@@ -109,6 +109,9 @@ export async function POST(request: NextRequest) {
                 const session = event.data.object as Stripe.Checkout.Session;
 
                 console.log('Checkout session completed:', session.id);
+                console.log('Session metadata:', session.metadata);
+                console.log('Session mode:', session.mode);
+                console.log('Session subscription:', session.subscription);
 
                 if (session.mode === 'subscription' && session.subscription) {
                     try {
@@ -118,10 +121,16 @@ export async function POST(request: NextRequest) {
                             { expand: ['items.data.price.product'] }
                         );
 
-                        // Get team ID from metadata
+                        // Get team ID and CustomerSubscription ID from metadata
                         const teamId = session.metadata?.teamId;
+                        const customerSubscriptionId = session.metadata?.customerSubscriptionId;
+                        console.log('Team ID from metadata:', teamId);
+                        console.log('CustomerSubscription ID from metadata:', customerSubscriptionId);
+                        console.log('All metadata keys:', Object.keys(session.metadata || {}));
+
                         if (!teamId) {
                             console.error('No teamId found in session metadata');
+                            console.error('Available metadata:', session.metadata);
                             break;
                         }
 
@@ -147,22 +156,84 @@ export async function POST(request: NextRequest) {
                         }
 
                         // Create customer subscription
-                        const result = await createCustomerSubscription({
-                            teamId: parseInt(teamId),
-                            planId: plan.id,
-                            stripeCustomerId: session.customer as string,
-                            stripeSubscriptionId: subscription.id,
-                            currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
-                            currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
-                            trialStart: (subscription as any).trial_start ? new Date((subscription as any).trial_start * 1000) : undefined,
-                            trialEnd: (subscription as any).trial_end ? new Date((subscription as any).trial_end * 1000) : undefined,
-                            cancelAtPeriodEnd: (subscription as any).cancel_at_period_end || false,
+                        // Extract period information from subscription items
+                        const subscriptionItem = subscription.items.data[0];
+                        const currentPeriodStart = subscriptionItem?.current_period_start
+                            ? new Date(subscriptionItem.current_period_start * 1000)
+                            : undefined;
+                        const currentPeriodEnd = subscriptionItem?.current_period_end
+                            ? new Date(subscriptionItem.current_period_end * 1000)
+                            : undefined;
+                        const trialStart = (subscription as any).trial_start
+                            ? new Date((subscription as any).trial_start * 1000)
+                            : undefined;
+                        const trialEnd = (subscription as any).trial_end
+                            ? new Date((subscription as any).trial_end * 1000)
+                            : undefined;
+
+                        console.log('Subscription object:', {
+                            id: subscription.id,
+                            status: subscription.status,
+                            customer: subscription.customer,
+                            cancel_at_period_end: subscription.cancel_at_period_end,
+                            trial_start: (subscription as any).trial_start,
+                            trial_end: (subscription as any).trial_end
                         });
 
-                        if (result.success) {
-                            console.log(`Subscription created successfully for team ${teamId}`);
+                        console.log('Subscription item:', {
+                            current_period_start: subscriptionItem?.current_period_start,
+                            current_period_end: subscriptionItem?.current_period_end,
+                            price_id: subscriptionItem?.price?.id
+                        });
+
+                        console.log('Converted dates:', {
+                            currentPeriodStart,
+                            currentPeriodEnd,
+                            trialStart,
+                            trialEnd
+                        });
+
+                        if (customerSubscriptionId) {
+                            // Update existing CustomerSubscription
+                            console.log(`Updating existing CustomerSubscription: ${customerSubscriptionId}`);
+
+                            const updateResult = await prisma.customerSubscription.update({
+                                where: { id: customerSubscriptionId },
+                                data: {
+                                    planId: plan.id,
+                                    status: SubscriptionStatus.active,
+                                    stripeCustomerId: session.customer as string,
+                                    stripeSubscriptionId: subscription.id,
+                                    currentPeriodStart,
+                                    currentPeriodEnd,
+                                    trialStart,
+                                    trialEnd,
+                                    cancelAtPeriodEnd: subscription.cancel_at_period_end || false,
+                                }
+                            });
+
+                            console.log(`CustomerSubscription updated successfully: ${customerSubscriptionId}`);
                         } else {
-                            console.error('Failed to create subscription:', result.error);
+                            // Create new CustomerSubscription
+                            console.log(`Creating new CustomerSubscription for team ${teamId}`);
+
+                            const result = await createCustomerSubscription({
+                                teamId: parseInt(teamId),
+                                planId: plan.id,
+                                stripeCustomerId: session.customer as string,
+                                stripeSubscriptionId: subscription.id,
+                                currentPeriodStart,
+                                currentPeriodEnd,
+                                trialStart,
+                                trialEnd,
+                                cancelAtPeriodEnd: subscription.cancel_at_period_end || false,
+                            });
+
+                            if (result.success) {
+                                console.log(`Subscription created successfully for team ${teamId}`);
+                            } else {
+                                console.error('Failed to create subscription:', result.error);
+                            }
                         }
                     } catch (error) {
                         console.error('Error processing checkout.session.completed:', error);
@@ -218,11 +289,20 @@ export async function POST(request: NextRequest) {
                     }
 
                     // Update subscription status and plan
+                    // Extract period information from subscription items
+                    const subscriptionItem = subscription.items.data[0];
+                    const currentPeriodStart = subscriptionItem?.current_period_start
+                        ? new Date(subscriptionItem.current_period_start * 1000)
+                        : undefined;
+                    const currentPeriodEnd = subscriptionItem?.current_period_end
+                        ? new Date(subscriptionItem.current_period_end * 1000)
+                        : undefined;
+
                     const result = await updateSubscriptionStatus(
                         subscription.id,
                         mapStripeStatusToSubscriptionStatus(subscription.status),
-                        new Date((subscription as any).current_period_start * 1000),
-                        new Date((subscription as any).current_period_end * 1000)
+                        currentPeriodStart,
+                        currentPeriodEnd
                     );
 
                     if (result.success) {
@@ -235,9 +315,9 @@ export async function POST(request: NextRequest) {
                             data: {
                                 planId: plan.id,
                                 billingInterval: billingInterval,
-                                currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
-                                currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
-                                cancelAtPeriodEnd: (subscription as any).cancel_at_period_end
+                                currentPeriodStart: currentPeriodStart,
+                                currentPeriodEnd: currentPeriodEnd,
+                                cancelAtPeriodEnd: subscription.cancel_at_period_end
                             }
                         });
 
@@ -321,11 +401,20 @@ export async function POST(request: NextRequest) {
                         );
 
                         // Update subscription status to active and current period
+                        // Extract period information from subscription items
+                        const subscriptionItem = subscription.items.data[0];
+                        const currentPeriodStart = subscriptionItem?.current_period_start
+                            ? new Date(subscriptionItem.current_period_start * 1000)
+                            : undefined;
+                        const currentPeriodEnd = subscriptionItem?.current_period_end
+                            ? new Date(subscriptionItem.current_period_end * 1000)
+                            : undefined;
+
                         const result = await updateSubscriptionStatus(
                             subscription.id,
                             SubscriptionStatus.active,
-                            new Date((subscription as any).current_period_start * 1000),
-                            new Date((subscription as any).current_period_end * 1000)
+                            currentPeriodStart,
+                            currentPeriodEnd
                         );
 
                         if (result.success) {

@@ -1,36 +1,29 @@
 'use server';
 
-import { auth } from '@/app/auth';
 import { redirect } from 'next/navigation';
+import { createCheckoutSession as createStripeCheckoutSession, createPortalSession as createStripePortalSession } from '@/lib/stripe-service';
+import { getCustomerSubscription } from '@/lib/customer-subscription';
+import { getCurrentPeriodUsageReport } from '@/lib/periodic-usage-tracking';
+import { getCurrentTeamId } from '@/lib/prisma-wrapper';
+import { PlanType } from '@/lib/generated/prisma';
 
-export const createCheckoutSession = async (planId: string, billingCycle: 'monthly' | 'yearly') => {
-    const session = await auth();
-
-    if (!session?.user?.email) {
-        throw new Error('Unauthorized');
-    }
-
+export const createCheckoutSession = async (planId: PlanType, billingCycle: 'monthly' | 'yearly') => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/stripe/create-checkout-session`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                planId,
-                billingCycle,
-            }),
+        const result = await createStripeCheckoutSession({
+            planId,
+            billingCycle
         });
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to create checkout session');
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to create checkout session');
         }
 
-        const { sessionId } = await response.json();
+        if (!result.url) {
+            throw new Error('No checkout URL received');
+        }
 
         // Redirect to Stripe Checkout
-        redirect(`https://checkout.stripe.com/c/pay/${sessionId}`);
+        redirect(result.url);
     } catch (error) {
         console.error('Error creating checkout session:', error);
         throw error;
@@ -38,29 +31,19 @@ export const createCheckoutSession = async (planId: string, billingCycle: 'month
 };
 
 export const createPortalSession = async () => {
-    const session = await auth();
-
-    if (!session?.user?.email) {
-        throw new Error('Unauthorized');
-    }
-
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/stripe/create-portal-session`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        const result = await createStripePortalSession();
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to create portal session');
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to create portal session');
         }
 
-        const { url } = await response.json();
+        if (!result.url) {
+            throw new Error('No portal URL received');
+        }
 
         // Redirect to Stripe Customer Portal
-        redirect(url);
+        redirect(result.url);
     } catch (error) {
         console.error('Error creating portal session:', error);
         throw error;
@@ -68,6 +51,7 @@ export const createPortalSession = async () => {
 };
 
 export const getSubscriptionStatus = async () => {
+    const { auth } = await import('@/app/auth');
     const session = await auth();
 
     if (!session?.user?.email) {
@@ -83,4 +67,53 @@ export const getSubscriptionStatus = async () => {
         nextBilling: '2024-02-15',
         cancelAtPeriodEnd: false,
     };
+};
+
+export const getSubscriptionData = async () => {
+    try {
+        const teamId = await getCurrentTeamId();
+
+        if (!teamId) {
+            return {
+                success: false,
+                error: 'No team found for current user',
+                data: null
+            };
+        }
+
+        // Get subscription data
+        const subscriptionResult = await getCustomerSubscription({ teamId });
+
+        if (!subscriptionResult.success || !subscriptionResult.data) {
+            return {
+                success: false,
+                error: subscriptionResult.error || 'No subscription found',
+                data: null
+            };
+        }
+
+        // Get usage metrics
+        let usageReport = null;
+        try {
+            usageReport = await getCurrentPeriodUsageReport(teamId);
+        } catch (error) {
+            console.warn('Failed to get usage report:', error);
+            // Continue without usage data
+        }
+
+        return {
+            success: true,
+            data: {
+                subscription: subscriptionResult.data,
+                usage: usageReport
+            }
+        };
+    } catch (error) {
+        console.error('Error getting subscription data:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error occurred',
+            data: null
+        };
+    }
 };

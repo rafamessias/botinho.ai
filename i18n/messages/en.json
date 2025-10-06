@@ -811,7 +811,7 @@
     },
     "Subscription": {
         "title": "Subscription Plans",
-        "description": "Choose the perfect plan for your needs",
+        "description": "Manage your subscription and billing",
         "currentPlan": {
             "title": "Current Plan",
             "description": "Your current subscription details",

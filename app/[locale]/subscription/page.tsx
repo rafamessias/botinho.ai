@@ -3,9 +3,13 @@ import { SubscriptionPage } from "@/components/subscription/subscription-page";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
+import { getSubscriptionData } from "@/components/server-actions/subscription";
 
 export default async function Subscription() {
     const t = await getTranslations("Subscription");
+
+    // Load subscription data server-side
+    const subscriptionData = await getSubscriptionData();
 
     return (
         <SidebarProvider
@@ -26,7 +30,7 @@ export default async function Subscription() {
                                 {t("description")}
                             </p>
 
-                            <SubscriptionPage />
+                            <SubscriptionPage subscriptionData={subscriptionData} />
                         </div>
                     </div>
                 </div>
