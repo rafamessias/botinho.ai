@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react"
 import { toast } from "sonner"
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useTheme } from "next-themes"
 import { generateTeamTokenAction, regenerateTeamTokenAction, getTeamTokenAction } from "@/components/server-actions/team"
 import { useUser } from "@/components/user-provider"
@@ -40,6 +40,162 @@ export const ApiSettings = () => {
         navigator.clipboard.writeText(code)
         toast.success(t("codeCopied"))
     }
+
+    const renderCodeSnippet = (title: string, description: string, code: string, language: string, copyButtonText: string) => (
+        <Card className="w-full overflow-hidden">
+            <CardHeader>
+                <CardTitle>{title}</CardTitle>
+                <CardDescription>
+                    {description}
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="bg-gray-900 p-4 rounded-lg relative overflow-hidden">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleCopyCode(code)}
+                        className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm z-10"
+                    >
+                        <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <span className="text-xs sm:text-sm">{copyButtonText}</span>
+                    </Button>
+                    <div className="overflow-x-auto">
+                        <SyntaxHighlighter
+                            language={language}
+                            style={a11yDark}
+                            customStyle={{
+                                margin: 0,
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem',
+                                background: 'transparent',
+                                minWidth: 'max-content',
+                                width: '100%'
+                            }}
+                            showLineNumbers={false}
+                            wrapLines={true}
+                            wrapLongLines={true}
+                        >
+                            {code}
+                        </SyntaxHighlighter>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    )
+
+    const renderTabContent = (
+        tokenType: "survey" | "api",
+        tokenLabel: string,
+        currentToken: string | null,
+        showToken: boolean,
+        setShowToken: (show: boolean) => void,
+        handleCopyToken: () => void,
+        isGeneratingToken: boolean,
+        codeTitle: string,
+        codeDescription: string,
+        code: string,
+        language: string,
+        copyButtonText: string
+    ) => (
+        <Card className="p-0 border-none w-full overflow-hidden">
+            <CardContent className="p-0 space-y-4 w-full">
+                <div className="space-y-3 sm:space-y-4">
+                    <div className="space-y-2 sm:space-y-3">
+                        <Label htmlFor={`${tokenType}-token`} className="text-sm font-medium">{tokenLabel}</Label>
+                        <div className="space-y-2">
+                            <div className="flex gap-1.5 sm:gap-2">
+                                <div className="flex-1 relative">
+                                    <Input
+                                        id={`${tokenType}-token`}
+                                        type={showToken || !currentToken ? "text" : "password"}
+                                        value={currentToken || t("noTokenGenerated")}
+                                        readOnly
+                                        className="pr-10 text-xs sm:pr-12 sm:text-sm"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0.5 top-0.5 h-6 w-6 p-0 sm:right-1 sm:top-1 sm:h-7 sm:w-7"
+                                        onClick={() => setShowToken(!showToken)}
+                                    >
+                                        {showToken ? <EyeOff className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : <Eye className="h-2.5 w-2.5 sm:h-3 sm:w-3" />}
+                                    </Button>
+                                </div>
+                                {currentToken && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleCopyToken}
+                                        className="px-2 sm:px-3"
+                                    >
+                                        <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                                    </Button>
+                                )}
+                            </div>
+                            {isAdmin && (
+                                <div className="flex sm:justify-end gap-1.5 sm:gap-2">
+                                    {!currentToken ? (
+                                        <Button
+                                            onClick={() => handleGenerateToken(currentTeam!.id, tokenType)}
+                                            disabled={isGeneratingToken}
+                                            className="flex-1 sm:flex-none"
+                                            size="sm"
+                                        >
+                                            {isGeneratingToken ? (
+                                                <>
+                                                    <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
+                                                    <span className="text-xs sm:text-sm">{t("generating")}</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="text-xs sm:text-sm">{t("generateToken")}</span>
+                                                </>
+                                            )}
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            onClick={() => {
+                                                setRegenerateTokenType(tokenType)
+                                                setShowRegenerateModal(true)
+                                            }}
+                                            variant="default"
+                                            disabled={isGeneratingToken}
+                                            className="flex-1 sm:flex-none"
+                                            size="sm"
+                                        >
+                                            {isGeneratingToken ? (
+                                                <>
+                                                    <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
+                                                    <span className="text-xs sm:text-sm">{t("regenerating")}</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="text-xs sm:text-sm">{t("regenerateToken")}</span>
+                                                </>
+                                            )}
+                                        </Button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Code Snippet */}
+                {renderCodeSnippet(
+                    codeTitle,
+                    codeDescription,
+                    code,
+                    language,
+                    copyButtonText
+                )}
+            </CardContent>
+        </Card>
+    )
 
     // Get current user's default team
     const currentTeam = user?.teams?.find((team: any) => team.id === user?.defaultTeamId) || user?.teams?.[0]
@@ -210,7 +366,7 @@ getSurveyResults('your-survey-id');`
     }, [currentTeam])
 
     return (
-        <Card>
+        <Card className="w-full overflow-hidden">
             <CardHeader className="pb-4">
                 <CardTitle className="text-lg">{t("title")}</CardTitle>
                 <CardDescription className="text-sm">
@@ -236,271 +392,38 @@ getSurveyResults('your-survey-id');`
 
                         {/* Survey Token Tab */}
                         <TabsContent value="survey" className="space-y-4 sm:space-y-6">
-                            <div className="space-y-3 sm:space-y-4">
-                                <div className="space-y-2 sm:space-y-3">
-                                    <Label htmlFor="survey-token" className="text-sm font-medium">{t("surveyToken")}</Label>
-                                    <div className="space-y-2">
-                                        <div className="flex gap-1.5 sm:gap-2">
-                                            <div className="flex-1 relative">
-                                                <Input
-                                                    id="survey-token"
-                                                    type={showSurveyToken || !currentSurveyToken ? "text" : "password"}
-                                                    value={currentSurveyToken || t("noTokenGenerated")}
-                                                    readOnly
-                                                    className="pr-10 text-xs sm:pr-12 sm:text-sm"
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="absolute right-0.5 top-0.5 h-6 w-6 p-0 sm:right-1 sm:top-1 sm:h-7 sm:w-7"
-                                                    onClick={() => setShowSurveyToken(!showSurveyToken)}
-                                                >
-                                                    {showSurveyToken ? <EyeOff className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : <Eye className="h-2.5 w-2.5 sm:h-3 sm:w-3" />}
-                                                </Button>
-                                            </div>
-                                            {currentSurveyToken && (
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={handleCopySurveyToken}
-                                                    className="px-2 sm:px-3"
-                                                >
-                                                    <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
-                                                </Button>
-                                            )}
-                                        </div>
-                                        {isAdmin && (
-                                            <div className="flex sm:justify-end gap-1.5 sm:gap-2">
-                                                {!currentSurveyToken ? (
-                                                    <Button
-                                                        onClick={() => handleGenerateToken(currentTeam.id, "survey")}
-                                                        disabled={isGeneratingSurveyToken}
-                                                        className="flex-1 sm:flex-none"
-                                                        size="sm"
-                                                    >
-                                                        {isGeneratingSurveyToken ? (
-                                                            <>
-                                                                <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
-                                                                <span className="text-xs sm:text-sm">{t("generating")}</span>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <span className="text-xs sm:text-sm">{t("generateToken")}</span>
-                                                            </>
-                                                        )}
-                                                    </Button>
-                                                ) : (
-                                                    <Button
-                                                        onClick={() => {
-                                                            setRegenerateTokenType("survey")
-                                                            setShowRegenerateModal(true)
-                                                        }}
-                                                        variant="default"
-                                                        disabled={isGeneratingSurveyToken}
-                                                        className="flex-1 sm:flex-none"
-                                                        size="sm"
-                                                    >
-                                                        {isGeneratingSurveyToken ? (
-                                                            <>
-                                                                <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
-                                                                <span className="text-xs sm:text-sm">{t("regenerating")}</span>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <span className="text-xs sm:text-sm">{t("regenerateToken")}</span>
-                                                            </>
-                                                        )}
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Survey Widget Code Snippet */}
-                            <div className="space-y-3 sm:space-y-4">
-                                <div className="space-y-2 sm:space-y-3">
-                                    <Label className="text-sm font-medium">{t("codeSnippets.surveyWidget.title")}</Label>
-                                    <p className="text-xs sm:text-sm text-muted-foreground">{t("codeSnippets.surveyWidget.description")}</p>
-                                    <Card className="py-2">
-                                        <CardContent className="p-0 ">
-                                            <div className="relative">
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => handleCopyCode(surveyWidgetCode)}
-                                                    className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm"
-                                                >
-                                                    <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                                                    <span className="text-xs sm:text-sm">{t("codeSnippets.surveyWidget.copyCode")}</span>
-                                                </Button>
-                                                <SyntaxHighlighter
-                                                    language="html"
-                                                    style={theme === 'dark' ? oneDark : oneLight}
-                                                    customStyle={{
-                                                        margin: 0,
-                                                        fontSize: '0.75rem',
-                                                        lineHeight: '1.5',
-                                                        padding: '0.75rem',
-                                                        background: 'transparent',
-                                                        color: 'inherit',
-                                                        borderRadius: '0.5rem',
-                                                        whiteSpace: 'pre',
-                                                    }}
-                                                    codeTagProps={{
-                                                        style: {
-                                                            fontSize: '0.75rem',
-                                                            fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
-                                                            whiteSpace: 'pre'
-                                                        }
-                                                    }}
-                                                >
-                                                    {surveyWidgetCode}
-                                                </SyntaxHighlighter>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            </div>
+                            {renderTabContent(
+                                "survey",
+                                t("surveyToken"),
+                                currentSurveyToken,
+                                showSurveyToken,
+                                setShowSurveyToken,
+                                handleCopySurveyToken,
+                                isGeneratingSurveyToken,
+                                t('codeSnippets.surveyWidget.title'),
+                                t('codeSnippets.surveyWidget.description'),
+                                surveyWidgetCode,
+                                'html',
+                                t("codeSnippets.surveyWidget.copyCode")
+                            )}
                         </TabsContent>
 
                         {/* API Token Tab */}
                         <TabsContent value="api" className="space-y-4 sm:space-y-6">
-                            <div className="space-y-3 sm:space-y-4">
-                                <div className="space-y-2 sm:space-y-3">
-                                    <Label htmlFor="api-token" className="text-sm font-medium">{t("apiToken")}</Label>
-                                    <div className="space-y-2">
-                                        <div className="flex gap-1.5 sm:gap-2">
-                                            <div className="flex-1 relative">
-                                                <Input
-                                                    id="api-token"
-                                                    type={showApiToken || !currentApiToken ? "text" : "password"}
-                                                    value={currentApiToken || t("noTokenGenerated")}
-                                                    readOnly
-                                                    className="pr-10 text-xs sm:pr-12 sm:text-sm"
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="absolute right-0.5 top-0.5 h-6 w-6 p-0 sm:right-1 sm:top-1 sm:h-7 sm:w-7"
-                                                    onClick={() => setShowApiToken(!showApiToken)}
-                                                >
-                                                    {showApiToken ? <EyeOff className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : <Eye className="h-2.5 w-2.5 sm:h-3 sm:w-3" />}
-                                                </Button>
-                                            </div>
-                                            {currentApiToken && (
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={handleCopyApiToken}
-                                                    className="px-2 sm:px-3"
-                                                >
-                                                    <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
-                                                </Button>
-                                            )}
-                                        </div>
-                                        {isAdmin && (
-                                            <div className="flex sm:justify-end gap-1.5 sm:gap-2">
-                                                {!currentApiToken ? (
-                                                    <Button
-                                                        onClick={() => handleGenerateToken(currentTeam.id, "api")}
-                                                        disabled={isGeneratingApiToken}
-                                                        className="flex-1 sm:flex-none"
-                                                        size="sm"
-                                                    >
-                                                        {isGeneratingApiToken ? (
-                                                            <>
-                                                                <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
-                                                                <span className="text-xs sm:text-sm">{t("generating")}</span>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <span className="text-xs sm:text-sm">{t("generateToken")}</span>
-                                                            </>
-                                                        )}
-                                                    </Button>
-                                                ) : (
-                                                    <Button
-                                                        onClick={() => {
-                                                            setRegenerateTokenType("api")
-                                                            setShowRegenerateModal(true)
-                                                        }}
-                                                        variant="default"
-                                                        disabled={isGeneratingApiToken}
-                                                        className="flex-1 sm:flex-none"
-                                                        size="sm"
-                                                    >
-                                                        {isGeneratingApiToken ? (
-                                                            <>
-                                                                <RefreshCw className="mr-1.5 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4" />
-                                                                <span className="text-xs sm:text-sm">{t("regenerating")}</span>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <span className="text-xs sm:text-sm">{t("regenerateToken")}</span>
-                                                            </>
-                                                        )}
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* API Integration Code Snippet */}
-                            <div className="space-y-3 sm:space-y-4">
-                                <div className="space-y-2 sm:space-y-3">
-                                    <Label className="text-sm font-medium">{t("codeSnippets.apiIntegration.title")}</Label>
-                                    <p className="text-xs sm:text-sm text-muted-foreground">{t("codeSnippets.apiIntegration.description")}</p>
-                                    <Card className="py-2 relative">
-                                        <CardContent className="relative p-0">
-                                            <div className=" overflow-x-auto">
-                                                <SyntaxHighlighter
-                                                    language="javascript"
-                                                    style={theme === 'dark' ? oneDark : oneLight}
-                                                    customStyle={{
-                                                        margin: 0,
-                                                        fontSize: '0.75rem',
-                                                        lineHeight: '1.5',
-                                                        padding: '0.75rem',
-                                                        background: 'transparent',
-                                                        color: 'inherit',
-                                                        borderRadius: '0.5rem',
-                                                        whiteSpace: 'pre',
-                                                    }}
-                                                    codeTagProps={{
-                                                        style: {
-                                                            fontSize: '0.75rem',
-                                                            fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
-                                                            whiteSpace: 'pre'
-                                                        }
-                                                    }}
-                                                    wrapLongLines={true}
-                                                >
-                                                    {apiIntegrationCode}
-                                                </SyntaxHighlighter>
-                                            </div>
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handleCopyCode(apiIntegrationCode)}
-                                                className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm"
-                                            >
-                                                <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                                                <span className="text-xs sm:text-sm">{t("codeSnippets.apiIntegration.copyCode")}</span>
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            </div>
+                            {renderTabContent(
+                                "api",
+                                t("apiToken"),
+                                currentApiToken,
+                                showApiToken,
+                                setShowApiToken,
+                                handleCopyApiToken,
+                                isGeneratingApiToken,
+                                t('codeSnippets.apiIntegration.title'),
+                                t('codeSnippets.apiIntegration.description'),
+                                apiIntegrationCode,
+                                'javascript',
+                                t("codeSnippets.apiIntegration.copyCode")
+                            )}
                         </TabsContent>
                     </Tabs>
                 </CardContent>)
