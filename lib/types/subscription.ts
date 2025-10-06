@@ -34,13 +34,19 @@ export interface SubscriptionData {
     status: SubscriptionStatus;
     teamId: number;
     planId: string;
+    billingInterval: string;
     currentPeriodStart: Date | null;
     currentPeriodEnd: Date | null;
     createdAt: Date;
     plan: {
         planType: string;
         maxResponses: number;
-        billingInterval: string;
+        maxCompletedResponses: number;
+        maxActiveSurveys: number;
+        removeBranding: boolean;
+        allowApiAccess: boolean;
+        allowExport: boolean;
+        allowPublicPages: boolean;
     };
     usageTracking: Array<{
         id: string;

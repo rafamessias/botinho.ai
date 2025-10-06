@@ -46,12 +46,9 @@ export function OTPForm() {
         defaultValues: { otp: "" }
     })
 
-    const formOtp = watch("otp")
-
     // Auto-submit if OTP is provided via URL
     useEffect(() => {
-        console.log("urlOtp", urlOtp)
-        console.log("isSubmitting", email, phone)
+
         if (urlOtp && urlOtp.length === 6 && !isSubmitting) {
             setOtp(urlOtp)
             setValue("otp", urlOtp)
@@ -74,14 +71,22 @@ export function OTPForm() {
 
         setIsSubmitting(true)
         try {
+            // Use server action for OTP confirmation and auto sign-in
             const result = await confirmOTPAction(data.otp, email || undefined, phone || undefined)
 
             if (result?.success === false) {
-                setError("otp", { message: result.error })
-                toast.error(result.error)
+                setError("otp", { message: result.message })
+                toast.error(result.message)
             } else if (result?.success === true) {
                 toast.success(result.message || t("accountConfirmed"))
-                router.push(`/${locale}/sign-in`)
+
+                if (result.needsCheckout && result.checkoutUrl) {
+                    // User needs subscription, redirect to Stripe checkout
+                    window.location.href = result.checkoutUrl
+                } else {
+                    // No checkout needed, redirect to main dashboard
+                    router.push(`/${locale}`)
+                }
             }
         } catch (error) {
             console.error("OTP confirmation error:", error)
@@ -120,7 +125,7 @@ export function OTPForm() {
         setOtp(value)
         setValue("otp", value)
         if (value.length === 6) {
-            // Auto-submit when 6 digits are entered
+            // Auto-submit when 6 digits are entered using server action
             handleSubmit(onSubmit)()
         }
     }

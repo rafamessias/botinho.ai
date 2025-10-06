@@ -7,6 +7,8 @@ import { CredentialsSignin } from "next-auth"
 import WelcomeEmail from "@/emails/WelcomeEmail"
 import resend from "@/lib/resend"
 import { addDefaultSurveyTypes } from "@/components/server-actions/team"
+import { createCustomerSubscription } from "@/lib/customer-subscription"
+import { SubscriptionStatus } from "@/lib/generated/prisma"
 
 // Add type declarations at the top of the file
 declare module "next-auth" {
@@ -126,6 +128,58 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     throw new InvalidCredentialsError()
                 }
             }
+        }),
+        CredentialsProvider({
+            id: "otp",
+            name: "OTP Verification",
+            credentials: {
+                email: { label: "Email", type: "email" },
+                phone: { label: "Phone", type: "text" },
+                otp: { label: "OTP Code", type: "text" }
+            },
+            async authorize(credentials) {
+                if (!credentials?.otp || (!credentials?.email && !credentials?.phone)) {
+                    return null
+                }
+
+                try {
+                    // Find user with the OTP token
+                    const user = await prisma.user.findFirst({
+                        where: {
+                            confirmationToken: credentials.otp as string,
+                            confirmed: false,
+                            blocked: false,
+                            ...(credentials.email ? { email: credentials.email as string } : {}),
+                            ...(credentials.phone ? { phone: credentials.phone as string } : {})
+                        }
+                    })
+
+                    if (!user) {
+                        return null
+                    }
+
+                    // Update user to confirmed and clear OTP token
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: {
+                            confirmed: true,
+                            confirmationToken: null,
+                        }
+                    })
+
+                    return {
+                        id: user.id.toString(),
+                        email: user.email,
+                        name: `${user.firstName} ${user.lastName}`,
+                        language: user.language === "pt_BR" ? "pt-BR" : "en",
+                        avatarUrl: user?.avatarUrl || null,
+                        defaultTeamId: user.defaultTeamId
+                    }
+                } catch (error) {
+                    console.error("OTP provider error:", error)
+                    return null
+                }
+            }
         })
     ],
     callbacks: {
@@ -192,6 +246,62 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         });
 
                         await addDefaultSurveyTypes(newTeam.id)
+
+                        // Create subscription for Google OAuth users
+                        try {
+                            // Check for signup plan from cookies
+                            const cookies = require('next/headers').cookies;
+                            const cookieStore = await cookies();
+                            const signupPlan = cookieStore.get('signup_plan')?.value;
+
+                            if (signupPlan && signupPlan !== 'free') {
+                                // Find the subscription plan by planType
+                                const subscriptionPlan = await prisma.subscriptionPlan.findFirst({
+                                    where: {
+                                        planType: signupPlan.toUpperCase() as any,
+                                        isActive: true
+                                    }
+                                })
+
+                                if (subscriptionPlan) {
+                                    // Create customer subscription with pending status for paid plans
+                                    const subscriptionResult = await createCustomerSubscription({
+                                        teamId: newTeam.id,
+                                        planId: subscriptionPlan.id,
+                                        status: SubscriptionStatus.pending,
+                                        cancelAtPeriodEnd: false
+                                    })
+
+                                    if (!subscriptionResult.success) {
+                                        console.error("Failed to create customer subscription for Google OAuth:", subscriptionResult.error)
+                                    }
+                                }
+                            } else {
+                                // Create free subscription with active status
+                                const freePlan = await prisma.subscriptionPlan.findFirst({
+                                    where: {
+                                        planType: 'FREE',
+                                        isActive: true
+                                    }
+                                })
+
+                                if (freePlan) {
+                                    const subscriptionResult = await createCustomerSubscription({
+                                        teamId: newTeam.id,
+                                        planId: freePlan.id,
+                                        status: SubscriptionStatus.active,
+                                        cancelAtPeriodEnd: false
+                                    })
+
+                                    if (!subscriptionResult.success) {
+                                        console.error("Failed to create free subscription for Google OAuth:", subscriptionResult.error)
+                                    }
+                                }
+                            }
+                        } catch (subscriptionError) {
+                            console.error("Error creating subscription for Google OAuth user:", subscriptionError)
+                            // Don't fail the OAuth flow if subscription creation fails
+                        }
 
                         token.id = newUser.id.toString()
                         token.email = newUser.email

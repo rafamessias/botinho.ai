@@ -200,6 +200,7 @@ export type BillingInterval = (typeof BillingInterval)[keyof typeof BillingInter
 
 
 export const SubscriptionStatus: {
+  pending: 'pending',
   active: 'active',
   canceled: 'canceled',
   past_due: 'past_due',
@@ -214,7 +215,7 @@ export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof Subscr
 
 export const UsageMetricType: {
   ACTIVE_SURVEYS: 'ACTIVE_SURVEYS',
-  TOTAL_RESPONSES: 'TOTAL_RESPONSES'
+  TOTAL_COMPLETED_RESPONSES: 'TOTAL_COMPLETED_RESPONSES'
 };
 
 export type UsageMetricType = (typeof UsageMetricType)[keyof typeof UsageMetricType]
@@ -12743,6 +12744,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     description: string | null
+    context: string | null
     status: $Enums.SurveyStatus | null
     allowMultipleResponses: boolean | null
     createdAt: Date | null
@@ -12758,6 +12760,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     description: string | null
+    context: string | null
     status: $Enums.SurveyStatus | null
     allowMultipleResponses: boolean | null
     createdAt: Date | null
@@ -12773,6 +12776,7 @@ export namespace Prisma {
     id: number
     name: number
     description: number
+    context: number
     status: number
     allowMultipleResponses: number
     createdAt: number
@@ -12804,6 +12808,7 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    context?: true
     status?: true
     allowMultipleResponses?: true
     createdAt?: true
@@ -12819,6 +12824,7 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    context?: true
     status?: true
     allowMultipleResponses?: true
     createdAt?: true
@@ -12834,6 +12840,7 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    context?: true
     status?: true
     allowMultipleResponses?: true
     createdAt?: true
@@ -12936,6 +12943,7 @@ export namespace Prisma {
     id: string
     name: string
     description: string | null
+    context: string | null
     status: $Enums.SurveyStatus
     allowMultipleResponses: boolean
     createdAt: Date
@@ -12970,6 +12978,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    context?: boolean
     status?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
@@ -12992,6 +13001,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    context?: boolean
     status?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
@@ -13009,6 +13019,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    context?: boolean
     status?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
@@ -13026,6 +13037,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    context?: boolean
     status?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
@@ -13037,7 +13049,7 @@ export namespace Prisma {
     totalResponses?: boolean
   }
 
-  export type SurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "status" | "allowMultipleResponses" | "createdAt" | "updatedAt" | "teamId" | "typeId" | "ResponseRate" | "totalOpenSurveys" | "totalResponses", ExtArgs["result"]["survey"]>
+  export type SurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "context" | "status" | "allowMultipleResponses" | "createdAt" | "updatedAt" | "teamId" | "typeId" | "ResponseRate" | "totalOpenSurveys" | "totalResponses", ExtArgs["result"]["survey"]>
   export type SurveyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questions?: boolean | Survey$questionsArgs<ExtArgs>
     responses?: boolean | Survey$responsesArgs<ExtArgs>
@@ -13070,6 +13082,7 @@ export namespace Prisma {
       id: string
       name: string
       description: string | null
+      context: string | null
       status: $Enums.SurveyStatus
       allowMultipleResponses: boolean
       createdAt: Date
@@ -13511,6 +13524,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Survey", 'String'>
     readonly name: FieldRef<"Survey", 'String'>
     readonly description: FieldRef<"Survey", 'String'>
+    readonly context: FieldRef<"Survey", 'String'>
     readonly status: FieldRef<"Survey", 'SurveyStatus'>
     readonly allowMultipleResponses: FieldRef<"Survey", 'Boolean'>
     readonly createdAt: FieldRef<"Survey", 'DateTime'>
@@ -21607,28 +21621,37 @@ export namespace Prisma {
   }
 
   export type SubscriptionPlanAvgAggregateOutputType = {
-    price: Decimal | null
+    priceMonthly: Decimal | null
+    priceYearly: Decimal | null
     maxActiveSurveys: number | null
     maxResponses: number | null
+    maxCompletedResponses: number | null
   }
 
   export type SubscriptionPlanSumAggregateOutputType = {
-    price: Decimal | null
+    priceMonthly: Decimal | null
+    priceYearly: Decimal | null
     maxActiveSurveys: number | null
     maxResponses: number | null
+    maxCompletedResponses: number | null
   }
 
   export type SubscriptionPlanMinAggregateOutputType = {
     id: string | null
     planType: $Enums.PlanType | null
-    price: Decimal | null
+    stripeProductId: string | null
+    stripePriceIdMonthly: string | null
+    stripePriceIdYearly: string | null
+    priceMonthly: Decimal | null
+    priceYearly: Decimal | null
     currency: string | null
-    billingInterval: $Enums.BillingInterval | null
     maxActiveSurveys: number | null
     maxResponses: number | null
+    maxCompletedResponses: number | null
     removeBranding: boolean | null
     allowApiAccess: boolean | null
     allowExport: boolean | null
+    allowPublicPages: boolean | null
     isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -21637,14 +21660,19 @@ export namespace Prisma {
   export type SubscriptionPlanMaxAggregateOutputType = {
     id: string | null
     planType: $Enums.PlanType | null
-    price: Decimal | null
+    stripeProductId: string | null
+    stripePriceIdMonthly: string | null
+    stripePriceIdYearly: string | null
+    priceMonthly: Decimal | null
+    priceYearly: Decimal | null
     currency: string | null
-    billingInterval: $Enums.BillingInterval | null
     maxActiveSurveys: number | null
     maxResponses: number | null
+    maxCompletedResponses: number | null
     removeBranding: boolean | null
     allowApiAccess: boolean | null
     allowExport: boolean | null
+    allowPublicPages: boolean | null
     isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -21653,14 +21681,19 @@ export namespace Prisma {
   export type SubscriptionPlanCountAggregateOutputType = {
     id: number
     planType: number
-    price: number
+    stripeProductId: number
+    stripePriceIdMonthly: number
+    stripePriceIdYearly: number
+    priceMonthly: number
+    priceYearly: number
     currency: number
-    billingInterval: number
     maxActiveSurveys: number
     maxResponses: number
+    maxCompletedResponses: number
     removeBranding: number
     allowApiAccess: number
     allowExport: number
+    allowPublicPages: number
     isActive: number
     createdAt: number
     updatedAt: number
@@ -21669,28 +21702,37 @@ export namespace Prisma {
 
 
   export type SubscriptionPlanAvgAggregateInputType = {
-    price?: true
+    priceMonthly?: true
+    priceYearly?: true
     maxActiveSurveys?: true
     maxResponses?: true
+    maxCompletedResponses?: true
   }
 
   export type SubscriptionPlanSumAggregateInputType = {
-    price?: true
+    priceMonthly?: true
+    priceYearly?: true
     maxActiveSurveys?: true
     maxResponses?: true
+    maxCompletedResponses?: true
   }
 
   export type SubscriptionPlanMinAggregateInputType = {
     id?: true
     planType?: true
-    price?: true
+    stripeProductId?: true
+    stripePriceIdMonthly?: true
+    stripePriceIdYearly?: true
+    priceMonthly?: true
+    priceYearly?: true
     currency?: true
-    billingInterval?: true
     maxActiveSurveys?: true
     maxResponses?: true
+    maxCompletedResponses?: true
     removeBranding?: true
     allowApiAccess?: true
     allowExport?: true
+    allowPublicPages?: true
     isActive?: true
     createdAt?: true
     updatedAt?: true
@@ -21699,14 +21741,19 @@ export namespace Prisma {
   export type SubscriptionPlanMaxAggregateInputType = {
     id?: true
     planType?: true
-    price?: true
+    stripeProductId?: true
+    stripePriceIdMonthly?: true
+    stripePriceIdYearly?: true
+    priceMonthly?: true
+    priceYearly?: true
     currency?: true
-    billingInterval?: true
     maxActiveSurveys?: true
     maxResponses?: true
+    maxCompletedResponses?: true
     removeBranding?: true
     allowApiAccess?: true
     allowExport?: true
+    allowPublicPages?: true
     isActive?: true
     createdAt?: true
     updatedAt?: true
@@ -21715,14 +21762,19 @@ export namespace Prisma {
   export type SubscriptionPlanCountAggregateInputType = {
     id?: true
     planType?: true
-    price?: true
+    stripeProductId?: true
+    stripePriceIdMonthly?: true
+    stripePriceIdYearly?: true
+    priceMonthly?: true
+    priceYearly?: true
     currency?: true
-    billingInterval?: true
     maxActiveSurveys?: true
     maxResponses?: true
+    maxCompletedResponses?: true
     removeBranding?: true
     allowApiAccess?: true
     allowExport?: true
+    allowPublicPages?: true
     isActive?: true
     createdAt?: true
     updatedAt?: true
@@ -21818,14 +21870,19 @@ export namespace Prisma {
   export type SubscriptionPlanGroupByOutputType = {
     id: string
     planType: $Enums.PlanType
-    price: Decimal
+    stripeProductId: string | null
+    stripePriceIdMonthly: string | null
+    stripePriceIdYearly: string | null
+    priceMonthly: Decimal
+    priceYearly: Decimal
     currency: string
-    billingInterval: $Enums.BillingInterval
     maxActiveSurveys: number
     maxResponses: number
+    maxCompletedResponses: number
     removeBranding: boolean
     allowApiAccess: boolean
     allowExport: boolean
+    allowPublicPages: boolean
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -21853,14 +21910,19 @@ export namespace Prisma {
   export type SubscriptionPlanSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     planType?: boolean
-    price?: boolean
+    stripeProductId?: boolean
+    stripePriceIdMonthly?: boolean
+    stripePriceIdYearly?: boolean
+    priceMonthly?: boolean
+    priceYearly?: boolean
     currency?: boolean
-    billingInterval?: boolean
     maxActiveSurveys?: boolean
     maxResponses?: boolean
+    maxCompletedResponses?: boolean
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -21871,14 +21933,19 @@ export namespace Prisma {
   export type SubscriptionPlanSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     planType?: boolean
-    price?: boolean
+    stripeProductId?: boolean
+    stripePriceIdMonthly?: boolean
+    stripePriceIdYearly?: boolean
+    priceMonthly?: boolean
+    priceYearly?: boolean
     currency?: boolean
-    billingInterval?: boolean
     maxActiveSurveys?: boolean
     maxResponses?: boolean
+    maxCompletedResponses?: boolean
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -21887,14 +21954,19 @@ export namespace Prisma {
   export type SubscriptionPlanSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     planType?: boolean
-    price?: boolean
+    stripeProductId?: boolean
+    stripePriceIdMonthly?: boolean
+    stripePriceIdYearly?: boolean
+    priceMonthly?: boolean
+    priceYearly?: boolean
     currency?: boolean
-    billingInterval?: boolean
     maxActiveSurveys?: boolean
     maxResponses?: boolean
+    maxCompletedResponses?: boolean
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -21903,20 +21975,25 @@ export namespace Prisma {
   export type SubscriptionPlanSelectScalar = {
     id?: boolean
     planType?: boolean
-    price?: boolean
+    stripeProductId?: boolean
+    stripePriceIdMonthly?: boolean
+    stripePriceIdYearly?: boolean
+    priceMonthly?: boolean
+    priceYearly?: boolean
     currency?: boolean
-    billingInterval?: boolean
     maxActiveSurveys?: boolean
     maxResponses?: boolean
+    maxCompletedResponses?: boolean
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SubscriptionPlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "planType" | "price" | "currency" | "billingInterval" | "maxActiveSurveys" | "maxResponses" | "removeBranding" | "allowApiAccess" | "allowExport" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscriptionPlan"]>
+  export type SubscriptionPlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "planType" | "stripeProductId" | "stripePriceIdMonthly" | "stripePriceIdYearly" | "priceMonthly" | "priceYearly" | "currency" | "maxActiveSurveys" | "maxResponses" | "maxCompletedResponses" | "removeBranding" | "allowApiAccess" | "allowExport" | "allowPublicPages" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscriptionPlan"]>
   export type SubscriptionPlanInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     subscriptions?: boolean | SubscriptionPlan$subscriptionsArgs<ExtArgs>
     _count?: boolean | SubscriptionPlanCountOutputTypeDefaultArgs<ExtArgs>
@@ -21932,14 +22009,19 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       planType: $Enums.PlanType
-      price: Prisma.Decimal
+      stripeProductId: string | null
+      stripePriceIdMonthly: string | null
+      stripePriceIdYearly: string | null
+      priceMonthly: Prisma.Decimal
+      priceYearly: Prisma.Decimal
       currency: string
-      billingInterval: $Enums.BillingInterval
       maxActiveSurveys: number
       maxResponses: number
+      maxCompletedResponses: number
       removeBranding: boolean
       allowApiAccess: boolean
       allowExport: boolean
+      allowPublicPages: boolean
       isActive: boolean
       createdAt: Date
       updatedAt: Date
@@ -22369,14 +22451,19 @@ export namespace Prisma {
   interface SubscriptionPlanFieldRefs {
     readonly id: FieldRef<"SubscriptionPlan", 'String'>
     readonly planType: FieldRef<"SubscriptionPlan", 'PlanType'>
-    readonly price: FieldRef<"SubscriptionPlan", 'Decimal'>
+    readonly stripeProductId: FieldRef<"SubscriptionPlan", 'String'>
+    readonly stripePriceIdMonthly: FieldRef<"SubscriptionPlan", 'String'>
+    readonly stripePriceIdYearly: FieldRef<"SubscriptionPlan", 'String'>
+    readonly priceMonthly: FieldRef<"SubscriptionPlan", 'Decimal'>
+    readonly priceYearly: FieldRef<"SubscriptionPlan", 'Decimal'>
     readonly currency: FieldRef<"SubscriptionPlan", 'String'>
-    readonly billingInterval: FieldRef<"SubscriptionPlan", 'BillingInterval'>
     readonly maxActiveSurveys: FieldRef<"SubscriptionPlan", 'Int'>
     readonly maxResponses: FieldRef<"SubscriptionPlan", 'Int'>
+    readonly maxCompletedResponses: FieldRef<"SubscriptionPlan", 'Int'>
     readonly removeBranding: FieldRef<"SubscriptionPlan", 'Boolean'>
     readonly allowApiAccess: FieldRef<"SubscriptionPlan", 'Boolean'>
     readonly allowExport: FieldRef<"SubscriptionPlan", 'Boolean'>
+    readonly allowPublicPages: FieldRef<"SubscriptionPlan", 'Boolean'>
     readonly isActive: FieldRef<"SubscriptionPlan", 'Boolean'>
     readonly createdAt: FieldRef<"SubscriptionPlan", 'DateTime'>
     readonly updatedAt: FieldRef<"SubscriptionPlan", 'DateTime'>
@@ -22835,6 +22922,7 @@ export namespace Prisma {
     teamId: number | null
     planId: string | null
     status: $Enums.SubscriptionStatus | null
+    billingInterval: $Enums.BillingInterval | null
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
     currentPeriodStart: Date | null
@@ -22851,6 +22939,7 @@ export namespace Prisma {
     teamId: number | null
     planId: string | null
     status: $Enums.SubscriptionStatus | null
+    billingInterval: $Enums.BillingInterval | null
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
     currentPeriodStart: Date | null
@@ -22867,6 +22956,7 @@ export namespace Prisma {
     teamId: number
     planId: number
     status: number
+    billingInterval: number
     stripeCustomerId: number
     stripeSubscriptionId: number
     currentPeriodStart: number
@@ -22893,6 +22983,7 @@ export namespace Prisma {
     teamId?: true
     planId?: true
     status?: true
+    billingInterval?: true
     stripeCustomerId?: true
     stripeSubscriptionId?: true
     currentPeriodStart?: true
@@ -22909,6 +23000,7 @@ export namespace Prisma {
     teamId?: true
     planId?: true
     status?: true
+    billingInterval?: true
     stripeCustomerId?: true
     stripeSubscriptionId?: true
     currentPeriodStart?: true
@@ -22925,6 +23017,7 @@ export namespace Prisma {
     teamId?: true
     planId?: true
     status?: true
+    billingInterval?: true
     stripeCustomerId?: true
     stripeSubscriptionId?: true
     currentPeriodStart?: true
@@ -23028,6 +23121,7 @@ export namespace Prisma {
     teamId: number
     planId: string
     status: $Enums.SubscriptionStatus
+    billingInterval: $Enums.BillingInterval
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
     currentPeriodStart: Date | null
@@ -23063,6 +23157,7 @@ export namespace Prisma {
     teamId?: boolean
     planId?: boolean
     status?: boolean
+    billingInterval?: boolean
     stripeCustomerId?: boolean
     stripeSubscriptionId?: boolean
     currentPeriodStart?: boolean
@@ -23083,6 +23178,7 @@ export namespace Prisma {
     teamId?: boolean
     planId?: boolean
     status?: boolean
+    billingInterval?: boolean
     stripeCustomerId?: boolean
     stripeSubscriptionId?: boolean
     currentPeriodStart?: boolean
@@ -23101,6 +23197,7 @@ export namespace Prisma {
     teamId?: boolean
     planId?: boolean
     status?: boolean
+    billingInterval?: boolean
     stripeCustomerId?: boolean
     stripeSubscriptionId?: boolean
     currentPeriodStart?: boolean
@@ -23119,6 +23216,7 @@ export namespace Prisma {
     teamId?: boolean
     planId?: boolean
     status?: boolean
+    billingInterval?: boolean
     stripeCustomerId?: boolean
     stripeSubscriptionId?: boolean
     currentPeriodStart?: boolean
@@ -23130,7 +23228,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CustomerSubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "planId" | "status" | "stripeCustomerId" | "stripeSubscriptionId" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "trialStart" | "trialEnd" | "createdAt" | "updatedAt", ExtArgs["result"]["customerSubscription"]>
+  export type CustomerSubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "planId" | "status" | "billingInterval" | "stripeCustomerId" | "stripeSubscriptionId" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "trialStart" | "trialEnd" | "createdAt" | "updatedAt", ExtArgs["result"]["customerSubscription"]>
   export type CustomerSubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     team?: boolean | TeamDefaultArgs<ExtArgs>
     plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
@@ -23158,6 +23256,7 @@ export namespace Prisma {
       teamId: number
       planId: string
       status: $Enums.SubscriptionStatus
+      billingInterval: $Enums.BillingInterval
       stripeCustomerId: string | null
       stripeSubscriptionId: string | null
       currentPeriodStart: Date | null
@@ -23597,6 +23696,7 @@ export namespace Prisma {
     readonly teamId: FieldRef<"CustomerSubscription", 'Int'>
     readonly planId: FieldRef<"CustomerSubscription", 'String'>
     readonly status: FieldRef<"CustomerSubscription", 'SubscriptionStatus'>
+    readonly billingInterval: FieldRef<"CustomerSubscription", 'BillingInterval'>
     readonly stripeCustomerId: FieldRef<"CustomerSubscription", 'String'>
     readonly stripeSubscriptionId: FieldRef<"CustomerSubscription", 'String'>
     readonly currentPeriodStart: FieldRef<"CustomerSubscription", 'DateTime'>
@@ -25374,6 +25474,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     description: 'description',
+    context: 'context',
     status: 'status',
     allowMultipleResponses: 'allowMultipleResponses',
     createdAt: 'createdAt',
@@ -25507,14 +25608,19 @@ export namespace Prisma {
   export const SubscriptionPlanScalarFieldEnum: {
     id: 'id',
     planType: 'planType',
-    price: 'price',
+    stripeProductId: 'stripeProductId',
+    stripePriceIdMonthly: 'stripePriceIdMonthly',
+    stripePriceIdYearly: 'stripePriceIdYearly',
+    priceMonthly: 'priceMonthly',
+    priceYearly: 'priceYearly',
     currency: 'currency',
-    billingInterval: 'billingInterval',
     maxActiveSurveys: 'maxActiveSurveys',
     maxResponses: 'maxResponses',
+    maxCompletedResponses: 'maxCompletedResponses',
     removeBranding: 'removeBranding',
     allowApiAccess: 'allowApiAccess',
     allowExport: 'allowExport',
+    allowPublicPages: 'allowPublicPages',
     isActive: 'isActive',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -25528,6 +25634,7 @@ export namespace Prisma {
     teamId: 'teamId',
     planId: 'planId',
     status: 'status',
+    billingInterval: 'billingInterval',
     stripeCustomerId: 'stripeCustomerId',
     stripeSubscriptionId: 'stripeSubscriptionId',
     currentPeriodStart: 'currentPeriodStart',
@@ -25792,20 +25899,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'BillingInterval'
-   */
-  export type EnumBillingIntervalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BillingInterval'>
-    
-
-
-  /**
-   * Reference to a field of type 'BillingInterval[]'
-   */
-  export type ListEnumBillingIntervalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BillingInterval[]'>
-    
-
-
-  /**
    * Reference to a field of type 'SubscriptionStatus'
    */
   export type EnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus'>
@@ -25816,6 +25909,20 @@ export namespace Prisma {
    * Reference to a field of type 'SubscriptionStatus[]'
    */
   export type ListEnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BillingInterval'
+   */
+  export type EnumBillingIntervalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BillingInterval'>
+    
+
+
+  /**
+   * Reference to a field of type 'BillingInterval[]'
+   */
+  export type ListEnumBillingIntervalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BillingInterval[]'>
     
 
 
@@ -26538,6 +26645,7 @@ export namespace Prisma {
     id?: StringFilter<"Survey"> | string
     name?: StringFilter<"Survey"> | string
     description?: StringNullableFilter<"Survey"> | string | null
+    context?: StringNullableFilter<"Survey"> | string | null
     status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFilter<"Survey"> | boolean
     createdAt?: DateTimeFilter<"Survey"> | Date | string
@@ -26559,6 +26667,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
+    context?: SortOrderInput | SortOrder
     status?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
@@ -26583,6 +26692,7 @@ export namespace Prisma {
     NOT?: SurveyWhereInput | SurveyWhereInput[]
     name?: StringFilter<"Survey"> | string
     description?: StringNullableFilter<"Survey"> | string | null
+    context?: StringNullableFilter<"Survey"> | string | null
     status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFilter<"Survey"> | boolean
     createdAt?: DateTimeFilter<"Survey"> | Date | string
@@ -26604,6 +26714,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
+    context?: SortOrderInput | SortOrder
     status?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
@@ -26627,6 +26738,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Survey"> | string
     name?: StringWithAggregatesFilter<"Survey"> | string
     description?: StringNullableWithAggregatesFilter<"Survey"> | string | null
+    context?: StringNullableWithAggregatesFilter<"Survey"> | string | null
     status?: EnumSurveyStatusWithAggregatesFilter<"Survey"> | $Enums.SurveyStatus
     allowMultipleResponses?: BoolWithAggregatesFilter<"Survey"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Survey"> | Date | string
@@ -27293,14 +27405,19 @@ export namespace Prisma {
     NOT?: SubscriptionPlanWhereInput | SubscriptionPlanWhereInput[]
     id?: StringFilter<"SubscriptionPlan"> | string
     planType?: EnumPlanTypeFilter<"SubscriptionPlan"> | $Enums.PlanType
-    price?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    stripeProductId?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdMonthly?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdYearly?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    priceMonthly?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
     currency?: StringFilter<"SubscriptionPlan"> | string
-    billingInterval?: EnumBillingIntervalFilter<"SubscriptionPlan"> | $Enums.BillingInterval
     maxActiveSurveys?: IntFilter<"SubscriptionPlan"> | number
     maxResponses?: IntFilter<"SubscriptionPlan"> | number
+    maxCompletedResponses?: IntFilter<"SubscriptionPlan"> | number
     removeBranding?: BoolFilter<"SubscriptionPlan"> | boolean
     allowApiAccess?: BoolFilter<"SubscriptionPlan"> | boolean
     allowExport?: BoolFilter<"SubscriptionPlan"> | boolean
+    allowPublicPages?: BoolFilter<"SubscriptionPlan"> | boolean
     isActive?: BoolFilter<"SubscriptionPlan"> | boolean
     createdAt?: DateTimeFilter<"SubscriptionPlan"> | Date | string
     updatedAt?: DateTimeFilter<"SubscriptionPlan"> | Date | string
@@ -27310,14 +27427,19 @@ export namespace Prisma {
   export type SubscriptionPlanOrderByWithRelationInput = {
     id?: SortOrder
     planType?: SortOrder
-    price?: SortOrder
+    stripeProductId?: SortOrderInput | SortOrder
+    stripePriceIdMonthly?: SortOrderInput | SortOrder
+    stripePriceIdYearly?: SortOrderInput | SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
     currency?: SortOrder
-    billingInterval?: SortOrder
     maxActiveSurveys?: SortOrder
     maxResponses?: SortOrder
+    maxCompletedResponses?: SortOrder
     removeBranding?: SortOrder
     allowApiAccess?: SortOrder
     allowExport?: SortOrder
+    allowPublicPages?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -27330,14 +27452,19 @@ export namespace Prisma {
     OR?: SubscriptionPlanWhereInput[]
     NOT?: SubscriptionPlanWhereInput | SubscriptionPlanWhereInput[]
     planType?: EnumPlanTypeFilter<"SubscriptionPlan"> | $Enums.PlanType
-    price?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    stripeProductId?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdMonthly?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdYearly?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    priceMonthly?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
     currency?: StringFilter<"SubscriptionPlan"> | string
-    billingInterval?: EnumBillingIntervalFilter<"SubscriptionPlan"> | $Enums.BillingInterval
     maxActiveSurveys?: IntFilter<"SubscriptionPlan"> | number
     maxResponses?: IntFilter<"SubscriptionPlan"> | number
+    maxCompletedResponses?: IntFilter<"SubscriptionPlan"> | number
     removeBranding?: BoolFilter<"SubscriptionPlan"> | boolean
     allowApiAccess?: BoolFilter<"SubscriptionPlan"> | boolean
     allowExport?: BoolFilter<"SubscriptionPlan"> | boolean
+    allowPublicPages?: BoolFilter<"SubscriptionPlan"> | boolean
     isActive?: BoolFilter<"SubscriptionPlan"> | boolean
     createdAt?: DateTimeFilter<"SubscriptionPlan"> | Date | string
     updatedAt?: DateTimeFilter<"SubscriptionPlan"> | Date | string
@@ -27347,14 +27474,19 @@ export namespace Prisma {
   export type SubscriptionPlanOrderByWithAggregationInput = {
     id?: SortOrder
     planType?: SortOrder
-    price?: SortOrder
+    stripeProductId?: SortOrderInput | SortOrder
+    stripePriceIdMonthly?: SortOrderInput | SortOrder
+    stripePriceIdYearly?: SortOrderInput | SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
     currency?: SortOrder
-    billingInterval?: SortOrder
     maxActiveSurveys?: SortOrder
     maxResponses?: SortOrder
+    maxCompletedResponses?: SortOrder
     removeBranding?: SortOrder
     allowApiAccess?: SortOrder
     allowExport?: SortOrder
+    allowPublicPages?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -27371,14 +27503,19 @@ export namespace Prisma {
     NOT?: SubscriptionPlanScalarWhereWithAggregatesInput | SubscriptionPlanScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"SubscriptionPlan"> | string
     planType?: EnumPlanTypeWithAggregatesFilter<"SubscriptionPlan"> | $Enums.PlanType
-    price?: DecimalWithAggregatesFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    stripeProductId?: StringNullableWithAggregatesFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdMonthly?: StringNullableWithAggregatesFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdYearly?: StringNullableWithAggregatesFilter<"SubscriptionPlan"> | string | null
+    priceMonthly?: DecimalWithAggregatesFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalWithAggregatesFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
     currency?: StringWithAggregatesFilter<"SubscriptionPlan"> | string
-    billingInterval?: EnumBillingIntervalWithAggregatesFilter<"SubscriptionPlan"> | $Enums.BillingInterval
     maxActiveSurveys?: IntWithAggregatesFilter<"SubscriptionPlan"> | number
     maxResponses?: IntWithAggregatesFilter<"SubscriptionPlan"> | number
+    maxCompletedResponses?: IntWithAggregatesFilter<"SubscriptionPlan"> | number
     removeBranding?: BoolWithAggregatesFilter<"SubscriptionPlan"> | boolean
     allowApiAccess?: BoolWithAggregatesFilter<"SubscriptionPlan"> | boolean
     allowExport?: BoolWithAggregatesFilter<"SubscriptionPlan"> | boolean
+    allowPublicPages?: BoolWithAggregatesFilter<"SubscriptionPlan"> | boolean
     isActive?: BoolWithAggregatesFilter<"SubscriptionPlan"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"SubscriptionPlan"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SubscriptionPlan"> | Date | string
@@ -27392,6 +27529,7 @@ export namespace Prisma {
     teamId?: IntFilter<"CustomerSubscription"> | number
     planId?: StringFilter<"CustomerSubscription"> | string
     status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
     stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
     stripeSubscriptionId?: StringNullableFilter<"CustomerSubscription"> | string | null
     currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
@@ -27411,6 +27549,7 @@ export namespace Prisma {
     teamId?: SortOrder
     planId?: SortOrder
     status?: SortOrder
+    billingInterval?: SortOrder
     stripeCustomerId?: SortOrderInput | SortOrder
     stripeSubscriptionId?: SortOrderInput | SortOrder
     currentPeriodStart?: SortOrderInput | SortOrder
@@ -27435,6 +27574,7 @@ export namespace Prisma {
     NOT?: CustomerSubscriptionWhereInput | CustomerSubscriptionWhereInput[]
     planId?: StringFilter<"CustomerSubscription"> | string
     status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
     currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
     currentPeriodEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
     cancelAtPeriodEnd?: BoolFilter<"CustomerSubscription"> | boolean
@@ -27452,6 +27592,7 @@ export namespace Prisma {
     teamId?: SortOrder
     planId?: SortOrder
     status?: SortOrder
+    billingInterval?: SortOrder
     stripeCustomerId?: SortOrderInput | SortOrder
     stripeSubscriptionId?: SortOrderInput | SortOrder
     currentPeriodStart?: SortOrderInput | SortOrder
@@ -27476,6 +27617,7 @@ export namespace Prisma {
     teamId?: IntWithAggregatesFilter<"CustomerSubscription"> | number
     planId?: StringWithAggregatesFilter<"CustomerSubscription"> | string
     status?: EnumSubscriptionStatusWithAggregatesFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalWithAggregatesFilter<"CustomerSubscription"> | $Enums.BillingInterval
     stripeCustomerId?: StringNullableWithAggregatesFilter<"CustomerSubscription"> | string | null
     stripeSubscriptionId?: StringNullableWithAggregatesFilter<"CustomerSubscription"> | string | null
     currentPeriodStart?: DateTimeNullableWithAggregatesFilter<"CustomerSubscription"> | Date | string | null
@@ -28345,6 +28487,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -28364,6 +28507,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -28383,6 +28527,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28402,6 +28547,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28421,6 +28567,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -28436,6 +28583,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28449,6 +28597,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29160,14 +29309,19 @@ export namespace Prisma {
   export type SubscriptionPlanCreateInput = {
     id?: string
     planType: $Enums.PlanType
-    price: Decimal | DecimalJsLike | number | string
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
     currency?: string
-    billingInterval?: $Enums.BillingInterval
-    maxActiveSurveys: number
-    maxResponses: number
+    maxActiveSurveys?: number
+    maxResponses?: number
+    maxCompletedResponses?: number
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29177,14 +29331,19 @@ export namespace Prisma {
   export type SubscriptionPlanUncheckedCreateInput = {
     id?: string
     planType: $Enums.PlanType
-    price: Decimal | DecimalJsLike | number | string
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
     currency?: string
-    billingInterval?: $Enums.BillingInterval
-    maxActiveSurveys: number
-    maxResponses: number
+    maxActiveSurveys?: number
+    maxResponses?: number
+    maxCompletedResponses?: number
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29194,14 +29353,19 @@ export namespace Prisma {
   export type SubscriptionPlanUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currency?: StringFieldUpdateOperationsInput | string
-    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     maxActiveSurveys?: IntFieldUpdateOperationsInput | number
     maxResponses?: IntFieldUpdateOperationsInput | number
+    maxCompletedResponses?: IntFieldUpdateOperationsInput | number
     removeBranding?: BoolFieldUpdateOperationsInput | boolean
     allowApiAccess?: BoolFieldUpdateOperationsInput | boolean
     allowExport?: BoolFieldUpdateOperationsInput | boolean
+    allowPublicPages?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29211,14 +29375,19 @@ export namespace Prisma {
   export type SubscriptionPlanUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currency?: StringFieldUpdateOperationsInput | string
-    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     maxActiveSurveys?: IntFieldUpdateOperationsInput | number
     maxResponses?: IntFieldUpdateOperationsInput | number
+    maxCompletedResponses?: IntFieldUpdateOperationsInput | number
     removeBranding?: BoolFieldUpdateOperationsInput | boolean
     allowApiAccess?: BoolFieldUpdateOperationsInput | boolean
     allowExport?: BoolFieldUpdateOperationsInput | boolean
+    allowPublicPages?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29228,14 +29397,19 @@ export namespace Prisma {
   export type SubscriptionPlanCreateManyInput = {
     id?: string
     planType: $Enums.PlanType
-    price: Decimal | DecimalJsLike | number | string
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
     currency?: string
-    billingInterval?: $Enums.BillingInterval
-    maxActiveSurveys: number
-    maxResponses: number
+    maxActiveSurveys?: number
+    maxResponses?: number
+    maxCompletedResponses?: number
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29244,14 +29418,19 @@ export namespace Prisma {
   export type SubscriptionPlanUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currency?: StringFieldUpdateOperationsInput | string
-    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     maxActiveSurveys?: IntFieldUpdateOperationsInput | number
     maxResponses?: IntFieldUpdateOperationsInput | number
+    maxCompletedResponses?: IntFieldUpdateOperationsInput | number
     removeBranding?: BoolFieldUpdateOperationsInput | boolean
     allowApiAccess?: BoolFieldUpdateOperationsInput | boolean
     allowExport?: BoolFieldUpdateOperationsInput | boolean
+    allowPublicPages?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29260,14 +29439,19 @@ export namespace Prisma {
   export type SubscriptionPlanUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currency?: StringFieldUpdateOperationsInput | string
-    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     maxActiveSurveys?: IntFieldUpdateOperationsInput | number
     maxResponses?: IntFieldUpdateOperationsInput | number
+    maxCompletedResponses?: IntFieldUpdateOperationsInput | number
     removeBranding?: BoolFieldUpdateOperationsInput | boolean
     allowApiAccess?: BoolFieldUpdateOperationsInput | boolean
     allowExport?: BoolFieldUpdateOperationsInput | boolean
+    allowPublicPages?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29276,6 +29460,7 @@ export namespace Prisma {
   export type CustomerSubscriptionCreateInput = {
     id?: string
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -29295,6 +29480,7 @@ export namespace Prisma {
     teamId: number
     planId: string
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -29310,6 +29496,7 @@ export namespace Prisma {
   export type CustomerSubscriptionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29329,6 +29516,7 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
     planId?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29346,6 +29534,7 @@ export namespace Prisma {
     teamId: number
     planId: string
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -29360,6 +29549,7 @@ export namespace Prisma {
   export type CustomerSubscriptionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29376,6 +29566,7 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
     planId?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30354,6 +30545,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    context?: SortOrder
     status?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
@@ -30376,6 +30568,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    context?: SortOrder
     status?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
@@ -30391,6 +30584,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    context?: SortOrder
     status?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
@@ -30898,13 +31092,6 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
-  export type EnumBillingIntervalFilter<$PrismaModel = never> = {
-    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
-    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
-    not?: NestedEnumBillingIntervalFilter<$PrismaModel> | $Enums.BillingInterval
-  }
-
   export type CustomerSubscriptionListRelationFilter = {
     every?: CustomerSubscriptionWhereInput
     some?: CustomerSubscriptionWhereInput
@@ -30918,36 +31105,48 @@ export namespace Prisma {
   export type SubscriptionPlanCountOrderByAggregateInput = {
     id?: SortOrder
     planType?: SortOrder
-    price?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceIdMonthly?: SortOrder
+    stripePriceIdYearly?: SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
     currency?: SortOrder
-    billingInterval?: SortOrder
     maxActiveSurveys?: SortOrder
     maxResponses?: SortOrder
+    maxCompletedResponses?: SortOrder
     removeBranding?: SortOrder
     allowApiAccess?: SortOrder
     allowExport?: SortOrder
+    allowPublicPages?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type SubscriptionPlanAvgOrderByAggregateInput = {
-    price?: SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
     maxActiveSurveys?: SortOrder
     maxResponses?: SortOrder
+    maxCompletedResponses?: SortOrder
   }
 
   export type SubscriptionPlanMaxOrderByAggregateInput = {
     id?: SortOrder
     planType?: SortOrder
-    price?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceIdMonthly?: SortOrder
+    stripePriceIdYearly?: SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
     currency?: SortOrder
-    billingInterval?: SortOrder
     maxActiveSurveys?: SortOrder
     maxResponses?: SortOrder
+    maxCompletedResponses?: SortOrder
     removeBranding?: SortOrder
     allowApiAccess?: SortOrder
     allowExport?: SortOrder
+    allowPublicPages?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30956,23 +31155,30 @@ export namespace Prisma {
   export type SubscriptionPlanMinOrderByAggregateInput = {
     id?: SortOrder
     planType?: SortOrder
-    price?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceIdMonthly?: SortOrder
+    stripePriceIdYearly?: SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
     currency?: SortOrder
-    billingInterval?: SortOrder
     maxActiveSurveys?: SortOrder
     maxResponses?: SortOrder
+    maxCompletedResponses?: SortOrder
     removeBranding?: SortOrder
     allowApiAccess?: SortOrder
     allowExport?: SortOrder
+    allowPublicPages?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type SubscriptionPlanSumOrderByAggregateInput = {
-    price?: SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
     maxActiveSurveys?: SortOrder
     maxResponses?: SortOrder
+    maxCompletedResponses?: SortOrder
   }
 
   export type EnumPlanTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -31001,21 +31207,18 @@ export namespace Prisma {
     _max?: NestedDecimalFilter<$PrismaModel>
   }
 
-  export type EnumBillingIntervalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
-    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
-    not?: NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel> | $Enums.BillingInterval
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumBillingIntervalFilter<$PrismaModel>
-    _max?: NestedEnumBillingIntervalFilter<$PrismaModel>
-  }
-
   export type EnumSubscriptionStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
     in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
+  }
+
+  export type EnumBillingIntervalFilter<$PrismaModel = never> = {
+    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
+    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    not?: NestedEnumBillingIntervalFilter<$PrismaModel> | $Enums.BillingInterval
   }
 
   export type SubscriptionPlanScalarRelationFilter = {
@@ -31028,6 +31231,7 @@ export namespace Prisma {
     teamId?: SortOrder
     planId?: SortOrder
     status?: SortOrder
+    billingInterval?: SortOrder
     stripeCustomerId?: SortOrder
     stripeSubscriptionId?: SortOrder
     currentPeriodStart?: SortOrder
@@ -31048,6 +31252,7 @@ export namespace Prisma {
     teamId?: SortOrder
     planId?: SortOrder
     status?: SortOrder
+    billingInterval?: SortOrder
     stripeCustomerId?: SortOrder
     stripeSubscriptionId?: SortOrder
     currentPeriodStart?: SortOrder
@@ -31064,6 +31269,7 @@ export namespace Prisma {
     teamId?: SortOrder
     planId?: SortOrder
     status?: SortOrder
+    billingInterval?: SortOrder
     stripeCustomerId?: SortOrder
     stripeSubscriptionId?: SortOrder
     currentPeriodStart?: SortOrder
@@ -31087,6 +31293,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
     _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+  }
+
+  export type EnumBillingIntervalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
+    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    not?: NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel> | $Enums.BillingInterval
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBillingIntervalFilter<$PrismaModel>
+    _max?: NestedEnumBillingIntervalFilter<$PrismaModel>
   }
 
   export type EnumUsageMetricTypeFilter<$PrismaModel = never> = {
@@ -32811,10 +33027,6 @@ export namespace Prisma {
     divide?: Decimal | DecimalJsLike | number | string
   }
 
-  export type EnumBillingIntervalFieldUpdateOperationsInput = {
-    set?: $Enums.BillingInterval
-  }
-
   export type CustomerSubscriptionUpdateManyWithoutPlanNestedInput = {
     create?: XOR<CustomerSubscriptionCreateWithoutPlanInput, CustomerSubscriptionUncheckedCreateWithoutPlanInput> | CustomerSubscriptionCreateWithoutPlanInput[] | CustomerSubscriptionUncheckedCreateWithoutPlanInput[]
     connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutPlanInput | CustomerSubscriptionCreateOrConnectWithoutPlanInput[]
@@ -32871,6 +33083,10 @@ export namespace Prisma {
 
   export type EnumSubscriptionStatusFieldUpdateOperationsInput = {
     set?: $Enums.SubscriptionStatus
+  }
+
+  export type EnumBillingIntervalFieldUpdateOperationsInput = {
+    set?: $Enums.BillingInterval
   }
 
   export type TeamUpdateOneRequiredWithoutSubscriptionNestedInput = {
@@ -33350,13 +33566,6 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
-  export type NestedEnumBillingIntervalFilter<$PrismaModel = never> = {
-    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
-    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
-    not?: NestedEnumBillingIntervalFilter<$PrismaModel> | $Enums.BillingInterval
-  }
-
   export type NestedEnumPlanTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PlanType | EnumPlanTypeFieldRefInput<$PrismaModel>
     in?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
@@ -33383,21 +33592,18 @@ export namespace Prisma {
     _max?: NestedDecimalFilter<$PrismaModel>
   }
 
-  export type NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
-    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
-    not?: NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel> | $Enums.BillingInterval
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumBillingIntervalFilter<$PrismaModel>
-    _max?: NestedEnumBillingIntervalFilter<$PrismaModel>
-  }
-
   export type NestedEnumSubscriptionStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
     in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
+  }
+
+  export type NestedEnumBillingIntervalFilter<$PrismaModel = never> = {
+    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
+    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    not?: NestedEnumBillingIntervalFilter<$PrismaModel> | $Enums.BillingInterval
   }
 
   export type NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -33408,6 +33614,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
     _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
+    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    not?: NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel> | $Enums.BillingInterval
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBillingIntervalFilter<$PrismaModel>
+    _max?: NestedEnumBillingIntervalFilter<$PrismaModel>
   }
 
   export type NestedEnumUsageMetricTypeFilter<$PrismaModel = never> = {
@@ -34377,6 +34593,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -34395,6 +34612,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -34556,6 +34774,7 @@ export namespace Prisma {
   export type CustomerSubscriptionCreateWithoutTeamInput = {
     id?: string
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -34573,6 +34792,7 @@ export namespace Prisma {
     id?: string
     planId: string
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -34853,6 +35073,7 @@ export namespace Prisma {
     id?: StringFilter<"Survey"> | string
     name?: StringFilter<"Survey"> | string
     description?: StringNullableFilter<"Survey"> | string | null
+    context?: StringNullableFilter<"Survey"> | string | null
     status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFilter<"Survey"> | boolean
     createdAt?: DateTimeFilter<"Survey"> | Date | string
@@ -34946,6 +35167,7 @@ export namespace Prisma {
   export type CustomerSubscriptionUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34963,6 +35185,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     planId?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35306,6 +35529,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -35324,6 +35548,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -35886,6 +36111,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -35904,6 +36130,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -35996,6 +36223,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36014,6 +36242,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36170,6 +36399,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -36188,6 +36418,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -36354,6 +36585,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36372,6 +36604,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36838,6 +37071,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -36856,6 +37090,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -37006,6 +37241,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37024,6 +37260,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37122,6 +37359,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -37140,6 +37378,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -37341,6 +37580,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37359,6 +37599,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37925,6 +38166,7 @@ export namespace Prisma {
   export type CustomerSubscriptionCreateWithoutPlanInput = {
     id?: string
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -37942,6 +38184,7 @@ export namespace Prisma {
     id?: string
     teamId: number
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -37988,6 +38231,7 @@ export namespace Prisma {
     teamId?: IntFilter<"CustomerSubscription"> | number
     planId?: StringFilter<"CustomerSubscription"> | string
     status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
     stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
     stripeSubscriptionId?: StringNullableFilter<"CustomerSubscription"> | string | null
     currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
@@ -38060,14 +38304,19 @@ export namespace Prisma {
   export type SubscriptionPlanCreateWithoutSubscriptionsInput = {
     id?: string
     planType: $Enums.PlanType
-    price: Decimal | DecimalJsLike | number | string
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
     currency?: string
-    billingInterval?: $Enums.BillingInterval
-    maxActiveSurveys: number
-    maxResponses: number
+    maxActiveSurveys?: number
+    maxResponses?: number
+    maxCompletedResponses?: number
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38076,14 +38325,19 @@ export namespace Prisma {
   export type SubscriptionPlanUncheckedCreateWithoutSubscriptionsInput = {
     id?: string
     planType: $Enums.PlanType
-    price: Decimal | DecimalJsLike | number | string
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
     currency?: string
-    billingInterval?: $Enums.BillingInterval
-    maxActiveSurveys: number
-    maxResponses: number
+    maxActiveSurveys?: number
+    maxResponses?: number
+    maxCompletedResponses?: number
     removeBranding?: boolean
     allowApiAccess?: boolean
     allowExport?: boolean
+    allowPublicPages?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38208,14 +38462,19 @@ export namespace Prisma {
   export type SubscriptionPlanUpdateWithoutSubscriptionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currency?: StringFieldUpdateOperationsInput | string
-    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     maxActiveSurveys?: IntFieldUpdateOperationsInput | number
     maxResponses?: IntFieldUpdateOperationsInput | number
+    maxCompletedResponses?: IntFieldUpdateOperationsInput | number
     removeBranding?: BoolFieldUpdateOperationsInput | boolean
     allowApiAccess?: BoolFieldUpdateOperationsInput | boolean
     allowExport?: BoolFieldUpdateOperationsInput | boolean
+    allowPublicPages?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38224,14 +38483,19 @@ export namespace Prisma {
   export type SubscriptionPlanUncheckedUpdateWithoutSubscriptionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currency?: StringFieldUpdateOperationsInput | string
-    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     maxActiveSurveys?: IntFieldUpdateOperationsInput | number
     maxResponses?: IntFieldUpdateOperationsInput | number
+    maxCompletedResponses?: IntFieldUpdateOperationsInput | number
     removeBranding?: BoolFieldUpdateOperationsInput | boolean
     allowApiAccess?: BoolFieldUpdateOperationsInput | boolean
     allowExport?: BoolFieldUpdateOperationsInput | boolean
+    allowPublicPages?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38314,6 +38578,7 @@ export namespace Prisma {
   export type CustomerSubscriptionCreateWithoutUsageTrackingInput = {
     id?: string
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -38332,6 +38597,7 @@ export namespace Prisma {
     teamId: number
     planId: string
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -38426,6 +38692,7 @@ export namespace Prisma {
   export type CustomerSubscriptionUpdateWithoutUsageTrackingInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38444,6 +38711,7 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
     planId?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38763,6 +39031,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -39108,6 +39377,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39126,6 +39396,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39144,6 +39415,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39351,6 +39623,7 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    context?: string | null
     status?: $Enums.SurveyStatus
     allowMultipleResponses?: boolean
     createdAt?: Date | string
@@ -39365,6 +39638,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39383,6 +39657,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39401,6 +39676,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40025,6 +40301,7 @@ export namespace Prisma {
     id?: string
     teamId: number
     status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
     currentPeriodStart?: Date | string | null
@@ -40039,6 +40316,7 @@ export namespace Prisma {
   export type CustomerSubscriptionUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40056,6 +40334,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40072,6 +40351,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     teamId?: IntFieldUpdateOperationsInput | number
     status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

@@ -16,7 +16,8 @@
     "minify-minimal-widget-v2": "node scripts/minify-minimal-widget-v2.js",
     "build:widget": "npm run minify-widget",
     "build:minimal-widget": "npm run minify-minimal-widget",
-    "build:all-widgets": "npm run minify-widget && npm run minify-minimal-widget && npm run minify-minimal-widget-v2"
+    "build:all-widgets": "npm run minify-widget && npm run minify-minimal-widget && npm run minify-minimal-widget-v2",
+    "seed:subscription-plans": "npx tsx scripts/seed-subscription-plans.ts"
   },
   "dependencies": {
     "@codemirror/lang-css": "^6.3.1",

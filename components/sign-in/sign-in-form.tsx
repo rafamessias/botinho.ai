@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslations } from "next-intl"
 import { Link, useRouter } from "@/i18n/navigation"
-import { googleSignInAction, signInAction } from "@/components/server-actions/auth"
+import { googleSignInAction, signInAction, checkSubscriptionAndRedirect, createCheckoutSessionAction } from "@/components/server-actions/auth"
 import { useState } from "react"
 import { toast } from "sonner"
 import { ThemeSelector } from "@/components/theme-selector"
@@ -63,16 +63,37 @@ export function SignInForm({
                     router.push("/sign-up/check-email?email=" + data.email)
                 }
             } else if (result?.success === true) {
-                // Success - handle redirect properly
+                // Success - check subscription and redirect accordingly
+                const subscriptionCheck = await checkSubscriptionAndRedirect(data.email)
 
-                const redirectParam = searchParams.get("redirect")
-                if (redirectParam) {
-                    // If there's a redirect parameter, navigate to it
-                    // The middleware will handle locale conversion
-                    window.location.href = redirectParam
+                if (subscriptionCheck?.success && subscriptionCheck.needsCheckout && subscriptionCheck.planId) {
+                    // Create checkout session server-side
+                    const checkoutResult = await createCheckoutSessionAction(subscriptionCheck.planId, 'monthly')
+
+                    if (checkoutResult.success && checkoutResult.checkoutUrl) {
+                        // Redirect to Stripe checkout
+                        window.location.href = checkoutResult.checkoutUrl
+                    } else {
+                        console.error('Failed to create checkout session server-side')
+                        // Fallback to normal redirect
+                        const redirectParam = searchParams.get("redirect")
+                        if (redirectParam) {
+                            window.location.href = redirectParam
+                        } else {
+                            window.location.reload()
+                        }
+                    }
                 } else {
-                    // No redirect, just reload to trigger middleware locale check
-                    window.location.reload();
+                    // No checkout needed, handle normal redirect
+                    const redirectParam = searchParams.get("redirect")
+                    if (redirectParam) {
+                        // If there's a redirect parameter, navigate to it
+                        // The middleware will handle locale conversion
+                        window.location.href = redirectParam
+                    } else {
+                        // No redirect, just reload to trigger middleware locale check
+                        window.location.reload();
+                    }
                 }
             }
         } catch (error) {

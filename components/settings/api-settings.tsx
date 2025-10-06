@@ -69,28 +69,31 @@ function handleSurveyClose() {
   onclose="handleSurveyClose"
 ></opineeo-survey>`
 
-    const apiIntegrationCode = `// API Integration Example
-const submitSurveyResponse = async (surveyData) => {
+    const apiIntegrationCode = `// API Integration Example - Get Survey Results
+const getSurveyResults = async (surveyId) => {
   try {
-    const response = await fetch('https://app.opineeo.com/api/survey/v0/results', {
-      method: 'POST',
+    const response = await fetch(\`https://app.opineeo.com/api/survey/v0/results?surveyId=\${surveyId}\`, {
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': 'Bearer ${currentApiToken || 'YOUR_API_TOKEN'}'
-      },
-      body: JSON.stringify({
-        surveyId: "your-survey-id",
-      })
+      }
     });
     
     if (response.ok) {
       const result = await response.json();
-      console.log('Survey submitted successfully:', result);
+      console.log('Survey results:', result.data);
+      return result.data;
+    } else {
+      const error = await response.json();
+      console.error('Error fetching results:', error);
     }
   } catch (error) {
-    console.error('Error submitting survey:', error);
+    console.error('Error fetching survey results:', error);
   }
-};`
+};
+
+// Usage example
+getSurveyResults('your-survey-id');`
 
     const handleCopySurveyToken = () => {
         if (currentSurveyToken) {
@@ -322,48 +325,45 @@ const submitSurveyResponse = async (surveyData) => {
                                 <div className="space-y-2 sm:space-y-3">
                                     <Label className="text-sm font-medium">{t("codeSnippets.surveyWidget.title")}</Label>
                                     <p className="text-xs sm:text-sm text-muted-foreground">{t("codeSnippets.surveyWidget.description")}</p>
-                                    <div className="relative">
-                                        <div className="rounded-lg overflow-hidden border">
-                                            <SyntaxHighlighter
-                                                language="html"
-                                                style={theme === 'dark' ? oneDark : oneLight}
-                                                customStyle={{
-                                                    margin: 0,
-                                                    fontSize: '0.75rem',
-                                                    lineHeight: '1.5',
-                                                    padding: '0.75rem',
-                                                    background: 'transparent',
-                                                    color: 'inherit',
-                                                    borderRadius: '0.5rem'
-                                                }}
-                                                codeTagProps={{
-                                                    style: {
+                                    <Card className="py-2">
+                                        <CardContent className="p-0 ">
+                                            <div className="relative">
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => handleCopyCode(surveyWidgetCode)}
+                                                    className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm"
+                                                >
+                                                    <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                                                    <span className="text-xs sm:text-sm">{t("codeSnippets.surveyWidget.copyCode")}</span>
+                                                </Button>
+                                                <SyntaxHighlighter
+                                                    language="html"
+                                                    style={theme === 'dark' ? oneDark : oneLight}
+                                                    customStyle={{
+                                                        margin: 0,
                                                         fontSize: '0.75rem',
-                                                        fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
-                                                    }
-                                                }}
-                                                wrapLines={true}
-                                                wrapLongLines={true}
-                                                PreTag={({ children, ...props }) => (
-                                                    <pre className="text-xs sm:text-sm" {...props}>
-                                                        {children}
-                                                    </pre>
-                                                )}
-                                            >
-                                                {surveyWidgetCode}
-                                            </SyntaxHighlighter>
-                                        </div>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleCopyCode(surveyWidgetCode)}
-                                            className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm"
-                                        >
-                                            <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                                            <span className="text-xs sm:text-sm">{t("codeSnippets.surveyWidget.copyCode")}</span>
-                                        </Button>
-                                    </div>
+                                                        lineHeight: '1.5',
+                                                        padding: '0.75rem',
+                                                        background: 'transparent',
+                                                        color: 'inherit',
+                                                        borderRadius: '0.5rem',
+                                                        whiteSpace: 'pre',
+                                                    }}
+                                                    codeTagProps={{
+                                                        style: {
+                                                            fontSize: '0.75rem',
+                                                            fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+                                                            whiteSpace: 'pre'
+                                                        }
+                                                    }}
+                                                >
+                                                    {surveyWidgetCode}
+                                                </SyntaxHighlighter>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
                                 </div>
                             </div>
                         </TabsContent>
@@ -459,53 +459,52 @@ const submitSurveyResponse = async (surveyData) => {
                                 <div className="space-y-2 sm:space-y-3">
                                     <Label className="text-sm font-medium">{t("codeSnippets.apiIntegration.title")}</Label>
                                     <p className="text-xs sm:text-sm text-muted-foreground">{t("codeSnippets.apiIntegration.description")}</p>
-                                    <div className="relative">
-                                        <div className="rounded-lg overflow-hidden border">
-                                            <SyntaxHighlighter
-                                                language="javascript"
-                                                style={theme === 'dark' ? oneDark : oneLight}
-                                                customStyle={{
-                                                    margin: 0,
-                                                    fontSize: '0.75rem',
-                                                    lineHeight: '1.5',
-                                                    padding: '0.75rem',
-                                                    background: 'transparent',
-                                                    color: 'inherit',
-                                                    borderRadius: '0.5rem'
-                                                }}
-                                                codeTagProps={{
-                                                    style: {
+                                    <Card className="py-2 relative">
+                                        <CardContent className="relative p-0">
+                                            <div className=" overflow-x-auto">
+                                                <SyntaxHighlighter
+                                                    language="javascript"
+                                                    style={theme === 'dark' ? oneDark : oneLight}
+                                                    customStyle={{
+                                                        margin: 0,
                                                         fontSize: '0.75rem',
-                                                        fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
-                                                    }
-                                                }}
-                                                wrapLines={true}
-                                                wrapLongLines={true}
-                                                PreTag={({ children, ...props }) => (
-                                                    <pre className="text-xs sm:text-sm" {...props}>
-                                                        {children}
-                                                    </pre>
-                                                )}
+                                                        lineHeight: '1.5',
+                                                        padding: '0.75rem',
+                                                        background: 'transparent',
+                                                        color: 'inherit',
+                                                        borderRadius: '0.5rem',
+                                                        whiteSpace: 'pre',
+                                                    }}
+                                                    codeTagProps={{
+                                                        style: {
+                                                            fontSize: '0.75rem',
+                                                            fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+                                                            whiteSpace: 'pre'
+                                                        }
+                                                    }}
+                                                    wrapLongLines={true}
+                                                >
+                                                    {apiIntegrationCode}
+                                                </SyntaxHighlighter>
+                                            </div>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleCopyCode(apiIntegrationCode)}
+                                                className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm"
                                             >
-                                                {apiIntegrationCode}
-                                            </SyntaxHighlighter>
-                                        </div>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleCopyCode(apiIntegrationCode)}
-                                            className="absolute top-2 right-2 px-2 sm:px-3 bg-background/80 backdrop-blur-sm"
-                                        >
-                                            <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                                            <span className="text-xs sm:text-sm">{t("codeSnippets.apiIntegration.copyCode")}</span>
-                                        </Button>
-                                    </div>
+                                                <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                                                <span className="text-xs sm:text-sm">{t("codeSnippets.apiIntegration.copyCode")}</span>
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
                                 </div>
                             </div>
                         </TabsContent>
                     </Tabs>
-                </CardContent>)}
+                </CardContent>)
+            }
 
             {/* Regenerate Token Confirmation Modal */}
             <Dialog open={showRegenerateModal} onOpenChange={setShowRegenerateModal}>

@@ -46,7 +46,10 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        return NextResponse.json({ sessionId: checkoutSession.id });
+        return NextResponse.json({
+            sessionId: checkoutSession.id,
+            url: checkoutSession.url
+        });
     } catch (error) {
         console.error('Error creating checkout session:', error);
         return NextResponse.json(

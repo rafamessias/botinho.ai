@@ -175,6 +175,7 @@ model Survey {
   id                     String                  @id @default(cuid())
   name                   String
   description            String?
+  context                String?
   status                 SurveyStatus            @default(draft)
   allowMultipleResponses Boolean                 @default(true)
   createdAt              DateTime                @default(now())
@@ -370,24 +371,28 @@ model QuestionResponse {
 }
 
 model SubscriptionPlan {
-  id               String                 @id @default(cuid())
-  planType         PlanType
-  price            Decimal                @db.Decimal(10, 2)
-  currency         String                 @default("USD")
-  billingInterval  BillingInterval        @default(monthly)
-  maxActiveSurveys Int
-  maxResponses     Int
-  removeBranding   Boolean                @default(false)
-  allowApiAccess   Boolean                @default(false)
-  allowExport      Boolean                @default(false)
-  isActive         Boolean                @default(true)
-  createdAt        DateTime               @default(now())
-  updatedAt        DateTime               @updatedAt
-  subscriptions    CustomerSubscription[]
+  id                    String                 @id @default(cuid())
+  planType              PlanType
+  stripeProductId       String?
+  stripePriceIdMonthly  String?
+  stripePriceIdYearly   String?
+  priceMonthly          Decimal                @default(0) @db.Decimal(10, 2)
+  priceYearly           Decimal                @default(0) @db.Decimal(10, 2)
+  currency              String                 @default("USD")
+  maxActiveSurveys      Int                    @default(0)
+  maxResponses          Int                    @default(0)
+  maxCompletedResponses Int                    @default(0)
+  removeBranding        Boolean                @default(false)
+  allowApiAccess        Boolean                @default(false)
+  allowExport           Boolean                @default(false)
+  allowPublicPages      Boolean                @default(false)
+  isActive              Boolean                @default(true)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  subscriptions         CustomerSubscription[]
 
   @@index([planType])
   @@index([isActive])
-  @@index([billingInterval])
   @@map("subscription_plans")
 }
 
@@ -396,6 +401,7 @@ model CustomerSubscription {
   teamId               Int                @unique
   planId               String
   status               SubscriptionStatus @default(active)
+  billingInterval      BillingInterval    @default(monthly)
   stripeCustomerId     String?            @unique
   stripeSubscriptionId String?            @unique
   currentPeriodStart   DateTime?
@@ -415,6 +421,7 @@ model CustomerSubscription {
   @@index([stripeCustomerId])
   @@index([stripeSubscriptionId])
   @@index([currentPeriodEnd])
+  @@index([billingInterval])
   @@map("customer_subscriptions")
 }
 
@@ -505,6 +512,7 @@ enum BillingInterval {
 }
 
 enum SubscriptionStatus {
+  pending
   active
   canceled
   past_due
@@ -516,5 +524,5 @@ enum SubscriptionStatus {
 
 enum UsageMetricType {
   ACTIVE_SURVEYS
-  TOTAL_RESPONSES
+  TOTAL_COMPLETED_RESPONSES
 }

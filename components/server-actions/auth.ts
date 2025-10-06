@@ -11,7 +11,8 @@ import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
 import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
-import { Provider, Theme } from "@/lib/generated/prisma"
+import { Provider, Theme, SubscriptionStatus } from "@/lib/generated/prisma"
+import { createCustomerSubscription } from "@/lib/customer-subscription"
 
 // Types for form data
 export interface SignInFormData {
@@ -117,9 +118,66 @@ export const signInAction = async (formData: SignInFormData) => {
 }
 
 /**
+ * Server action to check user subscription and redirect to Stripe checkout if needed
+ */
+export const checkSubscriptionAndRedirect = async (userEmail: string) => {
+    try {
+        // Get user with their team and subscription
+        const user = await prisma.user.findUnique({
+            where: { email: userEmail },
+            include: {
+                team: {
+                    include: {
+                        subscription: {
+                            include: {
+                                plan: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        if (!user || !user.team) {
+            return { success: false, error: "User or team not found" }
+        }
+
+        const subscription = user.team.subscription
+
+        // If no subscription or subscription is pending, redirect to Stripe checkout
+        if (!subscription || subscription.status === 'pending') {
+            // Find the plan to redirect to
+            let planToRedirect = 'free'
+
+            if (subscription && subscription.plan) {
+                planToRedirect = subscription.plan.planType.toLowerCase()
+            }
+
+            // Return redirect information
+            return {
+                success: true,
+                needsCheckout: true,
+                planId: planToRedirect,
+                redirectUrl: `/api/stripe/create-checkout-session`
+            }
+        }
+
+        // If subscription is active, no redirect needed
+        return {
+            success: true,
+            needsCheckout: false
+        }
+
+    } catch (error) {
+        console.error("Error checking subscription:", error)
+        return { success: false, error: "Failed to check subscription" }
+    }
+}
+
+/**
  * Server action for user sign-up (registration)
  */
-export const signUpAction = async (formData: SignUpFormData) => {
+export const signUpAction = async (formData: SignUpFormData, planParam?: string | null) => {
     const t = await getTranslations("AuthErrors")
 
     try {
@@ -219,6 +277,66 @@ export const signUpAction = async (formData: SignUpFormData) => {
         })
 
         const newUser = result.user
+        const team = result.team
+
+        console.log("planParam", planParam)
+        // Create CustomerSubscription if plan parameter is provided
+        if (planParam && planParam !== 'free') {
+            try {
+                // Find the subscription plan by planType
+                const subscriptionPlan = await prisma.subscriptionPlan.findFirst({
+                    where: {
+                        planType: planParam.toUpperCase() as any,
+                        isActive: true
+                    }
+                })
+                console.log("subscriptionPlan", subscriptionPlan)
+                if (subscriptionPlan) {
+                    // Create customer subscription with pending status for paid plans
+                    const subscriptionResult = await createCustomerSubscription({
+                        teamId: team.id,
+                        planId: subscriptionPlan.id,
+                        status: SubscriptionStatus.pending,
+                        cancelAtPeriodEnd: false
+                    })
+
+                    if (!subscriptionResult.success) {
+                        console.error("Failed to create customer subscription:", subscriptionResult.error)
+                    }
+                } else {
+                    console.warn(`Subscription plan not found for plan type: ${planParam}`)
+                }
+            } catch (subscriptionError) {
+                console.error("Error creating customer subscription:", subscriptionError)
+                // Don't fail the sign-up if subscription creation fails
+            }
+        } else if (planParam === 'free' || !planParam) {
+            // Create free subscription with active status
+            try {
+                const freePlan = await prisma.subscriptionPlan.findFirst({
+                    where: {
+                        planType: 'FREE',
+                        isActive: true
+                    }
+                })
+
+                if (freePlan) {
+                    const subscriptionResult = await createCustomerSubscription({
+                        teamId: team.id,
+                        planId: freePlan.id,
+                        status: SubscriptionStatus.active,
+                        cancelAtPeriodEnd: false
+                    })
+
+                    if (!subscriptionResult.success) {
+                        console.error("Failed to create free subscription:", subscriptionResult.error)
+                    }
+                }
+            } catch (subscriptionError) {
+                console.error("Error creating free subscription:", subscriptionError)
+                // Don't fail the sign-up if subscription creation fails
+            }
+        }
 
         // Send confirmation email or OTP based on environment
         const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/sign-up/otp?otp=${confirmationToken}&email=${validatedData.email}&phone=${validatedData.phone}`
@@ -650,7 +768,7 @@ export const confirmPasswordResetAction = async (token: string, password: string
 }
 
 /**
- * Server action to confirm OTP for account verification
+ * Server action to confirm OTP for account verification and auto sign-in
  */
 export const confirmOTPAction = async (otp: string, email?: string, phone?: string) => {
     const t = await getTranslations("AuthErrors")
@@ -664,30 +782,65 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
         const otpSchema = z.string().regex(/^\d{6}$/, t("otpInvalidFormat"))
         const validatedOTP = otpSchema.parse(otp)
 
-        // Find user with the OTP token
-        const user = await prisma.user.findFirst({
-            where: {
-                confirmationToken: validatedOTP,
-                confirmed: false,
-                ...(email ? { email } : {}),
-                ...(phone ? { phone } : {})
-            }
-        })
 
-        if (!user) {
-            return { success: false, error: t("invalidOTP") }
+
+        // Auto sign-in the user using NextAuth's signIn function
+        try {
+            const signInResult = await signIn("otp", {
+                email: email || "",
+                phone: phone || "",
+                otp: validatedOTP,
+                redirect: false,
+            })
+
+            if (signInResult?.error || !signInResult) {
+                // If sign-in fails, return success for OTP confirmation but indicate sign-in failed
+                return {
+                    success: false,
+                    message: t("otpInvalidFormat"),
+                }
+            }
+
+            // Check if user needs subscription after successful sign-in
+            const subscriptionCheck = await checkSubscriptionAndRedirect(email || "")
+
+            if (subscriptionCheck?.success && subscriptionCheck.needsCheckout && subscriptionCheck.planId) {
+                // Create checkout session server-side
+                const checkoutResult = await createCheckoutSessionAction(subscriptionCheck.planId, 'monthly')
+
+                if (checkoutResult.success) {
+                    return {
+                        success: true,
+                        message: t("accountConfirmed"),
+                        needsCheckout: true,
+                        checkoutUrl: checkoutResult.checkoutUrl
+                    }
+                } else {
+                    // Checkout failed, but sign-in was successful
+                    return {
+                        success: true,
+                        message: t("accountConfirmed"),
+                        needsCheckout: false
+                    }
+                }
+            }
+
+            // Both OTP confirmation and sign-in successful, no checkout needed
+            return {
+                success: true,
+                message: t("accountConfirmed"),
+                needsCheckout: false
+            }
+
+        } catch (signInError) {
+            console.error("Sign-in after OTP confirmation failed:", signInError)
+            // Still return success for OTP confirmation, but user needs to sign in manually
+            return {
+                success: false,
+                message: t("otpInvalidFormat"),
+
+            }
         }
-
-        // Update user to confirmed and clear OTP token
-        await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                confirmed: true,
-                confirmationToken: null,
-            }
-        })
-
-        return { success: true, message: t("accountConfirmed") }
 
     } catch (error) {
         console.error("OTP confirmation error:", error)
@@ -697,6 +850,39 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
         }
 
         return { success: false, error: t("unexpectedError") }
+    }
+}
+
+/**
+ * Server action to create Stripe checkout session
+ */
+export const createCheckoutSessionAction = async (planId: string, billingCycle: string = 'monthly') => {
+    try {
+        const response = await fetch(`${process.env.NEXTAUTH_URL}/api/stripe/create-checkout-session`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                planId,
+                billingCycle
+            }),
+        })
+
+        if (!response.ok) {
+            throw new Error('Failed to create checkout session')
+        }
+
+        const data = await response.json()
+
+        if (!data.url) {
+            throw new Error('No checkout URL received')
+        }
+
+        return { success: true, checkoutUrl: data.url }
+    } catch (error) {
+        console.error('Error creating checkout session:', error)
+        return { success: false, error: 'Failed to create checkout session' }
     }
 }
 

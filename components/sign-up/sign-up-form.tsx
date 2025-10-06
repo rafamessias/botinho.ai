@@ -65,7 +65,10 @@ export function SignUpForm({
 
     const onSubmit = async (data: SignUpFormData) => {
         try {
-            const result = await signUpAction(data)
+            // Get plan parameter from URL
+            const planParam = searchParams.get("plan")
+            console.log("planParam", planParam)
+            const result = await signUpAction(data, planParam)
 
             if (result?.success === false) {
                 toast.error(result.error)
@@ -94,8 +97,15 @@ export function SignUpForm({
     const handleGoogleSignUp = async () => {
         try {
             setIsGoogleLoading(true)
-            // Get redirect parameter from URL
+            // Get redirect parameter and plan parameter from URL
             const redirectParam = searchParams.get("redirect")
+            const planParam = searchParams.get("plan")
+
+            // Store plan parameter in cookies for Google OAuth flow
+            if (planParam) {
+                document.cookie = `signup_plan=${planParam}; path=/; max-age=300` // 5 minutes
+            }
+
             await googleSignInAction(redirectParam || undefined)
             // NextAuth will handle the redirect after successful Google sign-up
         } catch (error) {
