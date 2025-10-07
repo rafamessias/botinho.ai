@@ -29,7 +29,6 @@ export default async function TeamPage() {
     // Get teams data server-side
     const teamsResult = await getUserTeamsAction()
     const teams = teamsResult.success && teamsResult.teams ? teamsResult.teams : []
-
     // Get current user ID from session
     const currentUserId = typeof session.user.id === 'number' ? session.user.id : 0
 

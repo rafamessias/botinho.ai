@@ -5,30 +5,17 @@ import { useSession } from "next-auth/react"
 import { getCurrentUserAction } from "@/components/server-actions/auth"
 import { useTheme } from "next-themes"
 import { Theme } from "@/lib/generated/prisma"
-import { getUserTeamsAction } from "./server-actions/team"
+import { getUserTeamsLightAction } from "./server-actions/team"
 
 export interface UserTeam {
     id: number
     name: string
-    description?: string | null
-    totalSurveys: number
-    totalActiveSurveys: number
-    totalResponses: number
-    ResponseRate: number
     members?: Array<{
         id: number
         isAdmin: boolean
         canPost: boolean
         canApprove: boolean
-        isOwner: boolean
-        teamMemberStatus: string
-        user: {
-            id: number
-            firstName: string
-            lastName: string
-            email: string
-            avatarUrl?: string | null
-        }
+        isOwner: boolean,
     }>
 }
 
@@ -100,7 +87,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
             if (result.success && result.user) {
                 if (teamsUpdate) {
-                    const resultTeams = await getUserTeamsAction(true)
+                    const resultTeams = await getUserTeamsLightAction(result.user.id)
                     if (resultTeams && resultTeams?.success && resultTeams?.teams) {
                         setUser({ ...result.user, teams: resultTeams.teams as UserTeam[] })
                     } else {

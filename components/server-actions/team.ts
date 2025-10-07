@@ -898,3 +898,41 @@ export const getTeamTokenAction = async (teamId: number) => {
         return { success: false, error: "Failed to get team token" }
     }
 }
+
+export const getUserTeamsLightAction = async (userId: number) => {
+    try {
+        // Fetch only essential team data for navigation
+        const teams = await prisma.team.findMany({
+            where: {
+                members: {
+                    some: {
+                        userId: userId,
+                        teamMemberStatus: "accepted"
+                    }
+                }
+            },
+            select: {
+                id: true,
+                name: true,
+                members: {
+                    where: {
+                        userId: userId,
+                        teamMemberStatus: "accepted"
+                    },
+                    select: {
+                        id: true,
+                        isAdmin: true,
+                        canPost: true,
+                        canApprove: true,
+                        isOwner: true,
+                    }
+                }
+            }
+        })
+
+        return { success: true, teams }
+    } catch (error) {
+        console.error("Get user teams light error:", error)
+        return { success: false, error: "Failed to get teams" }
+    }
+}

@@ -67,7 +67,7 @@ interface TeamDashboardProps {
 export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProps) => {
     const t = useTranslations("Team")
     const tCommon = useTranslations("Common")
-    const { user, refreshUser, hasPermission } = useUser()
+    const { user, refreshUser } = useUser()
     const [teams, setTeams] = useState<Team[]>(initialTeams)
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(initialTeams.length > 0 ? initialTeams[0] : null)
 
@@ -78,41 +78,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
     const [showInviteForm, setShowInviteForm] = useState(false)
     const [open, setOpen] = useState(false)
     const [pendingNewTeamId, setPendingNewTeamId] = useState<number | null>(null)
-    const [isDeletingTeam, setIsDeletingTeam] = useState(false)
 
-    // Update teams from user context when user data changes
-    useEffect(() => {
-        if (user?.teams) {
-            const newTeams = user.teams as Team[]
-            setTeams(newTeams)
-
-            // If we have a pending new team ID, select that team
-            if (pendingNewTeamId) {
-                const newTeam = newTeams.find(t => t.id === pendingNewTeamId)
-                if (newTeam) {
-                    setSelectedTeam(newTeam)
-                    setPendingNewTeamId(null)
-                    return
-                }
-            }
-
-            // Update selected team if it still exists in the new data
-            if (selectedTeam) {
-                const updatedTeam = newTeams.find(t => t.id === selectedTeam.id)
-                if (updatedTeam) {
-                    setSelectedTeam(updatedTeam)
-                } else if (newTeams.length > 0) {
-                    // If selected team no longer exists, select the first available team
-                    setSelectedTeam(newTeams[0])
-                }
-            } else if (newTeams.length > 0) {
-                // If no team is selected, select the first one
-                setSelectedTeam(newTeams[0])
-            }
-        }
-    }, [user?.teams, pendingNewTeamId])
-
-    const userHasPermission = hasPermission()
 
     const handleTeamUpdate = async (newTeamId?: number) => {
         try {
