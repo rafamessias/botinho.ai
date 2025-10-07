@@ -936,3 +936,34 @@ export const getUserTeamsLightAction = async (userId: number) => {
         return { success: false, error: "Failed to get teams" }
     }
 }
+
+export const getTeamById = async (teamId: number) => {
+    try {
+
+        if (!teamId) {
+            return { success: false, error: "Team id is required" }
+        }
+
+        const team = await prisma.team.findUnique({
+            where: { id: teamId },
+            select: {
+                id: true,
+                name: true,
+                totalSurveys: true,
+                totalActiveSurveys: true,
+                totalResponses: true,
+                ResponseRate: true,
+            }
+        })
+
+        if (!team) {
+            return { success: false, error: "Team not found" }
+        }
+
+        return { success: true, team }
+
+    } catch (error) {
+        console.error("Get team by id error:", error)
+        return { success: false, error: "Failed to get team" }
+    }
+}

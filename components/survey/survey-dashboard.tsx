@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/card"
 import { SurveyTable } from "@/components/survey/survey-table"
 import { type PaginatedSurveysResult } from "@/components/server-actions/survey"
-import { useUser, UserTeam } from "../user-provider"
-
+import { useUser } from "@/components/user-provider"
+import { getTeamById } from "../server-actions/team"
 
 interface SurveyStats {
     totalSurveys: number
@@ -21,12 +21,20 @@ interface SurveyStats {
     responseRate: number
 }
 
-export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurveysResult }) => {
-    const t = useTranslations("Survey")
-    const { user } = useUser()
-    const [isLoading, setIsLoading] = useState(false)
+interface CurrentTeam {
+    id: number
+    name: string
+    totalSurveys: number
+    totalActiveSurveys: number
+    totalResponses: number
+    ResponseRate: number
+}
 
-    const currentTeam = user?.teams?.find((team: UserTeam) => team.id === user?.defaultTeamId)
+export const SurveyDashboard = ({ initialData, currentTeam }: { initialData?: PaginatedSurveysResult, currentTeam?: CurrentTeam }) => {
+    const t = useTranslations("Survey")
+    const [isLoading, setIsLoading] = useState(false)
+    const { user } = useUser()
+
 
     const [surveyStats, setSurveyStats] = useState<SurveyStats>({
         totalSurveys: currentTeam?.totalSurveys || 0,
@@ -36,13 +44,21 @@ export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurvey
     })
 
     useEffect(() => {
-        setSurveyStats({
-            totalSurveys: currentTeam?.totalSurveys || 0,
-            activeSurveys: currentTeam?.totalActiveSurveys || 0,
-            totalResponses: currentTeam?.totalResponses || 0,
-            responseRate: currentTeam?.ResponseRate || 0,
-        })
-    }, [currentTeam])
+
+        async function getCurrentTeam() {
+            const currentTeam = await getTeamById(user?.defaultTeamId || 0)
+            if (currentTeam.success) {
+                setSurveyStats({
+                    totalSurveys: currentTeam.team?.totalSurveys || 0,
+                    activeSurveys: currentTeam.team?.totalActiveSurveys || 0,
+                    totalResponses: currentTeam.team?.totalResponses || 0,
+                    responseRate: currentTeam.team?.ResponseRate || 0,
+                })
+            }
+
+        }
+        if (user?.defaultTeamId && user?.defaultTeamId !== currentTeam?.id) getCurrentTeam()
+    }, [user?.defaultTeamId])
 
 
     if (isLoading) {
@@ -139,7 +155,7 @@ export const SurveyDashboard = ({ initialData }: { initialData?: PaginatedSurvey
             </div>
 
             {/* Survey Table */}
-            <SurveyTable initialData={initialData} />
+            <SurveyTable initialData={initialData} teamId={currentTeam?.id || 0} />
         </div>
     )
 }

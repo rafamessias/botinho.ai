@@ -33,13 +33,15 @@ import { useRouter } from "next/navigation"
 import { logoutAction } from "@/components/server-actions/auth"
 import { useState } from "react"
 import { useUser } from "@/components/user-provider"
+import { useSession } from "next-auth/react"
 
 export function NavUser() {
   const locale = useLocale()
   const t = useTranslations("NavUser")
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const { user, loading } = useUser()
+  const { user, loading, setUser } = useUser()
+  const { update } = useSession()
 
   // Show loading state if user data is still loading
   if (loading || !user) {
@@ -84,6 +86,7 @@ export function NavUser() {
     try {
       setIsLoggingOut(true)
       await logoutAction(`/${locale}/sign-in`)
+      await update()
       // NextAuth will handle the redirect after logout
     } catch (error) {
       // NextAuth throws NEXT_REDIRECT for logout redirects - this is expected

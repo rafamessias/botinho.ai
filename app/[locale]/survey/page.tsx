@@ -12,6 +12,7 @@ import { auth } from "@/app/auth"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { getSurveysWithPagination } from "@/components/server-actions/survey"
+import { getTeamById } from "@/components/server-actions/team"
 
 export default async function SurveyPage() {
     const t = await getTranslations("Survey")
@@ -22,6 +23,9 @@ export default async function SurveyPage() {
     // Fetch paginated surveys data on the server
     const surveysResult = await getSurveysWithPagination({ page: 1, pageSize: 10 })
     const paginatedData = surveysResult.success ? surveysResult.data : undefined
+
+    const currentTeam = await getTeamById(defaultTeam || 0)
+    const currentTeamData = currentTeam.success ? currentTeam.team : undefined
 
     return (
         <SidebarProvider
@@ -39,7 +43,7 @@ export default async function SurveyPage() {
                     <div className="@container/main flex flex-1 flex-col gap-2">
                         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 max-w-6xl w-full mx-auto">
                             {defaultTeam ? (
-                                <SurveyDashboard initialData={paginatedData} />
+                                <SurveyDashboard initialData={paginatedData} currentTeam={currentTeamData} />
                             ) : (
                                 <div className="flex flex-col items-center justify-center">
                                     <Card className="flex flex-col max-w-md items-center justify-center py-12 px-6 text-center border-none shadow-none bg-transparent">

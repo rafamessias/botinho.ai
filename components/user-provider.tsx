@@ -6,6 +6,7 @@ import { getCurrentUserAction } from "@/components/server-actions/auth"
 import { useTheme } from "next-themes"
 import { Theme } from "@/lib/generated/prisma"
 import { getUserTeamsLightAction } from "./server-actions/team"
+import LoadingComp from "./loading-comp"
 
 export interface UserTeam {
     id: number
@@ -45,6 +46,7 @@ export interface User {
 // Context type definition
 interface UserContextType {
     user: User | null
+    setUser: (user: User | null) => void
     loading: boolean
     error: string | null
     refreshUser: (teamsUpdate: boolean) => Promise<void>
@@ -119,6 +121,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
     // Fetch user data when session changes - simplified approach
     useEffect(() => {
+        console.log("UserProvider: status", status)
+        console.log("UserProvider: session?.user?.email", session?.user?.email)
         if (status === "loading") {
             return // Still loading session
         }
@@ -131,10 +135,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         }
 
         // Session is authenticated, fetch user data
-        if (status === "authenticated" && session?.user?.email && !user) {
+        // Check if session email changed to handle user switching
+        if (status === "authenticated") {
             fetchUser()
         }
-    }, [status]) // Only depend on status changes
+    }, [status, session?.user?.email]) // Depend on status AND email changes
 
     // Access control helpers
     const isAuthenticated = !!session && !!user
@@ -158,6 +163,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     // Context value
     const contextValue: UserContextType = {
         user,
+        setUser,
         loading,
         error,
         refreshUser,
@@ -169,7 +175,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
     return (
         <UserContext.Provider value={contextValue}>
-            {children}
+            {loading ? <LoadingComp isLoadingProp={loading} /> : children}
         </UserContext.Provider>
     )
 }

@@ -224,9 +224,10 @@ export const surveySchema = z.object({
 interface SurveyTableProps {
     initialData?: PaginatedSurveysResult
     initialFilters?: Partial<SurveyFilters>
+    teamId?: number
 }
 
-export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) => {
+export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTableProps) => {
     const t = useTranslations("Survey")
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
@@ -278,7 +279,9 @@ export const SurveyTable = ({ initialData, initialFilters }: SurveyTableProps) =
     const tRef = React.useRef(t)
 
     React.useEffect(() => {
-        fetchSurveys()
+        if (user?.defaultTeamId === undefined) return
+
+        if (teamId && teamId !== user?.defaultTeamId) fetchSurveys()
     }, [user?.defaultTeamId])
 
     // Update refs when values change

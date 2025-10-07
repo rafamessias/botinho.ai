@@ -23,6 +23,7 @@ import { toast } from "sonner"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
 import { useSearchParams } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 export function SignInForm({
     className,
@@ -32,6 +33,7 @@ export function SignInForm({
     const [isGoogleLoading, setIsGoogleLoading] = useState(false)
     const router = useRouter()
     const searchParams = useSearchParams()
+    const { update } = useSession()
 
     // Form validation schema with translations
     const signInSchema = z.object({
@@ -63,6 +65,7 @@ export function SignInForm({
                     router.push("/sign-up/check-email?email=" + data.email)
                 }
             } else if (result?.success === true) {
+                await update()
                 // Check if we need to redirect to checkout
                 if (result.needsCheckout && result.checkoutUrl) {
                     // Redirect to Stripe checkout
@@ -97,6 +100,7 @@ export function SignInForm({
             // Get redirect parameter from URL
             const redirectParam = searchParams.get("redirect")
             await googleSignInAction(redirectParam || undefined)
+            await update()
             // NextAuth will handle the redirect after successful Google sign-in
         } catch (error) {
             // NextAuth throws NEXT_REDIRECT for OAuth redirects - this is expected
