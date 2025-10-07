@@ -949,6 +949,10 @@
             "error": {
                 "title": "Erro",
                 "description": "Falha ao abrir gerenciamento de assinatura. Tente novamente."
+            },
+            "portalNotConfigured": {
+                "title": "Portal Não Disponível",
+                "description": "Portal do cliente ainda não foi configurado. Entre em contato com o suporte para gerenciar sua assinatura."
             }
         }
     },

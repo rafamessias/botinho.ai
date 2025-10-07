@@ -141,26 +141,31 @@ export const createPortalSession = async (): Promise<CreatePortalSessionResult> 
             return { success: false, error: 'Unauthorized' };
         }
 
-        // Get user's team and subscription to find Stripe customer ID
-        const { prisma } = await import('@/prisma/lib/prisma');
-
+        // Get the user's default team and its subscription to find Stripe customer ID
         const user = await prisma.user.findUnique({
             where: { email: session.user.email },
-            include: {
-                team: {
-                    include: {
-                        subscription: true
-                    }
-                }
+            select: {
+                defaultTeamId: true,
             }
         });
 
-        if (!user?.team?.subscription?.stripeCustomerId) {
+        if (!user?.defaultTeamId) {
+            return { success: false, error: 'No default team found for user' };
+        }
+
+        const team = await prisma.team.findUnique({
+            where: { id: user.defaultTeamId },
+            include: {
+                subscription: true
+            }
+        });
+
+        if (!team?.subscription?.stripeCustomerId) {
             return { success: false, error: 'No Stripe customer found' };
         }
 
         const portalSession = await stripe.billingPortal.sessions.create({
-            customer: user.team.subscription.stripeCustomerId,
+            customer: team.subscription.stripeCustomerId,
             return_url: `${process.env.NEXT_PUBLIC_APP_URL}/subscription`,
         });
 
@@ -170,6 +175,15 @@ export const createPortalSession = async (): Promise<CreatePortalSessionResult> 
         };
     } catch (error) {
         console.error('Error creating portal session:', error);
+
+        // Check if it's a Stripe configuration error
+        if (error instanceof Error && error.message.includes('No configuration provided')) {
+            return {
+                success: false,
+                error: 'Customer portal is not configured. Please contact support or set up your billing portal configuration in the Stripe dashboard.'
+            };
+        }
+
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Internal server error'

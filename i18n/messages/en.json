@@ -949,6 +949,10 @@
             "error": {
                 "title": "Error",
                 "description": "Failed to open subscription management. Please try again."
+            },
+            "portalNotConfigured": {
+                "title": "Portal Not Available",
+                "description": "Customer portal is not configured yet. Please contact support for subscription management."
             }
         }
     },

@@ -35,18 +35,30 @@ export const createPortalSession = async () => {
         const result = await createStripePortalSession();
 
         if (!result.success) {
-            throw new Error(result.error || 'Failed to create portal session');
+            // Return error instead of throwing for better client-side handling
+            return {
+                success: false,
+                error: result.error || 'Failed to create portal session'
+            };
         }
 
         if (!result.url) {
-            throw new Error('No portal URL received');
+            return {
+                success: false,
+                error: 'No portal URL received'
+            };
         }
 
-        // Redirect to Stripe Customer Portal
-        redirect(result.url);
+        return {
+            success: true,
+            url: result.url
+        };
     } catch (error) {
         console.error('Error creating portal session:', error);
-        throw error;
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Internal server error'
+        };
     }
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import { createPortalSession } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "../ui/separator";
+import { useRouter } from "next/navigation";
 
 
 interface UsageMetric {
@@ -37,54 +37,34 @@ interface SubscriptionPageProps {
 export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) => {
     const t = useTranslations("Subscription");
     const [isLoading, setIsLoading] = useState(false);
-    // Use real subscription data if available, otherwise fallback to mock data
-    const currentSubscription = subscriptionData.success && subscriptionData.data?.subscription
-        ? {
-            plan: subscriptionData.data.subscription.plan?.planType || "free",
-            status: subscriptionData.data.subscription.status || "active",
-            billingCycle: subscriptionData.data.subscription.billingInterval || "monthly",
-            nextBilling: subscriptionData.data.subscription.currentPeriodEnd
-                ? new Date(subscriptionData.data.subscription.currentPeriodEnd).toISOString().split('T')[0]
-                : "2024-02-15"
-        }
-        : {
-            plan: "free",
-            status: "active",
-            billingCycle: "monthly",
-            nextBilling: "2024-02-15"
-        };
     const { toast } = useToast();
-
-    // Check for success/cancel parameters in URL
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const success = urlParams.get('success');
-        const canceled = urlParams.get('canceled');
-
-        if (success) {
-            toast({
-                title: t("toast.success.title"),
-                description: t("toast.success.description"),
-            });
-            // Remove URL parameters
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-
-        if (canceled) {
-            toast({
-                title: t("toast.cancelled.title"),
-                description: t("toast.cancelled.description"),
-                variant: "destructive",
-            });
-            // Remove URL parameters
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    }, [toast]);
+    const router = useRouter();
 
     const handleManageSubscription = async () => {
         setIsLoading(true);
         try {
-            await createPortalSession();
+            const result = await createPortalSession();
+
+            if (result && !result.success) {
+                // Check if it's a portal configuration error
+                const errorMessage = result.error || '';
+                if (errorMessage.includes('Customer portal is not configured') || errorMessage.includes('No configuration provided')) {
+                    toast({
+                        title: t("toast.portalNotConfigured.title"),
+                        description: t("toast.portalNotConfigured.description"),
+                        variant: "destructive",
+                    });
+                } else {
+                    toast({
+                        title: t("toast.error.title"),
+                        description: t("toast.error.description"),
+                        variant: "destructive",
+                    });
+                }
+            }
+
+            if (result && result.success) router.push(result.url || '');
+
         } catch (error) {
             console.error('Error creating portal session:', error);
             toast({
@@ -179,12 +159,8 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
             {/* Subscription Overview */}
             <Card>
                 <CardHeader>
-                    <CardTitle className="relative flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                            <Calendar className="h-5 w-5" />
-                            {t("page.title")}
-                        </div>
-                        <div className="absolute right-0 flex items-center gap-2">
+                    <CardTitle className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                        <div className="relative sm:absolute right-0 flex items-center gap-2 w-full justify-end mb-2 sm:mb-0">
                             <Button
                                 onClick={handleManageSubscription}
                                 variant="outline"
@@ -201,6 +177,11 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                 )}
                             </Button>
                         </div>
+                        <div className="flex items-center gap-2">
+                            <Calendar className="h-5 w-5" />
+                            {t("page.title")}
+                        </div>
+
                     </CardTitle>
                     <CardDescription>
                         {t("page.description")}
