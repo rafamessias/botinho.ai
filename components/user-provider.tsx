@@ -150,7 +150,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         if (!team || !team.members || !Array.isArray(team.members)) return { isAdmin: false, canPost: false, canApprove: false }
 
         // Return true if the user has any member records in their default team
-        const userTeamMember = team.members.find((member: any) => member.userId === user.id)
+        const userTeamMember = team.members[0]
 
         return { isAdmin: userTeamMember?.isAdmin || false, canPost: userTeamMember?.canPost || false, canApprove: userTeamMember?.canApprove || false }
 

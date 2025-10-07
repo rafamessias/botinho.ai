@@ -27,11 +27,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations("AppSidebar")
 
   const data = {
-    user: {
-      name: "Rafael Messias",
-      email: "contact@rafaelmessias.com",
-      avatar: "/placeholder-user.png",
-    },
     navMain: [
       {
         title: t("navigation.dashboard"),
