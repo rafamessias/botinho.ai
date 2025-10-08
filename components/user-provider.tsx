@@ -30,17 +30,10 @@ export interface User {
     phone: string | null
     avatarUrl: string | null
     language: string
-    provider: string
-    confirmed: boolean | null
-    blocked: boolean | null
     theme: Theme
     teams: UserTeam[] | null
     defaultTeamId: number | null
-    createdAt: Date
-    updatedAt: Date
-    // Access control flags
-    isActive: boolean
-    canAccess: boolean
+    usagePercentage: number
 }
 
 // Context type definition
@@ -50,11 +43,9 @@ interface UserContextType {
     loading: boolean
     error: string | null
     refreshUser: (teamsUpdate: boolean) => Promise<void>
-    // Access control helpers
     isAuthenticated: boolean
-    isActive: boolean
-    canAccess: boolean
     hasPermission: () => { isAdmin: boolean, canPost: boolean, canApprove: boolean }
+    usagePercentage: number
 }
 
 // Create context
@@ -142,12 +133,10 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
     // Access control helpers
     const isAuthenticated = !!session && !!user
-    const isActive = Boolean(user?.isActive)
-    const canAccess = Boolean(user?.canAccess)
 
     // Permission system (can be extended)
     const hasPermission = (): { isAdmin: boolean, canPost: boolean, canApprove: boolean } => {
-        if (!user || !isActive) return { isAdmin: false, canPost: false, canApprove: false }
+        if (!user) return { isAdmin: false, canPost: false, canApprove: false }
 
         // Assuming user.teams is an array of team objects with members
         const team = user.teams?.find((t: any) => t.id === user.defaultTeamId)
@@ -167,9 +156,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         error,
         refreshUser,
         isAuthenticated,
-        isActive,
-        canAccess,
         hasPermission,
+        usagePercentage: user?.usagePercentage || 0
     }
 
     return (

@@ -679,12 +679,7 @@ export const getCurrentUserAction = async () => {
                 phone: true,
                 avatarUrl: true,
                 language: true,
-                provider: true,
                 theme: true,
-                confirmed: true,
-                blocked: true,
-                createdAt: true,
-                updatedAt: true,
                 defaultTeamId: true,
                 avatar: {
                     select: {
@@ -700,6 +695,48 @@ export const getCurrentUserAction = async () => {
             return { success: false, error: "User not found", user: null }
         }
 
+        // Check if user's default team has exceeded usage metric
+        let usagePercentage = 0;
+        if (user?.defaultTeamId) {
+            // Example: Check if team has exceeded ACTIVE_SURVEYS or TOTAL_COMPLETED_RESPONSES
+            const usage = await prisma.usageTracking.findMany({
+                where: {
+                    teamId: user.defaultTeamId,
+                    OR: [
+                        { metricType: "ACTIVE_SURVEYS" },
+                        { metricType: "TOTAL_COMPLETED_RESPONSES" }
+                    ],
+                    periodStart: {
+                        lte: new Date()
+                    },
+                    periodEnd: {
+                        gte: new Date()
+                    }
+                },
+                select: {
+                    metricType: true,
+                    currentUsage: true,
+                    limitValue: true
+                }
+            });
+
+            // If any metric value exceeds its limit, set overusage to true
+            if (usage && usage.length > 0) {
+                // Calculate the highest usage percentage among the tracked metrics
+                // If any metric has a limitValue > 0, compute currentUsage / limitValue * 100, else 0
+                // overusage will be the highest percentage (rounded down), or 0 if no limits
+                usagePercentage = Math.floor(
+                    Math.max(
+                        ...usage.map(metric =>
+                            metric.limitValue > 0
+                                ? (metric.currentUsage / metric.limitValue) * 100
+                                : 0
+                        )
+                    )
+                );
+            }
+        }
+
         // Transform data for frontend use
         const userData = {
             id: user.id,
@@ -710,16 +747,9 @@ export const getCurrentUserAction = async () => {
             phone: user.phone,
             avatarUrl: user.avatarUrl || user.avatar?.url || null,
             language: user.language === "pt_BR" ? "pt-BR" : "en",
-            provider: user.provider as Provider,
             theme: user.theme as Theme,
-            confirmed: user.confirmed,
-            blocked: user.blocked,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
             defaultTeamId: user.defaultTeamId,
-            // Access control flags
-            isActive: Boolean(user.confirmed && !user.blocked),
-            canAccess: Boolean(user.confirmed && !user.blocked),
+            usagePercentage: usagePercentage
         }
 
         return { success: true, user: userData }

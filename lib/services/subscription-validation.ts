@@ -414,6 +414,86 @@ export const clearSubscriptionCache = (): void => {
 };
 
 /**
+ * Simplified boolean feature validation
+ * Returns a simple boolean indicating if the feature is allowed
+ */
+const validateBooleanFeature = async (
+    teamId: number,
+    featureCheck: (plan: any) => boolean,
+    featureName: string
+): Promise<boolean> => {
+    try {
+        // Get active subscription for the team
+        const subscription = await prisma.customerSubscription.findFirst({
+            where: {
+                teamId,
+                status: {
+                    in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
+                }
+            },
+            select: {
+                planId: true
+            }
+        });
+
+        let planId: string | null = null;
+
+        if (!subscription) {
+            // No subscription found, try to create free plan
+            const freePlan = await prisma.subscriptionPlan.findFirst({
+                where: {
+                    planType: 'FREE',
+                    isActive: true
+                },
+                select: {
+                    id: true
+                }
+            });
+
+            if (freePlan) {
+                // Create free subscription for the team
+                await createCustomerSubscription({
+                    teamId: teamId,
+                    planId: freePlan.id,
+                    status: SubscriptionStatus.active,
+                    cancelAtPeriodEnd: false
+                });
+
+                planId = freePlan.id;
+            } else {
+                // No plan available at all
+                return false;
+            }
+        } else {
+            planId = subscription.planId;
+        }
+
+        // Get the plan details
+        const plan = await prisma.subscriptionPlan.findUnique({
+            where: {
+                id: planId
+            },
+            select: {
+                removeBranding: true,
+                allowApiAccess: true,
+                allowExport: true,
+                allowPublicPages: true
+            }
+        });
+
+        if (!plan) {
+            return false;
+        }
+
+        // Return feature check based on plan
+        return featureCheck(plan);
+    } catch (error) {
+        console.error(`Error validating ${featureName}:`, error);
+        return false;
+    }
+};
+
+/**
  * Convenience functions for specific validation types
  */
 export const validateActiveSurveys = async (teamId: number): Promise<SubscriptionValidationResult> => {
@@ -424,18 +504,37 @@ export const validateTotalCompletedResponses = async (teamId: number): Promise<S
     return validateSubscriptionAndUsage(teamId, ValidationType.TOTAL_COMPLETED_RESPONSES);
 };
 
-export const validateRemoveBranding = async (teamId: number): Promise<SubscriptionValidationResult> => {
-    return validateSubscriptionAndUsage(teamId, ValidationType.REMOVE_BRANDING);
+/**
+ * Boolean feature validators - return simple boolean values
+ */
+export const validateRemoveBranding = async (teamId: number): Promise<boolean> => {
+    return validateBooleanFeature(
+        teamId,
+        (plan) => plan.removeBranding === true,
+        'remove branding'
+    );
 };
 
-export const validateExportData = async (teamId: number): Promise<SubscriptionValidationResult> => {
-    return validateSubscriptionAndUsage(teamId, ValidationType.EXPORT_DATA);
+export const validateExportData = async (teamId: number): Promise<boolean> => {
+    return validateBooleanFeature(
+        teamId,
+        (plan) => plan.allowExport === true,
+        'export data'
+    );
 };
 
-export const validateApiAccess = async (teamId: number): Promise<SubscriptionValidationResult> => {
-    return validateSubscriptionAndUsage(teamId, ValidationType.API_ACCESS);
+export const validateApiAccess = async (teamId: number): Promise<boolean> => {
+    return validateBooleanFeature(
+        teamId,
+        (plan) => plan.allowApiAccess === true,
+        'API access'
+    );
 };
 
-export const validatePublicPages = async (teamId: number): Promise<SubscriptionValidationResult> => {
-    return validateSubscriptionAndUsage(teamId, ValidationType.PUBLIC_PAGES);
+export const validatePublicPages = async (teamId: number): Promise<boolean> => {
+    return validateBooleanFeature(
+        teamId,
+        (plan) => plan.allowPublicPages === true,
+        'public pages'
+    );
 };

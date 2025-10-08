@@ -9,6 +9,7 @@ import { generateConfirmationToken, getCurrentLocale } from "./auth"
 import bcrypt from "bcryptjs"
 import resend from "@/lib/resend"
 import TeamInvitationEmail from "@/emails/TeamInvitationEmail"
+import { validateApiAccess } from "@/lib/services/subscription-validation"
 
 // Validation schemas
 const createTeamSchema = z.object({
@@ -761,6 +762,20 @@ export const generateTeamTokenAction = async (formData: z.infer<typeof generateT
             return { success: false, error: "Not authorized to generate tokens for this team" }
         }
 
+        // Validate API access for API tokens
+        if (validatedData.tokenType === "api") {
+            const hasApiAccess = await validateApiAccess(validatedData.teamId)
+
+            if (!hasApiAccess) {
+                return {
+                    success: false,
+                    error: "API access is not available in your current plan",
+                    requiresUpgrade: true,
+                    limitType: "apis"
+                }
+            }
+        }
+
         // Generate a secure random token using bcrypt salt
         const randomString = Math.random().toString(36) + Date.now().toString(36)
         const token = await bcrypt.hash(randomString, 10)
@@ -817,6 +832,20 @@ export const regenerateTeamTokenAction = async (formData: z.infer<typeof regener
 
         if (!teamMember) {
             return { success: false, error: "Not authorized to regenerate tokens for this team" }
+        }
+
+        // Validate API access for API tokens
+        if (validatedData.tokenType === "api") {
+            const hasApiAccess = await validateApiAccess(validatedData.teamId)
+
+            if (!hasApiAccess) {
+                return {
+                    success: false,
+                    error: "API access is not available in your current plan",
+                    requiresUpgrade: true,
+                    limitType: "apis"
+                }
+            }
         }
 
         // Generate a new secure random token using bcrypt salt

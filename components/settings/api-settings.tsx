@@ -22,6 +22,7 @@ import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useTheme } from "next-themes"
 import { generateTeamTokenAction, regenerateTeamTokenAction, getTeamTokenAction } from "@/components/server-actions/team"
 import { useUser } from "@/components/user-provider"
+import { UpgradeModal } from "@/components/upgrade-modal"
 
 export const ApiSettings = () => {
     const t = useTranslations("Settings.api")
@@ -34,6 +35,7 @@ export const ApiSettings = () => {
     const [isGeneratingApiToken, setIsGeneratingApiToken] = useState(false)
     const [showRegenerateModal, setShowRegenerateModal] = useState(false)
     const [regenerateTokenType, setRegenerateTokenType] = useState<"survey" | "api">("survey")
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const { isAdmin } = hasPermission()
 
     const handleCopyCode = (code: string) => {
@@ -286,7 +288,12 @@ getSurveyResults('your-survey-id');`
                 }))
                 toast.success(result.message)
             } else {
-                toast.error(result.error || "Failed to generate token")
+                // Check if upgrade is required
+                if ('requiresUpgrade' in result && result.requiresUpgrade) {
+                    setShowUpgradeModal(true)
+                } else {
+                    toast.error(result.error || "Failed to generate token")
+                }
             }
         } catch (error) {
             console.error("Generate token error:", error)
@@ -321,7 +328,12 @@ getSurveyResults('your-survey-id');`
                 }))
                 toast.success(result.message)
             } else {
-                toast.error(result.error || "Failed to regenerate token")
+                // Check if upgrade is required
+                if ('requiresUpgrade' in result && result.requiresUpgrade) {
+                    setShowUpgradeModal(true)
+                } else {
+                    toast.error(result.error || "Failed to regenerate token")
+                }
             }
         } catch (error) {
             console.error("Regenerate token error:", error)
@@ -466,6 +478,13 @@ getSurveyResults('your-survey-id');`
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+                open={showUpgradeModal}
+                onOpenChange={setShowUpgradeModal}
+                limitType="apis"
+            />
         </Card >
     )
 }
