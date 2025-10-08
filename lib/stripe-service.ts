@@ -1,7 +1,7 @@
 import { auth } from '@/app/auth';
 import { stripe } from '@/lib/stripe';
 import { prisma } from '@/prisma/lib/prisma';
-import { PlanType } from '@/lib/generated/prisma';
+import { PlanType, Prisma } from '@/lib/generated/prisma';
 
 export interface CreateCheckoutSessionParams {
     planId: PlanType;
@@ -156,16 +156,30 @@ export const createPortalSession = async (): Promise<CreatePortalSessionResult> 
         const team = await prisma.team.findUnique({
             where: { id: user.defaultTeamId },
             include: {
-                subscription: true
+                subscriptions: {
+                    where: {
+                        status: {
+                            in: ['active', 'trialing']
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    },
+                    take: 1
+                }
             }
-        });
+        }) as Prisma.TeamGetPayload<{
+            include: { subscriptions: true }
+        }> | null;
 
-        if (!team?.subscription?.stripeCustomerId) {
+        const activeSubscription = team?.subscriptions?.[0];
+
+        if (!activeSubscription?.stripeCustomerId) {
             return { success: false, error: 'No Stripe customer found' };
         }
 
         const portalSession = await stripe.billingPortal.sessions.create({
-            customer: team.subscription.stripeCustomerId,
+            customer: activeSubscription.stripeCustomerId,
             return_url: `${process.env.NEXT_PUBLIC_APP_URL}/subscription`,
         });
 

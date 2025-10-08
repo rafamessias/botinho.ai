@@ -11,7 +11,7 @@ import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
 import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
-import { Provider, Theme, SubscriptionStatus, PlanType } from "@/lib/generated/prisma"
+import { Provider, Theme, SubscriptionStatus, PlanType, Prisma } from "@/lib/generated/prisma"
 import { createCustomerSubscription } from "@/lib/customer-subscription"
 import { createCheckoutSession } from "@/lib/stripe-service"
 
@@ -93,11 +93,23 @@ export const signInAction = async (formData: SignInFormData) => {
                 include: {
                     team: {
                         include: {
-                            subscription: true
+                            subscriptions: {
+                                where: {
+                                    status: {
+                                        in: ['active', 'trialing']
+                                    }
+                                },
+                                orderBy: {
+                                    createdAt: 'desc'
+                                },
+                                take: 1
+                            }
                         }
                     }
                 }
-            })
+            }) as Prisma.UserGetPayload<{
+                include: { team: { include: { subscriptions: true } } }
+            }> | null
 
             if (!user?.defaultTeamId) {
                 console.error('No team found for user:', validatedData.email)
@@ -109,7 +121,7 @@ export const signInAction = async (formData: SignInFormData) => {
             }
 
             // Get existing CustomerSubscription ID if it exists
-            const existingSubscriptionId = user.team?.subscription?.id
+            const existingSubscriptionId = user.team?.subscriptions[0]?.id
             console.log('Existing CustomerSubscription ID:', existingSubscriptionId)
 
             // Create checkout session server-side
@@ -191,27 +203,38 @@ export const checkSubscriptionAndRedirect = async (userEmail: string) => {
             include: {
                 team: {
                     include: {
-                        subscription: {
+                        subscriptions: {
+                            where: {
+                                status: {
+                                    in: ['active', 'trialing']
+                                }
+                            },
                             include: {
                                 plan: true
-                            }
+                            },
+                            orderBy: {
+                                createdAt: 'desc'
+                            },
+                            take: 1
                         }
                     }
                 }
             }
-        })
+        }) as Prisma.UserGetPayload<{
+            include: { team: { include: { subscriptions: { include: { plan: true } } } } }
+        }> | null
 
         console.log('User found:', !!user, 'Team found:', !!user?.team)
-        console.log('Subscription found:', !!user?.team?.subscription)
-        console.log('Subscription status:', user?.team?.subscription?.status)
-        console.log('Plan found:', !!user?.team?.subscription?.plan)
-        console.log('Plan type:', user?.team?.subscription?.plan?.planType)
+        console.log('Subscription found:', !!user?.team?.subscriptions?.[0])
+        console.log('Subscription status:', user?.team?.subscriptions?.[0]?.status)
+        console.log('Plan found:', !!user?.team?.subscriptions?.[0]?.plan)
+        console.log('Plan type:', user?.team?.subscriptions?.[0]?.plan?.planType)
 
         if (!user || !user.team) {
             return { success: false, error: "User or team not found" }
         }
 
-        const subscription = user.team.subscription
+        const subscription = user.team.subscriptions[0]
 
         // If no subscription or subscription is pending, redirect to Stripe checkout
         if (!subscription || subscription.status === 'pending') {
@@ -882,11 +905,23 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
                     include: {
                         team: {
                             include: {
-                                subscription: true
+                                subscriptions: {
+                                    where: {
+                                        status: {
+                                            in: ['active', 'trialing']
+                                        }
+                                    },
+                                    orderBy: {
+                                        createdAt: 'desc'
+                                    },
+                                    take: 1
+                                }
                             }
                         }
                     }
-                })
+                }) as Prisma.UserGetPayload<{
+                    include: { team: { include: { subscriptions: true } } }
+                }> | null
 
                 if (!user?.defaultTeamId) {
                     console.error('No team found for user in OTP flow:', email)
@@ -898,7 +933,7 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
                 }
 
                 // Get existing CustomerSubscription ID if it exists
-                const existingSubscriptionId = user.team?.subscription?.id
+                const existingSubscriptionId = user.team?.subscriptions?.[0]?.id
                 console.log('Existing CustomerSubscription ID in OTP flow:', existingSubscriptionId)
 
                 // Create checkout session server-side

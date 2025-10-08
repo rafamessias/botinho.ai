@@ -2659,6 +2659,7 @@ export namespace Prisma {
     members: number
     user: number
     responseSummaries: number
+    subscriptions: number
     usageTracking: number
   }
 
@@ -2673,6 +2674,7 @@ export namespace Prisma {
     members?: boolean | TeamCountOutputTypeCountMembersArgs
     user?: boolean | TeamCountOutputTypeCountUserArgs
     responseSummaries?: boolean | TeamCountOutputTypeCountResponseSummariesArgs
+    subscriptions?: boolean | TeamCountOutputTypeCountSubscriptionsArgs
     usageTracking?: boolean | TeamCountOutputTypeCountUsageTrackingArgs
   }
 
@@ -2755,6 +2757,13 @@ export namespace Prisma {
    */
   export type TeamCountOutputTypeCountResponseSummariesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SurveyResponseSummaryWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerSubscriptionWhereInput
   }
 
   /**
@@ -9167,7 +9176,7 @@ export namespace Prisma {
     members?: boolean | Team$membersArgs<ExtArgs>
     user?: boolean | Team$userArgs<ExtArgs>
     responseSummaries?: boolean | Team$responseSummariesArgs<ExtArgs>
-    subscription?: boolean | Team$subscriptionArgs<ExtArgs>
+    subscriptions?: boolean | Team$subscriptionsArgs<ExtArgs>
     usageTracking?: boolean | Team$usageTrackingArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
@@ -9232,7 +9241,7 @@ export namespace Prisma {
     members?: boolean | Team$membersArgs<ExtArgs>
     user?: boolean | Team$userArgs<ExtArgs>
     responseSummaries?: boolean | Team$responseSummariesArgs<ExtArgs>
-    subscription?: boolean | Team$subscriptionArgs<ExtArgs>
+    subscriptions?: boolean | Team$subscriptionsArgs<ExtArgs>
     usageTracking?: boolean | Team$usageTrackingArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -9252,7 +9261,7 @@ export namespace Prisma {
       members: Prisma.$TeamMemberPayload<ExtArgs>[]
       user: Prisma.$UserPayload<ExtArgs>[]
       responseSummaries: Prisma.$SurveyResponseSummaryPayload<ExtArgs>[]
-      subscription: Prisma.$CustomerSubscriptionPayload<ExtArgs> | null
+      subscriptions: Prisma.$CustomerSubscriptionPayload<ExtArgs>[]
       usageTracking: Prisma.$UsageTrackingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -9673,7 +9682,7 @@ export namespace Prisma {
     members<T extends Team$membersArgs<ExtArgs> = {}>(args?: Subset<T, Team$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     user<T extends Team$userArgs<ExtArgs> = {}>(args?: Subset<T, Team$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     responseSummaries<T extends Team$responseSummariesArgs<ExtArgs> = {}>(args?: Subset<T, Team$responseSummariesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SurveyResponseSummaryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    subscription<T extends Team$subscriptionArgs<ExtArgs> = {}>(args?: Subset<T, Team$subscriptionArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    subscriptions<T extends Team$subscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, Team$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     usageTracking<T extends Team$usageTrackingArgs<ExtArgs> = {}>(args?: Subset<T, Team$usageTrackingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10345,9 +10354,9 @@ export namespace Prisma {
   }
 
   /**
-   * Team.subscription
+   * Team.subscriptions
    */
-  export type Team$subscriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Team$subscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the CustomerSubscription
      */
@@ -10361,6 +10370,11 @@ export namespace Prisma {
      */
     include?: CustomerSubscriptionInclude<ExtArgs> | null
     where?: CustomerSubscriptionWhereInput
+    orderBy?: CustomerSubscriptionOrderByWithRelationInput | CustomerSubscriptionOrderByWithRelationInput[]
+    cursor?: CustomerSubscriptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerSubscriptionScalarFieldEnum | CustomerSubscriptionScalarFieldEnum[]
   }
 
   /**
@@ -22925,6 +22939,7 @@ export namespace Prisma {
     billingInterval: $Enums.BillingInterval | null
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
+    cancellationDetails: string | null
     currentPeriodStart: Date | null
     currentPeriodEnd: Date | null
     cancelAtPeriodEnd: boolean | null
@@ -22942,6 +22957,7 @@ export namespace Prisma {
     billingInterval: $Enums.BillingInterval | null
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
+    cancellationDetails: string | null
     currentPeriodStart: Date | null
     currentPeriodEnd: Date | null
     cancelAtPeriodEnd: boolean | null
@@ -22959,6 +22975,7 @@ export namespace Prisma {
     billingInterval: number
     stripeCustomerId: number
     stripeSubscriptionId: number
+    cancellationDetails: number
     currentPeriodStart: number
     currentPeriodEnd: number
     cancelAtPeriodEnd: number
@@ -22986,6 +23003,7 @@ export namespace Prisma {
     billingInterval?: true
     stripeCustomerId?: true
     stripeSubscriptionId?: true
+    cancellationDetails?: true
     currentPeriodStart?: true
     currentPeriodEnd?: true
     cancelAtPeriodEnd?: true
@@ -23003,6 +23021,7 @@ export namespace Prisma {
     billingInterval?: true
     stripeCustomerId?: true
     stripeSubscriptionId?: true
+    cancellationDetails?: true
     currentPeriodStart?: true
     currentPeriodEnd?: true
     cancelAtPeriodEnd?: true
@@ -23020,6 +23039,7 @@ export namespace Prisma {
     billingInterval?: true
     stripeCustomerId?: true
     stripeSubscriptionId?: true
+    cancellationDetails?: true
     currentPeriodStart?: true
     currentPeriodEnd?: true
     cancelAtPeriodEnd?: true
@@ -23124,6 +23144,7 @@ export namespace Prisma {
     billingInterval: $Enums.BillingInterval
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
+    cancellationDetails: string | null
     currentPeriodStart: Date | null
     currentPeriodEnd: Date | null
     cancelAtPeriodEnd: boolean
@@ -23160,6 +23181,7 @@ export namespace Prisma {
     billingInterval?: boolean
     stripeCustomerId?: boolean
     stripeSubscriptionId?: boolean
+    cancellationDetails?: boolean
     currentPeriodStart?: boolean
     currentPeriodEnd?: boolean
     cancelAtPeriodEnd?: boolean
@@ -23181,6 +23203,7 @@ export namespace Prisma {
     billingInterval?: boolean
     stripeCustomerId?: boolean
     stripeSubscriptionId?: boolean
+    cancellationDetails?: boolean
     currentPeriodStart?: boolean
     currentPeriodEnd?: boolean
     cancelAtPeriodEnd?: boolean
@@ -23200,6 +23223,7 @@ export namespace Prisma {
     billingInterval?: boolean
     stripeCustomerId?: boolean
     stripeSubscriptionId?: boolean
+    cancellationDetails?: boolean
     currentPeriodStart?: boolean
     currentPeriodEnd?: boolean
     cancelAtPeriodEnd?: boolean
@@ -23219,6 +23243,7 @@ export namespace Prisma {
     billingInterval?: boolean
     stripeCustomerId?: boolean
     stripeSubscriptionId?: boolean
+    cancellationDetails?: boolean
     currentPeriodStart?: boolean
     currentPeriodEnd?: boolean
     cancelAtPeriodEnd?: boolean
@@ -23228,7 +23253,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CustomerSubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "planId" | "status" | "billingInterval" | "stripeCustomerId" | "stripeSubscriptionId" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "trialStart" | "trialEnd" | "createdAt" | "updatedAt", ExtArgs["result"]["customerSubscription"]>
+  export type CustomerSubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "planId" | "status" | "billingInterval" | "stripeCustomerId" | "stripeSubscriptionId" | "cancellationDetails" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "trialStart" | "trialEnd" | "createdAt" | "updatedAt", ExtArgs["result"]["customerSubscription"]>
   export type CustomerSubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     team?: boolean | TeamDefaultArgs<ExtArgs>
     plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
@@ -23259,6 +23284,7 @@ export namespace Prisma {
       billingInterval: $Enums.BillingInterval
       stripeCustomerId: string | null
       stripeSubscriptionId: string | null
+      cancellationDetails: string | null
       currentPeriodStart: Date | null
       currentPeriodEnd: Date | null
       cancelAtPeriodEnd: boolean
@@ -23699,6 +23725,7 @@ export namespace Prisma {
     readonly billingInterval: FieldRef<"CustomerSubscription", 'BillingInterval'>
     readonly stripeCustomerId: FieldRef<"CustomerSubscription", 'String'>
     readonly stripeSubscriptionId: FieldRef<"CustomerSubscription", 'String'>
+    readonly cancellationDetails: FieldRef<"CustomerSubscription", 'String'>
     readonly currentPeriodStart: FieldRef<"CustomerSubscription", 'DateTime'>
     readonly currentPeriodEnd: FieldRef<"CustomerSubscription", 'DateTime'>
     readonly cancelAtPeriodEnd: FieldRef<"CustomerSubscription", 'Boolean'>
@@ -25637,6 +25664,7 @@ export namespace Prisma {
     billingInterval: 'billingInterval',
     stripeCustomerId: 'stripeCustomerId',
     stripeSubscriptionId: 'stripeSubscriptionId',
+    cancellationDetails: 'cancellationDetails',
     currentPeriodStart: 'currentPeriodStart',
     currentPeriodEnd: 'currentPeriodEnd',
     cancelAtPeriodEnd: 'cancelAtPeriodEnd',
@@ -26384,7 +26412,7 @@ export namespace Prisma {
     members?: TeamMemberListRelationFilter
     user?: UserListRelationFilter
     responseSummaries?: SurveyResponseSummaryListRelationFilter
-    subscription?: XOR<CustomerSubscriptionNullableScalarRelationFilter, CustomerSubscriptionWhereInput> | null
+    subscriptions?: CustomerSubscriptionListRelationFilter
     usageTracking?: UsageTrackingListRelationFilter
   }
 
@@ -26412,7 +26440,7 @@ export namespace Prisma {
     members?: TeamMemberOrderByRelationAggregateInput
     user?: UserOrderByRelationAggregateInput
     responseSummaries?: SurveyResponseSummaryOrderByRelationAggregateInput
-    subscription?: CustomerSubscriptionOrderByWithRelationInput
+    subscriptions?: CustomerSubscriptionOrderByRelationAggregateInput
     usageTracking?: UsageTrackingOrderByRelationAggregateInput
   }
 
@@ -26443,7 +26471,7 @@ export namespace Prisma {
     members?: TeamMemberListRelationFilter
     user?: UserListRelationFilter
     responseSummaries?: SurveyResponseSummaryListRelationFilter
-    subscription?: XOR<CustomerSubscriptionNullableScalarRelationFilter, CustomerSubscriptionWhereInput> | null
+    subscriptions?: CustomerSubscriptionListRelationFilter
     usageTracking?: UsageTrackingListRelationFilter
   }, "id" | "tokenSurvery" | "tokenApi">
 
@@ -27532,6 +27560,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
     stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
     stripeSubscriptionId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    cancellationDetails?: StringNullableFilter<"CustomerSubscription"> | string | null
     currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
     currentPeriodEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
     cancelAtPeriodEnd?: BoolFilter<"CustomerSubscription"> | boolean
@@ -27552,6 +27581,7 @@ export namespace Prisma {
     billingInterval?: SortOrder
     stripeCustomerId?: SortOrderInput | SortOrder
     stripeSubscriptionId?: SortOrderInput | SortOrder
+    cancellationDetails?: SortOrderInput | SortOrder
     currentPeriodStart?: SortOrderInput | SortOrder
     currentPeriodEnd?: SortOrderInput | SortOrder
     cancelAtPeriodEnd?: SortOrder
@@ -27566,15 +27596,16 @@ export namespace Prisma {
 
   export type CustomerSubscriptionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    teamId?: number
-    stripeCustomerId?: string
     stripeSubscriptionId?: string
     AND?: CustomerSubscriptionWhereInput | CustomerSubscriptionWhereInput[]
     OR?: CustomerSubscriptionWhereInput[]
     NOT?: CustomerSubscriptionWhereInput | CustomerSubscriptionWhereInput[]
+    teamId?: IntFilter<"CustomerSubscription"> | number
     planId?: StringFilter<"CustomerSubscription"> | string
     status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
     billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
+    stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    cancellationDetails?: StringNullableFilter<"CustomerSubscription"> | string | null
     currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
     currentPeriodEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
     cancelAtPeriodEnd?: BoolFilter<"CustomerSubscription"> | boolean
@@ -27585,7 +27616,7 @@ export namespace Prisma {
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
     plan?: XOR<SubscriptionPlanScalarRelationFilter, SubscriptionPlanWhereInput>
     usageTracking?: UsageTrackingListRelationFilter
-  }, "id" | "teamId" | "stripeCustomerId" | "stripeSubscriptionId">
+  }, "id" | "stripeSubscriptionId">
 
   export type CustomerSubscriptionOrderByWithAggregationInput = {
     id?: SortOrder
@@ -27595,6 +27626,7 @@ export namespace Prisma {
     billingInterval?: SortOrder
     stripeCustomerId?: SortOrderInput | SortOrder
     stripeSubscriptionId?: SortOrderInput | SortOrder
+    cancellationDetails?: SortOrderInput | SortOrder
     currentPeriodStart?: SortOrderInput | SortOrder
     currentPeriodEnd?: SortOrderInput | SortOrder
     cancelAtPeriodEnd?: SortOrder
@@ -27620,6 +27652,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalWithAggregatesFilter<"CustomerSubscription"> | $Enums.BillingInterval
     stripeCustomerId?: StringNullableWithAggregatesFilter<"CustomerSubscription"> | string | null
     stripeSubscriptionId?: StringNullableWithAggregatesFilter<"CustomerSubscription"> | string | null
+    cancellationDetails?: StringNullableWithAggregatesFilter<"CustomerSubscription"> | string | null
     currentPeriodStart?: DateTimeNullableWithAggregatesFilter<"CustomerSubscription"> | Date | string | null
     currentPeriodEnd?: DateTimeNullableWithAggregatesFilter<"CustomerSubscription"> | Date | string | null
     cancelAtPeriodEnd?: BoolWithAggregatesFilter<"CustomerSubscription"> | boolean
@@ -28197,7 +28230,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -28225,7 +28258,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -28252,7 +28285,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -28280,7 +28313,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -29463,6 +29496,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -29470,7 +29504,7 @@ export namespace Prisma {
     trialEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSubscriptionInput
+    team: TeamCreateNestedOneWithoutSubscriptionsInput
     plan: SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutSubscriptionInput
   }
@@ -29483,6 +29517,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -29499,6 +29534,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
@@ -29506,7 +29542,7 @@ export namespace Prisma {
     trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSubscriptionNestedInput
+    team?: TeamUpdateOneRequiredWithoutSubscriptionsNestedInput
     plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
   }
@@ -29519,6 +29555,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
@@ -29537,6 +29574,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -29552,6 +29590,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
@@ -29569,6 +29608,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
@@ -30274,9 +30314,10 @@ export namespace Prisma {
     none?: SurveyResponseSummaryWhereInput
   }
 
-  export type CustomerSubscriptionNullableScalarRelationFilter = {
-    is?: CustomerSubscriptionWhereInput | null
-    isNot?: CustomerSubscriptionWhereInput | null
+  export type CustomerSubscriptionListRelationFilter = {
+    every?: CustomerSubscriptionWhereInput
+    some?: CustomerSubscriptionWhereInput
+    none?: CustomerSubscriptionWhereInput
   }
 
   export type UsageTrackingListRelationFilter = {
@@ -30314,6 +30355,10 @@ export namespace Prisma {
   }
 
   export type SurveyResponseSummaryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CustomerSubscriptionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -31092,16 +31137,6 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
-  export type CustomerSubscriptionListRelationFilter = {
-    every?: CustomerSubscriptionWhereInput
-    some?: CustomerSubscriptionWhereInput
-    none?: CustomerSubscriptionWhereInput
-  }
-
-  export type CustomerSubscriptionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type SubscriptionPlanCountOrderByAggregateInput = {
     id?: SortOrder
     planType?: SortOrder
@@ -31234,6 +31269,7 @@ export namespace Prisma {
     billingInterval?: SortOrder
     stripeCustomerId?: SortOrder
     stripeSubscriptionId?: SortOrder
+    cancellationDetails?: SortOrder
     currentPeriodStart?: SortOrder
     currentPeriodEnd?: SortOrder
     cancelAtPeriodEnd?: SortOrder
@@ -31255,6 +31291,7 @@ export namespace Prisma {
     billingInterval?: SortOrder
     stripeCustomerId?: SortOrder
     stripeSubscriptionId?: SortOrder
+    cancellationDetails?: SortOrder
     currentPeriodStart?: SortOrder
     currentPeriodEnd?: SortOrder
     cancelAtPeriodEnd?: SortOrder
@@ -31272,6 +31309,7 @@ export namespace Prisma {
     billingInterval?: SortOrder
     stripeCustomerId?: SortOrder
     stripeSubscriptionId?: SortOrder
+    cancellationDetails?: SortOrder
     currentPeriodStart?: SortOrder
     currentPeriodEnd?: SortOrder
     cancelAtPeriodEnd?: SortOrder
@@ -31733,10 +31771,11 @@ export namespace Prisma {
     connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
   }
 
-  export type CustomerSubscriptionCreateNestedOneWithoutTeamInput = {
-    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
-    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput
-    connect?: CustomerSubscriptionWhereUniqueInput
+  export type CustomerSubscriptionCreateNestedManyWithoutTeamInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput> | CustomerSubscriptionCreateWithoutTeamInput[] | CustomerSubscriptionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput | CustomerSubscriptionCreateOrConnectWithoutTeamInput[]
+    createMany?: CustomerSubscriptionCreateManyTeamInputEnvelope
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
   }
 
   export type UsageTrackingCreateNestedManyWithoutTeamInput = {
@@ -31816,10 +31855,11 @@ export namespace Prisma {
     connect?: SurveyResponseSummaryWhereUniqueInput | SurveyResponseSummaryWhereUniqueInput[]
   }
 
-  export type CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput = {
-    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
-    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput
-    connect?: CustomerSubscriptionWhereUniqueInput
+  export type CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput> | CustomerSubscriptionCreateWithoutTeamInput[] | CustomerSubscriptionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput | CustomerSubscriptionCreateOrConnectWithoutTeamInput[]
+    createMany?: CustomerSubscriptionCreateManyTeamInputEnvelope
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
   }
 
   export type UsageTrackingUncheckedCreateNestedManyWithoutTeamInput = {
@@ -31981,14 +32021,18 @@ export namespace Prisma {
     deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
   }
 
-  export type CustomerSubscriptionUpdateOneWithoutTeamNestedInput = {
-    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
-    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput
-    upsert?: CustomerSubscriptionUpsertWithoutTeamInput
-    disconnect?: CustomerSubscriptionWhereInput | boolean
-    delete?: CustomerSubscriptionWhereInput | boolean
-    connect?: CustomerSubscriptionWhereUniqueInput
-    update?: XOR<XOR<CustomerSubscriptionUpdateToOneWithWhereWithoutTeamInput, CustomerSubscriptionUpdateWithoutTeamInput>, CustomerSubscriptionUncheckedUpdateWithoutTeamInput>
+  export type CustomerSubscriptionUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput> | CustomerSubscriptionCreateWithoutTeamInput[] | CustomerSubscriptionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput | CustomerSubscriptionCreateOrConnectWithoutTeamInput[]
+    upsert?: CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput | CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: CustomerSubscriptionCreateManyTeamInputEnvelope
+    set?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    disconnect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    delete?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    update?: CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput | CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput | CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
   }
 
   export type UsageTrackingUpdateManyWithoutTeamNestedInput = {
@@ -32145,14 +32189,18 @@ export namespace Prisma {
     deleteMany?: SurveyResponseSummaryScalarWhereInput | SurveyResponseSummaryScalarWhereInput[]
   }
 
-  export type CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput = {
-    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
-    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput
-    upsert?: CustomerSubscriptionUpsertWithoutTeamInput
-    disconnect?: CustomerSubscriptionWhereInput | boolean
-    delete?: CustomerSubscriptionWhereInput | boolean
-    connect?: CustomerSubscriptionWhereUniqueInput
-    update?: XOR<XOR<CustomerSubscriptionUpdateToOneWithWhereWithoutTeamInput, CustomerSubscriptionUpdateWithoutTeamInput>, CustomerSubscriptionUncheckedUpdateWithoutTeamInput>
+  export type CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput> | CustomerSubscriptionCreateWithoutTeamInput[] | CustomerSubscriptionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput | CustomerSubscriptionCreateOrConnectWithoutTeamInput[]
+    upsert?: CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput | CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: CustomerSubscriptionCreateManyTeamInputEnvelope
+    set?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    disconnect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    delete?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    update?: CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput | CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput | CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
   }
 
   export type UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput = {
@@ -33055,9 +33103,9 @@ export namespace Prisma {
     deleteMany?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
   }
 
-  export type TeamCreateNestedOneWithoutSubscriptionInput = {
-    create?: XOR<TeamCreateWithoutSubscriptionInput, TeamUncheckedCreateWithoutSubscriptionInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutSubscriptionInput
+  export type TeamCreateNestedOneWithoutSubscriptionsInput = {
+    create?: XOR<TeamCreateWithoutSubscriptionsInput, TeamUncheckedCreateWithoutSubscriptionsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutSubscriptionsInput
     connect?: TeamWhereUniqueInput
   }
 
@@ -33089,12 +33137,12 @@ export namespace Prisma {
     set?: $Enums.BillingInterval
   }
 
-  export type TeamUpdateOneRequiredWithoutSubscriptionNestedInput = {
-    create?: XOR<TeamCreateWithoutSubscriptionInput, TeamUncheckedCreateWithoutSubscriptionInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutSubscriptionInput
-    upsert?: TeamUpsertWithoutSubscriptionInput
+  export type TeamUpdateOneRequiredWithoutSubscriptionsNestedInput = {
+    create?: XOR<TeamCreateWithoutSubscriptionsInput, TeamUncheckedCreateWithoutSubscriptionsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutSubscriptionsInput
+    upsert?: TeamUpsertWithoutSubscriptionsInput
     connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutSubscriptionInput, TeamUpdateWithoutSubscriptionInput>, TeamUncheckedUpdateWithoutSubscriptionInput>
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutSubscriptionsInput, TeamUpdateWithoutSubscriptionsInput>, TeamUncheckedUpdateWithoutSubscriptionsInput>
   }
 
   export type SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput = {
@@ -33788,7 +33836,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -33815,7 +33863,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -33985,7 +34033,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -34012,7 +34060,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -34777,6 +34825,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -34795,6 +34844,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -34808,6 +34858,11 @@ export namespace Prisma {
   export type CustomerSubscriptionCreateOrConnectWithoutTeamInput = {
     where: CustomerSubscriptionWhereUniqueInput
     create: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
+  }
+
+  export type CustomerSubscriptionCreateManyTeamInputEnvelope = {
+    data: CustomerSubscriptionCreateManyTeamInput | CustomerSubscriptionCreateManyTeamInput[]
+    skipDuplicates?: boolean
   }
 
   export type UsageTrackingCreateWithoutTeamInput = {
@@ -35153,49 +35208,41 @@ export namespace Prisma {
     lastUpdated?: DateTimeFilter<"SurveyResponseSummary"> | Date | string
   }
 
-  export type CustomerSubscriptionUpsertWithoutTeamInput = {
+  export type CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput = {
+    where: CustomerSubscriptionWhereUniqueInput
     update: XOR<CustomerSubscriptionUpdateWithoutTeamInput, CustomerSubscriptionUncheckedUpdateWithoutTeamInput>
     create: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
-    where?: CustomerSubscriptionWhereInput
   }
 
-  export type CustomerSubscriptionUpdateToOneWithWhereWithoutTeamInput = {
-    where?: CustomerSubscriptionWhereInput
+  export type CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput = {
+    where: CustomerSubscriptionWhereUniqueInput
     data: XOR<CustomerSubscriptionUpdateWithoutTeamInput, CustomerSubscriptionUncheckedUpdateWithoutTeamInput>
   }
 
-  export type CustomerSubscriptionUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
-    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
-    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
-    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
-    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
-    usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
+  export type CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput = {
+    where: CustomerSubscriptionScalarWhereInput
+    data: XOR<CustomerSubscriptionUpdateManyMutationInput, CustomerSubscriptionUncheckedUpdateManyWithoutTeamInput>
   }
 
-  export type CustomerSubscriptionUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    planId?: StringFieldUpdateOperationsInput | string
-    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
-    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
-    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
-    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
-    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput
+  export type CustomerSubscriptionScalarWhereInput = {
+    AND?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
+    OR?: CustomerSubscriptionScalarWhereInput[]
+    NOT?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
+    id?: StringFilter<"CustomerSubscription"> | string
+    teamId?: IntFilter<"CustomerSubscription"> | number
+    planId?: StringFilter<"CustomerSubscription"> | string
+    status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
+    stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    stripeSubscriptionId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    cancellationDetails?: StringNullableFilter<"CustomerSubscription"> | string | null
+    currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    currentPeriodEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    cancelAtPeriodEnd?: BoolFilter<"CustomerSubscription"> | boolean
+    trialStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    trialEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
   }
 
   export type UsageTrackingUpsertWithWhereUniqueWithoutTeamInput = {
@@ -35253,7 +35300,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -35280,7 +35327,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -35376,7 +35423,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -35403,7 +35450,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -35489,7 +35536,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -35516,7 +35563,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -35606,7 +35653,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -35633,7 +35680,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -35812,7 +35859,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -35839,7 +35886,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -36031,7 +36078,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -36058,7 +36105,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -36172,7 +36219,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -36199,7 +36246,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -36290,7 +36337,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -36317,7 +36364,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -36460,7 +36507,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -36487,7 +36534,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -36652,7 +36699,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -36679,7 +36726,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -36764,7 +36811,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -36791,7 +36838,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -36964,7 +37011,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -36991,7 +37038,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -37132,7 +37179,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -37159,7 +37206,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -37308,7 +37355,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -37335,7 +37382,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -37492,7 +37539,7 @@ export namespace Prisma {
     surveys?: SurveyCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -37519,7 +37566,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -37731,7 +37778,7 @@ export namespace Prisma {
     surveys?: SurveyUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -37758,7 +37805,7 @@ export namespace Prisma {
     surveys?: SurveyUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -37936,7 +37983,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
@@ -37963,7 +38010,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -38132,7 +38179,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
@@ -38159,7 +38206,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
     usageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -38169,6 +38216,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -38176,7 +38224,7 @@ export namespace Prisma {
     trialEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSubscriptionInput
+    team: TeamCreateNestedOneWithoutSubscriptionsInput
     usageTracking?: UsageTrackingCreateNestedManyWithoutSubscriptionInput
   }
 
@@ -38187,6 +38235,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -38223,27 +38272,7 @@ export namespace Prisma {
     data: XOR<CustomerSubscriptionUpdateManyMutationInput, CustomerSubscriptionUncheckedUpdateManyWithoutPlanInput>
   }
 
-  export type CustomerSubscriptionScalarWhereInput = {
-    AND?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
-    OR?: CustomerSubscriptionScalarWhereInput[]
-    NOT?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
-    id?: StringFilter<"CustomerSubscription"> | string
-    teamId?: IntFilter<"CustomerSubscription"> | number
-    planId?: StringFilter<"CustomerSubscription"> | string
-    status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
-    billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
-    stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
-    stripeSubscriptionId?: StringNullableFilter<"CustomerSubscription"> | string | null
-    currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
-    currentPeriodEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
-    cancelAtPeriodEnd?: BoolFilter<"CustomerSubscription"> | boolean
-    trialStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
-    trialEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
-    createdAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
-    updatedAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
-  }
-
-  export type TeamCreateWithoutSubscriptionInput = {
+  export type TeamCreateWithoutSubscriptionsInput = {
     name: string
     description?: string | null
     tokenSurvery?: string | null
@@ -38269,7 +38298,7 @@ export namespace Prisma {
     usageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
-  export type TeamUncheckedCreateWithoutSubscriptionInput = {
+  export type TeamUncheckedCreateWithoutSubscriptionsInput = {
     id?: number
     name: string
     description?: string | null
@@ -38296,9 +38325,9 @@ export namespace Prisma {
     usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
-  export type TeamCreateOrConnectWithoutSubscriptionInput = {
+  export type TeamCreateOrConnectWithoutSubscriptionsInput = {
     where: TeamWhereUniqueInput
-    create: XOR<TeamCreateWithoutSubscriptionInput, TeamUncheckedCreateWithoutSubscriptionInput>
+    create: XOR<TeamCreateWithoutSubscriptionsInput, TeamUncheckedCreateWithoutSubscriptionsInput>
   }
 
   export type SubscriptionPlanCreateWithoutSubscriptionsInput = {
@@ -38384,18 +38413,18 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type TeamUpsertWithoutSubscriptionInput = {
-    update: XOR<TeamUpdateWithoutSubscriptionInput, TeamUncheckedUpdateWithoutSubscriptionInput>
-    create: XOR<TeamCreateWithoutSubscriptionInput, TeamUncheckedCreateWithoutSubscriptionInput>
+  export type TeamUpsertWithoutSubscriptionsInput = {
+    update: XOR<TeamUpdateWithoutSubscriptionsInput, TeamUncheckedUpdateWithoutSubscriptionsInput>
+    create: XOR<TeamCreateWithoutSubscriptionsInput, TeamUncheckedCreateWithoutSubscriptionsInput>
     where?: TeamWhereInput
   }
 
-  export type TeamUpdateToOneWithWhereWithoutSubscriptionInput = {
+  export type TeamUpdateToOneWithWhereWithoutSubscriptionsInput = {
     where?: TeamWhereInput
-    data: XOR<TeamUpdateWithoutSubscriptionInput, TeamUncheckedUpdateWithoutSubscriptionInput>
+    data: XOR<TeamUpdateWithoutSubscriptionsInput, TeamUncheckedUpdateWithoutSubscriptionsInput>
   }
 
-  export type TeamUpdateWithoutSubscriptionInput = {
+  export type TeamUpdateWithoutSubscriptionsInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     tokenSurvery?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38421,7 +38450,7 @@ export namespace Prisma {
     usageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
-  export type TeamUncheckedUpdateWithoutSubscriptionInput = {
+  export type TeamUncheckedUpdateWithoutSubscriptionsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38540,7 +38569,7 @@ export namespace Prisma {
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutUsageTrackingInput = {
@@ -38567,7 +38596,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
     responseSummaries?: SurveyResponseSummaryUncheckedCreateNestedManyWithoutTeamInput
-    subscription?: CustomerSubscriptionUncheckedCreateNestedOneWithoutTeamInput
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutUsageTrackingInput = {
@@ -38581,6 +38610,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -38588,7 +38618,7 @@ export namespace Prisma {
     trialEnd?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    team: TeamCreateNestedOneWithoutSubscriptionInput
+    team: TeamCreateNestedOneWithoutSubscriptionsInput
     plan: SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput
   }
 
@@ -38600,6 +38630,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -38648,7 +38679,7 @@ export namespace Prisma {
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutUsageTrackingInput = {
@@ -38675,7 +38706,7 @@ export namespace Prisma {
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
     responseSummaries?: SurveyResponseSummaryUncheckedUpdateManyWithoutTeamNestedInput
-    subscription?: CustomerSubscriptionUncheckedUpdateOneWithoutTeamNestedInput
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CustomerSubscriptionUpsertWithoutUsageTrackingInput = {
@@ -38695,6 +38726,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
@@ -38702,7 +38734,7 @@ export namespace Prisma {
     trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSubscriptionNestedInput
+    team?: TeamUpdateOneRequiredWithoutSubscriptionsNestedInput
     plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
   }
 
@@ -38714,6 +38746,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
@@ -39090,6 +39123,23 @@ export namespace Prisma {
     booleanValue?: boolean | null
     responseCount: number
     lastUpdated?: Date | string
+  }
+
+  export type CustomerSubscriptionCreateManyTeamInput = {
+    id?: string
+    planId: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UsageTrackingCreateManyTeamInput = {
@@ -39578,6 +39628,59 @@ export namespace Prisma {
     booleanValue?: NullableBoolFieldUpdateOperationsInput | boolean | null
     responseCount?: IntFieldUpdateOperationsInput | number
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerSubscriptionUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UsageTrackingUpdateWithoutTeamInput = {
@@ -40304,6 +40407,7 @@ export namespace Prisma {
     billingInterval?: $Enums.BillingInterval
     stripeCustomerId?: string | null
     stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
     currentPeriodStart?: Date | string | null
     currentPeriodEnd?: Date | string | null
     cancelAtPeriodEnd?: boolean
@@ -40319,6 +40423,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
@@ -40326,7 +40431,7 @@ export namespace Prisma {
     trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutSubscriptionNestedInput
+    team?: TeamUpdateOneRequiredWithoutSubscriptionsNestedInput
     usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
   }
 
@@ -40337,6 +40442,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
@@ -40354,6 +40460,7 @@ export namespace Prisma {
     billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
     stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
     stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
     currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean

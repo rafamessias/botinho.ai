@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe, STRIPE_CONFIG } from '@/lib/stripe';
 import Stripe from 'stripe';
-import { PrismaClient, SubscriptionStatus, BillingInterval, UsageMetricType } from '@/lib/generated/prisma';
+import { PrismaClient, SubscriptionStatus, BillingInterval, UsageMetricType, PlanType, SurveyStatus } from '@/lib/generated/prisma';
 import { createCustomerSubscription, updateSubscriptionStatus } from '@/lib/customer-subscription';
 
 const prisma = new PrismaClient();
@@ -52,7 +52,7 @@ function getLimitForMetric(plan: any, metricType: UsageMetricType): number {
 }
 
 // Helper function to update usage tracking limits for plan changes
-async function updateUsageTrackingLimits(subscriptionId: string, newPlan: any): Promise<void> {
+async function updateUsageTrackingLimits(subscriptionId: string, newPlan: any, resetUsage: boolean = false): Promise<void> {
     try {
         // Get current usage tracking records
         const currentTracking = await prisma.usageTracking.findMany({
@@ -71,16 +71,27 @@ async function updateUsageTrackingLimits(subscriptionId: string, newPlan: any): 
         for (const tracking of currentTracking) {
             const newLimit = getLimitForMetric(newPlan, tracking.metricType);
 
+            const updateData: any = {
+                limitValue: newLimit,
+                lastUpdated: new Date()
+            };
+
+            // If resetUsage is true, reset currentUsage based on metric type
+            if (resetUsage) {
+                if (tracking.metricType === UsageMetricType.ACTIVE_SURVEYS) {
+                    // Reset active surveys to 0 since all surveys are archived
+                    updateData.currentUsage = 0;
+                }
+                // TOTAL_COMPLETED_RESPONSES keeps its current value as it's cumulative
+            }
+
             await prisma.usageTracking.update({
                 where: { id: tracking.id },
-                data: {
-                    limitValue: newLimit,
-                    lastUpdated: new Date()
-                }
+                data: updateData
             });
         }
 
-        console.log(`Updated usage tracking limits for subscription ${subscriptionId}`);
+        console.log(`Updated usage tracking limits for subscription ${subscriptionId}${resetUsage ? ' (with usage reset)' : ''}`);
     } catch (error) {
         console.error('Error updating usage tracking limits:', error);
     }
@@ -309,16 +320,30 @@ export async function POST(request: NextRequest) {
                         // Determine billing interval from the price ID
                         const billingInterval = getBillingIntervalFromPriceId(priceId, plan);
 
+                        // Prepare update data
+                        const updateData: any = {
+                            planId: plan.id,
+                            billingInterval: billingInterval,
+                            currentPeriodStart: currentPeriodStart,
+                            currentPeriodEnd: currentPeriodEnd,
+                            cancelAtPeriodEnd: subscription.cancel_at_period_end
+                        };
+
+                        // Include cancellation details if available
+                        if ((subscription as any).cancellation_details) {
+                            const cancellationDetails = (subscription as any).cancellation_details;
+                            updateData.cancellationDetails = JSON.stringify({
+                                comment: cancellationDetails.comment || null,
+                                feedback: cancellationDetails.feedback || null,
+                                reason: cancellationDetails.reason || null
+                            });
+                            console.log(`Cancellation details captured for subscription ${subscription.id}:`, updateData.cancellationDetails);
+                        }
+
                         // Update the subscription with all required fields
                         await prisma.customerSubscription.updateMany({
                             where: { stripeSubscriptionId: subscription.id },
-                            data: {
-                                planId: plan.id,
-                                billingInterval: billingInterval,
-                                currentPeriodStart: currentPeriodStart,
-                                currentPeriodEnd: currentPeriodEnd,
-                                cancelAtPeriodEnd: subscription.cancel_at_period_end
-                            }
+                            data: updateData
                         });
 
                         // Update usage tracking limits if plan changed
@@ -369,18 +394,114 @@ export async function POST(request: NextRequest) {
                 console.log('Subscription deleted:', subscription.id);
 
                 try {
-                    // Update subscription status to canceled
-                    const result = await updateSubscriptionStatus(
-                        subscription.id,
-                        SubscriptionStatus.canceled
-                    );
+                    // Find the existing customer subscription
+                    const existingSubscription = await prisma.customerSubscription.findFirst({
+                        where: { stripeSubscriptionId: subscription.id },
+                        include: { team: true }
+                    });
 
-                    if (result.success) {
-                        console.log(`Subscription canceled successfully: ${subscription.id}`);
-                        // Note: Access should be revoked after grace period, not immediately
-                    } else {
-                        console.error('Failed to cancel subscription:', result.error);
+                    if (!existingSubscription) {
+                        console.error(`No subscription found for Stripe subscription: ${subscription.id}`);
+                        break;
                     }
+
+                    const teamId = existingSubscription.teamId;
+                    console.log(`Processing cancellation for team ${teamId}`);
+
+                    // 1. Mark the existing subscription as canceled
+                    await prisma.customerSubscription.update({
+                        where: { id: existingSubscription.id },
+                        data: {
+                            status: SubscriptionStatus.canceled,
+                            cancelAtPeriodEnd: false
+                        }
+                    });
+
+                    console.log(`✅ Marked subscription as canceled: ${subscription.id}`);
+
+                    // 2. Find all published surveys for this team and archive them
+                    const publishedSurveys = await prisma.survey.findMany({
+                        where: {
+                            teamId: teamId,
+                            status: SurveyStatus.published
+                        }
+                    });
+
+                    if (publishedSurveys.length > 0) {
+                        console.log(`Found ${publishedSurveys.length} published surveys to archive`);
+
+                        // Archive all published surveys and update team's total active surveys count in a transaction
+                        await prisma.$transaction([
+                            prisma.survey.updateMany({
+                                where: {
+                                    teamId: teamId,
+                                    status: SurveyStatus.published
+                                },
+                                data: {
+                                    status: SurveyStatus.archived
+                                }
+                            }),
+                            prisma.team.update({
+                                where: { id: teamId },
+                                data: {
+                                    totalActiveSurveys: 0
+                                }
+                            })
+                        ]);
+
+                        console.log(`✅ Archived ${publishedSurveys.length} published surveys`);
+                    }
+
+                    // 3. Find the Free plan
+                    const freePlan = await prisma.subscriptionPlan.findFirst({
+                        where: {
+                            planType: PlanType.FREE,
+                            isActive: true
+                        }
+                    });
+
+                    if (!freePlan) {
+                        console.error('Free plan not found!');
+                        break;
+                    }
+
+                    // 4. Check if team already has an active Free plan subscription
+                    const existingFreeSubscription = await prisma.customerSubscription.findFirst({
+                        where: {
+                            teamId: teamId,
+                            status: SubscriptionStatus.active,
+                            planId: freePlan.id
+                        }
+                    });
+
+                    if (!existingFreeSubscription) {
+                        // Create a new CustomerSubscription record for the Free plan
+                        const freeSubscriptionResult = await createCustomerSubscription({
+                            teamId: teamId,
+                            planId: freePlan.id,
+                            status: SubscriptionStatus.active,
+                            cancelAtPeriodEnd: false,
+                        });
+
+                        if (freeSubscriptionResult.success) {
+                            console.log(`✅ Created new Free plan subscription for team ${teamId}`);
+
+                            // Initialize usage tracking for the new subscription
+                            if (freeSubscriptionResult.data?.id) {
+                                await updateUsageTrackingLimits(freeSubscriptionResult.data.id, freePlan, true);
+                            }
+                        } else {
+                            console.error('Failed to create free subscription:', freeSubscriptionResult.error);
+                        }
+                    } else {
+                        console.log(`✅ Team ${teamId} already has an active Free plan subscription`);
+                    }
+
+                    console.log(`✅ Subscription cancellation completed for team ${teamId}`);
+                    console.log(`   - Canceled subscription: ${subscription.id}`);
+                    console.log(`   - Archived ${publishedSurveys.length} published surveys`);
+                    console.log(`   - Reset active surveys usage to 0`);
+
                 } catch (error) {
                     console.error('Error processing customer.subscription.deleted:', error);
                 }

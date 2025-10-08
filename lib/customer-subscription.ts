@@ -60,8 +60,8 @@ export const createCustomerSubscription = async (data: CreateCustomerSubscriptio
         // Validate input data
         const validatedData = createCustomerSubscriptionSchema.parse(data)
 
-        // Check if team already has an active subscription
-        const existingSubscription = await prisma.customerSubscription.findUnique({
+        // Check if team already has an active or trialing subscription
+        const existingActiveSubscription = await prisma.customerSubscription.findFirst({
             where: {
                 teamId: validatedData.teamId,
                 status: {
@@ -70,7 +70,7 @@ export const createCustomerSubscription = async (data: CreateCustomerSubscriptio
             }
         })
 
-        if (existingSubscription) {
+        if (existingActiveSubscription) {
             return {
                 success: false,
                 error: "Team already has an active subscription"
@@ -241,7 +241,7 @@ export const getCustomerSubscription = async (data: GetCustomerSubscriptionInput
         const validatedData = getCustomerSubscriptionSchema.parse(data)
 
         // Get the subscription
-        const subscription = await prisma.customerSubscription.findUnique({
+        const subscription = await prisma.customerSubscription.findFirst({
             where: {
                 teamId: validatedData.teamId
             },
@@ -294,7 +294,7 @@ export const deleteCustomerSubscription = async (data: DeleteCustomerSubscriptio
         const validatedData = deleteCustomerSubscriptionSchema.parse(data)
 
         // Check if subscription exists
-        const existingSubscription = await prisma.customerSubscription.findUnique({
+        const existingSubscription = await prisma.customerSubscription.findFirst({
             where: {
                 id: validatedData.id
             }
@@ -346,7 +346,7 @@ export const cancelCustomerSubscription = async (data: DeleteCustomerSubscriptio
         const validatedData = deleteCustomerSubscriptionSchema.parse(data)
 
         // Check if subscription exists
-        const existingSubscription = await prisma.customerSubscription.findUnique({
+        const existingSubscription = await prisma.customerSubscription.findFirst({
             where: {
                 id: validatedData.id
             }
@@ -411,7 +411,7 @@ export const reactivateCustomerSubscription = async (data: DeleteCustomerSubscri
         const validatedData = deleteCustomerSubscriptionSchema.parse(data)
 
         // Check if subscription exists
-        const existingSubscription = await prisma.customerSubscription.findUnique({
+        const existingSubscription = await prisma.customerSubscription.findFirst({
             where: {
                 id: validatedData.id
             }

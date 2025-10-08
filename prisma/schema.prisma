@@ -123,7 +123,7 @@ model Team {
   members            TeamMember[]            @relation("TeamMembers")
   user               User[]                  @relation("UserDefaultTeam")
   responseSummaries  SurveyResponseSummary[]
-  subscription       CustomerSubscription?
+  subscriptions      CustomerSubscription[]
   usageTracking      UsageTracking[]
 
   @@index([tokenSurvery])
@@ -398,12 +398,13 @@ model SubscriptionPlan {
 
 model CustomerSubscription {
   id                   String             @id @default(cuid())
-  teamId               Int                @unique
+  teamId               Int
   planId               String
   status               SubscriptionStatus @default(active)
   billingInterval      BillingInterval    @default(monthly)
-  stripeCustomerId     String?            @unique
+  stripeCustomerId     String?
   stripeSubscriptionId String?            @unique
+  cancellationDetails  String?
   currentPeriodStart   DateTime?
   currentPeriodEnd     DateTime?
   cancelAtPeriodEnd    Boolean            @default(false)
@@ -422,6 +423,7 @@ model CustomerSubscription {
   @@index([stripeSubscriptionId])
   @@index([currentPeriodEnd])
   @@index([billingInterval])
+  @@index([teamId, status])
   @@map("customer_subscriptions")
 }
 
