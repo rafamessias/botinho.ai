@@ -1063,6 +1063,54 @@
             "createTeamButton": "Ir para Equipes"
         }
     },
+    "UpgradeModal": {
+        "limitReached": {
+            "surveys": {
+                "title": "Limite de Pesquisas Atingido",
+                "description": "Você atingiu o limite de pesquisas ativas do seu plano. Faça upgrade para criar mais pesquisas.",
+                "descriptionWithLimit": "Você atingiu o limite de {limit} pesquisas ativas do seu plano. Faça upgrade para criar mais pesquisas."
+            },
+            "responses": {
+                "title": "Limite de Respostas Atingido",
+                "description": "Você atingiu o limite de respostas do seu plano. Faça upgrade para coletar mais respostas.",
+                "descriptionWithLimit": "Você atingiu o limite de {limit} respostas do seu plano. Faça upgrade para coletar mais respostas."
+            },
+            "remove_branding": {
+                "title": "Remover Marca",
+                "description": "Este recurso não está disponível no seu plano atual. Faça upgrade para remover a marca das suas pesquisas.",
+                "descriptionWithLimit": "Remoção de marca não está disponível no seu plano atual. Faça upgrade para personalizar suas pesquisas."
+            },
+            "exports": {
+                "title": "Recurso de Exportação Indisponível",
+                "description": "Exportação de dados não está disponível no seu plano atual. Faça upgrade para exportar os dados das suas pesquisas.",
+                "descriptionWithLimit": "Exportação de dados não está disponível no seu plano atual. Faça upgrade para exportações ilimitadas."
+            },
+            "apis": {
+                "title": "Acesso à API Indisponível",
+                "description": "Acesso à API não está disponível no seu plano atual. Faça upgrade para integrar com suas aplicações.",
+                "descriptionWithLimit": "Acesso à API não está disponível no seu plano atual. Faça upgrade para desbloquear recursos de API."
+            },
+            "public_pages": {
+                "title": "Páginas Públicas Indisponíveis",
+                "description": "Páginas públicas de pesquisa não estão disponíveis no seu plano atual. Faça upgrade para criar páginas públicas de pesquisa.",
+                "descriptionWithLimit": "Páginas públicas de pesquisa não estão disponíveis no seu plano atual. Faça upgrade para desbloquear este recurso."
+            },
+            "custom": {
+                "title": "Upgrade Necessário",
+                "description": "Você atingiu um limite do seu plano atual. Faça upgrade para continuar.",
+                "descriptionWithLimit": "Você atingiu um limite do seu plano atual. Faça upgrade para continuar."
+            }
+        },
+        "benefits": {
+            "title": "Faça upgrade para desbloquear:",
+            "unlimited": "Limites maiores",
+            "advanced": "Recursos avançados"
+        },
+        "actions": {
+            "upgrade": "Ver Planos e Fazer Upgrade",
+            "cancel": "Talvez Depois"
+        }
+    },
     "CreateSurvey": {
         "title": "Criar Pesquisa",
         "description": "Crie uma nova pesquisa para coletar respostas do seu público",
@@ -1080,7 +1128,8 @@
             "publishError": "Falha ao publicar pesquisa",
             "unexpectedError": "Ocorreu um erro inesperado",
             "surveyIdCopied": "ID da pesquisa copiado para a área de transferência",
-            "readonlyMode": "Você não tem permissão para editar esta pesquisa"
+            "readonlyMode": "Você não tem permissão para editar esta pesquisa",
+            "activeSurveysLimitReached": "Você atingiu o limite de pesquisas ativas ({limit})."
         },
         "defaultQuestion": {
             "yesLabel": "Sim",

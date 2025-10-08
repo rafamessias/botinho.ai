@@ -14,6 +14,7 @@ import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
 import { useRouter } from "next/navigation"
 import { useUser } from "../user-provider"
 import LoadingComp from "../loading-comp"
+import { UpgradeModal } from "@/components/upgrade-modal"
 
 interface Question {
     id: string
@@ -73,6 +74,8 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
     const router = useRouter()
     const { hasPermission } = useUser()
     const [loading, setLoading] = useState(false)
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+    const [upgradeLimit, setUpgradeLimit] = useState<number | undefined>(undefined)
 
     const userHasPermission = hasPermission()
     const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
@@ -148,8 +151,15 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                         }
                     }, 800)
                 } else {
-                    console.log(result.error)
-                    toast.error(getErrorMessages(JSON.parse(result.error || "")) || t("messages.saveError"))
+                    if (result.upgrade) {
+                        // Show upgrade modal instead of toast
+                        const limitResult = result as any
+                        setUpgradeLimit(limitResult.currentLimit || 0)
+                        setShowUpgradeModal(true)
+                    } else {
+                        console.log(result.error)
+                        toast.error(getErrorMessages(JSON.parse(result.error || "")) || t("messages.saveError"))
+                    }
                 }
             } catch (error) {
                 console.log(error)
@@ -181,8 +191,14 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                         }
                     }, 800)
                 } else {
-                    console.log(result.error)
-                    toast.error(getErrorMessages(JSON.parse(result.error || "")) || t("messages.publishError"))
+                    if (result.upgrade) {
+                        // Show upgrade modal instead of toast
+                        const limitResult = result as any
+                        setUpgradeLimit(limitResult.currentLimit || 0)
+                        setShowUpgradeModal(true)
+                    } else {
+                        toast.error(getErrorMessages(JSON.parse(result.error || "")) || t("messages.publishError"))
+                    }
                 }
             } catch (error) {
                 console.log(error)
@@ -194,6 +210,14 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
     return (
         <div className="space-y-6">
             <LoadingComp isLoadingProp={loading} />
+
+            <UpgradeModal
+                open={showUpgradeModal}
+                onOpenChange={setShowUpgradeModal}
+                limitType="surveys"
+                currentLimit={upgradeLimit}
+            />
+
             {/* Page Header */}
             <div className="space-y-2">
                 <p className="text-muted-foreground">{t("description")}</p>

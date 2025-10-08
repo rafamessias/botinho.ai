@@ -13,7 +13,7 @@ export const updateUsageTracking = async (teamId: number, subscriptionId: string
             where: {
                 teamId,
                 subscriptionId,
-                metricType: UsageMetricType.TOTAL_RESPONSES,
+                metricType: UsageMetricType.TOTAL_COMPLETED_RESPONSES,
                 periodStart: {
                     lte: new Date()
                 },
@@ -56,7 +56,7 @@ export const updateUsageTrackingInTransaction = async (
             where: {
                 teamId,
                 subscriptionId,
-                metricType: UsageMetricType.TOTAL_RESPONSES,
+                metricType: UsageMetricType.TOTAL_COMPLETED_RESPONSES,
                 periodStart: {
                     lte: new Date()
                 },
@@ -72,6 +72,143 @@ export const updateUsageTrackingInTransaction = async (
     } catch (error) {
         console.error('Error updating usage tracking in transaction:', error);
         // Don't throw error here as it shouldn't block the response submission
+    }
+};
+
+/**
+ * Increment active surveys count in usage tracking within a transaction
+ * Call this when a survey is published
+ */
+export const incrementActiveSurveysInTransaction = async (
+    tx: any,
+    teamId: number,
+    subscriptionId: string
+): Promise<void> => {
+    try {
+        const now = new Date();
+
+        // Check if usage tracking record exists for current period
+        const existingTracking = await tx.usageTracking.findFirst({
+            where: {
+                teamId,
+                subscriptionId,
+                metricType: UsageMetricType.ACTIVE_SURVEYS,
+                periodStart: {
+                    lte: now
+                },
+                periodEnd: {
+                    gte: now
+                }
+            }
+        });
+
+        if (existingTracking) {
+            // Update existing record
+            await tx.usageTracking.update({
+                where: { id: existingTracking.id },
+                data: {
+                    currentUsage: { increment: 1 },
+                    lastUpdated: now
+                }
+            });
+        } else {
+            // Create new tracking record if it doesn't exist
+            const subscription = await tx.customerSubscription.findUnique({
+                where: { id: subscriptionId },
+                include: { plan: true }
+            });
+
+            if (subscription) {
+                const periodStart = subscription.currentPeriodStart || now;
+                const periodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(periodStart, subscription.billingInterval);
+
+                await tx.usageTracking.create({
+                    data: {
+                        teamId,
+                        subscriptionId,
+                        metricType: UsageMetricType.ACTIVE_SURVEYS,
+                        currentUsage: 1,
+                        limitValue: subscription.plan.maxActiveSurveys,
+                        periodStart,
+                        periodEnd,
+                        lastUpdated: now
+                    }
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error incrementing active surveys in transaction:', error);
+        // Don't throw error here as it shouldn't block the survey operation
+    }
+};
+
+/**
+ * Decrement active surveys count in usage tracking within a transaction
+ * Call this when a published survey goes to draft or archived
+ */
+export const decrementActiveSurveysInTransaction = async (
+    tx: any,
+    teamId: number,
+    subscriptionId: string
+): Promise<void> => {
+    try {
+        const now = new Date();
+
+        // Check if usage tracking record exists for current period
+        const existingTracking = await tx.usageTracking.findFirst({
+            where: {
+                teamId,
+                subscriptionId,
+                metricType: UsageMetricType.ACTIVE_SURVEYS,
+                periodStart: {
+                    lte: now
+                },
+                periodEnd: {
+                    gte: now
+                }
+            }
+        });
+
+        if (existingTracking) {
+            // Update existing record - only decrement if currentUsage > 0
+            if (existingTracking.currentUsage > 0) {
+                await tx.usageTracking.update({
+                    where: { id: existingTracking.id },
+                    data: {
+                        currentUsage: { decrement: 1 },
+                        lastUpdated: now
+                    }
+                });
+            }
+        } else {
+            // Create new tracking record if it doesn't exist
+            // Initialize with 0 since we're decrementing (shouldn't go negative)
+            const subscription = await tx.customerSubscription.findUnique({
+                where: { id: subscriptionId },
+                include: { plan: true }
+            });
+
+            if (subscription) {
+                const periodStart = subscription.currentPeriodStart || now;
+                const periodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(periodStart, subscription.billingInterval);
+
+                await tx.usageTracking.create({
+                    data: {
+                        teamId,
+                        subscriptionId,
+                        metricType: UsageMetricType.ACTIVE_SURVEYS,
+                        currentUsage: 0,
+                        limitValue: subscription.plan.maxActiveSurveys,
+                        periodStart,
+                        periodEnd,
+                        lastUpdated: now
+                    }
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error decrementing active surveys in transaction:', error);
+        // Don't throw error here as it shouldn't block the survey operation
     }
 };
 
@@ -164,10 +301,10 @@ export const resetUsageForNewPeriod = async (subscriptionId: string): Promise<vo
     }
 
     const newPeriodStart = subscription.currentPeriodStart || new Date();
-    const newPeriodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(newPeriodStart, subscription.plan.billingInterval);
+    const newPeriodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(newPeriodStart, subscription.billingInterval);
 
     // Create new tracking records for the new period
-    const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_RESPONSES];
+    const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_COMPLETED_RESPONSES];
 
     const trackingRecords = metricTypes.map(metricType => ({
         teamId: subscription.teamId,
@@ -206,7 +343,7 @@ export const getCurrentPeriodUsageReport = async (teamId: number) => {
         throw new Error('No subscription found for team');
     }
 
-    const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_RESPONSES];
+    const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_COMPLETED_RESPONSES];
 
     const report = metricTypes.map(metricType => {
         const tracking = subscription.usageTracking.find(t => t.metricType === metricType);
@@ -325,7 +462,7 @@ const getLimitForMetric = (plan: any, metricType: UsageMetricType): number => {
     switch (metricType) {
         case UsageMetricType.ACTIVE_SURVEYS:
             return plan.maxActiveSurveys;
-        case UsageMetricType.TOTAL_RESPONSES:
+        case UsageMetricType.TOTAL_COMPLETED_RESPONSES:
             return plan.maxResponses;
         default:
             return 0;

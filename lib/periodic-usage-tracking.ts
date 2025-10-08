@@ -1,9 +1,4 @@
-import { PrismaClient, SubscriptionStatus, BillingInterval } from '../lib/generated/prisma';
-
-enum UsageMetricType {
-    ACTIVE_SURVEYS = 'ACTIVE_SURVEYS',
-    TOTAL_RESPONSES = 'TOTAL_RESPONSES'
-}
+import { PrismaClient, SubscriptionStatus, BillingInterval, UsageMetricType } from '../lib/generated/prisma';
 
 const prisma = new PrismaClient();
 
@@ -49,7 +44,7 @@ export async function getCurrentPeriodTracking(
 
     const now = new Date();
     const periodStart = subscription.currentPeriodStart || subscription.createdAt;
-    const periodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(periodStart, subscription.plan.billingInterval);
+    const periodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(periodStart, subscription.billingInterval);
 
     // Try to find existing tracking for current period
     let tracking = await (prisma as any).usageTracking.findFirst({
@@ -141,10 +136,10 @@ export async function resetUsageForNewPeriod(subscriptionId: string): Promise<vo
     }
 
     const newPeriodStart = subscription.currentPeriodStart || new Date();
-    const newPeriodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(newPeriodStart, subscription.plan.billingInterval);
+    const newPeriodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(newPeriodStart, subscription.billingInterval);
 
     // Create new tracking records for the new period
-    const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_RESPONSES];
+    const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_COMPLETED_RESPONSES];
 
     const trackingRecords = metricTypes.map(metricType => ({
         teamId: subscription.teamId,
@@ -172,7 +167,10 @@ export async function getCurrentPeriodUsageReport(teamId: number) {
             usageTracking: {
                 where: {
                     periodStart: {
-                        gte: new Date() // This will be fixed after migration
+                        lte: new Date() // This will be fixed after migration
+                    },
+                    periodEnd: {
+                        gte: new Date()
                     }
                 }
             }
@@ -183,7 +181,7 @@ export async function getCurrentPeriodUsageReport(teamId: number) {
         throw new Error('No subscription found for team');
     }
 
-    const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_RESPONSES];
+    const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_COMPLETED_RESPONSES];
 
     const report = metricTypes.map(metricType => {
         const tracking = subscription.usageTracking.find(t => t.metricType === metricType);
@@ -339,7 +337,7 @@ function getLimitForMetric(plan: any, metricType: UsageMetricType): number {
     switch (metricType) {
         case UsageMetricType.ACTIVE_SURVEYS:
             return plan.maxActiveSurveys;
-        case UsageMetricType.TOTAL_RESPONSES:
+        case UsageMetricType.TOTAL_COMPLETED_RESPONSES:
             return plan.maxResponses;
         default:
             return 0;
@@ -354,6 +352,6 @@ export async function canCreateSurvey(teamId: number): Promise<boolean> {
 }
 
 export async function canReceiveResponse(teamId: number): Promise<boolean> {
-    const result = await checkUsageLimit(teamId, UsageMetricType.TOTAL_RESPONSES);
+    const result = await checkUsageLimit(teamId, UsageMetricType.TOTAL_COMPLETED_RESPONSES);
     return result.canProceed;
 }

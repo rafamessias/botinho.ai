@@ -1062,6 +1062,54 @@
             "createTeamButton": "Go to Teams"
         }
     },
+    "UpgradeModal": {
+        "limitReached": {
+            "surveys": {
+                "title": "Active Survey Limit Reached",
+                "description": "You've reached your plan's limit for active surveys. Upgrade to create more surveys.",
+                "descriptionWithLimit": "You've reached your plan's limit of {limit} active surveys. Upgrade to create more surveys."
+            },
+            "responses": {
+                "title": "Response Limit Reached",
+                "description": "You've reached your plan's limit for survey responses. Upgrade to collect more responses.",
+                "descriptionWithLimit": "You've reached your plan's limit of {limit} responses. Upgrade to collect more responses."
+            },
+            "remove_branding": {
+                "title": "Remove Branding",
+                "description": "This feature is not available in your current plan. Upgrade to remove branding from your surveys.",
+                "descriptionWithLimit": "Branding removal is not available in your current plan. Upgrade to customize your surveys."
+            },
+            "exports": {
+                "title": "Export Feature Unavailable",
+                "description": "Data export is not available in your current plan. Upgrade to export your survey data.",
+                "descriptionWithLimit": "Data export is not available in your current plan. Upgrade to unlock unlimited exports."
+            },
+            "apis": {
+                "title": "API Access Unavailable",
+                "description": "API access is not available in your current plan. Upgrade to integrate with your applications.",
+                "descriptionWithLimit": "API access is not available in your current plan. Upgrade to unlock API features."
+            },
+            "public_pages": {
+                "title": "Public Pages Unavailable",
+                "description": "Public survey pages are not available in your current plan. Upgrade to create public survey pages.",
+                "descriptionWithLimit": "Public survey pages are not available in your current plan. Upgrade to unlock this feature."
+            },
+            "custom": {
+                "title": "Upgrade Required",
+                "description": "You've reached a limit of your current plan. Upgrade to continue.",
+                "descriptionWithLimit": "You've reached a limit of your current plan. Upgrade to continue."
+            }
+        },
+        "benefits": {
+            "title": "Upgrade to unlock:",
+            "unlimited": "Higher limits",
+            "advanced": "Advanced features"
+        },
+        "actions": {
+            "upgrade": "View Plans & Upgrade",
+            "cancel": "Maybe Later"
+        }
+    },
     "CreateSurvey": {
         "title": "Create Survey",
         "description": "Create a new survey to collect responses from your audience",
@@ -1079,7 +1127,8 @@
             "publishError": "Failed to publish survey",
             "unexpectedError": "An unexpected error occurred",
             "surveyIdCopied": "Survey ID copied to clipboard",
-            "readonlyMode": "You don't have permission to edit this survey"
+            "readonlyMode": "You don't have permission to edit this survey",
+            "activeSurveysLimitReached": "You have reached your active surveys limit ({limit})."
         },
         "defaultQuestion": {
             "yesLabel": "Yes",

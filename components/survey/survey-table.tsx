@@ -82,6 +82,7 @@ import { SurveyStatus } from "@/lib/generated/prisma"
 import LoadingComp from "../loading-comp"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useUser } from "../user-provider"
+import { UpgradeModal } from "@/components/upgrade-modal"
 
 // Custom debounce hook - optimized to prevent callback recreation
 const useDebounce = <T extends (...args: any[]) => any>(callback: T, delay: number) => {
@@ -264,6 +265,8 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
     const [surveyToDelete, setSurveyToDelete] = React.useState<DatabaseSurvey | null>(null)
     const [actionLoading, setActionLoading] = React.useState<string | null>(null) // Track which action is loading
+    const [showUpgradeModal, setShowUpgradeModal] = React.useState(false)
+    const [upgradeLimit, setUpgradeLimit] = React.useState<number | undefined>(undefined)
 
     // Sorting state
     const [sorting, setSorting] = React.useState<SortingState>([
@@ -442,7 +445,14 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
                     await fetchSurveys()
                     toast.success(tRef.current("table.messages.surveyUpdatedSuccess"))
                 } else {
-                    toast.error(result.error || tRef.current("table.messages.updateSurveyError"))
+                    if (result.upgrade) {
+                        // Show upgrade modal instead of toast
+                        const limitResult = result as any
+                        setUpgradeLimit(limitResult.currentLimit || 0)
+                        setShowUpgradeModal(true)
+                    } else {
+                        toast.error(result.error || tRef.current("table.messages.updateSurveyError"))
+                    }
                 }
             } catch (error) {
                 toast.error(tRef.current("table.messages.unexpectedError"))
@@ -994,6 +1004,13 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            <UpgradeModal
+                open={showUpgradeModal}
+                onOpenChange={setShowUpgradeModal}
+                limitType="surveys"
+                currentLimit={upgradeLimit}
+            />
         </div>
     )
 }

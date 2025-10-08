@@ -121,8 +121,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
     // Fetch user data when session changes - simplified approach
     useEffect(() => {
-        console.log("UserProvider: status", status)
-        console.log("UserProvider: session?.user?.email", session?.user?.email)
+
         if (status === "loading") {
             return // Still loading session
         }

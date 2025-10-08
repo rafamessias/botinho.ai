@@ -3,8 +3,14 @@
 import { revalidatePath } from "next/cache"
 import { getPrismaWrapper, getCurrentTeamId } from "@/lib/prisma-wrapper"
 import { prisma } from "@/prisma/lib/prisma"
-import { SurveyStatus, QuestionFormat } from "@/lib/generated/prisma"
+import { SurveyStatus, QuestionFormat, UsageMetricType } from "@/lib/generated/prisma"
 import { z } from "zod"
+import { getTranslations } from "next-intl/server"
+import {
+    incrementActiveSurveysInTransaction,
+    decrementActiveSurveysInTransaction,
+    getCurrentUsage
+} from "@/lib/services/usage-tracking"
 
 // Helper function to get and cache team ID for better performance
 const getTeamIdCached = async (): Promise<number | null> => {
@@ -112,6 +118,32 @@ export const createSurvey = async (formData: FormData) => {
             }
         }
 
+        // Get team subscription for usage tracking
+        const activeSubscription = await prisma.customerSubscription.findFirst({
+            where: {
+                teamId: teamId,
+                status: { in: ['active', 'trialing'] }
+            },
+            select: { id: true }
+        })
+
+        const subscriptionId = activeSubscription?.id
+
+        // Validate credits before publishing survey
+        if (validatedData.status === SurveyStatus.published) {
+            const usageInfo = await getCurrentUsage(teamId, UsageMetricType.ACTIVE_SURVEYS)
+
+            if (usageInfo.isOverLimit || usageInfo.remaining <= 0) {
+                const t = await getTranslations("CreateSurvey.messages")
+                return {
+                    success: false,
+                    error: t("activeSurveysLimitReached", { limit: usageInfo.limit }),
+                    upgrade: true,
+                    currentLimit: usageInfo.limit
+                }
+            }
+        }
+
         // Create survey with questions and style in a transaction with optimized operations
         const result = await prisma.$transaction(async (tx) => {
             // Create survey using direct Prisma call for better performance
@@ -136,6 +168,11 @@ export const createSurvey = async (formData: FormData) => {
                     })
                 }
             })
+
+            // Update usage tracking if survey is published and subscription exists
+            if (validatedData.status === SurveyStatus.published && subscriptionId) {
+                await incrementActiveSurveysInTransaction(tx, teamId, subscriptionId)
+            }
 
             // Create survey style using direct Prisma call
             await tx.surveyStyle.create({
@@ -242,6 +279,17 @@ export const updateSurvey = async (formData: FormData) => {
             }
         }
 
+        // Get team subscription for usage tracking
+        const activeSubscription = await prisma.customerSubscription.findFirst({
+            where: {
+                teamId: teamId,
+                status: { in: ['active', 'trialing'] }
+            },
+            select: { id: true }
+        })
+
+        const subscriptionId = activeSubscription?.id
+
         // Get current survey to check status changes and existing questions
         const currentSurvey = await prisma.survey.findUnique({
             where: {
@@ -262,6 +310,24 @@ export const updateSurvey = async (formData: FormData) => {
             return {
                 success: false,
                 error: "Survey not found"
+            }
+        }
+
+        // Validate credits before publishing survey (if changing status to published)
+        const isChangingToPublished = currentSurvey.status !== SurveyStatus.published &&
+            validatedData.status === SurveyStatus.published
+
+        if (isChangingToPublished) {
+            const usageInfo = await getCurrentUsage(teamId, UsageMetricType.ACTIVE_SURVEYS)
+
+            if (usageInfo.isOverLimit || usageInfo.remaining <= 0) {
+                const t = await getTranslations("CreateSurvey.messages")
+                return {
+                    success: false,
+                    error: t("activeSurveysLimitReached", { limit: usageInfo.limit }),
+                    upgrade: true,
+                    currentLimit: usageInfo.limit
+                }
             }
         }
 
@@ -300,6 +366,17 @@ export const updateSurvey = async (formData: FormData) => {
                         where: { id: teamId },
                         data: updateData
                     })
+                }
+
+                // Update usage tracking based on status changes
+                if (subscriptionId) {
+                    if (oldStatus === SurveyStatus.published && newStatus !== SurveyStatus.published) {
+                        // Moving from published to draft/archived - decrement usage
+                        await decrementActiveSurveysInTransaction(tx, teamId, subscriptionId)
+                    } else if (oldStatus !== SurveyStatus.published && newStatus === SurveyStatus.published) {
+                        // Moving to published - increment usage
+                        await incrementActiveSurveysInTransaction(tx, teamId, subscriptionId)
+                    }
                 }
             }
 
@@ -622,6 +699,17 @@ export const deleteSurvey = async (id: string) => {
             }
         }
 
+        // Get team subscription for usage tracking
+        const activeSubscription = await prisma.customerSubscription.findFirst({
+            where: {
+                teamId: teamId,
+                status: { in: ['active', 'trialing'] }
+            },
+            select: { id: true }
+        })
+
+        const subscriptionId = activeSubscription?.id
+
         // Get survey details before deletion to update team counts using direct Prisma call
         const survey = await prisma.survey.findUnique({
             where: {
@@ -657,6 +745,11 @@ export const deleteSurvey = async (id: string) => {
                 where: { id: survey.teamId },
                 data: updateData
             })
+
+            // Update usage tracking if deleted survey was published
+            if (survey.status === SurveyStatus.published && subscriptionId) {
+                await decrementActiveSurveysInTransaction(tx, teamId, subscriptionId)
+            }
         }, {
             timeout: 3000 // Reduced timeout for delete operation
         })
@@ -834,6 +927,17 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
             }
         }
 
+        // Get team subscription for usage tracking
+        const activeSubscription = await prisma.customerSubscription.findFirst({
+            where: {
+                teamId: teamId,
+                status: { in: ['active', 'trialing'] }
+            },
+            select: { id: true }
+        })
+
+        const subscriptionId = activeSubscription?.id
+
         // Get current survey status and team ID using direct Prisma call
         const currentSurvey = await prisma.survey.findUnique({
             where: {
@@ -847,6 +951,24 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
             return {
                 success: false,
                 error: "Survey not found"
+            }
+        }
+
+        // Validate credits before publishing survey (if changing status to published)
+        const isChangingToPublished = currentSurvey.status !== SurveyStatus.published &&
+            status === SurveyStatus.published
+
+        if (isChangingToPublished) {
+            const usageInfo = await getCurrentUsage(teamId, UsageMetricType.ACTIVE_SURVEYS)
+
+            if (usageInfo.isOverLimit || usageInfo.remaining <= 0) {
+                const t = await getTranslations("CreateSurvey.messages")
+                return {
+                    success: false,
+                    error: t("activeSurveysLimitReached", { limit: usageInfo.limit }),
+                    upgrade: true,
+                    currentLimit: usageInfo.limit
+                }
             }
         }
 
@@ -879,6 +1001,17 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
                         where: { id: currentSurvey.teamId },
                         data: updateData
                     })
+                }
+
+                // Update usage tracking based on status changes
+                if (subscriptionId) {
+                    if (oldStatus === SurveyStatus.published && newStatus !== SurveyStatus.published) {
+                        // Moving from published to draft/archived - decrement usage
+                        await decrementActiveSurveysInTransaction(tx, teamId, subscriptionId)
+                    } else if (oldStatus !== SurveyStatus.published && newStatus === SurveyStatus.published) {
+                        // Moving to published - increment usage
+                        await incrementActiveSurveysInTransaction(tx, teamId, subscriptionId)
+                    }
                 }
             }
         }, {

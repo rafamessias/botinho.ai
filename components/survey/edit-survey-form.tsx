@@ -14,6 +14,7 @@ import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
 import { ArrowLeft, Clipboard } from "lucide-react"
 import { useUser } from "../user-provider"
+import { UpgradeModal } from "@/components/upgrade-modal"
 
 interface Question {
     id: string
@@ -111,6 +112,8 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
     const [pendingAction, setPendingAction] = useState<'save' | 'publish' | null>(null)
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+    const [upgradeLimit, setUpgradeLimit] = useState<number | undefined>(undefined)
     const { hasPermission } = useUser()
     const userHasPermission = hasPermission()
     const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
@@ -183,8 +186,15 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                     toast.success(t("messages.saveSuccess"))
                     //router.push("/survey")
                 } else {
-                    console.log(result.error)
-                    toast.error(t("messages.saveError"))
+                    if (result.upgrade) {
+                        // Show upgrade modal instead of toast
+                        const limitResult = result as any
+                        setUpgradeLimit(limitResult.currentLimit || 0)
+                        setShowUpgradeModal(true)
+                    } else {
+                        console.log(result.error)
+                        toast.error(t("messages.saveError"))
+                    }
                 }
             } catch (error) {
                 console.log("error save", error)
@@ -215,9 +225,17 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                     toast.success(t("messages.publishSuccess"))
                     router.push("/survey")
                 } else {
-                    console.log(result.error)
-                    toast.error(result.error || t("messages.publishError"))
+                    if (result.upgrade) {
+                        // Show upgrade modal instead of toast
+                        const limitResult = result as any
+                        setUpgradeLimit(limitResult.currentLimit || 0)
+                        setShowUpgradeModal(true)
+                    } else {
+                        console.log(result.error)
+                        toast.error(result.error || t("messages.publishError"))
+                    }
                 }
+
             } catch (error) {
                 console.log(error)
                 toast.error(t("messages.unexpectedError"))
@@ -332,6 +350,13 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                     )}
                 </CardContent>
             </Card>
+
+            <UpgradeModal
+                open={showUpgradeModal}
+                onOpenChange={setShowUpgradeModal}
+                limitType="surveys"
+                currentLimit={upgradeLimit}
+            />
         </div>
     )
 }

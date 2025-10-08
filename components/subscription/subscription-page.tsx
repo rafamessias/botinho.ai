@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import { createPortalSession } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -88,8 +88,8 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
     const getMetricIcon = (metricType: string) => {
         switch (metricType) {
             case 'ACTIVE_SURVEYS':
-                return <BarChart3 className="h-4 w-4" />;
-            case 'TOTAL_RESPONSES':
+                return <FileCheck className="h-4 w-4" />;
+            case 'TOTAL_COMPLETED_RESPONSES':
                 return <MessageSquare className="h-4 w-4" />;
             default:
                 return <Users className="h-4 w-4" />;
@@ -100,7 +100,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
         switch (metricType) {
             case 'ACTIVE_SURVEYS':
                 return t("page.activeSurveys");
-            case 'TOTAL_RESPONSES':
+            case 'TOTAL_COMPLETED_RESPONSES':
                 return t("page.totalResponses");
             default:
                 return metricType;
