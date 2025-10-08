@@ -194,6 +194,18 @@
             "system": "System",
             "description": "Select your preferred theme for the application"
         },
+        "branding": {
+            "title": "Branding",
+            "description": "Control the display of branding in your surveys",
+            "switchLabel": "Remove Branding",
+            "switchDescription": "Hide branding from your surveys and public pages",
+            "noTeam": "No team available. Please create or join a team first.",
+            "notAuthorized": "You must be an admin to change branding settings",
+            "brandingEnabled": "Branding has been enabled",
+            "brandingDisabled": "Branding has been removed",
+            "upgradeRequired": "Removing branding is not available in your current plan",
+            "updateFailed": "Failed to update branding settings"
+        },
         "api": {
             "title": "API Configuration",
             "description": "Manage API tokens and access for survey submissions",

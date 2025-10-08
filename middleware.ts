@@ -176,7 +176,14 @@ export default async function middleware(request: NextRequest) {
             pathname.startsWith(`/${locale}`)
         ) || routing.defaultLocale;
 
-        const redirectUrl = new URL(`${request.nextUrl.origin}/${currentLocale}/sign-in?redirect=${pathname}`);
+        // Check if the pathname is just a locale root (e.g., /en or /pt-BR)
+        const isLocaleRoot = routing.locales.some(locale => pathname === `/${locale}` || pathname === `/${locale}/`);
+
+        // Only add redirect parameter if it's not just the locale root
+        const redirectUrl = isLocaleRoot
+            ? new URL(`${request.nextUrl.origin}/${currentLocale}/sign-in`)
+            : new URL(`${request.nextUrl.origin}/${currentLocale}/sign-in?redirect=${pathname}`);
+
         return NextResponse.redirect(redirectUrl);
     }
 

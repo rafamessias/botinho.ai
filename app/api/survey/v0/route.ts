@@ -449,7 +449,7 @@ export async function POST(request: NextRequest) {
         });
 
         // Update totalOpenSurveys and ResponseRate for the survey
-        await updateSurveyStats(survey as { id: string, totalOpenSurveys: number, totalResponses: number });
+        await updateSurveyStats(survey.id, survey.totalOpenSurveys, survey.totalResponses + 1);
 
         // Invalidate caches after successful submission
         invalidateSurveyCache(survey.id);
@@ -491,6 +491,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
     try {
+        console.log('request', request);
 
         const team = await validateToken(request);
 
@@ -570,7 +571,7 @@ export async function GET(request: NextRequest) {
         });
 
         // Update totalOpenSurveys and ResponseRate for the survey
-        await updateSurveyStats(survey as { id: string, totalOpenSurveys: number, totalResponses: number });
+        await updateSurveyStats(survey.id, survey.totalOpenSurveys + 1, survey.totalResponses);
 
         return addCorsHeaders(NextResponse.json({
             success: true,
@@ -605,19 +606,19 @@ export async function GET(request: NextRequest) {
     }
 }
 
-async function updateSurveyStats(survey: { id: string, totalOpenSurveys: number, totalResponses: number }) {
+async function updateSurveyStats(id: string, totalOpenSurveys: number, totalResponses: number) {
     let responseRate = 0;
-    const denominator = survey.totalOpenSurveys + survey.totalResponses;
+    const denominator = totalOpenSurveys + totalResponses;
     if (denominator > 0) {
-        responseRate = (survey.totalResponses / denominator) * 100;
+        responseRate = (totalResponses / denominator) * 100;
     }
 
     // Update the survey model with new values
     await prisma.survey.update({
-        where: { id: survey.id },
+        where: { id: id },
         data: {
-            totalOpenSurveys: survey.totalOpenSurveys,
-            totalResponses: survey.totalResponses,
+            totalOpenSurveys: totalOpenSurveys,
+            totalResponses: totalResponses,
             ResponseRate: responseRate,
         }
     });

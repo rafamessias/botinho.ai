@@ -194,6 +194,18 @@
             "system": "Sistema",
             "description": "Selecione seu tema preferido para o aplicativo"
         },
+        "branding": {
+            "title": "Marca",
+            "description": "Controle a exibição da marca em suas pesquisas",
+            "switchLabel": "Remover Marca",
+            "switchDescription": "Ocultar a marca de suas pesquisas e páginas públicas",
+            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
+            "notAuthorized": "Você deve ser um administrador para alterar as configurações de marca",
+            "brandingEnabled": "A marca foi ativada",
+            "brandingDisabled": "A marca foi removida",
+            "upgradeRequired": "A remoção da marca não está disponível em seu plano atual",
+            "updateFailed": "Falha ao atualizar as configurações de marca"
+        },
         "api": {
             "title": "Configuração da API",
             "description": "Gerencie tokens da API e acesso para envio de pesquisas",

@@ -139,3 +139,43 @@ export const getSubscriptionData = async () => {
         };
     }
 };
+
+export const checkExportPermission = async () => {
+    try {
+        const teamId = await getCurrentTeamId();
+
+        if (!teamId) {
+            return {
+                success: false,
+                canExport: false,
+                error: 'No team found for current user'
+            };
+        }
+
+        // Get subscription data
+        const subscriptionResult = await getCustomerSubscription({ teamId });
+
+        if (!subscriptionResult.success || !subscriptionResult.data) {
+            return {
+                success: false,
+                canExport: false,
+                error: subscriptionResult.error || 'No subscription found'
+            };
+        }
+
+        const canExport = subscriptionResult.data.plan?.allowExport || false;
+
+        return {
+            success: true,
+            canExport,
+            planType: subscriptionResult.data.plan?.planType || 'FREE'
+        };
+    } catch (error) {
+        console.error('Error checking export permission:', error);
+        return {
+            success: false,
+            canExport: false,
+            error: error instanceof Error ? error.message : 'Unknown error occurred'
+        };
+    }
+};

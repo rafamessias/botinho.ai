@@ -9,7 +9,7 @@ import { generateConfirmationToken, getCurrentLocale } from "./auth"
 import bcrypt from "bcryptjs"
 import resend from "@/lib/resend"
 import TeamInvitationEmail from "@/emails/TeamInvitationEmail"
-import { validateApiAccess } from "@/lib/services/subscription-validation"
+import { validateApiAccess, validateRemoveBranding } from "@/lib/services/subscription-validation"
 
 // Validation schemas
 const createTeamSchema = z.object({
@@ -56,6 +56,11 @@ const generateTeamTokenSchema = z.object({
 const regenerateTeamTokenSchema = z.object({
     teamId: z.number(),
     tokenType: z.enum(["survey", "api"]).default("survey"),
+})
+
+const updateTeamBrandingSchema = z.object({
+    teamId: z.number(),
+    branding: z.boolean(),
 })
 
 /**
@@ -994,5 +999,112 @@ export const getTeamById = async (teamId: number) => {
     } catch (error) {
         console.error("Get team by id error:", error)
         return { success: false, error: "Failed to get team" }
+    }
+}
+
+/**
+ * Update team branding setting
+ */
+export const updateTeamBrandingAction = async (formData: z.infer<typeof updateTeamBrandingSchema>) => {
+    const t = await getTranslations("Settings.branding")
+
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        const validatedData = updateTeamBrandingSchema.parse(formData)
+
+        // Check if user is admin of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId: validatedData.teamId,
+                user: { email: session.user.email },
+                isAdmin: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to update branding for this team" }
+        }
+
+        // If trying to disable branding (branding = false), validate subscription
+        if (!validatedData.branding) {
+            const canRemoveBranding = await validateRemoveBranding(validatedData.teamId)
+
+            if (!canRemoveBranding) {
+                return {
+                    success: false,
+                    error: t("upgradeRequired"),
+                    requiresUpgrade: true,
+                    limitType: "remove_branding"
+                }
+            }
+        }
+
+        // Update team branding setting
+        const updatedTeam = await prisma.team.update({
+            where: { id: validatedData.teamId },
+            data: { branding: validatedData.branding }
+        })
+
+        return {
+            success: true,
+            message: validatedData.branding ? t("brandingEnabled") : t("brandingDisabled"),
+            branding: updatedTeam.branding
+        }
+
+    } catch (error) {
+        console.error("Update team branding error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("updateFailed") }
+    }
+}
+
+/**
+ * Get team branding setting
+ */
+export const getTeamBrandingAction = async (teamId: number) => {
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        // Check if user is a member of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId,
+                user: { email: session.user.email },
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to view this team" }
+        }
+
+        // Get team branding setting
+        const team = await prisma.team.findUnique({
+            where: { id: teamId },
+            select: { branding: true }
+        })
+
+        if (!team) {
+            return { success: false, error: "Team not found" }
+        }
+
+        return {
+            success: true,
+            branding: team.branding
+        }
+
+    } catch (error) {
+        console.error("Get team branding error:", error)
+        return { success: false, error: "Failed to get team branding" }
     }
 }

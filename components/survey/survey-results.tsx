@@ -43,8 +43,10 @@ import {
 import { RawDataTable } from "./raw-data-table"
 import { SurveyData, Question } from "./types"
 import { getSurveyResponseSummary, getQuestionResponses, getPublishedAndArchivedSurveys } from "@/components/server-actions/survey"
+import { checkExportPermission } from "@/components/server-actions/subscription"
 import { SurveyResponseSummary } from "@/lib/generated/prisma"
 import { useUser } from "../user-provider"
+import { UpgradeModal } from "@/components/upgrade-modal"
 
 // Extended type for SurveyResponseSummary with relations
 type SurveyResponseSummaryWithRelations = SurveyResponseSummary & {
@@ -76,6 +78,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
     const [loading, setLoading] = React.useState(false)
     const [selectedSurvey, setSelectedSurvey] = React.useState<SurveyData | null>(serverSurveys?.find(survey => survey.id === selectedSurveyId) || null)
     const [surveys, setSurveys] = React.useState<SurveyData[]>(serverSurveys || [])
+    const [upgradeModalOpen, setUpgradeModalOpen] = React.useState(false)
     const { user } = useUser()
 
     React.useEffect(() => {
@@ -206,6 +209,14 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
 
     const handleExport = async (format: "csv" | "excel") => {
         if (!surveyData || !selectedSurvey) return
+
+        // Check export permission
+        const permissionResult = await checkExportPermission()
+
+        if (!permissionResult.success || !permissionResult.canExport) {
+            setUpgradeModalOpen(true)
+            return
+        }
 
         setIsExporting(true)
 
@@ -440,178 +451,186 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
     }
 
     return (
-        <div className="space-y-6">
-            {/* Survey Selection */}
-            <Card className="border-none shadow-none m-0 bg-transparent">
-                <CardHeader>
-                    <CardTitle>Survey Results</CardTitle>
-                    <CardDescription>
-                        Select a survey to view its results and analytics
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                        <div className="flex-1 min-w-0">
-                            <Popover open={open} onOpenChange={setOpen}>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={open}
-                                        className="w-full sm:max-w-md justify-between h-14"
-                                    >
-                                        <div className="flex flex-col items-start min-w-0 flex-1 hover:text-foreground">
-                                            {selectedSurvey ? (
-                                                <>
-                                                    <span className="font-medium truncate">{selectedSurvey.title}</span>
-                                                    <span className="text-foreground">
-                                                        {selectedSurvey.totalResponses} responses • {selectedSurvey.createdAt}
-                                                    </span>
-                                                </>
-                                            ) : (
-                                                <span className="text-foreground">Select a survey to view results</span>
-                                            )}
-                                        </div>
-                                        <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-                                    <Command>
-                                        <CommandInput placeholder="Search surveys..." />
-                                        <CommandList>
-                                            <CommandEmpty>No surveys found.</CommandEmpty>
-                                            <CommandGroup>
-                                                {surveys.map((survey) => (
-                                                    <CommandItem
-                                                        key={survey.id}
-                                                        value={survey.title}
-                                                        onSelect={() => {
-                                                            setSelectedSurveyId(survey.id)
-                                                            setOpen(false)
-                                                        }}
-                                                    >
-                                                        <div className="flex flex-col w-full">
-                                                            <span className="font-medium">{survey.title}</span>
-                                                            <span className="text-sm text-foreground">
-                                                                {survey.totalResponses} responses • {survey.createdAt}
-                                                            </span>
-                                                        </div>
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
+        <>
+            <UpgradeModal
+                open={upgradeModalOpen}
+                onOpenChange={setUpgradeModalOpen}
+                limitType="exports"
+            />
 
-                        {selectedSurvey && (
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center space-x-2">
-                                    <Switch
-                                        id="view-mode"
-                                        checked={viewMode === "table"}
-                                        onCheckedChange={(checked) => setViewMode(checked ? "table" : "charts")}
-                                        disabled={loading}
-                                    />
-                                    <Label htmlFor="view-mode" className="flex items-center gap-2">
-                                        {viewMode === "charts" ? <BarChart3 className="h-4 w-4" /> : <Table className="h-4 w-4" />}
-                                        {viewMode === "charts" ? "Charts" : "Table"}
-                                    </Label>
-                                </div>
-
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" disabled={isExporting || loading}>
-                                            <Download className="h-4 w-4 mr-2" />
-                                            Export
+            <div className="space-y-6">
+                {/* Survey Selection */}
+                <Card className="border-none shadow-none m-0 bg-transparent">
+                    <CardHeader>
+                        <CardTitle>Survey Results</CardTitle>
+                        <CardDescription>
+                            Select a survey to view its results and analytics
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                            <div className="flex-1 min-w-0">
+                                <Popover open={open} onOpenChange={setOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            role="combobox"
+                                            aria-expanded={open}
+                                            className="w-full sm:max-w-md justify-between h-14"
+                                        >
+                                            <div className="flex flex-col items-start min-w-0 flex-1 hover:text-foreground">
+                                                {selectedSurvey ? (
+                                                    <>
+                                                        <span className="font-medium truncate">{selectedSurvey.title}</span>
+                                                        <span className="text-foreground">
+                                                            {selectedSurvey.totalResponses} responses • {selectedSurvey.createdAt}
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-foreground">Select a survey to view results</span>
+                                                )}
+                                            </div>
+                                            <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuItem onClick={() => handleExport("csv")}>
-                                            Export as CSV
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => handleExport("excel")}>
-                                            Export as Excel
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                                        <Command>
+                                            <CommandInput placeholder="Search surveys..." />
+                                            <CommandList>
+                                                <CommandEmpty>No surveys found.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {surveys.map((survey) => (
+                                                        <CommandItem
+                                                            key={survey.id}
+                                                            value={survey.title}
+                                                            onSelect={() => {
+                                                                setSelectedSurveyId(survey.id)
+                                                                setOpen(false)
+                                                            }}
+                                                        >
+                                                            <div className="flex flex-col w-full">
+                                                                <span className="font-medium">{survey.title}</span>
+                                                                <span className="text-sm text-foreground">
+                                                                    {survey.totalResponses} responses • {survey.createdAt}
+                                                                </span>
+                                                            </div>
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
-                        )}
-                    </div>
-                </CardContent>
-            </Card>
 
-            {/* Results Display */}
-            {!selectedSurvey ? (
-                <Card className="border-none shadow-none bg-transparent">
-                    <CardContent className="flex items-center justify-center py-12">
-                        <div className="text-center">
-                            <p className="text-muted-foreground text-lg mb-2">No survey selected</p>
-                            <p className="text-muted-foreground">Please select a survey from the dropdown above to view results</p>
+                            {selectedSurvey && (
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center space-x-2">
+                                        <Switch
+                                            id="view-mode"
+                                            checked={viewMode === "table"}
+                                            onCheckedChange={(checked) => setViewMode(checked ? "table" : "charts")}
+                                            disabled={loading}
+                                        />
+                                        <Label htmlFor="view-mode" className="flex items-center gap-2">
+                                            {viewMode === "charts" ? <BarChart3 className="h-4 w-4" /> : <Table className="h-4 w-4" />}
+                                            {viewMode === "charts" ? "Charts" : "Table"}
+                                        </Label>
+                                    </div>
+
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="outline" disabled={isExporting || loading}>
+                                                <Download className="h-4 w-4 mr-2" />
+                                                Export
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
+                                            <DropdownMenuItem onClick={() => handleExport("csv")}>
+                                                Export as CSV
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleExport("excel")}>
+                                                Export as Excel
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            )}
                         </div>
                     </CardContent>
                 </Card>
-            ) : loading ? (
-                <Card className="border-none shadow-none bg-transparent">
-                    <CardContent className="flex items-center justify-center py-12">
-                        <div className="flex flex-col items-center justify-center w-full">
-                            <div className="relative flex items-center justify-center w-20 h-20">
-                                <span
-                                    className="relative inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"
-                                    role="status"
-                                    aria-label="Loading"
-                                    tabIndex={0}
-                                />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            ) : !surveyData ? (
-                <Card className="border-none shadow-none bg-transparent">
-                    <CardContent className="flex items-center justify-center py-12">
-                        <div className="text-center">
-                            <p className="text-muted-foreground text-lg mb-2">No data available</p>
-                            <p className="text-muted-foreground">This survey doesn't have any responses yet</p>
-                        </div>
-                    </CardContent>
-                </Card>
-            ) : (
-                <div className="">
-                    {/* Survey Info */}
+
+                {/* Results Display */}
+                {!selectedSurvey ? (
                     <Card className="border-none shadow-none bg-transparent">
-                        <CardHeader>
-                            <CardTitle>{selectedSurvey.title}</CardTitle>
-                            <CardDescription>{selectedSurvey.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                                <div>
-                                    <span className="font-medium">Total Responses:</span>
-                                    <span className="ml-2 text-muted-foreground">{selectedSurvey.totalResponses}</span>
-                                </div>
-                                <div>
-                                    <span className="font-medium">Created:</span>
-                                    <span className="ml-2 text-muted-foreground">{selectedSurvey.createdAt}</span>
-                                </div>
-                                <div>
-                                    <span className="font-medium">Questions:</span>
-                                    <span className="ml-2 text-muted-foreground">{processedQuestions.length}</span>
+                        <CardContent className="flex items-center justify-center py-12">
+                            <div className="text-center">
+                                <p className="text-muted-foreground text-lg mb-2">No survey selected</p>
+                                <p className="text-muted-foreground">Please select a survey from the dropdown above to view results</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ) : loading ? (
+                    <Card className="border-none shadow-none bg-transparent">
+                        <CardContent className="flex items-center justify-center py-12">
+                            <div className="flex flex-col items-center justify-center w-full">
+                                <div className="relative flex items-center justify-center w-20 h-20">
+                                    <span
+                                        className="relative inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"
+                                        role="status"
+                                        aria-label="Loading"
+                                        tabIndex={0}
+                                    />
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
+                ) : !surveyData ? (
+                    <Card className="border-none shadow-none bg-transparent">
+                        <CardContent className="flex items-center justify-center py-12">
+                            <div className="text-center">
+                                <p className="text-muted-foreground text-lg mb-2">No data available</p>
+                                <p className="text-muted-foreground">This survey doesn't have any responses yet</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="">
+                        {/* Survey Info */}
+                        <Card className="border-none shadow-none bg-transparent">
+                            <CardHeader>
+                                <CardTitle>{selectedSurvey.title}</CardTitle>
+                                <CardDescription>{selectedSurvey.description}</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <span className="font-medium">Total Responses:</span>
+                                        <span className="ml-2 text-muted-foreground">{selectedSurvey.totalResponses}</span>
+                                    </div>
+                                    <div>
+                                        <span className="font-medium">Created:</span>
+                                        <span className="ml-2 text-muted-foreground">{selectedSurvey.createdAt}</span>
+                                    </div>
+                                    <div>
+                                        <span className="font-medium">Questions:</span>
+                                        <span className="ml-2 text-muted-foreground">{processedQuestions.length}</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
 
-                    {/* Questions Results */}
-                    {viewMode === "charts" ? (
-                        <div className="px-6 space-y-6">
-                            {processedQuestions.map((question) => renderQuestionChart(question))}
-                        </div>
-                    ) : (
-                        <RawDataTable survey={selectedSurvey} rawData={rawData} />
-                    )}
-                </div>
-            )}
-        </div>
+                        {/* Questions Results */}
+                        {viewMode === "charts" ? (
+                            <div className="px-6 space-y-6">
+                                {processedQuestions.map((question) => renderQuestionChart(question))}
+                            </div>
+                        ) : (
+                            <RawDataTable survey={selectedSurvey} rawData={rawData} />
+                        )}
+                    </div>
+                )}
+            </div>
+        </>
     )
 }

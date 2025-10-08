@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/prisma/lib/prisma';
-import { getStatusCodeForError, validateApiAccess } from '@/lib/services/subscription-validation';
+import { getStatusCodeForError, validateSubscriptionAndUsage, ValidationType } from '@/lib/services/subscription-validation';
 import { getQuestionResponses } from '@/components/server-actions/survey';
 import { SurveyStatus } from '@/lib/generated/prisma';
 
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Validate subscription and usage limits for API export access
-        const subscriptionValidation = await validateApiAccess(team.id);
+        const subscriptionValidation = await validateSubscriptionAndUsage(team.id, ValidationType.API_ACCESS);
 
         if (!subscriptionValidation.canProceed) {
             const errorCode = subscriptionValidation.error?.code;
