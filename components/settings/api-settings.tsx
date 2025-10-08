@@ -42,14 +42,14 @@ export const ApiSettings = () => {
     }
 
     const renderCodeSnippet = (title: string, description: string, code: string, language: string, copyButtonText: string) => (
-        <Card className="w-full overflow-hidden">
-            <CardHeader>
+        <Card className="w-full overflow-hidden p-0 pt-4 sm:pt-0 border-none rounded-none">
+            <CardHeader className="p-0">
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>
                     {description}
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
                 <div className="bg-gray-900 p-4 rounded-lg relative overflow-hidden">
                     <Button
                         type="button"
