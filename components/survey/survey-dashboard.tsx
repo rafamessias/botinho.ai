@@ -27,7 +27,7 @@ interface CurrentTeam {
     totalSurveys: number
     totalActiveSurveys: number
     totalResponses: number
-    ResponseRate: number
+    responseRate: number
 }
 
 export const SurveyDashboard = ({ initialData, currentTeam }: { initialData?: PaginatedSurveysResult, currentTeam?: CurrentTeam }) => {
@@ -40,7 +40,7 @@ export const SurveyDashboard = ({ initialData, currentTeam }: { initialData?: Pa
         totalSurveys: currentTeam?.totalSurveys || 0,
         activeSurveys: currentTeam?.totalActiveSurveys || 0,
         totalResponses: currentTeam?.totalResponses || 0,
-        responseRate: currentTeam?.ResponseRate || 0,
+        responseRate: Math.trunc(currentTeam?.responseRate || 0),
     })
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export const SurveyDashboard = ({ initialData, currentTeam }: { initialData?: Pa
                     totalSurveys: currentTeam.team?.totalSurveys || 0,
                     activeSurveys: currentTeam.team?.totalActiveSurveys || 0,
                     totalResponses: currentTeam.team?.totalResponses || 0,
-                    responseRate: currentTeam.team?.ResponseRate || 0,
+                    responseRate: Math.trunc(currentTeam.team?.responseRate || 0),
                 })
             }
 
@@ -139,7 +139,7 @@ export const SurveyDashboard = ({ initialData, currentTeam }: { initialData?: Pa
                     <CardHeader className="pb-2 sm:pb-6">
                         <CardDescription className="text-xs sm:text-sm">{t("stats.responseRate.title")}</CardDescription>
                         <CardTitle className="text-lg font-semibold tabular-nums sm:text-2xl @[250px]/card:text-3xl">
-                            {surveyStats.responseRate}
+                            {surveyStats.responseRate}%
                         </CardTitle>
                     </CardHeader>
                     <CardFooter className="hidden sm:flex flex-col items-start gap-1.5 text-sm">

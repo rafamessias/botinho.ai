@@ -31,7 +31,7 @@ const getCachedSurvey = async (surveyId: string, teamId: number) => {
             id: true,
             totalOpenSurveys: true,
             totalResponses: true,
-            ResponseRate: true,
+            responseRate: true,
             style: {
                 select: {
                     styleMode: true,
@@ -307,10 +307,6 @@ export async function POST(request: NextRequest) {
             return addCorsHeaders(NextResponse.json(
                 {
                     error: subscriptionValidation.error?.message || 'Subscription limit exceeded',
-                    code: errorCode,
-                    details: subscriptionValidation.error?.details,
-                    usage: subscriptionValidation.usage,
-                    subscription: subscriptionValidation.subscription
                 },
                 { status: statusCode }
             ));
@@ -337,7 +333,7 @@ export async function POST(request: NextRequest) {
                         id: true,
                         totalOpenSurveys: true,
                         totalResponses: true,
-                        ResponseRate: true,
+                        responseRate: true,
                         questions: {
                             select: {
                                 id: true,
@@ -424,18 +420,6 @@ export async function POST(request: NextRequest) {
             // Execute batch summary updates
             await executeBatchSummaryUpdates(tx, summaryUpdates);
 
-            // Batch update counters
-            await Promise.all([
-                tx.team.update({
-                    where: { id: team.id },
-                    data: { totalResponses: { increment: 1 } }
-                }),
-                tx.survey.update({
-                    where: { id: survey.id },
-                    data: { totalResponses: { increment: 1 } }
-                })
-            ]);
-
             // Update usage tracking within the transaction
             await updateUsageTrackingInTransaction(tx, team.id, subscriptionValidation.subscription.id);
 
@@ -449,7 +433,7 @@ export async function POST(request: NextRequest) {
         });
 
         // Update totalOpenSurveys and ResponseRate for the survey
-        await updateSurveyStats(survey.id, survey.totalOpenSurveys, survey.totalResponses + 1);
+        await updateSurveyStats(survey.id, 0, 1, team.id); // increment responses by 1
 
         // Invalidate caches after successful submission
         invalidateSurveyCache(survey.id);
@@ -491,7 +475,6 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
     try {
-        console.log('request', request);
 
         const team = await validateToken(request);
 
@@ -525,10 +508,6 @@ export async function GET(request: NextRequest) {
             return addCorsHeaders(NextResponse.json(
                 {
                     error: subscriptionValidation.error?.message || 'Subscription limit exceeded',
-                    code: errorCode,
-                    details: subscriptionValidation.error?.details,
-                    usage: subscriptionValidation.usage,
-                    subscription: subscriptionValidation.subscription
                 },
                 { status: statusCode }
             ));
@@ -551,9 +530,9 @@ export async function GET(request: NextRequest) {
         const { advancedCSS, styleMode, basicCSS } = survey.style as SurveyStyle;
         const customCSS = styleMode === StyleMode.advanced ? advancedCSS : basicCSS;
 
-        // 2 minutes from now
-        //const expiresAt = new Date(Date.now() + 1000 * 60 * 2);
-        const expiresAt = new Date(Date.now() + 1000 * 10);
+        // 5 minutes from now
+        const expiresAt = new Date(Date.now() + 1000 * 60 * 5);
+        //const expiresAt = new Date(Date.now() + 1000 * 10);
 
         // Create a new survey response for this survey and team
         const newSurveyResponse = await prisma.surveyResponse.create({
@@ -571,7 +550,7 @@ export async function GET(request: NextRequest) {
         });
 
         // Update totalOpenSurveys and ResponseRate for the survey
-        await updateSurveyStats(survey.id, survey.totalOpenSurveys + 1, survey.totalResponses);
+        await updateSurveyStats(survey.id, 1, 0, team.id); // increment open surveys by 1
 
         return addCorsHeaders(NextResponse.json({
             success: true,
@@ -606,20 +585,42 @@ export async function GET(request: NextRequest) {
     }
 }
 
-async function updateSurveyStats(id: string, totalOpenSurveys: number, totalResponses: number) {
-    let responseRate = 0;
-    const denominator = totalOpenSurveys + totalResponses;
-    if (denominator > 0) {
-        responseRate = (totalResponses / denominator) * 100;
-    }
+async function updateSurveyStats(
+    id: string,
+    incrementOpenSurveys: number,
+    incrementResponses: number,
+    teamId: number
+) {
+    // Use atomic increment operations and calculate response rate in the same query
+    await prisma.$executeRaw`
+    UPDATE surveys
+    SET 
+      "totalOpenSurveys" = "totalOpenSurveys" + ${incrementOpenSurveys},
+      "totalResponses" = "totalResponses" + ${incrementResponses},
+      "responseRate" = CASE 
+        WHEN ("totalOpenSurveys" + ${incrementOpenSurveys}) > 0 
+        THEN (
+            ("totalResponses" + ${incrementResponses})::FLOAT / 
+            ("totalOpenSurveys" + ${incrementOpenSurveys})::FLOAT) * 100
+        ELSE 0
+      END
+    WHERE id = ${id}
+  `;
 
-    // Update the survey model with new values
-    await prisma.survey.update({
-        where: { id: id },
-        data: {
-            totalOpenSurveys: totalOpenSurveys,
-            totalResponses: totalResponses,
-            ResponseRate: responseRate,
-        }
-    });
+    // Update team stats atomically with direct increments
+    await prisma.$executeRaw`
+    UPDATE teams
+    SET 
+      "totalOpenSurveys" = "totalOpenSurveys" + ${incrementOpenSurveys},
+      "totalResponses" = "totalResponses" + ${incrementResponses},
+      "responseRate" = CASE 
+        WHEN ("totalOpenSurveys" + ${incrementOpenSurveys}) > 0
+        THEN (
+          ("totalResponses" + ${incrementResponses})::FLOAT / 
+          ("totalOpenSurveys" + ${incrementOpenSurveys})::FLOAT
+        ) * 100
+        ELSE 0
+      END
+    WHERE id = ${teamId}
+  `;
 }

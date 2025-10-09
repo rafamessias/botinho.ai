@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
                 createdAt: true,
                 totalResponses: true,
                 totalOpenSurveys: true,
-                ResponseRate: true,
+                responseRate: true,
                 status: true
             }
         });
@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
                     createdAt: survey.createdAt,
                     totalResponses: survey.totalResponses,
                     totalOpenSurveys: survey.totalOpenSurveys,
-                    ResponseRate: survey.ResponseRate,
+                    responseRate: survey.responseRate,
                     status: survey.status
                 },
                 results: formattedData,

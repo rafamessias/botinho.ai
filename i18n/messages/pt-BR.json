@@ -1001,6 +1001,8 @@
                 "type": "Tipo",
                 "status": "Status",
                 "responses": "Respostas",
+                "responseRate": "Taxa",
+                "totalOpenSurveys": "Abertas",
                 "createdAt": "Criada",
                 "updatedAt": "Atualizada"
             },

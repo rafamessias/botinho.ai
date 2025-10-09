@@ -8898,7 +8898,7 @@ export namespace Prisma {
 
   export type TeamAvgAggregateOutputType = {
     id: number | null
-    ResponseRate: number | null
+    responseRate: number | null
     totalActiveSurveys: number | null
     totalOpenSurveys: number | null
     totalResponses: number | null
@@ -8907,7 +8907,7 @@ export namespace Prisma {
 
   export type TeamSumAggregateOutputType = {
     id: number | null
-    ResponseRate: number | null
+    responseRate: number | null
     totalActiveSurveys: number | null
     totalOpenSurveys: number | null
     totalResponses: number | null
@@ -8923,7 +8923,7 @@ export namespace Prisma {
     branding: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
-    ResponseRate: number | null
+    responseRate: number | null
     totalActiveSurveys: number | null
     totalOpenSurveys: number | null
     totalResponses: number | null
@@ -8939,7 +8939,7 @@ export namespace Prisma {
     branding: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
-    ResponseRate: number | null
+    responseRate: number | null
     totalActiveSurveys: number | null
     totalOpenSurveys: number | null
     totalResponses: number | null
@@ -8955,7 +8955,7 @@ export namespace Prisma {
     branding: number
     createdAt: number
     updatedAt: number
-    ResponseRate: number
+    responseRate: number
     totalActiveSurveys: number
     totalOpenSurveys: number
     totalResponses: number
@@ -8966,7 +8966,7 @@ export namespace Prisma {
 
   export type TeamAvgAggregateInputType = {
     id?: true
-    ResponseRate?: true
+    responseRate?: true
     totalActiveSurveys?: true
     totalOpenSurveys?: true
     totalResponses?: true
@@ -8975,7 +8975,7 @@ export namespace Prisma {
 
   export type TeamSumAggregateInputType = {
     id?: true
-    ResponseRate?: true
+    responseRate?: true
     totalActiveSurveys?: true
     totalOpenSurveys?: true
     totalResponses?: true
@@ -8991,7 +8991,7 @@ export namespace Prisma {
     branding?: true
     createdAt?: true
     updatedAt?: true
-    ResponseRate?: true
+    responseRate?: true
     totalActiveSurveys?: true
     totalOpenSurveys?: true
     totalResponses?: true
@@ -9007,7 +9007,7 @@ export namespace Prisma {
     branding?: true
     createdAt?: true
     updatedAt?: true
-    ResponseRate?: true
+    responseRate?: true
     totalActiveSurveys?: true
     totalOpenSurveys?: true
     totalResponses?: true
@@ -9023,7 +9023,7 @@ export namespace Prisma {
     branding?: true
     createdAt?: true
     updatedAt?: true
-    ResponseRate?: true
+    responseRate?: true
     totalActiveSurveys?: true
     totalOpenSurveys?: true
     totalResponses?: true
@@ -9126,7 +9126,7 @@ export namespace Prisma {
     branding: boolean
     createdAt: Date
     updatedAt: Date
-    ResponseRate: number
+    responseRate: number
     totalActiveSurveys: number
     totalOpenSurveys: number
     totalResponses: number
@@ -9161,7 +9161,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    ResponseRate?: boolean
+    responseRate?: boolean
     totalActiveSurveys?: boolean
     totalOpenSurveys?: boolean
     totalResponses?: boolean
@@ -9190,7 +9190,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    ResponseRate?: boolean
+    responseRate?: boolean
     totalActiveSurveys?: boolean
     totalOpenSurveys?: boolean
     totalResponses?: boolean
@@ -9206,7 +9206,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    ResponseRate?: boolean
+    responseRate?: boolean
     totalActiveSurveys?: boolean
     totalOpenSurveys?: boolean
     totalResponses?: boolean
@@ -9222,14 +9222,14 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    ResponseRate?: boolean
+    responseRate?: boolean
     totalActiveSurveys?: boolean
     totalOpenSurveys?: boolean
     totalResponses?: boolean
     totalSurveys?: boolean
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "tokenSurvery" | "tokenApi" | "branding" | "createdAt" | "updatedAt" | "ResponseRate" | "totalActiveSurveys" | "totalOpenSurveys" | "totalResponses" | "totalSurveys", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "tokenSurvery" | "tokenApi" | "branding" | "createdAt" | "updatedAt" | "responseRate" | "totalActiveSurveys" | "totalOpenSurveys" | "totalResponses" | "totalSurveys", ExtArgs["result"]["team"]>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questionOptions?: boolean | Team$questionOptionsArgs<ExtArgs>
     questionResponses?: boolean | Team$questionResponsesArgs<ExtArgs>
@@ -9273,7 +9273,7 @@ export namespace Prisma {
       branding: boolean
       createdAt: Date
       updatedAt: Date
-      ResponseRate: number
+      responseRate: number
       totalActiveSurveys: number
       totalOpenSurveys: number
       totalResponses: number
@@ -9721,7 +9721,7 @@ export namespace Prisma {
     readonly branding: FieldRef<"Team", 'Boolean'>
     readonly createdAt: FieldRef<"Team", 'DateTime'>
     readonly updatedAt: FieldRef<"Team", 'DateTime'>
-    readonly ResponseRate: FieldRef<"Team", 'Float'>
+    readonly responseRate: FieldRef<"Team", 'Float'>
     readonly totalActiveSurveys: FieldRef<"Team", 'Int'>
     readonly totalOpenSurveys: FieldRef<"Team", 'Int'>
     readonly totalResponses: FieldRef<"Team", 'Int'>
@@ -12742,14 +12742,14 @@ export namespace Prisma {
 
   export type SurveyAvgAggregateOutputType = {
     teamId: number | null
-    ResponseRate: number | null
+    responseRate: number | null
     totalOpenSurveys: number | null
     totalResponses: number | null
   }
 
   export type SurveySumAggregateOutputType = {
     teamId: number | null
-    ResponseRate: number | null
+    responseRate: number | null
     totalOpenSurveys: number | null
     totalResponses: number | null
   }
@@ -12765,7 +12765,7 @@ export namespace Prisma {
     updatedAt: Date | null
     teamId: number | null
     typeId: string | null
-    ResponseRate: number | null
+    responseRate: number | null
     totalOpenSurveys: number | null
     totalResponses: number | null
   }
@@ -12781,7 +12781,7 @@ export namespace Prisma {
     updatedAt: Date | null
     teamId: number | null
     typeId: string | null
-    ResponseRate: number | null
+    responseRate: number | null
     totalOpenSurveys: number | null
     totalResponses: number | null
   }
@@ -12797,7 +12797,7 @@ export namespace Prisma {
     updatedAt: number
     teamId: number
     typeId: number
-    ResponseRate: number
+    responseRate: number
     totalOpenSurveys: number
     totalResponses: number
     _all: number
@@ -12806,14 +12806,14 @@ export namespace Prisma {
 
   export type SurveyAvgAggregateInputType = {
     teamId?: true
-    ResponseRate?: true
+    responseRate?: true
     totalOpenSurveys?: true
     totalResponses?: true
   }
 
   export type SurveySumAggregateInputType = {
     teamId?: true
-    ResponseRate?: true
+    responseRate?: true
     totalOpenSurveys?: true
     totalResponses?: true
   }
@@ -12829,7 +12829,7 @@ export namespace Prisma {
     updatedAt?: true
     teamId?: true
     typeId?: true
-    ResponseRate?: true
+    responseRate?: true
     totalOpenSurveys?: true
     totalResponses?: true
   }
@@ -12845,7 +12845,7 @@ export namespace Prisma {
     updatedAt?: true
     teamId?: true
     typeId?: true
-    ResponseRate?: true
+    responseRate?: true
     totalOpenSurveys?: true
     totalResponses?: true
   }
@@ -12861,7 +12861,7 @@ export namespace Prisma {
     updatedAt?: true
     teamId?: true
     typeId?: true
-    ResponseRate?: true
+    responseRate?: true
     totalOpenSurveys?: true
     totalResponses?: true
     _all?: true
@@ -12964,7 +12964,7 @@ export namespace Prisma {
     updatedAt: Date
     teamId: number
     typeId: string | null
-    ResponseRate: number
+    responseRate: number
     totalOpenSurveys: number
     totalResponses: number
     _count: SurveyCountAggregateOutputType | null
@@ -12999,7 +12999,7 @@ export namespace Prisma {
     updatedAt?: boolean
     teamId?: boolean
     typeId?: boolean
-    ResponseRate?: boolean
+    responseRate?: boolean
     totalOpenSurveys?: boolean
     totalResponses?: boolean
     questions?: boolean | Survey$questionsArgs<ExtArgs>
@@ -13022,7 +13022,7 @@ export namespace Prisma {
     updatedAt?: boolean
     teamId?: boolean
     typeId?: boolean
-    ResponseRate?: boolean
+    responseRate?: boolean
     totalOpenSurveys?: boolean
     totalResponses?: boolean
     team?: boolean | TeamDefaultArgs<ExtArgs>
@@ -13040,7 +13040,7 @@ export namespace Prisma {
     updatedAt?: boolean
     teamId?: boolean
     typeId?: boolean
-    ResponseRate?: boolean
+    responseRate?: boolean
     totalOpenSurveys?: boolean
     totalResponses?: boolean
     team?: boolean | TeamDefaultArgs<ExtArgs>
@@ -13058,12 +13058,12 @@ export namespace Prisma {
     updatedAt?: boolean
     teamId?: boolean
     typeId?: boolean
-    ResponseRate?: boolean
+    responseRate?: boolean
     totalOpenSurveys?: boolean
     totalResponses?: boolean
   }
 
-  export type SurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "context" | "status" | "allowMultipleResponses" | "createdAt" | "updatedAt" | "teamId" | "typeId" | "ResponseRate" | "totalOpenSurveys" | "totalResponses", ExtArgs["result"]["survey"]>
+  export type SurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "context" | "status" | "allowMultipleResponses" | "createdAt" | "updatedAt" | "teamId" | "typeId" | "responseRate" | "totalOpenSurveys" | "totalResponses", ExtArgs["result"]["survey"]>
   export type SurveyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questions?: boolean | Survey$questionsArgs<ExtArgs>
     responses?: boolean | Survey$responsesArgs<ExtArgs>
@@ -13103,7 +13103,7 @@ export namespace Prisma {
       updatedAt: Date
       teamId: number
       typeId: string | null
-      ResponseRate: number
+      responseRate: number
       totalOpenSurveys: number
       totalResponses: number
     }, ExtArgs["result"]["survey"]>
@@ -13545,7 +13545,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Survey", 'DateTime'>
     readonly teamId: FieldRef<"Survey", 'Int'>
     readonly typeId: FieldRef<"Survey", 'String'>
-    readonly ResponseRate: FieldRef<"Survey", 'Float'>
+    readonly responseRate: FieldRef<"Survey", 'Float'>
     readonly totalOpenSurveys: FieldRef<"Survey", 'Int'>
     readonly totalResponses: FieldRef<"Survey", 'Int'>
   }
@@ -25459,7 +25459,7 @@ export namespace Prisma {
     branding: 'branding',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    ResponseRate: 'ResponseRate',
+    responseRate: 'responseRate',
     totalActiveSurveys: 'totalActiveSurveys',
     totalOpenSurveys: 'totalOpenSurveys',
     totalResponses: 'totalResponses',
@@ -25508,7 +25508,7 @@ export namespace Prisma {
     updatedAt: 'updatedAt',
     teamId: 'teamId',
     typeId: 'typeId',
-    ResponseRate: 'ResponseRate',
+    responseRate: 'responseRate',
     totalOpenSurveys: 'totalOpenSurveys',
     totalResponses: 'totalResponses'
   };
@@ -26397,7 +26397,7 @@ export namespace Prisma {
     branding?: BoolFilter<"Team"> | boolean
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
-    ResponseRate?: FloatFilter<"Team"> | number
+    responseRate?: FloatFilter<"Team"> | number
     totalActiveSurveys?: IntFilter<"Team"> | number
     totalOpenSurveys?: IntFilter<"Team"> | number
     totalResponses?: IntFilter<"Team"> | number
@@ -26425,7 +26425,7 @@ export namespace Prisma {
     branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalActiveSurveys?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
@@ -26456,7 +26456,7 @@ export namespace Prisma {
     branding?: BoolFilter<"Team"> | boolean
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
-    ResponseRate?: FloatFilter<"Team"> | number
+    responseRate?: FloatFilter<"Team"> | number
     totalActiveSurveys?: IntFilter<"Team"> | number
     totalOpenSurveys?: IntFilter<"Team"> | number
     totalResponses?: IntFilter<"Team"> | number
@@ -26484,7 +26484,7 @@ export namespace Prisma {
     branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalActiveSurveys?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
@@ -26508,7 +26508,7 @@ export namespace Prisma {
     branding?: BoolWithAggregatesFilter<"Team"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
-    ResponseRate?: FloatWithAggregatesFilter<"Team"> | number
+    responseRate?: FloatWithAggregatesFilter<"Team"> | number
     totalActiveSurveys?: IntWithAggregatesFilter<"Team"> | number
     totalOpenSurveys?: IntWithAggregatesFilter<"Team"> | number
     totalResponses?: IntWithAggregatesFilter<"Team"> | number
@@ -26680,7 +26680,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
     teamId?: IntFilter<"Survey"> | number
     typeId?: StringNullableFilter<"Survey"> | string | null
-    ResponseRate?: FloatFilter<"Survey"> | number
+    responseRate?: FloatFilter<"Survey"> | number
     totalOpenSurveys?: IntFilter<"Survey"> | number
     totalResponses?: IntFilter<"Survey"> | number
     questions?: QuestionListRelationFilter
@@ -26702,7 +26702,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrderInput | SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
     questions?: QuestionOrderByRelationAggregateInput
@@ -26727,7 +26727,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
     teamId?: IntFilter<"Survey"> | number
     typeId?: StringNullableFilter<"Survey"> | string | null
-    ResponseRate?: FloatFilter<"Survey"> | number
+    responseRate?: FloatFilter<"Survey"> | number
     totalOpenSurveys?: IntFilter<"Survey"> | number
     totalResponses?: IntFilter<"Survey"> | number
     questions?: QuestionListRelationFilter
@@ -26749,7 +26749,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrderInput | SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
     _count?: SurveyCountOrderByAggregateInput
@@ -26773,7 +26773,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Survey"> | Date | string
     teamId?: IntWithAggregatesFilter<"Survey"> | number
     typeId?: StringNullableWithAggregatesFilter<"Survey"> | string | null
-    ResponseRate?: FloatWithAggregatesFilter<"Survey"> | number
+    responseRate?: FloatWithAggregatesFilter<"Survey"> | number
     totalOpenSurveys?: IntWithAggregatesFilter<"Survey"> | number
     totalResponses?: IntWithAggregatesFilter<"Survey"> | number
   }
@@ -28215,7 +28215,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -28243,7 +28243,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -28270,7 +28270,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -28298,7 +28298,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -28326,7 +28326,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -28341,7 +28341,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -28357,7 +28357,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -28525,7 +28525,7 @@ export namespace Prisma {
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionCreateNestedManyWithoutSurveyInput
@@ -28547,7 +28547,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
@@ -28565,7 +28565,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -28587,7 +28587,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -28607,7 +28607,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
   }
@@ -28621,7 +28621,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
   }
@@ -28637,7 +28637,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
   }
@@ -30375,7 +30375,7 @@ export namespace Prisma {
     branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalActiveSurveys?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
@@ -30384,7 +30384,7 @@ export namespace Prisma {
 
   export type TeamAvgOrderByAggregateInput = {
     id?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalActiveSurveys?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
@@ -30400,7 +30400,7 @@ export namespace Prisma {
     branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalActiveSurveys?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
@@ -30416,7 +30416,7 @@ export namespace Prisma {
     branding?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalActiveSurveys?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
@@ -30425,7 +30425,7 @@ export namespace Prisma {
 
   export type TeamSumOrderByAggregateInput = {
     id?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalActiveSurveys?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
@@ -30597,14 +30597,14 @@ export namespace Prisma {
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
   }
 
   export type SurveyAvgOrderByAggregateInput = {
     teamId?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
   }
@@ -30620,7 +30620,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
   }
@@ -30636,14 +30636,14 @@ export namespace Prisma {
     updatedAt?: SortOrder
     teamId?: SortOrder
     typeId?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
   }
 
   export type SurveySumOrderByAggregateInput = {
     teamId?: SortOrder
-    ResponseRate?: SortOrder
+    responseRate?: SortOrder
     totalOpenSurveys?: SortOrder
     totalResponses?: SortOrder
   }
@@ -33822,7 +33822,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -33849,7 +33849,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -34019,7 +34019,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34046,7 +34046,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -34646,7 +34646,7 @@ export namespace Prisma {
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionCreateNestedManyWithoutSurveyInput
@@ -34666,7 +34666,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     typeId?: string | null
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
@@ -35135,7 +35135,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
     teamId?: IntFilter<"Survey"> | number
     typeId?: StringNullableFilter<"Survey"> | string | null
-    ResponseRate?: FloatFilter<"Survey"> | number
+    responseRate?: FloatFilter<"Survey"> | number
     totalOpenSurveys?: IntFilter<"Survey"> | number
     totalResponses?: IntFilter<"Survey"> | number
   }
@@ -35286,7 +35286,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -35313,7 +35313,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -35409,7 +35409,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35436,7 +35436,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35522,7 +35522,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -35549,7 +35549,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -35581,7 +35581,7 @@ export namespace Prisma {
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionCreateNestedManyWithoutSurveyInput
@@ -35601,7 +35601,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
@@ -35639,7 +35639,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35666,7 +35666,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -35845,7 +35845,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -35872,7 +35872,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -36064,7 +36064,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -36091,7 +36091,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -36163,7 +36163,7 @@ export namespace Prisma {
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionCreateNestedManyWithoutSurveyInput
@@ -36184,7 +36184,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
@@ -36205,7 +36205,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -36232,7 +36232,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -36275,7 +36275,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -36296,7 +36296,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -36323,7 +36323,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -36350,7 +36350,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -36451,7 +36451,7 @@ export namespace Prisma {
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     responses?: SurveyResponseCreateNestedManyWithoutSurveyInput
@@ -36472,7 +36472,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     responses?: SurveyResponseUncheckedCreateNestedManyWithoutSurveyInput
@@ -36493,7 +36493,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -36520,7 +36520,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -36637,7 +36637,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     responses?: SurveyResponseUpdateManyWithoutSurveyNestedInput
@@ -36658,7 +36658,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     responses?: SurveyResponseUncheckedUpdateManyWithoutSurveyNestedInput
@@ -36685,7 +36685,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -36712,7 +36712,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -36797,7 +36797,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -36824,7 +36824,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -36997,7 +36997,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -37024,7 +37024,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -37123,7 +37123,7 @@ export namespace Prisma {
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionCreateNestedManyWithoutSurveyInput
@@ -37144,7 +37144,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
@@ -37165,7 +37165,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -37192,7 +37192,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -37293,7 +37293,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -37314,7 +37314,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -37341,7 +37341,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -37368,7 +37368,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -37411,7 +37411,7 @@ export namespace Prisma {
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionCreateNestedManyWithoutSurveyInput
@@ -37432,7 +37432,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamId: number
     typeId?: string | null
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
     questions?: QuestionUncheckedCreateNestedManyWithoutSurveyInput
@@ -37525,7 +37525,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -37552,7 +37552,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -37632,7 +37632,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -37653,7 +37653,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -37764,7 +37764,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -37791,7 +37791,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -37969,7 +37969,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -37996,7 +37996,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -38165,7 +38165,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -38192,7 +38192,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -38280,7 +38280,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -38307,7 +38307,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -38432,7 +38432,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -38459,7 +38459,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -38554,7 +38554,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -38581,7 +38581,7 @@ export namespace Prisma {
     branding?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    ResponseRate?: number
+    responseRate?: number
     totalActiveSurveys?: number
     totalOpenSurveys?: number
     totalResponses?: number
@@ -38664,7 +38664,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -38691,7 +38691,7 @@ export namespace Prisma {
     branding?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalActiveSurveys?: IntFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
@@ -39070,7 +39070,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     typeId?: string | null
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
   }
@@ -39432,7 +39432,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -39452,7 +39452,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -39471,7 +39471,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     typeId?: NullableStringFieldUpdateOperationsInput | string | null
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
   }
@@ -39732,7 +39732,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
-    ResponseRate?: number
+    responseRate?: number
     totalOpenSurveys?: number
     totalResponses?: number
   }
@@ -39746,7 +39746,7 @@ export namespace Prisma {
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUpdateManyWithoutSurveyNestedInput
@@ -39766,7 +39766,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
     questions?: QuestionUncheckedUpdateManyWithoutSurveyNestedInput
@@ -39785,7 +39785,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: IntFieldUpdateOperationsInput | number
-    ResponseRate?: FloatFieldUpdateOperationsInput | number
+    responseRate?: FloatFieldUpdateOperationsInput | number
     totalOpenSurveys?: IntFieldUpdateOperationsInput | number
     totalResponses?: IntFieldUpdateOperationsInput | number
   }

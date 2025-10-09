@@ -667,7 +667,7 @@ export const getUserTeamsAction = async (onlyMyTeamsMembers: boolean = false) =>
                 totalSurveys: true,
                 totalActiveSurveys: true,
                 totalResponses: true,
-                ResponseRate: true,
+                responseRate: true,
                 members: {
                     ...(onlyMyTeamsMembers && {
                         where: {
@@ -986,7 +986,7 @@ export const getTeamById = async (teamId: number) => {
                 totalSurveys: true,
                 totalActiveSurveys: true,
                 totalResponses: true,
-                ResponseRate: true,
+                responseRate: true,
             }
         })
 

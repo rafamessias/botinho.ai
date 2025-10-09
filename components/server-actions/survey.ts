@@ -26,7 +26,7 @@ interface DatabaseSurvey {
     enabled: boolean
     allowMultipleResponses: boolean
     totalResponses: number
-    ResponseRate: number
+    responseRate: number
     totalOpenSurveys: number
     createdAt: Date
     updatedAt: Date
@@ -599,7 +599,17 @@ export const getSurveysWithPagination = async (filters: Partial<SurveyFilters> =
         const [surveys, totalCount] = await Promise.all([
             wrapper.findMany(prisma.survey, {
                 where: whereClause,
-                include: {
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    status: true,
+                    allowMultipleResponses: true,
+                    totalResponses: true,
+                    responseRate: true,
+                    totalOpenSurveys: true,
+                    createdAt: true,
+                    updatedAt: true,
                     type: {
                         select: {
                             id: true,

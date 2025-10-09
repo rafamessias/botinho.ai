@@ -199,7 +199,7 @@ interface DatabaseSurvey {
     enabled: boolean
     allowMultipleResponses: boolean
     totalResponses: number
-    ResponseRate: number
+    responseRate: number
     totalOpenSurveys: number
     createdAt: Date
     updatedAt: Date
@@ -602,6 +602,23 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
             ),
         },
         {
+            accessorKey: "responseRate",
+            header: ({ column }) => (
+                <SortableHeader
+                    columnId={column.id}
+                    onSort={handleColumnSort}
+                    sorting={sorting}
+                >
+                    <div className="w-full text-right">{t("table.columns.responseRate")}</div>
+                </SortableHeader>
+            ),
+            cell: ({ row }) => (
+                <div className="text-right font-medium">
+                    {Math.trunc(row.original.responseRate || 0)}%
+                </div>
+            ),
+        },
+        {
             accessorKey: "totalResponses",
             header: ({ column }) => (
                 <SortableHeader
@@ -614,7 +631,24 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
             ),
             cell: ({ row }) => (
                 <div className="text-right font-medium">
-                    {row.original.totalResponses.toLocaleString()}
+                    {row.original.totalResponses}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "totalOpenSurveys",
+            header: ({ column }) => (
+                <SortableHeader
+                    columnId={column.id}
+                    onSort={handleColumnSort}
+                    sorting={sorting}
+                >
+                    <div className="w-full text-right">{t("table.columns.totalOpenSurveys")}</div>
+                </SortableHeader>
+            ),
+            cell: ({ row }) => (
+                <div className="text-right font-medium">
+                    {row.original.totalOpenSurveys}
                 </div>
             ),
         },

@@ -1001,6 +1001,8 @@
                 "type": "Type",
                 "status": "Status",
                 "responses": "Responses",
+                "responseRate": "Rate",
+                "totalOpenSurveys": "Open",
                 "createdAt": "Created",
                 "updatedAt": "Updated"
             },

@@ -108,7 +108,7 @@ model Team {
   branding           Boolean                 @default(true)
   createdAt          DateTime                @default(now())
   updatedAt          DateTime                @updatedAt
-  ResponseRate       Float                   @default(0)
+  responseRate       Float                   @default(0)
   totalActiveSurveys Int                     @default(0)
   totalOpenSurveys   Int                     @default(0)
   totalResponses     Int                     @default(0)
@@ -182,7 +182,7 @@ model Survey {
   updatedAt              DateTime                @updatedAt
   teamId                 Int
   typeId                 String?
-  ResponseRate           Float                   @default(0)
+  responseRate           Float                   @default(0)
   totalOpenSurveys       Int                     @default(0)
   totalResponses         Int                     @default(0)
   questions              Question[]
