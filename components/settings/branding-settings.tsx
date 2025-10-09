@@ -130,18 +130,7 @@ export const BrandingSettings = () => {
                     <CardDescription>{t("description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <Label
-                                htmlFor="branding-switch"
-                                className="text-base cursor-pointer"
-                            >
-                                {t("switchLabel")}
-                            </Label>
-                            <div className="text-sm text-muted-foreground">
-                                {t("switchDescription")}
-                            </div>
-                        </div>
+                    <div className="flex items-center justify-start space-x-2">
                         <Switch
                             id="branding-switch"
                             checked={!branding}
@@ -149,6 +138,17 @@ export const BrandingSettings = () => {
                             disabled={!isAdmin || isUpdating}
                             aria-label={t("switchLabel")}
                         />
+                        <div className="space-y-0.5 ml-4">
+                            <Label
+                                htmlFor="branding-switch"
+                                className="cursor-pointer text-sm"
+                            >
+                                {t("switchLabel")}
+                            </Label>
+                            <div className="text-muted-foreground text-xs">
+                                {t("switchDescription")}
+                            </div>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

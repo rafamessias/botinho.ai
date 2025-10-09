@@ -198,7 +198,7 @@
             "title": "Marca",
             "description": "Controle a exibição da marca em suas pesquisas",
             "switchLabel": "Remover Marca",
-            "switchDescription": "Ocultar a marca de suas pesquisas e páginas públicas",
+            "switchDescription": "Ocultar a marca de suas pesquisas: 'Powered by Opineeo'",
             "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
             "notAuthorized": "Você deve ser um administrador para alterar as configurações de marca",
             "brandingEnabled": "A marca foi ativada",

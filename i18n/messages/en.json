@@ -198,7 +198,7 @@
             "title": "Branding",
             "description": "Control the display of branding in your surveys",
             "switchLabel": "Remove Branding",
-            "switchDescription": "Hide branding from your surveys and public pages",
+            "switchDescription": "Hide branding from your surveys: 'Powered by Opineeo'",
             "noTeam": "No team available. Please create or join a team first.",
             "notAuthorized": "You must be an admin to change branding settings",
             "brandingEnabled": "Branding has been enabled",
