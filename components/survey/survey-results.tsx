@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
-import { Download, Table, BarChart3, ChevronDown } from "lucide-react"
+import { Download, Table, BarChart3, ChevronDown, LucideFolderOpen } from "lucide-react"
 import { Link } from "@/i18n/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -526,16 +526,32 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                             {selectedSurvey && (
                                 <div className="flex items-center gap-4">
                                     <div className="flex items-center space-x-2">
-                                        <Switch
-                                            id="view-mode"
-                                            checked={viewMode === "table"}
-                                            onCheckedChange={(checked) => setViewMode(checked ? "table" : "charts")}
-                                            disabled={loading}
-                                        />
-                                        <Label htmlFor="view-mode" className="flex items-center gap-2">
-                                            {viewMode === "charts" ? <BarChart3 className="h-4 w-4" /> : <Table className="h-4 w-4" />}
-                                            {viewMode === "charts" ? "Charts" : "Table"}
-                                        </Label>
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex items-center">
+                                                <div className="flex flex-row border rounded-md bg-muted divide-x overflow-hidden">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setViewMode("charts")}
+                                                        className={`flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer ${viewMode === "charts" ? "bg-primary text-primary-foreground" : "hover:bg-muted-foreground/10 text-muted-foreground"}`}
+                                                        disabled={loading}
+                                                        aria-pressed={viewMode === "charts"}
+                                                    >
+                                                        <BarChart3 className="h-4 w-4" />
+                                                        Charts
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setViewMode("table")}
+                                                        className={`flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer ${viewMode === "table" ? "bg-primary text-primary-foreground" : "hover:bg-muted-foreground/10 text-muted-foreground"}`}
+                                                        disabled={loading}
+                                                        aria-pressed={viewMode === "table"}
+                                                    >
+                                                        <Table className="h-4 w-4" />
+                                                        Table
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <DropdownMenu>
@@ -564,9 +580,12 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                 {!selectedSurvey ? (
                     <Card className="border-none shadow-none bg-transparent">
                         <CardContent className="flex items-center justify-center py-12">
-                            <div className="text-center">
-                                <p className="text-muted-foreground text-lg mb-2">No survey selected</p>
-                                <p className="text-muted-foreground">Please select a survey from the dropdown above to view results</p>
+                            <div className="flex flex-col items-center justify-center text-center space-y-2">
+                                <LucideFolderOpen className="mx-auto mb-1 h-9 w-9 text-muted-foreground/60" />
+                                <p className="text-lg font-semibold text-muted-foreground/80">No survey selected</p>
+                                <p className="text-muted-foreground">
+                                    Please select a survey from the dropdown above to view results
+                                </p>
                             </div>
                         </CardContent>
                     </Card>

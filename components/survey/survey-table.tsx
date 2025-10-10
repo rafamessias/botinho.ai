@@ -274,7 +274,7 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
     ])
 
     // Input state for debouncing
-    const [searchInput, setSearchInput] = React.useState(filters.search || "")
+    const searchInputRef = React.useRef<HTMLInputElement>(null)
     const [statusFilter, setStatusFilter] = React.useState<string>(filters.status || "")
 
     // Use refs to avoid dependency issues
@@ -325,7 +325,6 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
 
     // Memoized event handlers to prevent child component re-renders
     const handleSearchChange = React.useCallback((value: string) => {
-        setSearchInput(value)
         debouncedSearch(value)
     }, [debouncedSearch])
 
@@ -845,12 +844,18 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
             <div className="flex items-center gap-4">
                 <div className="flex-1 flex items-center gap-2">
                     <Input
+                        ref={searchInputRef}
                         placeholder={t("table.search.placeholder")}
-                        value={searchInput}
+                        defaultValue={filters.search || ""}
                         onChange={(event) => handleSearchChange(event.target.value)}
                         className="max-w-sm"
                     />
-                    <Button variant="ghost" size="icon" onClick={() => { handleSearchChange(""); setSearchInput(""); }} className="-ml-11">
+                    <Button variant="ghost" size="icon" onClick={() => {
+                        if (searchInputRef.current) {
+                            searchInputRef.current.value = "";
+                            handleSearchChange("");
+                        }
+                    }} className="-ml-11">
                         <X />
                     </Button>
                 </div>
