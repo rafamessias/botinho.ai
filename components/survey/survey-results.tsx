@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
-import { Download, Table, BarChart3, ChevronDown, LucideFolderOpen } from "lucide-react"
+import { Download, Table, BarChart3, ChevronDown, LucideFolderOpen, LucidePlusCircle, LucideSparkles } from "lucide-react"
 import { Link } from "@/i18n/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -437,11 +437,20 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
         return (
             <Card className="border-none shadow-none bg-transparent">
                 <CardContent className="flex items-center justify-center py-12">
-                    <div className="text-center">
-                        <p className="text-muted-foreground">No surveys available</p>
-                        <Button asChild className="mt-4">
+                    <div className="text-center flex flex-col items-center gap-4 py-4">
+                        <LucideSparkles className="mx-auto mb-2 text-primary size-8" />
+                        <p className="text-lg font-medium text-muted-foreground">
+                            No surveys yet
+                        </p>
+                        <p className="text-muted-foreground text-sm mb-1">
+                            You haven’t created any surveys. Get started by launching your first one.
+                        </p>
+                        <Button asChild className="mt-1">
                             <Link href="/survey/create">
-                                Create Survey
+                                <span className="flex items-center gap-2">
+                                    <LucidePlusCircle className="size-5" />
+                                    Create Survey
+                                </span>
                             </Link>
                         </Button>
                     </div>

@@ -4,6 +4,7 @@ import * as React from "react"
 import { useTranslations } from "next-intl"
 import {
   IconDashboard,
+  IconHelp,
   IconListDetails,
   IconSettings,
   IconUsers
@@ -49,6 +50,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: t("navigation.settings"),
         icon: IconSettings,
         url: '/settings',
+      },
+      {
+        title: t("navigation.support"),
+        url: "/support",
+        icon: IconHelp,
       },
     ],
 

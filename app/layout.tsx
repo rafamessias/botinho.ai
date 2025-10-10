@@ -8,7 +8,7 @@ import { UserProvider } from '@/components/user-provider'
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
-    title: "Opineeo - Extremely Simple Survey Widget for Founders and Devs",
+    title: "Opineeo - The simplest survey widget for Devs and Founders",
     description: "Lightweight, customizable survey widget for any website. Easy integration with vanilla JavaScript. Only 15KB minified.",
 }
 

@@ -206,7 +206,7 @@ export const checkSubscriptionAndRedirect = async (userEmail: string) => {
                         subscriptions: {
                             where: {
                                 status: {
-                                    in: ['active', 'trialing']
+                                    in: ['active', 'trialing', 'pending']
                                 }
                             },
                             include: {
@@ -930,6 +930,8 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
 
             if (subscriptionCheck?.success && subscriptionCheck.needsCheckout && subscriptionCheck.planType) {
                 // Get user's team and existing subscription
+                // Check if user needs subscription after successful sign-in
+                // IT IS BEING CALLED TWICE FOR SOME REASON - FIX IT
                 const user = await prisma.user.findUnique({
                     where: { email: email || "" },
                     include: {

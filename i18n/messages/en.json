@@ -10,7 +10,8 @@
             "surveys": "Surveys",
             "team": "Team",
             "surveyDemo": "Survey Demo",
-            "settings": "Settings"
+            "settings": "Settings",
+            "support": "Support"
         },
         "documents": {
             "dataLibrary": "Data Library"
@@ -176,6 +177,31 @@
         "sort": "Sort",
         "selectAll": "Select all",
         "selectRow": "Select row"
+    },
+    "Support": {
+        "title": "Support",
+        "description": "Get help and contact our support team"
+    },
+    "contact": {
+        "title": "Get in Touch",
+        "subtitle": "Have questions or need assistance? We're here to help. Send us a message and we'll get back to you as soon as possible.",
+        "form": {
+            "submitButton": "Send Message",
+            "description": "Fill out the form below and we'll respond within 24 hours",
+            "nameLabel": "Name",
+            "namePlaceholder": "Your full name",
+            "emailLabel": "Email",
+            "emailPlaceholder": "your.email@example.com",
+            "messageLabel": "Message",
+            "messagePlaceholder": "Tell us how we can help you...",
+            "required": "This field is required",
+            "invalidEmail": "Please enter a valid email address",
+            "sending": "Sending...",
+            "success": "Message Sent Successfully!",
+            "successDescription": "Thank you for contacting us. We'll get back to you soon.",
+            "sendAnother": "Send Another Message",
+            "error": "Failed to send message. Please try again."
+        }
     },
     "Settings": {
         "title": "Settings",

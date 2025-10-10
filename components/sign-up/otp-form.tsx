@@ -13,6 +13,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { confirmOTPAction, resendOTPAction } from "@/components/server-actions/auth"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
+import { useSession } from "next-auth/react"
 
 type OTPFormData = {
     otp: string
@@ -34,6 +35,7 @@ export function OTPForm() {
     const email = searchParams.get("email")
     const phone = searchParams.get("phone")
     const urlOtp = searchParams.get("otp")
+    const { update } = useSession()
 
     const {
         handleSubmit,
@@ -85,6 +87,7 @@ export function OTPForm() {
                     window.location.href = result.checkoutUrl
                 } else {
                     // No checkout needed, redirect to main dashboard
+                    await update()
                     router.push(`/${locale}`)
                 }
             }

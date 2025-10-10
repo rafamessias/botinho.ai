@@ -10,7 +10,8 @@
             "surveys": "Pesquisas",
             "team": "Equipe",
             "surveyDemo": "Demo de Pesquisa",
-            "settings": "Configurações"
+            "settings": "Configurações",
+            "support": "Suporte"
         },
         "documents": {
             "dataLibrary": "Biblioteca de Dados"
@@ -176,6 +177,31 @@
         "sort": "Ordenar",
         "selectAll": "Selecionar tudo",
         "selectRow": "Selecionar linha"
+    },
+    "Support": {
+        "title": "Suporte",
+        "description": "Obtenha ajuda e entre em contato com nossa equipe de suporte"
+    },
+    "contact": {
+        "title": "Entre em Contato",
+        "subtitle": "Tem dúvidas ou precisa de ajuda? Estamos aqui para ajudar. Envie-nos uma mensagem e retornaremos o mais breve possível.",
+        "form": {
+            "submitButton": "Enviar Mensagem",
+            "description": "Preencha o formulário abaixo e responderemos em até 24 horas",
+            "nameLabel": "Nome",
+            "namePlaceholder": "Seu nome completo",
+            "emailLabel": "Email",
+            "emailPlaceholder": "seu.email@exemplo.com",
+            "messageLabel": "Mensagem",
+            "messagePlaceholder": "Conte-nos como podemos ajudá-lo...",
+            "required": "Este campo é obrigatório",
+            "invalidEmail": "Por favor, insira um endereço de email válido",
+            "sending": "Enviando...",
+            "success": "Mensagem Enviada com Sucesso!",
+            "successDescription": "Obrigado por entrar em contato. Retornaremos em breve.",
+            "sendAnother": "Enviar Outra Mensagem",
+            "error": "Falha ao enviar mensagem. Por favor, tente novamente."
+        }
     },
     "Settings": {
         "title": "Configurações",

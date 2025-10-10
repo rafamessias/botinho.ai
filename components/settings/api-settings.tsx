@@ -206,26 +206,18 @@ export const ApiSettings = () => {
     const currentApiToken = currentTeamTokens?.tokenApi || null
 
     // Code snippets for each token type
-    const surveyWidgetCode = `<!-- Survey Widget Integration -->
+    const surveyWidgetCode = `<head>
+<!-- Opineeo Survey Web Component -->
 <script src="https://app.opineeo.com/opineeo-0.0.1.min.js"></script>
-<script>
-function handleSurveyComplete(data) {
-  console.log('Survey completed:', data);
-}
-
-function handleSurveyClose() {
-  console.log('Survey closed');
-}
-</script>
-
+</head>
+<body>
 <!-- Survey container -->
 <opineeo-survey
   survey-id="your-survey-id"
   token="${currentSurveyToken || 'YOUR_SURVEY_TOKEN'}"
   auto-close="3000"
-  oncomplete="handleSurveyComplete"
-  onclose="handleSurveyClose"
-></opineeo-survey>`
+></opineeo-survey>
+</body>`
 
     const apiIntegrationCode = `// API Integration Example - Get Survey Results
 const getSurveyResults = async (surveyId) => {

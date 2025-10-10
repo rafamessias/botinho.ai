@@ -10,6 +10,7 @@ import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTri
 import { createPortalSession } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { PlanType } from "@/lib/generated/prisma";
 
 
 interface UsageMetric {
@@ -341,7 +342,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    {subscription.plan.allowExport ? (
+                                    {subscription.plan.allowApiAccess ? (
                                         <CheckCircle className="h-4 w-4 text-green-600" />
                                     ) : (
                                         <AlertTriangle className="h-4 w-4 text-gray-400" />
@@ -362,7 +363,7 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    {subscription.plan.planType === 'enterprise' || subscription.plan.planType === 'professional' ? (
+                                    {subscription.plan.planType === PlanType.BUSINESS || subscription.plan.planType === PlanType.ENTERPRISE || subscription.plan.planType === PlanType.PRO ? (
                                         <CheckCircle className="h-4 w-4 text-green-600" />
                                     ) : (
                                         <AlertTriangle className="h-4 w-4 text-gray-400" />

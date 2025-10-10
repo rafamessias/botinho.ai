@@ -67,7 +67,6 @@ export function SignUpForm({
         try {
             // Get plan parameter from URL
             const planParam = searchParams.get("plan")
-            console.log("planParam", planParam)
             const result = await signUpAction(data, planParam)
 
             if (result?.success === false) {

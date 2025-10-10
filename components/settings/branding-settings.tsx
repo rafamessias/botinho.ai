@@ -94,11 +94,11 @@ export const BrandingSettings = () => {
                     <CardDescription>{t("description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex items-center justify-between">
-                        <div className="h-6 w-11 animate-pulse rounded-full bg-muted" />
-                        <div className="space-y-0.5">
-                            <Label className="text-base">{t("switchLabel")}</Label>
-                            <div className="text-sm text-muted-foreground">
+                    <div className="flex items-center space-x-2 justify-start">
+                        <div className="h-6 w-8 animate-pulse rounded-full bg-muted" />
+                        <div className="space-y-0.5 ml-4">
+                            <Label className="text-sm">{t("switchLabel")}</Label>
+                            <div className="text-xs text-muted-foreground">
                                 {t("switchDescription")}
                             </div>
                         </div>
