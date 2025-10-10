@@ -1,7 +1,7 @@
 import { auth } from '@/app/auth';
 import { stripe } from '@/lib/stripe';
 import { prisma } from '@/prisma/lib/prisma';
-import { PlanType, Prisma } from '@/lib/generated/prisma';
+import { PlanType, Prisma, SubscriptionStatus } from '@/lib/generated/prisma';
 
 export interface CreateCheckoutSessionParams {
     planId: PlanType;
@@ -53,9 +53,6 @@ export const createCheckoutSession = async (params: CreateCheckoutSessionParams)
             return { success: false, error: 'Plan ID and billing cycle are required' };
         }
 
-        // Find the subscription plan by planId and billingCycle
-        console.log('Looking for subscription plan with planId:', planId, 'billingCycle:', billingCycle);
-
         const subscriptionPlan = await prisma.subscriptionPlan.findFirst({
             where: {
                 planType: planId as PlanType,
@@ -67,28 +64,13 @@ export const createCheckoutSession = async (params: CreateCheckoutSessionParams)
             }
         });
 
-        console.log('Found subscription plan:', subscriptionPlan);
-
         if (!subscriptionPlan || !subscriptionPlan.stripePriceIdMonthly || !subscriptionPlan.stripePriceIdYearly) {
-            console.log('Price ID not found for planId:', planId, 'billingCycle:', billingCycle);
-            console.log('Available price IDs - Monthly:', subscriptionPlan?.stripePriceIdMonthly, 'Yearly:', subscriptionPlan?.stripePriceIdYearly);
             return { success: false, error: 'Invalid plan or billing cycle' };
         }
 
         const priceId = billingCycle === 'monthly' ? subscriptionPlan.stripePriceIdMonthly : subscriptionPlan.stripePriceIdYearly;
 
-        console.log('Creating checkout session for plan:', planId, 'billing:', billingCycle);
-        console.log('Checkout session metadata:', {
-            userEmail: email,
-            teamId: userTeamId.toString(),
-            planId,
-            billingInterval: billingCycle,
-            customerSubscriptionId: customerSubscriptionId || 'none'
-        });
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
-        console.log('Base URL:', baseUrl);
-        console.log('Success URL:', `${baseUrl}/subscription?success=true`);
-        console.log('Cancel URL:', `${baseUrl}/subscription?canceled=true`);
 
         const checkoutSession = await stripe.checkout.sessions.create({
             customer_email: email,
@@ -110,11 +92,7 @@ export const createCheckoutSession = async (params: CreateCheckoutSessionParams)
             },
         });
 
-        console.log('Stripe checkout session created:', {
-            id: checkoutSession.id,
-            url: checkoutSession.url,
-            metadata: checkoutSession.metadata
-        });
+        console.log('Stripe checkout session created: ', checkoutSession.id);
 
         return {
             success: true,
@@ -159,11 +137,11 @@ export const createPortalSession = async (): Promise<CreatePortalSessionResult> 
                 subscriptions: {
                     where: {
                         status: {
-                            in: ['active', 'trialing']
+                            in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
                         }
                     },
                     orderBy: {
-                        createdAt: 'desc'
+                        createdAt: Prisma.SortOrder.desc
                     },
                     take: 1
                 }

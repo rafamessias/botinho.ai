@@ -179,3 +179,92 @@ export const checkExportPermission = async () => {
         };
     }
 };
+
+export const handleCanceledCheckout = async () => {
+    try {
+        const teamId = await getCurrentTeamId();
+
+        if (!teamId) {
+            return {
+                success: false,
+                error: 'No team found for current user',
+                converted: false
+            };
+        }
+
+        // Get current subscription
+        const subscriptionResult = await getCustomerSubscription({ teamId });
+
+        if (!subscriptionResult.success || !subscriptionResult.data) {
+            return {
+                success: false,
+                error: subscriptionResult.error || 'No subscription found',
+                converted: false
+            };
+        }
+
+        const currentSubscription = subscriptionResult.data;
+
+        // Check if subscription status is pending
+        if (currentSubscription.status !== 'pending') {
+            return {
+                success: true,
+                converted: false,
+                message: 'Subscription is not pending'
+            };
+        }
+
+        // Find the FREE plan
+        const { prisma } = await import('@/prisma/lib/prisma');
+        const { SubscriptionStatus } = await import('@/lib/generated/prisma');
+        const { updateCustomerSubscription } = await import('@/lib/customer-subscription');
+
+        const freePlan = await prisma.subscriptionPlan.findFirst({
+            where: {
+                planType: PlanType.FREE,
+                isActive: true
+            }
+        });
+
+        if (!freePlan) {
+            return {
+                success: false,
+                error: 'Free plan not found',
+                converted: false
+            };
+        }
+
+        // Update subscription to FREE plan with active status
+        const updateResult = await updateCustomerSubscription({
+            id: currentSubscription.id,
+            planId: freePlan.id,
+            status: SubscriptionStatus.active,
+            stripeCustomerId: undefined,
+            stripeSubscriptionId: undefined,
+            currentPeriodStart: undefined,
+            currentPeriodEnd: undefined,
+            cancelAtPeriodEnd: false
+        });
+
+        if (!updateResult.success) {
+            return {
+                success: false,
+                error: updateResult.error || 'Failed to update subscription',
+                converted: false
+            };
+        }
+
+        return {
+            success: true,
+            converted: true,
+            message: 'Subscription converted to FREE plan'
+        };
+    } catch (error) {
+        console.error('Error handling canceled checkout:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error occurred',
+            converted: false
+        };
+    }
+};

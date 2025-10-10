@@ -4,9 +4,10 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { useSession } from "next-auth/react"
 import { getCurrentUserAction } from "@/components/server-actions/auth"
 import { useTheme } from "next-themes"
-import { Theme } from "@/lib/generated/prisma"
+import { BillingInterval, PlanType, SubscriptionStatus, Theme } from "@/lib/generated/prisma"
 import { getUserTeamsLightAction } from "./server-actions/team"
 import LoadingComp from "./loading-comp"
+import { useRouter } from "next/navigation"
 
 export interface UserTeam {
     id: number
@@ -58,7 +59,7 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const { data: session, status } = useSession()
-
+    const router = useRouter()
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -80,12 +81,35 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
             if (result.success && result.user) {
                 if (teamsUpdate) {
-                    const resultTeams = await getUserTeamsLightAction(result.user.id)
+                    const resultTeams = await getUserTeamsLightAction(result.user.id, result.user.defaultTeamId || 0)
                     if (resultTeams && resultTeams?.success && resultTeams?.teams) {
                         setUser({ ...result.user, teams: resultTeams.teams as UserTeam[] })
                     } else {
                         setUser({ ...result.user, teams: null })
                     }
+
+
+                    // Check if user exists and has a pending subscription
+                    if (resultTeams?.customerSubscription && resultTeams.customerSubscription.status === SubscriptionStatus.pending) {
+                        const subscription = resultTeams.customerSubscription
+
+                        import('@/components/server-actions/auth').then(async ({ createCheckoutSessionAction }) => {
+                            const checkoutResult = await createCheckoutSessionAction(
+                                subscription.plan?.planType || PlanType.FREE,
+                                subscription.billingInterval || BillingInterval.monthly,
+                                session?.user?.email,
+                                result.user.defaultTeamId || 0,
+                                subscription.id
+                            )
+
+                            if (checkoutResult?.success && checkoutResult.checkoutUrl) {
+                                // Redirect browser to the Stripe checkout
+                                router.push(checkoutResult.checkoutUrl as string)
+                            }
+                        })
+                    }
+
+
                 } else {
                     setUser({ ...result.user, teams: user?.teams || null })
                 }

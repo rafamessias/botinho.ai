@@ -933,7 +933,7 @@ export const getTeamTokenAction = async (teamId: number) => {
     }
 }
 
-export const getUserTeamsLightAction = async (userId: number) => {
+export const getUserTeamsLightAction = async (userId: number, defaultTeamId: number) => {
     try {
         // Fetch only essential team data for navigation
         const teams = await prisma.team.findMany({
@@ -964,7 +964,20 @@ export const getUserTeamsLightAction = async (userId: number) => {
             }
         })
 
-        return { success: true, teams }
+        let customerSubscription = null
+        if (defaultTeamId) {
+            customerSubscription = await prisma.customerSubscription.findFirst({
+                where: { teamId: defaultTeamId },
+                select: {
+                    id: true,
+                    status: true,
+                    billingInterval: true,
+                    plan: { select: { planType: true } }
+                }
+            })
+        }
+
+        return { success: true, teams, customerSubscription }
     } catch (error) {
         console.error("Get user teams light error:", error)
         return { success: false, error: "Failed to get teams" }

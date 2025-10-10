@@ -973,7 +973,11 @@
             "monthly": "Monthly",
             "active": "Active",
             "trial": "Trial",
-            "canceled": "Canceled"
+            "canceled": "Canceled",
+            "checkoutCanceled": {
+                "title": "Checkout Canceled",
+                "description": "Your subscription has been changed to the Free plan because the checkout was not completed."
+            }
         },
         "toast": {
             "success": {

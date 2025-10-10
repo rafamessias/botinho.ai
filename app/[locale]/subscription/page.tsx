@@ -3,10 +3,24 @@ import { SubscriptionPage } from "@/components/subscription/subscription-page";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
-import { getSubscriptionData } from "@/components/server-actions/subscription";
+import { getSubscriptionData, handleCanceledCheckout } from "@/components/server-actions/subscription";
 
-export default async function Subscription() {
+interface SubscriptionProps {
+    searchParams: Promise<{
+        canceled?: string;
+    }>;
+}
+
+export default async function Subscription({ searchParams }: SubscriptionProps) {
     const t = await getTranslations("Subscription");
+
+    // Check if checkout was canceled
+    const params = await searchParams;
+    let checkoutCanceled = false;
+    if (params.canceled === 'true') {
+        const cancelResult = await handleCanceledCheckout();
+        checkoutCanceled = cancelResult.converted || false;
+    }
 
     // Load subscription data server-side
     const subscriptionData = await getSubscriptionData();
@@ -30,7 +44,10 @@ export default async function Subscription() {
                                 {t("description")}
                             </p>
 
-                            <SubscriptionPage subscriptionData={subscriptionData} />
+                            <SubscriptionPage
+                                subscriptionData={subscriptionData}
+                                checkoutCanceled={checkoutCanceled}
+                            />
                         </div>
                     </div>
                 </div>

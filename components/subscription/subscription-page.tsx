@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info } from "lucide-react";
 import { createPortalSession } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -33,9 +34,10 @@ interface SubscriptionPageProps {
             usage: any;
         } | null;
     };
+    checkoutCanceled?: boolean;
 }
 
-export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) => {
+export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }: SubscriptionPageProps) => {
     const t = useTranslations("Subscription");
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
@@ -157,6 +159,19 @@ export const SubscriptionPage = ({ subscriptionData }: SubscriptionPageProps) =>
 
     return (
         <div className="space-y-6">
+            {/* Checkout Canceled Alert */}
+            {checkoutCanceled && (
+                <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
+                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <AlertTitle className="text-blue-900 dark:text-blue-100">
+                        {t("page.checkoutCanceled.title")}
+                    </AlertTitle>
+                    <AlertDescription className="text-blue-800 dark:text-blue-200">
+                        {t("page.checkoutCanceled.description")}
+                    </AlertDescription>
+                </Alert>
+            )}
+
             {/* Subscription Overview */}
             <Card>
                 <CardHeader>

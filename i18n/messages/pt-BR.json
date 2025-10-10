@@ -973,7 +973,11 @@
             "monthly": "Mensal",
             "active": "Ativo",
             "trial": "Teste",
-            "canceled": "Cancelado"
+            "canceled": "Cancelado",
+            "checkoutCanceled": {
+                "title": "Checkout Cancelado",
+                "description": "Sua assinatura foi alterada para o plano Gratuito porque o checkout não foi concluído."
+            }
         },
         "toast": {
             "success": {

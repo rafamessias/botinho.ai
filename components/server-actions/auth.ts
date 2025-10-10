@@ -11,7 +11,7 @@ import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
 import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
-import { Provider, Theme, SubscriptionStatus, PlanType, Prisma } from "@/lib/generated/prisma"
+import { Provider, Theme, SubscriptionStatus, PlanType, Prisma, TeamMemberStatus, BillingInterval } from "@/lib/generated/prisma"
 import { createCustomerSubscription } from "@/lib/customer-subscription"
 import { createCheckoutSession } from "@/lib/stripe-service"
 
@@ -81,73 +81,14 @@ export const signInAction = async (formData: SignInFormData) => {
 
         // If successful, check subscription and handle checkout if needed
         console.log('Checking subscription for user:', validatedData.email)
-        const subscriptionCheck = await checkSubscriptionAndRedirect(validatedData.email)
+        const subscriptionCheck = await validateUserTeamAndSubscription(validatedData.email)
         console.log('Subscription check result:', subscriptionCheck)
 
-        if (subscriptionCheck?.success && subscriptionCheck.needsCheckout && subscriptionCheck.planType) {
-            console.log('Creating checkout session for plan:', subscriptionCheck.planType)
-
-            // Get user's team and existing subscription
-            const user = await prisma.user.findUnique({
-                where: { email: validatedData.email },
-                include: {
-                    team: {
-                        include: {
-                            subscriptions: {
-                                where: {
-                                    status: {
-                                        in: ['active', 'trialing']
-                                    }
-                                },
-                                orderBy: {
-                                    createdAt: 'desc'
-                                },
-                                take: 1
-                            }
-                        }
-                    }
-                }
-            }) as Prisma.UserGetPayload<{
-                include: { team: { include: { subscriptions: true } } }
-            }> | null
-
-            if (!user?.defaultTeamId) {
-                console.error('No team found for user:', validatedData.email)
-                return {
-                    success: true,
-                    needsCheckout: false,
-                    error: 'No team found for user'
-                }
-            }
-
-            // Get existing CustomerSubscription ID if it exists
-            const existingSubscriptionId = user.team?.subscriptions[0]?.id
-            console.log('Existing CustomerSubscription ID:', existingSubscriptionId)
-
-            // Create checkout session server-side
-            const checkoutResult = await createCheckoutSessionAction(
-                subscriptionCheck.planType as PlanType,
-                'monthly',
-                validatedData.email,
-                user.defaultTeamId,
-                existingSubscriptionId
-            )
-            console.log('Checkout session result:', checkoutResult)
-
-            if (checkoutResult.success && checkoutResult.checkoutUrl) {
-                return {
-                    success: true,
-                    needsCheckout: true,
-                    checkoutUrl: checkoutResult.checkoutUrl
-                }
-            } else {
-                console.error('Failed to create checkout session server-side:', checkoutResult.error)
-                // Return success but without checkout URL - client will handle fallback
-                return {
-                    success: true,
-                    needsCheckout: false,
-                    error: 'Failed to create checkout session'
-                }
+        if (subscriptionCheck?.success && subscriptionCheck.needsCheckout) {
+            return {
+                success: true,
+                needsCheckout: subscriptionCheck.needsCheckout,
+                checkoutUrl: subscriptionCheck.checkoutUrl
             }
         }
 
@@ -191,81 +132,256 @@ export const signInAction = async (formData: SignInFormData) => {
 }
 
 /**
- * Server action to check user subscription and redirect to Stripe checkout if needed
+ * Create a default team with FREE plan subscription for a user
+ * @param userId - User ID
+ * @param firstName - User's first name
+ * @returns Promise with success status and team data
  */
-export const checkSubscriptionAndRedirect = async (userEmail: string) => {
+export const createDefaultTeamWithFreePlan = async (userId: number, firstName: string) => {
+
     try {
-        console.log('Checking subscription for user email:', userEmail)
+        console.log(`Creating default team with FREE plan for user ${userId}`)
 
-        // Get user with their team and subscription
-        const user = await prisma.user.findUnique({
-            where: { email: userEmail },
-            include: {
-                team: {
-                    include: {
-                        subscriptions: {
-                            where: {
-                                status: {
-                                    in: ['active', 'trialing', 'pending']
-                                }
-                            },
-                            include: {
-                                plan: true
-                            },
-                            orderBy: {
-                                createdAt: 'desc'
-                            },
-                            take: 1
-                        }
-                    }
-                }
+        // Create a default team for the user
+        const newTeam = await prisma.team.create({
+            data: {
+                name: "Team's " + firstName,
+                description: "Team's " + firstName
             }
-        }) as Prisma.UserGetPayload<{
-            include: { team: { include: { subscriptions: { include: { plan: true } } } } }
-        }> | null
+        })
 
-        console.log('User found:', !!user, 'Team found:', !!user?.team)
-        console.log('Subscription found:', !!user?.team?.subscriptions?.[0])
-        console.log('Subscription status:', user?.team?.subscriptions?.[0]?.status)
-        console.log('Plan found:', !!user?.team?.subscriptions?.[0]?.plan)
-        console.log('Plan type:', user?.team?.subscriptions?.[0]?.plan?.planType)
-
-        if (!user || !user.team) {
-            return { success: false, error: "User or team not found" }
-        }
-
-        const subscription = user.team.subscriptions[0]
-
-        // If no subscription or subscription is pending, redirect to Stripe checkout
-        if (!subscription || subscription.status === 'pending') {
-            // Find the plan to redirect to
-            let planToRedirect = 'FREE' // Use database enum value, not mapped string
-
-            if (subscription && subscription.plan) {
-                // Use the original database plan type directly
-                planToRedirect = subscription.plan.planType
+        // Create team member (owner)
+        await prisma.teamMember.create({
+            data: {
+                userId: userId,
+                teamId: newTeam.id,
+                isAdmin: true,
+                canPost: true,
+                canApprove: true,
+                isOwner: true,
+                teamMemberStatus: TeamMemberStatus.accepted,
             }
+        })
 
-            console.log('Plan to redirect to:', planToRedirect)
+        // Update user's default team
+        await prisma.user.update({
+            where: { id: userId },
+            data: { defaultTeamId: newTeam.id }
+        })
 
-            // Return redirect information
+        // Find FREE plan
+        const freePlan = await prisma.subscriptionPlan.findFirst({
+            where: {
+                planType: PlanType.FREE,
+                isActive: true
+            }
+        })
+
+        if (!freePlan) {
             return {
-                success: true,
-                needsCheckout: true,
-                planType: planToRedirect
+                success: false,
+                error: "Free plan not found",
+                team: null
             }
         }
 
-        // If subscription is active, no redirect needed
-        console.log('Subscription is active, no checkout needed')
+        // Create FREE plan subscription
+        const subscriptionResult = await createCustomerSubscription({
+            teamId: newTeam.id,
+            planId: freePlan.id,
+            status: SubscriptionStatus.active,
+            cancelAtPeriodEnd: false
+        })
+
+        if (!subscriptionResult.success) {
+            console.error("Failed to create free subscription:", subscriptionResult.error)
+            return {
+                success: false,
+                error: "Failed to create subscription",
+                team: null
+            }
+        }
+
+        console.log('✅ Created team with FREE plan subscription:', newTeam.id)
         return {
             success: true,
-            needsCheckout: false
+            message: "Team and FREE plan subscription created successfully",
+            team: newTeam
         }
 
     } catch (error) {
-        console.error("Error checking subscription:", error)
-        return { success: false, error: "Failed to check subscription" }
+        console.error("Error creating default team with free plan:", error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error occurred",
+            team: null
+        }
+    }
+}
+
+/**
+ * Server action to validate user's default team and subscription
+ * - Validates if user has a default team
+ * - Validates if default team has active subscription
+ * - Creates default team with FREE plan if no team exists
+ * - Creates checkout URL if default team has pending subscription and user is owner
+ * - Only validates the user's default team (set in defaultTeamId), not all teams user is member of
+ */
+export const validateUserTeamAndSubscription = async (userEmail: string) => {
+    const t = await getTranslations("AuthErrors")
+
+    try {
+        console.log('Validating user team and subscription for:', userEmail)
+
+        // Get user
+        const user = await prisma.user.findUnique({
+            where: { email: userEmail },
+            select: {
+                id: true,
+                defaultTeamId: true,
+                firstName: true
+            }
+        })
+
+        if (!user) {
+            return { success: false, error: "User not found", needsCheckout: false }
+        }
+
+        // Case 1: User has no default team - create one with FREE plan
+        if (!user.defaultTeamId) {
+            const createTeamResult = await createDefaultTeamWithFreePlan(user.id, user.firstName)
+
+            if (!createTeamResult.success) {
+                return {
+                    success: false,
+                    error: createTeamResult.error || "Failed to create default team",
+                    needsCheckout: false,
+                    checkoutUrl: null
+                }
+            }
+
+            return {
+                success: true,
+                needsCheckout: false,
+                checkoutUrl: null
+            }
+        }
+
+        // Case 2: User has default team - get team with subscription
+        const defaultTeam = await prisma.team.findUnique({
+            where: { id: user.defaultTeamId },
+            include: {
+                subscriptions: {
+                    where: {
+                        status: {
+                            in: [SubscriptionStatus.active, SubscriptionStatus.trialing, SubscriptionStatus.pending]
+                        }
+                    },
+                    include: {
+                        plan: true
+                    },
+                    orderBy: {
+                        createdAt: Prisma.SortOrder.desc
+                    },
+                    take: 1
+                },
+                members: {
+                    where: {
+                        userId: user.id,
+                        isOwner: true
+                    },
+                    take: 1
+                }
+            }
+        }) as Prisma.TeamGetPayload<{
+            include: { subscriptions: { include: { plan: true } }, members: true }
+        }> | null
+
+        if (!defaultTeam) {
+            // Default team ID exists but team not found - create a team and FREE plan subscription
+            console.log('Default team ID exists but team not found, creating new team with FREE plan')
+
+            const createTeamResult = await createDefaultTeamWithFreePlan(user.id, user.firstName)
+
+            if (!createTeamResult.success) {
+                return {
+                    success: false,
+                    error: createTeamResult.error || "Failed to create default team",
+                    needsCheckout: false,
+                    checkoutUrl: null
+                }
+            }
+
+            return {
+                success: true,
+                needsCheckout: false,
+                checkoutUrl: null
+            }
+        }
+
+        const subscription = defaultTeam.subscriptions[0]
+        const isOwner = defaultTeam.members.length > 0
+
+        // Case 2a: Has pending subscription and user is owner - create checkout
+        if (subscription && subscription.status === SubscriptionStatus.pending && isOwner) {
+            console.log('Pending subscription found for default team, creating checkout URL')
+
+            const planType: PlanType = subscription.plan?.planType as PlanType || PlanType.FREE
+
+            // Create checkout session
+            const checkoutResult = await createCheckoutSession({
+                planId: planType,
+                billingCycle: BillingInterval.monthly,
+                userEmail: userEmail,
+                teamId: defaultTeam.id,
+                customerSubscriptionId: subscription.id
+            })
+
+            if (!checkoutResult.success || !checkoutResult.url) {
+                console.error('Failed to create checkout session:', checkoutResult.error)
+                return {
+                    success: false,
+                    error: "Failed to create checkout session",
+                    needsCheckout: true,
+                    checkoutUrl: null
+                }
+            }
+
+            console.log('✅ Checkout URL created')
+            return {
+                success: true,
+                needsCheckout: true,
+                checkoutUrl: checkoutResult.url
+            }
+        }
+
+        // Case 2b: Has pending subscription but user is not owner of default team
+        if (subscription && subscription.status === SubscriptionStatus.pending && !isOwner) {
+            console.log('Pending subscription found but user is not owner of default team')
+            return {
+                success: false,
+                needsCheckout: false,
+                checkoutUrl: null,
+                message: "Only team owner can complete subscription checkout"
+            }
+        }
+
+        // Case 2c: Has active subscription for default team
+        console.log('✅ Active subscription found for default team, no checkout needed')
+        return {
+            success: true,
+            needsCheckout: false,
+            checkoutUrl: null
+        }
+
+    } catch (error) {
+        console.error("Error validating user team and subscription:", error)
+        return {
+            success: false,
+            error: "Failed to validate team and subscription",
+            needsCheckout: false,
+            checkoutUrl: null
+        }
     }
 }
 
@@ -325,7 +441,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
                     phone: validatedData.phone || null,
                     firstName,
                     lastName,
-                    provider: 'local',
+                    provider: Provider.local,
                     language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
                     confirmationToken,
                     confirmed: false,
@@ -350,7 +466,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
                     canPost: true,
                     canApprove: true,
                     isOwner: true,
-                    teamMemberStatus: 'accepted',
+                    teamMemberStatus: TeamMemberStatus.accepted,
                 }
             })
 
@@ -380,7 +496,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
                 // Find the subscription plan by planType
                 const subscriptionPlan = await prisma.subscriptionPlan.findFirst({
                     where: {
-                        planType: planParam.toUpperCase() as any,
+                        planType: planParam.toUpperCase() as PlanType,
                         isActive: true
                     }
                 })
@@ -409,7 +525,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
             try {
                 const freePlan = await prisma.subscriptionPlan.findFirst({
                     where: {
-                        planType: 'FREE',
+                        planType: PlanType.FREE,
                         isActive: true
                     }
                 })
@@ -926,71 +1042,14 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
             }
 
             // Check if user needs subscription after successful sign-in
-            const subscriptionCheck = await checkSubscriptionAndRedirect(email || "")
+            const subscriptionCheck = await validateUserTeamAndSubscription(email || "")
 
-            if (subscriptionCheck?.success && subscriptionCheck.needsCheckout && subscriptionCheck.planType) {
-                // Get user's team and existing subscription
-                // Check if user needs subscription after successful sign-in
-                // IT IS BEING CALLED TWICE FOR SOME REASON - FIX IT
-                const user = await prisma.user.findUnique({
-                    where: { email: email || "" },
-                    include: {
-                        team: {
-                            include: {
-                                subscriptions: {
-                                    where: {
-                                        status: {
-                                            in: ['active', 'trialing']
-                                        }
-                                    },
-                                    orderBy: {
-                                        createdAt: 'desc'
-                                    },
-                                    take: 1
-                                }
-                            }
-                        }
-                    }
-                }) as Prisma.UserGetPayload<{
-                    include: { team: { include: { subscriptions: true } } }
-                }> | null
-
-                if (!user?.defaultTeamId) {
-                    console.error('No team found for user in OTP flow:', email)
-                    return {
-                        success: true,
-                        message: t("accountConfirmed"),
-                        needsCheckout: false
-                    }
-                }
-
-                // Get existing CustomerSubscription ID if it exists
-                const existingSubscriptionId = user.team?.subscriptions?.[0]?.id
-                console.log('Existing CustomerSubscription ID in OTP flow:', existingSubscriptionId)
-
-                // Create checkout session server-side
-                const checkoutResult = await createCheckoutSessionAction(
-                    subscriptionCheck.planType as PlanType,
-                    'monthly',
-                    email || "",
-                    user.defaultTeamId,
-                    existingSubscriptionId
-                )
-
-                if (checkoutResult.success) {
-                    return {
-                        success: true,
-                        message: t("accountConfirmed"),
-                        needsCheckout: true,
-                        checkoutUrl: checkoutResult.checkoutUrl
-                    }
-                } else {
-                    // Checkout failed, but sign-in was successful
-                    return {
-                        success: true,
-                        message: t("accountConfirmed"),
-                        needsCheckout: false
-                    }
+            if (subscriptionCheck?.success && subscriptionCheck.needsCheckout) {
+                return {
+                    success: true,
+                    message: t("accountConfirmed"),
+                    needsCheckout: true,
+                    checkoutUrl: subscriptionCheck.checkoutUrl
                 }
             }
 
@@ -1034,7 +1093,6 @@ export const createCheckoutSessionAction = async (planType: PlanType, billingCyc
             teamId: teamId,
             customerSubscriptionId: customerSubscriptionId
         })
-        console.log('result', result)
 
         if (!result.success) {
             return { success: false, error: result.error || 'Failed to create checkout session' }
