@@ -996,6 +996,54 @@
                 "title": "Portal Not Available",
                 "description": "Customer portal is not configured yet. Please contact support for subscription management."
             }
+        },
+        "upgradeModal": {
+            "title": "Upgrade Your Plan",
+            "description": "Choose the perfect plan for your needs and start getting more out of your surveys",
+            "upgradeNow": "Upgrade Now",
+            "popular": "Popular",
+            "cta": "Get Started",
+            "loading": "Loading...",
+            "billing": {
+                "monthly": "Monthly",
+                "yearly": "Yearly",
+                "save": "Save 20%"
+            },
+            "pricing": {
+                "perMonth": "/month",
+                "billedAnnually": "billed annually"
+            },
+            "features": {
+                "activeSurveys": "{count} Active Surveys",
+                "responses": "{count} Responses/month",
+                "unlimitedSurveys": "Unlimited Surveys",
+                "unlimitedResponses": "Unlimited Responses",
+                "analytics": "Advanced Analytics",
+                "removeBranding": "Remove Branding",
+                "dataExport": "Data Export",
+                "apiAccess": "API Access",
+                "publicPages": "Public Survey Pages",
+                "prioritySupport": "Priority Support"
+            },
+            "plans": {
+                "starter": {
+                    "description": "Perfect for small teams"
+                },
+                "pro": {
+                    "description": "For growing businesses"
+                },
+                "business": {
+                    "description": "For larger organizations"
+                },
+                "enterprise": {
+                    "description": "For enterprise needs"
+                }
+            },
+            "footer": "You can cancel or change your plan at any time",
+            "error": {
+                "title": "Error",
+                "description": "Failed to load plans. Please try again."
+            }
         }
     },
     "Survey": {

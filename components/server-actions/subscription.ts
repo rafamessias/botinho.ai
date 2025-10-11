@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { createCheckoutSession as createStripeCheckoutSession, createPortalSession as createStripePortalSession } from '@/lib/stripe-service';
 import { getCustomerSubscription } from '@/lib/customer-subscription';
 import { getCurrentPeriodUsageReport } from '@/lib/periodic-usage-tracking';
@@ -23,10 +22,10 @@ export const createCheckoutSession = async (planId: PlanType, billingCycle: 'mon
         }
 
         // Redirect to Stripe Checkout
-        redirect(result.url);
+        return ({ success: true, checkoutUrl: result.url });
     } catch (error) {
         console.error('Error creating checkout session:', error);
-        throw error;
+        return { success: false, error: error instanceof Error ? error.message : 'Internal server error' };
     }
 };
 
@@ -265,6 +264,43 @@ export const handleCanceledCheckout = async () => {
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error occurred',
             converted: false
+        };
+    }
+};
+
+export const getAvailablePlans = async () => {
+    try {
+        const { prisma } = await import('@/prisma/lib/prisma');
+
+        const plans = await prisma.subscriptionPlan.findMany({
+            where: {
+                isActive: true,
+                planType: {
+                    not: PlanType.FREE
+                }
+            },
+            orderBy: {
+                priceMonthly: 'asc'
+            }
+        });
+
+        // Serialize Decimal fields to numbers for client-side compatibility
+        const serializedPlans = plans.map(plan => ({
+            ...plan,
+            priceMonthly: Number(plan.priceMonthly),
+            priceYearly: Number(plan.priceYearly),
+        }));
+
+        return {
+            success: true,
+            plans: serializedPlans
+        };
+    } catch (error) {
+        console.error('Error fetching available plans:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Failed to fetch plans',
+            plans: []
         };
     }
 };

@@ -1,6 +1,6 @@
 import { prisma } from "@/prisma/lib/prisma"
 import { z } from "zod"
-import { SubscriptionStatus } from "@/lib/generated/prisma"
+import { BillingInterval, SubscriptionStatus } from "@/lib/generated/prisma"
 
 // Validation schemas
 const createCustomerSubscriptionSchema = z.object({
@@ -14,6 +14,7 @@ const createCustomerSubscriptionSchema = z.object({
     cancelAtPeriodEnd: z.boolean().default(false),
     trialStart: z.date().optional(),
     trialEnd: z.date().optional(),
+    billingInterval: z.nativeEnum(BillingInterval).optional(),
 })
 
 const updateCustomerSubscriptionSchema = z.object({
@@ -27,6 +28,7 @@ const updateCustomerSubscriptionSchema = z.object({
     cancelAtPeriodEnd: z.boolean().optional(),
     trialStart: z.date().optional(),
     trialEnd: z.date().optional(),
+    billingInterval: z.nativeEnum(BillingInterval).optional(),
 })
 
 const getCustomerSubscriptionSchema = z.object({
@@ -57,6 +59,7 @@ export interface CustomerSubscriptionResult {
  */
 export const createCustomerSubscription = async (data: CreateCustomerSubscriptionInput): Promise<CustomerSubscriptionResult> => {
     try {
+        console.log("Creating customer subscription", data)
         // Validate input data
         const validatedData = createCustomerSubscriptionSchema.parse(data)
 
@@ -104,7 +107,8 @@ export const createCustomerSubscription = async (data: CreateCustomerSubscriptio
                 cancelAtPeriodEnd: validatedData.cancelAtPeriodEnd,
                 trialStart: validatedData.trialStart,
                 trialEnd: validatedData.trialEnd,
-                status: validatedData.status || "active"
+                status: validatedData.status || SubscriptionStatus.active,
+                billingInterval: validatedData.billingInterval || BillingInterval.monthly
             },
             include: {
                 plan: true,
@@ -243,7 +247,10 @@ export const getCustomerSubscription = async (data: GetCustomerSubscriptionInput
         // Get the subscription
         const subscription = await prisma.customerSubscription.findFirst({
             where: {
-                teamId: validatedData.teamId
+                teamId: validatedData.teamId,
+                status: {
+                    in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
+                }
             },
             include: {
                 plan: true,

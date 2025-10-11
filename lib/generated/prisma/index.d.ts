@@ -26033,7 +26033,6 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     email?: string
-    phone?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -26043,6 +26042,7 @@ export namespace Prisma {
     confirmationToken?: StringNullableFilter<"User"> | string | null
     confirmed?: BoolNullableFilter<"User"> | boolean | null
     blocked?: BoolNullableFilter<"User"> | boolean | null
+    phone?: StringNullableFilter<"User"> | string | null
     firstName?: StringFilter<"User"> | string
     lastName?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
@@ -26059,7 +26059,7 @@ export namespace Prisma {
     teamMembers?: TeamMemberListRelationFilter
     avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
     team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
-  }, "id" | "email" | "phone">
+  }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder

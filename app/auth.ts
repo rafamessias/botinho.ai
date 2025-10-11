@@ -8,7 +8,7 @@ import WelcomeEmail from "@/emails/WelcomeEmail"
 import resend from "@/lib/resend"
 import { addDefaultSurveyTypes } from "@/components/server-actions/team"
 import { createCustomerSubscription } from "@/lib/customer-subscription"
-import { SubscriptionStatus } from "@/lib/generated/prisma"
+import { BillingInterval, PlanType, SubscriptionStatus } from "@/lib/generated/prisma"
 
 // Add type declarations at the top of the file
 declare module "next-auth" {
@@ -249,16 +249,40 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                         // Create subscription for Google OAuth users
                         try {
-                            // Check for signup plan from cookies
-                            const cookies = require('next/headers').cookies;
+                            // Read signup plan and interval from cookies
+                            const { cookies } = require('next/headers');
                             const cookieStore = await cookies();
-                            const signupPlan = cookieStore.get('signup_plan')?.value;
 
-                            if (signupPlan && signupPlan !== 'free') {
+                            const signupPlan = cookieStore.get('signup_plan')?.value || null;
+                            const interval = cookieStore.get('signup_interval')?.value || null;
+
+                            let validSignupPlan: PlanType | null = null;
+                            let validInterval: BillingInterval | null = null;
+
+                            // Fetch allowed planTypes and intervals from the DB for validation
+                            const allowedPlanTypes = new Set(Object.values(PlanType));
+                            const allowedIntervals = new Set(
+                                Object.values(BillingInterval)
+                            );
+
+                            if (signupPlan && allowedPlanTypes.has(signupPlan.toUpperCase() as PlanType)) {
+                                validSignupPlan = signupPlan.toUpperCase() as PlanType;
+                            }
+
+                            if (interval && allowedIntervals.has(interval as BillingInterval)) {
+                                validInterval = interval as BillingInterval;
+                            }
+
+                            console.log("signupPlan", signupPlan)
+                            console.log("interval", interval)
+                            console.log("validSignupPlan", validSignupPlan)
+                            console.log("validInterval", validInterval)
+
+                            if (validSignupPlan && validSignupPlan !== PlanType.FREE) {
                                 // Find the subscription plan by planType
                                 const subscriptionPlan = await prisma.subscriptionPlan.findFirst({
                                     where: {
-                                        planType: signupPlan.toUpperCase() as any,
+                                        planType: validSignupPlan as PlanType,
                                         isActive: true
                                     }
                                 })
@@ -269,7 +293,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                         teamId: newTeam.id,
                                         planId: subscriptionPlan.id,
                                         status: SubscriptionStatus.pending,
-                                        cancelAtPeriodEnd: false
+                                        cancelAtPeriodEnd: false,
+                                        billingInterval: validInterval as BillingInterval
                                     })
 
                                     if (!subscriptionResult.success) {
@@ -280,7 +305,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 // Create free subscription with active status
                                 const freePlan = await prisma.subscriptionPlan.findFirst({
                                     where: {
-                                        planType: 'FREE',
+                                        planType: PlanType.FREE,
                                         isActive: true
                                     }
                                 })
@@ -311,13 +336,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         token.defaultTeamId = newTeam.id
 
                         const baseUrl = process.env.HOST;
-                        const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <contact@saasframework.com>";
+                        const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>";
 
                         // send welcome email
                         const { data, error } = await resend.emails.send({
                             from: fromEmail,
                             to: [token.email!],
-                            subject: currentLocale === 'pt-BR' ? 'Bem-vindo à SaaS Framework' : 'Welcome to SaaS Framework',
+                            subject: currentLocale === 'pt-BR' ? 'Bem-vindo à Opineeo' : 'Welcome to Opineeo',
                             react: WelcomeEmail({
                                 userName: token.name || "",
                                 confirmationUrl: `${baseUrl}/sign-up/success`,

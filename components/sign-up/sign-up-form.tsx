@@ -96,13 +96,17 @@ export function SignUpForm({
     const handleGoogleSignUp = async () => {
         try {
             setIsGoogleLoading(true)
-            // Get redirect parameter and plan parameter from URL
+            // Get redirect parameter and plan/interval parameters from URL
             const redirectParam = searchParams.get("redirect")
             const planParam = searchParams.get("plan")
+            const intervalParam = searchParams.get("interval")
 
-            // Store plan parameter in cookies for Google OAuth flow
+            // Store plan and interval parameters in cookies for Google OAuth flow
             if (planParam) {
                 document.cookie = `signup_plan=${planParam}; path=/; max-age=300` // 5 minutes
+            }
+            if (intervalParam) {
+                document.cookie = `signup_interval=${intervalParam}; path=/; max-age=300` // 5 minutes
             }
 
             await googleSignInAction(redirectParam || undefined)

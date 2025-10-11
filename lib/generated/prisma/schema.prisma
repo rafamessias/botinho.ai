@@ -18,7 +18,7 @@ model User {
   confirmationToken    String?
   confirmed            Boolean?
   blocked              Boolean?
-  phone                String?      @unique
+  phone                String?
   firstName            String
   lastName             String?
   avatarUrl            String?

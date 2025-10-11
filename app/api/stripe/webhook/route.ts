@@ -119,11 +119,6 @@ export async function POST(request: NextRequest) {
             case 'checkout.session.completed': {
                 const session = event.data.object as Stripe.Checkout.Session;
 
-                console.log('Checkout session completed:', session.id);
-                console.log('Session metadata:', session.metadata);
-                console.log('Session mode:', session.mode);
-                console.log('Session subscription:', session.subscription);
-
                 if (session.mode === 'subscription' && session.subscription) {
                     try {
                         // Get the full subscription object from Stripe
@@ -182,28 +177,6 @@ export async function POST(request: NextRequest) {
                             ? new Date((subscription as any).trial_end * 1000)
                             : undefined;
 
-                        console.log('Subscription object:', {
-                            id: subscription.id,
-                            status: subscription.status,
-                            customer: subscription.customer,
-                            cancel_at_period_end: subscription.cancel_at_period_end,
-                            trial_start: (subscription as any).trial_start,
-                            trial_end: (subscription as any).trial_end
-                        });
-
-                        console.log('Subscription item:', {
-                            current_period_start: subscriptionItem?.current_period_start,
-                            current_period_end: subscriptionItem?.current_period_end,
-                            price_id: subscriptionItem?.price?.id
-                        });
-
-                        console.log('Converted dates:', {
-                            currentPeriodStart,
-                            currentPeriodEnd,
-                            trialStart,
-                            trialEnd
-                        });
-
                         if (customerSubscriptionId) {
                             // Update existing CustomerSubscription
                             console.log(`Updating existing CustomerSubscription: ${customerSubscriptionId}`);
@@ -225,6 +198,39 @@ export async function POST(request: NextRequest) {
 
                             console.log(`CustomerSubscription updated successfully: ${customerSubscriptionId}`);
                         } else {
+
+
+                            console.log(`Checking for existing FREE plan subscription for team ${teamId}`);
+
+                            const existingFreeSubscription = await prisma.customerSubscription.findFirst({
+                                where: {
+                                    teamId: parseInt(teamId),
+                                    status: {
+                                        in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
+                                    }
+                                },
+                                include: {
+                                    plan: true,
+                                    usageTracking: true
+                                }
+                            });
+
+                            // If there's an existing FREE subscription, cancel it first
+                            // This is required because createCustomerSubscription validates against active subscriptions
+                            if (existingFreeSubscription && existingFreeSubscription.plan.planType === PlanType.FREE) {
+                                console.log(`Found existing FREE plan subscription: ${existingFreeSubscription.id}. Canceling it before creating new subscription...`);
+
+                                await prisma.customerSubscription.update({
+                                    where: { id: existingFreeSubscription.id },
+                                    data: {
+                                        status: SubscriptionStatus.canceled,
+                                        cancelAtPeriodEnd: false
+                                    }
+                                });
+
+                                console.log(`✅ Canceled FREE plan subscription: ${existingFreeSubscription.id}`);
+                            }
+
                             // Create new CustomerSubscription
                             console.log(`Creating new CustomerSubscription for team ${teamId}`);
 
@@ -242,6 +248,40 @@ export async function POST(request: NextRequest) {
 
                             if (result.success) {
                                 console.log(`Subscription created successfully for team ${teamId}`);
+
+                                // Migrate usage tracking from FREE subscription to new paid subscription
+                                if (existingFreeSubscription && existingFreeSubscription.plan.planType === PlanType.FREE) {
+                                    console.log(`Migrating usage tracking from FREE subscription...`);
+
+                                    const newSubscriptionId = result.data?.id;
+
+                                    if (newSubscriptionId) {
+                                        const usageTrackingRecords = existingFreeSubscription.usageTracking;
+
+                                        if (usageTrackingRecords && usageTrackingRecords.length > 0) {
+                                            console.log(`Migrating ${usageTrackingRecords.length} usage tracking records`);
+
+                                            for (const tracking of usageTrackingRecords) {
+                                                const newLimitValue = getLimitForMetric(plan, tracking.metricType);
+
+                                                await prisma.usageTracking.update({
+                                                    where: { id: tracking.id },
+                                                    data: {
+                                                        subscriptionId: newSubscriptionId,
+                                                        limitValue: newLimitValue,
+                                                        lastUpdated: new Date(),
+                                                        periodStart: currentPeriodStart,
+                                                        periodEnd: currentPeriodEnd,
+                                                    }
+                                                });
+
+                                                console.log(`✅ Migrated usage tracking for ${tracking.metricType}: ${tracking.currentUsage}/${newLimitValue}`);
+                                            }
+
+                                            console.log(`✅ Usage tracking migrated to new subscription: ${newSubscriptionId}`);
+                                        }
+                                    }
+                                }
                             } else {
                                 console.error('Failed to create subscription:', result.error);
                             }

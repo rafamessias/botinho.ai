@@ -996,6 +996,54 @@
                 "title": "Portal Não Disponível",
                 "description": "Portal do cliente ainda não foi configurado. Entre em contato com o suporte para gerenciar sua assinatura."
             }
+        },
+        "upgradeModal": {
+            "title": "Faça Upgrade do Seu Plano",
+            "description": "Escolha o plano perfeito para suas necessidades e aproveite mais suas pesquisas",
+            "upgradeNow": "Fazer Upgrade",
+            "popular": "Popular",
+            "cta": "Começar",
+            "loading": "Carregando...",
+            "billing": {
+                "monthly": "Mensal",
+                "yearly": "Anual",
+                "save": "Economize 20%"
+            },
+            "pricing": {
+                "perMonth": "/mês",
+                "billedAnnually": "cobrado anualmente"
+            },
+            "features": {
+                "activeSurveys": "{count} Pesquisas Ativas",
+                "responses": "{count} Respostas/mês",
+                "unlimitedSurveys": "Pesquisas Ilimitadas",
+                "unlimitedResponses": "Respostas Ilimitadas",
+                "analytics": "Análises Avançadas",
+                "removeBranding": "Remover Marca",
+                "dataExport": "Exportação de Dados",
+                "apiAccess": "Acesso à API",
+                "publicPages": "Páginas de Pesquisa Públicas",
+                "prioritySupport": "Suporte Prioritário"
+            },
+            "plans": {
+                "starter": {
+                    "description": "Perfeito para pequenas equipes"
+                },
+                "pro": {
+                    "description": "Para empresas em crescimento"
+                },
+                "business": {
+                    "description": "Para organizações maiores"
+                },
+                "enterprise": {
+                    "description": "Para necessidades corporativas"
+                }
+            },
+            "footer": "Você pode cancelar ou alterar seu plano a qualquer momento",
+            "error": {
+                "title": "Erro",
+                "description": "Falha ao carregar planos. Tente novamente."
+            }
         }
     },
     "Survey": {

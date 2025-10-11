@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info } from "lucide-react";
-import { createPortalSession } from "@/components/server-actions/subscription";
+import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info, Zap } from "lucide-react";
+import { createPortalSession, getAvailablePlans } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { PlanType } from "@/lib/generated/prisma";
+import { UpgradeModalPlans } from "./upgrade-modal-plans";
 
 
 interface UsageMetric {
@@ -40,6 +41,9 @@ interface SubscriptionPageProps {
 export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }: SubscriptionPageProps) => {
     const t = useTranslations("Subscription");
     const [isLoading, setIsLoading] = useState(false);
+    const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+    const [availablePlans, setAvailablePlans] = useState<any[]>([]);
+    const [loadingPlans, setLoadingPlans] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
 
@@ -77,6 +81,36 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
             });
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleUpgradeClick = async () => {
+        if (availablePlans.length === 0) {
+            setLoadingPlans(true);
+            try {
+                const result = await getAvailablePlans();
+                if (result.success && result.plans) {
+                    setAvailablePlans(result.plans);
+                    setUpgradeModalOpen(true);
+                } else {
+                    toast({
+                        title: t("toast.error.title"),
+                        description: t("toast.error.description"),
+                        variant: "destructive",
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching plans:', error);
+                toast({
+                    title: t("toast.error.title"),
+                    description: t("toast.error.description"),
+                    variant: "destructive",
+                });
+            } finally {
+                setLoadingPlans(false);
+            }
+        } else {
+            setUpgradeModalOpen(true);
         }
     };
 
@@ -126,6 +160,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
     // Get subscription and usage data
     const subscription = subscriptionData.success ? subscriptionData.data?.subscription : null;
     const usage = subscriptionData.success ? subscriptionData.data?.usage : null;
+    const isFreePlan = subscription?.plan?.planType === PlanType.FREE;
 
     if (!subscriptionData.success) {
         return (
@@ -177,21 +212,40 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                 <CardHeader>
                     <CardTitle className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div className="relative sm:absolute right-0 flex items-center gap-2 w-full justify-end mb-2 sm:mb-0">
-                            <Button
-                                onClick={handleManageSubscription}
-                                variant="outline"
-                                disabled={isLoading}
-
-                            >
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        {t("page.loading")}
-                                    </>
-                                ) : (
-                                    t("currentPlan.manageSubscription")
-                                )}
-                            </Button>
+                            {isFreePlan ? (
+                                <Button
+                                    onClick={handleUpgradeClick}
+                                    disabled={loadingPlans}
+                                    className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                                >
+                                    {loadingPlans ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            {t("page.loading")}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Zap className="mr-2 h-4 w-4" />
+                                            {t("upgradeModal.upgradeNow")}
+                                        </>
+                                    )}
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={handleManageSubscription}
+                                    variant="outline"
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            {t("page.loading")}
+                                        </>
+                                    ) : (
+                                        t("currentPlan.manageSubscription")
+                                    )}
+                                </Button>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
                             <Calendar className="h-5 w-5" />
@@ -392,6 +446,13 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                     </CardContent>
                 </Card>
             )}
+
+            {/* Upgrade Modal */}
+            <UpgradeModalPlans
+                open={upgradeModalOpen}
+                onOpenChange={setUpgradeModalOpen}
+                plans={availablePlans}
+            />
         </div>
     );
 };

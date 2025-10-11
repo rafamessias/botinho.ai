@@ -239,12 +239,55 @@ export const getCurrentUsage = async (teamId: number, metricType: UsageMetricTyp
     });
 
     if (!usageTracking) {
+        // Fetch the team's subscription and plan details
+        const subscription = await prisma.customerSubscription.findFirst({
+            where: { teamId },
+            include: { plan: true }
+        });
+
+        if (!subscription || !subscription.plan) {
+            // No subscription or plan found, return default with over limit
+            return {
+                currentUsage: 0,
+                limit: 0,
+                remaining: 0,
+                percentageUsed: 0,
+                isOverLimit: true
+            };
+        }
+
+        // Determine the current period
+        const now = new Date();
+        const periodStart = subscription.currentPeriodStart || now;
+        const periodEnd = subscription.currentPeriodEnd || getNextPeriodEnd(periodStart, subscription.billingInterval);
+
+        // Determine the metric limit for the requested type
+        let limitValue = 0;
+        if (metricType === UsageMetricType.ACTIVE_SURVEYS) {
+            limitValue = subscription.plan.maxActiveSurveys;
+        }
+        if (metricType === UsageMetricType.TOTAL_COMPLETED_RESPONSES) {
+            limitValue = subscription.plan.maxResponses;
+        }
+        // Add additional metricType/limit logic as needed
+
+        // Create a new usage tracking record for this context
+        await createUsageTrackingRecord({
+            teamId,
+            subscriptionId: subscription.id,
+            metricType,
+            limitValue,
+            periodStart,
+            periodEnd
+        });
+
+        // Return the new defaults (nothing used yet)
         return {
             currentUsage: 0,
-            limit: 0,
-            remaining: 0,
+            limit: limitValue,
+            remaining: limitValue,
             percentageUsed: 0,
-            isOverLimit: true
+            isOverLimit: false
         };
     }
 
