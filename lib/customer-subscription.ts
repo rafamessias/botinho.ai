@@ -59,7 +59,7 @@ export interface CustomerSubscriptionResult {
  */
 export const createCustomerSubscription = async (data: CreateCustomerSubscriptionInput): Promise<CustomerSubscriptionResult> => {
     try {
-        console.log("Creating customer subscription", data)
+        console.log("Creating customer subscription")
         // Validate input data
         const validatedData = createCustomerSubscriptionSchema.parse(data)
 

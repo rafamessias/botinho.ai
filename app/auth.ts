@@ -273,11 +273,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 validInterval = interval as BillingInterval;
                             }
 
-                            console.log("signupPlan", signupPlan)
-                            console.log("interval", interval)
-                            console.log("validSignupPlan", validSignupPlan)
-                            console.log("validInterval", validInterval)
-
                             if (validSignupPlan && validSignupPlan !== PlanType.FREE) {
                                 // Find the subscription plan by planType
                                 const subscriptionPlan = await prisma.subscriptionPlan.findFirst({

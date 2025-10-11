@@ -161,7 +161,7 @@ export async function resetUsageForNewPeriod(subscriptionId: string): Promise<vo
  */
 export async function getCurrentPeriodUsageReport(teamId: number) {
     const subscription = await prisma.customerSubscription.findFirst({
-        where: { teamId },
+        where: { teamId, status: { in: [SubscriptionStatus.active, SubscriptionStatus.trialing] } },
         include: {
             plan: true,
             usageTracking: {

@@ -130,9 +130,6 @@ export async function POST(request: NextRequest) {
                         // Get team ID and CustomerSubscription ID from metadata
                         const teamId = session.metadata?.teamId;
                         const customerSubscriptionId = session.metadata?.customerSubscriptionId;
-                        console.log('Team ID from metadata:', teamId);
-                        console.log('CustomerSubscription ID from metadata:', customerSubscriptionId);
-                        console.log('All metadata keys:', Object.keys(session.metadata || {}));
 
                         if (!teamId) {
                             console.error('No teamId found in session metadata');
