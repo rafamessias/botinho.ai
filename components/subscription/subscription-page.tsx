@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info, Zap } from "lucide-react";
+import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info, Zap, RefreshCw } from "lucide-react";
 import { createPortalSession, getAvailablePlans } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -44,8 +44,15 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
     const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
     const [availablePlans, setAvailablePlans] = useState<any[]>([]);
     const [loadingPlans, setLoadingPlans] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
     const { toast } = useToast();
     const router = useRouter();
+    const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Configuration
+    const POLLING_INTERVAL = 30000; // 30 seconds
+    const ENABLE_AUTO_POLLING = true; // Set to false to disable auto-polling
 
     const handleManageSubscription = async () => {
         setIsLoading(true);
@@ -113,6 +120,95 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
             setUpgradeModalOpen(true);
         }
     };
+
+    // Manual refresh function
+    const handleRefresh = useCallback(async () => {
+        setIsRefreshing(true);
+        try {
+            // Refresh the page data from the server
+            router.refresh();
+            setLastRefreshTime(new Date());
+
+            // Small delay to show the refresh animation
+            await new Promise(resolve => setTimeout(resolve, 500));
+        } catch (error) {
+            console.error('Error refreshing data:', error);
+            toast({
+                title: t("toast.error.title"),
+                description: t("toast.error.description"),
+                variant: "destructive",
+            });
+        } finally {
+            setIsRefreshing(false);
+        }
+    }, [router, toast, t]);
+
+    // Auto-polling effect
+    useEffect(() => {
+        if (!ENABLE_AUTO_POLLING) return;
+
+        const startPolling = () => {
+            // Clear any existing interval
+            if (pollingIntervalRef.current) {
+                clearInterval(pollingIntervalRef.current);
+            }
+
+            // Set up new polling interval
+            pollingIntervalRef.current = setInterval(() => {
+                console.log('Auto-refreshing subscription data...');
+                router.refresh();
+                setLastRefreshTime(new Date());
+            }, POLLING_INTERVAL);
+        };
+
+        startPolling();
+
+        // Cleanup on unmount
+        return () => {
+            if (pollingIntervalRef.current) {
+                clearInterval(pollingIntervalRef.current);
+            }
+        };
+    }, [router, ENABLE_AUTO_POLLING, POLLING_INTERVAL]);
+
+    // Visibility change effect - refresh when user returns to the page
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                console.log('Page became visible, refreshing data...');
+                router.refresh();
+                setLastRefreshTime(new Date());
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, [router]);
+
+    // Refresh when returning from Stripe portal/checkout
+    useEffect(() => {
+        const handleFocus = () => {
+            // Check if we're returning from an external page (like Stripe)
+            const now = Date.now();
+            const timeSinceLastRefresh = now - lastRefreshTime.getTime();
+
+            // If more than 5 seconds have passed, assume user might be returning from Stripe
+            if (timeSinceLastRefresh > 5000) {
+                console.log('User returned to page, refreshing data...');
+                router.refresh();
+                setLastRefreshTime(new Date());
+            }
+        };
+
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [router, lastRefreshTime]);
 
     const formatDate = (date: Date | string) => {
         return new Date(date).toLocaleDateString('en-US', {
@@ -212,6 +308,18 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                 <CardHeader>
                     <CardTitle className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div className="relative sm:absolute right-0 flex items-center gap-2 w-full justify-end mb-2 sm:mb-0">
+                            {/* Refresh Button */}
+                            <Button
+                                onClick={handleRefresh}
+                                variant="ghost"
+                                size="icon"
+                                disabled={isRefreshing}
+                                className="h-9 w-9"
+                                title="Refresh subscription data"
+                            >
+                                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            </Button>
+
                             {isFreePlan ? (
                                 <Button
                                     onClick={handleUpgradeClick}
