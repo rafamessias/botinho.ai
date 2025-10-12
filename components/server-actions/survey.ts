@@ -1145,6 +1145,43 @@ export const getQuestionResponses = async (surveyId: string) => {
                         userIp: true,
                         userId: true,
                         extraInfo: true,
+                        createdAt: true,
+                    }
+                }
+            },
+            orderBy: [
+                { response: { createdAt: 'desc' } },
+                { question: { order: 'asc' } }
+            ]
+        })
+
+        return { success: true, responses }
+    } catch (error) {
+        console.error("Error fetching question responses:", error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Failed to fetch question responses"
+        }
+    }
+}
+
+// Get question responses for raw data table
+export const getQuestionResponsesforRoute = async (surveyId: string) => {
+    try {
+
+        const responses = await prisma.questionResponse.findMany({
+            where: {
+                response: {
+                    surveyId: surveyId
+                }
+            },
+            include: {
+                response: {
+                    select: {
+                        userIp: true,
+                        userId: true,
+                        extraInfo: true,
+                        createdAt: true,
                     }
                 }
             },

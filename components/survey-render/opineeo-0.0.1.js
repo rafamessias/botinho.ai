@@ -12,7 +12,7 @@ class o {
         this.surveyId = p.surveyId || '';
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
-        this.branding = p.branding || true;
+        this.branding = p.branding || false;
         this.apiUrl = 'http://localhost:3000/api/survey/v0';
         this.i = 0;
         this.done = !1;
@@ -31,6 +31,7 @@ class o {
         // Ensure container is visible
         this.container.style.display = 'block';
         if (!this.survey && this.token && this.surveyId) await this.fetchSurveyData();
+        if (!this.token || !this.surveyId) this.branding = true;
         if (!this.survey) this.error = 'Survey not found';
         this.initializeScopeClass();
         this.addCustomStyles();

@@ -32,8 +32,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -290,8 +288,8 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                     response.response?.userId || "",
                     response.response?.extraInfo || "",
                     response.questionId || "",
-                    response.question?.title || "",
-                    response.question?.format || "",
+                    response.questionTitle || "",
+                    response.questionFormat || "",
                     response.optionId || "",
                     response.isOther || false,
                     response.textValue || "",

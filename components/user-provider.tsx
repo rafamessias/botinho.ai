@@ -8,6 +8,7 @@ import { BillingInterval, PlanType, SubscriptionStatus, Theme } from "@/lib/gene
 import { getUserTeamsLightAction } from "./server-actions/team"
 import LoadingComp from "./loading-comp"
 import { useRouter } from "next/navigation"
+import { createCheckoutSessionAction } from '@/components/server-actions/auth'
 
 export interface UserTeam {
     id: number
@@ -92,23 +93,20 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
                     // Check if user exists and has a pending subscription
                     if (resultTeams?.customerSubscription && resultTeams.customerSubscription.status === SubscriptionStatus.pending) {
                         const subscription = resultTeams.customerSubscription
+                        const checkoutResult = await createCheckoutSessionAction(
+                            subscription.plan?.planType || PlanType.FREE,
+                            subscription.billingInterval || BillingInterval.monthly,
+                            session?.user?.email,
+                            result.user.defaultTeamId || 0,
+                            subscription.id
+                        )
 
-                        import('@/components/server-actions/auth').then(async ({ createCheckoutSessionAction }) => {
-                            const checkoutResult = await createCheckoutSessionAction(
-                                subscription.plan?.planType || PlanType.FREE,
-                                subscription.billingInterval || BillingInterval.monthly,
-                                session?.user?.email,
-                                result.user.defaultTeamId || 0,
-                                subscription.id
-                            )
+                        if (checkoutResult?.success && checkoutResult.checkoutUrl) {
+                            // Redirect browser to the Stripe checkout
+                            router.push(checkoutResult.checkoutUrl as string)
+                        }
 
-                            if (checkoutResult?.success && checkoutResult.checkoutUrl) {
-                                // Redirect browser to the Stripe checkout
-                                router.push(checkoutResult.checkoutUrl as string)
-                            }
-                        })
                     }
-
 
                 } else {
                     setUser({ ...result.user, teams: user?.teams || null })

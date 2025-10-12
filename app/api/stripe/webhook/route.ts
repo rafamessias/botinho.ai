@@ -385,7 +385,75 @@ export async function POST(request: NextRequest) {
 
                         // Update usage tracking limits if plan changed
                         if (isPlanChange) {
-                            await updateUsageTrackingLimits(currentSubscription?.id || '', plan);
+
+                            // Check if plan was downgraded and ACTIVE_SURVEYS usage track is above the new limit,
+                            // then archive the excess published surveys to bring usage down to limit.
+
+                            // Track whether surveys were archived during downgrade
+                            let surveysWereArchived = false;
+
+                            // Determine if this is a downgrade
+                            if (isPlanChange && currentSubscription && currentSubscription.planId !== plan.id) {
+                                // Fetch current usage tracking for ACTIVE_SURVEYS for this subscription
+                                const currentTracking = await prisma.usageTracking.findFirst({
+                                    where: {
+                                        subscriptionId: currentSubscription.id,
+                                        metricType: UsageMetricType.ACTIVE_SURVEYS
+                                    }
+                                });
+
+                                // Get the new allowed limit for ACTIVE_SURVEYS
+                                const newActiveSurveysLimit = getLimitForMetric(plan, UsageMetricType.ACTIVE_SURVEYS);
+
+                                if (currentTracking && typeof currentTracking.currentUsage === "number" && currentTracking.currentUsage > newActiveSurveysLimit) {
+                                    // Archive the excess number of published surveys for the team
+                                    const extraToArchive = currentTracking.currentUsage - newActiveSurveysLimit;
+
+                                    if (extraToArchive > 0) {
+                                        // Find the oldest published surveys for the team/subscription
+                                        const customerSub = await prisma.customerSubscription.findUnique({
+                                            where: { id: currentSubscription.id },
+                                            select: {
+                                                teamId: true
+                                            }
+                                        });
+
+                                        if (customerSub?.teamId) {
+                                            // Get N oldest published surveys
+                                            const publishedSurveys = await prisma.survey.findMany({
+                                                where: {
+                                                    teamId: customerSub.teamId,
+                                                    status: SurveyStatus.published
+                                                },
+                                                orderBy: {
+                                                    createdAt: 'asc'
+                                                }
+                                            });
+
+                                            const publishedSurveyIds = publishedSurveys.map(s => s.id);
+
+                                            // Update those surveys to archived
+                                            if (publishedSurveyIds.length > 0) {
+                                                await prisma.survey.updateMany({
+                                                    where: {
+                                                        id: { in: publishedSurveyIds }
+                                                    },
+                                                    data: {
+                                                        status: SurveyStatus.archived
+                                                    }
+                                                });
+                                                surveysWereArchived = true;
+
+                                                console.log(`Archived ${publishedSurveyIds.length} excess published surveys for team ${customerSub.teamId} due to plan downgrade.`);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Update usage tracking limits once at the end
+                            await updateUsageTrackingLimits(currentSubscription?.id || '', plan, surveysWereArchived);
+
                             console.log(`✅ Plan upgrade/downgrade completed: ${plan.planType} (${billingInterval}) for subscription ${subscription.id}`);
                         } else {
                             console.log(`✅ Subscription updated successfully: ${subscription.id}`);

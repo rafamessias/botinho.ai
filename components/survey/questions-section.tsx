@@ -803,13 +803,13 @@ export const QuestionsSection = memo(({ questions, onChange, expandAllQuestions 
         setNewlyAddedQuestionId(newId)
         onChange([...questions, newQuestion])
 
-        // Focus the title input of the newly added question after a short delay
+        // Focus and scroll the title input of the newly added question after a short delay
         setTimeout(() => {
             const titleInput = document.getElementById(`question-title-${newId}`) as HTMLInputElement
             if (titleInput) {
                 titleInput.focus()
+                titleInput.scrollIntoView({ behavior: "smooth", block: "center" })
             }
-
         }, 100)
     }
 

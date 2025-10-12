@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/prisma/lib/prisma';
 import { getStatusCodeForError, validateSubscriptionAndUsage, ValidationType } from '@/lib/services/subscription-validation';
-import { getQuestionResponses } from '@/components/server-actions/survey';
+import { getQuestionResponsesforRoute } from '@/components/server-actions/survey';
 import { SurveyStatus } from '@/lib/generated/prisma';
 
 // CORS headers for API access
@@ -65,9 +65,6 @@ export async function GET(request: NextRequest) {
                 {
                     error: subscriptionValidation.error?.message || 'Export data feature not available',
                     code: errorCode,
-                    details: subscriptionValidation.error?.details,
-                    usage: subscriptionValidation.usage,
-                    subscription: subscriptionValidation.subscription
                 },
                 { status: statusCode }
             ));
@@ -102,7 +99,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Get question responses (raw data) for the survey
-        const questionResponsesResult = await getQuestionResponses(surveyId);
+        const questionResponsesResult = await getQuestionResponsesforRoute(surveyId);
 
         if (!questionResponsesResult.success) {
             return addCorsHeaders(NextResponse.json(
@@ -114,13 +111,13 @@ export async function GET(request: NextRequest) {
         const responses = questionResponsesResult.responses || [];
 
         // Format the data in the same structure as the dashboard export
-        const formattedData = responses.map(response => ({
-            userIP: response.response?.userIp || "",
-            userId: response.response?.userId || "",
-            extraInfo: response.response?.extraInfo || "",
+        const formattedData = responses.map((response: any) => ({
+            userIP: response?.response?.userIp || "",
+            userId: response?.response?.userId || "",
+            extraInfo: response?.response?.extraInfo || "",
             questionId: response.questionId || "",
-            questionTitle: response.question?.title || "",
-            questionFormat: response.question?.format || "",
+            questionTitle: response?.questionTitle || "",
+            questionFormat: response?.questionFormat || "",
             optionId: response.optionId || "",
             isOther: response.isOther || false,
             textValue: response.textValue || "",
@@ -141,18 +138,16 @@ export async function GET(request: NextRequest) {
                     totalResponses: survey.totalResponses,
                     totalOpenSurveys: survey.totalOpenSurveys,
                     responseRate: survey.responseRate,
-                    status: survey.status
+                    status: survey.status,
                 },
                 results: formattedData,
-                totalResponses: formattedData.length,
-                exportedAt: new Date().toISOString()
             }
         }));
 
     } catch (error) {
         console.error('Error fetching survey results:', error);
         return addCorsHeaders(NextResponse.json(
-            { error: 'Internal server error' },
+            { success: false, error: 'Internal server error' },
             { status: 500 }
         ));
     }
