@@ -200,8 +200,8 @@ export function SignInForm({
                 </CardContent>
             </Card>
             <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-                {t("termsText")} <Link href="#">{t("termsOfService")}</Link>{" "}
-                {t("and")} <Link href="#">{t("privacyPolicy")}</Link>.
+                {t("termsText")} <Link target="_blank" href="https://opineeo.com/terms-of-service">{t("termsOfService")}</Link>{" "}
+                {t("and")} <Link target="_blank" href="https://opineeo.com/privacy-policy">{t("privacyPolicy")}</Link>.
             </div>
         </div>
     )
