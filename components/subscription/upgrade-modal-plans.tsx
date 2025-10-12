@@ -131,7 +131,6 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans }: UpgradeModalPro
     //Function to separate decimal from the price to format differently on the screen
     const formatPriceDecimal = (price: number, decimal: true | false): string => {
         const priceParts = (price / 12).toFixed(2).toString().split('.');
-        console.log(priceParts);
         const integerPart = priceParts[0];
         const decimalPart = priceParts[1];
         if (decimal) {
@@ -190,14 +189,14 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans }: UpgradeModalPro
                                 return (
                                     <Card
                                         key={plan.id}
-                                        className={`relative flex flex-col overflow-visible ${popular ? "border-primary shadow-lg" : ""}`}
+                                        className={`relative flex flex-col overflow-visible gap-1 ${popular ? "border-primary shadow-lg" : ""}`}
                                     >
                                         {popular && (
                                             <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 z-50 text-xs bg-primary text-primary-foreground">
                                                 {t("popular")}
                                             </Badge>
                                         )}
-                                        <CardHeader className="pb-3 sm:pb-4 pt-4 sm:pt-6">
+                                        <CardHeader className="">
                                             <CardTitle className="text-base sm:text-lg capitalize">
                                                 {getPlanName(plan.planType)}
                                             </CardTitle>
@@ -209,14 +208,14 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans }: UpgradeModalPro
                                             <div>
                                                 <div className="flex items-baseline gap-1">
                                                     <span className="text-2xl sm:text-3xl font-bold ">
-                                                        {billingCycle === "yearly" ? (<><span className="mt-1">{formatPriceDecimal(price, false)}</span> <span className="text-xs text-muted-foreground -ml-2">.{formatPriceDecimal(price, true)}</span></>) : (formatPrice(price, plan.currency))}
+                                                        {billingCycle === "yearly" ? (<><span className="text-4xl mt-1">${formatPriceDecimal(price, false)}</span> <span className="text-xs text-muted-foreground -ml-2">.{formatPriceDecimal(price, true)}</span></>) : <span className="text-4xl mt-1">{formatPrice(price, plan.currency)}</span>}
                                                     </span>
                                                     <span className="text-muted-foreground text-xs sm:text-sm">
                                                         {t("pricing.perMonth")}
                                                     </span>
                                                 </div>
-                                                <div className="flex items-baseline gap-1 h-4">
-                                                    <p className="text-[10px] sm:text-xs text-muted-foreground">
+                                                <div className="flex items-baseline h-6">
+                                                    <p className="text-xs text-muted-foreground">
                                                         {billingCycle === "yearly" && (
                                                             t("pricing.billedAnnually")
                                                         )}
@@ -233,7 +232,7 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans }: UpgradeModalPro
                                                 ))}
                                             </div>
                                         </CardContent>
-                                        <CardFooter className="pt-3 sm:pt-4">
+                                        <CardFooter className="pt-6">
                                             <Button
                                                 onClick={() => handleUpgrade(plan.planType)}
                                                 disabled={isLoading !== null}
