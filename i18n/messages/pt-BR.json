@@ -940,6 +940,7 @@
             "title": "Visão Geral da Assinatura",
             "description": "Detalhes do plano atual e informações de cobrança",
             "loading": "Carregando...",
+            "viewPlans": "Ver Planos",
             "plan": "Plano",
             "status": "Status",
             "billingCycle": "Ciclo de Cobrança",
@@ -976,7 +977,11 @@
             "canceled": "Cancelado",
             "checkoutCanceled": {
                 "title": "Checkout Cancelado",
-                "description": "Sua assinatura foi alterada para o plano Gratuito porque o checkout não foi concluído."
+                "description": "Sua assinatura NÃO foi alterada para o porque o checkout não foi concluído."
+            },
+            "upgradeSuccess": {
+                "title": "Assinatura Atualizada com Sucesso!",
+                "description": "Sua assinatura foi atualizada. Os recursos do seu novo plano já estão ativos."
             }
         },
         "toast": {
@@ -995,6 +1000,10 @@
             "portalNotConfigured": {
                 "title": "Portal Não Disponível",
                 "description": "Portal do cliente ainda não foi configurado. Entre em contato com o suporte para gerenciar sua assinatura."
+            },
+            "upgradeSuccess": {
+                "title": "Upgrade Realizado com Sucesso!",
+                "description": "Seu plano foi atualizado com sucesso. Atualizando os detalhes da sua assinatura..."
             }
         },
         "upgradeModal": {

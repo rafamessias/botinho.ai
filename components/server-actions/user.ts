@@ -361,6 +361,31 @@ export const deleteUserAccountAction = async (userEmail: string) => {
 
             // For each owned team, remove all members except the current user and set team as inactive
             for (const ownedTeam of ownedTeams) {
+                // Get all team members for this team (except the owner)
+                const teamMembersToRemove = await tx.teamMember.findMany({
+                    where: {
+                        teamId: ownedTeam.teamId,
+                        userId: { not: user.id }
+                    },
+                    include: {
+                        user: true
+                    }
+                })
+
+                // For each team member, block and add deleted prefix to their user account
+                for (const teamMember of teamMembersToRemove) {
+                    const memberEmail = teamMember.user.email
+                    const memberDeletedEmail = `deleted_${dateStr}_${memberEmail}`
+
+                    await tx.user.update({
+                        where: { id: teamMember.userId },
+                        data: {
+                            blocked: true,
+                            email: memberDeletedEmail,
+                        }
+                    })
+                }
+
                 // Remove all team members except the owner
                 await tx.teamMember.deleteMany({
                     where: {

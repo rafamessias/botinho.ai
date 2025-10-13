@@ -12,7 +12,7 @@ import { StyleSection } from "@/components/survey/style-section"
 import { updateSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
-import { ArrowLeft, Clipboard, Eye, EyeOff } from "lucide-react"
+import { ArrowLeft, Clipboard, Eye, EyeOff, Settings } from "lucide-react"
 import { useUser } from "../user-provider"
 import { UpgradeModal } from "@/components/upgrade-modal"
 import { getTeamTokenAction } from "@/components/server-actions/team"
@@ -324,18 +324,27 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                         <p className="hidden text-muted-foreground font-mono text-xs sm:inline-block sm:text-sm">
                             {currentToken ? '••••••••••••••••••••••••' : 'Not generated'}
                         </p>
-                        {currentToken && (
-                            <>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                    onClick={handleCopySurveyToken}
-                                    aria-label="Copy Survey Token"
-                                >
-                                    <Clipboard className="h-4 w-4" />
-                                </Button>
-                            </>
+                        {currentToken ? (
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={handleCopySurveyToken}
+                                aria-label="Copy Survey Token"
+                            >
+                                <Clipboard className="h-4 w-4" />
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8"
+                                onClick={() => router.push("/settings")}
+                                aria-label="Go to Settings to generate token"
+                            >
+                                <Settings className="h-4 w-4 sm:mr-1" />
+                                <span className="hidden sm:inline">Generate</span>
+                            </Button>
                         )}
                     </div>
                 </div>

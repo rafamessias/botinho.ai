@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, Suspense } from "react"
-import { IconCirclePlusFilled, IconUsers, IconChevronDown, IconPlus, type TablerIcon } from "@tabler/icons-react"
+import { IconCirclePlusFilled, IconUsers, IconChevronDown, IconPlus, IconStar, type TablerIcon } from "@tabler/icons-react"
 import { usePathname, Link } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { useUser } from "@/components/user-provider"
 import { updateDefaultTeamAction } from "@/components/server-actions/user"
+import { FeedbackSurveyModal } from "@/components/feedback-survey-modal"
 
 import {
   SidebarGroup,
@@ -181,6 +182,11 @@ export function NavMain({
   const t = useTranslations("NavMain")
   const { hasPermission } = useUser()
   const userHasPermission = hasPermission()
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false)
+
+  // TODO: Configure these values with your actual survey ID and token
+  const FEEDBACK_SURVEY_ID = "cmgpg5cds000zyqfke4cvkqkp"
+  const FEEDBACK_SURVEY_TOKEN = "$2b$10$YDevI3E4G3Kxddbymf9DlOehCPmZKnHECGAunr6CN.8pMv88ilR9W"
 
   const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
 
@@ -231,7 +237,26 @@ export function NavMain({
             )
           })}
         </SidebarMenu>
+
+        {/* Feedback Survey Item */}
+        <SidebarMenu className="mt-auto">
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setFeedbackModalOpen(true)}
+              className="cursor-pointer [&:hover_.star-bounce]:animate-bounce [&:hover_.star-text-yellow]:text-yellow-400 [&:hover_.star-fill-yellow]:fill-yellow-400"
+            >
+              <IconStar className="h-5 w-5 star-bounce star-text-yellow star-fill-yellow" />
+              <span>Rate our Service</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarGroupContent>
+      <FeedbackSurveyModal
+        open={feedbackModalOpen}
+        onOpenChange={setFeedbackModalOpen}
+        surveyId={FEEDBACK_SURVEY_ID}
+        token={FEEDBACK_SURVEY_TOKEN}
+      />
     </SidebarGroup>
   )
 }

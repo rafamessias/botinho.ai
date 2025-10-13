@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info, Zap, RefreshCw } from "lucide-react";
+import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info, Zap, RefreshCw, Eye } from "lucide-react";
 import { createPortalSession, getAvailablePlans } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { PlanType } from "@/lib/generated/prisma";
 import { UpgradeModalPlans } from "./upgrade-modal-plans";
-
+import { useUser } from "@/components/user-provider";
 
 interface UsageMetric {
     metricType: string;
@@ -45,11 +46,70 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
     const [availablePlans, setAvailablePlans] = useState<any[]>([]);
     const [loadingPlans, setLoadingPlans] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [showUpgradeButton, setShowUpgradeButton] = useState(true);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [showCheckoutCanceledAlert, setShowCheckoutCanceledAlert] = useState(checkoutCanceled);
     const { toast } = useToast();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const { hasPermission } = useUser();
+    const userHasPermission = hasPermission();
+
+    // Auto-refresh when returning from successful upgrade/checkout
+    useEffect(() => {
+        const success = searchParams.get('success');
+        const canceled = searchParams.get('canceled');
+        const sessionId = searchParams.get('session_id');
+
+        if (success === 'true' || sessionId) {
+            // Show success message
+            setShowSuccessAlert(true);
+
+            // Automatically refresh the data to get updated subscription
+            const refreshData = async () => {
+                setIsRefreshing(true);
+                try {
+                    router.refresh();
+                    // Small delay to ensure the refresh completes
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    toast({
+                        title: t("toast.upgradeSuccess.title"),
+                        description: t("toast.upgradeSuccess.description"),
+                        variant: "default",
+                    });
+                } catch (error) {
+                    console.error('Error refreshing after upgrade:', error);
+                } finally {
+                    setIsRefreshing(false);
+                }
+            };
+
+            refreshData();
+
+            // Clean up URL parameters after a short delay
+            setTimeout(() => {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('success');
+                url.searchParams.delete('session_id');
+                window.history.replaceState({}, '', url.toString());
+            }, 2000);
+        } else if (canceled === 'true') {
+            setShowCheckoutCanceledAlert(true);
+        }
+    }, [searchParams, router, toast, t, checkoutCanceled]);
 
     const handleManageSubscription = async () => {
         setIsLoading(true);
+        if (!userHasPermission.isAdmin) {
+            toast({
+                title: t("Access denied"),
+                description: t("You are not authorized to manage the subscription."),
+                variant: "destructive",
+            });
+            setIsLoading(false);
+            return;
+        }
         try {
             const result = await createPortalSession();
 
@@ -86,12 +146,53 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
     };
 
     const handleUpgradeClick = async () => {
+        if (!userHasPermission.isAdmin) {
+            toast({
+                title: t("Access denied"),
+                description: t("You are not authorized to upgrade the subscription."),
+                variant: "destructive",
+            });
+            return;
+        }
+        setShowUpgradeButton(true);
         if (availablePlans.length === 0) {
             setLoadingPlans(true);
             try {
                 const result = await getAvailablePlans();
                 if (result.success && result.plans) {
                     setAvailablePlans(result.plans);
+                    setShowUpgradeButton(true);
+                    setUpgradeModalOpen(true);
+                } else {
+                    toast({
+                        title: t("toast.error.title"),
+                        description: t("toast.error.description"),
+                        variant: "destructive",
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching plans:', error);
+                toast({
+                    title: t("toast.error.title"),
+                    description: t("toast.error.description"),
+                    variant: "destructive",
+                });
+            } finally {
+                setLoadingPlans(false);
+            }
+        } else {
+            setUpgradeModalOpen(true);
+        }
+    };
+
+    const handleViewPlans = async () => {
+        if (availablePlans.length === 0) {
+            setLoadingPlans(true);
+            try {
+                const result = await getAvailablePlans();
+                if (result.success && result.plans) {
+                    setAvailablePlans(result.plans);
+                    setShowUpgradeButton(false);
                     setUpgradeModalOpen(true);
                 } else {
                     toast({
@@ -215,8 +316,21 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
 
     return (
         <div className="space-y-6">
+            {/* Upgrade Success Alert */}
+            {showSuccessAlert && (
+                <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <AlertTitle className="text-green-900 dark:text-green-100">
+                        {t("page.upgradeSuccess.title")}
+                    </AlertTitle>
+                    <AlertDescription className="text-green-800 dark:text-green-200">
+                        {t("page.upgradeSuccess.description")}
+                    </AlertDescription>
+                </Alert>
+            )}
+
             {/* Checkout Canceled Alert */}
-            {checkoutCanceled && (
+            {showCheckoutCanceledAlert && (
                 <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
                     <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <AlertTitle className="text-blue-900 dark:text-blue-100">
@@ -232,7 +346,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
             <Card>
                 <CardHeader>
                     <CardTitle className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                        <div className="relative sm:absolute right-0 flex items-center gap-2 w-full justify-end mb-2 sm:mb-0">
+                        <div className="relative sm:absolute right-0 flex flex-col sm:flex-row items-end sm:items-center gap-2 w-full justify-end mb-2 sm:mb-0">
                             {/* Refresh Button */}
                             <Button
                                 onClick={handleRefresh}
@@ -245,7 +359,29 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                             </Button>
 
-                            {isFreePlan ? (
+                            {/* View Plans Button */}
+                            {!isFreePlan && (
+                                <Button
+                                    onClick={handleViewPlans}
+                                    variant="outline"
+                                    disabled={loadingPlans}
+                                    className="flex "
+                                >
+                                    {loadingPlans ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            {t("page.loading")}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Eye className="mr-2 h-4 w-4" />
+                                            {t("page.viewPlans")}
+                                        </>
+                                    )}
+                                </Button>
+                            )}
+
+                            {isFreePlan && userHasPermission.isAdmin ? (
                                 <Button
                                     onClick={handleUpgradeClick}
                                     disabled={loadingPlans}
@@ -264,21 +400,22 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                     )}
                                 </Button>
                             ) : (
-                                <Button
-                                    onClick={handleManageSubscription}
-                                    variant="outline"
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            {t("page.loading")}
-                                        </>
-                                    ) : (
-                                        t("currentPlan.manageSubscription")
-                                    )}
-                                </Button>
-                            )}
+                                userHasPermission.isAdmin && (
+                                    <Button
+                                        onClick={handleManageSubscription}
+                                        variant="default"
+                                        disabled={isLoading}
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                {t("page.loading")}
+                                            </>
+                                        ) : (
+                                            t("currentPlan.manageSubscription")
+                                        )}
+                                    </Button>
+                                ))}
                         </div>
                         <div className="flex items-center gap-2">
                             <Calendar className="h-5 w-5" />
@@ -485,6 +622,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                 open={upgradeModalOpen}
                 onOpenChange={setUpgradeModalOpen}
                 plans={availablePlans}
+                showUpgradeButton={showUpgradeButton}
             />
         </div>
     );

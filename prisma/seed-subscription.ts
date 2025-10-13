@@ -1,176 +1,131 @@
-import { PrismaClient } from "@prisma/client";
-import { FeatureType, BillingInterval } from "@/lib/generated/prisma"
+import { PrismaClient, PlanType } from "@/lib/generated/prisma"
 
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log("🌱 Seeding subscription data...");
+    console.log("🌱 Seeding subscription plans...");
 
-    // Create features
-    const features = await Promise.all([
-        prisma.feature.upsert({
-            where: { name: "Projects" },
+    // Create subscription plans
+    const plans = await Promise.all([
+        // FREE plan
+        prisma.subscriptionPlan.upsert({
+            where: { id: "plan_free" },
             update: {},
             create: {
-                name: "Projects",
-                description: "Number of projects you can create",
-                type: FeatureType.projects,
-                unit: "projects"
-            }
-        }),
-    ]);
-
-    console.log("✅ Features created:", features.map(f => f.name));
-
-    // Get feature IDs for product creation
-    const projectsFeature = features.find(f => f.type === FeatureType.projects)!;
-
-    // Create products
-    const products = await Promise.all([
-        // Free tier
-        prisma.product.upsert({
-            where: { stripeProductId: "prod_free" },
-            update: {},
-            create: {
-                stripeProductId: "prod_free",
-                name: "Free",
-                description: "Perfect for small teams getting started",
-                billingInterval: BillingInterval.month,
-                price: 0,
-                currency: "usd",
-                trialPeriodDays: 0,
-                features: {
-                    create: [
-                        { featureId: projectsFeature.id, limit: 1 },
-                    ]
-                }
+                id: "plan_free",
+                planType: PlanType.FREE,
+                priceMonthly: 0,
+                priceYearly: 0,
+                currency: "USD",
+                maxActiveSurveys: 1,
+                maxResponses: 100,
+                maxCompletedResponses: 100,
+                removeBranding: false,
+                allowApiAccess: false,
+                allowExport: false,
+                allowPublicPages: false,
+                isActive: true
             }
         }),
 
-        // Starter tier
-        prisma.product.upsert({
-            where: { stripeProductId: "prod_starter" },
+        // STARTER plan - Perfect for individuals and small teams
+        prisma.subscriptionPlan.upsert({
+            where: { id: "plan_starter" },
             update: {},
             create: {
-                stripeProductId: "prod_starter",
-                name: "Starter",
-                description: "Great for growing construction companies",
-                billingInterval: BillingInterval.month,
-                price: 29.99,
-                currency: "usd",
-                trialPeriodDays: 14,
-                features: {
-                    create: [
-                        { featureId: projectsFeature.id, limit: 8 },
-                    ]
-                }
+                id: "plan_starter",
+                planType: PlanType.STARTER,
+                stripeProductId: "prod_TEK33oxuKeM6cT",
+                stripePriceIdMonthly: "price_1SHrPWPOKcl3oL4etYfXBBcP",
+                stripePriceIdYearly: "price_1SHrPWPOKcl3oL4euYyPkEyR",
+                priceMonthly: 9.00,
+                priceYearly: 86.40, // $9 * 12 * 0.8 (20% discount)
+                currency: "USD",
+                maxActiveSurveys: 3,
+                maxResponses: 500,
+                maxCompletedResponses: 500,
+                removeBranding: false,
+                allowApiAccess: false,
+                allowExport: false,
+                allowPublicPages: false,
+                isActive: true
             }
         }),
 
-        // Professional tier
-        prisma.product.upsert({
-            where: { stripeProductId: "prod_professional" },
+        // PRO plan - Ideal for growing businesses (Most Popular)
+        prisma.subscriptionPlan.upsert({
+            where: { id: "plan_pro" },
             update: {},
             create: {
-                stripeProductId: "prod_professional",
-                name: "Professional",
-                description: "For established construction companies",
-                billingInterval: BillingInterval.month,
-                price: 79.99,
-                currency: "usd",
-                trialPeriodDays: 14,
-                features: {
-                    create: [
-                        { featureId: projectsFeature.id, limit: 16 },
-                    ]
-                }
+                id: "plan_pro",
+                planType: PlanType.PRO,
+                stripeProductId: "prod_TEK3qXu6yPpWX2",
+                stripePriceIdMonthly: "price_1SHrPTPOKcl3oL4e7iVaraLr",
+                stripePriceIdYearly: "price_1SHrPTPOKcl3oL4ejq0pz5YS",
+                priceMonthly: 29.00,
+                priceYearly: 278.40, // $29 * 12 * 0.8 (20% discount)
+                currency: "USD",
+                maxActiveSurveys: 10,
+                maxResponses: 5000,
+                maxCompletedResponses: 5000,
+                removeBranding: true,
+                allowApiAccess: false,
+                allowExport: true,
+                allowPublicPages: false,
+                isActive: true
             }
         }),
 
-        // Enterprise tier
-        prisma.product.upsert({
-            where: { stripeProductId: "prod_enterprise" },
+        // BUSINESS plan - For organizations and teams
+        prisma.subscriptionPlan.upsert({
+            where: { id: "plan_business" },
             update: {},
             create: {
+                id: "plan_business",
+                planType: PlanType.BUSINESS,
+                stripeProductId: "prod_TEK3rXZOUXQoGL",
+                stripePriceIdMonthly: "price_1SHrPPPOKcl3oL4eOcwPviZR",
+                stripePriceIdYearly: "price_1SHrPPPOKcl3oL4e3IGcZKlh",
+                priceMonthly: 99.00,
+                priceYearly: 950.40, // $99 * 12 * 0.8 (20% discount)
+                currency: "USD",
+                maxActiveSurveys: 25,
+                maxResponses: 20000,
+                maxCompletedResponses: 20000,
+                removeBranding: true,
+                allowApiAccess: true,
+                allowExport: true,
+                allowPublicPages: true,
+                isActive: true
+            }
+        }),
+
+        // ENTERPRISE plan - Custom enterprise solutions
+        prisma.subscriptionPlan.upsert({
+            where: { id: "plan_enterprise" },
+            update: {},
+            create: {
+                id: "plan_enterprise",
+                planType: PlanType.ENTERPRISE,
                 stripeProductId: "prod_enterprise",
-                name: "Enterprise",
-                description: "For large construction companies with unlimited needs",
-                billingInterval: BillingInterval.month,
-                price: 199.99,
-                currency: "usd",
-                trialPeriodDays: 14,
-                features: {
-                    create: [
-                        { featureId: projectsFeature.id, limit: 24 },
-                    ]
-                }
+                stripePriceIdMonthly: "",
+                stripePriceIdYearly: "",
+                priceMonthly: 499.00,
+                priceYearly: 4790.40, // $499 * 12 * 0.8 (20% discount)
+                currency: "USD",
+                maxActiveSurveys: -1, // unlimited
+                maxResponses: -1, // unlimited
+                maxCompletedResponses: -1, // unlimited
+                removeBranding: true,
+                allowApiAccess: true,
+                allowExport: true,
+                allowPublicPages: true,
+                isActive: true
             }
         })
     ]);
 
-    console.log("✅ Products created:", products.map(p => p.name));
-
-    // Create yearly versions of paid products
-    const yearlyProducts = await Promise.all([
-        prisma.product.upsert({
-            where: { stripeProductId: "prod_starter_yearly" },
-            update: {},
-            create: {
-                stripeProductId: "prod_starter_yearly",
-                name: "Starter (Yearly)",
-                description: "Great for growing construction companies - Save 20%",
-                billingInterval: BillingInterval.year,
-                price: 287.90, // 29.99 * 12 * 0.8 (20% discount)
-                currency: "usd",
-                trialPeriodDays: 14,
-                features: {
-                    create: [
-                        { featureId: projectsFeature.id, limit: 8 },
-                    ]
-                }
-            }
-        }),
-
-        prisma.product.upsert({
-            where: { stripeProductId: "prod_professional_yearly" },
-            update: {},
-            create: {
-                stripeProductId: "prod_professional_yearly",
-                name: "Professional (Yearly)",
-                description: "For established construction companies - Save 20%",
-                billingInterval: BillingInterval.year,
-                price: 767.90, // 79.99 * 12 * 0.8 (20% discount)
-                currency: "usd",
-                trialPeriodDays: 14,
-                features: {
-                    create: [
-                        { featureId: projectsFeature.id, limit: 16 },
-                    ]
-                }
-            }
-        }),
-
-        prisma.product.upsert({
-            where: { stripeProductId: "prod_enterprise_yearly" },
-            update: {},
-            create: {
-                stripeProductId: "prod_enterprise_yearly",
-                name: "Enterprise (Yearly)",
-                description: "For large construction companies - Save 20%",
-                billingInterval: BillingInterval.year,
-                price: 1919.90, // 199.99 * 12 * 0.8 (20% discount)
-                currency: "usd",
-                trialPeriodDays: 14,
-                features: {
-                    create: [
-                        { featureId: projectsFeature.id, limit: 24 },
-                    ]
-                }
-            }
-        })
-    ]);
-
-    console.log("✅ Yearly products created:", yearlyProducts.map(p => p.name));
+    console.log("✅ Subscription plans created:", plans.map(p => p.planType));
 
     console.log("🎉 Subscription seeding completed!");
 }

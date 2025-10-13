@@ -940,6 +940,7 @@
             "title": "Subscription Overview",
             "description": "Current plan details and billing information",
             "loading": "Loading...",
+            "viewPlans": "View Plans",
             "plan": "Plan",
             "status": "Status",
             "billingCycle": "Billing Cycle",
@@ -976,7 +977,11 @@
             "canceled": "Canceled",
             "checkoutCanceled": {
                 "title": "Checkout Canceled",
-                "description": "Your subscription has been changed to the Free plan because the checkout was not completed."
+                "description": "Your subscription has NOT been changed because the checkout was not completed."
+            },
+            "upgradeSuccess": {
+                "title": "Subscription Upgraded Successfully!",
+                "description": "Your subscription has been upgraded. Your new plan features are now active."
             }
         },
         "toast": {
@@ -995,6 +1000,10 @@
             "portalNotConfigured": {
                 "title": "Portal Not Available",
                 "description": "Customer portal is not configured yet. Please contact support for subscription management."
+            },
+            "upgradeSuccess": {
+                "title": "Upgrade Successful!",
+                "description": "Your plan has been upgraded successfully. Refreshing your subscription details..."
             }
         },
         "upgradeModal": {

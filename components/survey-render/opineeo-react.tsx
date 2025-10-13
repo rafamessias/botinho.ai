@@ -145,9 +145,16 @@ export const OpineeoSurvey: React.FC<OpineeoSurveyProps> = ({
 
                 widgetRef.current = widget;
 
-                // Mount the widget
+                // Wait for DOM element to be ready before mounting
                 if (containerRef.current) {
-                    await widget.mount(containerId);
+                    // Add a small delay to ensure DOM is fully ready
+                    await new Promise(resolve => setTimeout(resolve, 100));
+
+                    // Double check the element still exists
+                    const element = document.getElementById(containerId);
+                    if (element) {
+                        await widget.mount(containerId);
+                    }
                 }
             } catch (error) {
                 console.error('Failed to initialize Opineeo survey:', error);

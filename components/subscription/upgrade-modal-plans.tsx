@@ -36,9 +36,10 @@ interface UpgradeModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     plans: Plan[];
+    showUpgradeButton: boolean;
 }
 
-export const UpgradeModalPlans = ({ open, onOpenChange, plans }: UpgradeModalProps) => {
+export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton = true }: UpgradeModalProps) => {
     const t = useTranslations("Subscription.upgradeModal");
     const [isLoading, setIsLoading] = useState<string | null>(null);
     const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("yearly");
@@ -233,21 +234,23 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans }: UpgradeModalPro
                                             </div>
                                         </CardContent>
                                         <CardFooter className="pt-6">
-                                            <Button
-                                                onClick={() => handleUpgrade(plan.planType)}
-                                                disabled={isLoading !== null}
-                                                className="w-full text-sm"
-                                                variant={popular ? "default" : "outline"}
-                                            >
-                                                {isLoading === plan.planType ? (
-                                                    <>
-                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                        {t("loading")}
-                                                    </>
-                                                ) : (
-                                                    t("cta")
-                                                )}
-                                            </Button>
+                                            {showUpgradeButton && (
+                                                <Button
+                                                    onClick={() => handleUpgrade(plan.planType)}
+                                                    disabled={isLoading !== null}
+                                                    className="w-full text-sm"
+                                                    variant={popular ? "default" : "outline"}
+                                                >
+                                                    {isLoading === plan.planType ? (
+                                                        <>
+                                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                            {t("loading")}
+                                                        </>
+                                                    ) : (
+                                                        t("cta")
+                                                    )}
+                                                </Button>
+                                            )}
                                         </CardFooter>
                                     </Card>
                                 );

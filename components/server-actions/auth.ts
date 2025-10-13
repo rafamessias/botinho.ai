@@ -81,9 +81,7 @@ export const signInAction = async (formData: SignInFormData) => {
         }
 
         // If successful, check subscription and handle checkout if needed
-        console.log('Checking subscription for user:', validatedData.email)
         const subscriptionCheck = await validateUserTeamAndSubscription(validatedData.email)
-        console.log('Subscription check result:', subscriptionCheck)
 
         if (subscriptionCheck?.success && subscriptionCheck.needsCheckout) {
             return {

@@ -62,7 +62,8 @@ export function SignInForm({
             if (result?.success === false) {
                 toast.error(result.error)
                 if (result.errorCode === "email-not-confirmed") {
-                    router.push("/sign-up/check-email?email=" + data.email)
+                    router.push("/sign-up/otp?email=" + data.email)
+                    //router.push("/sign-up/check-email?email=" + data.email)
                 }
             } else if (result?.success === true) {
                 await update()

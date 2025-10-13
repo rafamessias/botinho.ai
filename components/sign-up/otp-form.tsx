@@ -31,6 +31,7 @@ export function OTPForm() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isResending, setIsResending] = useState(false)
     const [otp, setOtp] = useState("")
+    const [resendCountdown, setResendCountdown] = useState(0)
 
     const email = searchParams.get("email")
     const phone = searchParams.get("phone")
@@ -47,6 +48,16 @@ export function OTPForm() {
         resolver: zodResolver(otpSchema),
         defaultValues: { otp: "" }
     })
+
+    // Countdown timer for resend button
+    useEffect(() => {
+        if (resendCountdown > 0) {
+            const timer = setTimeout(() => {
+                setResendCountdown(resendCountdown - 1)
+            }, 1000)
+            return () => clearTimeout(timer)
+        }
+    }, [resendCountdown])
 
     // Auto-submit if OTP is provided via URL
     useEffect(() => {
@@ -115,6 +126,7 @@ export function OTPForm() {
                 toast.success(result.message || t("otpSent"))
                 setOtp("") // Clear the OTP input
                 setValue("otp", "") // Clear the form value
+                setResendCountdown(60) // Start 60 second countdown
             }
         } catch (error) {
             console.error("Resend OTP error:", error)
@@ -190,10 +202,14 @@ export function OTPForm() {
                             type="button"
                             variant="outline"
                             onClick={handleResendOTP}
-                            disabled={isResending}
+                            disabled={isResending || resendCountdown > 0}
                             className="cursor-pointer"
                         >
-                            {isResending ? t("resending") : t("resendButton")}
+                            {isResending
+                                ? t("resending")
+                                : resendCountdown > 0
+                                    ? `${t("resendButton")} (${resendCountdown}s)`
+                                    : t("resendButton")}
                         </Button>
                     </div>
                 </form>

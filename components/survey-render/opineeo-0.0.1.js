@@ -95,7 +95,7 @@ class o {
         if (!this.container) return;
         if (this.scopeClass) this.container.className = this.scopeClass;
         const qs = this.survey?.questions || [], last = this.i >= qs.length;
-        const head = '<div class="sv"><button class="x" data-a="close">×</button>';
+        const head = '<div class="sv">';
         const load = this.loading ? `<div class="cc"><div class="ca">${this.getSLoadingIcon()}</div>` : '';
         const unavailableFeedback = this.error || (!this.survey && !this.loading) ? `<div class="cc"><div class="ca">${this.getUnavailableIcon()}</div><p>Survey not available</p></div>` : '';
         const body = qs.length ? (this.done || last ? this.renderDone() : `<div class="qtc">${this.renderQuestionCard(qs[this.i])}</div>`)
