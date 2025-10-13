@@ -5,16 +5,9 @@ import { getCustomerSubscription } from '@/lib/customer-subscription';
 import { getCurrentPeriodUsageReport } from '@/lib/periodic-usage-tracking';
 import { getCurrentTeamId } from '@/lib/prisma-wrapper';
 import { PlanType } from '@/lib/generated/prisma';
-import { checkBotId } from 'botid/server';
 
 export const createCheckoutSession = async (planId: PlanType, billingCycle: 'monthly' | 'yearly') => {
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         const result = await createStripeCheckoutSession({
             planId,
             billingCycle
@@ -38,12 +31,6 @@ export const createCheckoutSession = async (planId: PlanType, billingCycle: 'mon
 
 export const createPortalSession = async () => {
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         const result = await createStripePortalSession();
 
         if (!result.success) {
@@ -194,12 +181,6 @@ export const checkExportPermission = async () => {
 
 export const handleCanceledCheckout = async () => {
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         const teamId = await getCurrentTeamId();
 
         if (!teamId) {

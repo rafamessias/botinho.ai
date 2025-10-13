@@ -4,7 +4,6 @@ import { z } from "zod"
 import resend from "@/lib/resend"
 import ContactEmail from "@/emails/ContactEmail"
 import { emailConfig } from "@/lib/emailConfig"
-import { checkBotId } from 'botid/server'
 
 // Types for form data
 export interface ContactFormData {
@@ -25,13 +24,6 @@ const contactSchema = z.object({
  */
 export async function sendContactEmail(formData: ContactFormData) {
     try {
-        // Bot protection
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         // Validate form data
         const validatedData = contactSchema.parse(formData)
 

@@ -14,7 +14,6 @@ import { getTranslations } from "next-intl/server"
 import { Provider, Theme, SubscriptionStatus, PlanType, Prisma, TeamMemberStatus, BillingInterval } from "@/lib/generated/prisma"
 import { createCustomerSubscription } from "@/lib/customer-subscription"
 import { createCheckoutSession } from "@/lib/stripe-service"
-import { checkBotId } from 'botid/server';
 
 // Types for form data
 export interface SignInFormData {
@@ -65,11 +64,7 @@ export const signInAction = async (formData: SignInFormData) => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         // Validate form data
         const validatedData = signInSchema.parse(formData)
 
@@ -146,11 +141,7 @@ export const signInAction = async (formData: SignInFormData) => {
 export const createDefaultTeamWithFreePlan = async (userId: number, firstName: string) => {
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         console.log(`Creating default team with FREE plan for user ${userId}`)
 
         // Create a default team for the user
@@ -242,11 +233,7 @@ export const validateUserTeamAndSubscription = async (userEmail: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         console.log('Validating user team and subscription for:', userEmail)
 
         // Get user
@@ -408,11 +395,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         // Validate form data
         const validatedData = signUpSchema.parse(formData)
 
@@ -634,11 +617,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
  */
 export const googleSignInAction = async (redirectPath?: string) => {
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         // Store redirect path in cookies if provided
         if (redirectPath) {
             const cookieStore = await cookies()
@@ -688,11 +667,7 @@ export const confirmEmailAction = async (token: string, teamId: number) => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         if (!token) {
             return { success: false, error: "Confirmation token is required" }
         }
@@ -747,11 +722,7 @@ export const resendConfirmationEmailAction = async (email: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         if (!email) {
             return { success: false, error: "Email is required" }
         }
@@ -814,11 +785,7 @@ export const resendConfirmationEmailAction = async (email: string) => {
  */
 export const getCurrentUserAction = async () => {
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         const session = await auth()
 
         if (!session?.user?.email) {
@@ -923,11 +890,7 @@ export const resetPasswordAction = async (email: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         if (!email) {
             return { success: false, error: "Email is required" }
         }
@@ -1003,11 +966,7 @@ export const confirmPasswordResetAction = async (token: string, password: string
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         if (!token || !password) {
             return { success: false, error: "Token and password are required" }
         }
@@ -1065,11 +1024,7 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         if (!otp || (!email && !phone)) {
             return { success: false, error: t("otpRequired") }
         }
@@ -1142,11 +1097,7 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
  */
 export const createCheckoutSessionAction = async (planType: PlanType, billingCycle: string = 'monthly', userEmail?: string, teamId?: number, customerSubscriptionId?: string) => {
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         const result = await createCheckoutSession({
             planId: planType as PlanType,
             billingCycle: billingCycle as 'monthly' | 'yearly',
@@ -1177,11 +1128,7 @@ export const resendOTPAction = async (email?: string, phone?: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
 
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
         if (!email && !phone) {
             return { success: false, error: t("emailOrPhoneRequired") }
         }

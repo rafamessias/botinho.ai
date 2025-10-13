@@ -5,7 +5,6 @@ import { prisma } from "@/prisma/lib/prisma"
 import { z } from "zod"
 import { Theme } from "@/lib/generated/prisma"
 import { getTranslations } from "next-intl/server"
-import { checkBotId } from 'botid/server'
 
 // Validation schemas
 const updateThemeSchema = z.object({
@@ -29,12 +28,6 @@ export const updateUserThemeAction = async (theme: "light" | "dark" | "system") 
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         // Validate input
         const validatedData = updateThemeSchema.parse({ theme })
 
@@ -83,12 +76,6 @@ export const updateUserProfileAction = async (profileData: {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         // Validate input
         const validatedData = updateProfileSchema.parse(profileData)
 
@@ -151,12 +138,6 @@ export const updateUserLanguageAction = async (language: "en" | "pt-BR") => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         // Validate input
         const validatedData = updateLanguageSchema.parse({ language })
 
@@ -204,12 +185,6 @@ export const updateUserAvatarAction = async (avatarUrl: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         // Validate input
         const avatarSchema = z.string().url("Invalid avatar URL")
         const validatedAvatarUrl = avatarSchema.parse(avatarUrl)
@@ -300,12 +275,6 @@ export const getUserPreferencesAction = async () => {
  */
 export const updateDefaultTeamAction = async (teamId: number) => {
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
@@ -347,12 +316,6 @@ export const deleteUserAccountAction = async (userEmail: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         // Get current session
         const session = await auth()
         if (!session?.user?.email) {

@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache"
 import { getPrismaWrapper } from "@/lib/prisma-wrapper"
 import { prisma } from "@/prisma/lib/prisma"
 import { z } from "zod"
-import { checkBotId } from 'botid/server'
 
 // Validation schemas
 const createSurveyTypeSchema = z.object({
@@ -19,12 +18,6 @@ const updateSurveyTypeSchema = createSurveyTypeSchema.extend({
 // Create a new survey type
 export const createSurveyType = async (formData: FormData) => {
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         const wrapper = getPrismaWrapper()
 
         const rawData = {
@@ -44,10 +37,9 @@ export const createSurveyType = async (formData: FormData) => {
             })
         }
 
-        const surveyType = await wrapper.create(prisma.surveyType, {
+        const surveyType = await wrapper.upsert(prisma.surveyType, {
             data: {
                 ...validatedData,
-                teamId: (await wrapper.getTeamId())!
             }
         })
 
@@ -110,12 +102,6 @@ export const getSurveyType = async (id: string) => {
 // Update a survey type
 export const updateSurveyType = async (formData: FormData) => {
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         const wrapper = getPrismaWrapper()
 
         const rawData = {
@@ -159,12 +145,6 @@ export const updateSurveyType = async (formData: FormData) => {
 // Delete a survey type
 export const deleteSurveyType = async (id: string) => {
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         const wrapper = getPrismaWrapper()
 
         // Check if any surveys are using this type
@@ -195,12 +175,6 @@ export const deleteSurveyType = async (id: string) => {
 // Set default survey type
 export const setDefaultSurveyType = async (id: string) => {
     try {
-        const verification = await checkBotId();
-
-        if (verification.isBot) {
-            throw new Error('Access denied');
-        }
-
         const wrapper = getPrismaWrapper()
 
         // Unset current default
