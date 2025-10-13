@@ -3,6 +3,7 @@ import { prisma } from '@/prisma/lib/prisma';
 import { getStatusCodeForError, validateSubscriptionAndUsage, ValidationType } from '@/lib/services/subscription-validation';
 import { getQuestionResponsesforRoute } from '@/components/server-actions/survey';
 import { SurveyStatus } from '@/lib/generated/prisma';
+import { checkBotId } from 'botid/server';
 
 // CORS headers for API access
 function addCorsHeaders(response: NextResponse): NextResponse {
@@ -34,6 +35,11 @@ async function validateApiToken(request: NextRequest): Promise<{ id: number } | 
 
 export async function GET(request: NextRequest) {
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+        }
         // Validate API token
         const team = await validateApiToken(request);
         if (!team) {

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { QuestionFormat, ResponseStatus, StyleMode, Survey, SurveyStyle, UsageMetricType } from '@/lib/generated/prisma';
 import { validateSubscriptionAndUsage, getStatusCodeForError, invalidateSubscriptionCache } from '@/lib/services/subscription-validation';
 import { updateUsageTrackingInTransaction } from '@/lib/services/usage-tracking';
+import { checkBotId } from 'botid/server';
 
 // Simple in-memory cache for survey data (in production, consider Redis)
 const surveyCache = new Map<string, { data: any; timestamp: number }>();
@@ -287,6 +288,12 @@ async function validateToken(request: NextRequest): Promise<{ id: number, brandi
 
 export async function POST(request: NextRequest) {
     try {
+
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            return addCorsHeaders(NextResponse.json({ error: 'Access denied' }, { status: 403 }));
+        }
         // Early token validation
         const team = await validateToken(request);
         if (!team) {
@@ -475,6 +482,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
     try {
+
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            return addCorsHeaders(NextResponse.json({ error: 'Access denied' }, { status: 403 }));
+        }
 
         const team = await validateToken(request);
 

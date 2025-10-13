@@ -10,6 +10,7 @@ import bcrypt from "bcryptjs"
 import resend from "@/lib/resend"
 import TeamInvitationEmail from "@/emails/TeamInvitationEmail"
 import { validateApiAccess, validateRemoveBranding } from "@/lib/services/subscription-validation"
+import { checkBotId } from 'botid/server'
 
 // Validation schemas
 const createTeamSchema = z.object({
@@ -70,6 +71,11 @@ export const createTeamAction = async (formData: z.infer<typeof createTeamSchema
     const t = await getTranslations("Team")
 
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
@@ -150,6 +156,11 @@ export const updateTeamAction = async (formData: z.infer<typeof updateTeamSchema
     const t = await getTranslations("Team")
 
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
@@ -203,6 +214,11 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
     const t = await getTranslations("Team")
 
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
@@ -343,6 +359,11 @@ export const updateMemberAction = async (formData: z.infer<typeof updateMemberSc
     const t = await getTranslations("Team")
 
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
@@ -402,6 +423,11 @@ export const removeMemberAction = async (formData: z.infer<typeof removeMemberSc
     const t = await getTranslations("Team")
 
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
@@ -472,6 +498,20 @@ export const removeMemberAction = async (formData: z.infer<typeof removeMemberSc
  */
 export const deleteTeamAction = async (formData: z.infer<typeof deleteTeamSchema>) => {
     const t = await getTranslations("Team")
+
+    try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
+    } catch (error) {
+        // Rethrow if it's the access denied error
+        if (error instanceof Error && error.message === 'Access denied') {
+            throw error;
+        }
+        // Otherwise continue (bot check failed for other reasons)
+    }
 
     //avoid deleting
     return { success: false, error: "Deleting teams is not allowed" };
@@ -747,6 +787,11 @@ export const generateTeamTokenAction = async (formData: z.infer<typeof generateT
     const t = await getTranslations("Team")
 
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
@@ -819,6 +864,11 @@ export const regenerateTeamTokenAction = async (formData: z.infer<typeof regener
     const t = await getTranslations("Team")
 
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
@@ -1022,6 +1072,11 @@ export const updateTeamBrandingAction = async (formData: z.infer<typeof updateTe
     const t = await getTranslations("Settings.branding")
 
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }

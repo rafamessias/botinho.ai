@@ -11,6 +11,7 @@ import {
     decrementActiveSurveysInTransaction,
     getCurrentUsage
 } from "@/lib/services/usage-tracking"
+import { checkBotId } from 'botid/server'
 
 // Helper function to get and cache team ID for better performance
 const getTeamIdCached = async (): Promise<number | null> => {
@@ -93,6 +94,12 @@ const updateSurveySchema = createSurveySchema.partial().extend({
 // Create a new survey
 export const createSurvey = async (formData: FormData) => {
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
+
         const wrapper = getPrismaWrapper()
 
         // Parse form data
@@ -253,6 +260,12 @@ export const createSurvey = async (formData: FormData) => {
 // Update an existing survey
 export const updateSurvey = async (formData: FormData) => {
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
+
         const wrapper = getPrismaWrapper()
 
         // Parse form data
@@ -699,6 +712,12 @@ export const getSurvey = async (id: string) => {
 // Delete a survey
 export const deleteSurvey = async (id: string) => {
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
+
         const wrapper = getPrismaWrapper()
         const teamId = await getTeamIdCached()
 
@@ -778,6 +797,12 @@ export const deleteSurvey = async (id: string) => {
 // Duplicate a survey
 export const duplicateSurvey = async (id: string) => {
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
+
         const wrapper = getPrismaWrapper()
 
         // Get the original survey
@@ -927,6 +952,12 @@ export const duplicateSurvey = async (id: string) => {
 // Update survey status
 export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
     try {
+        const verification = await checkBotId();
+
+        if (verification.isBot) {
+            throw new Error('Access denied');
+        }
+
         const wrapper = getPrismaWrapper()
         const teamId = await getTeamIdCached()
 
