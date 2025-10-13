@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition, useCallback, useMemo } from "react"
+import { useState, useTransition, useCallback, useMemo, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { Card, CardContent } from "@/components/ui/card"
@@ -12,9 +12,10 @@ import { StyleSection } from "@/components/survey/style-section"
 import { updateSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
-import { ArrowLeft, Clipboard } from "lucide-react"
+import { ArrowLeft, Clipboard, Eye, EyeOff } from "lucide-react"
 import { useUser } from "../user-provider"
 import { UpgradeModal } from "@/components/upgrade-modal"
+import { getTeamTokenAction } from "@/components/server-actions/team"
 
 interface Question {
     id: string
@@ -114,7 +115,9 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
     const [pendingAction, setPendingAction] = useState<'save' | 'publish' | null>(null)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [upgradeLimit, setUpgradeLimit] = useState<number | undefined>(undefined)
-    const { hasPermission } = useUser()
+    const [currentToken, setCurrentToken] = useState<string | null>(null)
+    const [showToken, setShowToken] = useState(false)
+    const { hasPermission, user } = useUser()
     const userHasPermission = hasPermission()
     const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
     const isReadonly = !canCreateSurvey
@@ -250,6 +253,32 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
         toast.success(t("messages.surveyIdCopied") || "Survey ID copied to clipboard")
     }, [surveyData.id, t])
 
+    const handleCopySurveyToken = useCallback(async () => {
+        if (currentToken) {
+            await navigator.clipboard.writeText(currentToken)
+            toast.success("Survey token copied to clipboard")
+        } else {
+            toast.error("No token available. Please generate one in Settings > API.")
+        }
+    }, [currentToken])
+
+    // Load team token when component mounts
+    useEffect(() => {
+        const loadTeamToken = async () => {
+            if (user?.defaultTeamId) {
+                try {
+                    const result = await getTeamTokenAction(user.defaultTeamId)
+                    if (result.success && result.team?.tokenSurvery) {
+                        setCurrentToken(result.team.tokenSurvery)
+                    }
+                } catch (error) {
+                    console.error("Failed to load team token:", error)
+                }
+            }
+        }
+        loadTeamToken()
+    }, [user?.defaultTeamId])
+
     // Optimized change handlers to prevent unnecessary re-renders
     const handleSurveyDetailsChange = useCallback((data: Partial<SurveyData>) => {
         setSurveyData(prev => ({ ...prev, ...data }))
@@ -271,22 +300,44 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
             {/* Page Header */}
             <div className="space-y-2">
                 <Button variant="outline" size="icon" onClick={() => router.push("/survey")}><ArrowLeft className="h-4 w-4" /></Button>
-                <div className="flex flex-col items-start sm:items-center sm:flex-row">
-                    <p className="flex items-center flex-row">Survey ID:</p>
-                    <p
-                        className="text-muted-foreground cursor-pointer select-all transition-colors hover:text-primary focus:text-primary outline-none sm:ml-2 flex items-center justify-center"
-                        tabIndex={0}
-                        aria-label={t("actions.copySurveyId") || "Copy Survey ID"}
-                        onClick={handleCopySurveyId}
-                        onKeyDown={async (e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                                handleCopySurveyId()
-                            }
-                        }}
-                        role="button"
-                    >
-                        {surveyData.id} <Button variant="outline" size="icon" className="ml-2 flex items-center justify-center" onClick={handleCopySurveyId}><Clipboard className="h-4 w-4" /></Button>
-                    </p>
+                <div className="flex flex-row items-center gap-6">
+                    {/* Survey ID */}
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium">ID:</p>
+                        <p className="hidden text-muted-foreground font-mono text-xs sm:inline-block sm:text-sm">
+                            {surveyData.id}
+                        </p>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={handleCopySurveyId}
+                            aria-label={t("actions.copySurveyId") || "Copy Survey ID"}
+                        >
+                            <Clipboard className="h-4 w-4" />
+                        </Button>
+                    </div>
+
+                    {/* Survey Token */}
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium">Token:</p>
+                        <p className="hidden text-muted-foreground font-mono text-xs sm:inline-block sm:text-sm">
+                            {currentToken ? '••••••••••••••••••••••••' : 'Not generated'}
+                        </p>
+                        {currentToken && (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="h-8 w-8"
+                                    onClick={handleCopySurveyToken}
+                                    aria-label="Copy Survey Token"
+                                >
+                                    <Clipboard className="h-4 w-4" />
+                                </Button>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 
