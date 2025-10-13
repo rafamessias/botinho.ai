@@ -5,6 +5,10 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { getSubscriptionData, handleCanceledCheckout } from "@/components/server-actions/subscription";
 
+// Force dynamic rendering and disable caching to always get fresh subscription data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface SubscriptionProps {
     searchParams: Promise<{
         canceled?: string;

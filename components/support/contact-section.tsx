@@ -97,30 +97,29 @@ export default function ContactSection() {
     }
 
     return (
-        <section id="contact" className="py-10">
+        <section id="contact">
             <div className="container mx-auto px-4">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('contact.title')}</h2>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                <div className="text-start mb-8 sm:mb-16">
+                    <p className="text-base text-muted-foreground max-w-[600px] ">
                         {t('contact.subtitle')}
                     </p>
                 </div>
 
-                <div className="max-w-4xl mx-auto flex justify-center">
+                <div className="flex justify-start min-w-[300px] max-w-[600px] w-full">
                     {/* Contact Form */}
-                    <Card className="p-6 md:p-8 ">
-                        <CardHeader className="text-center">
-                            <Mail className="h-12 w-12 text-primary mx-auto mb-4" />
+                    <Card className="px-2 py-4 w-full">
+                        <CardHeader className="text-start px-4 py-4">
+                            <Mail className="h-12 w-12 text-primary" />
                             <CardTitle className="text-xl">{t('contact.form.submitButton')}</CardTitle>
                             <CardDescription className="text-base">
                                 {t('contact.form.description')}
                             </CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 pb-4">
                             {status === 'success' ? (
                                 /* Success Feedback - Hide Form */
                                 <div className="text-center py-8">
-                                    <div className="flex items-center justify-center p-6 bg-green-50 border border-green-200 rounded-lg mb-4">
+                                    <div className="flex items-center justify-center bg-green-50 border border-green-200 rounded-lg mb-4">
                                         <CheckCircle className="h-8 w-8 text-green-500 mr-3" />
                                         <div>
                                             <h3 className="text-lg font-semibold text-green-800 mb-1">
