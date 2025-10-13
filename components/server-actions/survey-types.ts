@@ -1,7 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { getPrismaWrapper } from "@/lib/prisma-wrapper"
+import { getCurrentTeamId, getPrismaWrapper } from "@/lib/prisma-wrapper"
 import { prisma } from "@/prisma/lib/prisma"
 import { z } from "zod"
 
@@ -27,6 +27,15 @@ export const createSurveyType = async (formData: FormData) => {
 
         const validatedData = createSurveyTypeSchema.parse(rawData)
 
+        const teamId = await getCurrentTeamId()
+
+        if (!teamId) {
+            return {
+                success: false,
+                error: "Team not found"
+            }
+        }
+
         // If this is set as default, unset other defaults
         if (validatedData.isDefault) {
             await wrapper.updateMany(prisma.surveyType, {
@@ -37,9 +46,10 @@ export const createSurveyType = async (formData: FormData) => {
             })
         }
 
-        const surveyType = await wrapper.upsert(prisma.surveyType, {
+        const surveyType = await prisma.surveyType.create({
             data: {
                 ...validatedData,
+                teamId: teamId
             }
         })
 
