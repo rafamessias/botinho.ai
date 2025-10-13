@@ -185,8 +185,8 @@ export function NavMain({
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false)
 
   // TODO: Configure these values with your actual survey ID and token
-  const FEEDBACK_SURVEY_ID = "cmgpg5cds000zyqfke4cvkqkp"
-  const FEEDBACK_SURVEY_TOKEN = "$2b$10$YDevI3E4G3Kxddbymf9DlOehCPmZKnHECGAunr6CN.8pMv88ilR9W"
+  const FEEDBACK_SURVEY_ID = "cmgplpcbi00033ue9vg6478ic"
+  const FEEDBACK_SURVEY_TOKEN = "$2b$10$7JyGsAfU/V5Z5vpbB/5oo.hubThQW59ny6wNdw1VBWTIsWZ7lD78G"
 
   const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
 
