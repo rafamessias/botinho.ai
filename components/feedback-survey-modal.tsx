@@ -7,6 +7,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
 } from "@/components/ui/dialog"
 
 interface FeedbackSurveyModalProps {
@@ -36,8 +37,10 @@ export function FeedbackSurveyModal({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
+                <DialogHeader className="px-4">
                     <DialogTitle>Rate Our Service</DialogTitle>
+                    <DialogDescription>
+                    </DialogDescription>
                 </DialogHeader>
                 {/* Only render survey when modal is open to avoid DOM mounting issues */}
                 {open && surveyId && token ? (
