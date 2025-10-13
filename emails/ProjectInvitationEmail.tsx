@@ -42,8 +42,8 @@ const ProjectInvitationEmail = ({
             <Body style={main}>
                 <Preview>
                     {isPt
-                        ? `Obraguru - Você foi convidado para o projeto ${projectName}!`
-                        : `Obraguru - You've been invited to join ${projectName}!`
+                        ? `Opineeo - Você foi convidado para o time ${projectName}!`
+                        : `Opineeo - You've been invited to join ${projectName}!`
                     }
                 </Preview>
                 <Container style={container}>
@@ -51,7 +51,7 @@ const ProjectInvitationEmail = ({
                         src={logoURL}
                         width="40"
                         height="40"
-                        alt="Obraguru"
+                        alt="Opineeo"
                         style={logo}
                     />
                     <Section>
@@ -60,14 +60,14 @@ const ProjectInvitationEmail = ({
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? `Você foi convidado(a) para participar do projeto "${projectName}" no Obraguru.`
-                                : `You've been invited to join the project "${projectName}" on Obraguru.`
+                                ? `Você foi convidado(a) para participar do time "${projectName}" no Opineeo.`
+                                : `You've been invited to join the "${projectName}" team on Opineeo.`
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'O Obraguru é uma plataforma poderosa para gerenciamento de projetos que permite colaboração eficiente, organização de tarefas e acompanhamento de progresso em tempo real.'
-                                : 'Obraguru is a powerful project management platform that enables efficient collaboration, task organization, and real-time progress tracking.'
+                                ? 'O Opineeo é uma plataforma poderosa para gerenciamento de pesquisas que permite colaboração eficiente, organização de tarefas e acompanhamento de progresso em tempo real.'
+                                : 'Opineeo is a powerful survey management platform that enables efficient collaboration, task organization, and real-time progress tracking.'
                             }
                         </Text>
                         <Text style={text}>
@@ -101,13 +101,13 @@ const ProjectInvitationEmail = ({
                         )}
                         <Text style={text}>
                             {isPt
-                                ? 'Junte-se à equipe e contribua para o sucesso deste projeto. Estamos ansiosos para ver suas contribuições!'
+                                ? 'Junte-se à equipe e contribua para o sucesso deste time. Estamos ansiosos para ver suas contribuições!'
                                 : 'Join the team and contribute to the success of this project. We\'re excited to see your contributions!'
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Se você tiver alguma dúvida sobre o projeto ou a plataforma, não hesite em entrar em contato conosco.'
+                                ? 'Se você tiver alguma dúvida sobre o time ou a plataforma, não hesite em entrar em contato conosco.'
                                 : 'If you have any questions about the project or the platform, don\'t hesitate to contact us.'
                             }
                         </Text>
@@ -133,7 +133,7 @@ const ProjectInvitationEmail = ({
                 <Section style={footer}>
                     <Row>
                         <Text style={{ textAlign: 'center', color: '#706a7b' }}>
-                            {isPt ? '© 2025 Obraguru, Todos os direitos reservados' : '© 2025 Obraguru, All Rights Reserved'}
+                            {isPt ? '© 2025 Opineeo, Todos os direitos reservados' : '© 2025 Opineeo, All Rights Reserved'}
                         </Text>
                     </Row>
                 </Section>
