@@ -36,8 +36,8 @@ export function FeedbackSurveyModal({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                <DialogHeader className="px-4">
+            <DialogContent className="sm:max-w-[400px]">
+                <DialogHeader >
                     <DialogTitle>Rate Our Service</DialogTitle>
                     <DialogDescription>
                     </DialogDescription>
