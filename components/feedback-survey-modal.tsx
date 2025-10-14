@@ -49,7 +49,6 @@ export function FeedbackSurveyModal({
                         token={token}
                         onComplete={handleComplete}
                         onClose={handleClose}
-                        className="mt-4"
                     />
                 ) : open && (!surveyId || !token) ? (
                     <div className="text-center py-8 text-muted-foreground">
