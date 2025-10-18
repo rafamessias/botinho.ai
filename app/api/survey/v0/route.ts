@@ -387,15 +387,14 @@ export async function POST(request: NextRequest) {
         // Parse and validate request body
         const body = await request.json();
         const validatedData = surveyAnswerSchema.parse(body);
-        console.log(validatedData);
-        console.log(request.headers.get('origin'));
 
         // Single optimized query to get survey with validation data
+        // NOT USING ORIGIN HERE BECAUSE GET REQUESTS DON'T SEND ORIGIN HEADER
         const surveyResponse = await prisma.surveyResponse.findFirst({
             where: {
                 id: validatedData.responseToken,
                 surveyId: validatedData.surveyId,
-                origin: request.headers.get('origin') || '',
+                //origin: request.headers.get('origin') || '',
                 status: 'pending',
                 expiresAt: {
                     gt: new Date()
