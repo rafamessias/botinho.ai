@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/prisma/lib/prisma';
 import { z } from 'zod';
-import { QuestionFormat, ResponseStatus, StyleMode, Survey, SurveyStyle, UsageMetricType } from '@/lib/generated/prisma';
+import { QuestionFormat, ResponseStatus, StyleMode, Survey, SurveyStatus, SurveyStyle, UsageMetricType } from '@/lib/generated/prisma';
 import { validateSubscriptionAndUsage, getStatusCodeForError, invalidateSubscriptionCache } from '@/lib/services/subscription-validation';
 import { updateUsageTrackingInTransaction } from '@/lib/services/usage-tracking';
 
@@ -284,7 +284,8 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 
-async function validateToken(request: NextRequest): Promise<{ id: number, branding: boolean } | null> {
+// Validate team token from Authorization header
+async function validateTeamToken(request: NextRequest): Promise<{ id: number, branding: boolean } | null> {
     let token: string | null = null;
     const authHeader = request.headers.get('authorization');
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -300,14 +301,66 @@ async function validateToken(request: NextRequest): Promise<{ id: number, brandi
 
     if (!team) return null;
 
-    return team;
+    return { id: team.id, branding: team.branding };
+}
+
+// Validate survey public token from URL parameter
+async function validateSurveyPublicToken(request: NextRequest): Promise<{ id: number, branding: boolean } | null> {
+    const { searchParams } = new URL(request.url);
+    const token = searchParams.get('token');
+    const surveyId = searchParams.get('surveyId');
+
+    if (!token || !surveyId) return null;
+
+    // Single query to validate everything
+    const survey = await prisma.survey.findFirst({
+        where: {
+            id: surveyId,
+            publicToken: token,
+            status: SurveyStatus.published
+        },
+        select: {
+            id: true,
+            teamId: true,
+            team: {
+                select: {
+                    id: true,
+                    branding: true
+                }
+            }
+        }
+    });
+
+    if (!survey) return null;
+
+    return {
+        id: survey.team.id,
+        branding: survey.team.branding
+    };
+}
+
+// Unified validation - tries both methods
+async function validateRequest(request: NextRequest): Promise<{ id: number, branding: boolean } | null> {
+    // First, try to validate survey public token (from URL)
+    const surveyTokenValidation = await validateSurveyPublicToken(request);
+    if (surveyTokenValidation) {
+        return surveyTokenValidation;
+    }
+
+    // Fall back to team token (from Authorization header)
+    const teamTokenValidation = await validateTeamToken(request);
+    if (teamTokenValidation) {
+        return teamTokenValidation;
+    }
+
+    return null;
 }
 
 export async function POST(request: NextRequest) {
     try {
         // Skip BotID for high-traffic public API - use other protection methods
-        // Early token validation
-        const team = await validateToken(request);
+        // Early token validation (supports both team token and survey public token)
+        const team = await validateRequest(request);
         if (!team) {
             return addCorsHeaders(NextResponse.json(
                 { error: 'Invalid token' },
@@ -497,7 +550,8 @@ export async function GET(request: NextRequest) {
         // Skip BotID for high-traffic public API - use other protection methods
         // BotID adds latency and can cause false positives for legitimate users
 
-        const team = await validateToken(request);
+        // Early token validation (supports both team token and survey public token)
+        const team = await validateRequest(request);
 
         if (!team) {
             return addCorsHeaders(NextResponse.json(

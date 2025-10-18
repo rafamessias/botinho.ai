@@ -1212,6 +1212,17 @@
             "cancel": "Talvez Depois"
         }
     },
+    "PublicSurvey": {
+        "thankYou": "Obrigado!",
+        "responseSubmitted": "Sua resposta foi enviada com sucesso.",
+        "submitAnother": "Enviar Outra Resposta",
+        "toggleTheme": "Alternar tema",
+        "error": {
+            "title": "Erro na Pesquisa",
+            "description": "Por favor, verifique se você tem o link e token corretos da pesquisa.",
+            "goHome": "Ir para Início"
+        }
+    },
     "CreateSurvey": {
         "title": "Criar Pesquisa",
         "description": "Crie uma nova pesquisa para coletar respostas do seu público",

@@ -9,13 +9,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SurveyDetailsSection } from "@/components/survey/survey-details-section"
 import { QuestionsSection } from "@/components/survey/questions-section"
 import { StyleSection } from "@/components/survey/style-section"
-import { updateSurvey } from "@/components/server-actions/survey"
+import { updateSurvey, regenerateSurveyPublicToken } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
-import { ArrowLeft, Clipboard, Eye, EyeOff, Settings } from "lucide-react"
+import { ArrowLeft, Clipboard, Eye, EyeOff, Settings, RefreshCw, Link as LinkIcon } from "lucide-react"
 import { useUser } from "../user-provider"
 import { UpgradeModal } from "@/components/upgrade-modal"
 import { getTeamTokenAction } from "@/components/server-actions/team"
+import { useParams } from "next/navigation"
+import { Separator } from "../ui/separator"
+import { Accordion, AccordionItem, AccordionTrigger } from "../ui/accordion"
+import { AccordionContent } from "@radix-ui/react-accordion"
 
 interface Question {
     id: string
@@ -68,6 +72,7 @@ interface Survey {
     typeId: string | null
     status: 'draft' | 'published' | 'archived'
     allowMultipleResponses: boolean
+    publicToken: string | null
     questions: Array<{
         id: string
         title: string
@@ -111,12 +116,16 @@ interface EditSurveyFormProps {
 export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => {
     const t = useTranslations("CreateSurvey")
     const router = useRouter()
+    const params = useParams()
+    const locale = (params.locale as string) || 'en'
     const [isPending, startTransition] = useTransition()
     const [pendingAction, setPendingAction] = useState<'save' | 'publish' | null>(null)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [upgradeLimit, setUpgradeLimit] = useState<number | undefined>(undefined)
     const [currentToken, setCurrentToken] = useState<string | null>(null)
     const [showToken, setShowToken] = useState(false)
+    const [publicToken, setPublicToken] = useState<string | null>(survey.publicToken)
+    const [isRegeneratingToken, setIsRegeneratingToken] = useState(false)
     const { hasPermission, user } = useUser()
     const userHasPermission = hasPermission()
     const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
@@ -225,6 +234,13 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                 const result = await updateSurvey(formData)
 
                 if (result.success) {
+                    // If survey was newly published, regenerate the public token
+                    if (!publicToken) {
+                        const tokenResult = await regenerateSurveyPublicToken(surveyData.id)
+                        if (tokenResult.success && tokenResult.publicToken) {
+                            setPublicToken(tokenResult.publicToken)
+                        }
+                    }
                     toast.success(t("messages.publishSuccess"))
                     router.push("/survey")
                 } else {
@@ -246,7 +262,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                 setPendingAction(null)
             }
         })
-    }, [surveyData, t, router])
+    }, [surveyData, t, router, publicToken])
 
     const handleCopySurveyId = useCallback(async () => {
         await navigator.clipboard.writeText(surveyData.id)
@@ -261,6 +277,42 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
             toast.error("No token available. Please generate one in Settings > API.")
         }
     }, [currentToken])
+
+    const handleRegeneratePublicToken = useCallback(async () => {
+        setIsRegeneratingToken(true)
+        try {
+            const result = await regenerateSurveyPublicToken(surveyData.id)
+            if (result.success && result.publicToken) {
+                setPublicToken(result.publicToken)
+                toast.success("Public token regenerated successfully")
+            } else {
+                toast.error(result.error || "Failed to regenerate public token")
+            }
+        } catch (error) {
+            console.error("Error regenerating token:", error)
+            toast.error("An unexpected error occurred")
+        } finally {
+            setIsRegeneratingToken(false)
+        }
+    }, [surveyData.id])
+
+    const handleCopyPublicUrl = useCallback(async () => {
+        if (publicToken) {
+            const baseUrl = window.location.origin
+            const publicUrl = `${baseUrl}/${locale}/survey/${surveyData.id}?token=${publicToken}`
+            await navigator.clipboard.writeText(publicUrl)
+            toast.success("Public URL copied to clipboard")
+        } else {
+            toast.error("No public token available. Please publish the survey first or regenerate the token.")
+        }
+    }, [publicToken, surveyData.id, locale])
+
+    const truncateUrl = useCallback((url: string, maxLength: number = 50) => {
+        if (url.length <= maxLength) return url
+        const start = url.slice(0, maxLength / 2)
+        const end = url.slice(-maxLength / 2)
+        return `${start}...${end}`
+    }, [])
 
     // Load team token when component mounts
     useEffect(() => {
@@ -295,60 +347,160 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
     // Memoize the survey data to prevent unnecessary re-renders
     const memoizedSurveyData = useMemo(() => surveyData, [surveyData])
 
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    const publicUrl = publicToken ? `${baseUrl}/${locale}/survey/${surveyData.id}?token=${publicToken}` : null
+    const truncatedUrl = publicUrl ? truncateUrl(publicUrl, 50) : 'Not available'
+
     return (
         <div className="space-y-6">
             {/* Page Header */}
-            <div className="space-y-2">
-                <Button variant="outline" size="icon" onClick={() => router.push("/survey")}><ArrowLeft className="h-4 w-4" /></Button>
-                <div className="flex flex-row items-center gap-6">
-                    {/* Survey ID */}
-                    <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium">ID:</p>
-                        <p className="hidden text-muted-foreground font-mono text-xs sm:inline-block sm:text-sm">
-                            {surveyData.id}
-                        </p>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={handleCopySurveyId}
-                            aria-label={t("actions.copySurveyId") || "Copy Survey ID"}
-                        >
-                            <Clipboard className="h-4 w-4" />
-                        </Button>
-                    </div>
+            {/* 
+                Use an accordion: 
+                - closed by default on mobile (open = false), open on desktop (open = true)
+                - Assumes you have Accordion, AccordionItem, AccordionTrigger, AccordionContent components available (e.g., from shadcn/ui, radix, or custom)
+            */}
+            <Accordion
+                type="single"
+                collapsible
+                defaultValue={typeof window !== "undefined" && window.innerWidth >= 640 ? "info" : undefined}
+                className="space-y-4"
+            >
+                <AccordionItem
+                    value="info"
+                    // Open when screen is sm (640px) or above, closed otherwise
+                    className="border-none"
+                >
+                    <AccordionTrigger className="!no-underline p-0">
+                        <div className="flex items-center gap-2">
+                            <div
+                                className="mr-2 inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push("/survey");
+                                }}
+                                role="button"
+                                tabIndex={0}
+                                aria-label="Go back to surveys"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        router.push("/survey");
+                                    }
+                                }}
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                            </div>
+                            <span className="text-base font-medium">
+                                Survey Info
+                            </span>
+                        </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                        {/* Survey ID and Token Section */}
+                        <div className="flex gap-4 sm:flex-row sm:items-center sm:gap-6 pt-3">
+                            {/* Survey ID */}
+                            <div className="flex items-center gap-2">
+                                <p className="text-sm font-medium">ID:</p>
+                                <p className="hidden text-muted-foreground font-mono text-xs sm:inline-block sm:text-sm">
+                                    {surveyData.id}
+                                </p>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="h-8 w-8"
+                                    onClick={handleCopySurveyId}
+                                    aria-label={t("actions.copySurveyId") || "Copy Survey ID"}
+                                >
+                                    <Clipboard className="h-4 w-4" />
+                                </Button>
+                            </div>
 
-                    {/* Survey Token */}
-                    <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium">Token:</p>
-                        <p className="hidden text-muted-foreground font-mono text-xs sm:inline-block sm:text-sm">
-                            {currentToken ? '••••••••••••••••••••••••' : 'Not generated'}
-                        </p>
-                        {currentToken ? (
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="h-8 w-8"
-                                onClick={handleCopySurveyToken}
-                                aria-label="Copy Survey Token"
-                            >
-                                <Clipboard className="h-4 w-4" />
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8"
-                                onClick={() => router.push("/settings")}
-                                aria-label="Go to Settings to generate token"
-                            >
-                                <Settings className="h-4 w-4 sm:mr-1" />
-                                <span className="hidden sm:inline">Generate</span>
-                            </Button>
-                        )}
-                    </div>
-                </div>
-            </div>
+                            {/* Team Token */}
+                            <div className="flex items-center gap-2">
+                                <p className="text-sm font-medium">Token:</p>
+                                <p className="hidden text-muted-foreground font-mono text-xs sm:inline-block sm:text-sm">
+                                    {currentToken ? '••••••••••••••••••••••••' : 'Not generated'}
+                                </p>
+                                {currentToken ? (
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="h-8 w-8"
+                                        onClick={handleCopySurveyToken}
+                                        aria-label="Copy Survey Token"
+                                    >
+                                        <Clipboard className="h-4 w-4" />
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-8"
+                                        onClick={() => router.push("/settings")}
+                                        aria-label="Go to Settings to generate token"
+                                    >
+                                        <Settings className="h-4 w-4 sm:mr-1" />
+                                        <span className="hidden sm:inline">Generate</span>
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Public URL Section */}
+                        {/*
+                        <div className="flex flex-col gap-3 mt-4">
+                            <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2">
+                                    <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                                    <p className="text-sm font-medium">Public URL:</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {publicToken && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-8"
+                                            onClick={handleCopyPublicUrl}
+                                            aria-label="Copy Public URL"
+                                        >
+                                            <Clipboard className="h-4 w-4" />
+                                        </Button>
+                                    )}
+                                    {canCreateSurvey && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-8"
+                                            onClick={handleRegeneratePublicToken}
+                                            disabled={isRegeneratingToken}
+                                            aria-label="Regenerate Public Token"
+                                        >
+                                            <RefreshCw className={`h-4 w-4 ${isRegeneratingToken ? 'animate-spin' : ''}`} />
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                {publicUrl ? (
+                                    <>
+                                        <div className="text-muted-foreground font-mono text-xs break-all" title={publicUrl}>
+                                            <span className="">{truncateUrl(publicUrl, 40)}</span>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p className="text-xs text-muted-foreground">
+                                        Publish the survey to generate a public URL
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                        */}
+                    </AccordionContent>
+                </AccordionItem>
+            </Accordion>
+
+            <Separator className="my-6" />
 
             {/* Survey Details Section */}
             <SurveyDetailsSection

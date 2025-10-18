@@ -144,6 +144,11 @@ export const createSurvey = async (formData: FormData) => {
             }
         }
 
+        // Generate public token if survey is being published
+        const publicToken = validatedData.status === SurveyStatus.published
+            ? crypto.randomUUID()
+            : null
+
         // Create survey with questions and style in a transaction with optimized operations
         const result = await prisma.$transaction(async (tx) => {
             // Create survey using direct Prisma call for better performance
@@ -154,6 +159,7 @@ export const createSurvey = async (formData: FormData) => {
                     typeId: validatedData.typeId ? validatedData.typeId : null,
                     status: validatedData.status,
                     allowMultipleResponses: validatedData.allowMultipleResponses,
+                    publicToken: publicToken,
                     teamId: teamId
                 }
             })
@@ -331,6 +337,9 @@ export const updateSurvey = async (formData: FormData) => {
             }
         }
 
+        // Generate public token if changing to published
+        const publicToken = isChangingToPublished ? crypto.randomUUID() : undefined
+
         // Update survey with questions and style in optimized transaction
         const result = await prisma.$transaction(async (tx) => {
             // Update survey using direct Prisma call
@@ -342,6 +351,7 @@ export const updateSurvey = async (formData: FormData) => {
                     typeId: validatedData.typeId ? validatedData.typeId : null,
                     status: validatedData.status,
                     allowMultipleResponses: validatedData.allowMultipleResponses,
+                    ...(publicToken && { publicToken })
                 }
             })
 
@@ -982,12 +992,18 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
             }
         }
 
+        // Generate public token if changing to published
+        const publicToken = isChangingToPublished ? crypto.randomUUID() : undefined
+
         // Update survey status and team counts in optimized transaction
         await prisma.$transaction(async (tx) => {
             // Update survey status using direct Prisma call
             await tx.survey.update({
                 where: { id },
-                data: { status }
+                data: {
+                    status,
+                    ...(publicToken && { publicToken })
+                }
             })
 
             // Update team survey counts based on status changes
@@ -1197,6 +1213,61 @@ export const getQuestionResponsesforRoute = async (surveyId: string) => {
         return {
             success: false,
             error: error instanceof Error ? error.message : "Failed to fetch question responses"
+        }
+    }
+}
+
+// Regenerate survey public token
+export const regenerateSurveyPublicToken = async (surveyId: string) => {
+    try {
+        const wrapper = getPrismaWrapper()
+        const teamId = await getTeamIdCached()
+
+        if (!teamId) {
+            return {
+                success: false,
+                error: "No team found"
+            }
+        }
+
+        // Check if user has permission to update this survey
+        const survey = await prisma.survey.findFirst({
+            where: {
+                id: surveyId,
+                teamId: teamId
+            },
+            select: {
+                id: true,
+                status: true
+            }
+        })
+
+        if (!survey) {
+            return {
+                success: false,
+                error: "Survey not found"
+            }
+        }
+
+        // Generate new public token
+        const crypto = await import("crypto")
+        const newPublicToken = crypto.randomUUID()
+
+        // Update survey with new token
+        const updatedSurvey = await prisma.survey.update({
+            where: { id: surveyId },
+            data: { publicToken: newPublicToken }
+        })
+
+        return {
+            success: true,
+            publicToken: updatedSurvey.publicToken
+        }
+    } catch (error) {
+        console.error("Error regenerating public token:", error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Failed to regenerate public token"
         }
     }
 }

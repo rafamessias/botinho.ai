@@ -9,6 +9,7 @@ import resend from "@/lib/resend"
 import { addDefaultSurveyTypes } from "@/components/server-actions/team"
 import { createCustomerSubscription } from "@/lib/customer-subscription"
 import { BillingInterval, PlanType, SubscriptionStatus } from "@/lib/generated/prisma"
+import { cookies } from "next/headers"
 
 // Add type declarations at the top of the file
 declare module "next-auth" {
@@ -191,6 +192,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.language = (user as any)?.language
                 token.avatarUrl = (user as any)?.avatarUrl
                 token.defaultTeamId = (user as any)?.defaultTeamId
+
+                // ✅ Store language in separate cookie for middleware access
+                const cookieStore = await cookies();
+                cookieStore.set('user-language', token.language as string, {
+                    httpOnly: false,  // Middleware can read it
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    maxAge: 30 * 24 * 60 * 60 // 30 days
+                });
             }
 
             // Handle Google OAuth user creation/update in JWT callback

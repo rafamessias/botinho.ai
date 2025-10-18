@@ -34,11 +34,17 @@ export function FeedbackSurveyModal({
         onOpenChange(false)
     }
 
+    const customCSS = `
+        .sv {
+            padding: 0 !important;
+        }
+    `
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader >
-                    <DialogTitle>Rate Our Service</DialogTitle>
+                    <DialogTitle></DialogTitle>
                     <DialogDescription>
                     </DialogDescription>
                 </DialogHeader>
@@ -49,6 +55,7 @@ export function FeedbackSurveyModal({
                         token={token}
                         onComplete={handleComplete}
                         onClose={handleClose}
+                        customCSS={customCSS}
                     />
                 ) : open && (!surveyId || !token) ? (
                     <div className="text-center py-8 text-muted-foreground">

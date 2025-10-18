@@ -1,7 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
-import { auth } from '@/app/auth';
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -24,6 +23,8 @@ const publicRoutes = routing.locales.flatMap(locale => [
     `/reset-password/confirm`,
     `/${locale}/sign-up/otp`,
     `/sign-up/otp`,
+    `/${locale}/survey/:surveyId`,
+    `/survey/:surveyId`,
 ]);
 
 function isPublicRoute(path: string) {
@@ -75,14 +76,18 @@ export default async function middleware(request: NextRequest) {
         return intlResponse;
     }
 
-    const session = await auth();
+    // ✅ Check for NextAuth session cookie (Edge Runtime safe)
+    // Check for both development (next-auth.session-token) and production (__Secure-next-auth.session-token) cookie names
+    const sessionToken = request.cookies.get('next-auth.session-token')?.value ||
+        request.cookies.get('__Secure-next-auth.session-token')?.value;
 
-    const user = session?.user ? { ok: true, user: session.user } : { ok: false, user: null };
+    const isAuthenticated = !!sessionToken;
+
+    const userLanguage = request.cookies.get('user-language')?.value;
+    const userLocale = userLanguage ? userLanguage === 'pt_BR' ? 'pt-BR' : 'en' : routing.defaultLocale;
 
     // If user is logged in, handle locale and redirect logic
-    if (user.ok) {
-        // Extract the user's preferred locale
-        const userLocale = user.user?.language || routing.defaultLocale;
+    if (isAuthenticated) {
         const currentLocale = routing.locales.find(locale => pathname.startsWith(`/${locale}`)) || routing.defaultLocale;
 
         // If user is trying to access public routes (sign-in, sign-up, etc.), redirect to home with their locale
@@ -91,21 +96,6 @@ export default async function middleware(request: NextRequest) {
             const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}`);
             return NextResponse.redirect(redirectUrl);
         }
-
-        /*
-        // Check if user has company
-        const hasCompany = session?.user?.company ? true : false;
- 
-        if (!hasCompany && !pathname.includes('/company/create')) {
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}/company/create`);
-            return NextResponse.redirect(redirectUrl);
-        }
- 
-        if (hasCompany && pathname.includes('/company/create')) {
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}`);
-            return NextResponse.redirect(redirectUrl);
-        }
-        */
 
         // Handle redirect parameter from URL (for general navigation) or OAuth redirect cookie
         const redirectParam = request.nextUrl.searchParams.get("redirect");
@@ -170,7 +160,7 @@ export default async function middleware(request: NextRequest) {
     }
 
     // If user is not logged in and trying to access protected routes (besides /), redirect to sign in
-    if (!user.ok && !isPublicRoute(pathname)) {
+    if (!isAuthenticated && !isPublicRoute(pathname)) {
         // Extract the current locale from the pathname
         const currentLocale = routing.locales.find(locale =>
             pathname.startsWith(`/${locale}`)

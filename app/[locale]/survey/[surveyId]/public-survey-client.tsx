@@ -1,221 +1,145 @@
 "use client"
 
 import * as React from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useTheme } from "next-themes"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, CheckCircle, AlertCircle } from "lucide-react"
-import { SurveyWidget, SurveyResponse } from "@/components/survey-render/survey-widget"
-import { QuestionFormat, Survey, SurveyStatus } from "@/lib/generated/prisma"
-
-interface SurveyData {
-    id: string
-    name: string
-    description: string | null
-    allowMultipleResponses: boolean
-    style: any
-    questions: Array<{
-        id: string
-        title: string
-        description: string | null
-        format: QuestionFormat
-        required: boolean
-        order: number
-        yesLabel: string | null
-        noLabel: string | null
-        options: Array<{
-            id: string
-            text: string
-            order: number
-            isOther: boolean
-        }>
-    }>
-}
-
-interface ApiResponse {
-    success: boolean
-    data?: {
-        survey: SurveyData
-    }
-    error?: string
-}
+import { CheckCircle, Moon, Sun } from "lucide-react"
+import { OpineeoSurvey, SurveyResponse } from "@/components/survey-render"
+import { Card, CardContent } from "@/components/ui/card"
 
 interface PublicSurveyClientProps {
     surveyId: string
     token: string
+    surveyName: string
+    surveyDescription: string | null
 }
 
 export const PublicSurveyClient: React.FC<PublicSurveyClientProps> = ({
     surveyId,
-    token
+    token,
+    surveyName,
+    surveyDescription,
 }) => {
-    const [survey, setSurvey] = React.useState<SurveyData | null>(null)
-    const [loading, setLoading] = React.useState(true)
-    const [error, setError] = React.useState<string | null>(null)
-    const [submitted, setSubmitted] = React.useState(false)
-    const [submitting, setSubmitting] = React.useState(false)
-
-    const fetchSurvey = React.useCallback(async () => {
-        try {
-            setLoading(true)
-            setError(null)
-
-            const response = await fetch(`/api/survey/v0?surveyId=${surveyId}&token=${token}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-
-            const data: ApiResponse = await response.json()
-
-            if (!response.ok || !data.success) {
-                throw new Error(data.error || 'Failed to fetch survey')
-            }
-
-            setSurvey(data.data?.survey || null)
-        } catch (err) {
-            console.error('Error fetching survey:', err)
-            setError(err instanceof Error ? err.message : 'Failed to fetch survey')
-        } finally {
-            setLoading(false)
-        }
-    }, [surveyId, token])
+    const t = useTranslations("PublicSurvey")
+    const [completed, setCompleted] = React.useState(false)
+    const { resolvedTheme, setTheme } = useTheme()
+    const [mounted, setMounted] = React.useState(false)
 
     React.useEffect(() => {
-        fetchSurvey()
-    }, [fetchSurvey])
+        setMounted(true)
+    }, [])
 
-    const handleSurveySubmit = async (responses: SurveyResponse[]) => {
-        if (!survey) return
+    const handleComplete = React.useCallback((responses: SurveyResponse[]) => {
+        console.log('Survey completed:', responses)
+        setCompleted(true)
+    }, [])
 
-        try {
-            setSubmitting(true)
+    const handleClose = React.useCallback(() => {
+        console.log('Survey closed')
+    }, [])
 
-            const response = await fetch('/api/survey/v0', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    surveyId: survey.id,
-                    responses: responses,
-                    userIp: '', // Will be handled by the API
-                    extraInfo: '',
-                }),
-            })
+    const toggleTheme = React.useCallback(() => {
+        setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+    }, [resolvedTheme, setTheme])
 
-            const data = await response.json()
-
-            if (!response.ok || !data.success) {
-                throw new Error(data.error || 'Failed to submit survey')
-            }
-
-            setSubmitted(true)
-        } catch (err) {
-            console.error('Error submitting survey:', err)
-            setError(err instanceof Error ? err.message : 'Failed to submit survey')
-        } finally {
-            setSubmitting(false)
-        }
-    }
-
-    if (loading) {
+    if (completed) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Card className="w-full max-w-md mx-4">
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-                        <p className="text-muted-foreground">Loading survey...</p>
-                    </CardContent>
-                </Card>
-            </div>
-        )
-    }
+            <div className="min-h-screen flex flex-col bg-background">
+                {/* Theme Toggle */}
+                <div className="w-full flex justify-end p-4 sm:p-6">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={toggleTheme}
+                        className="h-9 w-9 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors"
+                        aria-label={t("toggleTheme")}
+                    >
+                        {mounted && (
+                            <>
+                                <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                                <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                            </>
+                        )}
+                    </Button>
+                </div>
 
-    if (error) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Card className="w-full max-w-md mx-4">
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                        <AlertCircle className="h-8 w-8 text-destructive mb-4" />
-                        <Alert variant="destructive">
-                            <AlertDescription>{error}</AlertDescription>
-                        </Alert>
+                {/* Success Message */}
+                <div className="flex-1 flex items-center justify-center px-4 pb-20">
+                    <div className="w-full max-w-md flex flex-col items-center text-center space-y-6">
+                        <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-4">
+                            <CheckCircle className="h-12 w-12 sm:h-16 sm:w-16 text-green-600 dark:text-green-500" />
+                        </div>
+                        <div className="space-y-2">
+                            <h2 className="text-2xl sm:text-3xl font-semibold text-foreground">
+                                {t("thankYou")}
+                            </h2>
+                            <p className="text-base sm:text-lg text-muted-foreground">
+                                {t("responseSubmitted")}
+                            </p>
+                        </div>
                         <Button
-                            onClick={fetchSurvey}
+                            onClick={() => window.location.reload()}
                             variant="outline"
                             className="mt-4"
                         >
-                            Try Again
+                            {t("submitAnother")}
                         </Button>
-                    </CardContent>
-                </Card>
-            </div>
-        )
-    }
-
-    if (submitted) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Card className="w-full max-w-md mx-4">
-                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                        <CheckCircle className="h-12 w-12 text-green-500 mb-4" />
-                        <h2 className="text-2xl font-semibold mb-2">Thank You!</h2>
-                        <p className="text-muted-foreground mb-4">
-                            Your response has been submitted successfully.
-                        </p>
-                        {survey?.allowMultipleResponses && (
-                            <Button
-                                onClick={() => {
-                                    setSubmitted(false)
-                                    fetchSurvey()
-                                }}
-                                variant="outline"
-                            >
-                                Submit Another Response
-                            </Button>
-                        )}
-                    </CardContent>
-                </Card>
-            </div>
-        )
-    }
-
-    if (!survey) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Card className="w-full max-w-md mx-4">
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                        <AlertCircle className="h-8 w-8 text-destructive mb-4" />
-                        <p className="text-muted-foreground">Survey not found</p>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="container mx-auto px-4 max-w-4xl">
-                <Card className="mb-6">
-                    <CardHeader className="text-center">
-                        <CardTitle className="text-2xl md:text-3xl">{survey.name}</CardTitle>
-                        {survey.description && (
-                            <CardDescription className="text-base md:text-lg">
-                                {survey.description}
-                            </CardDescription>
-                        )}
-                    </CardHeader>
-                </Card>
+        <div className="min-h-screen flex flex-col bg-background">
+            {/* Theme Toggle */}
+            <div className="w-full flex justify-end p-4 sm:p-6">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleTheme}
+                    className="h-9 w-9 rounded-full hover:bg-accent hover:text-accent-foreground transition-colors"
+                    aria-label={t("toggleTheme")}
+                >
+                    {mounted && (
+                        <>
+                            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                        </>
+                    )}
+                </Button>
+            </div>
 
-                <SurveyWidget
-                    surveyData={survey as any}
-                    key={survey.id}
-                    onComplete={handleSurveySubmit}
-                    onError={setError}
-                />
+            {/* Survey Content */}
+            <div className="flex-1 flex flex-col items-center justify-center px-4 pb-20 ">
+                <div className="w-full flex flex-col items-center justify-center max-w-2xl mx-auto space-y-8">
+                    {/* Survey Header */}
+                    <div className="text-center space-y-3">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground leading-tight">
+                            {surveyName}
+                        </h2>
+                        {surveyDescription && (
+                            <p className="text-center sm:text-lg text-muted-foreground max-w-xl mx-auto">
+                                {surveyDescription}
+                            </p>
+                        )}
+                    </div>
+
+                    <Card className="max-w-[380px] min-h-[300px] flex flex-col justify-between">
+                        <CardContent>
+                            {/* Survey Widget */}
+                            <div className="flex justify-center w-full">
+                                <OpineeoSurvey
+                                    surveyId={surveyId}
+                                    token={token}
+                                    onComplete={handleComplete}
+                                    onClose={handleClose}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     )

@@ -13,8 +13,8 @@ class o {
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
         this.branding = p.branding || false;
-        this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
-        //this.apiUrl = 'http://localhost:3000/api/survey/v0';
+        //this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
+        this.apiUrl = 'http://localhost:3000/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting

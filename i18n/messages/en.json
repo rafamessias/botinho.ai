@@ -1211,6 +1211,17 @@
             "cancel": "Maybe Later"
         }
     },
+    "PublicSurvey": {
+        "thankYou": "Thank You!",
+        "responseSubmitted": "Your response has been submitted successfully.",
+        "submitAnother": "Submit Another Response",
+        "toggleTheme": "Toggle theme",
+        "error": {
+            "title": "Survey Error",
+            "description": "Please check that you have the correct survey link and token.",
+            "goHome": "Go Home"
+        }
+    },
     "CreateSurvey": {
         "title": "Create Survey",
         "description": "Create a new survey to collect responses from your audience",

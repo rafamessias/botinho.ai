@@ -12764,6 +12764,7 @@ export namespace Prisma {
     description: string | null
     context: string | null
     status: $Enums.SurveyStatus | null
+    publicToken: string | null
     allowMultipleResponses: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -12780,6 +12781,7 @@ export namespace Prisma {
     description: string | null
     context: string | null
     status: $Enums.SurveyStatus | null
+    publicToken: string | null
     allowMultipleResponses: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -12796,6 +12798,7 @@ export namespace Prisma {
     description: number
     context: number
     status: number
+    publicToken: number
     allowMultipleResponses: number
     createdAt: number
     updatedAt: number
@@ -12828,6 +12831,7 @@ export namespace Prisma {
     description?: true
     context?: true
     status?: true
+    publicToken?: true
     allowMultipleResponses?: true
     createdAt?: true
     updatedAt?: true
@@ -12844,6 +12848,7 @@ export namespace Prisma {
     description?: true
     context?: true
     status?: true
+    publicToken?: true
     allowMultipleResponses?: true
     createdAt?: true
     updatedAt?: true
@@ -12860,6 +12865,7 @@ export namespace Prisma {
     description?: true
     context?: true
     status?: true
+    publicToken?: true
     allowMultipleResponses?: true
     createdAt?: true
     updatedAt?: true
@@ -12963,6 +12969,7 @@ export namespace Prisma {
     description: string | null
     context: string | null
     status: $Enums.SurveyStatus
+    publicToken: string | null
     allowMultipleResponses: boolean
     createdAt: Date
     updatedAt: Date
@@ -12998,6 +13005,7 @@ export namespace Prisma {
     description?: boolean
     context?: boolean
     status?: boolean
+    publicToken?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13021,6 +13029,7 @@ export namespace Prisma {
     description?: boolean
     context?: boolean
     status?: boolean
+    publicToken?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13039,6 +13048,7 @@ export namespace Prisma {
     description?: boolean
     context?: boolean
     status?: boolean
+    publicToken?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13057,6 +13067,7 @@ export namespace Prisma {
     description?: boolean
     context?: boolean
     status?: boolean
+    publicToken?: boolean
     allowMultipleResponses?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13067,7 +13078,7 @@ export namespace Prisma {
     totalResponses?: boolean
   }
 
-  export type SurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "context" | "status" | "allowMultipleResponses" | "createdAt" | "updatedAt" | "teamId" | "typeId" | "responseRate" | "totalOpenSurveys" | "totalResponses", ExtArgs["result"]["survey"]>
+  export type SurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "context" | "status" | "publicToken" | "allowMultipleResponses" | "createdAt" | "updatedAt" | "teamId" | "typeId" | "responseRate" | "totalOpenSurveys" | "totalResponses", ExtArgs["result"]["survey"]>
   export type SurveyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     questions?: boolean | Survey$questionsArgs<ExtArgs>
     responses?: boolean | Survey$responsesArgs<ExtArgs>
@@ -13102,6 +13113,7 @@ export namespace Prisma {
       description: string | null
       context: string | null
       status: $Enums.SurveyStatus
+      publicToken: string | null
       allowMultipleResponses: boolean
       createdAt: Date
       updatedAt: Date
@@ -13544,6 +13556,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Survey", 'String'>
     readonly context: FieldRef<"Survey", 'String'>
     readonly status: FieldRef<"Survey", 'SurveyStatus'>
+    readonly publicToken: FieldRef<"Survey", 'String'>
     readonly allowMultipleResponses: FieldRef<"Survey", 'Boolean'>
     readonly createdAt: FieldRef<"Survey", 'DateTime'>
     readonly updatedAt: FieldRef<"Survey", 'DateTime'>
@@ -25507,6 +25520,7 @@ export namespace Prisma {
     description: 'description',
     context: 'context',
     status: 'status',
+    publicToken: 'publicToken',
     allowMultipleResponses: 'allowMultipleResponses',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -26679,6 +26693,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Survey"> | string | null
     context?: StringNullableFilter<"Survey"> | string | null
     status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
+    publicToken?: StringNullableFilter<"Survey"> | string | null
     allowMultipleResponses?: BoolFilter<"Survey"> | boolean
     createdAt?: DateTimeFilter<"Survey"> | Date | string
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
@@ -26701,6 +26716,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     context?: SortOrderInput | SortOrder
     status?: SortOrder
+    publicToken?: SortOrderInput | SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26726,6 +26742,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Survey"> | string | null
     context?: StringNullableFilter<"Survey"> | string | null
     status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
+    publicToken?: StringNullableFilter<"Survey"> | string | null
     allowMultipleResponses?: BoolFilter<"Survey"> | boolean
     createdAt?: DateTimeFilter<"Survey"> | Date | string
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
@@ -26748,6 +26765,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     context?: SortOrderInput | SortOrder
     status?: SortOrder
+    publicToken?: SortOrderInput | SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26772,6 +26790,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Survey"> | string | null
     context?: StringNullableWithAggregatesFilter<"Survey"> | string | null
     status?: EnumSurveyStatusWithAggregatesFilter<"Survey"> | $Enums.SurveyStatus
+    publicToken?: StringNullableWithAggregatesFilter<"Survey"> | string | null
     allowMultipleResponses?: BoolWithAggregatesFilter<"Survey"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Survey"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Survey"> | Date | string
@@ -28526,6 +28545,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28546,6 +28566,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28566,6 +28587,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28586,6 +28608,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28606,6 +28629,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28622,6 +28646,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28636,6 +28661,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30596,6 +30622,7 @@ export namespace Prisma {
     description?: SortOrder
     context?: SortOrder
     status?: SortOrder
+    publicToken?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30619,6 +30646,7 @@ export namespace Prisma {
     description?: SortOrder
     context?: SortOrder
     status?: SortOrder
+    publicToken?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30635,6 +30663,7 @@ export namespace Prisma {
     description?: SortOrder
     context?: SortOrder
     status?: SortOrder
+    publicToken?: SortOrder
     allowMultipleResponses?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -34647,6 +34676,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -34666,6 +34696,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -35134,6 +35165,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Survey"> | string | null
     context?: StringNullableFilter<"Survey"> | string | null
     status?: EnumSurveyStatusFilter<"Survey"> | $Enums.SurveyStatus
+    publicToken?: StringNullableFilter<"Survey"> | string | null
     allowMultipleResponses?: BoolFilter<"Survey"> | boolean
     createdAt?: DateTimeFilter<"Survey"> | Date | string
     updatedAt?: DateTimeFilter<"Survey"> | Date | string
@@ -35582,6 +35614,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -35601,6 +35634,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36164,6 +36198,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36183,6 +36218,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36276,6 +36312,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36295,6 +36332,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36452,6 +36490,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36471,6 +36510,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36638,6 +36678,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36657,6 +36698,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37124,6 +37166,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37143,6 +37186,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37294,6 +37338,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37313,6 +37358,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37412,6 +37458,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37431,6 +37478,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37633,6 +37681,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37652,6 +37701,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39070,6 +39120,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39433,6 +39484,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39452,6 +39504,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39471,6 +39524,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39732,6 +39786,7 @@ export namespace Prisma {
     description?: string | null
     context?: string | null
     status?: $Enums.SurveyStatus
+    publicToken?: string | null
     allowMultipleResponses?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39747,6 +39802,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39766,6 +39822,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39785,6 +39842,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     context?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumSurveyStatusFieldUpdateOperationsInput | $Enums.SurveyStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     allowMultipleResponses?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
