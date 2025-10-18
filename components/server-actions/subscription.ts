@@ -276,7 +276,7 @@ export const getAvailablePlans = async () => {
             where: {
                 isActive: true,
                 planType: {
-                    not: PlanType.FREE
+                    notIn: [PlanType.FREE, PlanType.ENTERPRISE],
                 }
             },
             orderBy: {

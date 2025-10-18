@@ -476,7 +476,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
 
                 <div className="relative">
                     {/* Mock Charts with Opacity */}
-                    <div className="opacity-30 pointer-events-none space-y-6 px-6">
+                    <div className="opacity-10 blur-xs pointer-events-none space-y-6 px-6">
                         {/* Chart 1 */}
                         <Card className="shadow-none">
                             <CardHeader>
@@ -522,23 +522,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                                         <Bar
                                             dataKey="count"
                                             layout="vertical"
-                                            fill="var(--color-chart-1)"
+                                            fill="var(--muted-foreground)"
                                             radius={4}
                                         >
-                                            <LabelList
-                                                dataKey="answer"
-                                                position="insideLeft"
-                                                offset={8}
-                                                className="fill-primary-foreground"
-                                                fontSize={12}
-                                            />
-                                            <LabelList
-                                                dataKey="count"
-                                                position="right"
-                                                offset={8}
-                                                className="fill-foreground"
-                                                fontSize={12}
-                                            />
                                         </Bar>
                                     </BarChart>
                                 </ChartContainer>
@@ -590,23 +576,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                                         <Bar
                                             dataKey="count"
                                             layout="vertical"
-                                            fill="var(--color-chart-1)"
+                                            fill="var(--muted-foreground)"
                                             radius={4}
                                         >
-                                            <LabelList
-                                                dataKey="answer"
-                                                position="insideLeft"
-                                                offset={8}
-                                                className="fill-primary-foreground"
-                                                fontSize={12}
-                                            />
-                                            <LabelList
-                                                dataKey="count"
-                                                position="right"
-                                                offset={8}
-                                                className="fill-foreground"
-                                                fontSize={12}
-                                            />
                                         </Bar>
                                     </BarChart>
                                 </ChartContainer>
@@ -658,23 +630,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                                         <Bar
                                             dataKey="count"
                                             layout="vertical"
-                                            fill="var(--color-chart-1)"
+                                            fill="var(--muted-foreground)"
                                             radius={4}
                                         >
-                                            <LabelList
-                                                dataKey="answer"
-                                                position="insideLeft"
-                                                offset={8}
-                                                className="fill-primary-foreground"
-                                                fontSize={12}
-                                            />
-                                            <LabelList
-                                                dataKey="count"
-                                                position="right"
-                                                offset={8}
-                                                className="fill-foreground"
-                                                fontSize={12}
-                                            />
                                         </Bar>
                                     </BarChart>
                                 </ChartContainer>
@@ -845,7 +803,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                 {!selectedSurvey ? (
                     <div className="relative min-h-[500px]">
                         {/* Mock Charts with Opacity */}
-                        <div className="opacity-20 pointer-events-none space-y-6 px-6">
+                        <div className="opacity-10 blur-xs pointer-events-none space-y-6 px-6 pt-12 sm:pt-16">
                             {/* Chart 1 */}
                             <Card className="shadow-none">
                                 <CardHeader>
@@ -891,23 +849,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                                             <Bar
                                                 dataKey="count"
                                                 layout="vertical"
-                                                fill="var(--color-chart-1)"
+                                                fill="var(--muted-foreground"
                                                 radius={4}
                                             >
-                                                <LabelList
-                                                    dataKey="answer"
-                                                    position="insideLeft"
-                                                    offset={8}
-                                                    className="fill-primary-foreground"
-                                                    fontSize={12}
-                                                />
-                                                <LabelList
-                                                    dataKey="count"
-                                                    position="right"
-                                                    offset={8}
-                                                    className="fill-foreground"
-                                                    fontSize={12}
-                                                />
                                             </Bar>
                                         </BarChart>
                                     </ChartContainer>
@@ -959,23 +903,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                                             <Bar
                                                 dataKey="count"
                                                 layout="vertical"
-                                                fill="var(--color-chart-1)"
+                                                fill="var(--muted-foreground)"
                                                 radius={4}
                                             >
-                                                <LabelList
-                                                    dataKey="answer"
-                                                    position="insideLeft"
-                                                    offset={8}
-                                                    className="fill-primary-foreground"
-                                                    fontSize={12}
-                                                />
-                                                <LabelList
-                                                    dataKey="count"
-                                                    position="right"
-                                                    offset={8}
-                                                    className="fill-foreground"
-                                                    fontSize={12}
-                                                />
                                             </Bar>
                                         </BarChart>
                                     </ChartContainer>
@@ -1027,23 +957,9 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
                                             <Bar
                                                 dataKey="count"
                                                 layout="vertical"
-                                                fill="var(--color-chart-1)"
+                                                fill="var(--muted-foreground)"
                                                 radius={4}
                                             >
-                                                <LabelList
-                                                    dataKey="answer"
-                                                    position="insideLeft"
-                                                    offset={8}
-                                                    className="fill-primary-foreground"
-                                                    fontSize={12}
-                                                />
-                                                <LabelList
-                                                    dataKey="count"
-                                                    position="right"
-                                                    offset={8}
-                                                    className="fill-foreground"
-                                                    fontSize={12}
-                                                />
                                             </Bar>
                                         </BarChart>
                                     </ChartContainer>
