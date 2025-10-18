@@ -36,6 +36,13 @@ export interface User {
     teams: UserTeam[] | null
     defaultTeamId: number | null
     usagePercentage: number
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
 }
 
 // Context type definition

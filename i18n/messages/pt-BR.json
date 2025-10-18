@@ -660,6 +660,17 @@
             "lastNamePlaceholder": "Digite seu sobrenome",
             "phone": "Número de Telefone",
             "phonePlaceholder": "+55 (11) 99999-9999",
+            "position": "Cargo",
+            "positionPlaceholder": "Digite seu cargo",
+            "companyName": "Nome da Empresa",
+            "companyNamePlaceholder": "Digite o nome da sua empresa",
+            "country": "País",
+            "countryPlaceholder": "Digite seu país",
+            "socialLinks": "Links Sociais",
+            "linkedinUrl": "URL do LinkedIn",
+            "twitterUrl": "URL do X",
+            "websiteUrl": "URL do Website",
+            "githubUrl": "URL do GitHub",
             "email": "Endereço de Email",
             "emailNote": "Endereço de email não pode ser alterado"
         },
@@ -677,7 +688,8 @@
             "firstNameTooLong": "Nome é muito longo",
             "lastNameTooLong": "Sobrenome é muito longo",
             "phoneMinLength": "Número de telefone deve ter pelo menos 10 caracteres",
-            "phoneInvalid": "Formato de número de telefone inválido"
+            "phoneInvalid": "Formato de número de telefone inválido",
+            "urlInvalid": "Por favor, insira uma URL válida"
         },
         "deleteAccount": {
             "title": "Excluir Conta",

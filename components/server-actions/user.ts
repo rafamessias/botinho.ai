@@ -15,6 +15,13 @@ const updateProfileSchema = z.object({
     firstName: z.string().min(1, "First name is required").max(50, "First name is too long"),
     lastName: z.string().max(50, "Last name is too long").optional(),
     phone: z.string().optional(),
+    position: z.string().max(100).optional(),
+    companyName: z.string().max(100).optional(),
+    country: z.string().max(100).optional(),
+    linkedinUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+    twitterUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+    websiteUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+    githubUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
 })
 
 const updateLanguageSchema = z.object({
@@ -72,6 +79,13 @@ export const updateUserProfileAction = async (profileData: {
     firstName?: string
     lastName?: string
     phone?: string
+    position?: string
+    companyName?: string
+    country?: string
+    linkedinUrl?: string
+    twitterUrl?: string
+    websiteUrl?: string
+    githubUrl?: string
 }) => {
     const t = await getTranslations("AuthErrors")
 
@@ -114,7 +128,14 @@ export const updateUserProfileAction = async (profileData: {
             data: {
                 ...(validatedData.firstName && { firstName: validatedData.firstName }),
                 ...(validatedData.lastName !== undefined && { lastName: validatedData.lastName }),
-                ...(validatedData.phone && { phone: validatedData.phone }),
+                ...(validatedData.phone !== undefined && { phone: validatedData.phone }),
+                ...(validatedData.position !== undefined && { position: validatedData.position }),
+                ...(validatedData.companyName !== undefined && { companyName: validatedData.companyName }),
+                ...(validatedData.country !== undefined && { country: validatedData.country }),
+                ...(validatedData.linkedinUrl !== undefined && { linkedinUrl: validatedData.linkedinUrl || null }),
+                ...(validatedData.twitterUrl !== undefined && { twitterUrl: validatedData.twitterUrl || null }),
+                ...(validatedData.websiteUrl !== undefined && { websiteUrl: validatedData.websiteUrl || null }),
+                ...(validatedData.githubUrl !== undefined && { githubUrl: validatedData.githubUrl || null }),
             }
         })
 
@@ -245,6 +266,13 @@ export const getUserPreferencesAction = async () => {
                 lastName: true,
                 phone: true,
                 avatarUrl: true,
+                position: true,
+                companyName: true,
+                country: true,
+                linkedinUrl: true,
+                twitterUrl: true,
+                websiteUrl: true,
+                githubUrl: true,
             }
         })
 
@@ -260,6 +288,13 @@ export const getUserPreferencesAction = async () => {
             lastName: user.lastName,
             phone: user.phone,
             avatarUrl: user.avatarUrl,
+            position: user.position,
+            companyName: user.companyName,
+            country: user.country,
+            linkedinUrl: user.linkedinUrl,
+            twitterUrl: user.twitterUrl,
+            websiteUrl: user.websiteUrl,
+            githubUrl: user.githubUrl,
         }
 
         return { success: true, preferences }

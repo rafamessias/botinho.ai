@@ -803,6 +803,13 @@ export const getCurrentUserAction = async () => {
                 language: true,
                 theme: true,
                 defaultTeamId: true,
+                position: true,
+                companyName: true,
+                country: true,
+                linkedinUrl: true,
+                twitterUrl: true,
+                websiteUrl: true,
+                githubUrl: true,
                 avatar: {
                     select: {
                         id: true,
@@ -871,7 +878,14 @@ export const getCurrentUserAction = async () => {
             language: user.language === "pt_BR" ? "pt-BR" : "en",
             theme: user.theme as Theme,
             defaultTeamId: user.defaultTeamId,
-            usagePercentage: usagePercentage
+            usagePercentage: usagePercentage,
+            position: user.position,
+            companyName: user.companyName,
+            country: user.country,
+            linkedinUrl: user.linkedinUrl,
+            twitterUrl: user.twitterUrl,
+            websiteUrl: user.websiteUrl,
+            githubUrl: user.githubUrl,
         }
 
         return { success: true, user: userData }

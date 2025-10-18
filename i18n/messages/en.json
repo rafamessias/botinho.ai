@@ -660,6 +660,17 @@
             "lastNamePlaceholder": "Enter your last name",
             "phone": "Phone Number",
             "phonePlaceholder": "+1 (555) 123-4567",
+            "position": "Position",
+            "positionPlaceholder": "Enter your position",
+            "companyName": "Company Name",
+            "companyNamePlaceholder": "Enter your company name",
+            "country": "Country",
+            "countryPlaceholder": "Enter your country",
+            "socialLinks": "Social Links",
+            "linkedinUrl": "LinkedIn URL",
+            "twitterUrl": "X URL",
+            "websiteUrl": "Website URL",
+            "githubUrl": "GitHub URL",
             "email": "Email Address",
             "emailNote": "Email address cannot be changed"
         },
@@ -677,7 +688,8 @@
             "firstNameTooLong": "First name is too long",
             "lastNameTooLong": "Last name is too long",
             "phoneMinLength": "Phone number must be at least 10 characters",
-            "phoneInvalid": "Invalid phone number format"
+            "phoneInvalid": "Invalid phone number format",
+            "urlInvalid": "Please enter a valid URL"
         },
         "deleteAccount": {
             "title": "Delete Account",

@@ -21,6 +21,13 @@ model User {
   phone                String?
   firstName            String
   lastName             String?
+  position             String?
+  companyName          String?
+  country              String?
+  linkedinUrl          String?
+  twitterUrl           String?
+  websiteUrl           String?
+  githubUrl            String?
   avatarUrl            String?
   language             Language
   createdAt            DateTime     @default(now())

@@ -3089,6 +3089,13 @@ export namespace Prisma {
     phone: string | null
     firstName: string | null
     lastName: string | null
+    position: string | null
+    companyName: string | null
+    country: string | null
+    linkedinUrl: string | null
+    twitterUrl: string | null
+    websiteUrl: string | null
+    githubUrl: string | null
     avatarUrl: string | null
     language: $Enums.Language | null
     createdAt: Date | null
@@ -3112,6 +3119,13 @@ export namespace Prisma {
     phone: string | null
     firstName: string | null
     lastName: string | null
+    position: string | null
+    companyName: string | null
+    country: string | null
+    linkedinUrl: string | null
+    twitterUrl: string | null
+    websiteUrl: string | null
+    githubUrl: string | null
     avatarUrl: string | null
     language: $Enums.Language | null
     createdAt: Date | null
@@ -3135,6 +3149,13 @@ export namespace Prisma {
     phone: number
     firstName: number
     lastName: number
+    position: number
+    companyName: number
+    country: number
+    linkedinUrl: number
+    twitterUrl: number
+    websiteUrl: number
+    githubUrl: number
     avatarUrl: number
     language: number
     createdAt: number
@@ -3172,6 +3193,13 @@ export namespace Prisma {
     phone?: true
     firstName?: true
     lastName?: true
+    position?: true
+    companyName?: true
+    country?: true
+    linkedinUrl?: true
+    twitterUrl?: true
+    websiteUrl?: true
+    githubUrl?: true
     avatarUrl?: true
     language?: true
     createdAt?: true
@@ -3195,6 +3223,13 @@ export namespace Prisma {
     phone?: true
     firstName?: true
     lastName?: true
+    position?: true
+    companyName?: true
+    country?: true
+    linkedinUrl?: true
+    twitterUrl?: true
+    websiteUrl?: true
+    githubUrl?: true
     avatarUrl?: true
     language?: true
     createdAt?: true
@@ -3218,6 +3253,13 @@ export namespace Prisma {
     phone?: true
     firstName?: true
     lastName?: true
+    position?: true
+    companyName?: true
+    country?: true
+    linkedinUrl?: true
+    twitterUrl?: true
+    websiteUrl?: true
+    githubUrl?: true
     avatarUrl?: true
     language?: true
     createdAt?: true
@@ -3328,6 +3370,13 @@ export namespace Prisma {
     phone: string | null
     firstName: string
     lastName: string | null
+    position: string | null
+    companyName: string | null
+    country: string | null
+    linkedinUrl: string | null
+    twitterUrl: string | null
+    websiteUrl: string | null
+    githubUrl: string | null
     avatarUrl: string | null
     language: $Enums.Language
     createdAt: Date
@@ -3370,6 +3419,13 @@ export namespace Prisma {
     phone?: boolean
     firstName?: boolean
     lastName?: boolean
+    position?: boolean
+    companyName?: boolean
+    country?: boolean
+    linkedinUrl?: boolean
+    twitterUrl?: boolean
+    websiteUrl?: boolean
+    githubUrl?: boolean
     avatarUrl?: boolean
     language?: boolean
     createdAt?: boolean
@@ -3399,6 +3455,13 @@ export namespace Prisma {
     phone?: boolean
     firstName?: boolean
     lastName?: boolean
+    position?: boolean
+    companyName?: boolean
+    country?: boolean
+    linkedinUrl?: boolean
+    twitterUrl?: boolean
+    websiteUrl?: boolean
+    githubUrl?: boolean
     avatarUrl?: boolean
     language?: boolean
     createdAt?: boolean
@@ -3424,6 +3487,13 @@ export namespace Prisma {
     phone?: boolean
     firstName?: boolean
     lastName?: boolean
+    position?: boolean
+    companyName?: boolean
+    country?: boolean
+    linkedinUrl?: boolean
+    twitterUrl?: boolean
+    websiteUrl?: boolean
+    githubUrl?: boolean
     avatarUrl?: boolean
     language?: boolean
     createdAt?: boolean
@@ -3449,6 +3519,13 @@ export namespace Prisma {
     phone?: boolean
     firstName?: boolean
     lastName?: boolean
+    position?: boolean
+    companyName?: boolean
+    country?: boolean
+    linkedinUrl?: boolean
+    twitterUrl?: boolean
+    websiteUrl?: boolean
+    githubUrl?: boolean
     avatarUrl?: boolean
     language?: boolean
     createdAt?: boolean
@@ -3460,7 +3537,7 @@ export namespace Prisma {
     defaultTeamId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "provider" | "password" | "resetPasswordToken" | "confirmationToken" | "confirmed" | "blocked" | "phone" | "firstName" | "lastName" | "avatarUrl" | "language" | "createdAt" | "updatedAt" | "avatarId" | "idProvider" | "resetPasswordExpires" | "theme" | "defaultTeamId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "provider" | "password" | "resetPasswordToken" | "confirmationToken" | "confirmed" | "blocked" | "phone" | "firstName" | "lastName" | "position" | "companyName" | "country" | "linkedinUrl" | "twitterUrl" | "websiteUrl" | "githubUrl" | "avatarUrl" | "language" | "createdAt" | "updatedAt" | "avatarId" | "idProvider" | "resetPasswordExpires" | "theme" | "defaultTeamId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -3499,6 +3576,13 @@ export namespace Prisma {
       phone: string | null
       firstName: string
       lastName: string | null
+      position: string | null
+      companyName: string | null
+      country: string | null
+      linkedinUrl: string | null
+      twitterUrl: string | null
+      websiteUrl: string | null
+      githubUrl: string | null
       avatarUrl: string | null
       language: $Enums.Language
       createdAt: Date
@@ -3947,6 +4031,13 @@ export namespace Prisma {
     readonly phone: FieldRef<"User", 'String'>
     readonly firstName: FieldRef<"User", 'String'>
     readonly lastName: FieldRef<"User", 'String'>
+    readonly position: FieldRef<"User", 'String'>
+    readonly companyName: FieldRef<"User", 'String'>
+    readonly country: FieldRef<"User", 'String'>
+    readonly linkedinUrl: FieldRef<"User", 'String'>
+    readonly twitterUrl: FieldRef<"User", 'String'>
+    readonly websiteUrl: FieldRef<"User", 'String'>
+    readonly githubUrl: FieldRef<"User", 'String'>
     readonly avatarUrl: FieldRef<"User", 'String'>
     readonly language: FieldRef<"User", 'Language'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -25400,6 +25491,13 @@ export namespace Prisma {
     phone: 'phone',
     firstName: 'firstName',
     lastName: 'lastName',
+    position: 'position',
+    companyName: 'companyName',
+    country: 'country',
+    linkedinUrl: 'linkedinUrl',
+    twitterUrl: 'twitterUrl',
+    websiteUrl: 'websiteUrl',
+    githubUrl: 'githubUrl',
     avatarUrl: 'avatarUrl',
     language: 'language',
     createdAt: 'createdAt',
@@ -26004,6 +26102,13 @@ export namespace Prisma {
     phone?: StringNullableFilter<"User"> | string | null
     firstName?: StringFilter<"User"> | string
     lastName?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    companyName?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    linkedinUrl?: StringNullableFilter<"User"> | string | null
+    twitterUrl?: StringNullableFilter<"User"> | string | null
+    websiteUrl?: StringNullableFilter<"User"> | string | null
+    githubUrl?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -26032,6 +26137,13 @@ export namespace Prisma {
     phone?: SortOrderInput | SortOrder
     firstName?: SortOrder
     lastName?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    companyName?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    twitterUrl?: SortOrderInput | SortOrder
+    websiteUrl?: SortOrderInput | SortOrder
+    githubUrl?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     language?: SortOrder
     createdAt?: SortOrder
@@ -26063,6 +26175,13 @@ export namespace Prisma {
     phone?: StringNullableFilter<"User"> | string | null
     firstName?: StringFilter<"User"> | string
     lastName?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    companyName?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    linkedinUrl?: StringNullableFilter<"User"> | string | null
+    twitterUrl?: StringNullableFilter<"User"> | string | null
+    websiteUrl?: StringNullableFilter<"User"> | string | null
+    githubUrl?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -26091,6 +26210,13 @@ export namespace Prisma {
     phone?: SortOrderInput | SortOrder
     firstName?: SortOrder
     lastName?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    companyName?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    twitterUrl?: SortOrderInput | SortOrder
+    websiteUrl?: SortOrderInput | SortOrder
+    githubUrl?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     language?: SortOrder
     createdAt?: SortOrder
@@ -26122,6 +26248,13 @@ export namespace Prisma {
     phone?: StringNullableWithAggregatesFilter<"User"> | string | null
     firstName?: StringWithAggregatesFilter<"User"> | string
     lastName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    position?: StringNullableWithAggregatesFilter<"User"> | string | null
+    companyName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    country?: StringNullableWithAggregatesFilter<"User"> | string | null
+    linkedinUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    twitterUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    websiteUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    githubUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     avatarUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     language?: EnumLanguageWithAggregatesFilter<"User"> | $Enums.Language
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -27787,6 +27920,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -27813,6 +27953,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -27838,6 +27985,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27864,6 +28018,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27890,6 +28051,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -27912,6 +28080,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27933,6 +28108,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29901,6 +30083,13 @@ export namespace Prisma {
     phone?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
+    position?: SortOrder
+    companyName?: SortOrder
+    country?: SortOrder
+    linkedinUrl?: SortOrder
+    twitterUrl?: SortOrder
+    websiteUrl?: SortOrder
+    githubUrl?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
     createdAt?: SortOrder
@@ -29930,6 +30119,13 @@ export namespace Prisma {
     phone?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
+    position?: SortOrder
+    companyName?: SortOrder
+    country?: SortOrder
+    linkedinUrl?: SortOrder
+    twitterUrl?: SortOrder
+    websiteUrl?: SortOrder
+    githubUrl?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
     createdAt?: SortOrder
@@ -29953,6 +30149,13 @@ export namespace Prisma {
     phone?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
+    position?: SortOrder
+    companyName?: SortOrder
+    country?: SortOrder
+    linkedinUrl?: SortOrder
+    twitterUrl?: SortOrder
+    websiteUrl?: SortOrder
+    githubUrl?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
     createdAt?: SortOrder
@@ -34108,6 +34311,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -34133,6 +34343,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -34187,6 +34404,13 @@ export namespace Prisma {
     phone?: StringNullableFilter<"User"> | string | null
     firstName?: StringFilter<"User"> | string
     lastName?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    companyName?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    linkedinUrl?: StringNullableFilter<"User"> | string | null
+    twitterUrl?: StringNullableFilter<"User"> | string | null
+    websiteUrl?: StringNullableFilter<"User"> | string | null
+    githubUrl?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -34209,6 +34433,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -34234,6 +34465,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -34274,6 +34512,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34299,6 +34544,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34323,6 +34575,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -34348,6 +34607,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -34388,6 +34654,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34413,6 +34686,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34764,6 +35044,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -34789,6 +35076,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -35383,6 +35677,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -35408,6 +35709,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -35512,6 +35820,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -35537,6 +35852,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38949,6 +39271,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -38970,6 +39299,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38995,6 +39331,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39020,6 +39363,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39154,6 +39504,13 @@ export namespace Prisma {
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
     createdAt?: Date | string
@@ -39580,6 +39937,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39605,6 +39969,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39630,6 +40001,13 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

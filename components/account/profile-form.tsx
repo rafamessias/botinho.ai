@@ -49,6 +49,13 @@ export function ProfileForm() {
         }, {
             message: t("validation.phoneInvalid")
         }),
+        position: z.string().max(100).optional(),
+        companyName: z.string().max(100).optional(),
+        country: z.string().max(100).optional(),
+        linkedinUrl: z.string().url(t("validation.urlInvalid")).optional().or(z.literal("")),
+        twitterUrl: z.string().url(t("validation.urlInvalid")).optional().or(z.literal("")),
+        websiteUrl: z.string().url(t("validation.urlInvalid")).optional().or(z.literal("")),
+        githubUrl: z.string().url(t("validation.urlInvalid")).optional().or(z.literal("")),
     }), [t])
 
     type ProfileFormValues = z.infer<typeof profileFormSchema>
@@ -59,6 +66,13 @@ export function ProfileForm() {
             firstName: "",
             lastName: "",
             phone: "",
+            position: "",
+            companyName: "",
+            country: "",
+            linkedinUrl: "",
+            twitterUrl: "",
+            websiteUrl: "",
+            githubUrl: "",
         },
     })
 
@@ -69,6 +83,13 @@ export function ProfileForm() {
                 firstName: user.firstName || "",
                 lastName: user.lastName || "",
                 phone: user.phone || "",
+                position: user.position || "",
+                companyName: user.companyName || "",
+                country: user.country || "",
+                linkedinUrl: user.linkedinUrl || "",
+                twitterUrl: user.twitterUrl || "",
+                websiteUrl: user.websiteUrl || "",
+                githubUrl: user.githubUrl || "",
             })
         }
     }, [user, form.reset])
@@ -222,6 +243,116 @@ export function ProfileForm() {
                                     {form.formState.errors.phone.message}
                                 </p>
                             )}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="position">{t("profile.position")}</Label>
+                                <Input
+                                    id="position"
+                                    placeholder={t("profile.positionPlaceholder")}
+                                    {...form.register("position")}
+                                />
+                                {form.formState.errors.position && (
+                                    <p className="text-sm text-red-500">
+                                        {form.formState.errors.position.message}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="companyName">{t("profile.companyName")}</Label>
+                                <Input
+                                    id="companyName"
+                                    placeholder={t("profile.companyNamePlaceholder")}
+                                    {...form.register("companyName")}
+                                />
+                                {form.formState.errors.companyName && (
+                                    <p className="text-sm text-red-500">
+                                        {form.formState.errors.companyName.message}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="country">{t("profile.country")}</Label>
+                            <Input
+                                id="country"
+                                placeholder={t("profile.countryPlaceholder")}
+                                {...form.register("country")}
+                            />
+                            {form.formState.errors.country && (
+                                <p className="text-sm text-red-500">
+                                    {form.formState.errors.country.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="space-y-4 pt-4 border-t">
+                            <h4 className="text-sm font-medium">{t("profile.socialLinks")}</h4>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="linkedinUrl">{t("profile.linkedinUrl")}</Label>
+                                    <Input
+                                        id="linkedinUrl"
+                                        type="url"
+                                        placeholder="https://linkedin.com/in/username"
+                                        {...form.register("linkedinUrl")}
+                                    />
+                                    {form.formState.errors.linkedinUrl && (
+                                        <p className="text-sm text-red-500">
+                                            {form.formState.errors.linkedinUrl.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="twitterUrl">{t("profile.twitterUrl")}</Label>
+                                    <Input
+                                        id="twitterUrl"
+                                        type="url"
+                                        placeholder="https://x.com/username"
+                                        {...form.register("twitterUrl")}
+                                    />
+                                    {form.formState.errors.twitterUrl && (
+                                        <p className="text-sm text-red-500">
+                                            {form.formState.errors.twitterUrl.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="websiteUrl">{t("profile.websiteUrl")}</Label>
+                                    <Input
+                                        id="websiteUrl"
+                                        type="url"
+                                        placeholder="https://example.com"
+                                        {...form.register("websiteUrl")}
+                                    />
+                                    {form.formState.errors.websiteUrl && (
+                                        <p className="text-sm text-red-500">
+                                            {form.formState.errors.websiteUrl.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="githubUrl">{t("profile.githubUrl")}</Label>
+                                    <Input
+                                        id="githubUrl"
+                                        type="url"
+                                        placeholder="https://github.com/username"
+                                        {...form.register("githubUrl")}
+                                    />
+                                    {form.formState.errors.githubUrl && (
+                                        <p className="text-sm text-red-500">
+                                            {form.formState.errors.githubUrl.message}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         <div className="space-y-2">
