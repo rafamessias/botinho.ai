@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useCallback, useMemo, useEffect } from "react"
 import { useTranslations } from "next-intl"
-import { useRouter } from "@/i18n/navigation"
+import { Link, useRouter } from "@/i18n/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -12,7 +12,7 @@ import { StyleSection } from "@/components/survey/style-section"
 import { updateSurvey, regenerateSurveyPublicToken } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
-import { ArrowLeft, Clipboard, Eye, EyeOff, Settings, RefreshCw, Link as LinkIcon } from "lucide-react"
+import { ArrowLeft, Clipboard, Eye, EyeOff, Settings, RefreshCw, Link as LinkIcon, ExternalLink } from "lucide-react"
 import { useUser } from "../user-provider"
 import { UpgradeModal } from "@/components/upgrade-modal"
 import { getTeamTokenAction } from "@/components/server-actions/team"
@@ -448,7 +448,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                         </div>
 
                         {/* Public URL Section */}
-                        {/*
+
                         <div className="flex flex-col gap-3 mt-4">
                             <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
@@ -456,6 +456,19 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                                     <p className="text-sm font-medium">Public URL:</p>
                                 </div>
                                 <div className="flex items-center gap-2">
+                                    {publicUrl && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-8"
+                                            asChild
+                                            aria-label="Open Survey in new tab"
+                                        >
+                                            <Link href={publicUrl} className="flex items-center" target="_blank" rel="noopener noreferrer">
+                                                <ExternalLink className="h-4 w-4" />
+                                            </Link>
+                                        </Button>
+                                    )}
                                     {publicToken && (
                                         <Button
                                             variant="outline"
@@ -495,7 +508,7 @@ export const EditSurveyForm = ({ survey, surveyTypes }: EditSurveyFormProps) => 
                                 )}
                             </div>
                         </div>
-                        */}
+
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>

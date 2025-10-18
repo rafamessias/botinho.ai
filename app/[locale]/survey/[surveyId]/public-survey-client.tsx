@@ -78,6 +78,7 @@ export const PublicSurveyClient: React.FC<PublicSurveyClientProps> = ({
                                 {t("responseSubmitted")}
                             </p>
                         </div>
+                        {/*}
                         <Button
                             onClick={() => window.location.reload()}
                             variant="outline"
@@ -85,6 +86,7 @@ export const PublicSurveyClient: React.FC<PublicSurveyClientProps> = ({
                         >
                             {t("submitAnother")}
                         </Button>
+                        */}
                     </div>
                 </div>
             </div>
@@ -126,7 +128,7 @@ export const PublicSurveyClient: React.FC<PublicSurveyClientProps> = ({
                         )}
                     </div>
 
-                    <Card className="max-w-[380px] min-h-[300px] flex flex-col justify-between">
+                    <Card className="max-w-[380px] min-w-[320px] min-h-[300px] flex flex-col justify-between">
                         <CardContent>
                             {/* Survey Widget */}
                             <div className="flex justify-center w-full">
