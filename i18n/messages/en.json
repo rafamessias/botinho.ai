@@ -1172,7 +1172,14 @@
         "emptyState": {
             "title": "No Team Found",
             "description": "You need to create or join a team to start creating surveys.",
-            "createTeamButton": "Go to Teams"
+            "createTeamButton": "Go to Teams",
+            "noSurveys": {
+                "title": "Start Creating Your First Survey",
+                "subtitle": "Create engaging surveys to collect valuable feedback",
+                "description": "Surveys help you understand your audience better and make data-driven decisions.",
+                "button": "Create Your First Survey",
+                "previewLabel": "Preview of what your surveys will look like"
+            }
         }
     },
     "UpgradeModal": {

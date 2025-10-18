@@ -870,7 +870,12 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
             </div>
 
             {/* Table */}
-            <div className="overflow-hidden rounded-lg border relative">
+            <div
+                className="overflow-hidden rounded-lg border relative select-none"
+                onCopy={(e) => e.preventDefault()}
+                onCut={(e) => e.preventDefault()}
+                onContextMenu={(e) => e.preventDefault()}
+            >
                 <LoadingComp isLoadingProp={isLoading} />
                 <Table>
                     <TableHeader className="bg-muted">
@@ -893,7 +898,7 @@ export const SurveyTable = ({ initialData, initialFilters, teamId }: SurveyTable
                             </TableRow>
                         ))}
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="select-none">
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow

@@ -431,29 +431,287 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
     }
 
 
+    // Mock data for empty state visualization
+    const mockChartData1 = [
+        { answer: "Very Satisfied", count: 45, percentage: "35" },
+        { answer: "Satisfied", count: 38, percentage: "30" },
+        { answer: "Neutral", count: 25, percentage: "20" },
+        { answer: "Dissatisfied", count: 12, percentage: "10" },
+        { answer: "Very Dissatisfied", count: 6, percentage: "5" }
+    ]
+
+    const mockChartData2 = [
+        { answer: "Excellent", count: 52, percentage: "42" },
+        { answer: "Good", count: 35, percentage: "28" },
+        { answer: "Average", count: 23, percentage: "18" },
+        { answer: "Poor", count: 15, percentage: "12" }
+    ]
+
+    const mockChartData3 = [
+        { answer: "Yes", count: 85, percentage: "68" },
+        { answer: "No", count: 25, percentage: "20" },
+        { answer: "Maybe", count: 15, percentage: "12" }
+    ]
+
+    const chartConfig = {
+        count: {
+            label: "Responses",
+        },
+        label: {
+            color: "hsl(var(--foreground-muted))",
+        },
+    } satisfies ChartConfig
+
     if (surveys.length === 0) {
         return (
-            <Card className="border-none shadow-none bg-transparent">
-                <CardContent className="flex items-center justify-center py-12">
-                    <div className="text-center flex flex-col items-center gap-4 py-4">
-                        <LucideSparkles className="mx-auto mb-2 text-primary size-8" />
-                        <p className="text-lg font-medium text-muted-foreground">
-                            No surveys yet
-                        </p>
-                        <p className="text-muted-foreground text-sm mb-1">
-                            You haven’t created any surveys. Get started by launching your first one.
-                        </p>
-                        <Button asChild className="mt-1">
-                            <Link href="/survey/create">
-                                <span className="flex items-center gap-2">
-                                    <LucidePlusCircle className="size-5" />
-                                    Create Survey
-                                </span>
-                            </Link>
-                        </Button>
+            <div className="space-y-6">
+                <Card className="border-none shadow-none m-0 bg-transparent">
+                    <CardHeader>
+                        <CardTitle>Survey Results</CardTitle>
+                        <CardDescription>
+                            Select a survey to view its results and analytics
+                        </CardDescription>
+                    </CardHeader>
+                </Card>
+
+                <div className="relative">
+                    {/* Mock Charts with Opacity */}
+                    <div className="opacity-30 pointer-events-none space-y-6 px-6">
+                        {/* Chart 1 */}
+                        <Card className="shadow-none">
+                            <CardHeader>
+                                <CardTitle className="text-lg">How satisfied are you with our service?</CardTitle>
+                                <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <span>126 total responses</span>
+                                    <span className="hidden sm:inline">•</span>
+                                    <span className="text-sm">
+                                        Most popular: <span className="font-medium text-primary">Very Satisfied</span> (35%)
+                                    </span>
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <ChartContainer
+                                    config={chartConfig}
+                                    className="w-full"
+                                    style={{ height: "300px" }}
+                                >
+                                    <BarChart
+                                        accessibilityLayer
+                                        data={mockChartData1}
+                                        layout="vertical"
+                                        margin={{
+                                            right: 32,
+                                        }}
+                                        maxBarSize={60}
+                                    >
+                                        <CartesianGrid horizontal={false} />
+                                        <YAxis
+                                            dataKey="answer"
+                                            type="category"
+                                            tickLine={false}
+                                            tickMargin={10}
+                                            axisLine={false}
+                                            tickFormatter={(value) => value}
+                                            hide
+                                        />
+                                        <XAxis dataKey="count" type="number" hide />
+                                        <ChartTooltip
+                                            cursor={false}
+                                            content={<ChartTooltipContent indicator="line" />}
+                                        />
+                                        <Bar
+                                            dataKey="count"
+                                            layout="vertical"
+                                            fill="var(--color-chart-1)"
+                                            radius={4}
+                                        >
+                                            <LabelList
+                                                dataKey="answer"
+                                                position="insideLeft"
+                                                offset={8}
+                                                className="fill-primary-foreground"
+                                                fontSize={12}
+                                            />
+                                            <LabelList
+                                                dataKey="count"
+                                                position="right"
+                                                offset={8}
+                                                className="fill-foreground"
+                                                fontSize={12}
+                                            />
+                                        </Bar>
+                                    </BarChart>
+                                </ChartContainer>
+                            </CardContent>
+                        </Card>
+
+                        {/* Chart 2 */}
+                        <Card className="shadow-none">
+                            <CardHeader>
+                                <CardTitle className="text-lg">How would you rate your experience?</CardTitle>
+                                <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <span>125 total responses</span>
+                                    <span className="hidden sm:inline">•</span>
+                                    <span className="text-sm">
+                                        Most popular: <span className="font-medium text-primary">Excellent</span> (42%)
+                                    </span>
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <ChartContainer
+                                    config={chartConfig}
+                                    className="w-full"
+                                    style={{ height: "240px" }}
+                                >
+                                    <BarChart
+                                        accessibilityLayer
+                                        data={mockChartData2}
+                                        layout="vertical"
+                                        margin={{
+                                            right: 32,
+                                        }}
+                                        maxBarSize={60}
+                                    >
+                                        <CartesianGrid horizontal={false} />
+                                        <YAxis
+                                            dataKey="answer"
+                                            type="category"
+                                            tickLine={false}
+                                            tickMargin={10}
+                                            axisLine={false}
+                                            tickFormatter={(value) => value}
+                                            hide
+                                        />
+                                        <XAxis dataKey="count" type="number" hide />
+                                        <ChartTooltip
+                                            cursor={false}
+                                            content={<ChartTooltipContent indicator="line" />}
+                                        />
+                                        <Bar
+                                            dataKey="count"
+                                            layout="vertical"
+                                            fill="var(--color-chart-1)"
+                                            radius={4}
+                                        >
+                                            <LabelList
+                                                dataKey="answer"
+                                                position="insideLeft"
+                                                offset={8}
+                                                className="fill-primary-foreground"
+                                                fontSize={12}
+                                            />
+                                            <LabelList
+                                                dataKey="count"
+                                                position="right"
+                                                offset={8}
+                                                className="fill-foreground"
+                                                fontSize={12}
+                                            />
+                                        </Bar>
+                                    </BarChart>
+                                </ChartContainer>
+                            </CardContent>
+                        </Card>
+
+                        {/* Chart 3 */}
+                        <Card className="shadow-none">
+                            <CardHeader>
+                                <CardTitle className="text-lg">Would you recommend us to others?</CardTitle>
+                                <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <span>125 total responses</span>
+                                    <span className="hidden sm:inline">•</span>
+                                    <span className="text-sm">
+                                        Most popular: <span className="font-medium text-primary">Yes</span> (68%)
+                                    </span>
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <ChartContainer
+                                    config={chartConfig}
+                                    className="w-full"
+                                    style={{ height: "180px" }}
+                                >
+                                    <BarChart
+                                        accessibilityLayer
+                                        data={mockChartData3}
+                                        layout="vertical"
+                                        margin={{
+                                            right: 32,
+                                        }}
+                                        maxBarSize={60}
+                                    >
+                                        <CartesianGrid horizontal={false} />
+                                        <YAxis
+                                            dataKey="answer"
+                                            type="category"
+                                            tickLine={false}
+                                            tickMargin={10}
+                                            axisLine={false}
+                                            tickFormatter={(value) => value}
+                                            hide
+                                        />
+                                        <XAxis dataKey="count" type="number" hide />
+                                        <ChartTooltip
+                                            cursor={false}
+                                            content={<ChartTooltipContent indicator="line" />}
+                                        />
+                                        <Bar
+                                            dataKey="count"
+                                            layout="vertical"
+                                            fill="var(--color-chart-1)"
+                                            radius={4}
+                                        >
+                                            <LabelList
+                                                dataKey="answer"
+                                                position="insideLeft"
+                                                offset={8}
+                                                className="fill-primary-foreground"
+                                                fontSize={12}
+                                            />
+                                            <LabelList
+                                                dataKey="count"
+                                                position="right"
+                                                offset={8}
+                                                className="fill-foreground"
+                                                fontSize={12}
+                                            />
+                                        </Bar>
+                                    </BarChart>
+                                </ChartContainer>
+                            </CardContent>
+                        </Card>
                     </div>
-                </CardContent>
-            </Card>
+
+                    {/* Overlay Message */}
+                    <div className="absolute inset-0 flex items-start justify-center pt-12 sm:pt-16">
+                        <Card className="max-w-md mx-4 shadow-lg border-2">
+                            <CardContent className="pt-6">
+                                <div className="text-center flex flex-col items-center gap-4">
+                                    <div className="rounded-full bg-primary/10 p-3">
+                                        <LucideSparkles className="text-primary size-8" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-xl font-semibold">
+                                            No surveys yet
+                                        </p>
+                                        <p className="text-muted-foreground text-sm">
+                                            Create your first survey and start collecting valuable feedback from your audience.
+                                        </p>
+                                    </div>
+                                    <Button asChild size="lg" className="mt-2">
+                                        <Link href="/survey/create">
+                                            <span className="flex items-center gap-2">
+                                                <LucidePlusCircle className="size-5" />
+                                                Create Your First Survey
+                                            </span>
+                                        </Link>
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </div>
         )
     }
 
@@ -585,17 +843,235 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
 
                 {/* Results Display */}
                 {!selectedSurvey ? (
-                    <Card className="border-none shadow-none bg-transparent">
-                        <CardContent className="flex items-center justify-center py-12">
-                            <div className="flex flex-col items-center justify-center text-center space-y-2">
-                                <LucideFolderOpen className="mx-auto mb-1 h-9 w-9 text-muted-foreground/60" />
-                                <p className="text-lg font-semibold text-muted-foreground/80">No survey selected</p>
-                                <p className="text-muted-foreground">
-                                    Please select a survey from the dropdown above to view results
-                                </p>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <div className="relative min-h-[500px]">
+                        {/* Mock Charts with Opacity */}
+                        <div className="opacity-20 pointer-events-none space-y-6 px-6">
+                            {/* Chart 1 */}
+                            <Card className="shadow-none">
+                                <CardHeader>
+                                    <CardTitle className="text-lg">How satisfied are you with our service?</CardTitle>
+                                    <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                        <span>126 total responses</span>
+                                        <span className="hidden sm:inline">•</span>
+                                        <span className="text-sm">
+                                            Most popular: <span className="font-medium text-primary">Very Satisfied</span> (35%)
+                                        </span>
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <ChartContainer
+                                        config={chartConfig}
+                                        className="w-full"
+                                        style={{ height: "300px" }}
+                                    >
+                                        <BarChart
+                                            accessibilityLayer
+                                            data={mockChartData1}
+                                            layout="vertical"
+                                            margin={{
+                                                right: 32,
+                                            }}
+                                            maxBarSize={60}
+                                        >
+                                            <CartesianGrid horizontal={false} />
+                                            <YAxis
+                                                dataKey="answer"
+                                                type="category"
+                                                tickLine={false}
+                                                tickMargin={10}
+                                                axisLine={false}
+                                                tickFormatter={(value) => value}
+                                                hide
+                                            />
+                                            <XAxis dataKey="count" type="number" hide />
+                                            <ChartTooltip
+                                                cursor={false}
+                                                content={<ChartTooltipContent indicator="line" />}
+                                            />
+                                            <Bar
+                                                dataKey="count"
+                                                layout="vertical"
+                                                fill="var(--color-chart-1)"
+                                                radius={4}
+                                            >
+                                                <LabelList
+                                                    dataKey="answer"
+                                                    position="insideLeft"
+                                                    offset={8}
+                                                    className="fill-primary-foreground"
+                                                    fontSize={12}
+                                                />
+                                                <LabelList
+                                                    dataKey="count"
+                                                    position="right"
+                                                    offset={8}
+                                                    className="fill-foreground"
+                                                    fontSize={12}
+                                                />
+                                            </Bar>
+                                        </BarChart>
+                                    </ChartContainer>
+                                </CardContent>
+                            </Card>
+
+                            {/* Chart 2 */}
+                            <Card className="shadow-none">
+                                <CardHeader>
+                                    <CardTitle className="text-lg">How would you rate your experience?</CardTitle>
+                                    <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                        <span>125 total responses</span>
+                                        <span className="hidden sm:inline">•</span>
+                                        <span className="text-sm">
+                                            Most popular: <span className="font-medium text-primary">Excellent</span> (42%)
+                                        </span>
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <ChartContainer
+                                        config={chartConfig}
+                                        className="w-full"
+                                        style={{ height: "240px" }}
+                                    >
+                                        <BarChart
+                                            accessibilityLayer
+                                            data={mockChartData2}
+                                            layout="vertical"
+                                            margin={{
+                                                right: 32,
+                                            }}
+                                            maxBarSize={60}
+                                        >
+                                            <CartesianGrid horizontal={false} />
+                                            <YAxis
+                                                dataKey="answer"
+                                                type="category"
+                                                tickLine={false}
+                                                tickMargin={10}
+                                                axisLine={false}
+                                                tickFormatter={(value) => value}
+                                                hide
+                                            />
+                                            <XAxis dataKey="count" type="number" hide />
+                                            <ChartTooltip
+                                                cursor={false}
+                                                content={<ChartTooltipContent indicator="line" />}
+                                            />
+                                            <Bar
+                                                dataKey="count"
+                                                layout="vertical"
+                                                fill="var(--color-chart-1)"
+                                                radius={4}
+                                            >
+                                                <LabelList
+                                                    dataKey="answer"
+                                                    position="insideLeft"
+                                                    offset={8}
+                                                    className="fill-primary-foreground"
+                                                    fontSize={12}
+                                                />
+                                                <LabelList
+                                                    dataKey="count"
+                                                    position="right"
+                                                    offset={8}
+                                                    className="fill-foreground"
+                                                    fontSize={12}
+                                                />
+                                            </Bar>
+                                        </BarChart>
+                                    </ChartContainer>
+                                </CardContent>
+                            </Card>
+
+                            {/* Chart 3 */}
+                            <Card className="shadow-none">
+                                <CardHeader>
+                                    <CardTitle className="text-lg">Would you recommend us to others?</CardTitle>
+                                    <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                        <span>125 total responses</span>
+                                        <span className="hidden sm:inline">•</span>
+                                        <span className="text-sm">
+                                            Most popular: <span className="font-medium text-primary">Yes</span> (68%)
+                                        </span>
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <ChartContainer
+                                        config={chartConfig}
+                                        className="w-full"
+                                        style={{ height: "180px" }}
+                                    >
+                                        <BarChart
+                                            accessibilityLayer
+                                            data={mockChartData3}
+                                            layout="vertical"
+                                            margin={{
+                                                right: 32,
+                                            }}
+                                            maxBarSize={60}
+                                        >
+                                            <CartesianGrid horizontal={false} />
+                                            <YAxis
+                                                dataKey="answer"
+                                                type="category"
+                                                tickLine={false}
+                                                tickMargin={10}
+                                                axisLine={false}
+                                                tickFormatter={(value) => value}
+                                                hide
+                                            />
+                                            <XAxis dataKey="count" type="number" hide />
+                                            <ChartTooltip
+                                                cursor={false}
+                                                content={<ChartTooltipContent indicator="line" />}
+                                            />
+                                            <Bar
+                                                dataKey="count"
+                                                layout="vertical"
+                                                fill="var(--color-chart-1)"
+                                                radius={4}
+                                            >
+                                                <LabelList
+                                                    dataKey="answer"
+                                                    position="insideLeft"
+                                                    offset={8}
+                                                    className="fill-primary-foreground"
+                                                    fontSize={12}
+                                                />
+                                                <LabelList
+                                                    dataKey="count"
+                                                    position="right"
+                                                    offset={8}
+                                                    className="fill-foreground"
+                                                    fontSize={12}
+                                                />
+                                            </Bar>
+                                        </BarChart>
+                                    </ChartContainer>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Overlay Message */}
+                        <div className="absolute inset-0 flex items-start justify-center pt-12 sm:pt-16">
+                            <Card className="max-w-md mx-4 shadow-lg border-2">
+                                <CardContent className="pt-6">
+                                    <div className="text-center flex flex-col items-center gap-4">
+                                        <div className="rounded-full bg-primary/10 p-3">
+                                            <LucideFolderOpen className="text-primary size-8" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <p className="text-xl font-semibold">
+                                                No survey selected
+                                            </p>
+                                            <p className="text-muted-foreground text-sm">
+                                                Select a survey from the dropdown above to view detailed results and analytics.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
                 ) : loading ? (
                     <Card className="border-none shadow-none bg-transparent">
                         <CardContent className="flex items-center justify-center py-12">

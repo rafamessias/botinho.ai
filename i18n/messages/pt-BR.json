@@ -1173,7 +1173,14 @@
         "emptyState": {
             "title": "Nenhuma Equipe Encontrada",
             "description": "Você precisa criar ou entrar em uma equipe para começar a criar pesquisas.",
-            "createTeamButton": "Ir para Equipes"
+            "createTeamButton": "Ir para Equipes",
+            "noSurveys": {
+                "title": "Comece Criando Sua Primeira Pesquisa",
+                "subtitle": "Crie pesquisas envolventes para coletar feedback valioso",
+                "description": "Pesquisas ajudam você a entender melhor seu público e tomar decisões baseadas em dados.",
+                "button": "Criar Sua Primeira Pesquisa",
+                "previewLabel": "Prévia de como suas pesquisas ficarão"
+            }
         }
     },
     "UpgradeModal": {
