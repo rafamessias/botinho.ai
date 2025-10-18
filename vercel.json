@@ -7,12 +7,10 @@
     ],
     "functions": {
         "app/api/survey/v0/route.ts": {
-            "maxDuration": 10,
-            "memory": 1024
+            "maxDuration": 10
         },
         "app/api/survey/v0/results/route.ts": {
-            "maxDuration": 15,
-            "memory": 1024
+            "maxDuration": 15
         }
     },
     "headers": [

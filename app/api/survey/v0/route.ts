@@ -387,6 +387,8 @@ export async function POST(request: NextRequest) {
         // Parse and validate request body
         const body = await request.json();
         const validatedData = surveyAnswerSchema.parse(body);
+        console.log(validatedData);
+        console.log(request.headers.get('origin'));
 
         // Single optimized query to get survey with validation data
         const surveyResponse = await prisma.surveyResponse.findFirst({
