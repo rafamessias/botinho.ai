@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
-import { Download, Table, BarChart3, ChevronDown, LucideFolderOpen, LucidePlusCircle, LucideSparkles } from "lucide-react"
+import { Download, Table, BarChart3, ChevronDown, LucideFolderOpen, LucidePlusCircle, LucideSparkles, Share2 } from "lucide-react"
 import { Link } from "@/i18n/navigation"
+import html2canvas from "html2canvas"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -77,6 +78,7 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
     const [selectedSurvey, setSelectedSurvey] = React.useState<SurveyData | null>(serverSurveys?.find(survey => survey.id === selectedSurveyId) || null)
     const [surveys, setSurveys] = React.useState<SurveyData[]>(serverSurveys || [])
     const [upgradeModalOpen, setUpgradeModalOpen] = React.useState(false)
+    const [sharingQuestionId, setSharingQuestionId] = React.useState<string | null>(null)
     const { user } = useUser()
 
     React.useEffect(() => {
@@ -324,6 +326,353 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
         return csvContent
     }
 
+    // Helper function to download the image
+    const downloadImage = (url: string, questionText: string) => {
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${questionText.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-results.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+    }
+
+    // Function to generate and share/download question result as image
+    const handleShareQuestion = async (question: Question) => {
+        // Prevent multiple simultaneous shares
+        if (sharingQuestionId) return
+
+        setSharingQuestionId(question.id)
+
+        try {
+            // Calculate total responses for this question
+            const totalResponses = question.options?.reduce((sum, option) => sum + option.count, 0) || 0
+            const topAnswer = question.options && question.options.length > 0
+                ? question.options.reduce((prev, current) => (prev.count > current.count) ? prev : current)
+                : null
+
+            // Helper function to convert any color format to rgb/rgba
+            const toRgbColor = (color: string): string => {
+                try {
+                    const canvas = document.createElement('canvas')
+                    canvas.width = canvas.height = 1
+                    const ctx = canvas.getContext('2d')
+                    if (!ctx) return 'rgb(0, 0, 0)'
+
+                    ctx.fillStyle = color
+                    ctx.fillRect(0, 0, 1, 1)
+                    const imageData = ctx.getImageData(0, 0, 1, 1).data
+
+                    if (imageData[3] === 255) {
+                        return `rgb(${imageData[0]}, ${imageData[1]}, ${imageData[2]})`
+                    }
+                    return `rgba(${imageData[0]}, ${imageData[1]}, ${imageData[2]}, ${imageData[3] / 255})`
+                } catch {
+                    return 'rgb(0, 0, 0)'
+                }
+            }
+
+            // Detect current theme
+            const isDarkMode = document.documentElement.classList.contains('dark')
+
+            // Get actual computed colors from the current theme
+            const getComputedThemeColor = (property: string): string => {
+                // Create a temporary element with the property set
+                const temp = document.createElement('div')
+                temp.style.cssText = `${property}; position: absolute; opacity: 0; pointer-events: none;`
+                document.body.appendChild(temp)
+                const computed = window.getComputedStyle(temp)
+
+                // Get the actual color value based on property type
+                let colorValue = ''
+                if (property.includes('background')) {
+                    colorValue = computed.backgroundColor
+                } else if (property.includes('border')) {
+                    colorValue = computed.borderColor
+                } else {
+                    colorValue = computed.color
+                }
+
+                document.body.removeChild(temp)
+                return toRgbColor(colorValue)
+            }
+            const bgColor = getComputedThemeColor('background-color: var(--background)')
+            const fgColor = getComputedThemeColor('color: var(--foreground)')
+            const mutedFgColor = getComputedThemeColor('color: var(--muted-foreground)')
+            const borderColor = getComputedThemeColor('border-color: var(--border)')
+            const primaryColor = getComputedThemeColor('color: var(--primary)')
+            const cardBgColor = getComputedThemeColor('background-color: var(--card)')
+            const chartColor = getComputedThemeColor('color: var(--primary)')
+
+            // Create an iframe for complete CSS isolation
+            const iframe = document.createElement('iframe')
+            iframe.style.position = 'fixed'
+            iframe.style.top = '-99999px'
+            iframe.style.left = '-99999px'
+            iframe.style.width = '1200px'
+            iframe.style.height = '2000px'
+            iframe.style.border = 'none'
+            iframe.style.visibility = 'hidden'
+            document.body.appendChild(iframe)
+
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
+                if (!iframeDoc) {
+                    throw new Error('Could not access iframe document')
+                }
+
+                // Write basic HTML structure to iframe
+                iframeDoc.open()
+                iframeDoc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        body {
+                            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                            background: transparent;
+                            padding: 0;
+                            margin: 0;
+                            display: inline-block;
+                        }
+                        rect {
+                            fill: ${chartColor} !important;
+                            stroke: ${chartColor} !important;
+                        }
+                        path {
+                            fill: ${chartColor} !important;
+                            stroke: ${chartColor} !important;
+                        }
+                        text {
+                            font-weight: bold !important;
+                        }
+                        text[fill*="white"], text[fill*="255"] {
+                            fill: rgb(255, 255, 255) !important; /* White for inside bars */
+                        }
+                        text:not([fill*="white"]):not([fill*="255"]) {
+                            fill: ${fgColor} !important; /* Theme color for outside bars */
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div id="share-content"></div>
+                </body>
+                </html>
+            `)
+                iframeDoc.close()
+
+                const shareContainer = iframeDoc.getElementById('share-content')!
+                const containerId = 'share-content'
+
+                // Build the HTML content as a single card with background wrapper
+                const contentDiv = document.createElement('div')
+                contentDiv.innerHTML = `
+                <div style="background: ${bgColor}; padding: 48px;">
+                    <div style="background: ${cardBgColor}; border: 1px solid ${borderColor}; border-radius: 16px; padding: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+                        <!-- Header -->
+                        <div style="margin-bottom: 24px;">
+                            <h2 style="font-size: 24px; font-weight: 600; margin: 0 0 12px 0; line-height: 1.3; color: ${fgColor};">
+                                ${question.text}
+                            </h2>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; color: ${mutedFgColor};">
+                                <span>${totalResponses} total responses</span>
+                                ${topAnswer ? `
+                                    <span>•</span>
+                                    <span>
+                                        Most popular: <span style="font-weight: 600; color: ${primaryColor};">${topAnswer.label}</span> (${((topAnswer.count / totalResponses) * 100).toFixed(1)}%)
+                                    </span>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div id="chart-container-share" style="margin-bottom: 20px;">
+                            <!-- Chart will be inserted here -->
+                        </div>
+
+                        <!-- Branding -->
+                        <div style="text-align: center; font-size: 12px; color: ${mutedFgColor}; padding-top: 16px; border-top: 1px solid ${borderColor};">
+                            Powered by <span style="font-weight: 700; color: ${fgColor};">Opineeo</span>
+                        </div>
+                    </div>
+                </div>
+            `
+
+                shareContainer.appendChild(contentDiv)
+
+                // Clone the actual chart and insert it
+                const chartElement = document.getElementById(`chart-${question.id}`)
+                if (chartElement) {
+                    const chartClone = chartElement.cloneNode(true) as HTMLElement
+                    const chartContainer = shareContainer.querySelector('#chart-container-share')
+                    if (chartContainer) {
+                        chartContainer.appendChild(chartClone)
+
+                        // Force all elements to use standard colors and remove classes
+                        const allElements = chartClone.querySelectorAll('*')
+                        allElements.forEach((el) => {
+                            const element = el as HTMLElement | SVGElement
+
+                            // Get computed styles before removing classes
+                            const computed = window.getComputedStyle(element)
+
+                            // Store important computed styles
+                            const styles: any = {}
+
+                            // Always apply primary color to rect elements (chart bars)
+                            if (element.tagName === 'rect') {
+                                styles.fill = chartColor
+                                console.log('Applied primary color to rect element:', chartColor)
+                            } else if (computed.fill && computed.fill !== 'none') {
+                                styles.fill = toRgbColor(computed.fill)
+                            }
+
+                            if (computed.stroke && computed.stroke !== 'none') {
+                                styles.stroke = toRgbColor(computed.stroke)
+                            }
+
+                            if (computed.color) {
+                                // Handle chart labels based on position
+                                if (element.tagName === 'text') {
+                                    // Labels inside bars should be white/transparent for contrast
+                                    // Labels outside bars should follow theme
+                                    const isInsideBar = element.getAttribute('data-inside') ||
+                                        element.style.fill?.includes('white') ||
+                                        computed.fill?.includes('white')
+
+                                    if (isInsideBar) {
+                                        styles.color = 'rgb(255, 255, 255)' // White for inside bars
+                                    } else {
+                                        styles.color = fgColor // Theme color for outside bars
+                                    }
+                                    styles.fontWeight = 'bold'
+                                } else {
+                                    styles.color = toRgbColor(computed.color)
+                                }
+                            }
+
+                            if (computed.backgroundColor && computed.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                                styles.backgroundColor = toRgbColor(computed.backgroundColor)
+                            }
+
+                            if (computed.fontSize) {
+                                styles.fontSize = computed.fontSize
+                            }
+
+                            if (computed.fontWeight) {
+                                styles.fontWeight = computed.fontWeight
+                            }
+
+                            if (computed.fontFamily) {
+                                styles.fontFamily = computed.fontFamily
+                            }
+
+                            if (computed.textAnchor) {
+                                styles.textAnchor = computed.textAnchor
+                            }
+
+                            // Remove all classes to prevent CSS variable inheritance
+                            element.removeAttribute('class')
+                            element.removeAttribute('className')
+
+                            // Force primary color on all chart elements
+                            if (element.tagName === 'rect' || element.tagName === 'path') {
+                                element.style.setProperty('fill', chartColor, 'important')
+                                element.style.setProperty('stroke', chartColor, 'important')
+                            }
+
+                            // Apply the stored styles as inline styles
+                            Object.keys(styles).forEach(key => {
+                                (element.style as any)[key] = styles[key]
+                            })
+                        })
+                    }
+                }
+
+                // Final override - force primary color on all rect elements and black bold text
+                const allRects = shareContainer.querySelectorAll('rect')
+                allRects.forEach(rect => {
+                    rect.style.setProperty('fill', chartColor, 'important')
+                    rect.style.setProperty('stroke', chartColor, 'important')
+                })
+
+                const allTexts = shareContainer.querySelectorAll('text')
+                allTexts.forEach(text => {
+                    // Check if text is inside bar (white fill) or outside bar (theme color)
+                    const currentFill = text.style.fill || text.getAttribute('fill')
+                    const isInsideBar = currentFill?.includes('white') || currentFill?.includes('255')
+
+                    if (isInsideBar) {
+                        text.style.setProperty('fill', 'rgb(255, 255, 255)', 'important') // White for inside bars
+                    } else {
+                        text.style.setProperty('fill', fgColor, 'important') // Theme color for outside bars
+                    }
+                    text.style.setProperty('font-weight', 'bold', 'important')
+                })
+
+                // Wait a bit for rendering
+                await new Promise(resolve => setTimeout(resolve, 500))
+
+                // Convert to canvas - capture the wrapper with background
+                const wrapperToCapture = iframeDoc.querySelector('#share-content > div') as HTMLElement
+                if (!wrapperToCapture) throw new Error('Content not found')
+
+                const canvas = await html2canvas(wrapperToCapture, {
+                    backgroundColor: bgColor, // Use theme background color
+                    scale: 2, // Higher quality
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true,
+                    foreignObjectRendering: false,
+                    imageTimeout: 0
+                })
+
+                // Convert canvas to blob
+                canvas.toBlob((blob) => {
+                    if (!blob) return
+
+                    const url = URL.createObjectURL(blob)
+
+                    // Try to use Web Share API if available (mobile devices)
+                    if (navigator.share && navigator.canShare) {
+                        const file = new File([blob], `${question.text.slice(0, 50).replace(/[^a-z0-9]/gi, '_')}-results.png`, { type: 'image/png' })
+
+                        if (navigator.canShare({ files: [file] })) {
+                            navigator.share({
+                                title: question.text,
+                                text: `Check out these survey results from ${selectedSurvey?.title}`,
+                                files: [file]
+                            }).catch(err => {
+                                console.log('Share cancelled or failed:', err)
+                                // Fallback to download
+                                downloadImage(url, question.text)
+                            })
+                            return
+                        }
+                    }
+
+                    // Fallback: direct download
+                    downloadImage(url, question.text)
+                }, 'image/png')
+            } finally {
+                // Always clean up the iframe
+                if (iframe.parentNode) {
+                    document.body.removeChild(iframe)
+                }
+            }
+
+        } catch (error) {
+            console.error('Error generating share image:', error)
+        } finally {
+            setSharingQuestionId(null)
+        }
+    }
+
     const renderQuestionChart = (question: Question) => {
         if (question.type === "text" || question.type === "long-text" || !question.options || question.options.length === 0) {
             return null
@@ -359,71 +708,96 @@ export const SurveyResults: React.FC<SurveyResultsProps> = ({ serverSurveys }) =
         return (
             <Card key={question.id} className="shadow-none">
                 <CardHeader>
-                    <CardTitle className="text-lg">{question.text}</CardTitle>
-                    <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2">
-                        <span>{totalResponses} total responses</span>
-                        <span className="hidden sm:inline">•</span>
-                        <span className="text-sm">
-                            Most popular: <span className="font-medium text-primary">{topAnswer.answer}</span> ({topAnswer.percentage}%)
-                        </span>
-                    </CardDescription>
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                            <CardTitle className="text-lg">{question.text}</CardTitle>
+                            <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <span>{totalResponses} total responses</span>
+                                <span className="hidden sm:inline">•</span>
+                                <span className="text-sm">
+                                    Most popular: <span className="font-medium text-primary">{topAnswer.answer}</span> ({topAnswer.percentage}%)
+                                </span>
+                            </CardDescription>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleShareQuestion(question)}
+                            disabled={sharingQuestionId === question.id}
+                            className="shrink-0"
+                        >
+                            {sharingQuestionId === question.id ? (
+                                <>
+                                    <span className="inline-block h-4 w-4 mr-2 animate-spin rounded-full border-2 border-solid border-current border-r-transparent" />
+                                    <span className="hidden sm:inline">Sharing...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Share2 className="h-4 w-4 mr-2" />
+                                    <span className="hidden sm:inline">Share</span>
+                                </>
+                            )}
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
 
-                        {/* Chart */}
-                        <ChartContainer
-                            config={chartConfig}
-                            className="w-full"
-                            style={{ height: `${dynamicHeight}px` }}
-                        >
-                            <BarChart
-                                accessibilityLayer
-                                data={data}
-                                layout="vertical"
-                                margin={{
-                                    right: 32,
-                                }}
-                                maxBarSize={60}
+                        {/* Chart - Add ID for sharing functionality */}
+                        <div id={`chart-${question.id}`}>
+                            <ChartContainer
+                                config={chartConfig}
+                                className="w-full"
+                                style={{ height: `${dynamicHeight}px` }}
                             >
-                                <CartesianGrid horizontal={false} />
-                                <YAxis
-                                    dataKey="answer"
-                                    type="category"
-                                    tickLine={false}
-                                    tickMargin={10}
-                                    axisLine={false}
-                                    tickFormatter={(value) => value}
-                                    hide
-                                />
-                                <XAxis dataKey="count" type="number" hide />
-                                <ChartTooltip
-                                    cursor={false}
-                                    content={<ChartTooltipContent indicator="line" />}
-                                />
-                                <Bar
-                                    dataKey="count"
+                                <BarChart
+                                    accessibilityLayer
+                                    data={data}
                                     layout="vertical"
-                                    fill="var(--color-chart-1)"
-                                    radius={4}
+                                    margin={{
+                                        right: 32,
+                                    }}
+                                    maxBarSize={60}
                                 >
-                                    <LabelList
+                                    <CartesianGrid horizontal={false} />
+                                    <YAxis
                                         dataKey="answer"
-                                        position="insideLeft"
-                                        offset={8}
-                                        className="fill-primary-foreground"
-                                        fontSize={12}
+                                        type="category"
+                                        tickLine={false}
+                                        tickMargin={10}
+                                        axisLine={false}
+                                        tickFormatter={(value) => value}
+                                        hide
                                     />
-                                    <LabelList
+                                    <XAxis dataKey="count" type="number" hide />
+                                    <ChartTooltip
+                                        cursor={false}
+                                        content={<ChartTooltipContent indicator="line" />}
+                                    />
+                                    <Bar
                                         dataKey="count"
-                                        position="right"
-                                        offset={8}
-                                        className="fill-foreground"
-                                        fontSize={12}
-                                    />
-                                </Bar>
-                            </BarChart>
-                        </ChartContainer>
+                                        layout="vertical"
+                                        fill="var(--color-chart-1)"
+                                        radius={4}
+                                    >
+                                        <LabelList
+                                            dataKey="answer"
+                                            position="insideLeft"
+                                            offset={8}
+                                            className="fill-primary-foreground"
+                                            fontSize={12}
+                                        />
+                                        <LabelList
+                                            dataKey="count"
+                                            position="right"
+                                            offset={8}
+                                            className="fill-foreground"
+                                            fontSize={12}
+                                        />
+                                    </Bar>
+                                </BarChart>
+                            </ChartContainer>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
