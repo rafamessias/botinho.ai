@@ -1261,6 +1261,27 @@
             "readonlyMode": "You don't have permission to edit this survey",
             "activeSurveysLimitReached": "You have reached your active surveys limit ({limit})."
         },
+        "aiGenerator": {
+            "title": "AI Survey Generator",
+            "description": "Let AI create your complete survey including name, description, and questions based on your context",
+            "createWithAI": "Create with AI",
+            "placeholder": "Describe your survey context...\n\nExample: \"Create a customer satisfaction survey for an e-commerce platform focusing on delivery experience, product quality, and customer service.\"",
+            "hint": "Be specific about your survey goals, target audience, and the type of feedback you want to collect.",
+            "generate": "Generate Survey",
+            "generating": "Generating...",
+            "steps": {
+                "analyzing": "Analyzing your context...",
+                "thinking": "Thinking and planning survey...",
+                "creating": "Creating your survey...",
+                "done": "Survey created successfully!"
+            },
+            "preview": "Generated {count} questions:",
+            "success": "Successfully generated survey with {count} questions!",
+            "errors": {
+                "emptyPrompt": "Please describe your survey context",
+                "failed": "Failed to generate survey. Please try again."
+            }
+        },
         "defaultQuestion": {
             "yesLabel": "Yes",
             "noLabel": "No"

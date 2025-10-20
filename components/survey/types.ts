@@ -1,3 +1,5 @@
+import { QuestionFormat } from "@/lib/generated/prisma"
+
 export interface SurveyData {
     id: string
     title: string
@@ -32,4 +34,23 @@ export interface ResponseAnswer {
     questionId: string
     questionText: string
     answer: string
+}
+
+// Question interface for creating/editing surveys
+export interface CreateSurveyQuestion {
+    id: string
+    title: string
+    description: string
+    format: QuestionFormat
+    required: boolean
+    order: number
+    yesLabel?: string
+    noLabel?: string
+    buttonLabel?: string
+    options: Array<{
+        id?: string
+        text: string
+        order: number
+        isOther?: boolean
+    }>
 }

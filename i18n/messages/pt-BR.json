@@ -1262,6 +1262,27 @@
             "readonlyMode": "Você não tem permissão para editar esta pesquisa",
             "activeSurveysLimitReached": "Você atingiu o limite de pesquisas ativas ({limit})."
         },
+        "aiGenerator": {
+            "title": "Gerador de Pesquisa com IA",
+            "description": "Deixe a IA criar sua pesquisa completa incluindo nome, descrição e perguntas baseadas no seu contexto",
+            "createWithAI": "Criar com IA",
+            "placeholder": "Descreva o contexto da sua pesquisa...\n\nExemplo: \"Criar uma pesquisa de satisfação do cliente para uma plataforma de e-commerce focando na experiência de entrega, qualidade do produto e atendimento ao cliente.\"",
+            "hint": "Seja específico sobre os objetivos da sua pesquisa, público-alvo e o tipo de feedback que deseja coletar.",
+            "generate": "Gerar Pesquisa",
+            "generating": "Gerando...",
+            "steps": {
+                "analyzing": "Analisando seu contexto...",
+                "thinking": "Pensando e planejando pesquisa...",
+                "creating": "Criando sua pesquisa...",
+                "done": "Pesquisa criada com sucesso!"
+            },
+            "preview": "{count} perguntas geradas:",
+            "success": "Pesquisa gerada com sucesso com {count} perguntas!",
+            "errors": {
+                "emptyPrompt": "Por favor, descreva o contexto da sua pesquisa",
+                "failed": "Falha ao gerar pesquisa. Por favor, tente novamente."
+            }
+        },
         "defaultQuestion": {
             "yesLabel": "Sim",
             "noLabel": "Não"
