@@ -1,6 +1,7 @@
 // ---------------- compact opineeo widget ----------------
 class o {
     constructor(p = {}) {
+        this.v = '1.0.0';
         this.survey = p.surveyData;
         this.customCSS = p.customCSS || '';
         this.onComplete = p.onComplete || (() => { });
@@ -13,8 +14,10 @@ class o {
         this.userId = p.userId || '';
         this.extraInfo = p.extraInfo || '';
         this.branding = p.branding || false;
-        this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
-        //this.apiUrl = 'http://localhost:3000/api/survey/v0';
+        this.position = p.position || 'inline'; // 'inline', 'top-right', 'top-left', 'bottom-right', 'bottom-left'
+        this.feedbackLabel = p.feedbackLabel || 'Give Feedback';
+        //this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
+        this.apiUrl = 'http://localhost:3000/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting
@@ -23,6 +26,7 @@ class o {
         this.scopeClass = null;
         this.loading = !1;
         this.error = null;
+        this.opened = this.position === 'inline'; // For anchored positions, start closed
     }
 
     async mount(id) {
@@ -31,11 +35,16 @@ class o {
         this.injectCSS();
         // Ensure container is visible
         this.container.style.display = 'block';
-        if (!this.survey && this.token && this.surveyId) await this.fetchSurveyData();
-        if (!this.token || !this.surveyId) this.branding = true;
-        if (!this.survey) this.error = 'Survey not found';
-        this.initializeScopeClass();
-        this.addCustomStyles();
+
+        // For inline mode, fetch data immediately. For anchored mode, fetch when opened
+        if (this.position === 'inline') {
+            if (!this.survey && this.token && this.surveyId) await this.fetchSurveyData();
+            if (!this.token || !this.surveyId) this.branding = true;
+            if (!this.survey) this.error = 'Survey not found';
+            this.initializeScopeClass();
+            this.addCustomStyles();
+        }
+
         this.render();
         ['click', 'input'].forEach(t => this.container.addEventListener(t, e => this[`on${t[0].toUpperCase()}${t.slice(1)}`](e)));
     }
@@ -68,7 +77,7 @@ class o {
         if (document.getElementById('opineeo-style')) return;
         const styleElement = document.createElement('style');
         styleElement.id = 'opineeo-style';
-        styleElement.textContent = `:root{--sv-primary-color:currentColor;--sv-secondary-bg:rgba(0,0,0,.1);--sv-secondary-border:rgba(0,0,0,.2);--sv-text-color:inherit}.sv{position:relative;display:flex;flex-direction:column;justify-content:space-between;background:transparent;color:inherit;min-width:300px;min-height:300px;font:inherit;overflow:hidden;padding:16px 16px;border-radius:8px}.x{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;opacity:.7;cursor:pointer;font-size:24px;color:inherit;z-index:999}.x:hover{opacity:1}.body{margin-bottom:1rem;overflow:hidden;transition:opacity .3s ease}.qc{width:100%;height:100%;}.qt{font-weight:600;margin-bottom:.5rem;font-size:18px;text-align:start}.qd{opacity:.8;margin-bottom:1rem;font-size:16px;text-align:start}.qs{margin-bottom:1rem;font-size:20px}.opts{margin-top:1.8rem;display:flex;flex-direction:column;align-items:flex-start}.req{color:#ef4444;font-size:1.2rem}.ft{display:flex;flex-direction:column}.nav{display:flex}.btn{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font:inherit;transition:all .2s ease}.btno{margin-right:.5rem;background:#262626;border:1px solid var(--sv-secondary-border);color:#fff}.btno:hover{background:rgba(0,0,0,.15);border-color:rgba(0,0,0,.3)}.btnp{border:1px solid rgba(0,0,0,.3);background:#8881DF;color:#fff}.btnp:hover{opacity:.7}.btn:disabled{opacity:.5;cursor:not-allowed}.spinner{animation:spin 1s linear infinite}.qtc{position:relative;overflow:hidden;min-height:200px;width:100%;height:auto}.qtc .qc{position:relative;width:100%;height:auto}.q-exit-right{animation:oR .3s ease-out forwards}.q-enter-right{animation:iR .4s ease-out forwards}.q-exit-left{animation:oL .3s ease-out forwards}.q-enter-left{animation:iL .4s ease-out forwards}.brand{margin-top:1rem;font-size:.75rem;opacity:.7;text-align:start}.brand a{color:inherit}.rad,.chk{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;cursor:pointer}.txt{width:100%;padding:.5rem;border:1px solid currentColor;border-radius:6px;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.stars{display:flex;justify-content:center;gap:.5rem}.star-btn{padding:.25rem;background:none;border:none;cursor:pointer;border-radius:50%;transition:all .2s ease;display:flex;align-items:center;justify-content:center;outline:0}.star-btn:hover{transform:scale(1.1)}.star-btn.star-sel{background-color:transparent}.star-svg{width:30px;height:30px;transition:all .2s ease}.star-btn:hover .star-svg{transform:scale(1.1)}.star-btn:not(.star-sel) .star-svg{opacity:.3}.ltxt{width:100%}.ta{width:100%;min-height:6rem;resize:none;border:1px solid currentColor;border-radius:6px;padding:.5rem;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.cc{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;min-height:250px;position:relative}.ca{margin-bottom:2rem;position:relative}.sc-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;position:relative;animation:scaleIn .6s cubic-bezier(.68,-.55,.265,1.55);box-shadow:0 8px 25px rgba(16,185,129,.3)}.sc-circle::before{content:'';position:absolute;width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);opacity:.3;animation:pulse 2s infinite}.sc-check{position:relative;width:24px;height:24px;transform:rotate(45deg);z-index:2}.cs{position:absolute;width:5px;height:25px;background-color:#fff;left:15px;top:-3px;border-radius:2px;animation:checkmarkStem .4s ease-in-out .3s both}.ck{position:absolute;width:15px;height:5px;background-color:#fff;left:4px;top:17px;border-radius:2px;animation:checkmarkKick .4s ease-in-out .5s both}@keyframes spin{to{transform:rotate(360deg)}}@keyframes oR{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-100%);opacity:0}}@keyframes iR{0%{transform:translateX(100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes oL{0%{transform:translateX(0);opacity:1}100%{transform:translateX(100%);opacity:0}}@keyframes iL{0%{transform:translateX(-100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes p{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(6px)}}@keyframes a{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}@keyframes scaleIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}@keyframes pulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.1);opacity:.1}}@keyframes checkmarkStem{0%{height:0}100%{height:25px}}@keyframes checkmarkKick{0%{width:0}100%{width:15px}}@media(max-width:400px){.sv{max-width:100%;}.qt{font-size:16px}.star{font-size:20px}}`;
+        styleElement.textContent = `:root{--sv-primary-color:currentColor;--sv-secondary-bg:rgba(0,0,0,.1);--sv-secondary-border:rgba(0,0,0,.2);--sv-text-color:inherit}.sv{position:relative;display:flex;flex-direction:column;justify-content:space-between;background:transparent;color:inherit;min-width:300px;min-height:300px;font:inherit;overflow:hidden;padding:16px;border-radius:8px}.sv-anchored{position:fixed!important;z-index:9999!important;padding:16px 24px!important;background:var(--bg-secondary, #fff)!important;box-shadow:0 4px 24px rgba(0,0,0,.15);max-width:400px;width:90vw;max-height:90vh;overflow-y:auto;border-radius:12px}.sv-top-right{top:20px!important;right:20px!important;bottom:auto!important;left:auto!important}.sv-top-left{top:20px!important;left:20px!important;bottom:auto!important;right:auto!important}.sv-bottom-right{bottom:20px!important;right:20px!important;top:auto!important;left:auto!important}.sv-bottom-left{bottom:20px!important;left:20px!important;top:auto!important;right:auto!important}.sv-feedback-btn{position:fixed;z-index:9998;padding:8px 16px;background:var(--bg-secondary, #fff);color:inherit;border:1px solid rgba(0,0,0,.1);border-radius:8px;cursor:pointer;font:inherit;font-size:13px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:all .2s ease;backdrop-filter:blur(10px)}.sv-feedback-btn:hover{box-shadow:0 4px 12px rgba(0,0,0,.12);border-color:rgba(0,0,0,.15);transform:translateY(-1px)}.sv-feedback-btn.btn-top-right,.sv-feedback-btn.btn-bottom-right{right:20px}.sv-feedback-btn.btn-top-left,.sv-feedback-btn.btn-bottom-left{left:20px}.sv-feedback-btn.btn-top-right,.sv-feedback-btn.btn-top-left{top:20px}.sv-feedback-btn.btn-bottom-right,.sv-feedback-btn.btn-bottom-left{bottom:20px}.x{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;opacity:.7;cursor:pointer;font-size:24px;color:inherit;z-index:999}.x:hover{opacity:1}.body{margin-bottom:1rem;overflow:hidden;transition:opacity .3s ease}.qc{width:100%;height:100%;}.qt{font-weight:600;margin-bottom:.5rem;font-size:18px;text-align:start}.qd{opacity:.8;margin-bottom:1rem;font-size:16px;text-align:start}.qs{margin-bottom:1rem;font-size:20px}.opts{margin-top:1.8rem;display:flex;flex-direction:column;align-items:flex-start}.req{color:#ef4444;font-size:1.2rem}.ft{display:flex;flex-direction:column}.nav{display:flex}.btn{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font:inherit;transition:all .2s ease}.btno{margin-right:.5rem;background:#262626;border:1px solid var(--sv-secondary-border);color:#fff}.btno:hover{background:rgba(0,0,0,.15);border-color:rgba(0,0,0,.3)}.btnp{border:1px solid rgba(0,0,0,.3);background:#8881DF;color:#fff}.btnp:hover{opacity:.7}.btn:disabled{opacity:.5;cursor:not-allowed}.spinner{animation:spin 1s linear infinite}.qtc{position:relative;overflow:hidden;min-height:200px;width:100%;height:auto}.qtc .qc{position:relative;width:100%;height:auto}.q-exit-right{animation:oR .3s ease-out forwards}.q-enter-right{animation:iR .4s ease-out forwards}.q-exit-left{animation:oL .3s ease-out forwards}.q-enter-left{animation:iL .4s ease-out forwards}.brand{margin-top:1rem;font-size:.75rem;opacity:.7;text-align:start}.brand a{color:inherit}.rad,.chk{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;cursor:pointer}.txt{width:100%;padding:.5rem;border:1px solid currentColor;border-radius:6px;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.stars{display:flex;justify-content:center;gap:.5rem}.star-btn{padding:.25rem;background:none;border:none;cursor:pointer;border-radius:50%;transition:all .2s ease;display:flex;align-items:center;justify-content:center;outline:0}.star-btn:hover{transform:scale(1.1)}.star-btn.star-sel{background-color:transparent}.star-svg{width:30px;height:30px;transition:all .2s ease}.star-btn:hover .star-svg{transform:scale(1.1)}.star-btn:not(.star-sel) .star-svg{opacity:.3}.ltxt{width:100%}.ta{width:100%;min-height:6rem;resize:none;border:1px solid currentColor;border-radius:6px;padding:.5rem;font-size:16px;background:transparent;box-sizing:border-box;color:inherit;font-family:inherit}.cc{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;min-height:250px;position:relative}.ca{margin-bottom:2rem;position:relative}.sc-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;position:relative;animation:scaleIn .6s cubic-bezier(.68,-.55,.265,1.55);box-shadow:0 8px 25px rgba(16,185,129,.3)}.sc-circle::before{content:'';position:absolute;width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);opacity:.3;animation:pulse 2s infinite}.sc-check{position:relative;width:24px;height:24px;transform:rotate(45deg);z-index:2}.cs{position:absolute;width:5px;height:25px;background-color:#fff;left:15px;top:-3px;border-radius:2px;animation:checkmarkStem .4s ease-in-out .3s both}.ck{position:absolute;width:15px;height:5px;background-color:#fff;left:4px;top:17px;border-radius:2px;animation:checkmarkKick .4s ease-in-out .5s both}@keyframes spin{to{transform:rotate(360deg)}}@keyframes oR{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-100%);opacity:0}}@keyframes iR{0%{transform:translateX(100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes oL{0%{transform:translateX(0);opacity:1}100%{transform:translateX(100%);opacity:0}}@keyframes iL{0%{transform:translateX(-100%);opacity:0}100%{transform:translateX(0);opacity:1}}@keyframes p{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(6px)}}@keyframes a{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}@keyframes scaleIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}@keyframes pulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.1);opacity:.1}}@keyframes checkmarkStem{0%{height:0}100%{height:25px}}@keyframes checkmarkKick{0%{width:0}100%{width:15px}}@media(max-width:400px){.sv{max-width:100%;}.qt{font-size:16px}.star{font-size:20px}}`;
         document.head.appendChild(styleElement);
         this.t = 1;
     }
@@ -95,13 +104,23 @@ class o {
     render() {
         if (!this.container) return;
         if (this.scopeClass) this.container.className = this.scopeClass;
+
+        // If anchored and not opened, show feedback button
+        if (this.position !== 'inline' && !this.opened) {
+            this.container.innerHTML = `<button class="sv-feedback-btn btn-${this.position}" data-a="open-survey">${this.feedbackLabel}</button>`;
+            return;
+        }
+
         const qs = this.survey?.questions || [], last = this.i >= qs.length;
-        const head = '<div class="sv">';
+        const positionClass = this.position !== 'inline' ? ` sv-anchored sv-${this.position}` : '';
+        const closeBtn = this.position !== 'inline' ? `<button class="x" data-a="close" aria-label="Close">&times;</button>` : '';
+        const head = `<div class="sv${positionClass}">` + closeBtn;
         const load = this.loading ? `<div class="cc"><div class="ca">${this.getSLoadingIcon()}</div>` : '';
         const unavailableFeedback = this.error || (!this.survey && !this.loading) ? `<div class="cc"><div class="ca">${this.getUnavailableIcon()}</div><p>Survey not available</p></div>` : '';
         const body = qs.length ? (this.done || last ? this.renderDone() : `<div class="qtc">${this.renderQuestionCard(qs[this.i])}</div>`)
             + `<div class="ft">${this.done ? '' : `<div class="nav">${this.i > 0 ? `<button class="btn btno" data-a="prev">${this.getPrevArrowIcon()}</button>` : ''}<button class="btn btnp" data-a="next" ${this.s ? 'disabled' : ''}>${this.s ? this.getSpinnerIcon() : (this.i === qs.length - 1 ? this.getSendIcon() : this.getNextArrowIcon())}</button></div>`}</div>` : '';
-        this.container.innerHTML = head + load + unavailableFeedback + body + (this.branding ? '<div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div></div>' : '');
+        const footer = (this.branding ? '<div class="brand">Powered by <a href="https://opineeo.com" target="_blank"><b>Opineeo</b></a></div>' : '') + '</div>';
+        this.container.innerHTML = head + load + unavailableFeedback + body + footer;
         this.focusInput();
     }
 
@@ -211,11 +230,29 @@ class o {
         finally { this.s = !1; this.render(); }
     }
 
-    onClick(ev) {
-        // Guard clause: if survey is destroyed, ignore clicks
-        if (!this.survey || !this.container) return;
+    async onClick(ev) {
+        if (!this.container) return;
         const el = ev.target, a = el.dataset.a || el.closest('[data-a]')?.dataset.a; if (!a) return;
+
+        // Handle opening the survey for anchored positions
+        if (a === 'open-survey') {
+            this.opened = true;
+            if (!this.survey && this.token && this.surveyId) {
+                await this.fetchSurveyData();
+            }
+            if (!this.token || !this.surveyId) this.branding = true;
+            if (!this.survey) this.error = 'Survey not found';
+            this.initializeScopeClass();
+            this.addCustomStyles();
+            this.render();
+            return;
+        }
+
+        // Close should always work, regardless of survey state
         if (a === 'close') return this.close();
+
+        // Guard clause: if survey is destroyed, ignore other clicks
+        if (!this.survey) return;
         if (a === 'prev') return this.transitionToPrevious();
         if (a === 'next') {
             const q = this.survey.questions[this.i];
@@ -279,11 +316,17 @@ class o {
     }
 
     close() {
+        // Destroy completely for all positions
         this.destroy();
         this.onClose();
         // Remove the widget from DOM
-        if (this.container && this.container.parentNode) {
-            this.container.parentNode.removeChild(this.container);
+        // For anchored positions, the container is inside a custom element that's added to body
+        // We need to remove the custom element itself
+        if (this.container) {
+            const customElement = this.container.parentNode; // opineeo-survey element
+            if (customElement && customElement.parentNode) {
+                customElement.parentNode.removeChild(customElement);
+            }
         }
     }
 
@@ -422,7 +465,7 @@ window.initSurveyWidget = i => new o(i);
 
     class OpineeoSurveyElement extends HTMLElement {
         static get observedAttributes() {
-            return ['survey-id', 'token', 'auto-close', 'user-id', 'extra-info', 'custom-css', 'oncomplete', 'onclose', 'survey'];
+            return ['survey-id', 'token', 'auto-close', 'user-id', 'extra-info', 'custom-css', 'oncomplete', 'onclose', 'survey', 'position', 'feedback-label'];
         }
 
         constructor() {
@@ -475,6 +518,8 @@ window.initSurveyWidget = i => new o(i);
                 extraInfo: this.getAttribute('extra-info') === '',
                 surveyData: surveyDataFromAttr || this._surveyData,
                 customCSS: this.getAttribute('custom-css') || this._customCSS,
+                position: this.getAttribute('position') || 'inline',
+                feedbackLabel: this.getAttribute('feedback-label') || 'Give Feedback',
                 onComplete: (data) => {
                     onCompFn?.(data, this);
                     this.dispatchEvent(new CustomEvent('complete', { detail: data }));
@@ -482,17 +527,7 @@ window.initSurveyWidget = i => new o(i);
                 onClose: () => {
                     onClosFn?.(this);
                     this.dispatchEvent(new Event('close'));
-                    // Remove the survey widget from DOM after callbacks
-                    try {
-                        if (this._id && this.isConnected && this.querySelector) {
-                            const surveyContainer = this.querySelector(`#${this._id}`);
-                            if (surveyContainer) {
-                                surveyContainer.remove();
-                            }
-                        }
-                    } catch (error) {
-                        console.warn('Error removing survey container:', error);
-                    }
+                    // The widget's close() method handles DOM removal
                 }
             };
             this._widget = new o(opts);

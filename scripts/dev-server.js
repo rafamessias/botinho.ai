@@ -7,8 +7,8 @@ const { exec } = require('child_process');
 
 const PORT = 4001;
 const DEMO_FILE = path.join(__dirname, '../components/survey-render/demo.html');
-const WIDGET_FILE = path.join(__dirname, '../components/survey-render/opineeo-0.0.1.js');
-const WIDGET_FILE_MIN = path.join(__dirname, '../public/opineeo-0.0.1.min.js');
+const WIDGET_FILE = path.join(__dirname, '../components/survey-render/opineeo.js');
+const WIDGET_FILE_MIN = path.join(__dirname, '../public/opineeo.min.js');
 
 // MIME types
 const mimeTypes = {
@@ -101,12 +101,12 @@ const server = http.createServer((req, res) => {
     }
 
     // Handle widget files
-    if (url === '/opineeo-0.0.1.js') {
+    if (url === '/opineeo.js') {
         serveFile(WIDGET_FILE, res);
         return;
     }
 
-    if (url === '/opineeo-0.0.1.min.js') {
+    if (url === '/opineeo.min.js') {
         serveFile(WIDGET_FILE_MIN, res);
         return;
     }
@@ -215,7 +215,7 @@ serveFile = function (filePath, res) {
 server.listen(PORT, () => {
     console.log('🚀 Development server started!');
     console.log(`📱 Demo: http://localhost:${PORT}`);
-    console.log(`📄 Main Widget: http://localhost:${PORT}/opineeo-0.0.1.js`);
+    console.log(`📄 Main Widget: http://localhost:${PORT}/opineeo.js`);
     console.log('');
     console.log('✨ Features:');
     console.log('  • Live reload on widget file changes');

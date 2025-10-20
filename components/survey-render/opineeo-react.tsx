@@ -84,7 +84,7 @@ const loadOpineeoScript = (): Promise<void> => {
 
         // Create and load script
         const script = document.createElement('script');
-        script.src = '/opineeo-0.0.1.min.js';
+        script.src = '/opineeo.min.js';
         script.async = true;
         script.onload = () => resolve();
         script.onerror = reject;
