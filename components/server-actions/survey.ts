@@ -11,6 +11,7 @@ import {
     decrementActiveSurveysInTransaction,
     getCurrentUsage
 } from "@/lib/services/usage-tracking"
+import { invalidateSurveyCache } from "@/app/api/survey/v0/route"
 
 // Helper function to get and cache team ID for better performance
 const getTeamIdCached = async (): Promise<number | null> => {
@@ -70,7 +71,7 @@ const surveyStyleSchema = z.object({
     titleFontSize: z.string().default("18px"),
     bodyFontSize: z.string().default("16px"),
     fontFamily: z.string().default("Inter"),
-    styleMode: z.enum(["basic", "advanced"]).default("basic"),
+    styleMode: z.enum(["none", "basic", "advanced"]).default("none"),
     basicCSS: z.string().optional(),
     advancedCSS: z.string().optional()
 })
@@ -506,6 +507,9 @@ export const updateSurvey = async (formData: FormData) => {
             timeout: 5000 // Reduced timeout due to optimized operations
         })
 
+        // Invalidate survey cache after successful update
+        invalidateSurveyCache(validatedData.id)
+
         revalidatePath("/survey")
         return { success: true, surveyId: result.id }
     } catch (error) {
@@ -773,6 +777,9 @@ export const deleteSurvey = async (id: string) => {
         }, {
             timeout: 3000 // Reduced timeout for delete operation
         })
+
+        // Invalidate survey cache after successful deletion
+        invalidateSurveyCache(id)
 
         revalidatePath("/survey")
         return { success: true }
@@ -1044,6 +1051,9 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
             timeout: 3000 // Reduced timeout for simple status update
         })
 
+        // Invalidate survey cache after successful status update
+        invalidateSurveyCache(id)
+
         revalidatePath("/survey")
         return { success: true }
     } catch (error) {
@@ -1259,6 +1269,9 @@ export const regenerateSurveyPublicToken = async (surveyId: string) => {
             data: { publicToken: newPublicToken }
         })
 
+        // Invalidate survey cache after token regeneration
+        invalidateSurveyCache(surveyId)
+
         return {
             success: true,
             publicToken: updatedSurvey.publicToken
@@ -1268,6 +1281,300 @@ export const regenerateSurveyPublicToken = async (surveyId: string) => {
         return {
             success: false,
             error: error instanceof Error ? error.message : "Failed to regenerate public token"
+        }
+    }
+}
+
+// AI Survey Generation
+interface GeneratedQuestion {
+    title: string
+    description: string
+    format: string
+    required: boolean
+    options?: { text: string; order: number }[]
+    yesLabel?: string
+    noLabel?: string
+}
+
+interface GeneratedQuestionResult {
+    id: string
+    title: string
+    description: string
+    format: QuestionFormat
+    required: boolean
+    order: number
+    yesLabel?: string
+    noLabel?: string
+    options: Array<{
+        id?: string
+        text: string
+        order: number
+        isOther?: boolean
+    }>
+}
+
+interface AIGeneratedSurvey {
+    surveyName: string
+    surveyDescription: string
+    suggestedType: string
+    questions: GeneratedQuestion[]
+}
+
+export const generateSurveyWithAI = async (prompt: string, surveyTypes: { id: string; name: string }[] = []): Promise<{
+    success: boolean
+    surveyName?: string
+    surveyDescription?: string
+    typeId?: string
+    questions?: GeneratedQuestionResult[]
+    error?: string
+}> => {
+    try {
+        // Verify authentication
+        const teamId = await getTeamIdCached()
+        if (!teamId) {
+            return {
+                success: false,
+                error: 'Unauthorized'
+            }
+        }
+
+        if (!prompt || typeof prompt !== 'string') {
+            return {
+                success: false,
+                error: 'Invalid prompt'
+            }
+        }
+
+        // Check if OpenAI API key is configured
+        const openAIKey = process.env.OPENAI_API_KEY
+        if (!openAIKey) {
+            return {
+                success: false,
+                error: 'OpenAI API key not configured'
+            }
+        }
+
+        // Prepare survey types context for AI
+        const surveyTypesContext = surveyTypes.length > 0
+            ? `Available survey types (MUST choose one of these): ${surveyTypes.map(t => t.name).join(', ')}\nImportant: Use the EXACT name of one of these types for the "suggestedType" field.`
+            : 'No existing survey types available.'
+
+        // Call OpenAI API
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${openAIKey}`,
+            },
+            body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [
+                    {
+                        role: 'system',
+                        content: `You are a professional survey designer. Generate a complete survey based on the user's context.
+Return ONLY a valid JSON object without any markdown formatting or code blocks.
+
+The JSON object must have this structure:
+{
+  "surveyName": "string (concise survey title, max 60 characters)",
+  "surveyDescription": "string (brief description of the survey purpose, max 200 characters)",
+  "suggestedType": "string (MUST be the exact name from the available survey types list, or a relevant category if none provided)",
+  "questions": [array of question objects]
+}
+
+Each question object should have:
+- title (string): The question text
+- description (string): Optional additional context or empty string
+- format (string): MUST BE one of these exact values: "YES_NO", "STAR_RATING", "LONG_TEXT", "STATEMENT", "SINGLE_CHOICE", "MULTIPLE_CHOICE"
+- required (boolean): Whether the question is required
+- options (array, optional): For MULTIPLE_CHOICE, SINGLE_CHOICE and STAR_RATING, array of objects with "text" and "order" properties
+- yesLabel (string, optional): For YES_NO questions, custom label for yes option (default: "Yes")
+- noLabel (string, optional): For YES_NO questions, custom label for no option (default: "No")
+
+Format descriptions:
+- YES_NO: Binary yes/no questions with customizable labels
+- STAR_RATING: Rating scale questions using 5 stars
+- LONG_TEXT: Open-ended text questions for detailed responses
+- STATEMENT: Information display (no user input required)
+- SINGLE_CHOICE: Radio button selection (only one answer allowed)
+- MULTIPLE_CHOICE: Checkbox selection (multiple answers allowed)
+
+Guidelines:
+- Create 2-6 relevant questions
+- Mix different question types appropriately
+- For SINGLE_CHOICE and MULTIPLE_CHOICE, include 3-6 options
+- For LONG_TEXT, don't include options
+- For STATEMENT, set required to false and don't include options
+- Make questions clear and concise
+- Ensure questions flow logically
+- Use the exact format values provided
+
+${surveyTypesContext}`
+                    },
+                    {
+                        role: 'user',
+                        content: `Create a survey for: ${prompt}`
+                    }
+                ],
+                temperature: 0.7,
+                max_tokens: 2500,
+            }),
+        })
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}))
+            console.error('OpenAI API error:', errorData)
+            return {
+                success: false,
+                error: 'Failed to generate questions from OpenAI'
+            }
+        }
+
+        const data = await response.json()
+        const content = data.choices[0]?.message?.content
+
+        if (!content) {
+            return {
+                success: false,
+                error: 'No content received from OpenAI'
+            }
+        }
+
+        // Parse the response - handle potential markdown code blocks
+        let aiResponse: AIGeneratedSurvey
+        try {
+            // Remove markdown code blocks if present
+            const cleanContent = content
+                .replace(/```json\s*/g, '')
+                .replace(/```\s*/g, '')
+                .trim()
+
+            aiResponse = JSON.parse(cleanContent)
+
+            // Validate the response structure
+            if (!aiResponse.surveyName || !aiResponse.questions || !Array.isArray(aiResponse.questions)) {
+                throw new Error('Invalid response structure from AI')
+            }
+        } catch (parseError) {
+            console.error('Failed to parse OpenAI response:', content)
+            return {
+                success: false,
+                error: 'Invalid response format from OpenAI'
+            }
+        }
+
+        // Match suggested type to existing types or use first available
+        let matchedTypeId: string | undefined
+        if (surveyTypes.length > 0) {
+            if (aiResponse.suggestedType) {
+                // Try to match the AI-suggested type to an existing type
+                const matchedType = surveyTypes.find(t =>
+                    t.name.toLowerCase() === aiResponse.suggestedType.toLowerCase() ||
+                    t.name.toLowerCase().includes(aiResponse.suggestedType.toLowerCase()) ||
+                    aiResponse.suggestedType.toLowerCase().includes(t.name.toLowerCase())
+                )
+                matchedTypeId = matchedType?.id
+            }
+
+            // If no match found, use the first available survey type
+            if (!matchedTypeId) {
+                matchedTypeId = surveyTypes[0].id
+            }
+        }
+
+        // Validate and format questions
+        const formattedQuestions: GeneratedQuestionResult[] = aiResponse.questions.map((q, index) => {
+            // Map AI-generated formats to Prisma QuestionFormat enum
+            // AI should return the correct format names, but we'll validate them
+            const validFormats: QuestionFormat[] = [
+                QuestionFormat.YES_NO,
+                QuestionFormat.STAR_RATING,
+                QuestionFormat.LONG_TEXT,
+                QuestionFormat.STATEMENT,
+                QuestionFormat.SINGLE_CHOICE,
+                QuestionFormat.MULTIPLE_CHOICE
+            ]
+
+            // Check if the format is valid, otherwise default to LONG_TEXT
+            const format = validFormats.includes(q.format as QuestionFormat)
+                ? (q.format as QuestionFormat)
+                : QuestionFormat.LONG_TEXT
+
+            // Base question structure matching CreateSurveyQuestion interface
+            const question: GeneratedQuestionResult = {
+                id: `ai-generated-${Date.now()}-${index}`,
+                title: q.title || `Question ${index + 1}`,
+                description: q.description || '',
+                format: format,
+                required: format === QuestionFormat.STATEMENT ? false : (q.required !== false),
+                order: index,
+                yesLabel: undefined,
+                noLabel: undefined,
+                options: []
+            }
+
+            // Add format-specific properties
+            if (format === QuestionFormat.YES_NO) {
+                // YES_NO requires yesLabel and noLabel
+                question.yesLabel = q.yesLabel || 'Yes'
+                question.noLabel = q.noLabel || 'No'
+                question.options = [] // YES_NO doesn't use options
+            } else if (format === QuestionFormat.MULTIPLE_CHOICE || format === QuestionFormat.SINGLE_CHOICE) {
+                // MULTIPLE_CHOICE and SINGLE_CHOICE require options
+                if (q.options && q.options.length > 0) {
+                    question.options = q.options.map((opt, optIndex) => ({
+                        id: `opt-${Date.now()}-${index}-${optIndex}`,
+                        text: opt.text,
+                        order: optIndex,
+                        isOther: false
+                    }))
+                } else {
+                    // Provide default options if none specified
+                    question.options = [
+                        { id: `opt-${Date.now()}-${index}-0`, text: 'Option 1', order: 0, isOther: false },
+                        { id: `opt-${Date.now()}-${index}-1`, text: 'Option 2', order: 1, isOther: false },
+                        { id: `opt-${Date.now()}-${index}-2`, text: 'Option 3', order: 2, isOther: false }
+                    ]
+                }
+            } else if (format === QuestionFormat.STAR_RATING) {
+                // STAR_RATING requires options (rating scale)
+                if (q.options && q.options.length > 0) {
+                    question.options = q.options.map((opt, optIndex) => ({
+                        id: `opt-${Date.now()}-${index}-${optIndex}`,
+                        text: opt.text,
+                        order: optIndex,
+                        isOther: false
+                    }))
+                } else {
+                    // Default 5-star rating
+                    question.options = Array.from({ length: 5 }, (_, i) => ({
+                        id: `opt-${Date.now()}-${index}-${i}`,
+                        text: `${i + 1}`,
+                        order: i,
+                        isOther: false
+                    }))
+                }
+            } else if (format === QuestionFormat.LONG_TEXT || format === QuestionFormat.STATEMENT) {
+                // LONG_TEXT and STATEMENT don't need options
+                question.options = []
+            }
+
+            return question
+        })
+
+        return {
+            success: true,
+            surveyName: aiResponse.surveyName,
+            surveyDescription: aiResponse.surveyDescription || '',
+            typeId: matchedTypeId,
+            questions: formattedQuestions
+        }
+
+    } catch (error) {
+        console.error('Error generating survey:', error)
+        return {
+            success: false,
+            error: 'Internal server error'
         }
     }
 }

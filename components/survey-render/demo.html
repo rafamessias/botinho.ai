@@ -204,6 +204,20 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.875rem center;
+            padding-right: 2.5rem;
+        }
+
+        select.form-input option {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
         .color-input-container {
             display: flex;
             gap: 0.5rem;
@@ -627,6 +641,23 @@
                     <input type="text" id="survey-id" class="form-input" value="cmgpmbm0m000hw5fktp7aje8r">
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label" for="position">Widget Position</label>
+                    <select id="position" class="form-input">
+                        <option value="inline">Inline (Default)</option>
+                        <option value="top-right">Top Right</option>
+                        <option value="top-left">Top Left</option>
+                        <option value="bottom-right">Bottom Right</option>
+                        <option value="bottom-left">Bottom Left</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="feedback-label">Feedback Button Label</label>
+                    <input type="text" id="feedback-label" class="form-input" value="Give Feedback"
+                        placeholder="Give Feedback">
+                </div>
+
                 <button class="show-widget-btn" onclick="updateWidget()">Show Widget</button>
             </div>
 
@@ -706,6 +737,11 @@ import { OpineeoWidget } from 'opineeo-react'
                 <h3 class="feature-title">Lightweight</h3>
                 <p class="feature-description">Minimal bundle size</p>
             </div>
+            <div class="feature-card">
+                <div class="feature-icon">📍</div>
+                <h3 class="feature-title">Flexible Positioning</h3>
+                <p class="feature-description">Anchor anywhere: inline or fixed corners</p>
+            </div>
         </div>
     </section>
 
@@ -755,14 +791,19 @@ import { OpineeoWidget } from 'opineeo-react'
             const apiKey = document.getElementById('api-key').value;
             const surveyId = document.getElementById('survey-id').value;
             const primaryColor = document.getElementById('primary-color').value;
+            const position = document.getElementById('position').value;
+            const feedbackLabel = document.getElementById('feedback-label').value;
 
             const codeExample = document.getElementById('code-example');
+            const positionAttr = position !== 'inline' ? `\n  position="${position}"` : '';
+            const feedbackLabelAttr = position !== 'inline' && feedbackLabel ? `\n  feedbackLabel="${feedbackLabel}"` : '';
+
             codeExample.innerHTML = `import { OpineeoWidget } from 'opineeo-react'
 
 &lt;OpineeoWidget
   token="${apiKey}"
   surveyId="${surveyId}"
-  customCSS=".sv { --primary: ${primaryColor}; --primary-foreground: #ffffff; }"
+  customCSS=".sv { --primary: ${primaryColor}; --primary-foreground: #ffffff; }"${positionAttr}${feedbackLabelAttr}
   onOpen={() => console.log('opened')}
   onClose={() => console.log('closed')}
   onSubmit={(data) => console.log(data)}
@@ -774,6 +815,8 @@ import { OpineeoWidget } from 'opineeo-react'
             const apiKey = document.getElementById('api-key').value;
             const surveyId = document.getElementById('survey-id').value;
             const primaryColor = document.getElementById('primary-color').value;
+            const position = document.getElementById('position').value;
+            const feedbackLabel = document.getElementById('feedback-label').value;
             const widgetContainer = document.getElementById('widget-container');
 
             // Remove existing widget
@@ -787,9 +830,10 @@ import { OpineeoWidget } from 'opineeo-react'
                 currentWidget = document.createElement('opineeo-survey');
                 currentWidget.setAttribute('survey-id', surveyId);
                 currentWidget.setAttribute('token', apiKey);
+                currentWidget.setAttribute('position', position);
+                currentWidget.setAttribute('feedback-label', feedbackLabel || 'Give Feedback');
                 currentWidget.setAttribute('oncomplete', 'handleSurveyComplete');
                 currentWidget.setAttribute('onclose', 'handleSurveyClose');
-                currentWidget.setAttribute('onopen', 'handleSurveyOpen');
 
                 // Add custom CSS for primary color
                 const style = document.createElement('style');
@@ -799,12 +843,18 @@ import { OpineeoWidget } from 'opineeo-react'
                         --primary-foreground: #ffffff;
                     }
                 `;
-                document.head.appendChild(style);
+                //document.head.appendChild(style);
 
-                widgetContainer.innerHTML = '';
-                widgetContainer.appendChild(currentWidget);
+                // For inline position, add to container. For anchored positions, add to body
+                if (position === 'inline') {
+                    widgetContainer.innerHTML = '';
+                    widgetContainer.appendChild(currentWidget);
+                } else {
+                    widgetContainer.innerHTML = '<div class="widget-placeholder">Widget is displayed in ' + position + ' position. Look for the feedback button!</div>';
+                    document.body.appendChild(currentWidget);
+                }
 
-                addEventLog('Widget Updated', `Created widget with Survey ID: ${surveyId}`);
+                addEventLog('Widget Updated', `Created widget with Survey ID: ${surveyId}, Position: ${position}`);
                 updateCodeExample();
             } else {
                 widgetContainer.innerHTML = '<div class="widget-placeholder">Please enter API Key and Survey ID</div>';
@@ -848,9 +898,13 @@ import { OpineeoWidget } from 'opineeo-react'
         function setupInputListeners() {
             const apiKeyInput = document.getElementById('api-key');
             const surveyIdInput = document.getElementById('survey-id');
+            const positionInput = document.getElementById('position');
+            const feedbackLabelInput = document.getElementById('feedback-label');
 
             apiKeyInput.addEventListener('input', updateCodeExample);
             surveyIdInput.addEventListener('input', updateCodeExample);
+            positionInput.addEventListener('change', updateCodeExample);
+            feedbackLabelInput.addEventListener('input', updateCodeExample);
         }
 
         // Theme management
@@ -915,7 +969,7 @@ import { OpineeoWidget } from 'opineeo-react'
             console.log('Opineeo Widget Demo loaded successfully!');
         });
     </script>
-    <script src="opineeo-0.0.1.js"></script>
+    <script src="opineeo.js"></script>
 
 </body>
 

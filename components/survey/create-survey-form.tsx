@@ -5,9 +5,11 @@ import { useTranslations } from "next-intl"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Sparkles } from "lucide-react"
 import { SurveyDetailsSection } from "@/components/survey/survey-details-section"
 import { QuestionsSection } from "@/components/survey/questions-section"
 import { StyleSection } from "@/components/survey/style-section"
+import { AISurveyGenerator } from "@/components/survey/ai-survey-generator"
 import { createSurvey } from "@/components/server-actions/survey"
 import { toast } from "sonner"
 import { QuestionFormat, SurveyType } from "@/lib/generated/prisma"
@@ -15,24 +17,9 @@ import { useRouter } from "next/navigation"
 import { useUser } from "../user-provider"
 import LoadingComp from "../loading-comp"
 import { UpgradeModal } from "@/components/upgrade-modal"
+import { CreateSurveyQuestion } from "./types"
 
-interface Question {
-    id: string
-    title: string
-    description: string
-    format: QuestionFormat
-    required: boolean
-    order: number
-    yesLabel?: string
-    noLabel?: string
-    buttonLabel?: string
-    options: Array<{
-        id?: string
-        text: string
-        order: number
-        isOther?: boolean
-    }>
-}
+type Question = CreateSurveyQuestion
 
 interface SurveyData {
     id?: string
@@ -54,7 +41,7 @@ interface SurveyData {
         titleFontSize: string
         bodyFontSize: string
         fontFamily: string
-        styleMode: 'basic' | 'advanced'
+        styleMode: 'none' | 'basic' | 'advanced'
         basicCSS?: string
         advancedCSS?: string
     }
@@ -76,6 +63,7 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
     const [loading, setLoading] = useState(false)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [upgradeLimit, setUpgradeLimit] = useState<number | undefined>(undefined)
+    const [showAIModal, setShowAIModal] = useState(true) // Start with modal open
 
     const userHasPermission = hasPermission()
     const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
@@ -115,14 +103,14 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
             textColor: "",
             buttonBackgroundColor: "",
             buttonTextColor: "",
-            margin: "16px 0px",
-            padding: "16px",
-            border: "1px solid #222222",
-            borderRadius: "6px",
-            titleFontSize: "18px",
-            bodyFontSize: "16px",
+            margin: "",
+            padding: "",
+            border: "",
+            borderRadius: "",
+            titleFontSize: "",
+            bodyFontSize: "",
             fontFamily: "",
-            styleMode: "basic" as const,
+            styleMode: "none" as const,
             basicCSS: "",
             advancedCSS: ""
         }
@@ -207,6 +195,21 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
         })
     }
 
+    const handleAISurveyGenerated = (data: {
+        surveyName: string
+        surveyDescription: string
+        typeId?: string
+        questions: Question[]
+    }) => {
+        setSurveyData(prev => ({
+            ...prev,
+            name: data.surveyName,
+            description: data.surveyDescription,
+            typeId: data.typeId || prev.typeId,
+            questions: data.questions
+        }))
+    }
+
     return (
         <div className="space-y-6">
             <LoadingComp isLoadingProp={loading} />
@@ -218,10 +221,26 @@ export const CreateSurveyForm = ({ surveyTypes }: { surveyTypes: SurveyType[] })
                 currentLimit={upgradeLimit}
             />
 
-            {/* Page Header */}
-            <div className="space-y-2">
+            {/* Page Header with AI Button */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <p className="text-muted-foreground">{t("description")}</p>
+                <Button
+                    size="sm"
+                    onClick={() => setShowAIModal(true)}
+                    className="gap-2 self-start sm:self-auto bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-300"
+                >
+                    <Sparkles className="h-4 w-4" />
+                    {t("aiGenerator.createWithAI")}
+                </Button>
             </div>
+
+            {/* AI Survey Generator Modal */}
+            <AISurveyGenerator
+                open={showAIModal}
+                onOpenChange={setShowAIModal}
+                onSurveyGenerated={handleAISurveyGenerated}
+                surveyTypes={surveyTypes.map(t => ({ id: t.id, name: t.name }))}
+            />
 
             {/* Survey Details Section */}
             <SurveyDetailsSection

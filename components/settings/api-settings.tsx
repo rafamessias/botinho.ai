@@ -208,7 +208,7 @@ export const ApiSettings = () => {
     // Code snippets for each token type
     const surveyWidgetCode = `<head>
 <!-- Opineeo Survey Web Component -->
-<script src="https://app.opineeo.com/opineeo-0.0.1.min.js"></script>
+<script src="https://app.opineeo.com/opineeo.min.js"></script>
 </head>
 <body>
 <!-- Survey container -->
