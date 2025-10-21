@@ -16,8 +16,8 @@ class o {
         this.branding = p.branding || false;
         this.position = p.position || 'inline'; // 'inline', 'top-right', 'top-left', 'bottom-right', 'bottom-left'
         this.feedbackLabel = p.feedbackLabel || 'Give Feedback';
-        //this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
-        this.apiUrl = 'http://localhost:3000/api/survey/v0';
+        this.apiUrl = 'https://app.opineeo.com/api/survey/v0';
+        //this.apiUrl = 'http://localhost:3000/api/survey/v0';
         this.i = 0;
         this.done = !1;
         this.s = !1;                 // submitting
