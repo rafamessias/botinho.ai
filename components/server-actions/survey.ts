@@ -11,6 +11,7 @@ import {
     decrementActiveSurveysInTransaction,
     getCurrentUsage
 } from "@/lib/services/usage-tracking"
+import { invalidateSurveyCache } from "@/app/api/survey/v0/route"
 
 // Helper function to get and cache team ID for better performance
 const getTeamIdCached = async (): Promise<number | null> => {
@@ -70,7 +71,7 @@ const surveyStyleSchema = z.object({
     titleFontSize: z.string().default("18px"),
     bodyFontSize: z.string().default("16px"),
     fontFamily: z.string().default("Inter"),
-    styleMode: z.enum(["basic", "advanced"]).default("basic"),
+    styleMode: z.enum(["none", "basic", "advanced"]).default("none"),
     basicCSS: z.string().optional(),
     advancedCSS: z.string().optional()
 })
@@ -506,6 +507,9 @@ export const updateSurvey = async (formData: FormData) => {
             timeout: 5000 // Reduced timeout due to optimized operations
         })
 
+        // Invalidate survey cache after successful update
+        invalidateSurveyCache(validatedData.id)
+
         revalidatePath("/survey")
         return { success: true, surveyId: result.id }
     } catch (error) {
@@ -773,6 +777,9 @@ export const deleteSurvey = async (id: string) => {
         }, {
             timeout: 3000 // Reduced timeout for delete operation
         })
+
+        // Invalidate survey cache after successful deletion
+        invalidateSurveyCache(id)
 
         revalidatePath("/survey")
         return { success: true }
@@ -1044,6 +1051,9 @@ export const updateSurveyStatus = async (id: string, status: SurveyStatus) => {
             timeout: 3000 // Reduced timeout for simple status update
         })
 
+        // Invalidate survey cache after successful status update
+        invalidateSurveyCache(id)
+
         revalidatePath("/survey")
         return { success: true }
     } catch (error) {
@@ -1258,6 +1268,9 @@ export const regenerateSurveyPublicToken = async (surveyId: string) => {
             where: { id: surveyId },
             data: { publicToken: newPublicToken }
         })
+
+        // Invalidate survey cache after token regeneration
+        invalidateSurveyCache(surveyId)
 
         return {
             success: true,

@@ -85,7 +85,7 @@ const getCachedSurvey = async (surveyId: string, teamId: number) => {
 };
 
 // Helper function to invalidate cache for a specific survey
-const invalidateSurveyCache = (surveyId: string) => {
+export const invalidateSurveyCache = (surveyId: string) => {
     const keysToDelete = Array.from(surveyCache.keys()).filter(key => key.startsWith(`${surveyId}-`));
     keysToDelete.forEach(key => surveyCache.delete(key));
 };
@@ -604,7 +604,7 @@ export async function GET(request: NextRequest) {
 
         // PERFORMANCE OPTIMIZATION: Process style data more efficiently
         const { advancedCSS, styleMode, basicCSS } = survey.style as SurveyStyle;
-        const customCSS = styleMode === StyleMode.advanced ? advancedCSS : basicCSS;
+        const customCSS = styleMode === StyleMode.none ? '' : styleMode === StyleMode.advanced ? advancedCSS : basicCSS;
 
         // 5 minutes from now
         const expiresAt = new Date(Date.now() + 1000 * 60 * 5);
@@ -632,7 +632,7 @@ export async function GET(request: NextRequest) {
             success: true,
             data: {
                 responseToken: newSurveyResponse.id,
-                style: customCSS,
+                ...(customCSS && { style: customCSS }),
                 questions: survey.questions,
                 branding: team.branding
             }

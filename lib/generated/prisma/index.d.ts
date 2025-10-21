@@ -173,6 +173,7 @@ export type ResponseStatus = (typeof ResponseStatus)[keyof typeof ResponseStatus
 
 
 export const StyleMode: {
+  none: 'none',
   basic: 'basic',
   advanced: 'advanced'
 };

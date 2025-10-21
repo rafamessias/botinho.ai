@@ -215,12 +215,12 @@ model SurveyStyle {
   textColor             String    @default("")
   buttonBackgroundColor String    @default("")
   buttonTextColor       String    @default("")
-  margin                String    @default("16px 0px")
-  padding               String    @default("16px")
-  borderRadius          String    @default("6px")
-  titleFontSize         String    @default("18px")
-  bodyFontSize          String    @default("16px")
-  fontFamily            String    @default("Inter")
+  margin                String    @default("")
+  padding               String    @default("")
+  borderRadius          String    @default("")
+  titleFontSize         String    @default("")
+  bodyFontSize          String    @default("")
+  fontFamily            String    @default("")
   basicCSS              String    @default("")
   styleMode             StyleMode @default(basic)
   advancedCSS           String?
@@ -228,7 +228,7 @@ model SurveyStyle {
   updatedAt             DateTime  @updatedAt
   surveyId              String    @unique
   teamId                Int
-  border                String    @default("1px solid #222222")
+  border                String    @default("")
   survey                Survey    @relation(fields: [surveyId], references: [id], onDelete: Cascade)
   team                  Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
@@ -505,6 +505,7 @@ enum ResponseStatus {
 }
 
 enum StyleMode {
+  none
   basic
   advanced
 }
