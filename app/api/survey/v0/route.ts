@@ -14,6 +14,8 @@ const MAX_CACHE_SIZE = 10000; // Prevent memory leaks
 
 // Helper function to get cached survey or fetch from database
 const getCachedSurvey = async (surveyId: string, teamId: number) => {
+
+    /* Commented out for now to avoid caching
     const cacheKey = `${surveyId}-${teamId}`;
     const cached = surveyCache.get(cacheKey);
 
@@ -31,6 +33,7 @@ const getCachedSurvey = async (surveyId: string, teamId: number) => {
             }
         }
     }
+*/
 
     // Fetch from database
     const survey = await prisma.survey.findFirst({
@@ -76,10 +79,12 @@ const getCachedSurvey = async (surveyId: string, teamId: number) => {
         }
     });
 
+    /* Commented out for now to avoid caching
     // Cache the result if found
     if (survey) {
         surveyCache.set(cacheKey, { data: survey, timestamp: Date.now() });
     }
+    */
 
     return survey;
 };
