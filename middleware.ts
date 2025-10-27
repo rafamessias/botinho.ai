@@ -4,14 +4,6 @@ import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
 
-// Survey routes that should be accessible for both logged-in and logged-out users
-// Pre-compiled regex for performance
-const surveyRoutePattern = new RegExp(`^\/(${routing.locales.join('|')})\/survey\/[^/]+\/?$`);
-
-function isSurveyRoute(path: string) {
-    return surveyRoutePattern.test(path);
-}
-
 const publicRoutes = routing.locales.flatMap(locale => [
     `/${locale}/sign-in`,
     `/sign-in`,
@@ -75,11 +67,6 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.redirect(newUrl);
     }
 
-    // Check if this is a survey route - these are accessible to everyone (logged in or not)
-    if (isSurveyRoute(pathname)) {
-        return intlMiddleware(request);
-    }
-
     // first, let next-intl detect and set request.nextUrl.locale
     const intlResponse = intlMiddleware(request);
 
@@ -95,7 +82,7 @@ export default async function middleware(request: NextRequest) {
     const isAuthenticated = !!sessionToken;
 
     const userLanguage = request.cookies.get('user-language')?.value;
-    const userLocale = userLanguage ? userLanguage === 'pt_BR' ? 'pt-BR' : 'en' : routing.defaultLocale;
+    const userLocale = userLanguage ? (userLanguage === 'pt_BR' ? 'pt-BR' : 'en') : routing.defaultLocale;
 
     // If user is logged in, handle locale and redirect logic
     if (isAuthenticated) {
