@@ -1,7 +1,0 @@
--- AlterTable
-ALTER TABLE "public"."surveys" ALTER COLUMN "ResponseRate" SET DEFAULT 0,
-ALTER COLUMN "ResponseRate" SET DATA TYPE DOUBLE PRECISION;
-
--- AlterTable
-ALTER TABLE "public"."teams" ALTER COLUMN "ResponseRate" SET DEFAULT 0,
-ALTER COLUMN "ResponseRate" SET DATA TYPE DOUBLE PRECISION;

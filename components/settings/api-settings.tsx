@@ -352,7 +352,7 @@ getSurveyResults('your-survey-id');`
                 setTeamTokens(prev => ({
                     ...prev,
                     [teamId]: {
-                        tokenSurvery: result.team?.tokenSurvery || null,
+                        ...prev[teamId],
                         tokenApi: result.team?.tokenApi || null
                     }
                 }))

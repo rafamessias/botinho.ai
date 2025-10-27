@@ -6,7 +6,6 @@ import bcrypt from "bcryptjs"
 import { CredentialsSignin } from "next-auth"
 import WelcomeEmail from "@/emails/WelcomeEmail"
 import resend from "@/lib/resend"
-import { addDefaultSurveyTypes } from "@/components/server-actions/team"
 import { createCustomerSubscription } from "@/lib/customer-subscription"
 import { BillingInterval, PlanType, SubscriptionStatus } from "@/lib/generated/prisma"
 import { cookies } from "next/headers"
@@ -254,8 +253,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             where: { id: newUser.id },
                             data: { defaultTeamId: newTeam.id }
                         });
-
-                        await addDefaultSurveyTypes(newTeam.id)
 
                         // Create subscription for Google OAuth users
                         try {

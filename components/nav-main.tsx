@@ -6,7 +6,6 @@ import { usePathname, Link } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { useUser } from "@/components/user-provider"
 import { updateDefaultTeamAction } from "@/components/server-actions/user"
-import { FeedbackSurveyModal } from "@/components/feedback-survey-modal"
 
 import {
   SidebarGroup,
@@ -182,11 +181,6 @@ export function NavMain({
   const t = useTranslations("NavMain")
   const { hasPermission } = useUser()
   const userHasPermission = hasPermission()
-  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false)
-
-  // TODO: Configure these values with your actual survey ID and token
-  const FEEDBACK_SURVEY_ID = "cmgplpcbi00033ue9vg6478ic"
-  const FEEDBACK_SURVEY_TOKEN = "$2b$10$7JyGsAfU/V5Z5vpbB/5oo.hubThQW59ny6wNdw1VBWTIsWZ7lD78G"
 
   const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
 
@@ -242,7 +236,6 @@ export function NavMain({
         <SidebarMenu className="mt-auto">
           <SidebarMenuItem>
             <SidebarMenuButton
-              onClick={() => setFeedbackModalOpen(true)}
               className="cursor-pointer [&:hover_.star-bounce]:animate-bounce [&:hover_.star-text-yellow]:text-yellow-400 [&:hover_.star-fill-yellow]:fill-yellow-400"
             >
               <IconStar className="h-5 w-5 star-bounce star-text-yellow star-fill-yellow" />
@@ -251,12 +244,6 @@ export function NavMain({
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
-      <FeedbackSurveyModal
-        open={feedbackModalOpen}
-        onOpenChange={setFeedbackModalOpen}
-        surveyId={FEEDBACK_SURVEY_ID}
-        token={FEEDBACK_SURVEY_TOKEN}
-      />
     </SidebarGroup>
   )
 }

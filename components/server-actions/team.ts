@@ -9,7 +9,7 @@ import { generateConfirmationToken, getCurrentLocale } from "./auth"
 import bcrypt from "bcryptjs"
 import resend from "@/lib/resend"
 import TeamInvitationEmail from "@/emails/TeamInvitationEmail"
-import { validateApiAccess, validateRemoveBranding } from "@/lib/services/subscription-validation"
+import { validateApiAccess } from "@/lib/services/subscription-validation"
 
 // Validation schemas
 const createTeamSchema = z.object({
@@ -107,14 +107,6 @@ export const createTeamAction = async (formData: z.infer<typeof createTeamSchema
                     isOwner: true,
                     teamMemberStatus: "accepted",
                 }
-            })
-
-            // Add default survey types to the team using createMany for efficiency
-            let defaultSurveyTypes = [{ name: "Product Feedback", isDefault: true, teamId: team.id }]
-            defaultSurveyTypes.push(...["Customer Satisfaction", "Employee Engagement", "Market Research", "Event Feedback", "User Experience"].map(name => ({ name, isDefault: false, teamId: team.id })))
-
-            await tx.surveyType.createMany({
-                data: defaultSurveyTypes
             })
 
             // Update user's default team
@@ -663,11 +655,7 @@ export const getUserTeamsAction = async (onlyMyTeamsMembers: boolean = false) =>
                 id: true,
                 name: true,
                 description: true,
-                tokenSurvery: true,
-                totalSurveys: true,
-                totalActiveSurveys: true,
-                totalResponses: true,
-                responseRate: true,
+                tokenApi: true,
                 members: {
                     ...(onlyMyTeamsMembers && {
                         where: {
@@ -697,46 +685,6 @@ export const getUserTeamsAction = async (onlyMyTeamsMembers: boolean = false) =>
     } catch (error) {
         console.error("Get user teams error:", error)
         return { success: false, error: "Failed to get teams" }
-    }
-}
-
-/**
- * Add default survey types to existing teams that don't have any survey types
- * This can be called manually to migrate existing teams
- */
-export const addDefaultSurveyTypes = async (teamId: number) => {
-    try {
-        // Default survey type templates
-        const defaultSurveyTypes = [
-            { name: "Product Feedback", isDefault: true },
-            { name: "Customer Satisfaction", isDefault: false },
-            { name: "Employee Engagement", isDefault: false },
-            { name: "Market Research", isDefault: false },
-            { name: "Event Feedback", isDefault: false },
-            { name: "User Experience", isDefault: false }
-        ]
-
-        // Add default survey types to each team
-        for (const surveyType of defaultSurveyTypes) {
-            await prisma.surveyType.create({
-                data: {
-                    name: surveyType.name,
-                    isDefault: surveyType.isDefault,
-                    teamId: teamId
-                }
-            })
-        }
-
-        return {
-            success: true,
-            message: `Added default survey types to team ${teamId}`
-        }
-    } catch (error) {
-        console.error("Error adding default survey types to team:", error)
-        return {
-            success: false,
-            error: `Failed to add default survey types to team ${teamId}`
-        }
     }
 }
 
@@ -788,8 +736,7 @@ export const generateTeamTokenAction = async (formData: z.infer<typeof generateT
         // Update team with the new token based on type
         const updateData = validatedData.tokenType === "api"
             ? { tokenApi: token }
-            : { tokenSurvery: token }
-
+            : {}
         const updatedTeam = await prisma.team.update({
             where: { id: validatedData.teamId },
             data: updateData
@@ -798,7 +745,7 @@ export const generateTeamTokenAction = async (formData: z.infer<typeof generateT
         return {
             success: true,
             message: t("messages.tokenGenerated"),
-            token: validatedData.tokenType === "api" ? updatedTeam.tokenApi : updatedTeam.tokenSurvery
+            token: updatedTeam.tokenApi
         }
 
     } catch (error) {
@@ -860,7 +807,7 @@ export const regenerateTeamTokenAction = async (formData: z.infer<typeof regener
         // Update team with the new token based on type (this will invalidate the old one)
         const updateData = validatedData.tokenType === "api"
             ? { tokenApi: newToken }
-            : { tokenSurvery: newToken }
+            : {}
 
         const updatedTeam = await prisma.team.update({
             where: { id: validatedData.teamId },
@@ -870,7 +817,7 @@ export const regenerateTeamTokenAction = async (formData: z.infer<typeof regener
         return {
             success: true,
             message: t("messages.tokenRegenerated"),
-            token: validatedData.tokenType === "api" ? updatedTeam.tokenApi : updatedTeam.tokenSurvery
+            token: updatedTeam.tokenApi
         }
 
     } catch (error) {
@@ -910,7 +857,7 @@ export const getTeamTokenAction = async (teamId: number) => {
         // Get team with tokens
         const team = await prisma.team.findUnique({
             where: { id: teamId },
-            select: { id: true, name: true, tokenSurvery: true, tokenApi: true }
+            select: { id: true, name: true, tokenApi: true }
         })
 
         if (!team) {
@@ -922,7 +869,6 @@ export const getTeamTokenAction = async (teamId: number) => {
             team: {
                 id: team.id,
                 name: team.name,
-                tokenSurvery: team.tokenSurvery,
                 tokenApi: team.tokenApi
             }
         }
@@ -996,10 +942,7 @@ export const getTeamById = async (teamId: number) => {
             select: {
                 id: true,
                 name: true,
-                totalSurveys: true,
-                totalActiveSurveys: true,
-                totalResponses: true,
-                responseRate: true,
+                tokenApi: true
             }
         })
 
@@ -1015,109 +958,3 @@ export const getTeamById = async (teamId: number) => {
     }
 }
 
-/**
- * Update team branding setting
- */
-export const updateTeamBrandingAction = async (formData: z.infer<typeof updateTeamBrandingSchema>) => {
-    const t = await getTranslations("Settings.branding")
-
-    try {
-        const session = await auth()
-        if (!session?.user?.email) {
-            return { success: false, error: "Not authenticated" }
-        }
-
-        const validatedData = updateTeamBrandingSchema.parse(formData)
-
-        // Check if user is admin of the team
-        const teamMember = await prisma.teamMember.findFirst({
-            where: {
-                teamId: validatedData.teamId,
-                user: { email: session.user.email },
-                isAdmin: true,
-            }
-        })
-
-        if (!teamMember) {
-            return { success: false, error: "Not authorized to update branding for this team" }
-        }
-
-        // If trying to disable branding (branding = false), validate subscription
-        if (!validatedData.branding) {
-            const canRemoveBranding = await validateRemoveBranding(validatedData.teamId)
-
-            if (!canRemoveBranding) {
-                return {
-                    success: false,
-                    error: t("upgradeRequired"),
-                    requiresUpgrade: true,
-                    limitType: "remove_branding"
-                }
-            }
-        }
-
-        // Update team branding setting
-        const updatedTeam = await prisma.team.update({
-            where: { id: validatedData.teamId },
-            data: { branding: validatedData.branding }
-        })
-
-        return {
-            success: true,
-            message: validatedData.branding ? t("brandingEnabled") : t("brandingDisabled"),
-            branding: updatedTeam.branding
-        }
-
-    } catch (error) {
-        console.error("Update team branding error:", error)
-
-        if (error instanceof z.ZodError) {
-            return { success: false, error: error.errors[0].message }
-        }
-
-        return { success: false, error: t("updateFailed") }
-    }
-}
-
-/**
- * Get team branding setting
- */
-export const getTeamBrandingAction = async (teamId: number) => {
-    try {
-        const session = await auth()
-        if (!session?.user?.email) {
-            return { success: false, error: "Not authenticated" }
-        }
-
-        // Check if user is a member of the team
-        const teamMember = await prisma.teamMember.findFirst({
-            where: {
-                teamId,
-                user: { email: session.user.email },
-            }
-        })
-
-        if (!teamMember) {
-            return { success: false, error: "Not authorized to view this team" }
-        }
-
-        // Get team branding setting
-        const team = await prisma.team.findUnique({
-            where: { id: teamId },
-            select: { branding: true }
-        })
-
-        if (!team) {
-            return { success: false, error: "Team not found" }
-        }
-
-        return {
-            success: true,
-            branding: team.branding
-        }
-
-    } catch (error) {
-        console.error("Get team branding error:", error)
-        return { success: false, error: "Failed to get team branding" }
-    }
-}

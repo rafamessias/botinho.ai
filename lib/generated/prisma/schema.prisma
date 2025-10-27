@@ -32,7 +32,7 @@ model User {
   language             Language
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
-  avatarId             Int?
+  avatarId             String?
   idProvider           String?
   resetPasswordExpires DateTime?
   theme                Theme        @default(system)
@@ -40,8 +40,9 @@ model User {
   accounts             Account[]
   sessions             Session[]
   teamMembers          TeamMember[] @relation("UserTeamMembers")
-  avatar               File?        @relation("UserAvatar", fields: [avatarId], references: [id])
+  avatar               File?        @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: Cascade)
   team                 Team?        @relation("UserDefaultTeam", fields: [defaultTeamId], references: [id])
+  files                File[]       @relation("UserFile")
 
   @@index([email])
   @@index([phone])
@@ -53,7 +54,7 @@ model User {
 }
 
 model File {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   name      String
   url       String
   publicId  String?
@@ -61,10 +62,14 @@ model File {
   version   String?
   mimeType  String?
   size      Int?
+  userId    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   avatarFor User[]   @relation("UserAvatar")
+  user      User?    @relation("UserFile", fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([id])
+  @@index([userId])
   @@map("files")
 }
 
@@ -107,34 +112,17 @@ model VerificationToken {
 }
 
 model Team {
-  id                 Int                     @id @default(autoincrement())
-  name               String
-  description        String?
-  tokenSurvery       String?                 @unique
-  tokenApi           String?                 @unique
-  branding           Boolean                 @default(true)
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime                @updatedAt
-  responseRate       Float                   @default(0)
-  totalActiveSurveys Int                     @default(0)
-  totalOpenSurveys   Int                     @default(0)
-  totalResponses     Int                     @default(0)
-  totalSurveys       Int                     @default(0)
-  questionOptions    QuestionOption[]
-  questionResponses  QuestionResponse[]
-  questions          Question[]
-  surveyResponses    SurveyResponse[]
-  surveysStyle       SurveyStyle[]
-  surveyTypes        SurveyType[]
-  surveys            Survey[]
-  members            TeamMember[]            @relation("TeamMembers")
-  user               User[]                  @relation("UserDefaultTeam")
-  responseSummaries  SurveyResponseSummary[]
-  subscriptions      CustomerSubscription[]
-  usageTracking      UsageTracking[]
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  description          String?
+  tokenApi             String?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  members              TeamMember[]           @relation("TeamMembers")
+  user                 User[]                 @relation("UserDefaultTeam")
+  CustomerSubscription CustomerSubscription[]
+  UsageTracking        UsageTracking[]
 
-  @@index([tokenSurvery])
-  @@index([tokenApi])
   @@index([createdAt])
   @@map("teams")
 }
@@ -162,243 +150,19 @@ model TeamMember {
   @@map("team_members")
 }
 
-model SurveyType {
-  id        String   @id @default(cuid())
-  name      String
-  isDefault Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  teamId    Int
-  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  surveys   Survey[]
-
-  @@index([teamId])
-  @@index([isDefault])
-  @@index([name])
-  @@map("survey_types")
-}
-
-model Survey {
-  id                     String                  @id @default(cuid())
-  name                   String
-  description            String?
-  context                String?
-  status                 SurveyStatus            @default(draft)
-  publicToken            String?
-  allowMultipleResponses Boolean                 @default(true)
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
-  teamId                 Int
-  typeId                 String?
-  responseRate           Float                   @default(0)
-  totalOpenSurveys       Int                     @default(0)
-  totalResponses         Int                     @default(0)
-  questions              Question[]
-  responses              SurveyResponse[]
-  style                  SurveyStyle?
-  team                   Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  type                   SurveyType?             @relation(fields: [typeId], references: [id])
-  SurveyResponseSummary  SurveyResponseSummary[]
-
-  @@index([teamId])
-  @@index([typeId])
-  @@index([status])
-  @@index([publicToken])
-  @@index([createdAt])
-  @@index([teamId, status])
-  @@map("surveys")
-}
-
-model SurveyStyle {
-  id                    String    @id @default(cuid())
-  backgroundColor       String    @default("")
-  textColor             String    @default("")
-  buttonBackgroundColor String    @default("")
-  buttonTextColor       String    @default("")
-  margin                String    @default("")
-  padding               String    @default("")
-  borderRadius          String    @default("")
-  titleFontSize         String    @default("")
-  bodyFontSize          String    @default("")
-  fontFamily            String    @default("")
-  basicCSS              String    @default("")
-  styleMode             StyleMode @default(basic)
-  advancedCSS           String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  surveyId              String    @unique
-  teamId                Int
-  border                String    @default("")
-  survey                Survey    @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  team                  Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@map("survey_styles")
-}
-
-model Question {
-  id                    String                  @id @default(cuid())
-  title                 String
-  description           String?
-  format                QuestionFormat
-  required              Boolean                 @default(false)
-  order                 Int
-  yesLabel              String?
-  noLabel               String?
-  buttonLabel           String?
-  createdAt             DateTime                @default(now())
-  updatedAt             DateTime                @updatedAt
-  surveyId              String
-  teamId                Int
-  addOther              Boolean                 @default(false)
-  options               QuestionOption[]
-  responses             QuestionResponse[]
-  survey                Survey                  @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  team                  Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  SurveyResponseSummary SurveyResponseSummary[]
-
-  @@index([surveyId])
-  @@index([teamId])
-  @@index([surveyId, order])
-  @@index([format])
-  @@map("questions")
-}
-
-model QuestionOption {
-  id                    String                  @id @default(cuid())
-  text                  String
-  order                 Int
-  createdAt             DateTime                @default(now())
-  updatedAt             DateTime                @updatedAt
-  questionId            String
-  teamId                Int
-  isOther               Boolean                 @default(false)
-  question              Question                @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  team                  Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  responses             QuestionResponse[]
-  SurveyResponseSummary SurveyResponseSummary[]
-
-  @@index([questionId])
-  @@index([teamId])
-  @@index([questionId, order])
-  @@index([isOther])
-  @@map("question_options")
-}
-
-model SurveyResponse {
-  id                    String                  @id @default(cuid())
-  status                ResponseStatus          @default(pending)
-  userId                String?
-  userIp                String?
-  extraInfo             String?
-  origin                String?
-  expiresAt             DateTime?
-  submittedAt           DateTime?
-  createdAt             DateTime                @default(now())
-  updatedAt             DateTime                @updatedAt
-  surveyId              String
-  teamId                Int
-  questionResponses     QuestionResponse[]
-  survey                Survey                  @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  team                  Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  SurveyResponseSummary SurveyResponseSummary[]
-
-  @@index([surveyId])
-  @@index([teamId])
-  @@index([status])
-  @@index([userId])
-  @@index([submittedAt])
-  @@index([surveyId, status])
-  @@index([teamId, status])
-  @@map("survey_responses")
-}
-
-// The following model stores pre-aggregated summary data for survey responses by question.
-// This enables efficient reporting and avoids recalculating counts on every request.
-
-model SurveyResponseSummary {
-  id             String          @id @default(cuid())
-  surveyId       String
-  questionId     String
-  questionTitle  String?
-  responseId     String
-  optionId       String? // null for open-ended or non-option questions
-  textValue      String?
-  questionFormat QuestionFormat?
-  isOther        Boolean?        @default(false)
-  numberValue    Int?
-  booleanValue   Boolean?
-  teamId         Int
-  responseCount  Int
-  lastUpdated    DateTime        @updatedAt
-
-  // Relations
-  survey   Survey          @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  question Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  option   QuestionOption? @relation(fields: [optionId], references: [id])
-  team     Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  response SurveyResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
-
-  @@unique([surveyId, questionId, optionId, teamId])
-  @@unique([surveyId, questionId, numberValue, teamId])
-  @@unique([surveyId, questionId, booleanValue, teamId])
-  @@index([surveyId])
-  @@index([questionId])
-  @@index([teamId])
-  @@index([responseId])
-  @@index([optionId])
-  @@index([questionFormat])
-  @@index([lastUpdated])
-  @@map("survey_response_summaries")
-}
-
-model QuestionResponse {
-  id             String          @id @default(cuid())
-  isOther        Boolean?        @default(false)
-  textValue      String?
-  numberValue    Int?
-  booleanValue   Boolean?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  questionId     String
-  questionTitle  String?
-  questionFormat QuestionFormat?
-  optionId       String?
-  responseId     String
-  teamId         Int
-  option         QuestionOption? @relation(fields: [optionId], references: [id])
-  question       Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  response       SurveyResponse  @relation(fields: [responseId], references: [id], onDelete: Cascade)
-  team           Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@index([questionId])
-  @@index([responseId])
-  @@index([teamId])
-  @@index([optionId])
-  @@index([questionFormat])
-  @@index([questionId, optionId])
-  @@map("question_responses")
-}
-
 model SubscriptionPlan {
-  id                    String                 @id @default(cuid())
-  planType              PlanType
-  stripeProductId       String?
-  stripePriceIdMonthly  String?
-  stripePriceIdYearly   String?
-  priceMonthly          Decimal                @default(0) @db.Decimal(10, 2)
-  priceYearly           Decimal                @default(0) @db.Decimal(10, 2)
-  currency              String                 @default("USD")
-  maxActiveSurveys      Int                    @default(0)
-  maxResponses          Int                    @default(0)
-  maxCompletedResponses Int                    @default(0)
-  removeBranding        Boolean                @default(false)
-  allowApiAccess        Boolean                @default(false)
-  allowExport           Boolean                @default(false)
-  allowPublicPages      Boolean                @default(false)
-  isActive              Boolean                @default(true)
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
-  subscriptions         CustomerSubscription[]
+  id                   String                 @id @default(cuid())
+  planType             PlanType
+  stripeProductId      String?
+  stripePriceIdMonthly String?
+  stripePriceIdYearly  String?
+  priceMonthly         Decimal                @default(0) @db.Decimal(10, 2)
+  priceYearly          Decimal                @default(0) @db.Decimal(10, 2)
+  currency             String                 @default("USD")
+  isActive             Boolean                @default(true)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  subscriptions        CustomerSubscription[]
 
   @@index([planType])
   @@index([isActive])
@@ -481,33 +245,6 @@ enum Theme {
   light
   dark
   system
-}
-
-enum SurveyStatus {
-  draft
-  published
-  archived
-}
-
-enum QuestionFormat {
-  YES_NO
-  STAR_RATING
-  LONG_TEXT
-  STATEMENT
-  SINGLE_CHOICE
-  MULTIPLE_CHOICE
-}
-
-enum ResponseStatus {
-  pending
-  completed
-  abandoned
-}
-
-enum StyleMode {
-  none
-  basic
-  advanced
 }
 
 enum PlanType {
