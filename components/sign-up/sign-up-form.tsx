@@ -43,7 +43,7 @@ export function SignUpForm({
     const signUpSchema = z.object({
         name: z.string().min(2, t("validation.nameMinLength")),
         email: z.string().email(t("validation.emailRequired")),
-        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^\+\d{10,15}$/, t("validation.phoneInvalid")),
+        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^\+\d{10,15}$/, t("validation.phoneInvalid")).optional(),
         password: z.string().min(6, t("validation.passwordMinLength")),
         confirmPassword: z.string().min(6, t("validation.confirmPasswordMinLength")),
     }).refine((data) => data.password === data.confirmPassword, {
@@ -65,7 +65,9 @@ export function SignUpForm({
 
     const onSubmit = async (data: SignUpFormData) => {
         try {
-            const result = await signUpAction(data)
+            // Get plan parameter from URL
+            const planParam = searchParams.get("plan")
+            const result = await signUpAction(data, planParam)
 
             if (result?.success === false) {
                 toast.error(result.error)
@@ -77,7 +79,7 @@ export function SignUpForm({
                     // Redirect to OTP page with email and phone parameters
                     const params = new URLSearchParams({
                         email: data.email,
-                        phone: data.phone
+                        phone: data.phone || ""
                     })
                     router.push(`/${locale}/sign-up/otp?${params.toString()}`)
                 } else {
@@ -94,8 +96,19 @@ export function SignUpForm({
     const handleGoogleSignUp = async () => {
         try {
             setIsGoogleLoading(true)
-            // Get redirect parameter from URL
+            // Get redirect parameter and plan/interval parameters from URL
             const redirectParam = searchParams.get("redirect")
+            const planParam = searchParams.get("plan")
+            const intervalParam = searchParams.get("interval")
+
+            // Store plan and interval parameters in cookies for Google OAuth flow
+            if (planParam) {
+                document.cookie = `signup_plan=${planParam}; path=/; max-age=300` // 5 minutes
+            }
+            if (intervalParam) {
+                document.cookie = `signup_interval=${intervalParam}; path=/; max-age=300` // 5 minutes
+            }
+
             await googleSignInAction(redirectParam || undefined)
             // NextAuth will handle the redirect after successful Google sign-up
         } catch (error) {
@@ -229,8 +242,8 @@ export function SignUpForm({
                 </CardContent>
             </Card>
             <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-                {t("termsText")} <Link href="#">{t("termsOfService")}</Link>{" "}
-                {t("and")} <Link href="#">{t("privacyPolicy")}</Link>.
+                {t("termsText")} <Link target="_blank" href="https://opineeo.com/terms-of-service">{t("termsOfService")}</Link>{" "}
+                {t("and")} <Link target="_blank" href="https://opineeo.com/privacy-policy">{t("privacyPolicy")}</Link>.
             </div>
         </div>
     )

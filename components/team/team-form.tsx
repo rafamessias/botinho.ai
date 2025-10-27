@@ -26,7 +26,7 @@ interface TeamFormProps {
         name: string
         description?: string | null
     }
-    onSuccess?: () => void
+    onSuccess?: (newTeamId?: number) => void
     onCancel?: () => void
 }
 
@@ -62,7 +62,9 @@ export const TeamForm = ({ team, onSuccess, onCancel }: TeamFormProps) => {
 
             if (result?.success) {
                 toast.success(result.message)
-                onSuccess?.()
+                // Pass the team ID for new teams, undefined for updates
+                const newTeamId = team ? undefined : result.team?.id
+                onSuccess?.(newTeamId)
             } else {
                 toast.error(result?.error || "Operation failed")
             }
@@ -89,6 +91,7 @@ export const TeamForm = ({ team, onSuccess, onCancel }: TeamFormProps) => {
                     <div className="space-y-2">
                         <Label htmlFor="name">{t("form.name")}</Label>
                         <Input
+                            autoFocus
                             id="name"
                             placeholder={t("form.namePlaceholder")}
                             {...register("name")}
@@ -111,17 +114,18 @@ export const TeamForm = ({ team, onSuccess, onCancel }: TeamFormProps) => {
                     </div>
 
                     <div className="flex gap-2 pt-4">
+
+                        {onCancel && (
+                            <Button type="button" variant="outline" onClick={onCancel}>
+                                {t("form.cancel")}
+                            </Button>
+                        )}
                         <Button type="submit" disabled={isSubmitting}>
                             {isSubmitting
                                 ? (team ? t("form.updating") : t("form.creating"))
                                 : (team ? t("form.update") : t("form.create"))
                             }
                         </Button>
-                        {onCancel && (
-                            <Button type="button" variant="outline" onClick={onCancel}>
-                                {t("form.cancel")}
-                            </Button>
-                        )}
                     </div>
                 </form>
             </CardContent>

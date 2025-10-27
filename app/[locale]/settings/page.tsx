@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
+import { ApiSettings } from "@/components/settings/api-settings"
 import {
     SidebarInset,
     SidebarProvider,
@@ -27,7 +28,7 @@ export default function SettingsPage() {
             <SidebarInset>
                 <SiteHeader title={t("title")} />
                 <div className="flex flex-1 flex-col">
-                    <div className="@container/main flex flex-1 flex-col gap-2">
+                    <div className="@container/main flex flex-1 flex-col gap-2 max-w-4xl w-full mx-auto">
                         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
                             <div className="px-4 lg:px-6">
                                 <div className="space-y-6">
@@ -38,29 +39,31 @@ export default function SettingsPage() {
                                     </div>
 
                                     <div className="grid gap-6">
-                                        <Card>
+                                        <Card className="">
                                             <CardHeader>
                                                 <CardTitle>{t("appearance.title")}</CardTitle>
                                                 <CardDescription>
                                                     {t("appearance.description")}
                                                 </CardDescription>
                                             </CardHeader>
-                                            <CardContent>
+                                            <CardContent className="">
                                                 <ThemeSelector />
                                             </CardContent>
                                         </Card>
 
-                                        <Card>
+                                        <Card className="">
                                             <CardHeader>
                                                 <CardTitle>{t("language.title")}</CardTitle>
                                                 <CardDescription>
                                                     {t("language.description")}
                                                 </CardDescription>
                                             </CardHeader>
-                                            <CardContent>
+                                            <CardContent className="">
                                                 <LanguageSelector />
                                             </CardContent>
                                         </Card>
+
+                                        <ApiSettings />
                                     </div>
                                 </div>
                             </div>

@@ -1,5 +1,5 @@
 export const emailConfig = {
-    fromEmail: "SaaS Framework <noreply@saasframework.com>",
-    companyName: "Saas",
-    logoURL: `${process.env.NEXT_PUBLIC_APP_URL}/placeholder-logo.png`,
+    fromEmail: "Opineeo <contact@opineeo.com>",
+    companyName: "Opineeo",
+    logoURL: `${process.env.NEXT_PUBLIC_APP_URL}/opineeo-logo.png`,
 }

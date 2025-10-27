@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { IconPlus, IconEdit, IconUsers, IconChevronDown } from "@tabler/icons-react"
+import { IconPlus, IconEdit, IconUsers, IconChevronDown, IconTrash, IconCheck } from "@tabler/icons-react"
 import { toast } from "sonner"
 import { TeamForm } from "@/components/team/team-form"
 import { InviteMemberForm } from "@/components/team/invite-member-form"
@@ -24,7 +24,19 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+//import { cn } from "@/lib/utils"
+//import { deleteTeamAction } from "@/components/server-actions/team"
 
 interface Team {
     id: number
@@ -54,10 +66,10 @@ interface TeamDashboardProps {
 
 export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProps) => {
     const t = useTranslations("Team")
+    const tCommon = useTranslations("Common")
     const { user, refreshUser } = useUser()
     const [teams, setTeams] = useState<Team[]>(initialTeams)
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(initialTeams.length > 0 ? initialTeams[0] : null)
-
 
     // Use current user ID from user context if available, fallback to prop
     const currentUserIdFromContext = user?.id || currentUserId
@@ -65,31 +77,19 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
     const [showEditForm, setShowEditForm] = useState(false)
     const [showInviteForm, setShowInviteForm] = useState(false)
     const [open, setOpen] = useState(false)
+    const [pendingNewTeamId, setPendingNewTeamId] = useState<number | null>(null)
 
-    // Update teams from user context when user data changes
-    useEffect(() => {
-        if (user?.teams) {
-            setTeams(user.teams as Team[])
-            // Update selected team if it still exists in the new data
-            if (selectedTeam) {
-                const updatedTeam = user.teams.find(t => t.id === selectedTeam.id)
-                if (updatedTeam) {
-                    setSelectedTeam(updatedTeam as Team)
-                } else if (user.teams.length > 0) {
-                    // If selected team no longer exists, select the first available team
-                    setSelectedTeam(user.teams[0] as Team)
-                }
-            } else if (user.teams.length > 0) {
-                // If no team is selected, select the first one
-                setSelectedTeam(user.teams[0] as Team)
-            }
-        }
-    }, [user?.teams, selectedTeam])
 
-    const handleTeamUpdate = async () => {
+    const handleTeamUpdate = async (newTeamId?: number) => {
         try {
-            // Refresh user data which includes teams
-            await refreshUser(false)
+            // If a new team was created, set it as pending
+            if (newTeamId) {
+                setPendingNewTeamId(newTeamId)
+            }
+
+            // Refresh user data which includes teams (set to true to refresh teams)
+            await refreshUser(true)
+
             toast.success(t("messages.teamsUpdated"))
         } catch (error) {
             console.error("Failed to refresh teams:", error)
@@ -103,6 +103,37 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
         )
         return isAdmin
     }
+
+    const isCurrentUserOwner = (team: Team) => {
+        const isOwner = team.members.some(m =>
+            m.user.id === currentUserIdFromContext && m.isOwner
+        )
+        return isOwner
+    }
+
+    /*
+    const handleDeleteTeam = async (teamId: number) => {
+        try {
+            setIsDeletingTeam(true)
+            const result = await deleteTeamAction({ teamId })
+
+            if (result.success) {
+                toast.success(result.message)
+                // Refresh user data to update teams list
+                await refreshUser(true)
+                // Clear selected team if it was deleted
+                setSelectedTeam(null)
+            } else {
+                toast.error(result.error || "Failed to delete team")
+            }
+        } catch (error) {
+            console.error("Delete team error:", error)
+            toast.error("An unexpected error occurred")
+        } finally {
+            setIsDeletingTeam(false)
+        }
+    }
+    */
 
     if (teams.length === 0) {
         return (
@@ -119,9 +150,9 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                         <div className="max-w-md w-full">
                             <TeamForm
-                                onSuccess={() => {
+                                onSuccess={(newTeamId) => {
                                     setShowCreateForm(false)
-                                    handleTeamUpdate()
+                                    handleTeamUpdate(newTeamId)
                                 }}
                                 onCancel={() => setShowCreateForm(false)}
                             />
@@ -139,8 +170,8 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
             </div>
 
             {/* Main Team Card */}
-            <Card className="border-none">
-                <CardHeader className="space-y-4 lg:space-y-6">
+            <Card className="border-none p-0 shadow-none bg-transparent">
+                <CardHeader className="space-y-4 lg:space-y-6 p-0">
                     {/* Team Selection and Actions */}
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div className="flex items-center gap-4">
@@ -171,9 +202,9 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                                             setOpen(false)
                                                         }}
                                                     >
-                                                        <IconUsers className="mr-2 h-4 w-4" />
+                                                        <IconUsers className="mr-2 h-4 w-4 text-muted" />
                                                         <span className="truncate">{team.name}</span>
-                                                        <span className="ml-auto text-xs text-muted-foreground shrink-0">
+                                                        <span className="ml-auto text-xs shrink-0">
                                                             {team.members.length} member{team.members.length !== 1 ? 's' : ''}
                                                         </span>
                                                     </CommandItem>
@@ -185,7 +216,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                             </Popover>
                         </div>
 
-                        <div className="flex gap-2">
+                        {/*<div className="flex gap-2">
                             <Button
                                 onClick={() => setShowCreateForm(true)}
                                 variant="outline"
@@ -195,7 +226,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                 <span className="hidden sm:inline">{t("createTeam")}</span>
                                 <span className="sm:hidden">Create</span>
                             </Button>
-                        </div>
+                        </div>*/}
                     </div>
 
                     {/* Team Info Section */}
@@ -214,17 +245,62 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                         <span>{selectedTeam.members.length} member{selectedTeam.members.length !== 1 ? 's' : ''}</span>
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setShowEditForm(true)}
-                                        className="w-full sm:w-auto"
-                                    >
-                                        <IconEdit className="h-4 w-4 mr-2" />
-                                        <span className="sm:hidden">Edit</span>
-                                        <span className="hidden sm:inline">{t("editTeam")}</span>
-                                    </Button>
+                                <div className="flex-col sm:flex-row gap-2">
+                                    {isCurrentUserAdmin(selectedTeam) && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setShowEditForm(true)}
+                                            className="w-full sm:w-auto"
+                                        >
+                                            <IconEdit className="h-4 w-4 mr-2" />
+                                            <span className="sm:hidden">Edit</span>
+                                            <span className="hidden sm:inline">{t("editTeam")}</span>
+                                        </Button>
+                                    )}
+
+                                    {isCurrentUserOwner(selectedTeam) && (
+                                        <AlertDialog>
+                                            {/*
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="w-full sm:w-auto mt-2 sm:mt-0 ml-0 sm:ml-2"
+                                                    disabled={isDeletingTeam}
+                                                >
+                                                    <IconTrash className="h-4 w-4 mr-2" />
+                                                    <span className="sm:hidden">
+                                                        {isDeletingTeam ? "Deleting..." : "Delete"}
+                                                    </span>
+                                                    <span className="hidden sm:inline">
+                                                        {isDeletingTeam ? "Deleting..." : t("deleteTeam")}
+                                                    </span>
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            */}
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>{t("deleteTeam")}</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        {t("deleteTeamConfirmation", { teamName: selectedTeam.name })}
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                {/*
+                                                <AlertDialogFooter>
+                                                    <AlertDialogAction
+                                                        onClick={() => handleDeleteTeam(selectedTeam.id)}
+                                                        className="w-full sm:w-auto bg-destructive text-white hover:bg-destructive/90"
+                                                        disabled={isDeletingTeam}
+                                                    >
+                                                        {isDeletingTeam ? "Deleting..." : t("delete")}
+                                                    </AlertDialogAction>
+                                                    <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
+                                                </AlertDialogFooter>
+                                                */}
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    )}
                                 </div>
                             </div>
 
@@ -241,25 +317,27 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
 
                 {/* Team Members Section */}
                 {selectedTeam && (
-                    <CardContent className="pt-0">
+                    <CardContent className="p-0">
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h3 className="text-lg font-semibold">{t("members.title")}</h3>
                                     <p className="text-sm text-muted-foreground">{t("members.description")}</p>
                                 </div>
-                                <div className="flex gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setShowInviteForm(true)}
-                                        className="w-full sm:w-auto"
-                                    >
-                                        <IconPlus className="h-4 w-4 mr-2" />
-                                        <span className="hidden sm:inline">{t("members.inviteMember")}</span>
-                                        <span className="sm:hidden">Add</span>
-                                    </Button>
-                                </div>
+                                {isCurrentUserAdmin(selectedTeam) && (
+                                    <div className="flex gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setShowInviteForm(true)}
+                                            className="w-full sm:w-auto"
+                                        >
+                                            <IconPlus className="h-4 w-4 mr-2" />
+                                            <span className="hidden sm:inline">{t("members.inviteMember")}</span>
+                                            <span className="sm:hidden">Add</span>
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
 
                             <TeamMembers
@@ -273,6 +351,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                         </div>
                     </CardContent>
                 )}
+
             </Card>
 
             {/* Modals */}
@@ -280,9 +359,9 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                 <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="w-full max-w-md max-h-[90vh] overflow-y-auto">
                         <TeamForm
-                            onSuccess={() => {
+                            onSuccess={(newTeamId) => {
                                 setShowCreateForm(false)
-                                handleTeamUpdate()
+                                handleTeamUpdate(newTeamId)
                             }}
                             onCancel={() => setShowCreateForm(false)}
                         />

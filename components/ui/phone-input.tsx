@@ -124,6 +124,13 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
 
             // Notify parent component about country change
             onCountryChange?.(country)
+
+            // Focus on input id=phoneInputInternationalNumber:
+
+            const inputElement = document.getElementById(props.id as string)
+            if (inputElement) {
+                inputElement.focus()
+            }
         }
 
         return (

@@ -1,0 +1,36 @@
+{
+    "crons": [
+        {
+            "path": "/api/cron/monthly-usage-tracking",
+            "schedule": "0 0 1 * *"
+        }
+    ],
+    "functions": {
+        "app/api/survey/v0/route.ts": {
+            "maxDuration": 10
+        },
+        "app/api/survey/v0/results/route.ts": {
+            "maxDuration": 15
+        }
+    },
+    "headers": [
+        {
+            "source": "/api/survey/v0",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=300, s-maxage=300"
+                },
+                {
+                    "key": "X-Robots-Tag",
+                    "value": "noindex"
+                }
+            ]
+        }
+    ],
+    "regions": [
+        "iad1",
+        "sfo1",
+        "lhr1"
+    ]
+}

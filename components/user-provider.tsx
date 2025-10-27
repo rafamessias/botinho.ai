@@ -4,27 +4,21 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { useSession } from "next-auth/react"
 import { getCurrentUserAction } from "@/components/server-actions/auth"
 import { useTheme } from "next-themes"
-import { Theme } from "@/lib/generated/prisma"
-import { getUserTeamsAction } from "./server-actions/team"
+import { BillingInterval, PlanType, SubscriptionStatus, Theme } from "@/lib/generated/prisma"
+import { getUserTeamsLightAction } from "./server-actions/team"
+import LoadingComp from "./loading-comp"
+import { useRouter } from "next/navigation"
+import { createCheckoutSessionAction } from '@/components/server-actions/auth'
 
-interface UserTeam {
+export interface UserTeam {
     id: number
     name: string
-    description?: string | null
-    members: Array<{
+    members?: Array<{
         id: number
         isAdmin: boolean
         canPost: boolean
         canApprove: boolean
-        isOwner: boolean
-        teamMemberStatus: string
-        user: {
-            id: number
-            firstName: string
-            lastName: string
-            email: string
-            avatarUrl?: string | null
-        }
+        isOwner: boolean,
     }>
 }
 
@@ -38,30 +32,29 @@ export interface User {
     phone: string | null
     avatarUrl: string | null
     language: string
-    provider: string
-    confirmed: boolean | null
-    blocked: boolean | null
     theme: Theme
     teams: UserTeam[] | null
     defaultTeamId: number | null
-    createdAt: Date
-    updatedAt: Date
-    // Access control flags
-    isActive: boolean
-    canAccess: boolean
+    usagePercentage: number
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
 }
 
 // Context type definition
 interface UserContextType {
     user: User | null
+    setUser: (user: User | null) => void
     loading: boolean
     error: string | null
     refreshUser: (teamsUpdate: boolean) => Promise<void>
-    // Access control helpers
     isAuthenticated: boolean
-    isActive: boolean
-    canAccess: boolean
-    hasPermission: (permission: string) => boolean
+    hasPermission: () => { isAdmin: boolean, canPost: boolean, canApprove: boolean }
+    usagePercentage: number
 }
 
 // Create context
@@ -74,7 +67,7 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const { data: session, status } = useSession()
-
+    const router = useRouter()
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -96,12 +89,32 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
             if (result.success && result.user) {
                 if (teamsUpdate) {
-                    const resultTeams = await getUserTeamsAction()
+                    const resultTeams = await getUserTeamsLightAction(result.user.id, result.user.defaultTeamId || 0)
                     if (resultTeams && resultTeams?.success && resultTeams?.teams) {
                         setUser({ ...result.user, teams: resultTeams.teams as UserTeam[] })
                     } else {
                         setUser({ ...result.user, teams: null })
                     }
+
+
+                    // Check if user exists and has a pending subscription
+                    if (resultTeams?.customerSubscription && resultTeams.customerSubscription.status === SubscriptionStatus.pending) {
+                        const subscription = resultTeams.customerSubscription
+                        const checkoutResult = await createCheckoutSessionAction(
+                            subscription.plan?.planType || PlanType.FREE,
+                            subscription.billingInterval || BillingInterval.monthly,
+                            session?.user?.email,
+                            result.user.defaultTeamId || 0,
+                            subscription.id
+                        )
+
+                        if (checkoutResult?.success && checkoutResult.checkoutUrl) {
+                            // Redirect browser to the Stripe checkout
+                            router.push(checkoutResult.checkoutUrl as string)
+                        }
+
+                    }
+
                 } else {
                     setUser({ ...result.user, teams: user?.teams || null })
                 }
@@ -128,6 +141,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
     // Fetch user data when session changes - simplified approach
     useEffect(() => {
+
         if (status === "loading") {
             return // Still loading session
         }
@@ -140,48 +154,44 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         }
 
         // Session is authenticated, fetch user data
-        if (status === "authenticated" && session?.user?.email && !user) {
+        // Check if session email changed to handle user switching
+        if (status === "authenticated") {
             fetchUser()
         }
-    }, [status]) // Only depend on status changes
+    }, [status, session?.user?.email]) // Depend on status AND email changes
 
     // Access control helpers
     const isAuthenticated = !!session && !!user
-    const isActive = Boolean(user?.isActive)
-    const canAccess = Boolean(user?.canAccess)
 
     // Permission system (can be extended)
-    const hasPermission = (permission: string): boolean => {
-        if (!user || !isActive) return false
+    const hasPermission = (): { isAdmin: boolean, canPost: boolean, canApprove: boolean } => {
+        if (!user) return { isAdmin: false, canPost: false, canApprove: false }
 
-        // Basic permission checks - can be extended based on your needs
-        switch (permission) {
-            case "read":
-                return canAccess
-            case "write":
-                return canAccess && Boolean(user.confirmed)
-            case "admin":
-                return canAccess && Boolean(user.confirmed)
-            default:
-                return false
-        }
+        // Assuming user.teams is an array of team objects with members
+        const team = user.teams?.find((t: any) => t.id === user.defaultTeamId)
+        if (!team || !team.members || !Array.isArray(team.members)) return { isAdmin: false, canPost: false, canApprove: false }
+
+        // Return true if the user has any member records in their default team
+        const userTeamMember = team.members[0]
+
+        return { isAdmin: userTeamMember?.isAdmin || false, canPost: userTeamMember?.canPost || false, canApprove: userTeamMember?.canApprove || false }
+
     }
-
     // Context value
     const contextValue: UserContextType = {
         user,
+        setUser,
         loading,
         error,
         refreshUser,
         isAuthenticated,
-        isActive,
-        canAccess,
         hasPermission,
+        usagePercentage: user?.usagePercentage || 0
     }
 
     return (
         <UserContext.Provider value={contextValue}>
-            {children}
+            {loading ? <LoadingComp isLoadingProp={loading} /> : children}
         </UserContext.Provider>
     )
 }
@@ -197,42 +207,3 @@ export const useUser = (): UserContextType => {
     return context
 }
 
-// Access control component
-interface ProtectedProps {
-    children: ReactNode
-    fallback?: ReactNode
-    requireAuth?: boolean
-    requireActive?: boolean
-    requirePermission?: string
-}
-
-export const Protected: React.FC<ProtectedProps> = ({
-    children,
-    fallback = <div>Access denied</div>,
-    requireAuth = true,
-    requireActive = false,
-    requirePermission
-}) => {
-    const { isAuthenticated, isActive, hasPermission, loading } = useUser()
-
-    if (loading) {
-        return <div>Loading...</div>
-    }
-
-    // Check authentication
-    if (requireAuth && !isAuthenticated) {
-        return <>{fallback}</>
-    }
-
-    // Check active status
-    if (requireActive && !isActive) {
-        return <>{fallback}</>
-    }
-
-    // Check specific permission
-    if (requirePermission && !hasPermission(requirePermission)) {
-        return <>{fallback}</>
-    }
-
-    return <>{children}</>
-}

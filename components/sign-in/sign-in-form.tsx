@@ -23,6 +23,7 @@ import { toast } from "sonner"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
 import { useSearchParams } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 export function SignInForm({
     className,
@@ -32,6 +33,7 @@ export function SignInForm({
     const [isGoogleLoading, setIsGoogleLoading] = useState(false)
     const router = useRouter()
     const searchParams = useSearchParams()
+    const { update } = useSession()
 
     // Form validation schema with translations
     const signInSchema = z.object({
@@ -60,19 +62,26 @@ export function SignInForm({
             if (result?.success === false) {
                 toast.error(result.error)
                 if (result.errorCode === "email-not-confirmed") {
-                    router.push("/sign-up/check-email?email=" + data.email)
+                    router.push("/sign-up/otp?email=" + data.email)
+                    //router.push("/sign-up/check-email?email=" + data.email)
                 }
             } else if (result?.success === true) {
-                // Success - handle redirect properly
-
-                const redirectParam = searchParams.get("redirect")
-                if (redirectParam) {
-                    // If there's a redirect parameter, navigate to it
-                    // The middleware will handle locale conversion
-                    window.location.href = redirectParam
+                await update()
+                // Check if we need to redirect to checkout
+                if (result.needsCheckout && result.checkoutUrl) {
+                    // Redirect to Stripe checkout
+                    router.push(result.checkoutUrl)
                 } else {
-                    // No redirect, just reload to trigger middleware locale check
-                    window.location.reload();
+                    // No checkout needed, handle normal redirect
+                    const redirectParam = searchParams.get("redirect")
+                    if (redirectParam) {
+                        // If there's a redirect parameter, navigate to it
+                        // The middleware will handle locale conversion
+                        router.push(redirectParam)
+                    } else {
+                        // No redirect, just reload to trigger middleware locale check
+                        router.push('/');
+                    }
                 }
             }
         } catch (error) {
@@ -92,6 +101,7 @@ export function SignInForm({
             // Get redirect parameter from URL
             const redirectParam = searchParams.get("redirect")
             await googleSignInAction(redirectParam || undefined)
+            await update()
             // NextAuth will handle the redirect after successful Google sign-in
         } catch (error) {
             // NextAuth throws NEXT_REDIRECT for OAuth redirects - this is expected
@@ -191,8 +201,8 @@ export function SignInForm({
                 </CardContent>
             </Card>
             <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-                {t("termsText")} <Link href="#">{t("termsOfService")}</Link>{" "}
-                {t("and")} <Link href="#">{t("privacyPolicy")}</Link>.
+                {t("termsText")} <Link target="_blank" href="https://opineeo.com/terms-of-service">{t("termsOfService")}</Link>{" "}
+                {t("and")} <Link target="_blank" href="https://opineeo.com/privacy-policy">{t("privacyPolicy")}</Link>.
             </div>
         </div>
     )

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, Suspense } from "react"
-import { IconCirclePlusFilled, IconUsers, IconChevronDown, IconPlus, type TablerIcon } from "@tabler/icons-react"
+import { IconCirclePlusFilled, IconUsers, IconChevronDown, IconPlus, IconStar, type TablerIcon } from "@tabler/icons-react"
 import { usePathname, Link } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { useUser } from "@/components/user-provider"
@@ -30,26 +30,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 
-interface UserTeam {
-  id: number
-  name: string
-  description?: string | null
-  members: Array<{
-    id: number
-    isAdmin: boolean
-    canPost: boolean
-    canApprove: boolean
-    isOwner: boolean
-    teamMemberStatus: string
-    user: {
-      id: number
-      firstName: string
-      lastName: string
-      email: string
-      avatarUrl?: string | null
-    }
-  }>
-}
+import { UserTeam } from "@/components/user-provider"
 
 // Loading component for team selection
 function TeamSelectionLoading() {
@@ -95,6 +76,7 @@ function TeamSelection() {
     try {
       const result = await updateDefaultTeamAction(team.id)
       if (result.success) {
+
         // Refresh user data to get updated defaultTeamId
         await refreshUser(false)
         toast.success(t("messages.teamsUpdated"))
@@ -145,7 +127,7 @@ function TeamSelection() {
               className="w-full justify-between cursor-pointer border h-[38px]"
             >
               <Button
-                variant="ghost"
+                variant="outline"
                 role="combobox"
                 aria-expanded={open}
                 className="w-full justify-between h-auto p-2"
@@ -172,7 +154,7 @@ function TeamSelection() {
                       value={team.name}
                       onSelect={() => handleTeamSelect(team)}
                     >
-                      <IconUsers className="mr-2 h-4 w-4" />
+                      <IconUsers className="mr-2 h-4 w-4 text-foreground" />
                       <span className="truncate">{team.name}</span>
                     </CommandItem>
                   ))}
@@ -197,6 +179,10 @@ export function NavMain({
 }) {
   const pathname = usePathname()
   const t = useTranslations("NavMain")
+  const { hasPermission } = useUser()
+  const userHasPermission = hasPermission()
+
+  const canCreateSurvey = userHasPermission.canPost || userHasPermission.isAdmin
 
   return (
     <SidebarGroup>
@@ -206,17 +192,19 @@ export function NavMain({
           <TeamSelection />
         </Suspense>
 
-        <SidebarMenu className="mt-2">
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip={t("quickCreate")}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear cursor-pointer"
-            >
-              <IconCirclePlusFilled />
-              <span>{t("quickCreate")}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        {canCreateSurvey && (
+          <SidebarMenu className="mt-2">
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip={t("quickCreate")}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear cursor-pointer"
+              >
+                <IconCirclePlusFilled />
+                <Link href="/survey/create" className="w-full">{t("quickCreate")}</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
         <SidebarMenu>
           {items.map((item) => {
             // Check if this item is selected based on the current pathname
@@ -242,6 +230,18 @@ export function NavMain({
               </SidebarMenuItem>
             )
           })}
+        </SidebarMenu>
+
+        {/* Feedback Survey Item */}
+        <SidebarMenu className="mt-auto">
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              className="cursor-pointer [&:hover_.star-bounce]:animate-bounce [&:hover_.star-text-yellow]:text-yellow-400 [&:hover_.star-fill-yellow]:fill-yellow-400"
+            >
+              <IconStar className="h-5 w-5 star-bounce star-text-yellow star-fill-yellow" />
+              <span>Rate our Service</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

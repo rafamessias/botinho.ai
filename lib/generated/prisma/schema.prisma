@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
   output          = "../lib/generated/prisma"
@@ -15,68 +9,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Language {
-  en
-  pt_BR
-}
-
-enum Provider {
-  google
-  local
-}
-
-enum TeamMemberStatus {
-  invited
-  accepted
-  rejected
-}
-
-enum Theme {
-  light
-  dark
-  system
-}
-
 model User {
-  id                   Int       @id @default(autoincrement())
-  idProvider           String?
-  email                String    @unique
-  provider             Provider  @default(local)
+  id                   Int          @id @default(autoincrement())
+  email                String       @unique
+  provider             Provider     @default(local)
   password             String?
   resetPasswordToken   String?
-  resetPasswordExpires DateTime?
   confirmationToken    String?
   confirmed            Boolean?
   blocked              Boolean?
-  phone                String?   @unique
+  phone                String?
   firstName            String
   lastName             String?
+  position             String?
+  companyName          String?
+  country              String?
+  linkedinUrl          String?
+  twitterUrl           String?
+  websiteUrl           String?
+  githubUrl            String?
   avatarUrl            String?
   language             Language
-  theme                Theme     @default(system)
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  avatarId             String?
+  idProvider           String?
+  resetPasswordExpires DateTime?
+  theme                Theme        @default(system)
+  defaultTeamId        Int?
+  accounts             Account[]
+  sessions             Session[]
+  teamMembers          TeamMember[] @relation("UserTeamMembers")
+  avatar               File?        @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: Cascade)
+  team                 Team?        @relation("UserDefaultTeam", fields: [defaultTeamId], references: [id])
+  files                File[]       @relation("UserFile")
 
-  // Relations
-  avatar   File? @relation("UserAvatar", fields: [avatarId], references: [id])
-  avatarId Int?
-
-  team          Team? @relation("UserDefaultTeam", fields: [defaultTeamId], references: [id])
-  defaultTeamId Int?
-
-  // NextAuth relations
-  accounts Account[]
-  sessions Session[]
-
-  // Company member relation
-  teamMembers TeamMember[] @relation("UserTeamMembers")
-
+  @@index([email])
+  @@index([phone])
+  @@index([resetPasswordToken])
+  @@index([confirmationToken])
+  @@index([defaultTeamId])
+  @@index([createdAt])
   @@map("users")
 }
 
-// Update File model to include project image relation
 model File {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   name      String
   url       String
   publicId  String?
@@ -84,33 +62,31 @@ model File {
   version   String?
   mimeType  String?
   size      Int?
+  userId    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  avatarFor User[]   @relation("UserAvatar")
+  user      User?    @relation("UserFile", fields: [userId], references: [id], onDelete: Cascade)
 
-  // Relations
-  avatarFor User[] @relation("UserAvatar")
-  team      Team?  @relation("TeamFiles", fields: [teamId], references: [id])
-  teamId    Int?
-
+  @@unique([id])
+  @@index([userId])
   @@map("files")
 }
 
-// NextAuth.js required models
 model Account {
   id                String  @id @default(cuid())
   userId            Int
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -136,17 +112,18 @@ model VerificationToken {
 }
 
 model Team {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  description          String?
+  tokenApi             String?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  members              TeamMember[]           @relation("TeamMembers")
+  user                 User[]                 @relation("UserDefaultTeam")
+  CustomerSubscription CustomerSubscription[]
+  UsageTracking        UsageTracking[]
 
-  // Relations
-  files   File[]       @relation("TeamFiles")
-  members TeamMember[] @relation("TeamMembers")
-  user    User[]       @relation("UserDefaultTeam")
-
+  @@index([createdAt])
   @@map("teams")
 }
 
@@ -159,14 +136,142 @@ model TeamMember {
   teamMemberStatus TeamMemberStatus
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-
-  // Relations
-  userId Int
-  user   User @relation("UserTeamMembers", fields: [userId], references: [id])
-
-  teamId Int
-  team   Team @relation("TeamMembers", fields: [teamId], references: [id])
+  userId           Int
+  teamId           Int
+  team             Team             @relation("TeamMembers", fields: [teamId], references: [id])
+  user             User             @relation("UserTeamMembers", fields: [userId], references: [id])
 
   @@unique([userId, teamId])
+  @@index([userId])
+  @@index([teamId])
+  @@index([teamMemberStatus])
+  @@index([isAdmin])
+  @@index([isOwner])
   @@map("team_members")
+}
+
+model SubscriptionPlan {
+  id                   String                 @id @default(cuid())
+  planType             PlanType
+  stripeProductId      String?
+  stripePriceIdMonthly String?
+  stripePriceIdYearly  String?
+  priceMonthly         Decimal                @default(0) @db.Decimal(10, 2)
+  priceYearly          Decimal                @default(0) @db.Decimal(10, 2)
+  currency             String                 @default("USD")
+  isActive             Boolean                @default(true)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  subscriptions        CustomerSubscription[]
+
+  @@index([planType])
+  @@index([isActive])
+  @@map("subscription_plans")
+}
+
+model CustomerSubscription {
+  id                   String             @id @default(cuid())
+  teamId               Int
+  planId               String
+  status               SubscriptionStatus @default(active)
+  billingInterval      BillingInterval    @default(monthly)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?            @unique
+  cancellationDetails  String?
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  trialStart           DateTime?
+  trialEnd             DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  team                 Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
+  usageTracking        UsageTracking[]
+
+  @@index([teamId])
+  @@index([planId])
+  @@index([status])
+  @@index([stripeCustomerId])
+  @@index([stripeSubscriptionId])
+  @@index([currentPeriodEnd])
+  @@index([billingInterval])
+  @@index([teamId, status])
+  @@map("customer_subscriptions")
+}
+
+model UsageTracking {
+  id             String               @id @default(cuid())
+  teamId         Int
+  subscriptionId String
+  metricType     UsageMetricType
+  currentUsage   Int                  @default(0)
+  limitValue     Int
+  periodStart    DateTime             @default(now())
+  periodEnd      DateTime
+  lastResetDate  DateTime?
+  lastUpdated    DateTime             @default(now())
+  createdAt      DateTime             @default(now())
+  team           Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  subscription   CustomerSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, metricType, periodStart])
+  @@index([teamId])
+  @@index([subscriptionId])
+  @@index([metricType])
+  @@index([periodStart])
+  @@index([periodEnd])
+  @@index([lastUpdated])
+  @@map("usage_tracking")
+}
+
+enum Language {
+  en
+  pt_BR
+}
+
+enum Provider {
+  google
+  local
+}
+
+enum TeamMemberStatus {
+  invited
+  accepted
+  rejected
+}
+
+enum Theme {
+  light
+  dark
+  system
+}
+
+enum PlanType {
+  FREE
+  STARTER
+  PRO
+  BUSINESS
+  ENTERPRISE
+}
+
+enum BillingInterval {
+  monthly
+  yearly
+}
+
+enum SubscriptionStatus {
+  pending
+  active
+  canceled
+  past_due
+  trialing
+  incomplete
+  incomplete_expired
+  unpaid
+}
+
+enum UsageMetricType {
+  ACTIVE_SURVEYS
+  TOTAL_COMPLETED_RESPONSES
 }

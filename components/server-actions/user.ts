@@ -14,7 +14,14 @@ const updateThemeSchema = z.object({
 const updateProfileSchema = z.object({
     firstName: z.string().min(1, "First name is required").max(50, "First name is too long"),
     lastName: z.string().max(50, "Last name is too long").optional(),
-    phone: z.string().min(10, "Phone number must be at least 10 characters").regex(/^[+]?[\d\s\-\(\)]{10,}$/, "Invalid phone number format").optional(),
+    phone: z.string().optional(),
+    position: z.string().max(100).optional(),
+    companyName: z.string().max(100).optional(),
+    country: z.string().max(100).optional(),
+    linkedinUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+    twitterUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+    websiteUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+    githubUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
 })
 
 const updateLanguageSchema = z.object({
@@ -72,6 +79,13 @@ export const updateUserProfileAction = async (profileData: {
     firstName?: string
     lastName?: string
     phone?: string
+    position?: string
+    companyName?: string
+    country?: string
+    linkedinUrl?: string
+    twitterUrl?: string
+    websiteUrl?: string
+    githubUrl?: string
 }) => {
     const t = await getTranslations("AuthErrors")
 
@@ -114,7 +128,14 @@ export const updateUserProfileAction = async (profileData: {
             data: {
                 ...(validatedData.firstName && { firstName: validatedData.firstName }),
                 ...(validatedData.lastName !== undefined && { lastName: validatedData.lastName }),
-                ...(validatedData.phone && { phone: validatedData.phone }),
+                ...(validatedData.phone !== undefined && { phone: validatedData.phone }),
+                ...(validatedData.position !== undefined && { position: validatedData.position }),
+                ...(validatedData.companyName !== undefined && { companyName: validatedData.companyName }),
+                ...(validatedData.country !== undefined && { country: validatedData.country }),
+                ...(validatedData.linkedinUrl !== undefined && { linkedinUrl: validatedData.linkedinUrl || null }),
+                ...(validatedData.twitterUrl !== undefined && { twitterUrl: validatedData.twitterUrl || null }),
+                ...(validatedData.websiteUrl !== undefined && { websiteUrl: validatedData.websiteUrl || null }),
+                ...(validatedData.githubUrl !== undefined && { githubUrl: validatedData.githubUrl || null }),
             }
         })
 
@@ -245,6 +266,13 @@ export const getUserPreferencesAction = async () => {
                 lastName: true,
                 phone: true,
                 avatarUrl: true,
+                position: true,
+                companyName: true,
+                country: true,
+                linkedinUrl: true,
+                twitterUrl: true,
+                websiteUrl: true,
+                githubUrl: true,
             }
         })
 
@@ -260,6 +288,13 @@ export const getUserPreferencesAction = async () => {
             lastName: user.lastName,
             phone: user.phone,
             avatarUrl: user.avatarUrl,
+            position: user.position,
+            companyName: user.companyName,
+            country: user.country,
+            linkedinUrl: user.linkedinUrl,
+            twitterUrl: user.twitterUrl,
+            websiteUrl: user.websiteUrl,
+            githubUrl: user.githubUrl,
         }
 
         return { success: true, preferences }
@@ -306,5 +341,119 @@ export const updateDefaultTeamAction = async (teamId: number) => {
     } catch (error) {
         console.error("Update default team error:", error)
         return { success: false, error: "Failed to update default team" }
+    }
+}
+
+/**
+ * Server action to delete user account
+ */
+export const deleteUserAccountAction = async (userEmail: string) => {
+    const t = await getTranslations("AuthErrors")
+
+    try {
+        // Get current session
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        // Verify the email matches the current user
+        if (session.user.email !== userEmail) {
+            return { success: false, error: "Email does not match your account" }
+        }
+
+        // Find user by email
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            include: {
+                teamMembers: {
+                    include: {
+                        team: true
+                    }
+                }
+            }
+        })
+
+        if (!user) {
+            return { success: false, error: "User not found" }
+        }
+
+        // Get current date in dd_mm_yyyy format
+        const now = new Date()
+        const day = String(now.getDate()).padStart(2, '0')
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const year = String(now.getFullYear())
+        const milliseconds = String(now.getTime())
+        const dateStr = `${day}_${month}_${year}_${milliseconds}`
+
+        // Create new email with prefix
+        const newEmail = `deleted_${dateStr}_${user.email}`
+
+        // Use transaction to ensure all operations succeed or fail together
+        await prisma.$transaction(async (tx) => {
+            // Find teams where user is owner
+            const ownedTeams = user.teamMembers.filter(member => member.isOwner)
+
+            // For each owned team, remove all members except the current user and set team as inactive
+            for (const ownedTeam of ownedTeams) {
+                // Get all team members for this team (except the owner)
+                const teamMembersToRemove = await tx.teamMember.findMany({
+                    where: {
+                        teamId: ownedTeam.teamId,
+                        userId: { not: user.id }
+                    },
+                    include: {
+                        user: true
+                    }
+                })
+
+                // For each team member, block and add deleted prefix to their user account
+                for (const teamMember of teamMembersToRemove) {
+                    const memberEmail = teamMember.user.email
+                    const memberDeletedEmail = `deleted_${dateStr}_${memberEmail}`
+
+                    await tx.user.update({
+                        where: { id: teamMember.userId },
+                        data: {
+                            blocked: true,
+                            email: memberDeletedEmail,
+                        }
+                    })
+                }
+
+                // Remove all team members except the owner
+                await tx.teamMember.deleteMany({
+                    where: {
+                        teamId: ownedTeam.teamId,
+                        userId: { not: user.id }
+                    }
+                })
+
+                // Set team as inactive (we'll add the active field later)
+                // For now, we'll just update the team name to indicate it's inactive
+                await tx.team.update({
+                    where: { id: ownedTeam.teamId },
+                    data: {
+                        name: `[INACTIVE] ${ownedTeam.team.name}`,
+                        description: `Team deactivated due to owner account deletion on ${dateStr}`
+                    }
+                })
+            }
+
+            // Update user: set blocked to true and rename email
+            await tx.user.update({
+                where: { id: user.id },
+                data: {
+                    blocked: true,
+                    email: newEmail,
+                }
+            })
+        })
+
+        return { success: true, message: "Account deleted successfully" }
+
+    } catch (error) {
+        console.error("Delete account error:", error)
+        return { success: false, error: t("unexpectedError") }
     }
 }

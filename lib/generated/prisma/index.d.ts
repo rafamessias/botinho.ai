@@ -48,6 +48,21 @@ export type Team = $Result.DefaultSelection<Prisma.$TeamPayload>
  * 
  */
 export type TeamMember = $Result.DefaultSelection<Prisma.$TeamMemberPayload>
+/**
+ * Model SubscriptionPlan
+ * 
+ */
+export type SubscriptionPlan = $Result.DefaultSelection<Prisma.$SubscriptionPlanPayload>
+/**
+ * Model CustomerSubscription
+ * 
+ */
+export type CustomerSubscription = $Result.DefaultSelection<Prisma.$CustomerSubscriptionPayload>
+/**
+ * Model UsageTracking
+ * 
+ */
+export type UsageTracking = $Result.DefaultSelection<Prisma.$UsageTrackingPayload>
 
 /**
  * Enums
@@ -86,6 +101,47 @@ export const Theme: {
 
 export type Theme = (typeof Theme)[keyof typeof Theme]
 
+
+export const PlanType: {
+  FREE: 'FREE',
+  STARTER: 'STARTER',
+  PRO: 'PRO',
+  BUSINESS: 'BUSINESS',
+  ENTERPRISE: 'ENTERPRISE'
+};
+
+export type PlanType = (typeof PlanType)[keyof typeof PlanType]
+
+
+export const BillingInterval: {
+  monthly: 'monthly',
+  yearly: 'yearly'
+};
+
+export type BillingInterval = (typeof BillingInterval)[keyof typeof BillingInterval]
+
+
+export const SubscriptionStatus: {
+  pending: 'pending',
+  active: 'active',
+  canceled: 'canceled',
+  past_due: 'past_due',
+  trialing: 'trialing',
+  incomplete: 'incomplete',
+  incomplete_expired: 'incomplete_expired',
+  unpaid: 'unpaid'
+};
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
+
+
+export const UsageMetricType: {
+  ACTIVE_SURVEYS: 'ACTIVE_SURVEYS',
+  TOTAL_COMPLETED_RESPONSES: 'TOTAL_COMPLETED_RESPONSES'
+};
+
+export type UsageMetricType = (typeof UsageMetricType)[keyof typeof UsageMetricType]
+
 }
 
 export type Language = $Enums.Language
@@ -103,6 +159,22 @@ export const TeamMemberStatus: typeof $Enums.TeamMemberStatus
 export type Theme = $Enums.Theme
 
 export const Theme: typeof $Enums.Theme
+
+export type PlanType = $Enums.PlanType
+
+export const PlanType: typeof $Enums.PlanType
+
+export type BillingInterval = $Enums.BillingInterval
+
+export const BillingInterval: typeof $Enums.BillingInterval
+
+export type SubscriptionStatus = $Enums.SubscriptionStatus
+
+export const SubscriptionStatus: typeof $Enums.SubscriptionStatus
+
+export type UsageMetricType = $Enums.UsageMetricType
+
+export const UsageMetricType: typeof $Enums.UsageMetricType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -291,6 +363,36 @@ export class PrismaClient<
     * ```
     */
   get teamMember(): Prisma.TeamMemberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.subscriptionPlan`: Exposes CRUD operations for the **SubscriptionPlan** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SubscriptionPlans
+    * const subscriptionPlans = await prisma.subscriptionPlan.findMany()
+    * ```
+    */
+  get subscriptionPlan(): Prisma.SubscriptionPlanDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.customerSubscription`: Exposes CRUD operations for the **CustomerSubscription** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CustomerSubscriptions
+    * const customerSubscriptions = await prisma.customerSubscription.findMany()
+    * ```
+    */
+  get customerSubscription(): Prisma.CustomerSubscriptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.usageTracking`: Exposes CRUD operations for the **UsageTracking** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UsageTrackings
+    * const usageTrackings = await prisma.usageTracking.findMany()
+    * ```
+    */
+  get usageTracking(): Prisma.UsageTrackingDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -737,7 +839,10 @@ export namespace Prisma {
     Session: 'Session',
     VerificationToken: 'VerificationToken',
     Team: 'Team',
-    TeamMember: 'TeamMember'
+    TeamMember: 'TeamMember',
+    SubscriptionPlan: 'SubscriptionPlan',
+    CustomerSubscription: 'CustomerSubscription',
+    UsageTracking: 'UsageTracking'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -756,7 +861,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "team" | "teamMember"
+      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "team" | "teamMember" | "subscriptionPlan" | "customerSubscription" | "usageTracking"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1278,6 +1383,228 @@ export namespace Prisma {
           }
         }
       }
+      SubscriptionPlan: {
+        payload: Prisma.$SubscriptionPlanPayload<ExtArgs>
+        fields: Prisma.SubscriptionPlanFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SubscriptionPlanFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SubscriptionPlanFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>
+          }
+          findFirst: {
+            args: Prisma.SubscriptionPlanFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SubscriptionPlanFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>
+          }
+          findMany: {
+            args: Prisma.SubscriptionPlanFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>[]
+          }
+          create: {
+            args: Prisma.SubscriptionPlanCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>
+          }
+          createMany: {
+            args: Prisma.SubscriptionPlanCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SubscriptionPlanCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>[]
+          }
+          delete: {
+            args: Prisma.SubscriptionPlanDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>
+          }
+          update: {
+            args: Prisma.SubscriptionPlanUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>
+          }
+          deleteMany: {
+            args: Prisma.SubscriptionPlanDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SubscriptionPlanUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SubscriptionPlanUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>[]
+          }
+          upsert: {
+            args: Prisma.SubscriptionPlanUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPlanPayload>
+          }
+          aggregate: {
+            args: Prisma.SubscriptionPlanAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSubscriptionPlan>
+          }
+          groupBy: {
+            args: Prisma.SubscriptionPlanGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SubscriptionPlanGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SubscriptionPlanCountArgs<ExtArgs>
+            result: $Utils.Optional<SubscriptionPlanCountAggregateOutputType> | number
+          }
+        }
+      }
+      CustomerSubscription: {
+        payload: Prisma.$CustomerSubscriptionPayload<ExtArgs>
+        fields: Prisma.CustomerSubscriptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CustomerSubscriptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CustomerSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>
+          }
+          findFirst: {
+            args: Prisma.CustomerSubscriptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CustomerSubscriptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>
+          }
+          findMany: {
+            args: Prisma.CustomerSubscriptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>[]
+          }
+          create: {
+            args: Prisma.CustomerSubscriptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>
+          }
+          createMany: {
+            args: Prisma.CustomerSubscriptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CustomerSubscriptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>[]
+          }
+          delete: {
+            args: Prisma.CustomerSubscriptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>
+          }
+          update: {
+            args: Prisma.CustomerSubscriptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.CustomerSubscriptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CustomerSubscriptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CustomerSubscriptionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>[]
+          }
+          upsert: {
+            args: Prisma.CustomerSubscriptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerSubscriptionPayload>
+          }
+          aggregate: {
+            args: Prisma.CustomerSubscriptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCustomerSubscription>
+          }
+          groupBy: {
+            args: Prisma.CustomerSubscriptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CustomerSubscriptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CustomerSubscriptionCountArgs<ExtArgs>
+            result: $Utils.Optional<CustomerSubscriptionCountAggregateOutputType> | number
+          }
+        }
+      }
+      UsageTracking: {
+        payload: Prisma.$UsageTrackingPayload<ExtArgs>
+        fields: Prisma.UsageTrackingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UsageTrackingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UsageTrackingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          findFirst: {
+            args: Prisma.UsageTrackingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UsageTrackingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          findMany: {
+            args: Prisma.UsageTrackingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>[]
+          }
+          create: {
+            args: Prisma.UsageTrackingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          createMany: {
+            args: Prisma.UsageTrackingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UsageTrackingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>[]
+          }
+          delete: {
+            args: Prisma.UsageTrackingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          update: {
+            args: Prisma.UsageTrackingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          deleteMany: {
+            args: Prisma.UsageTrackingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UsageTrackingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UsageTrackingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>[]
+          }
+          upsert: {
+            args: Prisma.UsageTrackingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UsageTrackingPayload>
+          }
+          aggregate: {
+            args: Prisma.UsageTrackingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUsageTracking>
+          }
+          groupBy: {
+            args: Prisma.UsageTrackingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UsageTrackingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UsageTrackingCountArgs<ExtArgs>
+            result: $Utils.Optional<UsageTrackingCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1377,6 +1704,9 @@ export namespace Prisma {
     verificationToken?: VerificationTokenOmit
     team?: TeamOmit
     teamMember?: TeamMemberOmit
+    subscriptionPlan?: SubscriptionPlanOmit
+    customerSubscription?: CustomerSubscriptionOmit
+    usageTracking?: UsageTrackingOmit
   }
 
   /* Types for Logging */
@@ -1460,12 +1790,14 @@ export namespace Prisma {
     accounts: number
     sessions: number
     teamMembers: number
+    files: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     teamMembers?: boolean | UserCountOutputTypeCountTeamMembersArgs
+    files?: boolean | UserCountOutputTypeCountFilesArgs
   }
 
   // Custom InputTypes
@@ -1498,6 +1830,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTeamMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TeamMemberWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileWhereInput
   }
 
 
@@ -1537,15 +1876,17 @@ export namespace Prisma {
    */
 
   export type TeamCountOutputType = {
-    files: number
     members: number
     user: number
+    CustomerSubscription: number
+    UsageTracking: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    files?: boolean | TeamCountOutputTypeCountFilesArgs
     members?: boolean | TeamCountOutputTypeCountMembersArgs
     user?: boolean | TeamCountOutputTypeCountUserArgs
+    CustomerSubscription?: boolean | TeamCountOutputTypeCountCustomerSubscriptionArgs
+    UsageTracking?: boolean | TeamCountOutputTypeCountUsageTrackingArgs
   }
 
   // Custom InputTypes
@@ -1562,13 +1903,6 @@ export namespace Prisma {
   /**
    * TeamCountOutputType without action
    */
-  export type TeamCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: FileWhereInput
-  }
-
-  /**
-   * TeamCountOutputType without action
-   */
   export type TeamCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TeamMemberWhereInput
   }
@@ -1578,6 +1912,82 @@ export namespace Prisma {
    */
   export type TeamCountOutputTypeCountUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountCustomerSubscriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerSubscriptionWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountUsageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UsageTrackingWhereInput
+  }
+
+
+  /**
+   * Count Type SubscriptionPlanCountOutputType
+   */
+
+  export type SubscriptionPlanCountOutputType = {
+    subscriptions: number
+  }
+
+  export type SubscriptionPlanCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscriptions?: boolean | SubscriptionPlanCountOutputTypeCountSubscriptionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SubscriptionPlanCountOutputType without action
+   */
+  export type SubscriptionPlanCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlanCountOutputType
+     */
+    select?: SubscriptionPlanCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SubscriptionPlanCountOutputType without action
+   */
+  export type SubscriptionPlanCountOutputTypeCountSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerSubscriptionWhereInput
+  }
+
+
+  /**
+   * Count Type CustomerSubscriptionCountOutputType
+   */
+
+  export type CustomerSubscriptionCountOutputType = {
+    usageTracking: number
+  }
+
+  export type CustomerSubscriptionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    usageTracking?: boolean | CustomerSubscriptionCountOutputTypeCountUsageTrackingArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CustomerSubscriptionCountOutputType without action
+   */
+  export type CustomerSubscriptionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscriptionCountOutputType
+     */
+    select?: CustomerSubscriptionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CustomerSubscriptionCountOutputType without action
+   */
+  export type CustomerSubscriptionCountOutputTypeCountUsageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UsageTrackingWhereInput
   }
 
 
@@ -1599,82 +2009,101 @@ export namespace Prisma {
 
   export type UserAvgAggregateOutputType = {
     id: number | null
-    avatarId: number | null
     defaultTeamId: number | null
   }
 
   export type UserSumAggregateOutputType = {
     id: number | null
-    avatarId: number | null
     defaultTeamId: number | null
   }
 
   export type UserMinAggregateOutputType = {
     id: number | null
-    idProvider: string | null
     email: string | null
     provider: $Enums.Provider | null
     password: string | null
     resetPasswordToken: string | null
-    resetPasswordExpires: Date | null
     confirmationToken: string | null
     confirmed: boolean | null
     blocked: boolean | null
     phone: string | null
     firstName: string | null
     lastName: string | null
+    position: string | null
+    companyName: string | null
+    country: string | null
+    linkedinUrl: string | null
+    twitterUrl: string | null
+    websiteUrl: string | null
+    githubUrl: string | null
     avatarUrl: string | null
     language: $Enums.Language | null
-    theme: $Enums.Theme | null
     createdAt: Date | null
     updatedAt: Date | null
-    avatarId: number | null
+    avatarId: string | null
+    idProvider: string | null
+    resetPasswordExpires: Date | null
+    theme: $Enums.Theme | null
     defaultTeamId: number | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: number | null
-    idProvider: string | null
     email: string | null
     provider: $Enums.Provider | null
     password: string | null
     resetPasswordToken: string | null
-    resetPasswordExpires: Date | null
     confirmationToken: string | null
     confirmed: boolean | null
     blocked: boolean | null
     phone: string | null
     firstName: string | null
     lastName: string | null
+    position: string | null
+    companyName: string | null
+    country: string | null
+    linkedinUrl: string | null
+    twitterUrl: string | null
+    websiteUrl: string | null
+    githubUrl: string | null
     avatarUrl: string | null
     language: $Enums.Language | null
-    theme: $Enums.Theme | null
     createdAt: Date | null
     updatedAt: Date | null
-    avatarId: number | null
+    avatarId: string | null
+    idProvider: string | null
+    resetPasswordExpires: Date | null
+    theme: $Enums.Theme | null
     defaultTeamId: number | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
-    idProvider: number
     email: number
     provider: number
     password: number
     resetPasswordToken: number
-    resetPasswordExpires: number
     confirmationToken: number
     confirmed: number
     blocked: number
     phone: number
     firstName: number
     lastName: number
+    position: number
+    companyName: number
+    country: number
+    linkedinUrl: number
+    twitterUrl: number
+    websiteUrl: number
+    githubUrl: number
     avatarUrl: number
     language: number
-    theme: number
     createdAt: number
     updatedAt: number
     avatarId: number
+    idProvider: number
+    resetPasswordExpires: number
+    theme: number
     defaultTeamId: number
     _all: number
   }
@@ -1682,82 +2111,101 @@ export namespace Prisma {
 
   export type UserAvgAggregateInputType = {
     id?: true
-    avatarId?: true
     defaultTeamId?: true
   }
 
   export type UserSumAggregateInputType = {
     id?: true
-    avatarId?: true
     defaultTeamId?: true
   }
 
   export type UserMinAggregateInputType = {
     id?: true
-    idProvider?: true
     email?: true
     provider?: true
     password?: true
     resetPasswordToken?: true
-    resetPasswordExpires?: true
     confirmationToken?: true
     confirmed?: true
     blocked?: true
     phone?: true
     firstName?: true
     lastName?: true
+    position?: true
+    companyName?: true
+    country?: true
+    linkedinUrl?: true
+    twitterUrl?: true
+    websiteUrl?: true
+    githubUrl?: true
     avatarUrl?: true
     language?: true
-    theme?: true
     createdAt?: true
     updatedAt?: true
     avatarId?: true
+    idProvider?: true
+    resetPasswordExpires?: true
+    theme?: true
     defaultTeamId?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
-    idProvider?: true
     email?: true
     provider?: true
     password?: true
     resetPasswordToken?: true
-    resetPasswordExpires?: true
     confirmationToken?: true
     confirmed?: true
     blocked?: true
     phone?: true
     firstName?: true
     lastName?: true
+    position?: true
+    companyName?: true
+    country?: true
+    linkedinUrl?: true
+    twitterUrl?: true
+    websiteUrl?: true
+    githubUrl?: true
     avatarUrl?: true
     language?: true
-    theme?: true
     createdAt?: true
     updatedAt?: true
     avatarId?: true
+    idProvider?: true
+    resetPasswordExpires?: true
+    theme?: true
     defaultTeamId?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
-    idProvider?: true
     email?: true
     provider?: true
     password?: true
     resetPasswordToken?: true
-    resetPasswordExpires?: true
     confirmationToken?: true
     confirmed?: true
     blocked?: true
     phone?: true
     firstName?: true
     lastName?: true
+    position?: true
+    companyName?: true
+    country?: true
+    linkedinUrl?: true
+    twitterUrl?: true
+    websiteUrl?: true
+    githubUrl?: true
     avatarUrl?: true
     language?: true
-    theme?: true
     createdAt?: true
     updatedAt?: true
     avatarId?: true
+    idProvider?: true
+    resetPasswordExpires?: true
+    theme?: true
     defaultTeamId?: true
     _all?: true
   }
@@ -1850,24 +2298,31 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: number
-    idProvider: string | null
     email: string
     provider: $Enums.Provider
     password: string | null
     resetPasswordToken: string | null
-    resetPasswordExpires: Date | null
     confirmationToken: string | null
     confirmed: boolean | null
     blocked: boolean | null
     phone: string | null
     firstName: string
     lastName: string | null
+    position: string | null
+    companyName: string | null
+    country: string | null
+    linkedinUrl: string | null
+    twitterUrl: string | null
+    websiteUrl: string | null
+    githubUrl: string | null
     avatarUrl: string | null
     language: $Enums.Language
-    theme: $Enums.Theme
     createdAt: Date
     updatedAt: Date
-    avatarId: number | null
+    avatarId: string | null
+    idProvider: string | null
+    resetPasswordExpires: Date | null
+    theme: $Enums.Theme
     defaultTeamId: number | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
@@ -1892,53 +2347,68 @@ export namespace Prisma {
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    idProvider?: boolean
     email?: boolean
     provider?: boolean
     password?: boolean
     resetPasswordToken?: boolean
-    resetPasswordExpires?: boolean
     confirmationToken?: boolean
     confirmed?: boolean
     blocked?: boolean
     phone?: boolean
     firstName?: boolean
     lastName?: boolean
+    position?: boolean
+    companyName?: boolean
+    country?: boolean
+    linkedinUrl?: boolean
+    twitterUrl?: boolean
+    websiteUrl?: boolean
+    githubUrl?: boolean
     avatarUrl?: boolean
     language?: boolean
-    theme?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     avatarId?: boolean
+    idProvider?: boolean
+    resetPasswordExpires?: boolean
+    theme?: boolean
     defaultTeamId?: boolean
-    avatar?: boolean | User$avatarArgs<ExtArgs>
-    team?: boolean | User$teamArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     teamMembers?: boolean | User$teamMembersArgs<ExtArgs>
+    avatar?: boolean | User$avatarArgs<ExtArgs>
+    team?: boolean | User$teamArgs<ExtArgs>
+    files?: boolean | User$filesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    idProvider?: boolean
     email?: boolean
     provider?: boolean
     password?: boolean
     resetPasswordToken?: boolean
-    resetPasswordExpires?: boolean
     confirmationToken?: boolean
     confirmed?: boolean
     blocked?: boolean
     phone?: boolean
     firstName?: boolean
     lastName?: boolean
+    position?: boolean
+    companyName?: boolean
+    country?: boolean
+    linkedinUrl?: boolean
+    twitterUrl?: boolean
+    websiteUrl?: boolean
+    githubUrl?: boolean
     avatarUrl?: boolean
     language?: boolean
-    theme?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     avatarId?: boolean
+    idProvider?: boolean
+    resetPasswordExpires?: boolean
+    theme?: boolean
     defaultTeamId?: boolean
     avatar?: boolean | User$avatarArgs<ExtArgs>
     team?: boolean | User$teamArgs<ExtArgs>
@@ -1946,24 +2416,31 @@ export namespace Prisma {
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    idProvider?: boolean
     email?: boolean
     provider?: boolean
     password?: boolean
     resetPasswordToken?: boolean
-    resetPasswordExpires?: boolean
     confirmationToken?: boolean
     confirmed?: boolean
     blocked?: boolean
     phone?: boolean
     firstName?: boolean
     lastName?: boolean
+    position?: boolean
+    companyName?: boolean
+    country?: boolean
+    linkedinUrl?: boolean
+    twitterUrl?: boolean
+    websiteUrl?: boolean
+    githubUrl?: boolean
     avatarUrl?: boolean
     language?: boolean
-    theme?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     avatarId?: boolean
+    idProvider?: boolean
+    resetPasswordExpires?: boolean
+    theme?: boolean
     defaultTeamId?: boolean
     avatar?: boolean | User$avatarArgs<ExtArgs>
     team?: boolean | User$teamArgs<ExtArgs>
@@ -1971,34 +2448,42 @@ export namespace Prisma {
 
   export type UserSelectScalar = {
     id?: boolean
-    idProvider?: boolean
     email?: boolean
     provider?: boolean
     password?: boolean
     resetPasswordToken?: boolean
-    resetPasswordExpires?: boolean
     confirmationToken?: boolean
     confirmed?: boolean
     blocked?: boolean
     phone?: boolean
     firstName?: boolean
     lastName?: boolean
+    position?: boolean
+    companyName?: boolean
+    country?: boolean
+    linkedinUrl?: boolean
+    twitterUrl?: boolean
+    websiteUrl?: boolean
+    githubUrl?: boolean
     avatarUrl?: boolean
     language?: boolean
-    theme?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     avatarId?: boolean
+    idProvider?: boolean
+    resetPasswordExpires?: boolean
+    theme?: boolean
     defaultTeamId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "idProvider" | "email" | "provider" | "password" | "resetPasswordToken" | "resetPasswordExpires" | "confirmationToken" | "confirmed" | "blocked" | "phone" | "firstName" | "lastName" | "avatarUrl" | "language" | "theme" | "createdAt" | "updatedAt" | "avatarId" | "defaultTeamId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "provider" | "password" | "resetPasswordToken" | "confirmationToken" | "confirmed" | "blocked" | "phone" | "firstName" | "lastName" | "position" | "companyName" | "country" | "linkedinUrl" | "twitterUrl" | "websiteUrl" | "githubUrl" | "avatarUrl" | "language" | "createdAt" | "updatedAt" | "avatarId" | "idProvider" | "resetPasswordExpires" | "theme" | "defaultTeamId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    avatar?: boolean | User$avatarArgs<ExtArgs>
-    team?: boolean | User$teamArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     teamMembers?: boolean | User$teamMembersArgs<ExtArgs>
+    avatar?: boolean | User$avatarArgs<ExtArgs>
+    team?: boolean | User$teamArgs<ExtArgs>
+    files?: boolean | User$filesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2013,32 +2498,40 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      avatar: Prisma.$FilePayload<ExtArgs> | null
-      team: Prisma.$TeamPayload<ExtArgs> | null
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       teamMembers: Prisma.$TeamMemberPayload<ExtArgs>[]
+      avatar: Prisma.$FilePayload<ExtArgs> | null
+      team: Prisma.$TeamPayload<ExtArgs> | null
+      files: Prisma.$FilePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      idProvider: string | null
       email: string
       provider: $Enums.Provider
       password: string | null
       resetPasswordToken: string | null
-      resetPasswordExpires: Date | null
       confirmationToken: string | null
       confirmed: boolean | null
       blocked: boolean | null
       phone: string | null
       firstName: string
       lastName: string | null
+      position: string | null
+      companyName: string | null
+      country: string | null
+      linkedinUrl: string | null
+      twitterUrl: string | null
+      websiteUrl: string | null
+      githubUrl: string | null
       avatarUrl: string | null
       language: $Enums.Language
-      theme: $Enums.Theme
       createdAt: Date
       updatedAt: Date
-      avatarId: number | null
+      avatarId: string | null
+      idProvider: string | null
+      resetPasswordExpires: Date | null
+      theme: $Enums.Theme
       defaultTeamId: number | null
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -2434,11 +2927,12 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    avatar<T extends User$avatarArgs<ExtArgs> = {}>(args?: Subset<T, User$avatarArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    team<T extends User$teamArgs<ExtArgs> = {}>(args?: Subset<T, User$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     teamMembers<T extends User$teamMembersArgs<ExtArgs> = {}>(args?: Subset<T, User$teamMembersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    avatar<T extends User$avatarArgs<ExtArgs> = {}>(args?: Subset<T, User$avatarArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    team<T extends User$teamArgs<ExtArgs> = {}>(args?: Subset<T, User$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    files<T extends User$filesArgs<ExtArgs> = {}>(args?: Subset<T, User$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2469,24 +2963,31 @@ export namespace Prisma {
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'Int'>
-    readonly idProvider: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly provider: FieldRef<"User", 'Provider'>
     readonly password: FieldRef<"User", 'String'>
     readonly resetPasswordToken: FieldRef<"User", 'String'>
-    readonly resetPasswordExpires: FieldRef<"User", 'DateTime'>
     readonly confirmationToken: FieldRef<"User", 'String'>
     readonly confirmed: FieldRef<"User", 'Boolean'>
     readonly blocked: FieldRef<"User", 'Boolean'>
     readonly phone: FieldRef<"User", 'String'>
     readonly firstName: FieldRef<"User", 'String'>
     readonly lastName: FieldRef<"User", 'String'>
+    readonly position: FieldRef<"User", 'String'>
+    readonly companyName: FieldRef<"User", 'String'>
+    readonly country: FieldRef<"User", 'String'>
+    readonly linkedinUrl: FieldRef<"User", 'String'>
+    readonly twitterUrl: FieldRef<"User", 'String'>
+    readonly websiteUrl: FieldRef<"User", 'String'>
+    readonly githubUrl: FieldRef<"User", 'String'>
     readonly avatarUrl: FieldRef<"User", 'String'>
     readonly language: FieldRef<"User", 'Language'>
-    readonly theme: FieldRef<"User", 'Theme'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
-    readonly avatarId: FieldRef<"User", 'Int'>
+    readonly avatarId: FieldRef<"User", 'String'>
+    readonly idProvider: FieldRef<"User", 'String'>
+    readonly resetPasswordExpires: FieldRef<"User", 'DateTime'>
+    readonly theme: FieldRef<"User", 'Theme'>
     readonly defaultTeamId: FieldRef<"User", 'Int'>
   }
     
@@ -2884,44 +3385,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.avatar
-   */
-  export type User$avatarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    where?: FileWhereInput
-  }
-
-  /**
-   * User.team
-   */
-  export type User$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Team
-     */
-    select?: TeamSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Team
-     */
-    omit?: TeamOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TeamInclude<ExtArgs> | null
-    where?: TeamWhereInput
-  }
-
-  /**
    * User.accounts
    */
   export type User$accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2994,6 +3457,68 @@ export namespace Prisma {
   }
 
   /**
+   * User.avatar
+   */
+  export type User$avatarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+  }
+
+  /**
+   * User.team
+   */
+  export type User$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    where?: TeamWhereInput
+  }
+
+  /**
+   * User.files
+   */
+  export type User$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the File
+     */
+    omit?: FileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
+    cursor?: FileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3025,19 +3550,17 @@ export namespace Prisma {
   }
 
   export type FileAvgAggregateOutputType = {
-    id: number | null
     size: number | null
-    teamId: number | null
+    userId: number | null
   }
 
   export type FileSumAggregateOutputType = {
-    id: number | null
     size: number | null
-    teamId: number | null
+    userId: number | null
   }
 
   export type FileMinAggregateOutputType = {
-    id: number | null
+    id: string | null
     name: string | null
     url: string | null
     publicId: string | null
@@ -3045,13 +3568,13 @@ export namespace Prisma {
     version: string | null
     mimeType: string | null
     size: number | null
+    userId: number | null
     createdAt: Date | null
     updatedAt: Date | null
-    teamId: number | null
   }
 
   export type FileMaxAggregateOutputType = {
-    id: number | null
+    id: string | null
     name: string | null
     url: string | null
     publicId: string | null
@@ -3059,9 +3582,9 @@ export namespace Prisma {
     version: string | null
     mimeType: string | null
     size: number | null
+    userId: number | null
     createdAt: Date | null
     updatedAt: Date | null
-    teamId: number | null
   }
 
   export type FileCountAggregateOutputType = {
@@ -3073,23 +3596,21 @@ export namespace Prisma {
     version: number
     mimeType: number
     size: number
+    userId: number
     createdAt: number
     updatedAt: number
-    teamId: number
     _all: number
   }
 
 
   export type FileAvgAggregateInputType = {
-    id?: true
     size?: true
-    teamId?: true
+    userId?: true
   }
 
   export type FileSumAggregateInputType = {
-    id?: true
     size?: true
-    teamId?: true
+    userId?: true
   }
 
   export type FileMinAggregateInputType = {
@@ -3101,9 +3622,9 @@ export namespace Prisma {
     version?: true
     mimeType?: true
     size?: true
+    userId?: true
     createdAt?: true
     updatedAt?: true
-    teamId?: true
   }
 
   export type FileMaxAggregateInputType = {
@@ -3115,9 +3636,9 @@ export namespace Prisma {
     version?: true
     mimeType?: true
     size?: true
+    userId?: true
     createdAt?: true
     updatedAt?: true
-    teamId?: true
   }
 
   export type FileCountAggregateInputType = {
@@ -3129,9 +3650,9 @@ export namespace Prisma {
     version?: true
     mimeType?: true
     size?: true
+    userId?: true
     createdAt?: true
     updatedAt?: true
-    teamId?: true
     _all?: true
   }
 
@@ -3222,7 +3743,7 @@ export namespace Prisma {
   }
 
   export type FileGroupByOutputType = {
-    id: number
+    id: string
     name: string
     url: string
     publicId: string | null
@@ -3230,9 +3751,9 @@ export namespace Prisma {
     version: string | null
     mimeType: string | null
     size: number | null
+    userId: number | null
     createdAt: Date
     updatedAt: Date
-    teamId: number | null
     _count: FileCountAggregateOutputType | null
     _avg: FileAvgAggregateOutputType | null
     _sum: FileSumAggregateOutputType | null
@@ -3263,11 +3784,11 @@ export namespace Prisma {
     version?: boolean
     mimeType?: boolean
     size?: boolean
+    userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    teamId?: boolean
     avatarFor?: boolean | File$avatarForArgs<ExtArgs>
-    team?: boolean | File$teamArgs<ExtArgs>
+    user?: boolean | File$userArgs<ExtArgs>
     _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["file"]>
 
@@ -3280,10 +3801,10 @@ export namespace Prisma {
     version?: boolean
     mimeType?: boolean
     size?: boolean
+    userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    teamId?: boolean
-    team?: boolean | File$teamArgs<ExtArgs>
+    user?: boolean | File$userArgs<ExtArgs>
   }, ExtArgs["result"]["file"]>
 
   export type FileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3295,10 +3816,10 @@ export namespace Prisma {
     version?: boolean
     mimeType?: boolean
     size?: boolean
+    userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    teamId?: boolean
-    team?: boolean | File$teamArgs<ExtArgs>
+    user?: boolean | File$userArgs<ExtArgs>
   }, ExtArgs["result"]["file"]>
 
   export type FileSelectScalar = {
@@ -3310,32 +3831,32 @@ export namespace Prisma {
     version?: boolean
     mimeType?: boolean
     size?: boolean
+    userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    teamId?: boolean
   }
 
-  export type FileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "publicId" | "format" | "version" | "mimeType" | "size" | "createdAt" | "updatedAt" | "teamId", ExtArgs["result"]["file"]>
+  export type FileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "publicId" | "format" | "version" | "mimeType" | "size" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["file"]>
   export type FileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     avatarFor?: boolean | File$avatarForArgs<ExtArgs>
-    team?: boolean | File$teamArgs<ExtArgs>
+    user?: boolean | File$userArgs<ExtArgs>
     _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | File$teamArgs<ExtArgs>
+    user?: boolean | File$userArgs<ExtArgs>
   }
   export type FileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | File$teamArgs<ExtArgs>
+    user?: boolean | File$userArgs<ExtArgs>
   }
 
   export type $FilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "File"
     objects: {
       avatarFor: Prisma.$UserPayload<ExtArgs>[]
-      team: Prisma.$TeamPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
+      id: string
       name: string
       url: string
       publicId: string | null
@@ -3343,9 +3864,9 @@ export namespace Prisma {
       version: string | null
       mimeType: string | null
       size: number | null
+      userId: number | null
       createdAt: Date
       updatedAt: Date
-      teamId: number | null
     }, ExtArgs["result"]["file"]>
     composites: {}
   }
@@ -3741,7 +4262,7 @@ export namespace Prisma {
   export interface Prisma__FileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     avatarFor<T extends File$avatarForArgs<ExtArgs> = {}>(args?: Subset<T, File$avatarForArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    team<T extends File$teamArgs<ExtArgs> = {}>(args?: Subset<T, File$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends File$userArgs<ExtArgs> = {}>(args?: Subset<T, File$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3771,7 +4292,7 @@ export namespace Prisma {
    * Fields of the File model
    */
   interface FileFieldRefs {
-    readonly id: FieldRef<"File", 'Int'>
+    readonly id: FieldRef<"File", 'String'>
     readonly name: FieldRef<"File", 'String'>
     readonly url: FieldRef<"File", 'String'>
     readonly publicId: FieldRef<"File", 'String'>
@@ -3779,9 +4300,9 @@ export namespace Prisma {
     readonly version: FieldRef<"File", 'String'>
     readonly mimeType: FieldRef<"File", 'String'>
     readonly size: FieldRef<"File", 'Int'>
+    readonly userId: FieldRef<"File", 'Int'>
     readonly createdAt: FieldRef<"File", 'DateTime'>
     readonly updatedAt: FieldRef<"File", 'DateTime'>
-    readonly teamId: FieldRef<"File", 'Int'>
   }
     
 
@@ -4202,22 +4723,22 @@ export namespace Prisma {
   }
 
   /**
-   * File.team
+   * File.user
    */
-  export type File$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type File$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Team
+     * Select specific fields to fetch from the User
      */
-    select?: TeamSelect<ExtArgs> | null
+    select?: UserSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Team
+     * Omit specific fields from the User
      */
-    omit?: TeamOmit<ExtArgs> | null
+    omit?: UserOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: TeamInclude<ExtArgs> | null
-    where?: TeamWhereInput
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -7498,6 +8019,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     description: string | null
+    tokenApi: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7506,6 +8028,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     description: string | null
+    tokenApi: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7514,6 +8037,7 @@ export namespace Prisma {
     id: number
     name: number
     description: number
+    tokenApi: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7532,6 +8056,7 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    tokenApi?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7540,6 +8065,7 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    tokenApi?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7548,6 +8074,7 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    tokenApi?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7643,6 +8170,7 @@ export namespace Prisma {
     id: number
     name: string
     description: string | null
+    tokenApi: string | null
     createdAt: Date
     updatedAt: Date
     _count: TeamCountAggregateOutputType | null
@@ -7670,11 +8198,13 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    tokenApi?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    files?: boolean | Team$filesArgs<ExtArgs>
     members?: boolean | Team$membersArgs<ExtArgs>
     user?: boolean | Team$userArgs<ExtArgs>
+    CustomerSubscription?: boolean | Team$CustomerSubscriptionArgs<ExtArgs>
+    UsageTracking?: boolean | Team$UsageTrackingArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
 
@@ -7682,6 +8212,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    tokenApi?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["team"]>
@@ -7690,6 +8221,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    tokenApi?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["team"]>
@@ -7698,15 +8230,17 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    tokenApi?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "tokenApi" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    files?: boolean | Team$filesArgs<ExtArgs>
     members?: boolean | Team$membersArgs<ExtArgs>
     user?: boolean | Team$userArgs<ExtArgs>
+    CustomerSubscription?: boolean | Team$CustomerSubscriptionArgs<ExtArgs>
+    UsageTracking?: boolean | Team$UsageTrackingArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -7715,14 +8249,16 @@ export namespace Prisma {
   export type $TeamPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Team"
     objects: {
-      files: Prisma.$FilePayload<ExtArgs>[]
       members: Prisma.$TeamMemberPayload<ExtArgs>[]
       user: Prisma.$UserPayload<ExtArgs>[]
+      CustomerSubscription: Prisma.$CustomerSubscriptionPayload<ExtArgs>[]
+      UsageTracking: Prisma.$UsageTrackingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
       description: string | null
+      tokenApi: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["team"]>
@@ -8119,9 +8655,10 @@ export namespace Prisma {
    */
   export interface Prisma__TeamClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    files<T extends Team$filesArgs<ExtArgs> = {}>(args?: Subset<T, Team$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     members<T extends Team$membersArgs<ExtArgs> = {}>(args?: Subset<T, Team$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     user<T extends Team$userArgs<ExtArgs> = {}>(args?: Subset<T, Team$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    CustomerSubscription<T extends Team$CustomerSubscriptionArgs<ExtArgs> = {}>(args?: Subset<T, Team$CustomerSubscriptionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    UsageTracking<T extends Team$UsageTrackingArgs<ExtArgs> = {}>(args?: Subset<T, Team$UsageTrackingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8154,6 +8691,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Team", 'Int'>
     readonly name: FieldRef<"Team", 'String'>
     readonly description: FieldRef<"Team", 'String'>
+    readonly tokenApi: FieldRef<"Team", 'String'>
     readonly createdAt: FieldRef<"Team", 'DateTime'>
     readonly updatedAt: FieldRef<"Team", 'DateTime'>
   }
@@ -8544,30 +9082,6 @@ export namespace Prisma {
   }
 
   /**
-   * Team.files
-   */
-  export type Team$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the File
-     */
-    select?: FileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the File
-     */
-    omit?: FileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FileInclude<ExtArgs> | null
-    where?: FileWhereInput
-    orderBy?: FileOrderByWithRelationInput | FileOrderByWithRelationInput[]
-    cursor?: FileWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
-  }
-
-  /**
    * Team.members
    */
   export type Team$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8613,6 +9127,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Team.CustomerSubscription
+   */
+  export type Team$CustomerSubscriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    where?: CustomerSubscriptionWhereInput
+    orderBy?: CustomerSubscriptionOrderByWithRelationInput | CustomerSubscriptionOrderByWithRelationInput[]
+    cursor?: CustomerSubscriptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerSubscriptionScalarFieldEnum | CustomerSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * Team.UsageTracking
+   */
+  export type Team$UsageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    where?: UsageTrackingWhereInput
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    cursor?: UsageTrackingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
   }
 
   /**
@@ -8880,8 +9442,8 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     teamId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8895,8 +9457,8 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     teamId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8910,8 +9472,8 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     teamId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectScalar = {
@@ -8929,23 +9491,23 @@ export namespace Prisma {
 
   export type TeamMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "isAdmin" | "canPost" | "canApprove" | "isOwner" | "teamMemberStatus" | "createdAt" | "updatedAt" | "userId" | "teamId", ExtArgs["result"]["teamMember"]>
   export type TeamMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TeamMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TeamMemberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | TeamDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $TeamMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TeamMember"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       team: Prisma.$TeamPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -9352,8 +9914,8 @@ export namespace Prisma {
    */
   export interface Prisma__TeamMemberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9808,6 +10370,3638 @@ export namespace Prisma {
 
 
   /**
+   * Model SubscriptionPlan
+   */
+
+  export type AggregateSubscriptionPlan = {
+    _count: SubscriptionPlanCountAggregateOutputType | null
+    _avg: SubscriptionPlanAvgAggregateOutputType | null
+    _sum: SubscriptionPlanSumAggregateOutputType | null
+    _min: SubscriptionPlanMinAggregateOutputType | null
+    _max: SubscriptionPlanMaxAggregateOutputType | null
+  }
+
+  export type SubscriptionPlanAvgAggregateOutputType = {
+    priceMonthly: Decimal | null
+    priceYearly: Decimal | null
+  }
+
+  export type SubscriptionPlanSumAggregateOutputType = {
+    priceMonthly: Decimal | null
+    priceYearly: Decimal | null
+  }
+
+  export type SubscriptionPlanMinAggregateOutputType = {
+    id: string | null
+    planType: $Enums.PlanType | null
+    stripeProductId: string | null
+    stripePriceIdMonthly: string | null
+    stripePriceIdYearly: string | null
+    priceMonthly: Decimal | null
+    priceYearly: Decimal | null
+    currency: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SubscriptionPlanMaxAggregateOutputType = {
+    id: string | null
+    planType: $Enums.PlanType | null
+    stripeProductId: string | null
+    stripePriceIdMonthly: string | null
+    stripePriceIdYearly: string | null
+    priceMonthly: Decimal | null
+    priceYearly: Decimal | null
+    currency: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SubscriptionPlanCountAggregateOutputType = {
+    id: number
+    planType: number
+    stripeProductId: number
+    stripePriceIdMonthly: number
+    stripePriceIdYearly: number
+    priceMonthly: number
+    priceYearly: number
+    currency: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SubscriptionPlanAvgAggregateInputType = {
+    priceMonthly?: true
+    priceYearly?: true
+  }
+
+  export type SubscriptionPlanSumAggregateInputType = {
+    priceMonthly?: true
+    priceYearly?: true
+  }
+
+  export type SubscriptionPlanMinAggregateInputType = {
+    id?: true
+    planType?: true
+    stripeProductId?: true
+    stripePriceIdMonthly?: true
+    stripePriceIdYearly?: true
+    priceMonthly?: true
+    priceYearly?: true
+    currency?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SubscriptionPlanMaxAggregateInputType = {
+    id?: true
+    planType?: true
+    stripeProductId?: true
+    stripePriceIdMonthly?: true
+    stripePriceIdYearly?: true
+    priceMonthly?: true
+    priceYearly?: true
+    currency?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SubscriptionPlanCountAggregateInputType = {
+    id?: true
+    planType?: true
+    stripeProductId?: true
+    stripePriceIdMonthly?: true
+    stripePriceIdYearly?: true
+    priceMonthly?: true
+    priceYearly?: true
+    currency?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SubscriptionPlanAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SubscriptionPlan to aggregate.
+     */
+    where?: SubscriptionPlanWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SubscriptionPlans to fetch.
+     */
+    orderBy?: SubscriptionPlanOrderByWithRelationInput | SubscriptionPlanOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SubscriptionPlanWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SubscriptionPlans from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SubscriptionPlans.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SubscriptionPlans
+    **/
+    _count?: true | SubscriptionPlanCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SubscriptionPlanAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SubscriptionPlanSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SubscriptionPlanMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SubscriptionPlanMaxAggregateInputType
+  }
+
+  export type GetSubscriptionPlanAggregateType<T extends SubscriptionPlanAggregateArgs> = {
+        [P in keyof T & keyof AggregateSubscriptionPlan]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSubscriptionPlan[P]>
+      : GetScalarType<T[P], AggregateSubscriptionPlan[P]>
+  }
+
+
+
+
+  export type SubscriptionPlanGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SubscriptionPlanWhereInput
+    orderBy?: SubscriptionPlanOrderByWithAggregationInput | SubscriptionPlanOrderByWithAggregationInput[]
+    by: SubscriptionPlanScalarFieldEnum[] | SubscriptionPlanScalarFieldEnum
+    having?: SubscriptionPlanScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SubscriptionPlanCountAggregateInputType | true
+    _avg?: SubscriptionPlanAvgAggregateInputType
+    _sum?: SubscriptionPlanSumAggregateInputType
+    _min?: SubscriptionPlanMinAggregateInputType
+    _max?: SubscriptionPlanMaxAggregateInputType
+  }
+
+  export type SubscriptionPlanGroupByOutputType = {
+    id: string
+    planType: $Enums.PlanType
+    stripeProductId: string | null
+    stripePriceIdMonthly: string | null
+    stripePriceIdYearly: string | null
+    priceMonthly: Decimal
+    priceYearly: Decimal
+    currency: string
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: SubscriptionPlanCountAggregateOutputType | null
+    _avg: SubscriptionPlanAvgAggregateOutputType | null
+    _sum: SubscriptionPlanSumAggregateOutputType | null
+    _min: SubscriptionPlanMinAggregateOutputType | null
+    _max: SubscriptionPlanMaxAggregateOutputType | null
+  }
+
+  type GetSubscriptionPlanGroupByPayload<T extends SubscriptionPlanGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SubscriptionPlanGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SubscriptionPlanGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SubscriptionPlanGroupByOutputType[P]>
+            : GetScalarType<T[P], SubscriptionPlanGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SubscriptionPlanSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    planType?: boolean
+    stripeProductId?: boolean
+    stripePriceIdMonthly?: boolean
+    stripePriceIdYearly?: boolean
+    priceMonthly?: boolean
+    priceYearly?: boolean
+    currency?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    subscriptions?: boolean | SubscriptionPlan$subscriptionsArgs<ExtArgs>
+    _count?: boolean | SubscriptionPlanCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["subscriptionPlan"]>
+
+  export type SubscriptionPlanSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    planType?: boolean
+    stripeProductId?: boolean
+    stripePriceIdMonthly?: boolean
+    stripePriceIdYearly?: boolean
+    priceMonthly?: boolean
+    priceYearly?: boolean
+    currency?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["subscriptionPlan"]>
+
+  export type SubscriptionPlanSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    planType?: boolean
+    stripeProductId?: boolean
+    stripePriceIdMonthly?: boolean
+    stripePriceIdYearly?: boolean
+    priceMonthly?: boolean
+    priceYearly?: boolean
+    currency?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["subscriptionPlan"]>
+
+  export type SubscriptionPlanSelectScalar = {
+    id?: boolean
+    planType?: boolean
+    stripeProductId?: boolean
+    stripePriceIdMonthly?: boolean
+    stripePriceIdYearly?: boolean
+    priceMonthly?: boolean
+    priceYearly?: boolean
+    currency?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SubscriptionPlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "planType" | "stripeProductId" | "stripePriceIdMonthly" | "stripePriceIdYearly" | "priceMonthly" | "priceYearly" | "currency" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscriptionPlan"]>
+  export type SubscriptionPlanInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscriptions?: boolean | SubscriptionPlan$subscriptionsArgs<ExtArgs>
+    _count?: boolean | SubscriptionPlanCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SubscriptionPlanIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type SubscriptionPlanIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $SubscriptionPlanPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SubscriptionPlan"
+    objects: {
+      subscriptions: Prisma.$CustomerSubscriptionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      planType: $Enums.PlanType
+      stripeProductId: string | null
+      stripePriceIdMonthly: string | null
+      stripePriceIdYearly: string | null
+      priceMonthly: Prisma.Decimal
+      priceYearly: Prisma.Decimal
+      currency: string
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["subscriptionPlan"]>
+    composites: {}
+  }
+
+  type SubscriptionPlanGetPayload<S extends boolean | null | undefined | SubscriptionPlanDefaultArgs> = $Result.GetResult<Prisma.$SubscriptionPlanPayload, S>
+
+  type SubscriptionPlanCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SubscriptionPlanFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SubscriptionPlanCountAggregateInputType | true
+    }
+
+  export interface SubscriptionPlanDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SubscriptionPlan'], meta: { name: 'SubscriptionPlan' } }
+    /**
+     * Find zero or one SubscriptionPlan that matches the filter.
+     * @param {SubscriptionPlanFindUniqueArgs} args - Arguments to find a SubscriptionPlan
+     * @example
+     * // Get one SubscriptionPlan
+     * const subscriptionPlan = await prisma.subscriptionPlan.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SubscriptionPlanFindUniqueArgs>(args: SelectSubset<T, SubscriptionPlanFindUniqueArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SubscriptionPlan that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SubscriptionPlanFindUniqueOrThrowArgs} args - Arguments to find a SubscriptionPlan
+     * @example
+     * // Get one SubscriptionPlan
+     * const subscriptionPlan = await prisma.subscriptionPlan.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SubscriptionPlanFindUniqueOrThrowArgs>(args: SelectSubset<T, SubscriptionPlanFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SubscriptionPlan that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionPlanFindFirstArgs} args - Arguments to find a SubscriptionPlan
+     * @example
+     * // Get one SubscriptionPlan
+     * const subscriptionPlan = await prisma.subscriptionPlan.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SubscriptionPlanFindFirstArgs>(args?: SelectSubset<T, SubscriptionPlanFindFirstArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SubscriptionPlan that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionPlanFindFirstOrThrowArgs} args - Arguments to find a SubscriptionPlan
+     * @example
+     * // Get one SubscriptionPlan
+     * const subscriptionPlan = await prisma.subscriptionPlan.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SubscriptionPlanFindFirstOrThrowArgs>(args?: SelectSubset<T, SubscriptionPlanFindFirstOrThrowArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SubscriptionPlans that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionPlanFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SubscriptionPlans
+     * const subscriptionPlans = await prisma.subscriptionPlan.findMany()
+     * 
+     * // Get first 10 SubscriptionPlans
+     * const subscriptionPlans = await prisma.subscriptionPlan.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const subscriptionPlanWithIdOnly = await prisma.subscriptionPlan.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SubscriptionPlanFindManyArgs>(args?: SelectSubset<T, SubscriptionPlanFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SubscriptionPlan.
+     * @param {SubscriptionPlanCreateArgs} args - Arguments to create a SubscriptionPlan.
+     * @example
+     * // Create one SubscriptionPlan
+     * const SubscriptionPlan = await prisma.subscriptionPlan.create({
+     *   data: {
+     *     // ... data to create a SubscriptionPlan
+     *   }
+     * })
+     * 
+     */
+    create<T extends SubscriptionPlanCreateArgs>(args: SelectSubset<T, SubscriptionPlanCreateArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SubscriptionPlans.
+     * @param {SubscriptionPlanCreateManyArgs} args - Arguments to create many SubscriptionPlans.
+     * @example
+     * // Create many SubscriptionPlans
+     * const subscriptionPlan = await prisma.subscriptionPlan.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SubscriptionPlanCreateManyArgs>(args?: SelectSubset<T, SubscriptionPlanCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SubscriptionPlans and returns the data saved in the database.
+     * @param {SubscriptionPlanCreateManyAndReturnArgs} args - Arguments to create many SubscriptionPlans.
+     * @example
+     * // Create many SubscriptionPlans
+     * const subscriptionPlan = await prisma.subscriptionPlan.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SubscriptionPlans and only return the `id`
+     * const subscriptionPlanWithIdOnly = await prisma.subscriptionPlan.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SubscriptionPlanCreateManyAndReturnArgs>(args?: SelectSubset<T, SubscriptionPlanCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SubscriptionPlan.
+     * @param {SubscriptionPlanDeleteArgs} args - Arguments to delete one SubscriptionPlan.
+     * @example
+     * // Delete one SubscriptionPlan
+     * const SubscriptionPlan = await prisma.subscriptionPlan.delete({
+     *   where: {
+     *     // ... filter to delete one SubscriptionPlan
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SubscriptionPlanDeleteArgs>(args: SelectSubset<T, SubscriptionPlanDeleteArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SubscriptionPlan.
+     * @param {SubscriptionPlanUpdateArgs} args - Arguments to update one SubscriptionPlan.
+     * @example
+     * // Update one SubscriptionPlan
+     * const subscriptionPlan = await prisma.subscriptionPlan.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SubscriptionPlanUpdateArgs>(args: SelectSubset<T, SubscriptionPlanUpdateArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SubscriptionPlans.
+     * @param {SubscriptionPlanDeleteManyArgs} args - Arguments to filter SubscriptionPlans to delete.
+     * @example
+     * // Delete a few SubscriptionPlans
+     * const { count } = await prisma.subscriptionPlan.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SubscriptionPlanDeleteManyArgs>(args?: SelectSubset<T, SubscriptionPlanDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SubscriptionPlans.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionPlanUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SubscriptionPlans
+     * const subscriptionPlan = await prisma.subscriptionPlan.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SubscriptionPlanUpdateManyArgs>(args: SelectSubset<T, SubscriptionPlanUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SubscriptionPlans and returns the data updated in the database.
+     * @param {SubscriptionPlanUpdateManyAndReturnArgs} args - Arguments to update many SubscriptionPlans.
+     * @example
+     * // Update many SubscriptionPlans
+     * const subscriptionPlan = await prisma.subscriptionPlan.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SubscriptionPlans and only return the `id`
+     * const subscriptionPlanWithIdOnly = await prisma.subscriptionPlan.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SubscriptionPlanUpdateManyAndReturnArgs>(args: SelectSubset<T, SubscriptionPlanUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SubscriptionPlan.
+     * @param {SubscriptionPlanUpsertArgs} args - Arguments to update or create a SubscriptionPlan.
+     * @example
+     * // Update or create a SubscriptionPlan
+     * const subscriptionPlan = await prisma.subscriptionPlan.upsert({
+     *   create: {
+     *     // ... data to create a SubscriptionPlan
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SubscriptionPlan we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SubscriptionPlanUpsertArgs>(args: SelectSubset<T, SubscriptionPlanUpsertArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SubscriptionPlans.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionPlanCountArgs} args - Arguments to filter SubscriptionPlans to count.
+     * @example
+     * // Count the number of SubscriptionPlans
+     * const count = await prisma.subscriptionPlan.count({
+     *   where: {
+     *     // ... the filter for the SubscriptionPlans we want to count
+     *   }
+     * })
+    **/
+    count<T extends SubscriptionPlanCountArgs>(
+      args?: Subset<T, SubscriptionPlanCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SubscriptionPlanCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SubscriptionPlan.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionPlanAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SubscriptionPlanAggregateArgs>(args: Subset<T, SubscriptionPlanAggregateArgs>): Prisma.PrismaPromise<GetSubscriptionPlanAggregateType<T>>
+
+    /**
+     * Group by SubscriptionPlan.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionPlanGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SubscriptionPlanGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SubscriptionPlanGroupByArgs['orderBy'] }
+        : { orderBy?: SubscriptionPlanGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SubscriptionPlanGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSubscriptionPlanGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SubscriptionPlan model
+   */
+  readonly fields: SubscriptionPlanFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SubscriptionPlan.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SubscriptionPlanClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    subscriptions<T extends SubscriptionPlan$subscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, SubscriptionPlan$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SubscriptionPlan model
+   */
+  interface SubscriptionPlanFieldRefs {
+    readonly id: FieldRef<"SubscriptionPlan", 'String'>
+    readonly planType: FieldRef<"SubscriptionPlan", 'PlanType'>
+    readonly stripeProductId: FieldRef<"SubscriptionPlan", 'String'>
+    readonly stripePriceIdMonthly: FieldRef<"SubscriptionPlan", 'String'>
+    readonly stripePriceIdYearly: FieldRef<"SubscriptionPlan", 'String'>
+    readonly priceMonthly: FieldRef<"SubscriptionPlan", 'Decimal'>
+    readonly priceYearly: FieldRef<"SubscriptionPlan", 'Decimal'>
+    readonly currency: FieldRef<"SubscriptionPlan", 'String'>
+    readonly isActive: FieldRef<"SubscriptionPlan", 'Boolean'>
+    readonly createdAt: FieldRef<"SubscriptionPlan", 'DateTime'>
+    readonly updatedAt: FieldRef<"SubscriptionPlan", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SubscriptionPlan findUnique
+   */
+  export type SubscriptionPlanFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionPlan to fetch.
+     */
+    where: SubscriptionPlanWhereUniqueInput
+  }
+
+  /**
+   * SubscriptionPlan findUniqueOrThrow
+   */
+  export type SubscriptionPlanFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionPlan to fetch.
+     */
+    where: SubscriptionPlanWhereUniqueInput
+  }
+
+  /**
+   * SubscriptionPlan findFirst
+   */
+  export type SubscriptionPlanFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionPlan to fetch.
+     */
+    where?: SubscriptionPlanWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SubscriptionPlans to fetch.
+     */
+    orderBy?: SubscriptionPlanOrderByWithRelationInput | SubscriptionPlanOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SubscriptionPlans.
+     */
+    cursor?: SubscriptionPlanWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SubscriptionPlans from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SubscriptionPlans.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SubscriptionPlans.
+     */
+    distinct?: SubscriptionPlanScalarFieldEnum | SubscriptionPlanScalarFieldEnum[]
+  }
+
+  /**
+   * SubscriptionPlan findFirstOrThrow
+   */
+  export type SubscriptionPlanFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionPlan to fetch.
+     */
+    where?: SubscriptionPlanWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SubscriptionPlans to fetch.
+     */
+    orderBy?: SubscriptionPlanOrderByWithRelationInput | SubscriptionPlanOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SubscriptionPlans.
+     */
+    cursor?: SubscriptionPlanWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SubscriptionPlans from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SubscriptionPlans.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SubscriptionPlans.
+     */
+    distinct?: SubscriptionPlanScalarFieldEnum | SubscriptionPlanScalarFieldEnum[]
+  }
+
+  /**
+   * SubscriptionPlan findMany
+   */
+  export type SubscriptionPlanFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * Filter, which SubscriptionPlans to fetch.
+     */
+    where?: SubscriptionPlanWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SubscriptionPlans to fetch.
+     */
+    orderBy?: SubscriptionPlanOrderByWithRelationInput | SubscriptionPlanOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SubscriptionPlans.
+     */
+    cursor?: SubscriptionPlanWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SubscriptionPlans from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SubscriptionPlans.
+     */
+    skip?: number
+    distinct?: SubscriptionPlanScalarFieldEnum | SubscriptionPlanScalarFieldEnum[]
+  }
+
+  /**
+   * SubscriptionPlan create
+   */
+  export type SubscriptionPlanCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SubscriptionPlan.
+     */
+    data: XOR<SubscriptionPlanCreateInput, SubscriptionPlanUncheckedCreateInput>
+  }
+
+  /**
+   * SubscriptionPlan createMany
+   */
+  export type SubscriptionPlanCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SubscriptionPlans.
+     */
+    data: SubscriptionPlanCreateManyInput | SubscriptionPlanCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SubscriptionPlan createManyAndReturn
+   */
+  export type SubscriptionPlanCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * The data used to create many SubscriptionPlans.
+     */
+    data: SubscriptionPlanCreateManyInput | SubscriptionPlanCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SubscriptionPlan update
+   */
+  export type SubscriptionPlanUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SubscriptionPlan.
+     */
+    data: XOR<SubscriptionPlanUpdateInput, SubscriptionPlanUncheckedUpdateInput>
+    /**
+     * Choose, which SubscriptionPlan to update.
+     */
+    where: SubscriptionPlanWhereUniqueInput
+  }
+
+  /**
+   * SubscriptionPlan updateMany
+   */
+  export type SubscriptionPlanUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SubscriptionPlans.
+     */
+    data: XOR<SubscriptionPlanUpdateManyMutationInput, SubscriptionPlanUncheckedUpdateManyInput>
+    /**
+     * Filter which SubscriptionPlans to update
+     */
+    where?: SubscriptionPlanWhereInput
+    /**
+     * Limit how many SubscriptionPlans to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SubscriptionPlan updateManyAndReturn
+   */
+  export type SubscriptionPlanUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * The data used to update SubscriptionPlans.
+     */
+    data: XOR<SubscriptionPlanUpdateManyMutationInput, SubscriptionPlanUncheckedUpdateManyInput>
+    /**
+     * Filter which SubscriptionPlans to update
+     */
+    where?: SubscriptionPlanWhereInput
+    /**
+     * Limit how many SubscriptionPlans to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SubscriptionPlan upsert
+   */
+  export type SubscriptionPlanUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SubscriptionPlan to update in case it exists.
+     */
+    where: SubscriptionPlanWhereUniqueInput
+    /**
+     * In case the SubscriptionPlan found by the `where` argument doesn't exist, create a new SubscriptionPlan with this data.
+     */
+    create: XOR<SubscriptionPlanCreateInput, SubscriptionPlanUncheckedCreateInput>
+    /**
+     * In case the SubscriptionPlan was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SubscriptionPlanUpdateInput, SubscriptionPlanUncheckedUpdateInput>
+  }
+
+  /**
+   * SubscriptionPlan delete
+   */
+  export type SubscriptionPlanDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+    /**
+     * Filter which SubscriptionPlan to delete.
+     */
+    where: SubscriptionPlanWhereUniqueInput
+  }
+
+  /**
+   * SubscriptionPlan deleteMany
+   */
+  export type SubscriptionPlanDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SubscriptionPlans to delete
+     */
+    where?: SubscriptionPlanWhereInput
+    /**
+     * Limit how many SubscriptionPlans to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SubscriptionPlan.subscriptions
+   */
+  export type SubscriptionPlan$subscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    where?: CustomerSubscriptionWhereInput
+    orderBy?: CustomerSubscriptionOrderByWithRelationInput | CustomerSubscriptionOrderByWithRelationInput[]
+    cursor?: CustomerSubscriptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerSubscriptionScalarFieldEnum | CustomerSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * SubscriptionPlan without action
+   */
+  export type SubscriptionPlanDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubscriptionPlan
+     */
+    select?: SubscriptionPlanSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubscriptionPlan
+     */
+    omit?: SubscriptionPlanOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionPlanInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CustomerSubscription
+   */
+
+  export type AggregateCustomerSubscription = {
+    _count: CustomerSubscriptionCountAggregateOutputType | null
+    _avg: CustomerSubscriptionAvgAggregateOutputType | null
+    _sum: CustomerSubscriptionSumAggregateOutputType | null
+    _min: CustomerSubscriptionMinAggregateOutputType | null
+    _max: CustomerSubscriptionMaxAggregateOutputType | null
+  }
+
+  export type CustomerSubscriptionAvgAggregateOutputType = {
+    teamId: number | null
+  }
+
+  export type CustomerSubscriptionSumAggregateOutputType = {
+    teamId: number | null
+  }
+
+  export type CustomerSubscriptionMinAggregateOutputType = {
+    id: string | null
+    teamId: number | null
+    planId: string | null
+    status: $Enums.SubscriptionStatus | null
+    billingInterval: $Enums.BillingInterval | null
+    stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
+    cancellationDetails: string | null
+    currentPeriodStart: Date | null
+    currentPeriodEnd: Date | null
+    cancelAtPeriodEnd: boolean | null
+    trialStart: Date | null
+    trialEnd: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CustomerSubscriptionMaxAggregateOutputType = {
+    id: string | null
+    teamId: number | null
+    planId: string | null
+    status: $Enums.SubscriptionStatus | null
+    billingInterval: $Enums.BillingInterval | null
+    stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
+    cancellationDetails: string | null
+    currentPeriodStart: Date | null
+    currentPeriodEnd: Date | null
+    cancelAtPeriodEnd: boolean | null
+    trialStart: Date | null
+    trialEnd: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CustomerSubscriptionCountAggregateOutputType = {
+    id: number
+    teamId: number
+    planId: number
+    status: number
+    billingInterval: number
+    stripeCustomerId: number
+    stripeSubscriptionId: number
+    cancellationDetails: number
+    currentPeriodStart: number
+    currentPeriodEnd: number
+    cancelAtPeriodEnd: number
+    trialStart: number
+    trialEnd: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CustomerSubscriptionAvgAggregateInputType = {
+    teamId?: true
+  }
+
+  export type CustomerSubscriptionSumAggregateInputType = {
+    teamId?: true
+  }
+
+  export type CustomerSubscriptionMinAggregateInputType = {
+    id?: true
+    teamId?: true
+    planId?: true
+    status?: true
+    billingInterval?: true
+    stripeCustomerId?: true
+    stripeSubscriptionId?: true
+    cancellationDetails?: true
+    currentPeriodStart?: true
+    currentPeriodEnd?: true
+    cancelAtPeriodEnd?: true
+    trialStart?: true
+    trialEnd?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CustomerSubscriptionMaxAggregateInputType = {
+    id?: true
+    teamId?: true
+    planId?: true
+    status?: true
+    billingInterval?: true
+    stripeCustomerId?: true
+    stripeSubscriptionId?: true
+    cancellationDetails?: true
+    currentPeriodStart?: true
+    currentPeriodEnd?: true
+    cancelAtPeriodEnd?: true
+    trialStart?: true
+    trialEnd?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CustomerSubscriptionCountAggregateInputType = {
+    id?: true
+    teamId?: true
+    planId?: true
+    status?: true
+    billingInterval?: true
+    stripeCustomerId?: true
+    stripeSubscriptionId?: true
+    cancellationDetails?: true
+    currentPeriodStart?: true
+    currentPeriodEnd?: true
+    cancelAtPeriodEnd?: true
+    trialStart?: true
+    trialEnd?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CustomerSubscriptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomerSubscription to aggregate.
+     */
+    where?: CustomerSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerSubscriptions to fetch.
+     */
+    orderBy?: CustomerSubscriptionOrderByWithRelationInput | CustomerSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CustomerSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CustomerSubscriptions
+    **/
+    _count?: true | CustomerSubscriptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CustomerSubscriptionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CustomerSubscriptionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CustomerSubscriptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CustomerSubscriptionMaxAggregateInputType
+  }
+
+  export type GetCustomerSubscriptionAggregateType<T extends CustomerSubscriptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCustomerSubscription]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCustomerSubscription[P]>
+      : GetScalarType<T[P], AggregateCustomerSubscription[P]>
+  }
+
+
+
+
+  export type CustomerSubscriptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerSubscriptionWhereInput
+    orderBy?: CustomerSubscriptionOrderByWithAggregationInput | CustomerSubscriptionOrderByWithAggregationInput[]
+    by: CustomerSubscriptionScalarFieldEnum[] | CustomerSubscriptionScalarFieldEnum
+    having?: CustomerSubscriptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CustomerSubscriptionCountAggregateInputType | true
+    _avg?: CustomerSubscriptionAvgAggregateInputType
+    _sum?: CustomerSubscriptionSumAggregateInputType
+    _min?: CustomerSubscriptionMinAggregateInputType
+    _max?: CustomerSubscriptionMaxAggregateInputType
+  }
+
+  export type CustomerSubscriptionGroupByOutputType = {
+    id: string
+    teamId: number
+    planId: string
+    status: $Enums.SubscriptionStatus
+    billingInterval: $Enums.BillingInterval
+    stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
+    cancellationDetails: string | null
+    currentPeriodStart: Date | null
+    currentPeriodEnd: Date | null
+    cancelAtPeriodEnd: boolean
+    trialStart: Date | null
+    trialEnd: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CustomerSubscriptionCountAggregateOutputType | null
+    _avg: CustomerSubscriptionAvgAggregateOutputType | null
+    _sum: CustomerSubscriptionSumAggregateOutputType | null
+    _min: CustomerSubscriptionMinAggregateOutputType | null
+    _max: CustomerSubscriptionMaxAggregateOutputType | null
+  }
+
+  type GetCustomerSubscriptionGroupByPayload<T extends CustomerSubscriptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CustomerSubscriptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CustomerSubscriptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CustomerSubscriptionGroupByOutputType[P]>
+            : GetScalarType<T[P], CustomerSubscriptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CustomerSubscriptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    planId?: boolean
+    status?: boolean
+    billingInterval?: boolean
+    stripeCustomerId?: boolean
+    stripeSubscriptionId?: boolean
+    cancellationDetails?: boolean
+    currentPeriodStart?: boolean
+    currentPeriodEnd?: boolean
+    cancelAtPeriodEnd?: boolean
+    trialStart?: boolean
+    trialEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
+    usageTracking?: boolean | CustomerSubscription$usageTrackingArgs<ExtArgs>
+    _count?: boolean | CustomerSubscriptionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["customerSubscription"]>
+
+  export type CustomerSubscriptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    planId?: boolean
+    status?: boolean
+    billingInterval?: boolean
+    stripeCustomerId?: boolean
+    stripeSubscriptionId?: boolean
+    cancellationDetails?: boolean
+    currentPeriodStart?: boolean
+    currentPeriodEnd?: boolean
+    cancelAtPeriodEnd?: boolean
+    trialStart?: boolean
+    trialEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["customerSubscription"]>
+
+  export type CustomerSubscriptionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    planId?: boolean
+    status?: boolean
+    billingInterval?: boolean
+    stripeCustomerId?: boolean
+    stripeSubscriptionId?: boolean
+    cancellationDetails?: boolean
+    currentPeriodStart?: boolean
+    currentPeriodEnd?: boolean
+    cancelAtPeriodEnd?: boolean
+    trialStart?: boolean
+    trialEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["customerSubscription"]>
+
+  export type CustomerSubscriptionSelectScalar = {
+    id?: boolean
+    teamId?: boolean
+    planId?: boolean
+    status?: boolean
+    billingInterval?: boolean
+    stripeCustomerId?: boolean
+    stripeSubscriptionId?: boolean
+    cancellationDetails?: boolean
+    currentPeriodStart?: boolean
+    currentPeriodEnd?: boolean
+    cancelAtPeriodEnd?: boolean
+    trialStart?: boolean
+    trialEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CustomerSubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "planId" | "status" | "billingInterval" | "stripeCustomerId" | "stripeSubscriptionId" | "cancellationDetails" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "trialStart" | "trialEnd" | "createdAt" | "updatedAt", ExtArgs["result"]["customerSubscription"]>
+  export type CustomerSubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
+    usageTracking?: boolean | CustomerSubscription$usageTrackingArgs<ExtArgs>
+    _count?: boolean | CustomerSubscriptionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CustomerSubscriptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
+  }
+  export type CustomerSubscriptionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    plan?: boolean | SubscriptionPlanDefaultArgs<ExtArgs>
+  }
+
+  export type $CustomerSubscriptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CustomerSubscription"
+    objects: {
+      team: Prisma.$TeamPayload<ExtArgs>
+      plan: Prisma.$SubscriptionPlanPayload<ExtArgs>
+      usageTracking: Prisma.$UsageTrackingPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      teamId: number
+      planId: string
+      status: $Enums.SubscriptionStatus
+      billingInterval: $Enums.BillingInterval
+      stripeCustomerId: string | null
+      stripeSubscriptionId: string | null
+      cancellationDetails: string | null
+      currentPeriodStart: Date | null
+      currentPeriodEnd: Date | null
+      cancelAtPeriodEnd: boolean
+      trialStart: Date | null
+      trialEnd: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["customerSubscription"]>
+    composites: {}
+  }
+
+  type CustomerSubscriptionGetPayload<S extends boolean | null | undefined | CustomerSubscriptionDefaultArgs> = $Result.GetResult<Prisma.$CustomerSubscriptionPayload, S>
+
+  type CustomerSubscriptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CustomerSubscriptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CustomerSubscriptionCountAggregateInputType | true
+    }
+
+  export interface CustomerSubscriptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CustomerSubscription'], meta: { name: 'CustomerSubscription' } }
+    /**
+     * Find zero or one CustomerSubscription that matches the filter.
+     * @param {CustomerSubscriptionFindUniqueArgs} args - Arguments to find a CustomerSubscription
+     * @example
+     * // Get one CustomerSubscription
+     * const customerSubscription = await prisma.customerSubscription.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CustomerSubscriptionFindUniqueArgs>(args: SelectSubset<T, CustomerSubscriptionFindUniqueArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CustomerSubscription that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CustomerSubscriptionFindUniqueOrThrowArgs} args - Arguments to find a CustomerSubscription
+     * @example
+     * // Get one CustomerSubscription
+     * const customerSubscription = await prisma.customerSubscription.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CustomerSubscriptionFindUniqueOrThrowArgs>(args: SelectSubset<T, CustomerSubscriptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomerSubscription that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerSubscriptionFindFirstArgs} args - Arguments to find a CustomerSubscription
+     * @example
+     * // Get one CustomerSubscription
+     * const customerSubscription = await prisma.customerSubscription.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CustomerSubscriptionFindFirstArgs>(args?: SelectSubset<T, CustomerSubscriptionFindFirstArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomerSubscription that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerSubscriptionFindFirstOrThrowArgs} args - Arguments to find a CustomerSubscription
+     * @example
+     * // Get one CustomerSubscription
+     * const customerSubscription = await prisma.customerSubscription.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CustomerSubscriptionFindFirstOrThrowArgs>(args?: SelectSubset<T, CustomerSubscriptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CustomerSubscriptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerSubscriptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CustomerSubscriptions
+     * const customerSubscriptions = await prisma.customerSubscription.findMany()
+     * 
+     * // Get first 10 CustomerSubscriptions
+     * const customerSubscriptions = await prisma.customerSubscription.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const customerSubscriptionWithIdOnly = await prisma.customerSubscription.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CustomerSubscriptionFindManyArgs>(args?: SelectSubset<T, CustomerSubscriptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CustomerSubscription.
+     * @param {CustomerSubscriptionCreateArgs} args - Arguments to create a CustomerSubscription.
+     * @example
+     * // Create one CustomerSubscription
+     * const CustomerSubscription = await prisma.customerSubscription.create({
+     *   data: {
+     *     // ... data to create a CustomerSubscription
+     *   }
+     * })
+     * 
+     */
+    create<T extends CustomerSubscriptionCreateArgs>(args: SelectSubset<T, CustomerSubscriptionCreateArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CustomerSubscriptions.
+     * @param {CustomerSubscriptionCreateManyArgs} args - Arguments to create many CustomerSubscriptions.
+     * @example
+     * // Create many CustomerSubscriptions
+     * const customerSubscription = await prisma.customerSubscription.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CustomerSubscriptionCreateManyArgs>(args?: SelectSubset<T, CustomerSubscriptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CustomerSubscriptions and returns the data saved in the database.
+     * @param {CustomerSubscriptionCreateManyAndReturnArgs} args - Arguments to create many CustomerSubscriptions.
+     * @example
+     * // Create many CustomerSubscriptions
+     * const customerSubscription = await prisma.customerSubscription.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CustomerSubscriptions and only return the `id`
+     * const customerSubscriptionWithIdOnly = await prisma.customerSubscription.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CustomerSubscriptionCreateManyAndReturnArgs>(args?: SelectSubset<T, CustomerSubscriptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CustomerSubscription.
+     * @param {CustomerSubscriptionDeleteArgs} args - Arguments to delete one CustomerSubscription.
+     * @example
+     * // Delete one CustomerSubscription
+     * const CustomerSubscription = await prisma.customerSubscription.delete({
+     *   where: {
+     *     // ... filter to delete one CustomerSubscription
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CustomerSubscriptionDeleteArgs>(args: SelectSubset<T, CustomerSubscriptionDeleteArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CustomerSubscription.
+     * @param {CustomerSubscriptionUpdateArgs} args - Arguments to update one CustomerSubscription.
+     * @example
+     * // Update one CustomerSubscription
+     * const customerSubscription = await prisma.customerSubscription.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CustomerSubscriptionUpdateArgs>(args: SelectSubset<T, CustomerSubscriptionUpdateArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CustomerSubscriptions.
+     * @param {CustomerSubscriptionDeleteManyArgs} args - Arguments to filter CustomerSubscriptions to delete.
+     * @example
+     * // Delete a few CustomerSubscriptions
+     * const { count } = await prisma.customerSubscription.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CustomerSubscriptionDeleteManyArgs>(args?: SelectSubset<T, CustomerSubscriptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomerSubscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerSubscriptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CustomerSubscriptions
+     * const customerSubscription = await prisma.customerSubscription.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CustomerSubscriptionUpdateManyArgs>(args: SelectSubset<T, CustomerSubscriptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomerSubscriptions and returns the data updated in the database.
+     * @param {CustomerSubscriptionUpdateManyAndReturnArgs} args - Arguments to update many CustomerSubscriptions.
+     * @example
+     * // Update many CustomerSubscriptions
+     * const customerSubscription = await prisma.customerSubscription.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CustomerSubscriptions and only return the `id`
+     * const customerSubscriptionWithIdOnly = await prisma.customerSubscription.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CustomerSubscriptionUpdateManyAndReturnArgs>(args: SelectSubset<T, CustomerSubscriptionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CustomerSubscription.
+     * @param {CustomerSubscriptionUpsertArgs} args - Arguments to update or create a CustomerSubscription.
+     * @example
+     * // Update or create a CustomerSubscription
+     * const customerSubscription = await prisma.customerSubscription.upsert({
+     *   create: {
+     *     // ... data to create a CustomerSubscription
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CustomerSubscription we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CustomerSubscriptionUpsertArgs>(args: SelectSubset<T, CustomerSubscriptionUpsertArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CustomerSubscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerSubscriptionCountArgs} args - Arguments to filter CustomerSubscriptions to count.
+     * @example
+     * // Count the number of CustomerSubscriptions
+     * const count = await prisma.customerSubscription.count({
+     *   where: {
+     *     // ... the filter for the CustomerSubscriptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends CustomerSubscriptionCountArgs>(
+      args?: Subset<T, CustomerSubscriptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CustomerSubscriptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CustomerSubscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerSubscriptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CustomerSubscriptionAggregateArgs>(args: Subset<T, CustomerSubscriptionAggregateArgs>): Prisma.PrismaPromise<GetCustomerSubscriptionAggregateType<T>>
+
+    /**
+     * Group by CustomerSubscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerSubscriptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CustomerSubscriptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CustomerSubscriptionGroupByArgs['orderBy'] }
+        : { orderBy?: CustomerSubscriptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CustomerSubscriptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCustomerSubscriptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CustomerSubscription model
+   */
+  readonly fields: CustomerSubscriptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CustomerSubscription.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CustomerSubscriptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    plan<T extends SubscriptionPlanDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SubscriptionPlanDefaultArgs<ExtArgs>>): Prisma__SubscriptionPlanClient<$Result.GetResult<Prisma.$SubscriptionPlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    usageTracking<T extends CustomerSubscription$usageTrackingArgs<ExtArgs> = {}>(args?: Subset<T, CustomerSubscription$usageTrackingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CustomerSubscription model
+   */
+  interface CustomerSubscriptionFieldRefs {
+    readonly id: FieldRef<"CustomerSubscription", 'String'>
+    readonly teamId: FieldRef<"CustomerSubscription", 'Int'>
+    readonly planId: FieldRef<"CustomerSubscription", 'String'>
+    readonly status: FieldRef<"CustomerSubscription", 'SubscriptionStatus'>
+    readonly billingInterval: FieldRef<"CustomerSubscription", 'BillingInterval'>
+    readonly stripeCustomerId: FieldRef<"CustomerSubscription", 'String'>
+    readonly stripeSubscriptionId: FieldRef<"CustomerSubscription", 'String'>
+    readonly cancellationDetails: FieldRef<"CustomerSubscription", 'String'>
+    readonly currentPeriodStart: FieldRef<"CustomerSubscription", 'DateTime'>
+    readonly currentPeriodEnd: FieldRef<"CustomerSubscription", 'DateTime'>
+    readonly cancelAtPeriodEnd: FieldRef<"CustomerSubscription", 'Boolean'>
+    readonly trialStart: FieldRef<"CustomerSubscription", 'DateTime'>
+    readonly trialEnd: FieldRef<"CustomerSubscription", 'DateTime'>
+    readonly createdAt: FieldRef<"CustomerSubscription", 'DateTime'>
+    readonly updatedAt: FieldRef<"CustomerSubscription", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CustomerSubscription findUnique
+   */
+  export type CustomerSubscriptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerSubscription to fetch.
+     */
+    where: CustomerSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * CustomerSubscription findUniqueOrThrow
+   */
+  export type CustomerSubscriptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerSubscription to fetch.
+     */
+    where: CustomerSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * CustomerSubscription findFirst
+   */
+  export type CustomerSubscriptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerSubscription to fetch.
+     */
+    where?: CustomerSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerSubscriptions to fetch.
+     */
+    orderBy?: CustomerSubscriptionOrderByWithRelationInput | CustomerSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomerSubscriptions.
+     */
+    cursor?: CustomerSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomerSubscriptions.
+     */
+    distinct?: CustomerSubscriptionScalarFieldEnum | CustomerSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerSubscription findFirstOrThrow
+   */
+  export type CustomerSubscriptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerSubscription to fetch.
+     */
+    where?: CustomerSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerSubscriptions to fetch.
+     */
+    orderBy?: CustomerSubscriptionOrderByWithRelationInput | CustomerSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomerSubscriptions.
+     */
+    cursor?: CustomerSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomerSubscriptions.
+     */
+    distinct?: CustomerSubscriptionScalarFieldEnum | CustomerSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerSubscription findMany
+   */
+  export type CustomerSubscriptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerSubscriptions to fetch.
+     */
+    where?: CustomerSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerSubscriptions to fetch.
+     */
+    orderBy?: CustomerSubscriptionOrderByWithRelationInput | CustomerSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CustomerSubscriptions.
+     */
+    cursor?: CustomerSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerSubscriptions.
+     */
+    skip?: number
+    distinct?: CustomerSubscriptionScalarFieldEnum | CustomerSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerSubscription create
+   */
+  export type CustomerSubscriptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CustomerSubscription.
+     */
+    data: XOR<CustomerSubscriptionCreateInput, CustomerSubscriptionUncheckedCreateInput>
+  }
+
+  /**
+   * CustomerSubscription createMany
+   */
+  export type CustomerSubscriptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CustomerSubscriptions.
+     */
+    data: CustomerSubscriptionCreateManyInput | CustomerSubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CustomerSubscription createManyAndReturn
+   */
+  export type CustomerSubscriptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * The data used to create many CustomerSubscriptions.
+     */
+    data: CustomerSubscriptionCreateManyInput | CustomerSubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CustomerSubscription update
+   */
+  export type CustomerSubscriptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CustomerSubscription.
+     */
+    data: XOR<CustomerSubscriptionUpdateInput, CustomerSubscriptionUncheckedUpdateInput>
+    /**
+     * Choose, which CustomerSubscription to update.
+     */
+    where: CustomerSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * CustomerSubscription updateMany
+   */
+  export type CustomerSubscriptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CustomerSubscriptions.
+     */
+    data: XOR<CustomerSubscriptionUpdateManyMutationInput, CustomerSubscriptionUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomerSubscriptions to update
+     */
+    where?: CustomerSubscriptionWhereInput
+    /**
+     * Limit how many CustomerSubscriptions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomerSubscription updateManyAndReturn
+   */
+  export type CustomerSubscriptionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * The data used to update CustomerSubscriptions.
+     */
+    data: XOR<CustomerSubscriptionUpdateManyMutationInput, CustomerSubscriptionUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomerSubscriptions to update
+     */
+    where?: CustomerSubscriptionWhereInput
+    /**
+     * Limit how many CustomerSubscriptions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CustomerSubscription upsert
+   */
+  export type CustomerSubscriptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CustomerSubscription to update in case it exists.
+     */
+    where: CustomerSubscriptionWhereUniqueInput
+    /**
+     * In case the CustomerSubscription found by the `where` argument doesn't exist, create a new CustomerSubscription with this data.
+     */
+    create: XOR<CustomerSubscriptionCreateInput, CustomerSubscriptionUncheckedCreateInput>
+    /**
+     * In case the CustomerSubscription was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CustomerSubscriptionUpdateInput, CustomerSubscriptionUncheckedUpdateInput>
+  }
+
+  /**
+   * CustomerSubscription delete
+   */
+  export type CustomerSubscriptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter which CustomerSubscription to delete.
+     */
+    where: CustomerSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * CustomerSubscription deleteMany
+   */
+  export type CustomerSubscriptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomerSubscriptions to delete
+     */
+    where?: CustomerSubscriptionWhereInput
+    /**
+     * Limit how many CustomerSubscriptions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomerSubscription.usageTracking
+   */
+  export type CustomerSubscription$usageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    where?: UsageTrackingWhereInput
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    cursor?: UsageTrackingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerSubscription without action
+   */
+  export type CustomerSubscriptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerSubscription
+     */
+    select?: CustomerSubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerSubscription
+     */
+    omit?: CustomerSubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerSubscriptionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UsageTracking
+   */
+
+  export type AggregateUsageTracking = {
+    _count: UsageTrackingCountAggregateOutputType | null
+    _avg: UsageTrackingAvgAggregateOutputType | null
+    _sum: UsageTrackingSumAggregateOutputType | null
+    _min: UsageTrackingMinAggregateOutputType | null
+    _max: UsageTrackingMaxAggregateOutputType | null
+  }
+
+  export type UsageTrackingAvgAggregateOutputType = {
+    teamId: number | null
+    currentUsage: number | null
+    limitValue: number | null
+  }
+
+  export type UsageTrackingSumAggregateOutputType = {
+    teamId: number | null
+    currentUsage: number | null
+    limitValue: number | null
+  }
+
+  export type UsageTrackingMinAggregateOutputType = {
+    id: string | null
+    teamId: number | null
+    subscriptionId: string | null
+    metricType: $Enums.UsageMetricType | null
+    currentUsage: number | null
+    limitValue: number | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    lastResetDate: Date | null
+    lastUpdated: Date | null
+    createdAt: Date | null
+  }
+
+  export type UsageTrackingMaxAggregateOutputType = {
+    id: string | null
+    teamId: number | null
+    subscriptionId: string | null
+    metricType: $Enums.UsageMetricType | null
+    currentUsage: number | null
+    limitValue: number | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    lastResetDate: Date | null
+    lastUpdated: Date | null
+    createdAt: Date | null
+  }
+
+  export type UsageTrackingCountAggregateOutputType = {
+    id: number
+    teamId: number
+    subscriptionId: number
+    metricType: number
+    currentUsage: number
+    limitValue: number
+    periodStart: number
+    periodEnd: number
+    lastResetDate: number
+    lastUpdated: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UsageTrackingAvgAggregateInputType = {
+    teamId?: true
+    currentUsage?: true
+    limitValue?: true
+  }
+
+  export type UsageTrackingSumAggregateInputType = {
+    teamId?: true
+    currentUsage?: true
+    limitValue?: true
+  }
+
+  export type UsageTrackingMinAggregateInputType = {
+    id?: true
+    teamId?: true
+    subscriptionId?: true
+    metricType?: true
+    currentUsage?: true
+    limitValue?: true
+    periodStart?: true
+    periodEnd?: true
+    lastResetDate?: true
+    lastUpdated?: true
+    createdAt?: true
+  }
+
+  export type UsageTrackingMaxAggregateInputType = {
+    id?: true
+    teamId?: true
+    subscriptionId?: true
+    metricType?: true
+    currentUsage?: true
+    limitValue?: true
+    periodStart?: true
+    periodEnd?: true
+    lastResetDate?: true
+    lastUpdated?: true
+    createdAt?: true
+  }
+
+  export type UsageTrackingCountAggregateInputType = {
+    id?: true
+    teamId?: true
+    subscriptionId?: true
+    metricType?: true
+    currentUsage?: true
+    limitValue?: true
+    periodStart?: true
+    periodEnd?: true
+    lastResetDate?: true
+    lastUpdated?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UsageTrackingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UsageTracking to aggregate.
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UsageTrackings to fetch.
+     */
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UsageTrackingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UsageTrackings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UsageTrackings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UsageTrackings
+    **/
+    _count?: true | UsageTrackingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UsageTrackingAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UsageTrackingSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UsageTrackingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UsageTrackingMaxAggregateInputType
+  }
+
+  export type GetUsageTrackingAggregateType<T extends UsageTrackingAggregateArgs> = {
+        [P in keyof T & keyof AggregateUsageTracking]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUsageTracking[P]>
+      : GetScalarType<T[P], AggregateUsageTracking[P]>
+  }
+
+
+
+
+  export type UsageTrackingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UsageTrackingWhereInput
+    orderBy?: UsageTrackingOrderByWithAggregationInput | UsageTrackingOrderByWithAggregationInput[]
+    by: UsageTrackingScalarFieldEnum[] | UsageTrackingScalarFieldEnum
+    having?: UsageTrackingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UsageTrackingCountAggregateInputType | true
+    _avg?: UsageTrackingAvgAggregateInputType
+    _sum?: UsageTrackingSumAggregateInputType
+    _min?: UsageTrackingMinAggregateInputType
+    _max?: UsageTrackingMaxAggregateInputType
+  }
+
+  export type UsageTrackingGroupByOutputType = {
+    id: string
+    teamId: number
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage: number
+    limitValue: number
+    periodStart: Date
+    periodEnd: Date
+    lastResetDate: Date | null
+    lastUpdated: Date
+    createdAt: Date
+    _count: UsageTrackingCountAggregateOutputType | null
+    _avg: UsageTrackingAvgAggregateOutputType | null
+    _sum: UsageTrackingSumAggregateOutputType | null
+    _min: UsageTrackingMinAggregateOutputType | null
+    _max: UsageTrackingMaxAggregateOutputType | null
+  }
+
+  type GetUsageTrackingGroupByPayload<T extends UsageTrackingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UsageTrackingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UsageTrackingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UsageTrackingGroupByOutputType[P]>
+            : GetScalarType<T[P], UsageTrackingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UsageTrackingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    subscriptionId?: boolean
+    metricType?: boolean
+    currentUsage?: boolean
+    limitValue?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    lastResetDate?: boolean
+    lastUpdated?: boolean
+    createdAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["usageTracking"]>
+
+  export type UsageTrackingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    subscriptionId?: boolean
+    metricType?: boolean
+    currentUsage?: boolean
+    limitValue?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    lastResetDate?: boolean
+    lastUpdated?: boolean
+    createdAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["usageTracking"]>
+
+  export type UsageTrackingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    subscriptionId?: boolean
+    metricType?: boolean
+    currentUsage?: boolean
+    limitValue?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    lastResetDate?: boolean
+    lastUpdated?: boolean
+    createdAt?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["usageTracking"]>
+
+  export type UsageTrackingSelectScalar = {
+    id?: boolean
+    teamId?: boolean
+    subscriptionId?: boolean
+    metricType?: boolean
+    currentUsage?: boolean
+    limitValue?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    lastResetDate?: boolean
+    lastUpdated?: boolean
+    createdAt?: boolean
+  }
+
+  export type UsageTrackingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "subscriptionId" | "metricType" | "currentUsage" | "limitValue" | "periodStart" | "periodEnd" | "lastResetDate" | "lastUpdated" | "createdAt", ExtArgs["result"]["usageTracking"]>
+  export type UsageTrackingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }
+  export type UsageTrackingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }
+  export type UsageTrackingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    subscription?: boolean | CustomerSubscriptionDefaultArgs<ExtArgs>
+  }
+
+  export type $UsageTrackingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UsageTracking"
+    objects: {
+      team: Prisma.$TeamPayload<ExtArgs>
+      subscription: Prisma.$CustomerSubscriptionPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      teamId: number
+      subscriptionId: string
+      metricType: $Enums.UsageMetricType
+      currentUsage: number
+      limitValue: number
+      periodStart: Date
+      periodEnd: Date
+      lastResetDate: Date | null
+      lastUpdated: Date
+      createdAt: Date
+    }, ExtArgs["result"]["usageTracking"]>
+    composites: {}
+  }
+
+  type UsageTrackingGetPayload<S extends boolean | null | undefined | UsageTrackingDefaultArgs> = $Result.GetResult<Prisma.$UsageTrackingPayload, S>
+
+  type UsageTrackingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UsageTrackingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UsageTrackingCountAggregateInputType | true
+    }
+
+  export interface UsageTrackingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UsageTracking'], meta: { name: 'UsageTracking' } }
+    /**
+     * Find zero or one UsageTracking that matches the filter.
+     * @param {UsageTrackingFindUniqueArgs} args - Arguments to find a UsageTracking
+     * @example
+     * // Get one UsageTracking
+     * const usageTracking = await prisma.usageTracking.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UsageTrackingFindUniqueArgs>(args: SelectSubset<T, UsageTrackingFindUniqueArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UsageTracking that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UsageTrackingFindUniqueOrThrowArgs} args - Arguments to find a UsageTracking
+     * @example
+     * // Get one UsageTracking
+     * const usageTracking = await prisma.usageTracking.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UsageTrackingFindUniqueOrThrowArgs>(args: SelectSubset<T, UsageTrackingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UsageTracking that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingFindFirstArgs} args - Arguments to find a UsageTracking
+     * @example
+     * // Get one UsageTracking
+     * const usageTracking = await prisma.usageTracking.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UsageTrackingFindFirstArgs>(args?: SelectSubset<T, UsageTrackingFindFirstArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UsageTracking that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingFindFirstOrThrowArgs} args - Arguments to find a UsageTracking
+     * @example
+     * // Get one UsageTracking
+     * const usageTracking = await prisma.usageTracking.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UsageTrackingFindFirstOrThrowArgs>(args?: SelectSubset<T, UsageTrackingFindFirstOrThrowArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UsageTrackings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UsageTrackings
+     * const usageTrackings = await prisma.usageTracking.findMany()
+     * 
+     * // Get first 10 UsageTrackings
+     * const usageTrackings = await prisma.usageTracking.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const usageTrackingWithIdOnly = await prisma.usageTracking.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UsageTrackingFindManyArgs>(args?: SelectSubset<T, UsageTrackingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UsageTracking.
+     * @param {UsageTrackingCreateArgs} args - Arguments to create a UsageTracking.
+     * @example
+     * // Create one UsageTracking
+     * const UsageTracking = await prisma.usageTracking.create({
+     *   data: {
+     *     // ... data to create a UsageTracking
+     *   }
+     * })
+     * 
+     */
+    create<T extends UsageTrackingCreateArgs>(args: SelectSubset<T, UsageTrackingCreateArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UsageTrackings.
+     * @param {UsageTrackingCreateManyArgs} args - Arguments to create many UsageTrackings.
+     * @example
+     * // Create many UsageTrackings
+     * const usageTracking = await prisma.usageTracking.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UsageTrackingCreateManyArgs>(args?: SelectSubset<T, UsageTrackingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UsageTrackings and returns the data saved in the database.
+     * @param {UsageTrackingCreateManyAndReturnArgs} args - Arguments to create many UsageTrackings.
+     * @example
+     * // Create many UsageTrackings
+     * const usageTracking = await prisma.usageTracking.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UsageTrackings and only return the `id`
+     * const usageTrackingWithIdOnly = await prisma.usageTracking.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UsageTrackingCreateManyAndReturnArgs>(args?: SelectSubset<T, UsageTrackingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UsageTracking.
+     * @param {UsageTrackingDeleteArgs} args - Arguments to delete one UsageTracking.
+     * @example
+     * // Delete one UsageTracking
+     * const UsageTracking = await prisma.usageTracking.delete({
+     *   where: {
+     *     // ... filter to delete one UsageTracking
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UsageTrackingDeleteArgs>(args: SelectSubset<T, UsageTrackingDeleteArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UsageTracking.
+     * @param {UsageTrackingUpdateArgs} args - Arguments to update one UsageTracking.
+     * @example
+     * // Update one UsageTracking
+     * const usageTracking = await prisma.usageTracking.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UsageTrackingUpdateArgs>(args: SelectSubset<T, UsageTrackingUpdateArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UsageTrackings.
+     * @param {UsageTrackingDeleteManyArgs} args - Arguments to filter UsageTrackings to delete.
+     * @example
+     * // Delete a few UsageTrackings
+     * const { count } = await prisma.usageTracking.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UsageTrackingDeleteManyArgs>(args?: SelectSubset<T, UsageTrackingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UsageTrackings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UsageTrackings
+     * const usageTracking = await prisma.usageTracking.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UsageTrackingUpdateManyArgs>(args: SelectSubset<T, UsageTrackingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UsageTrackings and returns the data updated in the database.
+     * @param {UsageTrackingUpdateManyAndReturnArgs} args - Arguments to update many UsageTrackings.
+     * @example
+     * // Update many UsageTrackings
+     * const usageTracking = await prisma.usageTracking.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UsageTrackings and only return the `id`
+     * const usageTrackingWithIdOnly = await prisma.usageTracking.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UsageTrackingUpdateManyAndReturnArgs>(args: SelectSubset<T, UsageTrackingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UsageTracking.
+     * @param {UsageTrackingUpsertArgs} args - Arguments to update or create a UsageTracking.
+     * @example
+     * // Update or create a UsageTracking
+     * const usageTracking = await prisma.usageTracking.upsert({
+     *   create: {
+     *     // ... data to create a UsageTracking
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UsageTracking we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UsageTrackingUpsertArgs>(args: SelectSubset<T, UsageTrackingUpsertArgs<ExtArgs>>): Prisma__UsageTrackingClient<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UsageTrackings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingCountArgs} args - Arguments to filter UsageTrackings to count.
+     * @example
+     * // Count the number of UsageTrackings
+     * const count = await prisma.usageTracking.count({
+     *   where: {
+     *     // ... the filter for the UsageTrackings we want to count
+     *   }
+     * })
+    **/
+    count<T extends UsageTrackingCountArgs>(
+      args?: Subset<T, UsageTrackingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UsageTrackingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UsageTracking.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UsageTrackingAggregateArgs>(args: Subset<T, UsageTrackingAggregateArgs>): Prisma.PrismaPromise<GetUsageTrackingAggregateType<T>>
+
+    /**
+     * Group by UsageTracking.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UsageTrackingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UsageTrackingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UsageTrackingGroupByArgs['orderBy'] }
+        : { orderBy?: UsageTrackingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UsageTrackingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUsageTrackingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UsageTracking model
+   */
+  readonly fields: UsageTrackingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UsageTracking.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UsageTrackingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    subscription<T extends CustomerSubscriptionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerSubscriptionDefaultArgs<ExtArgs>>): Prisma__CustomerSubscriptionClient<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UsageTracking model
+   */
+  interface UsageTrackingFieldRefs {
+    readonly id: FieldRef<"UsageTracking", 'String'>
+    readonly teamId: FieldRef<"UsageTracking", 'Int'>
+    readonly subscriptionId: FieldRef<"UsageTracking", 'String'>
+    readonly metricType: FieldRef<"UsageTracking", 'UsageMetricType'>
+    readonly currentUsage: FieldRef<"UsageTracking", 'Int'>
+    readonly limitValue: FieldRef<"UsageTracking", 'Int'>
+    readonly periodStart: FieldRef<"UsageTracking", 'DateTime'>
+    readonly periodEnd: FieldRef<"UsageTracking", 'DateTime'>
+    readonly lastResetDate: FieldRef<"UsageTracking", 'DateTime'>
+    readonly lastUpdated: FieldRef<"UsageTracking", 'DateTime'>
+    readonly createdAt: FieldRef<"UsageTracking", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UsageTracking findUnique
+   */
+  export type UsageTrackingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTracking to fetch.
+     */
+    where: UsageTrackingWhereUniqueInput
+  }
+
+  /**
+   * UsageTracking findUniqueOrThrow
+   */
+  export type UsageTrackingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTracking to fetch.
+     */
+    where: UsageTrackingWhereUniqueInput
+  }
+
+  /**
+   * UsageTracking findFirst
+   */
+  export type UsageTrackingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTracking to fetch.
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UsageTrackings to fetch.
+     */
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UsageTrackings.
+     */
+    cursor?: UsageTrackingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UsageTrackings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UsageTrackings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UsageTrackings.
+     */
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
+  }
+
+  /**
+   * UsageTracking findFirstOrThrow
+   */
+  export type UsageTrackingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTracking to fetch.
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UsageTrackings to fetch.
+     */
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UsageTrackings.
+     */
+    cursor?: UsageTrackingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UsageTrackings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UsageTrackings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UsageTrackings.
+     */
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
+  }
+
+  /**
+   * UsageTracking findMany
+   */
+  export type UsageTrackingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter, which UsageTrackings to fetch.
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UsageTrackings to fetch.
+     */
+    orderBy?: UsageTrackingOrderByWithRelationInput | UsageTrackingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UsageTrackings.
+     */
+    cursor?: UsageTrackingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UsageTrackings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UsageTrackings.
+     */
+    skip?: number
+    distinct?: UsageTrackingScalarFieldEnum | UsageTrackingScalarFieldEnum[]
+  }
+
+  /**
+   * UsageTracking create
+   */
+  export type UsageTrackingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UsageTracking.
+     */
+    data: XOR<UsageTrackingCreateInput, UsageTrackingUncheckedCreateInput>
+  }
+
+  /**
+   * UsageTracking createMany
+   */
+  export type UsageTrackingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UsageTrackings.
+     */
+    data: UsageTrackingCreateManyInput | UsageTrackingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UsageTracking createManyAndReturn
+   */
+  export type UsageTrackingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * The data used to create many UsageTrackings.
+     */
+    data: UsageTrackingCreateManyInput | UsageTrackingCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UsageTracking update
+   */
+  export type UsageTrackingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UsageTracking.
+     */
+    data: XOR<UsageTrackingUpdateInput, UsageTrackingUncheckedUpdateInput>
+    /**
+     * Choose, which UsageTracking to update.
+     */
+    where: UsageTrackingWhereUniqueInput
+  }
+
+  /**
+   * UsageTracking updateMany
+   */
+  export type UsageTrackingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UsageTrackings.
+     */
+    data: XOR<UsageTrackingUpdateManyMutationInput, UsageTrackingUncheckedUpdateManyInput>
+    /**
+     * Filter which UsageTrackings to update
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * Limit how many UsageTrackings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UsageTracking updateManyAndReturn
+   */
+  export type UsageTrackingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * The data used to update UsageTrackings.
+     */
+    data: XOR<UsageTrackingUpdateManyMutationInput, UsageTrackingUncheckedUpdateManyInput>
+    /**
+     * Filter which UsageTrackings to update
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * Limit how many UsageTrackings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UsageTracking upsert
+   */
+  export type UsageTrackingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UsageTracking to update in case it exists.
+     */
+    where: UsageTrackingWhereUniqueInput
+    /**
+     * In case the UsageTracking found by the `where` argument doesn't exist, create a new UsageTracking with this data.
+     */
+    create: XOR<UsageTrackingCreateInput, UsageTrackingUncheckedCreateInput>
+    /**
+     * In case the UsageTracking was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UsageTrackingUpdateInput, UsageTrackingUncheckedUpdateInput>
+  }
+
+  /**
+   * UsageTracking delete
+   */
+  export type UsageTrackingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+    /**
+     * Filter which UsageTracking to delete.
+     */
+    where: UsageTrackingWhereUniqueInput
+  }
+
+  /**
+   * UsageTracking deleteMany
+   */
+  export type UsageTrackingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UsageTrackings to delete
+     */
+    where?: UsageTrackingWhereInput
+    /**
+     * Limit how many UsageTrackings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UsageTracking without action
+   */
+  export type UsageTrackingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UsageTracking
+     */
+    select?: UsageTrackingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UsageTracking
+     */
+    omit?: UsageTrackingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsageTrackingInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9823,24 +14017,31 @@ export namespace Prisma {
 
   export const UserScalarFieldEnum: {
     id: 'id',
-    idProvider: 'idProvider',
     email: 'email',
     provider: 'provider',
     password: 'password',
     resetPasswordToken: 'resetPasswordToken',
-    resetPasswordExpires: 'resetPasswordExpires',
     confirmationToken: 'confirmationToken',
     confirmed: 'confirmed',
     blocked: 'blocked',
     phone: 'phone',
     firstName: 'firstName',
     lastName: 'lastName',
+    position: 'position',
+    companyName: 'companyName',
+    country: 'country',
+    linkedinUrl: 'linkedinUrl',
+    twitterUrl: 'twitterUrl',
+    websiteUrl: 'websiteUrl',
+    githubUrl: 'githubUrl',
     avatarUrl: 'avatarUrl',
     language: 'language',
-    theme: 'theme',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     avatarId: 'avatarId',
+    idProvider: 'idProvider',
+    resetPasswordExpires: 'resetPasswordExpires',
+    theme: 'theme',
     defaultTeamId: 'defaultTeamId'
   };
 
@@ -9856,9 +14057,9 @@ export namespace Prisma {
     version: 'version',
     mimeType: 'mimeType',
     size: 'size',
+    userId: 'userId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    teamId: 'teamId'
+    updatedAt: 'updatedAt'
   };
 
   export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
@@ -9905,6 +14106,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     description: 'description',
+    tokenApi: 'tokenApi',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -9926,6 +14128,61 @@ export namespace Prisma {
   };
 
   export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
+
+
+  export const SubscriptionPlanScalarFieldEnum: {
+    id: 'id',
+    planType: 'planType',
+    stripeProductId: 'stripeProductId',
+    stripePriceIdMonthly: 'stripePriceIdMonthly',
+    stripePriceIdYearly: 'stripePriceIdYearly',
+    priceMonthly: 'priceMonthly',
+    priceYearly: 'priceYearly',
+    currency: 'currency',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SubscriptionPlanScalarFieldEnum = (typeof SubscriptionPlanScalarFieldEnum)[keyof typeof SubscriptionPlanScalarFieldEnum]
+
+
+  export const CustomerSubscriptionScalarFieldEnum: {
+    id: 'id',
+    teamId: 'teamId',
+    planId: 'planId',
+    status: 'status',
+    billingInterval: 'billingInterval',
+    stripeCustomerId: 'stripeCustomerId',
+    stripeSubscriptionId: 'stripeSubscriptionId',
+    cancellationDetails: 'cancellationDetails',
+    currentPeriodStart: 'currentPeriodStart',
+    currentPeriodEnd: 'currentPeriodEnd',
+    cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+    trialStart: 'trialStart',
+    trialEnd: 'trialEnd',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CustomerSubscriptionScalarFieldEnum = (typeof CustomerSubscriptionScalarFieldEnum)[keyof typeof CustomerSubscriptionScalarFieldEnum]
+
+
+  export const UsageTrackingScalarFieldEnum: {
+    id: 'id',
+    teamId: 'teamId',
+    subscriptionId: 'subscriptionId',
+    metricType: 'metricType',
+    currentUsage: 'currentUsage',
+    limitValue: 'limitValue',
+    periodStart: 'periodStart',
+    periodEnd: 'periodEnd',
+    lastResetDate: 'lastResetDate',
+    lastUpdated: 'lastUpdated',
+    createdAt: 'createdAt'
+  };
+
+  export type UsageTrackingScalarFieldEnum = (typeof UsageTrackingScalarFieldEnum)[keyof typeof UsageTrackingScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -10000,20 +14257,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
-   */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-  /**
-   * Reference to a field of type 'DateTime[]'
-   */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -10031,6 +14274,20 @@ export namespace Prisma {
    * Reference to a field of type 'Language[]'
    */
   export type ListEnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -10063,6 +14320,76 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'PlanType'
+   */
+  export type EnumPlanTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PlanType[]'
+   */
+  export type ListEnumPlanTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SubscriptionStatus'
+   */
+  export type EnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SubscriptionStatus[]'
+   */
+  export type ListEnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BillingInterval'
+   */
+  export type EnumBillingIntervalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BillingInterval'>
+    
+
+
+  /**
+   * Reference to a field of type 'BillingInterval[]'
+   */
+  export type ListEnumBillingIntervalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BillingInterval[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'UsageMetricType'
+   */
+  export type EnumUsageMetricTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UsageMetricType'>
+    
+
+
+  /**
+   * Reference to a field of type 'UsageMetricType[]'
+   */
+  export type ListEnumUsageMetricTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UsageMetricType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -10084,111 +14411,142 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: IntFilter<"User"> | number
-    idProvider?: StringNullableFilter<"User"> | string | null
     email?: StringFilter<"User"> | string
     provider?: EnumProviderFilter<"User"> | $Enums.Provider
     password?: StringNullableFilter<"User"> | string | null
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
-    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     confirmationToken?: StringNullableFilter<"User"> | string | null
     confirmed?: BoolNullableFilter<"User"> | boolean | null
     blocked?: BoolNullableFilter<"User"> | boolean | null
     phone?: StringNullableFilter<"User"> | string | null
     firstName?: StringFilter<"User"> | string
     lastName?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    companyName?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    linkedinUrl?: StringNullableFilter<"User"> | string | null
+    twitterUrl?: StringNullableFilter<"User"> | string | null
+    websiteUrl?: StringNullableFilter<"User"> | string | null
+    githubUrl?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
-    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    avatarId?: IntNullableFilter<"User"> | number | null
+    avatarId?: StringNullableFilter<"User"> | string | null
+    idProvider?: StringNullableFilter<"User"> | string | null
+    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     defaultTeamId?: IntNullableFilter<"User"> | number | null
-    avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     teamMembers?: TeamMemberListRelationFilter
+    avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
+    files?: FileListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
-    idProvider?: SortOrderInput | SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrderInput | SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
-    resetPasswordExpires?: SortOrderInput | SortOrder
     confirmationToken?: SortOrderInput | SortOrder
     confirmed?: SortOrderInput | SortOrder
     blocked?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     firstName?: SortOrder
     lastName?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    companyName?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    twitterUrl?: SortOrderInput | SortOrder
+    websiteUrl?: SortOrderInput | SortOrder
+    githubUrl?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrderInput | SortOrder
+    idProvider?: SortOrderInput | SortOrder
+    resetPasswordExpires?: SortOrderInput | SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrderInput | SortOrder
-    avatar?: FileOrderByWithRelationInput
-    team?: TeamOrderByWithRelationInput
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     teamMembers?: TeamMemberOrderByRelationAggregateInput
+    avatar?: FileOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
+    files?: FileOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     email?: string
-    phone?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    idProvider?: StringNullableFilter<"User"> | string | null
     provider?: EnumProviderFilter<"User"> | $Enums.Provider
     password?: StringNullableFilter<"User"> | string | null
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
-    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     confirmationToken?: StringNullableFilter<"User"> | string | null
     confirmed?: BoolNullableFilter<"User"> | boolean | null
     blocked?: BoolNullableFilter<"User"> | boolean | null
+    phone?: StringNullableFilter<"User"> | string | null
     firstName?: StringFilter<"User"> | string
     lastName?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    companyName?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    linkedinUrl?: StringNullableFilter<"User"> | string | null
+    twitterUrl?: StringNullableFilter<"User"> | string | null
+    websiteUrl?: StringNullableFilter<"User"> | string | null
+    githubUrl?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
-    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    avatarId?: IntNullableFilter<"User"> | number | null
+    avatarId?: StringNullableFilter<"User"> | string | null
+    idProvider?: StringNullableFilter<"User"> | string | null
+    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     defaultTeamId?: IntNullableFilter<"User"> | number | null
-    avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     teamMembers?: TeamMemberListRelationFilter
-  }, "id" | "email" | "phone">
+    avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
+    files?: FileListRelationFilter
+  }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
-    idProvider?: SortOrderInput | SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrderInput | SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
-    resetPasswordExpires?: SortOrderInput | SortOrder
     confirmationToken?: SortOrderInput | SortOrder
     confirmed?: SortOrderInput | SortOrder
     blocked?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     firstName?: SortOrder
     lastName?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    companyName?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    twitterUrl?: SortOrderInput | SortOrder
+    websiteUrl?: SortOrderInput | SortOrder
+    githubUrl?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrderInput | SortOrder
+    idProvider?: SortOrderInput | SortOrder
+    resetPasswordExpires?: SortOrderInput | SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
@@ -10202,24 +14560,31 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"User"> | number
-    idProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
     email?: StringWithAggregatesFilter<"User"> | string
     provider?: EnumProviderWithAggregatesFilter<"User"> | $Enums.Provider
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
     resetPasswordToken?: StringNullableWithAggregatesFilter<"User"> | string | null
-    resetPasswordExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     confirmationToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     confirmed?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
     blocked?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
     phone?: StringNullableWithAggregatesFilter<"User"> | string | null
     firstName?: StringWithAggregatesFilter<"User"> | string
     lastName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    position?: StringNullableWithAggregatesFilter<"User"> | string | null
+    companyName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    country?: StringNullableWithAggregatesFilter<"User"> | string | null
+    linkedinUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    twitterUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    websiteUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    githubUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     avatarUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     language?: EnumLanguageWithAggregatesFilter<"User"> | $Enums.Language
-    theme?: EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
-    avatarId?: IntNullableWithAggregatesFilter<"User"> | number | null
+    avatarId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    idProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
+    resetPasswordExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    theme?: EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
     defaultTeamId?: IntNullableWithAggregatesFilter<"User"> | number | null
   }
 
@@ -10227,7 +14592,7 @@ export namespace Prisma {
     AND?: FileWhereInput | FileWhereInput[]
     OR?: FileWhereInput[]
     NOT?: FileWhereInput | FileWhereInput[]
-    id?: IntFilter<"File"> | number
+    id?: StringFilter<"File"> | string
     name?: StringFilter<"File"> | string
     url?: StringFilter<"File"> | string
     publicId?: StringNullableFilter<"File"> | string | null
@@ -10235,11 +14600,11 @@ export namespace Prisma {
     version?: StringNullableFilter<"File"> | string | null
     mimeType?: StringNullableFilter<"File"> | string | null
     size?: IntNullableFilter<"File"> | number | null
+    userId?: IntNullableFilter<"File"> | number | null
     createdAt?: DateTimeFilter<"File"> | Date | string
     updatedAt?: DateTimeFilter<"File"> | Date | string
-    teamId?: IntNullableFilter<"File"> | number | null
     avatarFor?: UserListRelationFilter
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type FileOrderByWithRelationInput = {
@@ -10251,15 +14616,15 @@ export namespace Prisma {
     version?: SortOrderInput | SortOrder
     mimeType?: SortOrderInput | SortOrder
     size?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    teamId?: SortOrderInput | SortOrder
     avatarFor?: UserOrderByRelationAggregateInput
-    team?: TeamOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type FileWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     AND?: FileWhereInput | FileWhereInput[]
     OR?: FileWhereInput[]
     NOT?: FileWhereInput | FileWhereInput[]
@@ -10270,12 +14635,12 @@ export namespace Prisma {
     version?: StringNullableFilter<"File"> | string | null
     mimeType?: StringNullableFilter<"File"> | string | null
     size?: IntNullableFilter<"File"> | number | null
+    userId?: IntNullableFilter<"File"> | number | null
     createdAt?: DateTimeFilter<"File"> | Date | string
     updatedAt?: DateTimeFilter<"File"> | Date | string
-    teamId?: IntNullableFilter<"File"> | number | null
     avatarFor?: UserListRelationFilter
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
-  }, "id">
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "id">
 
   export type FileOrderByWithAggregationInput = {
     id?: SortOrder
@@ -10286,9 +14651,9 @@ export namespace Prisma {
     version?: SortOrderInput | SortOrder
     mimeType?: SortOrderInput | SortOrder
     size?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    teamId?: SortOrderInput | SortOrder
     _count?: FileCountOrderByAggregateInput
     _avg?: FileAvgOrderByAggregateInput
     _max?: FileMaxOrderByAggregateInput
@@ -10300,7 +14665,7 @@ export namespace Prisma {
     AND?: FileScalarWhereWithAggregatesInput | FileScalarWhereWithAggregatesInput[]
     OR?: FileScalarWhereWithAggregatesInput[]
     NOT?: FileScalarWhereWithAggregatesInput | FileScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"File"> | number
+    id?: StringWithAggregatesFilter<"File"> | string
     name?: StringWithAggregatesFilter<"File"> | string
     url?: StringWithAggregatesFilter<"File"> | string
     publicId?: StringNullableWithAggregatesFilter<"File"> | string | null
@@ -10308,9 +14673,9 @@ export namespace Prisma {
     version?: StringNullableWithAggregatesFilter<"File"> | string | null
     mimeType?: StringNullableWithAggregatesFilter<"File"> | string | null
     size?: IntNullableWithAggregatesFilter<"File"> | number | null
+    userId?: IntNullableWithAggregatesFilter<"File"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"File"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"File"> | Date | string
-    teamId?: IntNullableWithAggregatesFilter<"File"> | number | null
   }
 
   export type AccountWhereInput = {
@@ -10508,22 +14873,26 @@ export namespace Prisma {
     id?: IntFilter<"Team"> | number
     name?: StringFilter<"Team"> | string
     description?: StringNullableFilter<"Team"> | string | null
+    tokenApi?: StringNullableFilter<"Team"> | string | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
-    files?: FileListRelationFilter
     members?: TeamMemberListRelationFilter
     user?: UserListRelationFilter
+    CustomerSubscription?: CustomerSubscriptionListRelationFilter
+    UsageTracking?: UsageTrackingListRelationFilter
   }
 
   export type TeamOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
+    tokenApi?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    files?: FileOrderByRelationAggregateInput
     members?: TeamMemberOrderByRelationAggregateInput
     user?: UserOrderByRelationAggregateInput
+    CustomerSubscription?: CustomerSubscriptionOrderByRelationAggregateInput
+    UsageTracking?: UsageTrackingOrderByRelationAggregateInput
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -10533,17 +14902,20 @@ export namespace Prisma {
     NOT?: TeamWhereInput | TeamWhereInput[]
     name?: StringFilter<"Team"> | string
     description?: StringNullableFilter<"Team"> | string | null
+    tokenApi?: StringNullableFilter<"Team"> | string | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
-    files?: FileListRelationFilter
     members?: TeamMemberListRelationFilter
     user?: UserListRelationFilter
+    CustomerSubscription?: CustomerSubscriptionListRelationFilter
+    UsageTracking?: UsageTrackingListRelationFilter
   }, "id">
 
   export type TeamOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
+    tokenApi?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: TeamCountOrderByAggregateInput
@@ -10560,6 +14932,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Team"> | number
     name?: StringWithAggregatesFilter<"Team"> | string
     description?: StringNullableWithAggregatesFilter<"Team"> | string | null
+    tokenApi?: StringNullableWithAggregatesFilter<"Team"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
   }
@@ -10578,8 +14951,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"TeamMember"> | Date | string
     userId?: IntFilter<"TeamMember"> | number
     teamId?: IntFilter<"TeamMember"> | number
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type TeamMemberOrderByWithRelationInput = {
@@ -10593,8 +14966,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     teamId?: SortOrder
-    user?: UserOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -10612,8 +14985,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"TeamMember"> | Date | string
     userId?: IntFilter<"TeamMember"> | number
     teamId?: IntFilter<"TeamMember"> | number
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId_teamId">
 
   export type TeamMemberOrderByWithAggregationInput = {
@@ -10650,175 +15023,520 @@ export namespace Prisma {
     teamId?: IntWithAggregatesFilter<"TeamMember"> | number
   }
 
+  export type SubscriptionPlanWhereInput = {
+    AND?: SubscriptionPlanWhereInput | SubscriptionPlanWhereInput[]
+    OR?: SubscriptionPlanWhereInput[]
+    NOT?: SubscriptionPlanWhereInput | SubscriptionPlanWhereInput[]
+    id?: StringFilter<"SubscriptionPlan"> | string
+    planType?: EnumPlanTypeFilter<"SubscriptionPlan"> | $Enums.PlanType
+    stripeProductId?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdMonthly?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdYearly?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    priceMonthly?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    currency?: StringFilter<"SubscriptionPlan"> | string
+    isActive?: BoolFilter<"SubscriptionPlan"> | boolean
+    createdAt?: DateTimeFilter<"SubscriptionPlan"> | Date | string
+    updatedAt?: DateTimeFilter<"SubscriptionPlan"> | Date | string
+    subscriptions?: CustomerSubscriptionListRelationFilter
+  }
+
+  export type SubscriptionPlanOrderByWithRelationInput = {
+    id?: SortOrder
+    planType?: SortOrder
+    stripeProductId?: SortOrderInput | SortOrder
+    stripePriceIdMonthly?: SortOrderInput | SortOrder
+    stripePriceIdYearly?: SortOrderInput | SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
+    currency?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    subscriptions?: CustomerSubscriptionOrderByRelationAggregateInput
+  }
+
+  export type SubscriptionPlanWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SubscriptionPlanWhereInput | SubscriptionPlanWhereInput[]
+    OR?: SubscriptionPlanWhereInput[]
+    NOT?: SubscriptionPlanWhereInput | SubscriptionPlanWhereInput[]
+    planType?: EnumPlanTypeFilter<"SubscriptionPlan"> | $Enums.PlanType
+    stripeProductId?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdMonthly?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdYearly?: StringNullableFilter<"SubscriptionPlan"> | string | null
+    priceMonthly?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    currency?: StringFilter<"SubscriptionPlan"> | string
+    isActive?: BoolFilter<"SubscriptionPlan"> | boolean
+    createdAt?: DateTimeFilter<"SubscriptionPlan"> | Date | string
+    updatedAt?: DateTimeFilter<"SubscriptionPlan"> | Date | string
+    subscriptions?: CustomerSubscriptionListRelationFilter
+  }, "id">
+
+  export type SubscriptionPlanOrderByWithAggregationInput = {
+    id?: SortOrder
+    planType?: SortOrder
+    stripeProductId?: SortOrderInput | SortOrder
+    stripePriceIdMonthly?: SortOrderInput | SortOrder
+    stripePriceIdYearly?: SortOrderInput | SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
+    currency?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SubscriptionPlanCountOrderByAggregateInput
+    _avg?: SubscriptionPlanAvgOrderByAggregateInput
+    _max?: SubscriptionPlanMaxOrderByAggregateInput
+    _min?: SubscriptionPlanMinOrderByAggregateInput
+    _sum?: SubscriptionPlanSumOrderByAggregateInput
+  }
+
+  export type SubscriptionPlanScalarWhereWithAggregatesInput = {
+    AND?: SubscriptionPlanScalarWhereWithAggregatesInput | SubscriptionPlanScalarWhereWithAggregatesInput[]
+    OR?: SubscriptionPlanScalarWhereWithAggregatesInput[]
+    NOT?: SubscriptionPlanScalarWhereWithAggregatesInput | SubscriptionPlanScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SubscriptionPlan"> | string
+    planType?: EnumPlanTypeWithAggregatesFilter<"SubscriptionPlan"> | $Enums.PlanType
+    stripeProductId?: StringNullableWithAggregatesFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdMonthly?: StringNullableWithAggregatesFilter<"SubscriptionPlan"> | string | null
+    stripePriceIdYearly?: StringNullableWithAggregatesFilter<"SubscriptionPlan"> | string | null
+    priceMonthly?: DecimalWithAggregatesFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalWithAggregatesFilter<"SubscriptionPlan"> | Decimal | DecimalJsLike | number | string
+    currency?: StringWithAggregatesFilter<"SubscriptionPlan"> | string
+    isActive?: BoolWithAggregatesFilter<"SubscriptionPlan"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"SubscriptionPlan"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SubscriptionPlan"> | Date | string
+  }
+
+  export type CustomerSubscriptionWhereInput = {
+    AND?: CustomerSubscriptionWhereInput | CustomerSubscriptionWhereInput[]
+    OR?: CustomerSubscriptionWhereInput[]
+    NOT?: CustomerSubscriptionWhereInput | CustomerSubscriptionWhereInput[]
+    id?: StringFilter<"CustomerSubscription"> | string
+    teamId?: IntFilter<"CustomerSubscription"> | number
+    planId?: StringFilter<"CustomerSubscription"> | string
+    status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
+    stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    stripeSubscriptionId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    cancellationDetails?: StringNullableFilter<"CustomerSubscription"> | string | null
+    currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    currentPeriodEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    cancelAtPeriodEnd?: BoolFilter<"CustomerSubscription"> | boolean
+    trialStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    trialEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    plan?: XOR<SubscriptionPlanScalarRelationFilter, SubscriptionPlanWhereInput>
+    usageTracking?: UsageTrackingListRelationFilter
+  }
+
+  export type CustomerSubscriptionOrderByWithRelationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    planId?: SortOrder
+    status?: SortOrder
+    billingInterval?: SortOrder
+    stripeCustomerId?: SortOrderInput | SortOrder
+    stripeSubscriptionId?: SortOrderInput | SortOrder
+    cancellationDetails?: SortOrderInput | SortOrder
+    currentPeriodStart?: SortOrderInput | SortOrder
+    currentPeriodEnd?: SortOrderInput | SortOrder
+    cancelAtPeriodEnd?: SortOrder
+    trialStart?: SortOrderInput | SortOrder
+    trialEnd?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    team?: TeamOrderByWithRelationInput
+    plan?: SubscriptionPlanOrderByWithRelationInput
+    usageTracking?: UsageTrackingOrderByRelationAggregateInput
+  }
+
+  export type CustomerSubscriptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    stripeSubscriptionId?: string
+    AND?: CustomerSubscriptionWhereInput | CustomerSubscriptionWhereInput[]
+    OR?: CustomerSubscriptionWhereInput[]
+    NOT?: CustomerSubscriptionWhereInput | CustomerSubscriptionWhereInput[]
+    teamId?: IntFilter<"CustomerSubscription"> | number
+    planId?: StringFilter<"CustomerSubscription"> | string
+    status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
+    stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    cancellationDetails?: StringNullableFilter<"CustomerSubscription"> | string | null
+    currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    currentPeriodEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    cancelAtPeriodEnd?: BoolFilter<"CustomerSubscription"> | boolean
+    trialStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    trialEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    plan?: XOR<SubscriptionPlanScalarRelationFilter, SubscriptionPlanWhereInput>
+    usageTracking?: UsageTrackingListRelationFilter
+  }, "id" | "stripeSubscriptionId">
+
+  export type CustomerSubscriptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    planId?: SortOrder
+    status?: SortOrder
+    billingInterval?: SortOrder
+    stripeCustomerId?: SortOrderInput | SortOrder
+    stripeSubscriptionId?: SortOrderInput | SortOrder
+    cancellationDetails?: SortOrderInput | SortOrder
+    currentPeriodStart?: SortOrderInput | SortOrder
+    currentPeriodEnd?: SortOrderInput | SortOrder
+    cancelAtPeriodEnd?: SortOrder
+    trialStart?: SortOrderInput | SortOrder
+    trialEnd?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CustomerSubscriptionCountOrderByAggregateInput
+    _avg?: CustomerSubscriptionAvgOrderByAggregateInput
+    _max?: CustomerSubscriptionMaxOrderByAggregateInput
+    _min?: CustomerSubscriptionMinOrderByAggregateInput
+    _sum?: CustomerSubscriptionSumOrderByAggregateInput
+  }
+
+  export type CustomerSubscriptionScalarWhereWithAggregatesInput = {
+    AND?: CustomerSubscriptionScalarWhereWithAggregatesInput | CustomerSubscriptionScalarWhereWithAggregatesInput[]
+    OR?: CustomerSubscriptionScalarWhereWithAggregatesInput[]
+    NOT?: CustomerSubscriptionScalarWhereWithAggregatesInput | CustomerSubscriptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CustomerSubscription"> | string
+    teamId?: IntWithAggregatesFilter<"CustomerSubscription"> | number
+    planId?: StringWithAggregatesFilter<"CustomerSubscription"> | string
+    status?: EnumSubscriptionStatusWithAggregatesFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalWithAggregatesFilter<"CustomerSubscription"> | $Enums.BillingInterval
+    stripeCustomerId?: StringNullableWithAggregatesFilter<"CustomerSubscription"> | string | null
+    stripeSubscriptionId?: StringNullableWithAggregatesFilter<"CustomerSubscription"> | string | null
+    cancellationDetails?: StringNullableWithAggregatesFilter<"CustomerSubscription"> | string | null
+    currentPeriodStart?: DateTimeNullableWithAggregatesFilter<"CustomerSubscription"> | Date | string | null
+    currentPeriodEnd?: DateTimeNullableWithAggregatesFilter<"CustomerSubscription"> | Date | string | null
+    cancelAtPeriodEnd?: BoolWithAggregatesFilter<"CustomerSubscription"> | boolean
+    trialStart?: DateTimeNullableWithAggregatesFilter<"CustomerSubscription"> | Date | string | null
+    trialEnd?: DateTimeNullableWithAggregatesFilter<"CustomerSubscription"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CustomerSubscription"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CustomerSubscription"> | Date | string
+  }
+
+  export type UsageTrackingWhereInput = {
+    AND?: UsageTrackingWhereInput | UsageTrackingWhereInput[]
+    OR?: UsageTrackingWhereInput[]
+    NOT?: UsageTrackingWhereInput | UsageTrackingWhereInput[]
+    id?: StringFilter<"UsageTracking"> | string
+    teamId?: IntFilter<"UsageTracking"> | number
+    subscriptionId?: StringFilter<"UsageTracking"> | string
+    metricType?: EnumUsageMetricTypeFilter<"UsageTracking"> | $Enums.UsageMetricType
+    currentUsage?: IntFilter<"UsageTracking"> | number
+    limitValue?: IntFilter<"UsageTracking"> | number
+    periodStart?: DateTimeFilter<"UsageTracking"> | Date | string
+    periodEnd?: DateTimeFilter<"UsageTracking"> | Date | string
+    lastResetDate?: DateTimeNullableFilter<"UsageTracking"> | Date | string | null
+    lastUpdated?: DateTimeFilter<"UsageTracking"> | Date | string
+    createdAt?: DateTimeFilter<"UsageTracking"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    subscription?: XOR<CustomerSubscriptionScalarRelationFilter, CustomerSubscriptionWhereInput>
+  }
+
+  export type UsageTrackingOrderByWithRelationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrderInput | SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+    team?: TeamOrderByWithRelationInput
+    subscription?: CustomerSubscriptionOrderByWithRelationInput
+  }
+
+  export type UsageTrackingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    teamId_metricType_periodStart?: UsageTrackingTeamIdMetricTypePeriodStartCompoundUniqueInput
+    AND?: UsageTrackingWhereInput | UsageTrackingWhereInput[]
+    OR?: UsageTrackingWhereInput[]
+    NOT?: UsageTrackingWhereInput | UsageTrackingWhereInput[]
+    teamId?: IntFilter<"UsageTracking"> | number
+    subscriptionId?: StringFilter<"UsageTracking"> | string
+    metricType?: EnumUsageMetricTypeFilter<"UsageTracking"> | $Enums.UsageMetricType
+    currentUsage?: IntFilter<"UsageTracking"> | number
+    limitValue?: IntFilter<"UsageTracking"> | number
+    periodStart?: DateTimeFilter<"UsageTracking"> | Date | string
+    periodEnd?: DateTimeFilter<"UsageTracking"> | Date | string
+    lastResetDate?: DateTimeNullableFilter<"UsageTracking"> | Date | string | null
+    lastUpdated?: DateTimeFilter<"UsageTracking"> | Date | string
+    createdAt?: DateTimeFilter<"UsageTracking"> | Date | string
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    subscription?: XOR<CustomerSubscriptionScalarRelationFilter, CustomerSubscriptionWhereInput>
+  }, "id" | "teamId_metricType_periodStart">
+
+  export type UsageTrackingOrderByWithAggregationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrderInput | SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+    _count?: UsageTrackingCountOrderByAggregateInput
+    _avg?: UsageTrackingAvgOrderByAggregateInput
+    _max?: UsageTrackingMaxOrderByAggregateInput
+    _min?: UsageTrackingMinOrderByAggregateInput
+    _sum?: UsageTrackingSumOrderByAggregateInput
+  }
+
+  export type UsageTrackingScalarWhereWithAggregatesInput = {
+    AND?: UsageTrackingScalarWhereWithAggregatesInput | UsageTrackingScalarWhereWithAggregatesInput[]
+    OR?: UsageTrackingScalarWhereWithAggregatesInput[]
+    NOT?: UsageTrackingScalarWhereWithAggregatesInput | UsageTrackingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UsageTracking"> | string
+    teamId?: IntWithAggregatesFilter<"UsageTracking"> | number
+    subscriptionId?: StringWithAggregatesFilter<"UsageTracking"> | string
+    metricType?: EnumUsageMetricTypeWithAggregatesFilter<"UsageTracking"> | $Enums.UsageMetricType
+    currentUsage?: IntWithAggregatesFilter<"UsageTracking"> | number
+    limitValue?: IntWithAggregatesFilter<"UsageTracking"> | number
+    periodStart?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
+    periodEnd?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
+    lastResetDate?: DateTimeNullableWithAggregatesFilter<"UsageTracking"> | Date | string | null
+    lastUpdated?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
+  }
+
   export type UserCreateInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
-    team?: TeamCreateNestedOneWithoutUserInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarId?: number | null
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
-    team?: TeamUpdateOneWithoutUserNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarId?: number | null
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
   }
 
   export type UserUpdateManyMutationInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type FileCreateInput = {
+    id?: string
     name: string
     url: string
     publicId?: string | null
@@ -10829,11 +15547,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     avatarFor?: UserCreateNestedManyWithoutAvatarInput
-    team?: TeamCreateNestedOneWithoutFilesInput
+    user?: UserCreateNestedOneWithoutFilesInput
   }
 
   export type FileUncheckedCreateInput = {
-    id?: number
+    id?: string
     name: string
     url: string
     publicId?: string | null
@@ -10841,13 +15559,14 @@ export namespace Prisma {
     version?: string | null
     mimeType?: string | null
     size?: number | null
+    userId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    teamId?: number | null
     avatarFor?: UserUncheckedCreateNestedManyWithoutAvatarInput
   }
 
   export type FileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     publicId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10858,11 +15577,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     avatarFor?: UserUpdateManyWithoutAvatarNestedInput
-    team?: TeamUpdateOneWithoutFilesNestedInput
+    user?: UserUpdateOneWithoutFilesNestedInput
   }
 
   export type FileUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     publicId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10870,14 +15589,14 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     mimeType?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableIntFieldUpdateOperationsInput | number | null
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamId?: NullableIntFieldUpdateOperationsInput | number | null
     avatarFor?: UserUncheckedUpdateManyWithoutAvatarNestedInput
   }
 
   export type FileCreateManyInput = {
-    id?: number
+    id?: string
     name: string
     url: string
     publicId?: string | null
@@ -10885,12 +15604,13 @@ export namespace Prisma {
     version?: string | null
     mimeType?: string | null
     size?: number | null
+    userId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    teamId?: number | null
   }
 
   export type FileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     publicId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10903,7 +15623,7 @@ export namespace Prisma {
   }
 
   export type FileUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     publicId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10911,9 +15631,9 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     mimeType?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableIntFieldUpdateOperationsInput | number | null
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type AccountCreateInput = {
@@ -11113,49 +15833,58 @@ export namespace Prisma {
   export type TeamCreateInput = {
     name: string
     description?: string | null
+    tokenApi?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    files?: FileCreateNestedManyWithoutTeamInput
     members?: TeamMemberCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateInput = {
     id?: number
     name: string
     description?: string | null
+    tokenApi?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    files?: FileUncheckedCreateNestedManyWithoutTeamInput
     members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileUncheckedUpdateManyWithoutTeamNestedInput
     members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateManyInput = {
     id?: number
     name: string
     description?: string | null
+    tokenApi?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11163,6 +15892,7 @@ export namespace Prisma {
   export type TeamUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11171,6 +15901,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11183,8 +15914,8 @@ export namespace Prisma {
     teamMemberStatus: $Enums.TeamMemberStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutTeamMembersInput
     team: TeamCreateNestedOneWithoutMembersInput
+    user: UserCreateNestedOneWithoutTeamMembersInput
   }
 
   export type TeamMemberUncheckedCreateInput = {
@@ -11208,8 +15939,8 @@ export namespace Prisma {
     teamMemberStatus?: EnumTeamMemberStatusFieldUpdateOperationsInput | $Enums.TeamMemberStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTeamMembersNestedInput
     team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+    user?: UserUpdateOneRequiredWithoutTeamMembersNestedInput
   }
 
   export type TeamMemberUncheckedUpdateInput = {
@@ -11261,6 +15992,332 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
   }
 
+  export type SubscriptionPlanCreateInput = {
+    id?: string
+    planType: $Enums.PlanType
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
+    currency?: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptions?: CustomerSubscriptionCreateNestedManyWithoutPlanInput
+  }
+
+  export type SubscriptionPlanUncheckedCreateInput = {
+    id?: string
+    planType: $Enums.PlanType
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
+    currency?: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subscriptions?: CustomerSubscriptionUncheckedCreateNestedManyWithoutPlanInput
+  }
+
+  export type SubscriptionPlanUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptions?: CustomerSubscriptionUpdateManyWithoutPlanNestedInput
+  }
+
+  export type SubscriptionPlanUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscriptions?: CustomerSubscriptionUncheckedUpdateManyWithoutPlanNestedInput
+  }
+
+  export type SubscriptionPlanCreateManyInput = {
+    id?: string
+    planType: $Enums.PlanType
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
+    currency?: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SubscriptionPlanUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionPlanUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerSubscriptionCreateInput = {
+    id?: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutCustomerSubscriptionInput
+    plan: SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutSubscriptionInput
+  }
+
+  export type CustomerSubscriptionUncheckedCreateInput = {
+    id?: string
+    teamId: number
+    planId: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutSubscriptionInput
+  }
+
+  export type CustomerSubscriptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutCustomerSubscriptionNestedInput
+    plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    planId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type CustomerSubscriptionCreateManyInput = {
+    id?: string
+    teamId: number
+    planId: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerSubscriptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    planId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingCreateInput = {
+    id?: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+    team: TeamCreateNestedOneWithoutUsageTrackingInput
+    subscription: CustomerSubscriptionCreateNestedOneWithoutUsageTrackingInput
+  }
+
+  export type UsageTrackingUncheckedCreateInput = {
+    id?: string
+    teamId: number
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutUsageTrackingNestedInput
+    subscription?: CustomerSubscriptionUpdateOneRequiredWithoutUsageTrackingNestedInput
+  }
+
+  export type UsageTrackingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    subscriptionId?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingCreateManyInput = {
+    id?: string
+    teamId: number
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    subscriptionId?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -11270,21 +16327,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -11309,15 +16351,19 @@ export namespace Prisma {
     not?: NestedEnumProviderFilter<$PrismaModel> | $Enums.Provider
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type BoolNullableFilter<$PrismaModel = never> = {
@@ -11332,13 +16378,6 @@ export namespace Prisma {
     not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
   }
 
-  export type EnumThemeFilter<$PrismaModel = never> = {
-    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
-    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    not?: NestedEnumThemeFilter<$PrismaModel> | $Enums.Theme
-  }
-
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -11350,6 +16389,24 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type EnumThemeFilter<$PrismaModel = never> = {
+    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
+    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    not?: NestedEnumThemeFilter<$PrismaModel> | $Enums.Theme
+  }
+
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -11359,16 +16416,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type FileNullableScalarRelationFilter = {
-    is?: FileWhereInput | null
-    isNot?: FileWhereInput | null
-  }
-
-  export type TeamNullableScalarRelationFilter = {
-    is?: TeamWhereInput | null
-    isNot?: TeamWhereInput | null
   }
 
   export type AccountListRelationFilter = {
@@ -11389,6 +16436,22 @@ export namespace Prisma {
     none?: TeamMemberWhereInput
   }
 
+  export type FileNullableScalarRelationFilter = {
+    is?: FileWhereInput | null
+    isNot?: FileWhereInput | null
+  }
+
+  export type TeamNullableScalarRelationFilter = {
+    is?: TeamWhereInput | null
+    isNot?: TeamWhereInput | null
+  }
+
+  export type FileListRelationFilter = {
+    every?: FileWhereInput
+    some?: FileWhereInput
+    none?: FileWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -11406,84 +16469,107 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type FileOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
-    idProvider?: SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrder
     resetPasswordToken?: SortOrder
-    resetPasswordExpires?: SortOrder
     confirmationToken?: SortOrder
     confirmed?: SortOrder
     blocked?: SortOrder
     phone?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
+    position?: SortOrder
+    companyName?: SortOrder
+    country?: SortOrder
+    linkedinUrl?: SortOrder
+    twitterUrl?: SortOrder
+    websiteUrl?: SortOrder
+    githubUrl?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrder
+    idProvider?: SortOrder
+    resetPasswordExpires?: SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
     id?: SortOrder
-    avatarId?: SortOrder
     defaultTeamId?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
-    idProvider?: SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrder
     resetPasswordToken?: SortOrder
-    resetPasswordExpires?: SortOrder
     confirmationToken?: SortOrder
     confirmed?: SortOrder
     blocked?: SortOrder
     phone?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
+    position?: SortOrder
+    companyName?: SortOrder
+    country?: SortOrder
+    linkedinUrl?: SortOrder
+    twitterUrl?: SortOrder
+    websiteUrl?: SortOrder
+    githubUrl?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrder
+    idProvider?: SortOrder
+    resetPasswordExpires?: SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
-    idProvider?: SortOrder
     email?: SortOrder
     provider?: SortOrder
     password?: SortOrder
     resetPasswordToken?: SortOrder
-    resetPasswordExpires?: SortOrder
     confirmationToken?: SortOrder
     confirmed?: SortOrder
     blocked?: SortOrder
     phone?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
+    position?: SortOrder
+    companyName?: SortOrder
+    country?: SortOrder
+    linkedinUrl?: SortOrder
+    twitterUrl?: SortOrder
+    websiteUrl?: SortOrder
+    githubUrl?: SortOrder
     avatarUrl?: SortOrder
     language?: SortOrder
-    theme?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     avatarId?: SortOrder
+    idProvider?: SortOrder
+    resetPasswordExpires?: SortOrder
+    theme?: SortOrder
     defaultTeamId?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
     id?: SortOrder
-    avatarId?: SortOrder
     defaultTeamId?: SortOrder
   }
 
@@ -11501,24 +16587,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -11549,18 +16617,22 @@ export namespace Prisma {
     _max?: NestedEnumProviderFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -11581,16 +16653,6 @@ export namespace Prisma {
     _max?: NestedEnumLanguageFilter<$PrismaModel>
   }
 
-  export type EnumThemeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
-    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    not?: NestedEnumThemeWithAggregatesFilter<$PrismaModel> | $Enums.Theme
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumThemeFilter<$PrismaModel>
-    _max?: NestedEnumThemeFilter<$PrismaModel>
-  }
-
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -11603,6 +16665,30 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumThemeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
+    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    not?: NestedEnumThemeWithAggregatesFilter<$PrismaModel> | $Enums.Theme
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumThemeFilter<$PrismaModel>
+    _max?: NestedEnumThemeFilter<$PrismaModel>
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -11627,6 +16713,11 @@ export namespace Prisma {
     none?: UserWhereInput
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -11640,15 +16731,14 @@ export namespace Prisma {
     version?: SortOrder
     mimeType?: SortOrder
     size?: SortOrder
+    userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    teamId?: SortOrder
   }
 
   export type FileAvgOrderByAggregateInput = {
-    id?: SortOrder
     size?: SortOrder
-    teamId?: SortOrder
+    userId?: SortOrder
   }
 
   export type FileMaxOrderByAggregateInput = {
@@ -11660,9 +16750,9 @@ export namespace Prisma {
     version?: SortOrder
     mimeType?: SortOrder
     size?: SortOrder
+    userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    teamId?: SortOrder
   }
 
   export type FileMinOrderByAggregateInput = {
@@ -11674,15 +16764,14 @@ export namespace Prisma {
     version?: SortOrder
     mimeType?: SortOrder
     size?: SortOrder
+    userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    teamId?: SortOrder
   }
 
   export type FileSumOrderByAggregateInput = {
-    id?: SortOrder
     size?: SortOrder
-    teamId?: SortOrder
+    userId?: SortOrder
   }
 
   export type UserScalarRelationFilter = {
@@ -11802,13 +16891,23 @@ export namespace Prisma {
     expires?: SortOrder
   }
 
-  export type FileListRelationFilter = {
-    every?: FileWhereInput
-    some?: FileWhereInput
-    none?: FileWhereInput
+  export type CustomerSubscriptionListRelationFilter = {
+    every?: CustomerSubscriptionWhereInput
+    some?: CustomerSubscriptionWhereInput
+    none?: CustomerSubscriptionWhereInput
   }
 
-  export type FileOrderByRelationAggregateInput = {
+  export type UsageTrackingListRelationFilter = {
+    every?: UsageTrackingWhereInput
+    some?: UsageTrackingWhereInput
+    none?: UsageTrackingWhereInput
+  }
+
+  export type CustomerSubscriptionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UsageTrackingOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -11816,6 +16915,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    tokenApi?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11828,6 +16928,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    tokenApi?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11836,6 +16937,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    tokenApi?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11935,16 +17037,283 @@ export namespace Prisma {
     _max?: NestedEnumTeamMemberStatusFilter<$PrismaModel>
   }
 
-  export type FileCreateNestedOneWithoutAvatarForInput = {
-    create?: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
-    connectOrCreate?: FileCreateOrConnectWithoutAvatarForInput
-    connect?: FileWhereUniqueInput
+  export type EnumPlanTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanType | EnumPlanTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanTypeFilter<$PrismaModel> | $Enums.PlanType
   }
 
-  export type TeamCreateNestedOneWithoutUserInput = {
-    create?: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutUserInput
-    connect?: TeamWhereUniqueInput
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type SubscriptionPlanCountOrderByAggregateInput = {
+    id?: SortOrder
+    planType?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceIdMonthly?: SortOrder
+    stripePriceIdYearly?: SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
+    currency?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SubscriptionPlanAvgOrderByAggregateInput = {
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
+  }
+
+  export type SubscriptionPlanMaxOrderByAggregateInput = {
+    id?: SortOrder
+    planType?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceIdMonthly?: SortOrder
+    stripePriceIdYearly?: SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
+    currency?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SubscriptionPlanMinOrderByAggregateInput = {
+    id?: SortOrder
+    planType?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceIdMonthly?: SortOrder
+    stripePriceIdYearly?: SortOrder
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
+    currency?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SubscriptionPlanSumOrderByAggregateInput = {
+    priceMonthly?: SortOrder
+    priceYearly?: SortOrder
+  }
+
+  export type EnumPlanTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanType | EnumPlanTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanTypeWithAggregatesFilter<$PrismaModel> | $Enums.PlanType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlanTypeFilter<$PrismaModel>
+    _max?: NestedEnumPlanTypeFilter<$PrismaModel>
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type EnumSubscriptionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
+  }
+
+  export type EnumBillingIntervalFilter<$PrismaModel = never> = {
+    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
+    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    not?: NestedEnumBillingIntervalFilter<$PrismaModel> | $Enums.BillingInterval
+  }
+
+  export type SubscriptionPlanScalarRelationFilter = {
+    is?: SubscriptionPlanWhereInput
+    isNot?: SubscriptionPlanWhereInput
+  }
+
+  export type CustomerSubscriptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    planId?: SortOrder
+    status?: SortOrder
+    billingInterval?: SortOrder
+    stripeCustomerId?: SortOrder
+    stripeSubscriptionId?: SortOrder
+    cancellationDetails?: SortOrder
+    currentPeriodStart?: SortOrder
+    currentPeriodEnd?: SortOrder
+    cancelAtPeriodEnd?: SortOrder
+    trialStart?: SortOrder
+    trialEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerSubscriptionAvgOrderByAggregateInput = {
+    teamId?: SortOrder
+  }
+
+  export type CustomerSubscriptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    planId?: SortOrder
+    status?: SortOrder
+    billingInterval?: SortOrder
+    stripeCustomerId?: SortOrder
+    stripeSubscriptionId?: SortOrder
+    cancellationDetails?: SortOrder
+    currentPeriodStart?: SortOrder
+    currentPeriodEnd?: SortOrder
+    cancelAtPeriodEnd?: SortOrder
+    trialStart?: SortOrder
+    trialEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerSubscriptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    planId?: SortOrder
+    status?: SortOrder
+    billingInterval?: SortOrder
+    stripeCustomerId?: SortOrder
+    stripeSubscriptionId?: SortOrder
+    cancellationDetails?: SortOrder
+    currentPeriodStart?: SortOrder
+    currentPeriodEnd?: SortOrder
+    cancelAtPeriodEnd?: SortOrder
+    trialStart?: SortOrder
+    trialEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerSubscriptionSumOrderByAggregateInput = {
+    teamId?: SortOrder
+  }
+
+  export type EnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+  }
+
+  export type EnumBillingIntervalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
+    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    not?: NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel> | $Enums.BillingInterval
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBillingIntervalFilter<$PrismaModel>
+    _max?: NestedEnumBillingIntervalFilter<$PrismaModel>
+  }
+
+  export type EnumUsageMetricTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.UsageMetricType | EnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUsageMetricTypeFilter<$PrismaModel> | $Enums.UsageMetricType
+  }
+
+  export type CustomerSubscriptionScalarRelationFilter = {
+    is?: CustomerSubscriptionWhereInput
+    isNot?: CustomerSubscriptionWhereInput
+  }
+
+  export type UsageTrackingTeamIdMetricTypePeriodStartCompoundUniqueInput = {
+    teamId: number
+    metricType: $Enums.UsageMetricType
+    periodStart: Date | string
+  }
+
+  export type UsageTrackingCountOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UsageTrackingAvgOrderByAggregateInput = {
+    teamId?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+  }
+
+  export type UsageTrackingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UsageTrackingMinOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    subscriptionId?: SortOrder
+    metricType?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    lastResetDate?: SortOrder
+    lastUpdated?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UsageTrackingSumOrderByAggregateInput = {
+    teamId?: SortOrder
+    currentUsage?: SortOrder
+    limitValue?: SortOrder
+  }
+
+  export type EnumUsageMetricTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UsageMetricType | EnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUsageMetricTypeWithAggregatesFilter<$PrismaModel> | $Enums.UsageMetricType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
+    _max?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -11968,6 +17337,25 @@ export namespace Prisma {
     connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
   }
 
+  export type FileCreateNestedOneWithoutAvatarForInput = {
+    create?: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
+    connectOrCreate?: FileCreateOrConnectWithoutAvatarForInput
+    connect?: FileWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutUserInput = {
+    create?: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutUserInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type FileCreateNestedManyWithoutUserInput = {
+    create?: XOR<FileCreateWithoutUserInput, FileUncheckedCreateWithoutUserInput> | FileCreateWithoutUserInput[] | FileUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FileCreateOrConnectWithoutUserInput | FileCreateOrConnectWithoutUserInput[]
+    createMany?: FileCreateManyUserInputEnvelope
+    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -11989,8 +17377,11 @@ export namespace Prisma {
     connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
+  export type FileUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FileCreateWithoutUserInput, FileUncheckedCreateWithoutUserInput> | FileCreateWithoutUserInput[] | FileUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FileCreateOrConnectWithoutUserInput | FileCreateOrConnectWithoutUserInput[]
+    createMany?: FileCreateManyUserInputEnvelope
+    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -12001,8 +17392,8 @@ export namespace Prisma {
     set?: $Enums.Provider
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type NullableBoolFieldUpdateOperationsInput = {
@@ -12013,32 +17404,16 @@ export namespace Prisma {
     set?: $Enums.Language
   }
 
-  export type EnumThemeFieldUpdateOperationsInput = {
-    set?: $Enums.Theme
-  }
-
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
 
-  export type FileUpdateOneWithoutAvatarForNestedInput = {
-    create?: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
-    connectOrCreate?: FileCreateOrConnectWithoutAvatarForInput
-    upsert?: FileUpsertWithoutAvatarForInput
-    disconnect?: FileWhereInput | boolean
-    delete?: FileWhereInput | boolean
-    connect?: FileWhereUniqueInput
-    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutAvatarForInput, FileUpdateWithoutAvatarForInput>, FileUncheckedUpdateWithoutAvatarForInput>
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
-  export type TeamUpdateOneWithoutUserNestedInput = {
-    create?: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutUserInput
-    upsert?: TeamUpsertWithoutUserInput
-    disconnect?: TeamWhereInput | boolean
-    delete?: TeamWhereInput | boolean
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutUserInput, TeamUpdateWithoutUserInput>, TeamUncheckedUpdateWithoutUserInput>
+  export type EnumThemeFieldUpdateOperationsInput = {
+    set?: $Enums.Theme
   }
 
   export type AccountUpdateManyWithoutUserNestedInput = {
@@ -12081,6 +17456,40 @@ export namespace Prisma {
     update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+  }
+
+  export type FileUpdateOneWithoutAvatarForNestedInput = {
+    create?: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
+    connectOrCreate?: FileCreateOrConnectWithoutAvatarForInput
+    upsert?: FileUpsertWithoutAvatarForInput
+    disconnect?: FileWhereInput | boolean
+    delete?: FileWhereInput | boolean
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutAvatarForInput, FileUpdateWithoutAvatarForInput>, FileUncheckedUpdateWithoutAvatarForInput>
+  }
+
+  export type TeamUpdateOneWithoutUserNestedInput = {
+    create?: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutUserInput
+    upsert?: TeamUpsertWithoutUserInput
+    disconnect?: TeamWhereInput | boolean
+    delete?: TeamWhereInput | boolean
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutUserInput, TeamUpdateWithoutUserInput>, TeamUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FileUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FileCreateWithoutUserInput, FileUncheckedCreateWithoutUserInput> | FileCreateWithoutUserInput[] | FileUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FileCreateOrConnectWithoutUserInput | FileCreateOrConnectWithoutUserInput[]
+    upsert?: FileUpsertWithWhereUniqueWithoutUserInput | FileUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FileCreateManyUserInputEnvelope
+    set?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    disconnect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    delete?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    update?: FileUpdateWithWhereUniqueWithoutUserInput | FileUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FileUpdateManyWithWhereWithoutUserInput | FileUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -12141,6 +17550,20 @@ export namespace Prisma {
     deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
   }
 
+  export type FileUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FileCreateWithoutUserInput, FileUncheckedCreateWithoutUserInput> | FileCreateWithoutUserInput[] | FileUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FileCreateOrConnectWithoutUserInput | FileCreateOrConnectWithoutUserInput[]
+    upsert?: FileUpsertWithWhereUniqueWithoutUserInput | FileUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FileCreateManyUserInputEnvelope
+    set?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    disconnect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    delete?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+    update?: FileUpdateWithWhereUniqueWithoutUserInput | FileUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FileUpdateManyWithWhereWithoutUserInput | FileUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
+  }
+
   export type UserCreateNestedManyWithoutAvatarInput = {
     create?: XOR<UserCreateWithoutAvatarInput, UserUncheckedCreateWithoutAvatarInput> | UserCreateWithoutAvatarInput[] | UserUncheckedCreateWithoutAvatarInput[]
     connectOrCreate?: UserCreateOrConnectWithoutAvatarInput | UserCreateOrConnectWithoutAvatarInput[]
@@ -12148,10 +17571,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type TeamCreateNestedOneWithoutFilesInput = {
-    create?: XOR<TeamCreateWithoutFilesInput, TeamUncheckedCreateWithoutFilesInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutFilesInput
-    connect?: TeamWhereUniqueInput
+  export type UserCreateNestedOneWithoutFilesInput = {
+    create?: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFilesInput
+    connect?: UserWhereUniqueInput
   }
 
   export type UserUncheckedCreateNestedManyWithoutAvatarInput = {
@@ -12175,14 +17598,14 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
-  export type TeamUpdateOneWithoutFilesNestedInput = {
-    create?: XOR<TeamCreateWithoutFilesInput, TeamUncheckedCreateWithoutFilesInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutFilesInput
-    upsert?: TeamUpsertWithoutFilesInput
-    disconnect?: TeamWhereInput | boolean
-    delete?: TeamWhereInput | boolean
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutFilesInput, TeamUpdateWithoutFilesInput>, TeamUncheckedUpdateWithoutFilesInput>
+  export type UserUpdateOneWithoutFilesNestedInput = {
+    create?: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFilesInput
+    upsert?: UserUpsertWithoutFilesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFilesInput, UserUpdateWithoutFilesInput>, UserUncheckedUpdateWithoutFilesInput>
   }
 
   export type UserUncheckedUpdateManyWithoutAvatarNestedInput = {
@@ -12227,13 +17650,6 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type FileCreateNestedManyWithoutTeamInput = {
-    create?: XOR<FileCreateWithoutTeamInput, FileUncheckedCreateWithoutTeamInput> | FileCreateWithoutTeamInput[] | FileUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: FileCreateOrConnectWithoutTeamInput | FileCreateOrConnectWithoutTeamInput[]
-    createMany?: FileCreateManyTeamInputEnvelope
-    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
-  }
-
   export type TeamMemberCreateNestedManyWithoutTeamInput = {
     create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
@@ -12248,11 +17664,18 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type FileUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<FileCreateWithoutTeamInput, FileUncheckedCreateWithoutTeamInput> | FileCreateWithoutTeamInput[] | FileUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: FileCreateOrConnectWithoutTeamInput | FileCreateOrConnectWithoutTeamInput[]
-    createMany?: FileCreateManyTeamInputEnvelope
-    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+  export type CustomerSubscriptionCreateNestedManyWithoutTeamInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput> | CustomerSubscriptionCreateWithoutTeamInput[] | CustomerSubscriptionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput | CustomerSubscriptionCreateOrConnectWithoutTeamInput[]
+    createMany?: CustomerSubscriptionCreateManyTeamInputEnvelope
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+  }
+
+  export type UsageTrackingCreateNestedManyWithoutTeamInput = {
+    create?: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput> | UsageTrackingCreateWithoutTeamInput[] | UsageTrackingUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutTeamInput | UsageTrackingCreateOrConnectWithoutTeamInput[]
+    createMany?: UsageTrackingCreateManyTeamInputEnvelope
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
   }
 
   export type TeamMemberUncheckedCreateNestedManyWithoutTeamInput = {
@@ -12269,18 +17692,18 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type FileUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<FileCreateWithoutTeamInput, FileUncheckedCreateWithoutTeamInput> | FileCreateWithoutTeamInput[] | FileUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: FileCreateOrConnectWithoutTeamInput | FileCreateOrConnectWithoutTeamInput[]
-    upsert?: FileUpsertWithWhereUniqueWithoutTeamInput | FileUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: FileCreateManyTeamInputEnvelope
-    set?: FileWhereUniqueInput | FileWhereUniqueInput[]
-    disconnect?: FileWhereUniqueInput | FileWhereUniqueInput[]
-    delete?: FileWhereUniqueInput | FileWhereUniqueInput[]
-    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
-    update?: FileUpdateWithWhereUniqueWithoutTeamInput | FileUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: FileUpdateManyWithWhereWithoutTeamInput | FileUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
+  export type CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput> | CustomerSubscriptionCreateWithoutTeamInput[] | CustomerSubscriptionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput | CustomerSubscriptionCreateOrConnectWithoutTeamInput[]
+    createMany?: CustomerSubscriptionCreateManyTeamInputEnvelope
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+  }
+
+  export type UsageTrackingUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput> | UsageTrackingCreateWithoutTeamInput[] | UsageTrackingUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutTeamInput | UsageTrackingCreateOrConnectWithoutTeamInput[]
+    createMany?: UsageTrackingCreateManyTeamInputEnvelope
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
   }
 
   export type TeamMemberUpdateManyWithoutTeamNestedInput = {
@@ -12311,18 +17734,32 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
-  export type FileUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<FileCreateWithoutTeamInput, FileUncheckedCreateWithoutTeamInput> | FileCreateWithoutTeamInput[] | FileUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: FileCreateOrConnectWithoutTeamInput | FileCreateOrConnectWithoutTeamInput[]
-    upsert?: FileUpsertWithWhereUniqueWithoutTeamInput | FileUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: FileCreateManyTeamInputEnvelope
-    set?: FileWhereUniqueInput | FileWhereUniqueInput[]
-    disconnect?: FileWhereUniqueInput | FileWhereUniqueInput[]
-    delete?: FileWhereUniqueInput | FileWhereUniqueInput[]
-    connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
-    update?: FileUpdateWithWhereUniqueWithoutTeamInput | FileUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: FileUpdateManyWithWhereWithoutTeamInput | FileUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
+  export type CustomerSubscriptionUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput> | CustomerSubscriptionCreateWithoutTeamInput[] | CustomerSubscriptionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput | CustomerSubscriptionCreateOrConnectWithoutTeamInput[]
+    upsert?: CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput | CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: CustomerSubscriptionCreateManyTeamInputEnvelope
+    set?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    disconnect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    delete?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    update?: CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput | CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput | CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
+  }
+
+  export type UsageTrackingUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput> | UsageTrackingCreateWithoutTeamInput[] | UsageTrackingUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutTeamInput | UsageTrackingCreateOrConnectWithoutTeamInput[]
+    upsert?: UsageTrackingUpsertWithWhereUniqueWithoutTeamInput | UsageTrackingUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: UsageTrackingCreateManyTeamInputEnvelope
+    set?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    disconnect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    delete?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    update?: UsageTrackingUpdateWithWhereUniqueWithoutTeamInput | UsageTrackingUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: UsageTrackingUpdateManyWithWhereWithoutTeamInput | UsageTrackingUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
   }
 
   export type TeamMemberUncheckedUpdateManyWithoutTeamNestedInput = {
@@ -12353,16 +17790,44 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutTeamMembersInput = {
-    create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
-    connect?: UserWhereUniqueInput
+  export type CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput> | CustomerSubscriptionCreateWithoutTeamInput[] | CustomerSubscriptionUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutTeamInput | CustomerSubscriptionCreateOrConnectWithoutTeamInput[]
+    upsert?: CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput | CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: CustomerSubscriptionCreateManyTeamInputEnvelope
+    set?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    disconnect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    delete?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    update?: CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput | CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput | CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
+  }
+
+  export type UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput> | UsageTrackingCreateWithoutTeamInput[] | UsageTrackingUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutTeamInput | UsageTrackingCreateOrConnectWithoutTeamInput[]
+    upsert?: UsageTrackingUpsertWithWhereUniqueWithoutTeamInput | UsageTrackingUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: UsageTrackingCreateManyTeamInputEnvelope
+    set?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    disconnect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    delete?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    update?: UsageTrackingUpdateWithWhereUniqueWithoutTeamInput | UsageTrackingUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: UsageTrackingUpdateManyWithWhereWithoutTeamInput | UsageTrackingUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
   }
 
   export type TeamCreateNestedOneWithoutMembersInput = {
     create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
     connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
     connect?: TeamWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTeamMembersInput = {
+    create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
+    connect?: UserWhereUniqueInput
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -12373,6 +17838,14 @@ export namespace Prisma {
     set?: $Enums.TeamMemberStatus
   }
 
+  export type TeamUpdateOneRequiredWithoutMembersNestedInput = {
+    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
+    upsert?: TeamUpsertWithoutMembersInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMembersInput, TeamUpdateWithoutMembersInput>, TeamUncheckedUpdateWithoutMembersInput>
+  }
+
   export type UserUpdateOneRequiredWithoutTeamMembersNestedInput = {
     create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
     connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
@@ -12381,12 +17854,168 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTeamMembersInput, UserUpdateWithoutTeamMembersInput>, UserUncheckedUpdateWithoutTeamMembersInput>
   }
 
-  export type TeamUpdateOneRequiredWithoutMembersNestedInput = {
-    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
-    upsert?: TeamUpsertWithoutMembersInput
+  export type CustomerSubscriptionCreateNestedManyWithoutPlanInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutPlanInput, CustomerSubscriptionUncheckedCreateWithoutPlanInput> | CustomerSubscriptionCreateWithoutPlanInput[] | CustomerSubscriptionUncheckedCreateWithoutPlanInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutPlanInput | CustomerSubscriptionCreateOrConnectWithoutPlanInput[]
+    createMany?: CustomerSubscriptionCreateManyPlanInputEnvelope
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+  }
+
+  export type CustomerSubscriptionUncheckedCreateNestedManyWithoutPlanInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutPlanInput, CustomerSubscriptionUncheckedCreateWithoutPlanInput> | CustomerSubscriptionCreateWithoutPlanInput[] | CustomerSubscriptionUncheckedCreateWithoutPlanInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutPlanInput | CustomerSubscriptionCreateOrConnectWithoutPlanInput[]
+    createMany?: CustomerSubscriptionCreateManyPlanInputEnvelope
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+  }
+
+  export type EnumPlanTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PlanType
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type CustomerSubscriptionUpdateManyWithoutPlanNestedInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutPlanInput, CustomerSubscriptionUncheckedCreateWithoutPlanInput> | CustomerSubscriptionCreateWithoutPlanInput[] | CustomerSubscriptionUncheckedCreateWithoutPlanInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutPlanInput | CustomerSubscriptionCreateOrConnectWithoutPlanInput[]
+    upsert?: CustomerSubscriptionUpsertWithWhereUniqueWithoutPlanInput | CustomerSubscriptionUpsertWithWhereUniqueWithoutPlanInput[]
+    createMany?: CustomerSubscriptionCreateManyPlanInputEnvelope
+    set?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    disconnect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    delete?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    update?: CustomerSubscriptionUpdateWithWhereUniqueWithoutPlanInput | CustomerSubscriptionUpdateWithWhereUniqueWithoutPlanInput[]
+    updateMany?: CustomerSubscriptionUpdateManyWithWhereWithoutPlanInput | CustomerSubscriptionUpdateManyWithWhereWithoutPlanInput[]
+    deleteMany?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateManyWithoutPlanNestedInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutPlanInput, CustomerSubscriptionUncheckedCreateWithoutPlanInput> | CustomerSubscriptionCreateWithoutPlanInput[] | CustomerSubscriptionUncheckedCreateWithoutPlanInput[]
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutPlanInput | CustomerSubscriptionCreateOrConnectWithoutPlanInput[]
+    upsert?: CustomerSubscriptionUpsertWithWhereUniqueWithoutPlanInput | CustomerSubscriptionUpsertWithWhereUniqueWithoutPlanInput[]
+    createMany?: CustomerSubscriptionCreateManyPlanInputEnvelope
+    set?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    disconnect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    delete?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    connect?: CustomerSubscriptionWhereUniqueInput | CustomerSubscriptionWhereUniqueInput[]
+    update?: CustomerSubscriptionUpdateWithWhereUniqueWithoutPlanInput | CustomerSubscriptionUpdateWithWhereUniqueWithoutPlanInput[]
+    updateMany?: CustomerSubscriptionUpdateManyWithWhereWithoutPlanInput | CustomerSubscriptionUpdateManyWithWhereWithoutPlanInput[]
+    deleteMany?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
+  }
+
+  export type TeamCreateNestedOneWithoutCustomerSubscriptionInput = {
+    create?: XOR<TeamCreateWithoutCustomerSubscriptionInput, TeamUncheckedCreateWithoutCustomerSubscriptionInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutCustomerSubscriptionInput
     connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMembersInput, TeamUpdateWithoutMembersInput>, TeamUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput = {
+    create?: XOR<SubscriptionPlanCreateWithoutSubscriptionsInput, SubscriptionPlanUncheckedCreateWithoutSubscriptionsInput>
+    connectOrCreate?: SubscriptionPlanCreateOrConnectWithoutSubscriptionsInput
+    connect?: SubscriptionPlanWhereUniqueInput
+  }
+
+  export type UsageTrackingCreateNestedManyWithoutSubscriptionInput = {
+    create?: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput> | UsageTrackingCreateWithoutSubscriptionInput[] | UsageTrackingUncheckedCreateWithoutSubscriptionInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutSubscriptionInput | UsageTrackingCreateOrConnectWithoutSubscriptionInput[]
+    createMany?: UsageTrackingCreateManySubscriptionInputEnvelope
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+  }
+
+  export type UsageTrackingUncheckedCreateNestedManyWithoutSubscriptionInput = {
+    create?: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput> | UsageTrackingCreateWithoutSubscriptionInput[] | UsageTrackingUncheckedCreateWithoutSubscriptionInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutSubscriptionInput | UsageTrackingCreateOrConnectWithoutSubscriptionInput[]
+    createMany?: UsageTrackingCreateManySubscriptionInputEnvelope
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+  }
+
+  export type EnumSubscriptionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SubscriptionStatus
+  }
+
+  export type EnumBillingIntervalFieldUpdateOperationsInput = {
+    set?: $Enums.BillingInterval
+  }
+
+  export type TeamUpdateOneRequiredWithoutCustomerSubscriptionNestedInput = {
+    create?: XOR<TeamCreateWithoutCustomerSubscriptionInput, TeamUncheckedCreateWithoutCustomerSubscriptionInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutCustomerSubscriptionInput
+    upsert?: TeamUpsertWithoutCustomerSubscriptionInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutCustomerSubscriptionInput, TeamUpdateWithoutCustomerSubscriptionInput>, TeamUncheckedUpdateWithoutCustomerSubscriptionInput>
+  }
+
+  export type SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput = {
+    create?: XOR<SubscriptionPlanCreateWithoutSubscriptionsInput, SubscriptionPlanUncheckedCreateWithoutSubscriptionsInput>
+    connectOrCreate?: SubscriptionPlanCreateOrConnectWithoutSubscriptionsInput
+    upsert?: SubscriptionPlanUpsertWithoutSubscriptionsInput
+    connect?: SubscriptionPlanWhereUniqueInput
+    update?: XOR<XOR<SubscriptionPlanUpdateToOneWithWhereWithoutSubscriptionsInput, SubscriptionPlanUpdateWithoutSubscriptionsInput>, SubscriptionPlanUncheckedUpdateWithoutSubscriptionsInput>
+  }
+
+  export type UsageTrackingUpdateManyWithoutSubscriptionNestedInput = {
+    create?: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput> | UsageTrackingCreateWithoutSubscriptionInput[] | UsageTrackingUncheckedCreateWithoutSubscriptionInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutSubscriptionInput | UsageTrackingCreateOrConnectWithoutSubscriptionInput[]
+    upsert?: UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput | UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput[]
+    createMany?: UsageTrackingCreateManySubscriptionInputEnvelope
+    set?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    disconnect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    delete?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    update?: UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput | UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput[]
+    updateMany?: UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput | UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput[]
+    deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+  }
+
+  export type UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput = {
+    create?: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput> | UsageTrackingCreateWithoutSubscriptionInput[] | UsageTrackingUncheckedCreateWithoutSubscriptionInput[]
+    connectOrCreate?: UsageTrackingCreateOrConnectWithoutSubscriptionInput | UsageTrackingCreateOrConnectWithoutSubscriptionInput[]
+    upsert?: UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput | UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput[]
+    createMany?: UsageTrackingCreateManySubscriptionInputEnvelope
+    set?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    disconnect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    delete?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+    update?: UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput | UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput[]
+    updateMany?: UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput | UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput[]
+    deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+  }
+
+  export type TeamCreateNestedOneWithoutUsageTrackingInput = {
+    create?: XOR<TeamCreateWithoutUsageTrackingInput, TeamUncheckedCreateWithoutUsageTrackingInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutUsageTrackingInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type CustomerSubscriptionCreateNestedOneWithoutUsageTrackingInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput>
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutUsageTrackingInput
+    connect?: CustomerSubscriptionWhereUniqueInput
+  }
+
+  export type EnumUsageMetricTypeFieldUpdateOperationsInput = {
+    set?: $Enums.UsageMetricType
+  }
+
+  export type TeamUpdateOneRequiredWithoutUsageTrackingNestedInput = {
+    create?: XOR<TeamCreateWithoutUsageTrackingInput, TeamUncheckedCreateWithoutUsageTrackingInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutUsageTrackingInput
+    upsert?: TeamUpsertWithoutUsageTrackingInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutUsageTrackingInput, TeamUpdateWithoutUsageTrackingInput>, TeamUncheckedUpdateWithoutUsageTrackingInput>
+  }
+
+  export type CustomerSubscriptionUpdateOneRequiredWithoutUsageTrackingNestedInput = {
+    create?: XOR<CustomerSubscriptionCreateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput>
+    connectOrCreate?: CustomerSubscriptionCreateOrConnectWithoutUsageTrackingInput
+    upsert?: CustomerSubscriptionUpsertWithoutUsageTrackingInput
+    connect?: CustomerSubscriptionWhereUniqueInput
+    update?: XOR<XOR<CustomerSubscriptionUpdateToOneWithWhereWithoutUsageTrackingInput, CustomerSubscriptionUpdateWithoutUsageTrackingInput>, CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -12398,20 +18027,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -12435,15 +18050,18 @@ export namespace Prisma {
     not?: NestedEnumProviderFilter<$PrismaModel> | $Enums.Provider
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedBoolNullableFilter<$PrismaModel = never> = {
@@ -12458,13 +18076,6 @@ export namespace Prisma {
     not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
   }
 
-  export type NestedEnumThemeFilter<$PrismaModel = never> = {
-    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
-    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    not?: NestedEnumThemeFilter<$PrismaModel> | $Enums.Theme
-  }
-
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -12474,6 +18085,24 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumThemeFilter<$PrismaModel = never> = {
+    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
+    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    not?: NestedEnumThemeFilter<$PrismaModel> | $Enums.Theme
   }
 
   export type NestedIntNullableFilter<$PrismaModel = never> = {
@@ -12514,23 +18143,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -12558,18 +18170,21 @@ export namespace Prisma {
     _max?: NestedEnumProviderFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -12590,16 +18205,6 @@ export namespace Prisma {
     _max?: NestedEnumLanguageFilter<$PrismaModel>
   }
 
-  export type NestedEnumThemeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
-    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
-    not?: NestedEnumThemeWithAggregatesFilter<$PrismaModel> | $Enums.Theme
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumThemeFilter<$PrismaModel>
-    _max?: NestedEnumThemeFilter<$PrismaModel>
-  }
-
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -12612,6 +18217,30 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumThemeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Theme | EnumThemeFieldRefInput<$PrismaModel>
+    in?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Theme[] | ListEnumThemeFieldRefInput<$PrismaModel>
+    not?: NestedEnumThemeWithAggregatesFilter<$PrismaModel> | $Enums.Theme
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumThemeFilter<$PrismaModel>
+    _max?: NestedEnumThemeFilter<$PrismaModel>
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -12671,60 +18300,99 @@ export namespace Prisma {
     _max?: NestedEnumTeamMemberStatusFilter<$PrismaModel>
   }
 
-  export type FileCreateWithoutAvatarForInput = {
-    name: string
-    url: string
-    publicId?: string | null
-    format?: string | null
-    version?: string | null
-    mimeType?: string | null
-    size?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    team?: TeamCreateNestedOneWithoutFilesInput
+  export type NestedEnumPlanTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanType | EnumPlanTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanTypeFilter<$PrismaModel> | $Enums.PlanType
   }
 
-  export type FileUncheckedCreateWithoutAvatarForInput = {
-    id?: number
-    name: string
-    url: string
-    publicId?: string | null
-    format?: string | null
-    version?: string | null
-    mimeType?: string | null
-    size?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamId?: number | null
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
-  export type FileCreateOrConnectWithoutAvatarForInput = {
-    where: FileWhereUniqueInput
-    create: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
+  export type NestedEnumPlanTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanType | EnumPlanTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanType[] | ListEnumPlanTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanTypeWithAggregatesFilter<$PrismaModel> | $Enums.PlanType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlanTypeFilter<$PrismaModel>
+    _max?: NestedEnumPlanTypeFilter<$PrismaModel>
   }
 
-  export type TeamCreateWithoutUserInput = {
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileCreateNestedManyWithoutTeamInput
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
-  export type TeamUncheckedCreateWithoutUserInput = {
-    id?: number
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileUncheckedCreateNestedManyWithoutTeamInput
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+  export type NestedEnumSubscriptionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusFilter<$PrismaModel> | $Enums.SubscriptionStatus
   }
 
-  export type TeamCreateOrConnectWithoutUserInput = {
-    where: TeamWhereUniqueInput
-    create: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
+  export type NestedEnumBillingIntervalFilter<$PrismaModel = never> = {
+    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
+    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    not?: NestedEnumBillingIntervalFilter<$PrismaModel> | $Enums.BillingInterval
+  }
+
+  export type NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SubscriptionStatus | EnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SubscriptionStatus[] | ListEnumSubscriptionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSubscriptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SubscriptionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSubscriptionStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BillingInterval | EnumBillingIntervalFieldRefInput<$PrismaModel>
+    in?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BillingInterval[] | ListEnumBillingIntervalFieldRefInput<$PrismaModel>
+    not?: NestedEnumBillingIntervalWithAggregatesFilter<$PrismaModel> | $Enums.BillingInterval
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBillingIntervalFilter<$PrismaModel>
+    _max?: NestedEnumBillingIntervalFilter<$PrismaModel>
+  }
+
+  export type NestedEnumUsageMetricTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.UsageMetricType | EnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUsageMetricTypeFilter<$PrismaModel> | $Enums.UsageMetricType
+  }
+
+  export type NestedEnumUsageMetricTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UsageMetricType | EnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UsageMetricType[] | ListEnumUsageMetricTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUsageMetricTypeWithAggregatesFilter<$PrismaModel> | $Enums.UsageMetricType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
+    _max?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -12820,72 +18488,103 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type FileUpsertWithoutAvatarForInput = {
-    update: XOR<FileUpdateWithoutAvatarForInput, FileUncheckedUpdateWithoutAvatarForInput>
+  export type FileCreateWithoutAvatarForInput = {
+    id?: string
+    name: string
+    url: string
+    publicId?: string | null
+    format?: string | null
+    version?: string | null
+    mimeType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutFilesInput
+  }
+
+  export type FileUncheckedCreateWithoutAvatarForInput = {
+    id?: string
+    name: string
+    url: string
+    publicId?: string | null
+    format?: string | null
+    version?: string | null
+    mimeType?: string | null
+    size?: number | null
+    userId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileCreateOrConnectWithoutAvatarForInput = {
+    where: FileWhereUniqueInput
     create: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
-    where?: FileWhereInput
   }
 
-  export type FileUpdateToOneWithWhereWithoutAvatarForInput = {
-    where?: FileWhereInput
-    data: XOR<FileUpdateWithoutAvatarForInput, FileUncheckedUpdateWithoutAvatarForInput>
+  export type TeamCreateWithoutUserInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
-  export type FileUpdateWithoutAvatarForInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    publicId?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: NullableStringFieldUpdateOperationsInput | string | null
-    version?: NullableStringFieldUpdateOperationsInput | string | null
-    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneWithoutFilesNestedInput
+  export type TeamUncheckedCreateWithoutUserInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
-  export type FileUncheckedUpdateWithoutAvatarForInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    publicId?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: NullableStringFieldUpdateOperationsInput | string | null
-    version?: NullableStringFieldUpdateOperationsInput | string | null
-    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamId?: NullableIntFieldUpdateOperationsInput | number | null
-  }
-
-  export type TeamUpsertWithoutUserInput = {
-    update: XOR<TeamUpdateWithoutUserInput, TeamUncheckedUpdateWithoutUserInput>
+  export type TeamCreateOrConnectWithoutUserInput = {
+    where: TeamWhereUniqueInput
     create: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
-    where?: TeamWhereInput
   }
 
-  export type TeamUpdateToOneWithWhereWithoutUserInput = {
-    where?: TeamWhereInput
-    data: XOR<TeamUpdateWithoutUserInput, TeamUncheckedUpdateWithoutUserInput>
+  export type FileCreateWithoutUserInput = {
+    id?: string
+    name: string
+    url: string
+    publicId?: string | null
+    format?: string | null
+    version?: string | null
+    mimeType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarFor?: UserCreateNestedManyWithoutAvatarInput
   }
 
-  export type TeamUpdateWithoutUserInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileUpdateManyWithoutTeamNestedInput
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+  export type FileUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    url: string
+    publicId?: string | null
+    format?: string | null
+    version?: string | null
+    mimeType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarFor?: UserUncheckedCreateNestedManyWithoutAvatarInput
   }
 
-  export type TeamUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileUncheckedUpdateManyWithoutTeamNestedInput
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+  export type FileCreateOrConnectWithoutUserInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutUserInput, FileUncheckedCreateWithoutUserInput>
+  }
+
+  export type FileCreateManyUserInputEnvelope = {
+    data: FileCreateManyUserInput | FileCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -12980,53 +18679,175 @@ export namespace Prisma {
     teamId?: IntFilter<"TeamMember"> | number
   }
 
+  export type FileUpsertWithoutAvatarForInput = {
+    update: XOR<FileUpdateWithoutAvatarForInput, FileUncheckedUpdateWithoutAvatarForInput>
+    create: XOR<FileCreateWithoutAvatarForInput, FileUncheckedCreateWithoutAvatarForInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutAvatarForInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutAvatarForInput, FileUncheckedUpdateWithoutAvatarForInput>
+  }
+
+  export type FileUpdateWithoutAvatarForInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutFilesNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutAvatarForInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamUpsertWithoutUserInput = {
+    update: XOR<TeamUpdateWithoutUserInput, TeamUncheckedUpdateWithoutUserInput>
+    create: XOR<TeamCreateWithoutUserInput, TeamUncheckedCreateWithoutUserInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutUserInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutUserInput, TeamUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TeamUpdateWithoutUserInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type FileUpsertWithWhereUniqueWithoutUserInput = {
+    where: FileWhereUniqueInput
+    update: XOR<FileUpdateWithoutUserInput, FileUncheckedUpdateWithoutUserInput>
+    create: XOR<FileCreateWithoutUserInput, FileUncheckedCreateWithoutUserInput>
+  }
+
+  export type FileUpdateWithWhereUniqueWithoutUserInput = {
+    where: FileWhereUniqueInput
+    data: XOR<FileUpdateWithoutUserInput, FileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FileUpdateManyWithWhereWithoutUserInput = {
+    where: FileScalarWhereInput
+    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FileScalarWhereInput = {
+    AND?: FileScalarWhereInput | FileScalarWhereInput[]
+    OR?: FileScalarWhereInput[]
+    NOT?: FileScalarWhereInput | FileScalarWhereInput[]
+    id?: StringFilter<"File"> | string
+    name?: StringFilter<"File"> | string
+    url?: StringFilter<"File"> | string
+    publicId?: StringNullableFilter<"File"> | string | null
+    format?: StringNullableFilter<"File"> | string | null
+    version?: StringNullableFilter<"File"> | string | null
+    mimeType?: StringNullableFilter<"File"> | string | null
+    size?: IntNullableFilter<"File"> | number | null
+    userId?: IntNullableFilter<"File"> | number | null
+    createdAt?: DateTimeFilter<"File"> | Date | string
+    updatedAt?: DateTimeFilter<"File"> | Date | string
+  }
+
   export type UserCreateWithoutAvatarInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    team?: TeamCreateNestedOneWithoutUserInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    team?: TeamCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAvatarInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAvatarInput = {
@@ -13039,28 +18860,74 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type TeamCreateWithoutFilesInput = {
-    name: string
-    description?: string | null
+  export type UserCreateWithoutFilesInput = {
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    user?: UserCreateNestedManyWithoutTeamInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
   }
 
-  export type TeamUncheckedCreateWithoutFilesInput = {
+  export type UserUncheckedCreateWithoutFilesInput = {
     id?: number
-    name: string
-    description?: string | null
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    defaultTeamId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type TeamCreateOrConnectWithoutFilesInput = {
-    where: TeamWhereUniqueInput
-    create: XOR<TeamCreateWithoutFilesInput, TeamUncheckedCreateWithoutFilesInput>
+  export type UserCreateOrConnectWithoutFilesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
   }
 
   export type UserUpsertWithWhereUniqueWithoutAvatarInput = {
@@ -13084,104 +18951,173 @@ export namespace Prisma {
     OR?: UserScalarWhereInput[]
     NOT?: UserScalarWhereInput | UserScalarWhereInput[]
     id?: IntFilter<"User"> | number
-    idProvider?: StringNullableFilter<"User"> | string | null
     email?: StringFilter<"User"> | string
     provider?: EnumProviderFilter<"User"> | $Enums.Provider
     password?: StringNullableFilter<"User"> | string | null
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
-    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     confirmationToken?: StringNullableFilter<"User"> | string | null
     confirmed?: BoolNullableFilter<"User"> | boolean | null
     blocked?: BoolNullableFilter<"User"> | boolean | null
     phone?: StringNullableFilter<"User"> | string | null
     firstName?: StringFilter<"User"> | string
     lastName?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    companyName?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    linkedinUrl?: StringNullableFilter<"User"> | string | null
+    twitterUrl?: StringNullableFilter<"User"> | string | null
+    websiteUrl?: StringNullableFilter<"User"> | string | null
+    githubUrl?: StringNullableFilter<"User"> | string | null
     avatarUrl?: StringNullableFilter<"User"> | string | null
     language?: EnumLanguageFilter<"User"> | $Enums.Language
-    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    avatarId?: IntNullableFilter<"User"> | number | null
+    avatarId?: StringNullableFilter<"User"> | string | null
+    idProvider?: StringNullableFilter<"User"> | string | null
+    resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    theme?: EnumThemeFilter<"User"> | $Enums.Theme
     defaultTeamId?: IntNullableFilter<"User"> | number | null
   }
 
-  export type TeamUpsertWithoutFilesInput = {
-    update: XOR<TeamUpdateWithoutFilesInput, TeamUncheckedUpdateWithoutFilesInput>
-    create: XOR<TeamCreateWithoutFilesInput, TeamUncheckedCreateWithoutFilesInput>
-    where?: TeamWhereInput
+  export type UserUpsertWithoutFilesInput = {
+    update: XOR<UserUpdateWithoutFilesInput, UserUncheckedUpdateWithoutFilesInput>
+    create: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
+    where?: UserWhereInput
   }
 
-  export type TeamUpdateToOneWithWhereWithoutFilesInput = {
-    where?: TeamWhereInput
-    data: XOR<TeamUpdateWithoutFilesInput, TeamUncheckedUpdateWithoutFilesInput>
+  export type UserUpdateToOneWithWhereWithoutFilesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFilesInput, UserUncheckedUpdateWithoutFilesInput>
   }
 
-  export type TeamUpdateWithoutFilesInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+  export type UserUpdateWithoutFilesInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    user?: UserUpdateManyWithoutTeamNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
   }
 
-  export type TeamUncheckedUpdateWithoutFilesInput = {
+  export type UserUncheckedUpdateWithoutFilesInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
-    team?: TeamCreateNestedOneWithoutUserInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     sessions?: SessionCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarId?: number | null
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -13201,101 +19137,133 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutAccountsInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
-    team?: TeamUpdateOneWithoutUserNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
-    team?: TeamCreateNestedOneWithoutUserInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarId?: number | null
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -13315,89 +19283,68 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutSessionsInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
-    team?: TeamUpdateOneWithoutUserNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type FileCreateWithoutTeamInput = {
-    name: string
-    url: string
-    publicId?: string | null
-    format?: string | null
-    version?: string | null
-    mimeType?: string | null
-    size?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarFor?: UserCreateNestedManyWithoutAvatarInput
-  }
-
-  export type FileUncheckedCreateWithoutTeamInput = {
-    id?: number
-    name: string
-    url: string
-    publicId?: string | null
-    format?: string | null
-    version?: string | null
-    mimeType?: string | null
-    size?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarFor?: UserUncheckedCreateNestedManyWithoutAvatarInput
-  }
-
-  export type FileCreateOrConnectWithoutTeamInput = {
-    where: FileWhereUniqueInput
-    create: XOR<FileCreateWithoutTeamInput, FileUncheckedCreateWithoutTeamInput>
-  }
-
-  export type FileCreateManyTeamInputEnvelope = {
-    data: FileCreateManyTeamInput | FileCreateManyTeamInput[]
-    skipDuplicates?: boolean
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamMemberCreateWithoutTeamInput = {
@@ -13434,52 +19381,68 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutTeamInput = {
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    files?: FileCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTeamInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarId?: number | null
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTeamInput = {
@@ -13492,37 +19455,86 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type FileUpsertWithWhereUniqueWithoutTeamInput = {
-    where: FileWhereUniqueInput
-    update: XOR<FileUpdateWithoutTeamInput, FileUncheckedUpdateWithoutTeamInput>
-    create: XOR<FileCreateWithoutTeamInput, FileUncheckedCreateWithoutTeamInput>
+  export type CustomerSubscriptionCreateWithoutTeamInput = {
+    id?: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    plan: SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutSubscriptionInput
   }
 
-  export type FileUpdateWithWhereUniqueWithoutTeamInput = {
-    where: FileWhereUniqueInput
-    data: XOR<FileUpdateWithoutTeamInput, FileUncheckedUpdateWithoutTeamInput>
+  export type CustomerSubscriptionUncheckedCreateWithoutTeamInput = {
+    id?: string
+    planId: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutSubscriptionInput
   }
 
-  export type FileUpdateManyWithWhereWithoutTeamInput = {
-    where: FileScalarWhereInput
-    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyWithoutTeamInput>
+  export type CustomerSubscriptionCreateOrConnectWithoutTeamInput = {
+    where: CustomerSubscriptionWhereUniqueInput
+    create: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
   }
 
-  export type FileScalarWhereInput = {
-    AND?: FileScalarWhereInput | FileScalarWhereInput[]
-    OR?: FileScalarWhereInput[]
-    NOT?: FileScalarWhereInput | FileScalarWhereInput[]
-    id?: IntFilter<"File"> | number
-    name?: StringFilter<"File"> | string
-    url?: StringFilter<"File"> | string
-    publicId?: StringNullableFilter<"File"> | string | null
-    format?: StringNullableFilter<"File"> | string | null
-    version?: StringNullableFilter<"File"> | string | null
-    mimeType?: StringNullableFilter<"File"> | string | null
-    size?: IntNullableFilter<"File"> | number | null
-    createdAt?: DateTimeFilter<"File"> | Date | string
-    updatedAt?: DateTimeFilter<"File"> | Date | string
-    teamId?: IntNullableFilter<"File"> | number | null
+  export type CustomerSubscriptionCreateManyTeamInputEnvelope = {
+    data: CustomerSubscriptionCreateManyTeamInput | CustomerSubscriptionCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UsageTrackingCreateWithoutTeamInput = {
+    id?: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+    subscription: CustomerSubscriptionCreateNestedOneWithoutUsageTrackingInput
+  }
+
+  export type UsageTrackingUncheckedCreateWithoutTeamInput = {
+    id?: string
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingCreateOrConnectWithoutTeamInput = {
+    where: UsageTrackingWhereUniqueInput
+    create: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput>
+  }
+
+  export type UsageTrackingCreateManyTeamInputEnvelope = {
+    data: UsageTrackingCreateManyTeamInput | UsageTrackingCreateManyTeamInput[]
+    skipDuplicates?: boolean
   }
 
   export type TeamMemberUpsertWithWhereUniqueWithoutTeamInput = {
@@ -13557,77 +19569,97 @@ export namespace Prisma {
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutTeamInput>
   }
 
-  export type UserCreateWithoutTeamMembersInput = {
-    idProvider?: string | null
-    email: string
-    provider?: $Enums.Provider
-    password?: string | null
-    resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
-    confirmationToken?: string | null
-    confirmed?: boolean | null
-    blocked?: boolean | null
-    phone?: string | null
-    firstName: string
-    lastName?: string | null
-    avatarUrl?: string | null
-    language: $Enums.Language
-    theme?: $Enums.Theme
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatar?: FileCreateNestedOneWithoutAvatarForInput
-    team?: TeamCreateNestedOneWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+  export type CustomerSubscriptionUpsertWithWhereUniqueWithoutTeamInput = {
+    where: CustomerSubscriptionWhereUniqueInput
+    update: XOR<CustomerSubscriptionUpdateWithoutTeamInput, CustomerSubscriptionUncheckedUpdateWithoutTeamInput>
+    create: XOR<CustomerSubscriptionCreateWithoutTeamInput, CustomerSubscriptionUncheckedCreateWithoutTeamInput>
   }
 
-  export type UserUncheckedCreateWithoutTeamMembersInput = {
-    id?: number
-    idProvider?: string | null
-    email: string
-    provider?: $Enums.Provider
-    password?: string | null
-    resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
-    confirmationToken?: string | null
-    confirmed?: boolean | null
-    blocked?: boolean | null
-    phone?: string | null
-    firstName: string
-    lastName?: string | null
-    avatarUrl?: string | null
-    language: $Enums.Language
-    theme?: $Enums.Theme
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarId?: number | null
-    defaultTeamId?: number | null
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  export type CustomerSubscriptionUpdateWithWhereUniqueWithoutTeamInput = {
+    where: CustomerSubscriptionWhereUniqueInput
+    data: XOR<CustomerSubscriptionUpdateWithoutTeamInput, CustomerSubscriptionUncheckedUpdateWithoutTeamInput>
   }
 
-  export type UserCreateOrConnectWithoutTeamMembersInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
+  export type CustomerSubscriptionUpdateManyWithWhereWithoutTeamInput = {
+    where: CustomerSubscriptionScalarWhereInput
+    data: XOR<CustomerSubscriptionUpdateManyMutationInput, CustomerSubscriptionUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type CustomerSubscriptionScalarWhereInput = {
+    AND?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
+    OR?: CustomerSubscriptionScalarWhereInput[]
+    NOT?: CustomerSubscriptionScalarWhereInput | CustomerSubscriptionScalarWhereInput[]
+    id?: StringFilter<"CustomerSubscription"> | string
+    teamId?: IntFilter<"CustomerSubscription"> | number
+    planId?: StringFilter<"CustomerSubscription"> | string
+    status?: EnumSubscriptionStatusFilter<"CustomerSubscription"> | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFilter<"CustomerSubscription"> | $Enums.BillingInterval
+    stripeCustomerId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    stripeSubscriptionId?: StringNullableFilter<"CustomerSubscription"> | string | null
+    cancellationDetails?: StringNullableFilter<"CustomerSubscription"> | string | null
+    currentPeriodStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    currentPeriodEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    cancelAtPeriodEnd?: BoolFilter<"CustomerSubscription"> | boolean
+    trialStart?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    trialEnd?: DateTimeNullableFilter<"CustomerSubscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomerSubscription"> | Date | string
+  }
+
+  export type UsageTrackingUpsertWithWhereUniqueWithoutTeamInput = {
+    where: UsageTrackingWhereUniqueInput
+    update: XOR<UsageTrackingUpdateWithoutTeamInput, UsageTrackingUncheckedUpdateWithoutTeamInput>
+    create: XOR<UsageTrackingCreateWithoutTeamInput, UsageTrackingUncheckedCreateWithoutTeamInput>
+  }
+
+  export type UsageTrackingUpdateWithWhereUniqueWithoutTeamInput = {
+    where: UsageTrackingWhereUniqueInput
+    data: XOR<UsageTrackingUpdateWithoutTeamInput, UsageTrackingUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type UsageTrackingUpdateManyWithWhereWithoutTeamInput = {
+    where: UsageTrackingScalarWhereInput
+    data: XOR<UsageTrackingUpdateManyMutationInput, UsageTrackingUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type UsageTrackingScalarWhereInput = {
+    AND?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+    OR?: UsageTrackingScalarWhereInput[]
+    NOT?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+    id?: StringFilter<"UsageTracking"> | string
+    teamId?: IntFilter<"UsageTracking"> | number
+    subscriptionId?: StringFilter<"UsageTracking"> | string
+    metricType?: EnumUsageMetricTypeFilter<"UsageTracking"> | $Enums.UsageMetricType
+    currentUsage?: IntFilter<"UsageTracking"> | number
+    limitValue?: IntFilter<"UsageTracking"> | number
+    periodStart?: DateTimeFilter<"UsageTracking"> | Date | string
+    periodEnd?: DateTimeFilter<"UsageTracking"> | Date | string
+    lastResetDate?: DateTimeNullableFilter<"UsageTracking"> | Date | string | null
+    lastUpdated?: DateTimeFilter<"UsageTracking"> | Date | string
+    createdAt?: DateTimeFilter<"UsageTracking"> | Date | string
   }
 
   export type TeamCreateWithoutMembersInput = {
     name: string
     description?: string | null
+    tokenApi?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    files?: FileCreateNestedManyWithoutTeamInput
     user?: UserCreateNestedManyWithoutTeamInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutMembersInput = {
     id?: number
     name: string
     description?: string | null
+    tokenApi?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    files?: FileUncheckedCreateNestedManyWithoutTeamInput
     user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutMembersInput = {
@@ -13635,64 +19667,74 @@ export namespace Prisma {
     create: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
   }
 
-  export type UserUpsertWithoutTeamMembersInput = {
-    update: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
+  export type UserCreateWithoutTeamMembersInput = {
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    team?: TeamCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTeamMembersInput = {
+    id?: number
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    defaultTeamId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTeamMembersInput = {
+    where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutTeamMembersInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
-  }
-
-  export type UserUpdateWithoutTeamMembersInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
-    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
-    team?: TeamUpdateOneWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutTeamMembersInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
-    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
-    defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamUpsertWithoutMembersInput = {
@@ -13709,20 +19751,498 @@ export namespace Prisma {
   export type TeamUpdateWithoutMembersInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileUpdateManyWithoutTeamNestedInput
     user?: UserUpdateManyWithoutTeamNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileUncheckedUpdateManyWithoutTeamNestedInput
     user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type UserUpsertWithoutTeamMembersInput = {
+    update: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
+    create: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTeamMembersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
+  }
+
+  export type UserUpdateWithoutTeamMembersInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTeamMembersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type CustomerSubscriptionCreateWithoutPlanInput = {
+    id?: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutCustomerSubscriptionInput
+    usageTracking?: UsageTrackingCreateNestedManyWithoutSubscriptionInput
+  }
+
+  export type CustomerSubscriptionUncheckedCreateWithoutPlanInput = {
+    id?: string
+    teamId: number
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    usageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutSubscriptionInput
+  }
+
+  export type CustomerSubscriptionCreateOrConnectWithoutPlanInput = {
+    where: CustomerSubscriptionWhereUniqueInput
+    create: XOR<CustomerSubscriptionCreateWithoutPlanInput, CustomerSubscriptionUncheckedCreateWithoutPlanInput>
+  }
+
+  export type CustomerSubscriptionCreateManyPlanInputEnvelope = {
+    data: CustomerSubscriptionCreateManyPlanInput | CustomerSubscriptionCreateManyPlanInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerSubscriptionUpsertWithWhereUniqueWithoutPlanInput = {
+    where: CustomerSubscriptionWhereUniqueInput
+    update: XOR<CustomerSubscriptionUpdateWithoutPlanInput, CustomerSubscriptionUncheckedUpdateWithoutPlanInput>
+    create: XOR<CustomerSubscriptionCreateWithoutPlanInput, CustomerSubscriptionUncheckedCreateWithoutPlanInput>
+  }
+
+  export type CustomerSubscriptionUpdateWithWhereUniqueWithoutPlanInput = {
+    where: CustomerSubscriptionWhereUniqueInput
+    data: XOR<CustomerSubscriptionUpdateWithoutPlanInput, CustomerSubscriptionUncheckedUpdateWithoutPlanInput>
+  }
+
+  export type CustomerSubscriptionUpdateManyWithWhereWithoutPlanInput = {
+    where: CustomerSubscriptionScalarWhereInput
+    data: XOR<CustomerSubscriptionUpdateManyMutationInput, CustomerSubscriptionUncheckedUpdateManyWithoutPlanInput>
+  }
+
+  export type TeamCreateWithoutCustomerSubscriptionInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutCustomerSubscriptionInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutCustomerSubscriptionInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutCustomerSubscriptionInput, TeamUncheckedCreateWithoutCustomerSubscriptionInput>
+  }
+
+  export type SubscriptionPlanCreateWithoutSubscriptionsInput = {
+    id?: string
+    planType: $Enums.PlanType
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
+    currency?: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SubscriptionPlanUncheckedCreateWithoutSubscriptionsInput = {
+    id?: string
+    planType: $Enums.PlanType
+    stripeProductId?: string | null
+    stripePriceIdMonthly?: string | null
+    stripePriceIdYearly?: string | null
+    priceMonthly?: Decimal | DecimalJsLike | number | string
+    priceYearly?: Decimal | DecimalJsLike | number | string
+    currency?: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SubscriptionPlanCreateOrConnectWithoutSubscriptionsInput = {
+    where: SubscriptionPlanWhereUniqueInput
+    create: XOR<SubscriptionPlanCreateWithoutSubscriptionsInput, SubscriptionPlanUncheckedCreateWithoutSubscriptionsInput>
+  }
+
+  export type UsageTrackingCreateWithoutSubscriptionInput = {
+    id?: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+    team: TeamCreateNestedOneWithoutUsageTrackingInput
+  }
+
+  export type UsageTrackingUncheckedCreateWithoutSubscriptionInput = {
+    id?: string
+    teamId: number
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingCreateOrConnectWithoutSubscriptionInput = {
+    where: UsageTrackingWhereUniqueInput
+    create: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput>
+  }
+
+  export type UsageTrackingCreateManySubscriptionInputEnvelope = {
+    data: UsageTrackingCreateManySubscriptionInput | UsageTrackingCreateManySubscriptionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TeamUpsertWithoutCustomerSubscriptionInput = {
+    update: XOR<TeamUpdateWithoutCustomerSubscriptionInput, TeamUncheckedUpdateWithoutCustomerSubscriptionInput>
+    create: XOR<TeamCreateWithoutCustomerSubscriptionInput, TeamUncheckedCreateWithoutCustomerSubscriptionInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutCustomerSubscriptionInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutCustomerSubscriptionInput, TeamUncheckedUpdateWithoutCustomerSubscriptionInput>
+  }
+
+  export type TeamUpdateWithoutCustomerSubscriptionInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutCustomerSubscriptionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type SubscriptionPlanUpsertWithoutSubscriptionsInput = {
+    update: XOR<SubscriptionPlanUpdateWithoutSubscriptionsInput, SubscriptionPlanUncheckedUpdateWithoutSubscriptionsInput>
+    create: XOR<SubscriptionPlanCreateWithoutSubscriptionsInput, SubscriptionPlanUncheckedCreateWithoutSubscriptionsInput>
+    where?: SubscriptionPlanWhereInput
+  }
+
+  export type SubscriptionPlanUpdateToOneWithWhereWithoutSubscriptionsInput = {
+    where?: SubscriptionPlanWhereInput
+    data: XOR<SubscriptionPlanUpdateWithoutSubscriptionsInput, SubscriptionPlanUncheckedUpdateWithoutSubscriptionsInput>
+  }
+
+  export type SubscriptionPlanUpdateWithoutSubscriptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionPlanUncheckedUpdateWithoutSubscriptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planType?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
+    stripeProductId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdMonthly?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePriceIdYearly?: NullableStringFieldUpdateOperationsInput | string | null
+    priceMonthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    priceYearly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUpsertWithWhereUniqueWithoutSubscriptionInput = {
+    where: UsageTrackingWhereUniqueInput
+    update: XOR<UsageTrackingUpdateWithoutSubscriptionInput, UsageTrackingUncheckedUpdateWithoutSubscriptionInput>
+    create: XOR<UsageTrackingCreateWithoutSubscriptionInput, UsageTrackingUncheckedCreateWithoutSubscriptionInput>
+  }
+
+  export type UsageTrackingUpdateWithWhereUniqueWithoutSubscriptionInput = {
+    where: UsageTrackingWhereUniqueInput
+    data: XOR<UsageTrackingUpdateWithoutSubscriptionInput, UsageTrackingUncheckedUpdateWithoutSubscriptionInput>
+  }
+
+  export type UsageTrackingUpdateManyWithWhereWithoutSubscriptionInput = {
+    where: UsageTrackingScalarWhereInput
+    data: XOR<UsageTrackingUpdateManyMutationInput, UsageTrackingUncheckedUpdateManyWithoutSubscriptionInput>
+  }
+
+  export type TeamCreateWithoutUsageTrackingInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMemberCreateNestedManyWithoutTeamInput
+    user?: UserCreateNestedManyWithoutTeamInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutUsageTrackingInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
+    user?: UserUncheckedCreateNestedManyWithoutTeamInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutUsageTrackingInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutUsageTrackingInput, TeamUncheckedCreateWithoutUsageTrackingInput>
+  }
+
+  export type CustomerSubscriptionCreateWithoutUsageTrackingInput = {
+    id?: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutCustomerSubscriptionInput
+    plan: SubscriptionPlanCreateNestedOneWithoutSubscriptionsInput
+  }
+
+  export type CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput = {
+    id?: string
+    teamId: number
+    planId: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerSubscriptionCreateOrConnectWithoutUsageTrackingInput = {
+    where: CustomerSubscriptionWhereUniqueInput
+    create: XOR<CustomerSubscriptionCreateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput>
+  }
+
+  export type TeamUpsertWithoutUsageTrackingInput = {
+    update: XOR<TeamUpdateWithoutUsageTrackingInput, TeamUncheckedUpdateWithoutUsageTrackingInput>
+    create: XOR<TeamCreateWithoutUsageTrackingInput, TeamUncheckedCreateWithoutUsageTrackingInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutUsageTrackingInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutUsageTrackingInput, TeamUncheckedUpdateWithoutUsageTrackingInput>
+  }
+
+  export type TeamUpdateWithoutUsageTrackingInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput
+    user?: UserUpdateManyWithoutTeamNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutUsageTrackingInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
+    user?: UserUncheckedUpdateManyWithoutTeamNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type CustomerSubscriptionUpsertWithoutUsageTrackingInput = {
+    update: XOR<CustomerSubscriptionUpdateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput>
+    create: XOR<CustomerSubscriptionCreateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedCreateWithoutUsageTrackingInput>
+    where?: CustomerSubscriptionWhereInput
+  }
+
+  export type CustomerSubscriptionUpdateToOneWithWhereWithoutUsageTrackingInput = {
+    where?: CustomerSubscriptionWhereInput
+    data: XOR<CustomerSubscriptionUpdateWithoutUsageTrackingInput, CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput>
+  }
+
+  export type CustomerSubscriptionUpdateWithoutUsageTrackingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutCustomerSubscriptionNestedInput
+    plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    planId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountCreateManyUserInput = {
@@ -13755,6 +20275,19 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId: number
+  }
+
+  export type FileCreateManyUserInput = {
+    id?: string
+    name: string
+    url: string
+    publicId?: string | null
+    format?: string | null
+    version?: string | null
+    mimeType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -13852,110 +20385,168 @@ export namespace Prisma {
     teamId?: IntFieldUpdateOperationsInput | number
   }
 
+  export type FileUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarFor?: UserUpdateManyWithoutAvatarNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarFor?: UserUncheckedUpdateManyWithoutAvatarNestedInput
+  }
+
+  export type FileUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    format?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyAvatarInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
     defaultTeamId?: number | null
   }
 
   export type UserUpdateWithoutAvatarInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneWithoutUserNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    team?: TeamUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAvatarInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAvatarInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     defaultTeamId?: NullableIntFieldUpdateOperationsInput | number | null
-  }
-
-  export type FileCreateManyTeamInput = {
-    id?: number
-    name: string
-    url: string
-    publicId?: string | null
-    format?: string | null
-    version?: string | null
-    mimeType?: string | null
-    size?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type TeamMemberCreateManyTeamInput = {
@@ -13972,64 +20563,61 @@ export namespace Prisma {
 
   export type UserCreateManyTeamInput = {
     id?: number
-    idProvider?: string | null
     email: string
     provider?: $Enums.Provider
     password?: string | null
     resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
     confirmationToken?: string | null
     confirmed?: boolean | null
     blocked?: boolean | null
     phone?: string | null
     firstName: string
     lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
     avatarUrl?: string | null
     language: $Enums.Language
-    theme?: $Enums.Theme
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarId?: number | null
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
   }
 
-  export type FileUpdateWithoutTeamInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    publicId?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: NullableStringFieldUpdateOperationsInput | string | null
-    version?: NullableStringFieldUpdateOperationsInput | string | null
-    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarFor?: UserUpdateManyWithoutAvatarNestedInput
+  export type CustomerSubscriptionCreateManyTeamInput = {
+    id?: string
+    planId: string
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type FileUncheckedUpdateWithoutTeamInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    publicId?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: NullableStringFieldUpdateOperationsInput | string | null
-    version?: NullableStringFieldUpdateOperationsInput | string | null
-    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarFor?: UserUncheckedUpdateManyWithoutAvatarNestedInput
-  }
-
-  export type FileUncheckedUpdateManyWithoutTeamInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    url?: StringFieldUpdateOperationsInput | string
-    publicId?: NullableStringFieldUpdateOperationsInput | string | null
-    format?: NullableStringFieldUpdateOperationsInput | string | null
-    version?: NullableStringFieldUpdateOperationsInput | string | null
-    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type UsageTrackingCreateManyTeamInput = {
+    id?: string
+    subscriptionId: string
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
   }
 
   export type TeamMemberUpdateWithoutTeamInput = {
@@ -14068,74 +20656,311 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutTeamInput = {
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutTeamInput = {
     id?: IntFieldUpdateOperationsInput | number
-    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
     password?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
     confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
     blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarId?: NullableIntFieldUpdateOperationsInput | number | null
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  }
+
+  export type CustomerSubscriptionUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    plan?: SubscriptionPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscription?: CustomerSubscriptionUpdateOneRequiredWithoutUsageTrackingNestedInput
+  }
+
+  export type UsageTrackingUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriptionId?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subscriptionId?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerSubscriptionCreateManyPlanInput = {
+    id?: string
+    teamId: number
+    status?: $Enums.SubscriptionStatus
+    billingInterval?: $Enums.BillingInterval
+    stripeCustomerId?: string | null
+    stripeSubscriptionId?: string | null
+    cancellationDetails?: string | null
+    currentPeriodStart?: Date | string | null
+    currentPeriodEnd?: Date | string | null
+    cancelAtPeriodEnd?: boolean
+    trialStart?: Date | string | null
+    trialEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerSubscriptionUpdateWithoutPlanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutCustomerSubscriptionNestedInput
+    usageTracking?: UsageTrackingUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateWithoutPlanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usageTracking?: UsageTrackingUncheckedUpdateManyWithoutSubscriptionNestedInput
+  }
+
+  export type CustomerSubscriptionUncheckedUpdateManyWithoutPlanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    status?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    billingInterval?: EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    cancellationDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    currentPeriodStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    currentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelAtPeriodEnd?: BoolFieldUpdateOperationsInput | boolean
+    trialStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingCreateManySubscriptionInput = {
+    id?: string
+    teamId: number
+    metricType: $Enums.UsageMetricType
+    currentUsage?: number
+    limitValue: number
+    periodStart?: Date | string
+    periodEnd: Date | string
+    lastResetDate?: Date | string | null
+    lastUpdated?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UsageTrackingUpdateWithoutSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutUsageTrackingNestedInput
+  }
+
+  export type UsageTrackingUncheckedUpdateWithoutSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsageTrackingUncheckedUpdateManyWithoutSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    metricType?: EnumUsageMetricTypeFieldUpdateOperationsInput | $Enums.UsageMetricType
+    currentUsage?: IntFieldUpdateOperationsInput | number
+    limitValue?: IntFieldUpdateOperationsInput | number
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

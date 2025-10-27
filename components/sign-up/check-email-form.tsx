@@ -171,7 +171,7 @@ export function CheckEmailForm({
                 <p>{t("help.checkSpam")}</p>
                 <p>
                     {t("help.needHelp")} {" "}
-                    <a href="mailto:support@example.com" className="underline underline-offset-4 hover:text-foreground">
+                    <a href="mailto:contact@opineeo.com" className="underline underline-offset-4 hover:text-foreground">
                         {t("help.contactSupport")}
                     </a>
                 </p>

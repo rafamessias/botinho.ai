@@ -3,7 +3,6 @@
 import { signIn, signOut, auth } from "@/app/auth"
 import { prisma } from "@/prisma/lib/prisma"
 import bcrypt from "bcryptjs"
-import { redirect } from "next/navigation"
 import { z } from "zod"
 import { AuthError } from "next-auth"
 import resend from "@/lib/resend"
@@ -12,7 +11,9 @@ import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
 import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
-import { Provider, Theme } from "@/lib/generated/prisma"
+import { Provider, Theme, SubscriptionStatus, PlanType, Prisma, TeamMemberStatus, BillingInterval } from "@/lib/generated/prisma"
+import { createCustomerSubscription } from "@/lib/customer-subscription"
+import { createCheckoutSession } from "@/lib/stripe-service"
 
 // Types for form data
 export interface SignInFormData {
@@ -23,7 +24,7 @@ export interface SignInFormData {
 export interface SignUpFormData {
     name: string
     email: string
-    phone: string
+    phone?: string
     password: string
     confirmPassword: string
 }
@@ -37,7 +38,7 @@ const signInSchema = z.object({
 const signUpSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Invalid email address"),
-    phone: z.string().min(10, "Phone number must be at least 10 characters").regex(/^[+]?[\d\s\-\(\)]{10,}$/, "Invalid phone number format"),
+    phone: z.string().min(10, "Phone number must be at least 10 characters").regex(/^[+]?[\d\s\-\(\)]{10,}$/, "Invalid phone number format").optional(),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm password must be at least 6 characters"),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -63,6 +64,7 @@ export const signInAction = async (formData: SignInFormData) => {
     const t = await getTranslations("AuthErrors")
 
     try {
+
         // Validate form data
         const validatedData = signInSchema.parse(formData)
 
@@ -78,8 +80,19 @@ export const signInAction = async (formData: SignInFormData) => {
             return { success: false, error: result.error }
         }
 
-        // If successful, return success and let client handle redirect
-        return { success: true }
+        // If successful, check subscription and handle checkout if needed
+        const subscriptionCheck = await validateUserTeamAndSubscription(validatedData.email)
+
+        if (subscriptionCheck?.success && subscriptionCheck.needsCheckout) {
+            return {
+                success: true,
+                needsCheckout: subscriptionCheck.needsCheckout,
+                checkoutUrl: subscriptionCheck.checkoutUrl
+            }
+        }
+
+        // No checkout needed, return success
+        return { success: true, needsCheckout: false }
     } catch (error) {
         // NextAuth throws NEXT_REDIRECT which is expected behavior for redirects
         if (error instanceof Error && error.message === "NEXT_REDIRECT") {
@@ -118,12 +131,269 @@ export const signInAction = async (formData: SignInFormData) => {
 }
 
 /**
- * Server action for user sign-up (registration)
+ * Create a default team with FREE plan subscription for a user
+ * @param userId - User ID
+ * @param firstName - User's first name
+ * @returns Promise with success status and team data
  */
-export const signUpAction = async (formData: SignUpFormData) => {
+export const createDefaultTeamWithFreePlan = async (userId: number, firstName: string) => {
+
+    try {
+
+        console.log(`Creating default team with FREE plan for user ${userId}`)
+
+        // Create a default team for the user
+        const newTeam = await prisma.team.create({
+            data: {
+                name: "Team's " + firstName,
+                description: "Team's " + firstName
+            }
+        })
+
+        // Create team member (owner)
+        await prisma.teamMember.create({
+            data: {
+                userId: userId,
+                teamId: newTeam.id,
+                isAdmin: true,
+                canPost: true,
+                canApprove: true,
+                isOwner: true,
+                teamMemberStatus: TeamMemberStatus.accepted,
+            }
+        })
+
+        // Update user's default team
+        await prisma.user.update({
+            where: { id: userId },
+            data: { defaultTeamId: newTeam.id }
+        })
+
+        // Find FREE plan
+        const freePlan = await prisma.subscriptionPlan.findFirst({
+            where: {
+                planType: PlanType.FREE,
+                isActive: true
+            }
+        })
+
+        if (!freePlan) {
+            return {
+                success: false,
+                error: "Free plan not found",
+                team: null
+            }
+        }
+
+        // Create FREE plan subscription
+        const subscriptionResult = await createCustomerSubscription({
+            teamId: newTeam.id,
+            planId: freePlan.id,
+            status: SubscriptionStatus.active,
+            cancelAtPeriodEnd: false
+        })
+
+        if (!subscriptionResult.success) {
+            console.error("Failed to create free subscription:", subscriptionResult.error)
+            return {
+                success: false,
+                error: "Failed to create subscription",
+                team: null
+            }
+        }
+
+        console.log('✅ Created team with FREE plan subscription:', newTeam.id)
+        return {
+            success: true,
+            message: "Team and FREE plan subscription created successfully",
+            team: newTeam
+        }
+
+    } catch (error) {
+        console.error("Error creating default team with free plan:", error)
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error occurred",
+            team: null
+        }
+    }
+}
+
+/**
+ * Server action to validate user's default team and subscription
+ * - Validates if user has a default team
+ * - Validates if default team has active subscription
+ * - Creates default team with FREE plan if no team exists
+ * - Creates checkout URL if default team has pending subscription and user is owner
+ * - Only validates the user's default team (set in defaultTeamId), not all teams user is member of
+ */
+export const validateUserTeamAndSubscription = async (userEmail: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
+
+        console.log('Validating user team and subscription for:', userEmail)
+
+        // Get user
+        const user = await prisma.user.findUnique({
+            where: { email: userEmail },
+            select: {
+                id: true,
+                defaultTeamId: true,
+                firstName: true
+            }
+        })
+
+        if (!user) {
+            return { success: false, error: "User not found", needsCheckout: false }
+        }
+
+        // Case 1: User has no default team - create one with FREE plan
+        if (!user.defaultTeamId) {
+            const createTeamResult = await createDefaultTeamWithFreePlan(user.id, user.firstName)
+
+            if (!createTeamResult.success) {
+                return {
+                    success: false,
+                    error: createTeamResult.error || "Failed to create default team",
+                    needsCheckout: false,
+                    checkoutUrl: null
+                }
+            }
+
+            return {
+                success: true,
+                needsCheckout: false,
+                checkoutUrl: null
+            }
+        }
+
+        // Case 2: User has default team - get team with subscription
+        const defaultTeam = await prisma.team.findUnique({
+            where: { id: user.defaultTeamId },
+            include: {
+                subscriptions: {
+                    where: {
+                        status: {
+                            in: [SubscriptionStatus.active, SubscriptionStatus.trialing, SubscriptionStatus.pending]
+                        }
+                    },
+                    include: {
+                        plan: true
+                    },
+                    orderBy: {
+                        createdAt: Prisma.SortOrder.desc
+                    },
+                    take: 1
+                },
+                members: {
+                    where: {
+                        userId: user.id,
+                        isOwner: true
+                    },
+                    take: 1
+                }
+            }
+        }) as Prisma.TeamGetPayload<{
+            include: { subscriptions: { include: { plan: true } }, members: true }
+        }> | null
+
+        if (!defaultTeam) {
+            // Default team ID exists but team not found - create a team and FREE plan subscription
+            console.log('Default team ID exists but team not found, creating new team with FREE plan')
+
+            const createTeamResult = await createDefaultTeamWithFreePlan(user.id, user.firstName)
+
+            if (!createTeamResult.success) {
+                return {
+                    success: false,
+                    error: createTeamResult.error || "Failed to create default team",
+                    needsCheckout: false,
+                    checkoutUrl: null
+                }
+            }
+
+            return {
+                success: true,
+                needsCheckout: false,
+                checkoutUrl: null
+            }
+        }
+
+        const subscription = defaultTeam.subscriptions[0]
+        const isOwner = defaultTeam.members.length > 0
+
+        // Case 2a: Has pending subscription and user is owner - create checkout
+        if (subscription && subscription.status === SubscriptionStatus.pending && isOwner) {
+            console.log('Pending subscription found for default team, creating checkout URL')
+
+            const planType: PlanType = subscription.plan?.planType as PlanType || PlanType.FREE
+
+            // Create checkout session
+            const checkoutResult = await createCheckoutSession({
+                planId: planType,
+                billingCycle: BillingInterval.monthly,
+                userEmail: userEmail,
+                teamId: defaultTeam.id,
+                customerSubscriptionId: subscription.id
+            })
+
+            if (!checkoutResult.success || !checkoutResult.url) {
+                console.error('Failed to create checkout session:', checkoutResult.error)
+                return {
+                    success: false,
+                    error: "Failed to create checkout session",
+                    needsCheckout: true,
+                    checkoutUrl: null
+                }
+            }
+
+            console.log('✅ Checkout URL created')
+            return {
+                success: true,
+                needsCheckout: true,
+                checkoutUrl: checkoutResult.url
+            }
+        }
+
+        // Case 2b: Has pending subscription but user is not owner of default team
+        if (subscription && subscription.status === SubscriptionStatus.pending && !isOwner) {
+            console.log('Pending subscription found but user is not owner of default team')
+            return {
+                success: false,
+                needsCheckout: false,
+                checkoutUrl: null,
+                message: "Only team owner can complete subscription checkout"
+            }
+        }
+
+        // Case 2c: Has active subscription for default team
+        console.log('✅ Active subscription found for default team, no checkout needed')
+        return {
+            success: true,
+            needsCheckout: false,
+            checkoutUrl: null
+        }
+
+    } catch (error) {
+        console.error("Error validating user team and subscription:", error)
+        return {
+            success: false,
+            error: "Failed to validate team and subscription",
+            needsCheckout: false,
+            checkoutUrl: null
+        }
+    }
+}
+
+/**
+ * Server action for user sign-up (registration)
+ */
+export const signUpAction = async (formData: SignUpFormData, planParam?: string | null) => {
+    const t = await getTranslations("AuthErrors")
+
+    try {
+
         // Validate form data
         const validatedData = signUpSchema.parse(formData)
 
@@ -132,7 +402,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
             where: {
                 OR: [
                     { email: validatedData.email },
-                    { phone: validatedData.phone }
+                    { phone: validatedData.phone || "" }
                 ]
             }
         })
@@ -141,7 +411,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
             if (existingUser.email === validatedData.email) {
                 return { success: false, error: t("emailExists") }
             }
-            if (existingUser.phone === validatedData.phone) {
+            if (validatedData.phone && existingUser.phone === validatedData.phone) {
                 return { success: false, error: t("phoneExists") }
             }
         }
@@ -150,7 +420,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
         const hashedPassword = await bcrypt.hash(validatedData.password, 12)
 
         // Generate confirmation token or OTP based on environment
-        const isOTPEnabled = process.env.OTP_ENABLED === 'true'
+        const isOTPEnabled = process.env.OTP_ENABLED === 'TRUE'
         const confirmationToken = isOTPEnabled
             ? Math.floor(100000 + Math.random() * 900000).toString() // 6-digit OTP
             : await generateConfirmationToken() // Random token for email confirmation
@@ -170,10 +440,10 @@ export const signUpAction = async (formData: SignUpFormData) => {
                 data: {
                     email: validatedData.email,
                     password: hashedPassword,
-                    phone: validatedData.phone,
+                    phone: validatedData.phone || null,
                     firstName,
                     lastName,
-                    provider: 'local',
+                    provider: Provider.local,
                     language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
                     confirmationToken,
                     confirmed: false,
@@ -198,8 +468,16 @@ export const signUpAction = async (formData: SignUpFormData) => {
                     canPost: true,
                     canApprove: true,
                     isOwner: true,
-                    teamMemberStatus: 'accepted',
+                    teamMemberStatus: TeamMemberStatus.accepted,
                 }
+            })
+
+            // Add default survey types to the team using createMany for efficiency
+            let defaultSurveyTypes = [{ name: "Product Feedback", isDefault: true, teamId: team.id }]
+            defaultSurveyTypes.push(...["Customer Satisfaction", "Employee Engagement", "Market Research", "Event Feedback", "User Experience"].map(name => ({ name, isDefault: false, teamId: team.id })))
+
+            await tx.surveyType.createMany({
+                data: defaultSurveyTypes
             })
 
             // Update user's default team
@@ -212,10 +490,69 @@ export const signUpAction = async (formData: SignUpFormData) => {
         })
 
         const newUser = result.user
+        const team = result.team
+
+        // Create CustomerSubscription if plan parameter is provided
+        if (planParam && planParam !== 'free') {
+            try {
+                // Find the subscription plan by planType
+                const subscriptionPlan = await prisma.subscriptionPlan.findFirst({
+                    where: {
+                        planType: planParam.toUpperCase() as PlanType,
+                        isActive: true
+                    }
+                })
+                console.log("subscriptionPlan", subscriptionPlan)
+                if (subscriptionPlan) {
+                    // Create customer subscription with pending status for paid plans
+                    const subscriptionResult = await createCustomerSubscription({
+                        teamId: team.id,
+                        planId: subscriptionPlan.id,
+                        status: SubscriptionStatus.pending,
+                        cancelAtPeriodEnd: false
+                    })
+
+                    if (!subscriptionResult.success) {
+                        console.error("Failed to create customer subscription:", subscriptionResult.error)
+                    }
+                } else {
+                    console.warn(`Subscription plan not found for plan type: ${planParam}`)
+                }
+            } catch (subscriptionError) {
+                console.error("Error creating customer subscription:", subscriptionError)
+                // Don't fail the sign-up if subscription creation fails
+            }
+        } else if (planParam === 'free' || !planParam) {
+            // Create free subscription with active status
+            try {
+                const freePlan = await prisma.subscriptionPlan.findFirst({
+                    where: {
+                        planType: PlanType.FREE,
+                        isActive: true
+                    }
+                })
+
+                if (freePlan) {
+                    const subscriptionResult = await createCustomerSubscription({
+                        teamId: team.id,
+                        planId: freePlan.id,
+                        status: SubscriptionStatus.active,
+                        cancelAtPeriodEnd: false
+                    })
+
+                    if (!subscriptionResult.success) {
+                        console.error("Failed to create free subscription:", subscriptionResult.error)
+                    }
+                }
+            } catch (subscriptionError) {
+                console.error("Error creating free subscription:", subscriptionError)
+                // Don't fail the sign-up if subscription creation fails
+            }
+        }
 
         // Send confirmation email or OTP based on environment
         const baseUrl = (process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000') + `/${currentLocale}/sign-up/otp?otp=${confirmationToken}&email=${validatedData.email}&phone=${validatedData.phone}`
-        const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+        const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>"
 
         try {
             if (isOTPEnabled) {
@@ -278,6 +615,7 @@ export const signUpAction = async (formData: SignUpFormData) => {
  */
 export const googleSignInAction = async (redirectPath?: string) => {
     try {
+
         // Store redirect path in cookies if provided
         if (redirectPath) {
             const cookieStore = await cookies()
@@ -327,6 +665,7 @@ export const confirmEmailAction = async (token: string, teamId: number) => {
     const t = await getTranslations("AuthErrors")
 
     try {
+
         if (!token) {
             return { success: false, error: "Confirmation token is required" }
         }
@@ -335,7 +674,7 @@ export const confirmEmailAction = async (token: string, teamId: number) => {
         const user = await prisma.user.findFirst({
             where: {
                 confirmationToken: token,
-                confirmed: false,
+                //confirmed: false,
             }
         })
 
@@ -381,6 +720,7 @@ export const resendConfirmationEmailAction = async (email: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
+
         if (!email) {
             return { success: false, error: "Email is required" }
         }
@@ -412,7 +752,7 @@ export const resendConfirmationEmailAction = async (email: string) => {
 
         // Send confirmation email
         const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
-        const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+        const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>"
         const confirmationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}`
 
         const { data, error } = await resend.emails.send({
@@ -443,6 +783,7 @@ export const resendConfirmationEmailAction = async (email: string) => {
  */
 export const getCurrentUserAction = async () => {
     try {
+
         const session = await auth()
 
         if (!session?.user?.email) {
@@ -460,13 +801,15 @@ export const getCurrentUserAction = async () => {
                 phone: true,
                 avatarUrl: true,
                 language: true,
-                provider: true,
                 theme: true,
-                confirmed: true,
-                blocked: true,
-                createdAt: true,
-                updatedAt: true,
                 defaultTeamId: true,
+                position: true,
+                companyName: true,
+                country: true,
+                linkedinUrl: true,
+                twitterUrl: true,
+                websiteUrl: true,
+                githubUrl: true,
                 avatar: {
                     select: {
                         id: true,
@@ -481,6 +824,48 @@ export const getCurrentUserAction = async () => {
             return { success: false, error: "User not found", user: null }
         }
 
+        // Check if user's default team has exceeded usage metric
+        let usagePercentage = 0;
+        if (user?.defaultTeamId) {
+            // Example: Check if team has exceeded ACTIVE_SURVEYS or TOTAL_COMPLETED_RESPONSES
+            const usage = await prisma.usageTracking.findMany({
+                where: {
+                    teamId: user.defaultTeamId,
+                    OR: [
+                        { metricType: "ACTIVE_SURVEYS" },
+                        { metricType: "TOTAL_COMPLETED_RESPONSES" }
+                    ],
+                    periodStart: {
+                        lte: new Date()
+                    },
+                    periodEnd: {
+                        gte: new Date()
+                    }
+                },
+                select: {
+                    metricType: true,
+                    currentUsage: true,
+                    limitValue: true
+                }
+            });
+
+            // If any metric value exceeds its limit, set overusage to true
+            if (usage && usage.length > 0) {
+                // Calculate the highest usage percentage among the tracked metrics
+                // If any metric has a limitValue > 0, compute currentUsage / limitValue * 100, else 0
+                // overusage will be the highest percentage (rounded down), or 0 if no limits
+                usagePercentage = Math.floor(
+                    Math.max(
+                        ...usage.map(metric =>
+                            metric.limitValue > 0
+                                ? (metric.currentUsage / metric.limitValue) * 100
+                                : 0
+                        )
+                    )
+                );
+            }
+        }
+
         // Transform data for frontend use
         const userData = {
             id: user.id,
@@ -491,16 +876,16 @@ export const getCurrentUserAction = async () => {
             phone: user.phone,
             avatarUrl: user.avatarUrl || user.avatar?.url || null,
             language: user.language === "pt_BR" ? "pt-BR" : "en",
-            provider: user.provider as Provider,
             theme: user.theme as Theme,
-            confirmed: user.confirmed,
-            blocked: user.blocked,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
             defaultTeamId: user.defaultTeamId,
-            // Access control flags
-            isActive: Boolean(user.confirmed && !user.blocked),
-            canAccess: Boolean(user.confirmed && !user.blocked),
+            usagePercentage: usagePercentage,
+            position: user.position,
+            companyName: user.companyName,
+            country: user.country,
+            linkedinUrl: user.linkedinUrl,
+            twitterUrl: user.twitterUrl,
+            websiteUrl: user.websiteUrl,
+            githubUrl: user.githubUrl,
         }
 
         return { success: true, user: userData }
@@ -517,6 +902,7 @@ export const resetPasswordAction = async (email: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
+
         if (!email) {
             return { success: false, error: "Email is required" }
         }
@@ -551,7 +937,7 @@ export const resetPasswordAction = async (email: string) => {
 
             // Send reset password email
             const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
-            const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
+            const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>"
             const resetUrl = `${baseUrl}/${currentLocale}/reset-password/confirm?token=${resetPasswordToken}`
 
             try {
@@ -592,6 +978,7 @@ export const confirmPasswordResetAction = async (token: string, password: string
     const t = await getTranslations("AuthErrors")
 
     try {
+
         if (!token || !password) {
             return { success: false, error: "Token and password are required" }
         }
@@ -643,12 +1030,13 @@ export const confirmPasswordResetAction = async (token: string, password: string
 }
 
 /**
- * Server action to confirm OTP for account verification
+ * Server action to confirm OTP for account verification and auto sign-in
  */
 export const confirmOTPAction = async (otp: string, email?: string, phone?: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
+
         if (!otp || (!email && !phone)) {
             return { success: false, error: t("otpRequired") }
         }
@@ -657,30 +1045,53 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
         const otpSchema = z.string().regex(/^\d{6}$/, t("otpInvalidFormat"))
         const validatedOTP = otpSchema.parse(otp)
 
-        // Find user with the OTP token
-        const user = await prisma.user.findFirst({
-            where: {
-                confirmationToken: validatedOTP,
-                confirmed: false,
-                ...(email ? { email } : {}),
-                ...(phone ? { phone } : {})
-            }
-        })
 
-        if (!user) {
-            return { success: false, error: t("invalidOTP") }
+
+        // Auto sign-in the user using NextAuth's signIn function
+        try {
+            const signInResult = await signIn("otp", {
+                email: email || "",
+                phone: phone || "",
+                otp: validatedOTP,
+                redirect: false,
+            })
+
+            if (signInResult?.error || !signInResult) {
+                // If sign-in fails, return success for OTP confirmation but indicate sign-in failed
+                return {
+                    success: false,
+                    message: t("otpInvalidFormat"),
+                }
+            }
+
+            // Check if user needs subscription after successful sign-in
+            const subscriptionCheck = await validateUserTeamAndSubscription(email || "")
+
+            if (subscriptionCheck?.success && subscriptionCheck.needsCheckout) {
+                return {
+                    success: true,
+                    message: t("accountConfirmed"),
+                    needsCheckout: true,
+                    checkoutUrl: subscriptionCheck.checkoutUrl
+                }
+            }
+
+            // Both OTP confirmation and sign-in successful, no checkout needed
+            return {
+                success: true,
+                message: t("accountConfirmed"),
+                needsCheckout: false
+            }
+
+        } catch (signInError) {
+            console.error("Sign-in after OTP confirmation failed:", signInError)
+            // Still return success for OTP confirmation, but user needs to sign in manually
+            return {
+                success: false,
+                message: t("otpInvalidFormat"),
+
+            }
         }
-
-        // Update user to confirmed and clear OTP token
-        await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                confirmed: true,
-                confirmationToken: null,
-            }
-        })
-
-        return { success: true, message: t("accountConfirmed") }
 
     } catch (error) {
         console.error("OTP confirmation error:", error)
@@ -694,12 +1105,42 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
 }
 
 /**
+ * Server action to create Stripe checkout session
+ */
+export const createCheckoutSessionAction = async (planType: PlanType, billingCycle: string = 'monthly', userEmail?: string, teamId?: number, customerSubscriptionId?: string) => {
+    try {
+
+        const result = await createCheckoutSession({
+            planId: planType as PlanType,
+            billingCycle: billingCycle as 'monthly' | 'yearly',
+            userEmail: userEmail,
+            teamId: teamId,
+            customerSubscriptionId: customerSubscriptionId
+        })
+
+        if (!result.success) {
+            return { success: false, error: result.error || 'Failed to create checkout session' }
+        }
+
+        if (!result.url) {
+            return { success: false, error: 'No checkout URL received' }
+        }
+
+        return { success: true, checkoutUrl: result.url }
+    } catch (error) {
+        console.error('Error creating checkout session:', error)
+        return { success: false, error: 'Failed to create checkout session' }
+    }
+}
+
+/**
  * Server action to resend OTP for account verification
  */
 export const resendOTPAction = async (email?: string, phone?: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
+
         if (!email && !phone) {
             return { success: false, error: t("emailOrPhoneRequired") }
         }

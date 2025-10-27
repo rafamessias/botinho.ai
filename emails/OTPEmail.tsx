@@ -80,7 +80,7 @@ const OTPEmail = ({ userName = 'User', otpCode = '123456', lang = 'en', baseUrl 
                             }
                         </Text>
                         <Text style={anchor}>
-                            {baseUrl}
+                            {otpCode}
                         </Text>
 
                         <Hr style={hr} />
@@ -154,7 +154,7 @@ const otpCodeCss = {
     fontSize: '32px',
     fontFamily: "'Open Sans', 'Helvetica Neue', Arial",
     fontWeight: 'bold',
-    color: '#007ee6',
+    color: 'oklch(0.6 0.15 285)',
     letterSpacing: '8px',
     margin: '0',
     textAlign: 'center' as const,

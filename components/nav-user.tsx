@@ -33,13 +33,15 @@ import { useRouter } from "next/navigation"
 import { logoutAction } from "@/components/server-actions/auth"
 import { useState } from "react"
 import { useUser } from "@/components/user-provider"
+import { useSession } from "next-auth/react"
 
 export function NavUser() {
   const locale = useLocale()
   const t = useTranslations("NavUser")
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const { user, loading } = useUser()
+  const { user, loading, setUser } = useUser()
+  const { update } = useSession()
 
   // Show loading state if user data is still loading
   if (loading || !user) {
@@ -68,18 +70,7 @@ export function NavUser() {
       label: t("subscription"),
       icon: IconCreditCard,
       href: `/${locale}/subscription`,
-    },
-
-    {
-      label: t("notifications"),
-      icon: IconNotification,
-      href: `/${locale}/notifications`,
-    },
-    {
-      label: t("settings"),
-      icon: IconSettings,
-      href: `/${locale}/settings`,
-    },
+    }
   ]
 
   // Helper to truncate string to max 20 chars, adding ... if longer
@@ -95,6 +86,7 @@ export function NavUser() {
     try {
       setIsLoggingOut(true)
       await logoutAction(`/${locale}/sign-in`)
+      await update()
       // NextAuth will handle the redirect after logout
     } catch (error) {
       // NextAuth throws NEXT_REDIRECT for logout redirects - this is expected
@@ -145,7 +137,7 @@ export function NavUser() {
                     router.push(item.href);
                   }}
                 >
-                  <item.icon />
+                  <item.icon className="hover:text-accent" />
                   {item.label}
                 </DropdownMenuItem>
               ))}
@@ -156,7 +148,7 @@ export function NavUser() {
               disabled={isLoggingOut}
               className="cursor-pointer"
             >
-              <IconLogout />
+              <IconLogout className="hover:text-accent" />
               {isLoggingOut ? t("loggingOut") : t("logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>

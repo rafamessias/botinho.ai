@@ -37,6 +37,7 @@ const TeamInvitationEmail = ({
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
 
     const { companyName, logoURL } = emailConfig;
+
     return (
         <Html>
             <Head />
@@ -67,14 +68,14 @@ const TeamInvitationEmail = ({
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? `Como membro da equipe, você terá acesso a todos os projetos, recursos e ferramentas de colaboração disponíveis para a equipe.`
-                                : 'As a company member, you\'ll have access to all projects, resources, and collaboration tools available to the team.'
+                                ? `Como membro da equipe, você terá acesso as pesquisas e resultados para colaborar com a equipe.`
+                                : 'As a team member, you\'ll have access to surveys and results to collaborate with the team.'
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? `O ${companyName} oferece uma plataforma completa para gerenciamento de projetos, permitindo que equipes trabalhem de forma eficiente e organizada.`
-                                : `${companyName} provides a comprehensive platform for enterprise project management, enabling teams to work efficiently and organized.`
+                                ? `O ${companyName} oferece uma plataforma completa para gerenciamento de pesquisas, permitindo que equipes trabalhem de forma eficiente e organizada.`
+                                : `${companyName} provides a comprehensive platform for survey management, enabling teams to work efficiently and organized.`
                             }
                         </Text>
                         <Text style={text}>
@@ -107,19 +108,6 @@ const TeamInvitationEmail = ({
                             </>
                         )}
 
-
-                        <Text style={text}>
-                            {isPt
-                                ? 'Junte-se à empresa e comece a colaborar com seus colegas em projetos importantes. Sua contribuição será valiosa para o sucesso da equipe!'
-                                : 'Join the company and start collaborating with your colleagues on important projects. Your contribution will be valuable to the team\'s success!'
-                            }
-                        </Text>
-                        <Text style={text}>
-                            {isPt
-                                ? 'Após aceitar o convite, você poderá acessar todos os projetos da empresa e começar a trabalhar imediatamente.'
-                                : 'After accepting the invitation, you\'ll be able to access all company projects and start working immediately.'
-                            }
-                        </Text>
                         <Text style={text}>
                             {isPt
                                 ? 'Se você tiver alguma dúvida sobre a empresa ou a plataforma, não hesite em entrar em contato conosco.'
@@ -196,7 +184,7 @@ const text = {
 };
 
 const button = {
-    backgroundColor: '#007ee6',
+    backgroundColor: 'oklch(0.6 0.15 285)',
     borderRadius: '4px',
     color: '#fff',
     fontFamily: "'Open Sans', 'Helvetica Neue', Arial",

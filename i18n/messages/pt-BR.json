@@ -7,20 +7,18 @@
         "brand": "Meu SaaS",
         "navigation": {
             "dashboard": "Painel",
-            "lifecycle": "Ciclo de Vida",
-            "analytics": "Análises",
-            "projects": "Projetos",
+            "surveys": "Pesquisas",
             "team": "Equipe",
-            "company": "Empresa"
+            "surveyDemo": "Demo de Pesquisa",
+            "settings": "Configurações",
+            "support": "Suporte"
         },
         "documents": {
-            "dataLibrary": "Biblioteca de Dados",
-            "reports": "Relatórios",
-            "wordAssistant": "Assistente de Texto"
+            "dataLibrary": "Biblioteca de Dados"
         }
     },
     "NavMain": {
-        "quickCreate": "Criação Rápida",
+        "quickCreate": "Criar Pesquisa",
         "addTeam": "Adicionar Equipe",
         "selectTeam": "Selecionar equipe...",
         "searchTeams": "Pesquisar equipes...",
@@ -169,6 +167,7 @@
     },
     "Common": {
         "loading": "Carregando...",
+        "deleting": "Deletando...",
         "save": "Salvar",
         "saving": "Salvando...",
         "cancel": "Cancelar",
@@ -178,6 +177,31 @@
         "sort": "Ordenar",
         "selectAll": "Selecionar tudo",
         "selectRow": "Selecionar linha"
+    },
+    "Support": {
+        "title": "Suporte",
+        "description": "Obtenha ajuda e entre em contato com nossa equipe de suporte"
+    },
+    "contact": {
+        "title": "Entre em Contato",
+        "subtitle": "Tem dúvidas ou precisa de ajuda? Estamos aqui para ajudar. Envie-nos uma mensagem e retornaremos o mais breve possível.",
+        "form": {
+            "submitButton": "Enviar Mensagem",
+            "description": "Preencha o formulário abaixo e responderemos em até 24 horas",
+            "nameLabel": "Nome",
+            "namePlaceholder": "Seu nome completo",
+            "emailLabel": "Email",
+            "emailPlaceholder": "seu.email@exemplo.com",
+            "messageLabel": "Mensagem",
+            "messagePlaceholder": "Conte-nos como podemos ajudá-lo...",
+            "required": "Este campo é obrigatório",
+            "invalidEmail": "Por favor, insira um endereço de email válido",
+            "sending": "Enviando...",
+            "success": "Mensagem Enviada com Sucesso!",
+            "successDescription": "Obrigado por entrar em contato. Retornaremos em breve.",
+            "sendAnother": "Enviar Outra Mensagem",
+            "error": "Falha ao enviar mensagem. Por favor, tente novamente."
+        }
     },
     "Settings": {
         "title": "Configurações",
@@ -195,10 +219,92 @@
             "dark": "Escuro",
             "system": "Sistema",
             "description": "Selecione seu tema preferido para o aplicativo"
+        },
+        "branding": {
+            "title": "Marca",
+            "description": "Controle a exibição da marca em suas pesquisas",
+            "switchLabel": "Remover Marca",
+            "switchDescription": "Ocultar a marca de suas pesquisas: 'Powered by Opineeo'",
+            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
+            "notAuthorized": "Você deve ser um administrador para alterar as configurações de marca",
+            "brandingEnabled": "A marca foi ativada",
+            "brandingDisabled": "A marca foi removida",
+            "upgradeRequired": "A remoção da marca não está disponível em seu plano atual",
+            "updateFailed": "Falha ao atualizar as configurações de marca"
+        },
+        "api": {
+            "title": "Configuração da API",
+            "description": "Gerencie tokens da API e acesso para envio de pesquisas",
+            "surveyToken": "Token de Pesquisa",
+            "apiToken": "Token da API",
+            "noTokenGenerated": "Nenhum token gerado",
+            "generateToken": "Gerar Token",
+            "regenerateToken": "Regenerar Token",
+            "generating": "Gerando...",
+            "regenerating": "Regenerando...",
+            "apiEndpoint": "Endpoint da API",
+            "documentation": "Documentação da API",
+            "documentationDescription": "Visualize exemplos de código e referência da API",
+            "showDocs": "Mostrar Docs",
+            "hideDocs": "Ocultar Docs",
+            "requestBody": "Corpo da Requisição",
+            "successResponse": "Resposta de Sucesso",
+            "tokenCopied": "Token copiado",
+            "tokenCopiedDescription": "Token da API foi copiado para a área de transferência",
+            "codeCopied": "Código copiado",
+            "codeCopiedDescription": "Exemplo de código copiado para a área de transferência",
+            "endpointCopied": "Endpoint copiado",
+            "endpointCopiedDescription": "URL do endpoint da API copiada para a área de transferência",
+            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
+            "confirmRegenerateTitle": "Regenerar Token",
+            "confirmRegenerateDescription": "Tem certeza de que deseja regenerar este token? Esta ação não pode ser desfeita e invalidará o token atual.",
+            "confirmRegenerate": "Regenerar Token",
+            "cancel": "Cancelar",
+            "tabs": {
+                "surveyToken": "Token de Pesquisa",
+                "apiToken": "Token da API"
+            },
+            "codeSnippets": {
+                "surveyWidget": {
+                    "title": "Integração do Widget de Pesquisa",
+                    "description": "Use este token para incorporar pesquisas diretamente no seu site",
+                    "example": "Exemplo do Widget de Pesquisa",
+                    "copyCode": "Copiar Código"
+                },
+                "apiIntegration": {
+                    "title": "Integração da API",
+                    "description": "Use este token para enviar respostas de pesquisa via API",
+                    "example": "Exemplo de Integração da API",
+                    "copyCode": "Copiar Código"
+                }
+            },
+            "widget": {
+                "title": "Integração do Widget de Pesquisa",
+                "description": "Incorpore pesquisas diretamente no seu site com nosso widget JavaScript",
+                "show": "Mostrar Guia",
+                "hide": "Ocultar Guia",
+                "codeCopied": "Código copiado para a área de transferência",
+                "htmlSetup": "Configuração HTML",
+                "fullExample": "Implementação Completa",
+                "questionFormats": "Referência de Tipos de Pergunta",
+                "quickStart": "Guia de Início Rápido",
+                "tabs": {
+                    "setup": "Configuração",
+                    "implementation": "Implementação",
+                    "formats": "Tipos de Pergunta"
+                },
+                "steps": {
+                    "includeScript": "Inclua o script do widget no seu HTML",
+                    "createContainer": "Adicione um elemento div container",
+                    "configureQuestions": "Configure as perguntas da sua pesquisa",
+                    "addToken": "Adicione seu token da equipe para envios",
+                    "mount": "Monte o widget no seu container"
+                }
+            }
         }
     },
     "SignInForm": {
-        "title": "Bem-vindo de volta",
+        "title": "Bem-vindo",
         "description": "Faça login com sua conta do Google",
         "googleButton": "Entrar com Google",
         "orContinueWith": "Ou continue com",
@@ -228,7 +334,7 @@
         "namePlaceholder": "João Silva",
         "email": "Email",
         "emailPlaceholder": "m@exemplo.com",
-        "phone": "Número de Telefone",
+        "phone": "Número de Telefone (opcional)",
         "phonePlaceholder": "+55 (11) 99999-9999",
         "password": "Senha",
         "passwordPlaceholder": "Digite sua senha",
@@ -500,8 +606,8 @@
             "emailPlaceholder": "membro@exemplo.com",
             "permissions": "Permissões",
             "isAdmin": "Administrador - Pode gerenciar empresa e membros",
-            "canPost": "Pode Postar - Pode criar postagens e conteúdo",
-            "canApprove": "Pode Aprovar - Pode aprovar postagens e conteúdo",
+            "canPost": "Pode Criar - Pode criar pesquisas",
+            "canApprove": "Pode Ler - Pode ler pesquisas e resultados",
             "sendInvite": "Enviar Convite",
             "inviting": "Enviando...",
             "name": "Nome",
@@ -554,6 +660,17 @@
             "lastNamePlaceholder": "Digite seu sobrenome",
             "phone": "Número de Telefone",
             "phonePlaceholder": "+55 (11) 99999-9999",
+            "position": "Cargo",
+            "positionPlaceholder": "Digite seu cargo",
+            "companyName": "Nome da Empresa",
+            "companyNamePlaceholder": "Digite o nome da sua empresa",
+            "country": "País",
+            "countryPlaceholder": "Digite seu país",
+            "socialLinks": "Links Sociais",
+            "linkedinUrl": "URL do LinkedIn",
+            "twitterUrl": "URL do X",
+            "websiteUrl": "URL do Website",
+            "githubUrl": "URL do GitHub",
             "email": "Endereço de Email",
             "emailNote": "Endereço de email não pode ser alterado"
         },
@@ -562,14 +679,37 @@
             "avatarUpdated": "Foto de perfil atualizada com sucesso",
             "updateFailed": "Falha ao atualizar perfil",
             "avatarUpdateFailed": "Falha ao atualizar foto de perfil",
-            "unexpectedError": "Ocorreu um erro inesperado"
+            "unexpectedError": "Ocorreu um erro inesperado",
+            "accountDeleted": "Conta excluída com sucesso",
+            "deleteFailed": "Falha ao excluir conta"
         },
         "validation": {
             "firstNameRequired": "Nome é obrigatório",
             "firstNameTooLong": "Nome é muito longo",
             "lastNameTooLong": "Sobrenome é muito longo",
             "phoneMinLength": "Número de telefone deve ter pelo menos 10 caracteres",
-            "phoneInvalid": "Formato de número de telefone inválido"
+            "phoneInvalid": "Formato de número de telefone inválido",
+            "urlInvalid": "Por favor, insira uma URL válida"
+        },
+        "deleteAccount": {
+            "title": "Excluir Conta",
+            "description": "Excluir permanentemente sua conta e todos os dados associados",
+            "warning": "Esta ação não pode ser desfeita. Todos os seus dados, pesquisas e associações de equipe serão permanentemente excluídos.",
+            "button": "Excluir Conta",
+            "modal": {
+                "title": "Excluir Conta",
+                "description": "Esta ação não pode ser desfeita. Isso excluirá permanentemente sua conta e removerá todos os dados de nossos servidores.",
+                "emailLabel": "Digite seu email para confirmar",
+                "emailNote": "Você deve digitar seu endereço de email exato para confirmar a exclusão",
+                "confirm": "Sim, excluir minha conta",
+                "consequences": {
+                    "title": "O que acontece quando você exclui sua conta:",
+                    "account": "Sua conta será permanentemente excluída",
+                    "teams": "Se você possuir alguma equipe, todos os membros serão removidos e as equipes serão desativadas",
+                    "data": "Todas as suas pesquisas, respostas e dados serão permanentemente excluídos",
+                    "irreversible": "Esta ação é irreversível e não pode ser desfeita"
+                }
+            }
         }
     },
     "CompanyInvitation": {
@@ -621,6 +761,9 @@
         "createTeamDescription": "Crie uma nova equipe para colaborar com outros.",
         "editTeam": "Editar Equipe",
         "editTeamDescription": "Atualize as informações da sua equipe.",
+        "deleteTeam": "Excluir Equipe",
+        "deleteTeamConfirmation": "Tem certeza de que deseja excluir a equipe \"{teamName}\"? Esta ação não pode ser desfeita e removerá todos os membros da equipe e dados associados.",
+        "delete": "Excluir",
         "noTeams": "Nenhuma equipe encontrada",
         "noTeamsDescription": "Você ainda não criou nenhuma equipe. Crie sua primeira equipe para começar.",
         "createFirstTeam": "Criar Sua Primeira Equipe",
@@ -644,8 +787,8 @@
             "emailPlaceholder": "membro@exemplo.com",
             "permissions": "Permissões",
             "isAdmin": "Administrador - Pode gerenciar equipe e membros",
-            "canPost": "Pode Postar - Pode criar posts e conteúdo",
-            "canApprove": "Pode Aprovar - Pode aprovar posts e conteúdo",
+            "canPost": "Pode Criar - Pode criar pesquisas",
+            "canApprove": "Pode Ler - Pode ler pesquisas e resultados",
             "sendInvite": "Enviar Convite",
             "inviting": "Enviando...",
             "name": "Nome",
@@ -679,12 +822,20 @@
             "createFailed": "Falha ao criar equipe",
             "updateSuccess": "Equipe atualizada com sucesso",
             "updateFailed": "Falha ao atualizar equipe",
+            "deleteSuccess": "Equipe excluída com sucesso",
+            "deleteFailed": "Falha ao excluir equipe",
+            "cannotDeleteOnlyTeam": "Não é possível excluir a única equipe. Você deve ter pelo menos uma equipe.",
+            "onlyTeamOwnerCanDeleteTeam": "Apenas o proprietário da equipe pode excluir a equipe",
             "inviteSuccess": "Membro convidado com sucesso",
             "inviteFailed": "Falha ao convidar membro",
             "memberUpdateSuccess": "Permissões do membro atualizadas com sucesso",
             "memberUpdateFailed": "Falha ao atualizar permissões do membro",
             "memberRemoveSuccess": "Membro removido com sucesso",
-            "memberRemoveFailed": "Falha ao remover membro"
+            "memberRemoveFailed": "Falha ao remover membro",
+            "tokenGenerated": "Token da equipe gerado com sucesso",
+            "tokenGenerationFailed": "Falha ao gerar token da equipe",
+            "tokenRegenerated": "Token da equipe regenerado com sucesso",
+            "tokenRegenerationFailed": "Falha ao regenerar token da equipe"
         },
         "modals": {
             "editMember": {
@@ -692,8 +843,8 @@
                 "description": "Atualizar permissões para {firstName} {lastName}",
                 "permissions": "Permissões",
                 "teamAdministrator": "Administrador da Equipe",
-                "canPostContent": "Pode Postar Conteúdo",
-                "canApproveContent": "Pode Aprovar Conteúdo",
+                "canPostContent": "Pode Criar Pesquisas",
+                "canApproveContent": "Pode Ler Pesquisas e Resultados",
                 "cancel": "Cancelar",
                 "saveChanges": "Salvar Alterações",
                 "saving": "Salvando..."
@@ -710,7 +861,7 @@
     },
     "Subscription": {
         "title": "Planos de Assinatura",
-        "description": "Escolha o plano perfeito para suas necessidades",
+        "description": "Gerencie sua assinatura e cobrança",
         "currentPlan": {
             "title": "Plano Atual",
             "description": "Detalhes da sua assinatura atual",
@@ -796,6 +947,528 @@
             "subscriptionFailed": "Falha ao atualizar assinatura",
             "trialStarted": "Teste grátis iniciado com sucesso",
             "contactSales": "Entre em contato com nossa equipe de vendas para preços personalizados"
+        },
+        "page": {
+            "title": "Visão Geral da Assinatura",
+            "description": "Detalhes do plano atual e informações de cobrança",
+            "loading": "Carregando...",
+            "viewPlans": "Ver Planos",
+            "plan": "Plano",
+            "status": "Status",
+            "billingCycle": "Ciclo de Cobrança",
+            "currentPeriod": "Período Atual",
+            "cancellation": "Cancelamento",
+            "willCancelAtPeriodEnd": "Será cancelado no final do período",
+            "usageMetrics": "Métricas de Uso",
+            "currentUsage": "Uso atual para este período de cobrança",
+            "planFeatures": "Recursos do Plano",
+            "featuresIncluded": "Recursos incluídos no seu plano atual",
+            "maxActiveSurveys": "Máx. Pesquisas Ativas",
+            "maxResponses": "Máx. Respostas",
+            "analytics": "Análises",
+            "removeBranding": "Remover Marca",
+            "exports": "Exportações",
+            "apis": "APIs",
+            "publicPageSurvey": "Pesquisa de Página Pública",
+            "comingSoon": "(em breve)",
+            "prioritySupport": "Suporte Prioritário",
+            "unlimited": "Ilimitado",
+            "remaining": "restantes",
+            "limitReached": "Limite atingido",
+            "overLimit": "Acima do limite",
+            "unableToLoadData": "Não foi possível Carregar Dados da Assinatura",
+            "errorLoadingData": "Ocorreu um erro ao carregar suas informações de assinatura.",
+            "noSubscriptionFound": "Nenhuma Assinatura Encontrada",
+            "noSubscriptionDescription": "Você não tem uma assinatura ativa. Assine um plano para visualizar métricas de uso.",
+            "activeSurveys": "Pesquisas Ativas",
+            "totalResponses": "Total de Respostas",
+            "unknown": "Desconhecido",
+            "monthly": "Mensal",
+            "active": "Ativo",
+            "trial": "Teste",
+            "canceled": "Cancelado",
+            "checkoutCanceled": {
+                "title": "Checkout Cancelado",
+                "description": "Sua assinatura NÃO foi alterada para o porque o checkout não foi concluído."
+            },
+            "upgradeSuccess": {
+                "title": "Assinatura Atualizada com Sucesso!",
+                "description": "Sua assinatura foi atualizada. Os recursos do seu novo plano já estão ativos."
+            }
+        },
+        "toast": {
+            "success": {
+                "title": "Sucesso!",
+                "description": "Sua assinatura foi ativada com sucesso."
+            },
+            "cancelled": {
+                "title": "Cancelado",
+                "description": "Processo de assinatura foi cancelado."
+            },
+            "error": {
+                "title": "Erro",
+                "description": "Falha ao abrir gerenciamento de assinatura. Tente novamente."
+            },
+            "portalNotConfigured": {
+                "title": "Portal Não Disponível",
+                "description": "Portal do cliente ainda não foi configurado. Entre em contato com o suporte para gerenciar sua assinatura."
+            },
+            "upgradeSuccess": {
+                "title": "Upgrade Realizado com Sucesso!",
+                "description": "Seu plano foi atualizado com sucesso. Atualizando os detalhes da sua assinatura..."
+            }
+        },
+        "upgradeModal": {
+            "title": "Faça Upgrade do Seu Plano",
+            "description": "Escolha o plano perfeito para suas necessidades e aproveite mais suas pesquisas",
+            "upgradeNow": "Fazer Upgrade",
+            "popular": "Popular",
+            "cta": "Começar",
+            "loading": "Carregando...",
+            "billing": {
+                "monthly": "Mensal",
+                "yearly": "Anual",
+                "save": "Economize 20%"
+            },
+            "pricing": {
+                "perMonth": "/mês",
+                "billedAnnually": "cobrado anualmente"
+            },
+            "features": {
+                "activeSurveys": "{count} Pesquisas Ativas",
+                "responses": "{count} Respostas/mês",
+                "unlimitedSurveys": "Pesquisas Ilimitadas",
+                "unlimitedResponses": "Respostas Ilimitadas",
+                "analytics": "Análises Avançadas",
+                "removeBranding": "Remover Marca",
+                "dataExport": "Exportação de Dados",
+                "apiAccess": "Acesso à API",
+                "publicPages": "Páginas de Pesquisa Públicas",
+                "prioritySupport": "Suporte Prioritário"
+            },
+            "plans": {
+                "starter": {
+                    "description": "Perfeito para pequenas equipes"
+                },
+                "pro": {
+                    "description": "Para empresas em crescimento"
+                },
+                "business": {
+                    "description": "Para organizações maiores"
+                },
+                "enterprise": {
+                    "description": "Para necessidades corporativas"
+                }
+            },
+            "footer": "Você pode cancelar ou alterar seu plano a qualquer momento",
+            "error": {
+                "title": "Erro",
+                "description": "Falha ao carregar planos. Tente novamente."
+            }
+        }
+    },
+    "Survey": {
+        "title": "Pesquisas",
+        "description": "Gerencie suas pesquisas e colete respostas",
+        "stats": {
+            "totalSurveys": {
+                "title": "Total de Pesquisas",
+                "description": "Todas as pesquisas criadas",
+                "subtitle": "Inclui rascunhos e concluídas"
+            },
+            "activeSurveys": {
+                "title": "Pesquisas Ativas",
+                "description": "Coletando respostas atualmente",
+                "subtitle": "Ativas e aceitando respostas"
+            },
+            "totalResponses": {
+                "title": "Total de Respostas",
+                "description": "Todas as respostas coletadas",
+                "subtitle": "Em todas as pesquisas"
+            },
+            "responseRate": {
+                "title": "Taxa de Resposta",
+                "description": "Taxa média de conclusão",
+                "subtitle": "Indicador de qualidade das respostas"
+            }
+        },
+        "table": {
+            "title": "Todas as Pesquisas",
+            "totalSurveys": "pesquisas",
+            "columns": {
+                "title": "Título da Pesquisa",
+                "type": "Tipo",
+                "status": "Status",
+                "responses": "Respostas",
+                "responseRate": "Taxa",
+                "totalOpenSurveys": "Abertas",
+                "createdAt": "Criada",
+                "updatedAt": "Atualizada"
+            },
+            "status": {
+                "active": "Ativa",
+                "draft": "Rascunho",
+                "completed": "Concluída",
+                "published": "Publicada",
+                "archived": "Arquivada"
+            },
+            "actions": {
+                "view": "Visualizar",
+                "edit": "Editar",
+                "duplicate": "Duplicar",
+                "delete": "Excluir",
+                "openMenu": "Abrir menu",
+                "publish": "Publicar",
+                "archive": "Arquivar",
+                "copySurveyId": "Copiar Survey ID"
+            },
+            "buttons": {
+                "createSurvey": "Criar Pesquisa",
+                "customizeColumns": "Personalizar Colunas",
+                "columns": "Colunas"
+            },
+            "search": {
+                "placeholder": "Buscar pesquisas..."
+            },
+            "filters": {
+                "status": "Filtrar por status",
+                "allStatuses": "Todos os Status",
+                "active": "Ativa",
+                "draft": "Rascunho",
+                "completed": "Concluída"
+            },
+            "pagination": {
+                "rowsPerPage": "Linhas por página",
+                "page": "Página",
+                "of": "de",
+                "rowsSelected": "linha(s) selecionada(s)",
+                "goToFirstPage": "Ir para primeira página",
+                "goToPreviousPage": "Ir para página anterior",
+                "goToNextPage": "Ir para próxima página",
+                "goToLastPage": "Ir para última página"
+            },
+            "messages": {
+                "noResults": "Nenhuma pesquisa encontrada.",
+                "loadingSurveys": "Carregando pesquisas...",
+                "noType": "Sem Tipo",
+                "surveyDeletedSuccess": "Pesquisa excluída com sucesso",
+                "surveyDuplicatedSuccess": "Pesquisa duplicada com sucesso",
+                "surveyUpdatedSuccess": "Pesquisa atualizada com sucesso",
+                "fetchSurveysError": "Falha ao carregar pesquisas",
+                "deleteSurveyError": "Falha ao excluir pesquisa",
+                "duplicateSurveyError": "Falha ao duplicar pesquisa",
+                "updateSurveyError": "Falha ao atualizar status da pesquisa",
+                "unexpectedError": "Ocorreu um erro inesperado",
+                "surveyIdCopied": "ID da pesquisa copiado para a área de transferência",
+                "copyError": "Falha ao copiar ID da pesquisa"
+            },
+            "deleteDialog": {
+                "title": "Excluir Pesquisa",
+                "description": "Tem certeza de que deseja excluir \"{surveyName}\"? Esta ação não pode ser desfeita.",
+                "cancel": "Cancelar",
+                "delete": "Excluir",
+                "deleting": "Excluindo..."
+            }
+        },
+        "emptyState": {
+            "title": "Nenhuma Equipe Encontrada",
+            "description": "Você precisa criar ou entrar em uma equipe para começar a criar pesquisas.",
+            "createTeamButton": "Ir para Equipes",
+            "noSurveys": {
+                "title": "Comece Criando Sua Primeira Pesquisa",
+                "subtitle": "Crie pesquisas envolventes para coletar feedback valioso",
+                "description": "Pesquisas ajudam você a entender melhor seu público e tomar decisões baseadas em dados.",
+                "button": "Criar Sua Primeira Pesquisa",
+                "previewLabel": "Prévia de como suas pesquisas ficarão"
+            }
+        }
+    },
+    "UpgradeModal": {
+        "limitReached": {
+            "surveys": {
+                "title": "Limite de Pesquisas Atingido",
+                "description": "Você atingiu o limite de pesquisas ativas do seu plano. Faça upgrade para criar mais pesquisas.",
+                "descriptionWithLimit": "Você atingiu o limite de {limit} pesquisas ativas do seu plano. Faça upgrade para criar mais pesquisas."
+            },
+            "responses": {
+                "title": "Limite de Respostas Atingido",
+                "description": "Você atingiu o limite de respostas do seu plano. Faça upgrade para coletar mais respostas.",
+                "descriptionWithLimit": "Você atingiu o limite de {limit} respostas do seu plano. Faça upgrade para coletar mais respostas."
+            },
+            "remove_branding": {
+                "title": "Remover Marca",
+                "description": "Este recurso não está disponível no seu plano atual. Faça upgrade para remover a marca das suas pesquisas.",
+                "descriptionWithLimit": "Remoção de marca não está disponível no seu plano atual. Faça upgrade para personalizar suas pesquisas."
+            },
+            "exports": {
+                "title": "Recurso de Exportação Indisponível",
+                "description": "Exportação de dados não está disponível no seu plano atual. Faça upgrade para exportar os dados das suas pesquisas.",
+                "descriptionWithLimit": "Exportação de dados não está disponível no seu plano atual. Faça upgrade para exportações ilimitadas."
+            },
+            "apis": {
+                "title": "Acesso à API Indisponível",
+                "description": "Acesso à API não está disponível no seu plano atual. Faça upgrade para integrar com suas aplicações.",
+                "descriptionWithLimit": "Acesso à API não está disponível no seu plano atual. Faça upgrade para desbloquear recursos de API."
+            },
+            "public_pages": {
+                "title": "Páginas Públicas Indisponíveis",
+                "description": "Páginas públicas de pesquisa não estão disponíveis no seu plano atual. Faça upgrade para criar páginas públicas de pesquisa.",
+                "descriptionWithLimit": "Páginas públicas de pesquisa não estão disponíveis no seu plano atual. Faça upgrade para desbloquear este recurso."
+            },
+            "custom": {
+                "title": "Upgrade Necessário",
+                "description": "Você atingiu um limite do seu plano atual. Faça upgrade para continuar.",
+                "descriptionWithLimit": "Você atingiu um limite do seu plano atual. Faça upgrade para continuar."
+            }
+        },
+        "benefits": {
+            "title": "Faça upgrade para desbloquear:",
+            "unlimited": "Limites maiores",
+            "advanced": "Recursos avançados"
+        },
+        "actions": {
+            "upgrade": "Ver Planos e Fazer Upgrade",
+            "cancel": "Talvez Depois"
+        }
+    },
+    "PublicSurvey": {
+        "thankYou": "Obrigado!",
+        "responseSubmitted": "Sua resposta foi enviada com sucesso.",
+        "submitAnother": "Enviar Outra Resposta",
+        "toggleTheme": "Alternar tema",
+        "error": {
+            "title": "Erro na Pesquisa",
+            "description": "Por favor, verifique se você tem o link e token corretos da pesquisa.",
+            "goHome": "Ir para Início"
+        }
+    },
+    "CreateSurvey": {
+        "title": "Criar Pesquisa",
+        "description": "Crie uma nova pesquisa para coletar respostas do seu público",
+        "actions": {
+            "saveDraft": "Salvar",
+            "publish": "Publicar",
+            "saving": "Salvando...",
+            "publishing": "Publicando...",
+            "copySurveyId": "Copiar ID da Pesquisa"
+        },
+        "messages": {
+            "saveSuccess": "Pesquisa salva com sucesso!",
+            "saveError": "Falha ao salvar pesquisa",
+            "publishSuccess": "Pesquisa publicada com sucesso!",
+            "publishError": "Falha ao publicar pesquisa",
+            "unexpectedError": "Ocorreu um erro inesperado",
+            "surveyIdCopied": "ID da pesquisa copiado para a área de transferência",
+            "readonlyMode": "Você não tem permissão para editar esta pesquisa",
+            "activeSurveysLimitReached": "Você atingiu o limite de pesquisas ativas ({limit})."
+        },
+        "aiGenerator": {
+            "title": "Gerador de Pesquisa com IA",
+            "description": "Deixe a IA criar sua pesquisa completa incluindo nome, descrição e perguntas baseadas no seu contexto",
+            "createWithAI": "Criar com IA",
+            "placeholder": "Descreva o contexto da sua pesquisa...\n\nExemplo: \"Criar uma pesquisa de satisfação do cliente para uma plataforma de e-commerce focando na experiência de entrega, qualidade do produto e atendimento ao cliente.\"",
+            "hint": "Seja específico sobre os objetivos da sua pesquisa, público-alvo e o tipo de feedback que deseja coletar.",
+            "generate": "Gerar Pesquisa",
+            "generating": "Gerando...",
+            "steps": {
+                "analyzing": "Analisando seu contexto...",
+                "thinking": "Pensando e planejando pesquisa...",
+                "creating": "Criando sua pesquisa...",
+                "done": "Pesquisa criada com sucesso!"
+            },
+            "preview": "{count} perguntas geradas:",
+            "success": "Pesquisa gerada com sucesso com {count} perguntas!",
+            "errors": {
+                "emptyPrompt": "Por favor, descreva o contexto da sua pesquisa",
+                "failed": "Falha ao gerar pesquisa. Por favor, tente novamente."
+            }
+        },
+        "defaultQuestion": {
+            "yesLabel": "Sim",
+            "noLabel": "Não"
+        },
+        "details": {
+            "title": "Detalhes da Pesquisa",
+            "name": {
+                "label": "Nome",
+                "placeholder": "Digite o nome da pesquisa"
+            },
+            "description": {
+                "label": "Descrição",
+                "placeholder": "Digite a descrição da pesquisa (opcional)"
+            },
+            "type": {
+                "label": "Tipo de Pesquisa",
+                "placeholder": "Selecione o tipo de pesquisa",
+                "manageTypes": "Gerenciar Tipos"
+            },
+            "status": {
+                "label": "Status",
+                "placeholder": "Selecione o status da pesquisa",
+                "draft": "Rascunho",
+                "published": "Publicada",
+                "archived": "Arquivada"
+            },
+            "multipleResponses": {
+                "label": "Permitir múltiplas respostas por pessoa",
+                "description": "Permitir que a mesma pessoa responda várias vezes"
+            }
+        },
+        "questions": {
+            "title": "Perguntas",
+            "addQuestion": "Adicionar Pergunta",
+            "collapseAll": "Recolher Todas",
+            "expandAll": "Expandir Todas",
+            "question": "pergunta",
+            "questions": "perguntas",
+            "questionTitle": {
+                "label": "Título",
+                "placeholder": "Digite o título da pergunta"
+            },
+            "description": {
+                "label": "Descrição (Opcional)",
+                "placeholder": "Digite a descrição da pergunta"
+            },
+            "format": {
+                "label": "Formato",
+                "placeholder": "Selecione o formato da pergunta"
+            },
+            "required": {
+                "label": "Obrigatória",
+                "description": "Tornar esta pergunta obrigatória"
+            },
+            "options": {
+                "label": "Opções",
+                "addOption": "Adicionar Opção",
+                "optionPlaceholder": "Digite o texto da opção",
+                "removeOption": "Remover opção",
+                "includeOther": "Incluir opção 'Outro'",
+                "otherOptionText": "Outro"
+            },
+            "yesNoLabels": {
+                "label": "Rótulos Personalizados",
+                "yesLabel": "Rótulo Sim",
+                "noLabel": "Rótulo Não",
+                "yesPlaceholder": "Digite o rótulo para sim",
+                "noPlaceholder": "Digite o rótulo para não"
+            },
+            "buttonLabel": {
+                "label": "Rótulo do Botão",
+                "buttonLabel": "Texto do Botão",
+                "buttonPlaceholder": "Continuar"
+            },
+            "formats": {
+                "yesNo": "Sim/Não",
+                "starRating": "5 Estrelas",
+                "longText": "Texto Longo",
+                "statement": "Declaração",
+                "singleChoice": "Escolha Única",
+                "multipleChoice": "Múltipla Escolha"
+            }
+        },
+        "targets": {
+            "title": "Alvos",
+            "description": "Os alvos da pesquisa permitem adicionar pesquisas às páginas do seu site ou produto sem precisar alterar nenhum código.",
+            "addTarget": "Adicionar Alvo",
+            "noTargets": "Nenhum alvo configurado ainda"
+        },
+        "style": {
+            "title": "Estilo",
+            "collapse": "Recolher",
+            "expand": "Expandir",
+            "backgroundColor": {
+                "label": "Cor de Fundo"
+            },
+            "textColor": {
+                "label": "Cor do Texto"
+            },
+            "buttonBackgroundColor": {
+                "label": "Cor de Fundo do Botão"
+            },
+            "buttonTextColor": {
+                "label": "Cor do Texto do Botão"
+            },
+            "margin": {
+                "label": "Margem"
+            },
+            "padding": {
+                "label": "Preenchimento"
+            },
+            "border": {
+                "label": "Borda"
+            },
+            "borderRadius": {
+                "label": "Raio da Borda"
+            },
+            "titleFontSize": {
+                "label": "Tamanho da Fonte do Título"
+            },
+            "bodyFontSize": {
+                "label": "Tamanho da Fonte do Corpo"
+            },
+            "fontFamily": {
+                "label": "Fonte",
+                "placeholder": "Selecione a fonte"
+            },
+            "styleMode": {
+                "label": "Modo de Estilo",
+                "placeholder": "Selecione o modo de estilo",
+                "basic": "Básico",
+                "advanced": "Avançado"
+            },
+            "advancedCSS": {
+                "label": "CSS Avançado",
+                "placeholder": "Digite seu CSS personalizado aqui...",
+                "description": "Escreva CSS personalizado para estilizar sua pesquisa. Use classes como .sv, .qt, .qd, .btn, etc."
+            },
+            "preview": {
+                "label": "Visualização",
+                "title": "Pergunta de Exemplo",
+                "description": "É assim que sua pesquisa aparecerá para os respondentes",
+                "button": "Enviar Resposta"
+            }
+        },
+        "preview": {
+            "title": "Visualização"
+        },
+        "surveyTypes": {
+            "modal": {
+                "title": "Gerenciar Tipos de Pesquisa",
+                "description": "Criar, editar ou excluir tipos de pesquisa",
+                "createNew": "Criar Novo Tipo",
+                "editType": "Editar Tipo",
+                "deleteType": "Excluir Tipo",
+                "typeName": "Nome do Tipo",
+                "typeNamePlaceholder": "Digite o nome do tipo",
+                "save": "Salvar",
+                "cancel": "Cancelar",
+                "delete": "Excluir",
+                "saving": "Salvando...",
+                "deleting": "Excluindo..."
+            },
+            "actions": {
+                "edit": "Editar",
+                "delete": "Excluir",
+                "openMenu": "Abrir menu"
+            },
+            "messages": {
+                "createSuccess": "Tipo de pesquisa criado com sucesso",
+                "updateSuccess": "Tipo de pesquisa atualizado com sucesso",
+                "deleteSuccess": "Tipo de pesquisa excluído com sucesso",
+                "createFailed": "Falha ao criar tipo de pesquisa",
+                "updateFailed": "Falha ao atualizar tipo de pesquisa",
+                "deleteFailed": "Falha ao excluir tipo de pesquisa",
+                "nameRequired": "Nome do tipo é obrigatório",
+                "nameTooLong": "Nome do tipo é muito longo"
+            },
+            "defaultTypes": {
+                "customerFeedback": "Feedback do Cliente",
+                "internal": "Interno",
+                "marketResearch": "Pesquisa de Mercado",
+                "employeeSatisfaction": "Satisfação do Funcionário",
+                "productFeedback": "Feedback do Produto",
+                "eventFeedback": "Feedback do Evento"
+            }
         }
     }
 }

@@ -5,11 +5,12 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import AuthSessionProvider from '@/components/session-provider'
 import { UserProvider } from '@/components/user-provider'
+import { Analytics } from "@vercel/analytics/next"
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
-    title: 'saas framework',
-    description: 'Created by Rafael Messias'
+    title: "Opineeo - The simplest survey widget for Devs and Founders",
+    description: "Lightweight, customizable survey widget for any website. Easy integration with vanilla JavaScript. Only 15KB minified.",
 }
 
 export default function RootLayout({
@@ -57,6 +58,7 @@ export default function RootLayout({
                         <Toaster />
                     </AuthSessionProvider>
                 </ThemeProvider>
+                <Analytics />
             </body>
         </html>
     )

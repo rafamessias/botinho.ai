@@ -7,20 +7,18 @@
         "brand": "My SaaS",
         "navigation": {
             "dashboard": "Dashboard",
-            "lifecycle": "Lifecycle",
-            "analytics": "Analytics",
-            "projects": "Projects",
+            "surveys": "Surveys",
             "team": "Team",
-            "company": "Company"
+            "surveyDemo": "Survey Demo",
+            "settings": "Settings",
+            "support": "Support"
         },
         "documents": {
-            "dataLibrary": "Data Library",
-            "reports": "Reports",
-            "wordAssistant": "Word Assistant"
+            "dataLibrary": "Data Library"
         }
     },
     "NavMain": {
-        "quickCreate": "Quick Create",
+        "quickCreate": "Create Survey",
         "addTeam": "Add Team",
         "selectTeam": "Select team...",
         "searchTeams": "Search teams...",
@@ -169,6 +167,7 @@
     },
     "Common": {
         "loading": "Loading...",
+        "deleting": "Deleting...",
         "save": "Save",
         "saving": "Saving...",
         "cancel": "Cancel",
@@ -178,6 +177,31 @@
         "sort": "Sort",
         "selectAll": "Select all",
         "selectRow": "Select row"
+    },
+    "Support": {
+        "title": "Support",
+        "description": "Get help and contact our support team"
+    },
+    "contact": {
+        "title": "Get in Touch",
+        "subtitle": "Have questions or need assistance? We're here to help. Send us a message and we'll get back to you as soon as possible.",
+        "form": {
+            "submitButton": "Send Message",
+            "description": "Fill out the form below and we'll respond within 24 hours",
+            "nameLabel": "Name",
+            "namePlaceholder": "Your full name",
+            "emailLabel": "Email",
+            "emailPlaceholder": "your.email@example.com",
+            "messageLabel": "Message",
+            "messagePlaceholder": "Tell us how we can help you...",
+            "required": "This field is required",
+            "invalidEmail": "Please enter a valid email address",
+            "sending": "Sending...",
+            "success": "Message Sent Successfully!",
+            "successDescription": "Thank you for contacting us. We'll get back to you soon.",
+            "sendAnother": "Send Another Message",
+            "error": "Failed to send message. Please try again."
+        }
     },
     "Settings": {
         "title": "Settings",
@@ -195,10 +219,92 @@
             "dark": "Dark",
             "system": "System",
             "description": "Select your preferred theme for the application"
+        },
+        "branding": {
+            "title": "Branding",
+            "description": "Control the display of branding in your surveys",
+            "switchLabel": "Remove Branding",
+            "switchDescription": "Hide branding from your surveys: 'Powered by Opineeo'",
+            "noTeam": "No team available. Please create or join a team first.",
+            "notAuthorized": "You must be an admin to change branding settings",
+            "brandingEnabled": "Branding has been enabled",
+            "brandingDisabled": "Branding has been removed",
+            "upgradeRequired": "Removing branding is not available in your current plan",
+            "updateFailed": "Failed to update branding settings"
+        },
+        "api": {
+            "title": "API Configuration",
+            "description": "Manage API tokens and access for survey submissions",
+            "surveyToken": "Survey Token",
+            "apiToken": "API Token",
+            "noTokenGenerated": "No token generated",
+            "generateToken": "Generate Token",
+            "regenerateToken": "Regenerate Token",
+            "generating": "Generating...",
+            "regenerating": "Regenerating...",
+            "apiEndpoint": "API Endpoint",
+            "documentation": "API Documentation",
+            "documentationDescription": "View code examples and API reference",
+            "showDocs": "Show Docs",
+            "hideDocs": "Hide Docs",
+            "requestBody": "Request Body",
+            "successResponse": "Success Response",
+            "tokenCopied": "Token copied",
+            "tokenCopiedDescription": "API token has been copied to clipboard",
+            "codeCopied": "Code copied",
+            "codeCopiedDescription": "Code example copied to clipboard",
+            "endpointCopied": "Endpoint copied",
+            "endpointCopiedDescription": "API endpoint URL copied to clipboard",
+            "noTeam": "No team available. Please create or join a team first.",
+            "confirmRegenerateTitle": "Regenerate Token",
+            "confirmRegenerateDescription": "Are you sure you want to regenerate this token? This action cannot be undone and will invalidate the current token.",
+            "confirmRegenerate": "Regenerate Token",
+            "cancel": "Cancel",
+            "tabs": {
+                "surveyToken": "Survey Token",
+                "apiToken": "API Token"
+            },
+            "codeSnippets": {
+                "surveyWidget": {
+                    "title": "Survey Widget Integration",
+                    "description": "Use this token to embed surveys directly on your website",
+                    "example": "Survey Widget Example",
+                    "copyCode": "Copy Code"
+                },
+                "apiIntegration": {
+                    "title": "API Integration",
+                    "description": "Use this token to submit survey responses via API",
+                    "example": "API Integration Example",
+                    "copyCode": "Copy Code"
+                }
+            },
+            "widget": {
+                "title": "Survey Widget Integration",
+                "description": "Embed surveys directly on your website with our JavaScript widget",
+                "show": "Show Guide",
+                "hide": "Hide Guide",
+                "codeCopied": "Code copied to clipboard",
+                "htmlSetup": "HTML Setup",
+                "fullExample": "Complete Implementation",
+                "questionFormats": "Question Types Reference",
+                "quickStart": "Quick Start Guide",
+                "tabs": {
+                    "setup": "Setup",
+                    "implementation": "Implementation",
+                    "formats": "Question Types"
+                },
+                "steps": {
+                    "includeScript": "Include the widget script in your HTML",
+                    "createContainer": "Add a container div element",
+                    "configureQuestions": "Configure your survey questions",
+                    "addToken": "Add your team token for submissions",
+                    "mount": "Mount the widget to your container"
+                }
+            }
         }
     },
     "SignInForm": {
-        "title": "Welcome back",
+        "title": "Welcome",
         "description": "Login with your Google account",
         "googleButton": "Login with Google",
         "orContinueWith": "Or continue with",
@@ -228,7 +334,7 @@
         "namePlaceholder": "John Doe",
         "email": "Email",
         "emailPlaceholder": "m@example.com",
-        "phone": "Phone Number",
+        "phone": "Phone Number (optional)",
         "phonePlaceholder": "+1 (555) 123-4567",
         "password": "Password",
         "passwordPlaceholder": "Enter your password",
@@ -500,8 +606,8 @@
             "emailPlaceholder": "member@example.com",
             "permissions": "Permissions",
             "isAdmin": "Administrator - Can manage company and members",
-            "canPost": "Can Post - Can create posts and content",
-            "canApprove": "Can Approve - Can approve posts and content",
+            "canPost": "Can Create - Can create surveys",
+            "canApprove": "Can Read - Can read surveys and results",
             "sendInvite": "Send Invitation",
             "inviting": "Sending...",
             "name": "Name",
@@ -554,6 +660,17 @@
             "lastNamePlaceholder": "Enter your last name",
             "phone": "Phone Number",
             "phonePlaceholder": "+1 (555) 123-4567",
+            "position": "Position",
+            "positionPlaceholder": "Enter your position",
+            "companyName": "Company Name",
+            "companyNamePlaceholder": "Enter your company name",
+            "country": "Country",
+            "countryPlaceholder": "Enter your country",
+            "socialLinks": "Social Links",
+            "linkedinUrl": "LinkedIn URL",
+            "twitterUrl": "X URL",
+            "websiteUrl": "Website URL",
+            "githubUrl": "GitHub URL",
             "email": "Email Address",
             "emailNote": "Email address cannot be changed"
         },
@@ -562,14 +679,37 @@
             "avatarUpdated": "Profile picture updated successfully",
             "updateFailed": "Failed to update profile",
             "avatarUpdateFailed": "Failed to update profile picture",
-            "unexpectedError": "An unexpected error occurred"
+            "unexpectedError": "An unexpected error occurred",
+            "accountDeleted": "Account deleted successfully",
+            "deleteFailed": "Failed to delete account"
         },
         "validation": {
             "firstNameRequired": "First name is required",
             "firstNameTooLong": "First name is too long",
             "lastNameTooLong": "Last name is too long",
             "phoneMinLength": "Phone number must be at least 10 characters",
-            "phoneInvalid": "Invalid phone number format"
+            "phoneInvalid": "Invalid phone number format",
+            "urlInvalid": "Please enter a valid URL"
+        },
+        "deleteAccount": {
+            "title": "Delete Account",
+            "description": "Permanently delete your account and all associated data",
+            "warning": "This action cannot be undone. All your data, surveys, and team memberships will be permanently deleted.",
+            "button": "Delete Account",
+            "modal": {
+                "title": "Delete Account",
+                "description": "This action cannot be undone. This will permanently delete your account and remove all data from our servers.",
+                "emailLabel": "Type your email to confirm",
+                "emailNote": "You must type your exact email address to confirm deletion",
+                "confirm": "Yes, delete my account",
+                "consequences": {
+                    "title": "What happens when you delete your account:",
+                    "account": "Your account will be permanently deleted",
+                    "teams": "If you own any teams, all members will be removed and teams will be deactivated",
+                    "data": "All your surveys, responses, and data will be permanently deleted",
+                    "irreversible": "This action is irreversible and cannot be undone"
+                }
+            }
         }
     },
     "CompanyInvitation": {
@@ -621,6 +761,9 @@
         "createTeamDescription": "Create a new team to collaborate with others.",
         "editTeam": "Edit Team",
         "editTeamDescription": "Update your team information.",
+        "deleteTeam": "Delete Team",
+        "deleteTeamConfirmation": "Are you sure you want to delete the team \"{teamName}\"? This action cannot be undone and will remove all team members and associated data.",
+        "delete": "Delete",
         "noTeams": "No teams found",
         "noTeamsDescription": "You haven't created any teams yet. Create your first team to get started.",
         "createFirstTeam": "Create Your First Team",
@@ -644,8 +787,8 @@
             "emailPlaceholder": "member@example.com",
             "permissions": "Permissions",
             "isAdmin": "Administrator - Can manage team and members",
-            "canPost": "Can Post - Can create posts and content",
-            "canApprove": "Can Approve - Can approve posts and content",
+            "canPost": "Can Create - Can create surveys",
+            "canApprove": "Can Read - Can read surveys and results",
             "sendInvite": "Send Invitation",
             "inviting": "Sending...",
             "name": "Name",
@@ -679,12 +822,20 @@
             "createFailed": "Failed to create team",
             "updateSuccess": "Team updated successfully",
             "updateFailed": "Failed to update team",
+            "deleteSuccess": "Team deleted successfully",
+            "deleteFailed": "Failed to delete team",
+            "cannotDeleteOnlyTeam": "Cannot delete the only team. You must have at least one team.",
+            "onlyTeamOwnerCanDeleteTeam": "Only the team owner can delete the team",
             "inviteSuccess": "Member invited successfully",
             "inviteFailed": "Failed to invite member",
             "memberUpdateSuccess": "Member permissions updated successfully",
             "memberUpdateFailed": "Failed to update member permissions",
             "memberRemoveSuccess": "Member removed successfully",
-            "memberRemoveFailed": "Failed to remove member"
+            "memberRemoveFailed": "Failed to remove member",
+            "tokenGenerated": "Team token generated successfully",
+            "tokenGenerationFailed": "Failed to generate team token",
+            "tokenRegenerated": "Team token regenerated successfully",
+            "tokenRegenerationFailed": "Failed to regenerate team token"
         },
         "modals": {
             "editMember": {
@@ -692,8 +843,8 @@
                 "description": "Update permissions for {firstName} {lastName}",
                 "permissions": "Permissions",
                 "teamAdministrator": "Team Administrator",
-                "canPostContent": "Can Post Content",
-                "canApproveContent": "Can Approve Content",
+                "canPostContent": "Can Create Surveys",
+                "canApproveContent": "Can Read Surveys and Results",
                 "cancel": "Cancel",
                 "saveChanges": "Save Changes",
                 "saving": "Saving..."
@@ -710,7 +861,7 @@
     },
     "Subscription": {
         "title": "Subscription Plans",
-        "description": "Choose the perfect plan for your needs",
+        "description": "Manage your subscription and billing",
         "currentPlan": {
             "title": "Current Plan",
             "description": "Your current subscription details",
@@ -796,6 +947,527 @@
             "subscriptionFailed": "Failed to update subscription",
             "trialStarted": "Free trial started successfully",
             "contactSales": "Contact our sales team for custom pricing"
+        },
+        "page": {
+            "title": "Subscription Overview",
+            "description": "Current plan details and billing information",
+            "loading": "Loading...",
+            "viewPlans": "View Plans",
+            "plan": "Plan",
+            "status": "Status",
+            "billingCycle": "Billing Cycle",
+            "currentPeriod": "Current Period",
+            "cancellation": "Cancellation",
+            "willCancelAtPeriodEnd": "Will cancel at period end",
+            "usageMetrics": "Usage Metrics",
+            "currentUsage": "Current usage for this billing period",
+            "planFeatures": "Plan Features",
+            "featuresIncluded": "Features included in your current plan",
+            "maxActiveSurveys": "Max Active Surveys",
+            "maxResponses": "Max Responses",
+            "analytics": "Analytics",
+            "removeBranding": "Remove Branding",
+            "exports": "Exports",
+            "apis": "APIs",
+            "publicPageSurvey": "Public Page Survey",
+            "comingSoon": "(coming soon)",
+            "prioritySupport": "Priority Support",
+            "unlimited": "Unlimited",
+            "remaining": "remaining",
+            "limitReached": "Limit reached",
+            "overLimit": "Over limit",
+            "unableToLoadData": "Unable to Load Subscription Data",
+            "errorLoadingData": "An error occurred while loading your subscription information.",
+            "noSubscriptionFound": "No Subscription Found",
+            "noSubscriptionDescription": "You don't have an active subscription. Please subscribe to a plan to view usage metrics.",
+            "activeSurveys": "Active Surveys",
+            "totalResponses": "Total Responses",
+            "unknown": "Unknown",
+            "monthly": "Monthly",
+            "active": "Active",
+            "trial": "Trial",
+            "canceled": "Canceled",
+            "checkoutCanceled": {
+                "title": "Checkout Canceled",
+                "description": "Your subscription has NOT been changed because the checkout was not completed."
+            },
+            "upgradeSuccess": {
+                "title": "Subscription Upgraded Successfully!",
+                "description": "Your subscription has been upgraded. Your new plan features are now active."
+            }
+        },
+        "toast": {
+            "success": {
+                "title": "Success!",
+                "description": "Your subscription has been activated successfully."
+            },
+            "cancelled": {
+                "title": "Cancelled",
+                "description": "Subscription process was cancelled."
+            },
+            "error": {
+                "title": "Error",
+                "description": "Failed to open subscription management. Please try again."
+            },
+            "portalNotConfigured": {
+                "title": "Portal Not Available",
+                "description": "Customer portal is not configured yet. Please contact support for subscription management."
+            },
+            "upgradeSuccess": {
+                "title": "Upgrade Successful!",
+                "description": "Your plan has been upgraded successfully. Refreshing your subscription details..."
+            }
+        },
+        "upgradeModal": {
+            "title": "Upgrade Your Plan",
+            "description": "Choose the perfect plan for your needs and start getting more out of your surveys",
+            "upgradeNow": "Upgrade Now",
+            "popular": "Popular",
+            "cta": "Get Started",
+            "loading": "Loading...",
+            "billing": {
+                "monthly": "Monthly",
+                "yearly": "Yearly",
+                "save": "Save 20%"
+            },
+            "pricing": {
+                "perMonth": "/month",
+                "billedAnnually": "billed annually"
+            },
+            "features": {
+                "activeSurveys": "{count} Active Surveys",
+                "responses": "{count} Responses/month",
+                "unlimitedSurveys": "Unlimited Surveys",
+                "unlimitedResponses": "Unlimited Responses",
+                "analytics": "Advanced Analytics",
+                "removeBranding": "Remove Branding",
+                "dataExport": "Data Export",
+                "apiAccess": "API Access",
+                "publicPages": "Public Survey Pages",
+                "prioritySupport": "Priority Support"
+            },
+            "plans": {
+                "starter": {
+                    "description": "Perfect for small teams"
+                },
+                "pro": {
+                    "description": "For growing businesses"
+                },
+                "business": {
+                    "description": "For larger organizations"
+                },
+                "enterprise": {
+                    "description": "For enterprise needs"
+                }
+            },
+            "footer": "You can cancel or change your plan at any time",
+            "error": {
+                "title": "Error",
+                "description": "Failed to load plans. Please try again."
+            }
+        }
+    },
+    "Survey": {
+        "title": "Surveys",
+        "description": "Manage your surveys and collect responses",
+        "stats": {
+            "totalSurveys": {
+                "title": "Total Surveys",
+                "description": "All surveys created",
+                "subtitle": "Includes drafts and completed"
+            },
+            "activeSurveys": {
+                "title": "Active Surveys",
+                "description": "Currently collecting responses",
+                "subtitle": "Live and accepting responses"
+            },
+            "totalResponses": {
+                "title": "Total Responses",
+                "description": "All responses collected",
+                "subtitle": "Across all surveys"
+            },
+            "responseRate": {
+                "title": "Response Rate",
+                "description": "Average completion rate",
+                "subtitle": "Response quality indicator"
+            }
+        },
+        "table": {
+            "title": "All Surveys",
+            "totalSurveys": "surveys",
+            "columns": {
+                "title": "Survey Title",
+                "type": "Type",
+                "status": "Status",
+                "responses": "Responses",
+                "responseRate": "Rate",
+                "totalOpenSurveys": "Open",
+                "createdAt": "Created",
+                "updatedAt": "Updated"
+            },
+            "status": {
+                "active": "Active",
+                "draft": "Draft",
+                "published": "Published",
+                "archived": "Archived"
+            },
+            "actions": {
+                "view": "View",
+                "edit": "Edit",
+                "duplicate": "Duplicate",
+                "delete": "Delete",
+                "openMenu": "Open menu",
+                "publish": "Publish",
+                "archive": "Archive",
+                "copySurveyId": "Copy Survey ID"
+            },
+            "buttons": {
+                "createSurvey": "Create Survey",
+                "customizeColumns": "Customize Columns",
+                "columns": "Columns"
+            },
+            "search": {
+                "placeholder": "Search surveys..."
+            },
+            "filters": {
+                "status": "Filter by status",
+                "allStatuses": "All Statuses",
+                "active": "Active",
+                "draft": "Draft",
+                "completed": "Completed"
+            },
+            "pagination": {
+                "rowsPerPage": "Rows per page",
+                "page": "Page",
+                "of": "of",
+                "rowsSelected": "row(s) selected",
+                "goToFirstPage": "Go to first page",
+                "goToPreviousPage": "Go to previous page",
+                "goToNextPage": "Go to next page",
+                "goToLastPage": "Go to last page"
+            },
+            "messages": {
+                "noResults": "No surveys found.",
+                "loadingSurveys": "Loading surveys...",
+                "noType": "No Type",
+                "surveyDeletedSuccess": "Survey deleted successfully",
+                "surveyDuplicatedSuccess": "Survey duplicated successfully",
+                "surveyUpdatedSuccess": "Survey updated successfully",
+                "fetchSurveysError": "Failed to fetch surveys",
+                "deleteSurveyError": "Failed to delete survey",
+                "duplicateSurveyError": "Failed to duplicate survey",
+                "updateSurveyError": "Failed to update survey status",
+                "unexpectedError": "An unexpected error occurred",
+                "surveyIdCopied": "Survey ID copied to clipboard",
+                "copyError": "Failed to copy survey ID"
+            },
+            "deleteDialog": {
+                "title": "Delete Survey",
+                "description": "Are you sure you want to delete \"{surveyName}\"? This action cannot be undone.",
+                "cancel": "Cancel",
+                "delete": "Delete",
+                "deleting": "Deleting..."
+            }
+        },
+        "emptyState": {
+            "title": "No Team Found",
+            "description": "You need to create or join a team to start creating surveys.",
+            "createTeamButton": "Go to Teams",
+            "noSurveys": {
+                "title": "Start Creating Your First Survey",
+                "subtitle": "Create engaging surveys to collect valuable feedback",
+                "description": "Surveys help you understand your audience better and make data-driven decisions.",
+                "button": "Create Your First Survey",
+                "previewLabel": "Preview of what your surveys will look like"
+            }
+        }
+    },
+    "UpgradeModal": {
+        "limitReached": {
+            "surveys": {
+                "title": "Active Survey Limit Reached",
+                "description": "You've reached your plan's limit for active surveys. Upgrade to create more surveys.",
+                "descriptionWithLimit": "You've reached your plan's limit of {limit} active surveys. Upgrade to create more surveys."
+            },
+            "responses": {
+                "title": "Response Limit Reached",
+                "description": "You've reached your plan's limit for survey responses. Upgrade to collect more responses.",
+                "descriptionWithLimit": "You've reached your plan's limit of {limit} responses. Upgrade to collect more responses."
+            },
+            "remove_branding": {
+                "title": "Remove Branding",
+                "description": "This feature is not available in your current plan. Upgrade to remove branding from your surveys.",
+                "descriptionWithLimit": "Branding removal is not available in your current plan. Upgrade to customize your surveys."
+            },
+            "exports": {
+                "title": "Export Feature Unavailable",
+                "description": "Data export is not available in your current plan. Upgrade to export your survey data.",
+                "descriptionWithLimit": "Data export is not available in your current plan. Upgrade to unlock unlimited exports."
+            },
+            "apis": {
+                "title": "API Access Unavailable",
+                "description": "API access is not available in your current plan. Upgrade to integrate with your applications.",
+                "descriptionWithLimit": "API access is not available in your current plan. Upgrade to unlock API features."
+            },
+            "public_pages": {
+                "title": "Public Pages Unavailable",
+                "description": "Public survey pages are not available in your current plan. Upgrade to create public survey pages.",
+                "descriptionWithLimit": "Public survey pages are not available in your current plan. Upgrade to unlock this feature."
+            },
+            "custom": {
+                "title": "Upgrade Required",
+                "description": "You've reached a limit of your current plan. Upgrade to continue.",
+                "descriptionWithLimit": "You've reached a limit of your current plan. Upgrade to continue."
+            }
+        },
+        "benefits": {
+            "title": "Upgrade to unlock:",
+            "unlimited": "Higher limits",
+            "advanced": "Advanced features"
+        },
+        "actions": {
+            "upgrade": "View Plans & Upgrade",
+            "cancel": "Maybe Later"
+        }
+    },
+    "PublicSurvey": {
+        "thankYou": "Thank You!",
+        "responseSubmitted": "Your response has been submitted successfully.",
+        "submitAnother": "Submit Another Response",
+        "toggleTheme": "Toggle theme",
+        "error": {
+            "title": "Survey Error",
+            "description": "Please check that you have the correct survey link and token.",
+            "goHome": "Go Home"
+        }
+    },
+    "CreateSurvey": {
+        "title": "Create Survey",
+        "description": "Create a new survey to collect responses from your audience",
+        "actions": {
+            "saveDraft": "Save",
+            "publish": "Publish",
+            "saving": "Saving...",
+            "publishing": "Publishing...",
+            "copySurveyId": "Copy Survey ID"
+        },
+        "messages": {
+            "saveSuccess": "Survey saved successfully!",
+            "saveError": "Failed to save survey",
+            "publishSuccess": "Survey published successfully!",
+            "publishError": "Failed to publish survey",
+            "unexpectedError": "An unexpected error occurred",
+            "surveyIdCopied": "Survey ID copied to clipboard",
+            "readonlyMode": "You don't have permission to edit this survey",
+            "activeSurveysLimitReached": "You have reached your active surveys limit ({limit})."
+        },
+        "aiGenerator": {
+            "title": "AI Survey Generator",
+            "description": "Let AI create your complete survey including name, description, and questions based on your context",
+            "createWithAI": "Create with AI",
+            "placeholder": "Describe your survey context...\n\nExample: \"Create a customer satisfaction survey for an e-commerce platform focusing on delivery experience, product quality, and customer service.\"",
+            "hint": "Be specific about your survey goals, target audience, and the type of feedback you want to collect.",
+            "generate": "Generate Survey",
+            "generating": "Generating...",
+            "steps": {
+                "analyzing": "Analyzing your context...",
+                "thinking": "Thinking and planning survey...",
+                "creating": "Creating your survey...",
+                "done": "Survey created successfully!"
+            },
+            "preview": "Generated {count} questions:",
+            "success": "Successfully generated survey with {count} questions!",
+            "errors": {
+                "emptyPrompt": "Please describe your survey context",
+                "failed": "Failed to generate survey. Please try again."
+            }
+        },
+        "defaultQuestion": {
+            "yesLabel": "Yes",
+            "noLabel": "No"
+        },
+        "details": {
+            "title": "Survey Details",
+            "name": {
+                "label": "Name",
+                "placeholder": "Enter survey name"
+            },
+            "description": {
+                "label": "Description",
+                "placeholder": "Enter survey description (optional)"
+            },
+            "type": {
+                "label": "Survey Type",
+                "placeholder": "Select survey type",
+                "manageTypes": "Manage Types"
+            },
+            "status": {
+                "label": "Status",
+                "placeholder": "Select survey status",
+                "draft": "Draft",
+                "published": "Published",
+                "archived": "Archived"
+            },
+            "multipleResponses": {
+                "label": "Allow multiple responses per person",
+                "description": "Let the same person respond multiple times"
+            }
+        },
+        "questions": {
+            "title": "Questions",
+            "addQuestion": "Add Question",
+            "collapseAll": "Collapse All",
+            "expandAll": "Expand All",
+            "question": "question",
+            "questions": "questions",
+            "questionTitle": {
+                "label": "Title",
+                "placeholder": "Enter question title"
+            },
+            "description": {
+                "label": "Description (Optional)",
+                "placeholder": "Enter question description"
+            },
+            "format": {
+                "label": "Format",
+                "placeholder": "Select question format"
+            },
+            "required": {
+                "label": "Required",
+                "description": "Make this question mandatory"
+            },
+            "options": {
+                "label": "Options",
+                "addOption": "Add Option",
+                "optionPlaceholder": "Enter option text",
+                "removeOption": "Remove option",
+                "includeOther": "Include 'Other' option",
+                "otherOptionText": "Other"
+            },
+            "yesNoLabels": {
+                "label": "Custom Labels",
+                "yesLabel": "Yes Label",
+                "noLabel": "No Label",
+                "yesPlaceholder": "Enter yes label",
+                "noPlaceholder": "Enter no label"
+            },
+            "buttonLabel": {
+                "label": "Button Label",
+                "buttonLabel": "Button Text",
+                "buttonPlaceholder": "Continue"
+            },
+            "formats": {
+                "yesNo": "Yes/No",
+                "starRating": "5 Star Rating",
+                "longText": "Long Text",
+                "statement": "Statement",
+                "singleChoice": "Single Choice",
+                "multipleChoice": "Multiple Choice"
+            }
+        },
+        "targets": {
+            "title": "Targets",
+            "description": "Survey targets allow you to add surveys to the pages of your website or product without having to change any code.",
+            "addTarget": "Add Target",
+            "noTargets": "No targets configured yet"
+        },
+        "style": {
+            "title": "Style",
+            "collapse": "Collapse",
+            "expand": "Expand",
+            "backgroundColor": {
+                "label": "Background Colour"
+            },
+            "textColor": {
+                "label": "Text Colour"
+            },
+            "buttonBackgroundColor": {
+                "label": "Button Background Colour"
+            },
+            "buttonTextColor": {
+                "label": "Button Text Colour"
+            },
+            "margin": {
+                "label": "Margin"
+            },
+            "padding": {
+                "label": "Padding"
+            },
+            "border": {
+                "label": "Border"
+            },
+            "borderRadius": {
+                "label": "Border Radius"
+            },
+            "titleFontSize": {
+                "label": "Title Font Size"
+            },
+            "bodyFontSize": {
+                "label": "Body Font Size"
+            },
+            "fontFamily": {
+                "label": "Font Family",
+                "placeholder": "Select font family"
+            },
+            "styleMode": {
+                "label": "Style Mode",
+                "placeholder": "Select style mode",
+                "basic": "Basic",
+                "advanced": "Advanced"
+            },
+            "advancedCSS": {
+                "label": "Advanced CSS",
+                "placeholder": "Enter your custom CSS here...",
+                "description": "Write custom CSS to style your survey. Use classes like .sv, .qt, .qd, .btn, etc."
+            },
+            "preview": {
+                "label": "Preview",
+                "title": "Sample Question",
+                "description": "This is how your survey will look to respondents",
+                "button": "Submit Response"
+            }
+        },
+        "preview": {
+            "title": "Preview"
+        },
+        "surveyTypes": {
+            "modal": {
+                "title": "Manage Survey Types",
+                "description": "Create, edit, or delete survey types",
+                "createNew": "Create New Type",
+                "editType": "Edit Type",
+                "deleteType": "Delete Type",
+                "typeName": "Type Name",
+                "typeNamePlaceholder": "Enter type name",
+                "save": "Save",
+                "cancel": "Cancel",
+                "delete": "Delete",
+                "saving": "Saving...",
+                "deleting": "Deleting..."
+            },
+            "actions": {
+                "edit": "Edit",
+                "delete": "Delete",
+                "openMenu": "Open menu"
+            },
+            "messages": {
+                "createSuccess": "Survey type created successfully",
+                "updateSuccess": "Survey type updated successfully",
+                "deleteSuccess": "Survey type deleted successfully",
+                "createFailed": "Failed to create survey type",
+                "updateFailed": "Failed to update survey type",
+                "deleteFailed": "Failed to delete survey type",
+                "nameRequired": "Type name is required",
+                "nameTooLong": "Type name is too long"
+            },
+            "defaultTypes": {
+                "customerFeedback": "Customer Feedback",
+                "internal": "Internal",
+                "marketResearch": "Market Research",
+                "employeeSatisfaction": "Employee Satisfaction",
+                "productFeedback": "Product Feedback",
+                "eventFeedback": "Event Feedback"
+            }
         }
     }
 }

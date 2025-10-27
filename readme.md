@@ -1,5 +1,5 @@
 
-## �� Customization
+## Microsurvey
 
 ### Styling
 The project uses Tailwind CSS v4 with a custom design system. You can customize:

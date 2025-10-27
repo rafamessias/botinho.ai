@@ -177,7 +177,7 @@ export const TeamMembers = ({
                         </div>
 
                         {/* Actions */}
-                        {!member.isOwner && (
+                        {!member.isOwner && isCurrentUserAdmin && (
                             <div className="flex flex-col lg:flex-row items-center gap-2">
                                 <Button
                                     variant="outline"
@@ -345,19 +345,20 @@ export const TeamMembers = ({
                             {/* Actions */}
                             <div className="flex gap-2 pt-4">
                                 <Button
-                                    variant="outline"
-                                    onClick={() => setRemovingMember(null)}
-                                    className="flex-1"
-                                >
-                                    {t("modals.removeMember.cancel")}
-                                </Button>
-                                <Button
                                     variant="destructive"
                                     onClick={handleRemoveMember}
                                     className="flex-1"
                                 >
                                     {t("modals.removeMember.removeMember")}
                                 </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setRemovingMember(null)}
+                                    className="flex-1"
+                                >
+                                    {t("modals.removeMember.cancel")}
+                                </Button>
+
                             </div>
                         </div>
                     )}

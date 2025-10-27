@@ -74,8 +74,8 @@ const EmailConfirmationEmail = ({
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Após confirmar seu email, você terá acesso completo à plataforma Obraguru.'
-                                : 'After confirming your email, you will have full access to the Obraguru platform.'
+                                ? 'Após confirmar seu email, você terá acesso completo à plataforma Opineeo.'
+                                : 'After confirming your email, you will have full access to the Opineeo platform.'
                             }
                         </Text>
                         <Text style={text}>
@@ -142,7 +142,7 @@ const text = {
 };
 
 const button = {
-    backgroundColor: '#007ee6',
+    backgroundColor: 'oklch(0.6 0.15 285)',
     borderRadius: '4px',
     color: '#fff',
     fontFamily: "'Open Sans', 'Helvetica Neue', Arial",

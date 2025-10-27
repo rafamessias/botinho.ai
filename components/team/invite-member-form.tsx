@@ -84,6 +84,7 @@ export const InviteMemberForm = ({ teamId, onSuccess, onCancel }: InviteMemberFo
                     <div className="space-y-2">
                         <Label htmlFor="email">{t("members.email")}</Label>
                         <Input
+                            autoFocus
                             id="email"
                             type="email"
                             placeholder={t("members.emailPlaceholder")}
@@ -132,14 +133,14 @@ export const InviteMemberForm = ({ teamId, onSuccess, onCancel }: InviteMemberFo
                     </div>
 
                     <div className="flex gap-2 pt-4">
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? t("members.inviting") : t("members.sendInvite")}
-                        </Button>
                         {onCancel && (
                             <Button type="button" variant="outline" onClick={onCancel}>
                                 {t("form.cancel")}
                             </Button>
                         )}
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? t("members.inviting") : t("members.sendInvite")}
+                        </Button>
                     </div>
                 </form>
             </CardContent>

@@ -29,7 +29,6 @@ export default async function TeamPage() {
     // Get teams data server-side
     const teamsResult = await getUserTeamsAction()
     const teams = teamsResult.success && teamsResult.teams ? teamsResult.teams : []
-
     // Get current user ID from session
     const currentUserId = typeof session.user.id === 'number' ? session.user.id : 0
 
@@ -46,7 +45,7 @@ export default async function TeamPage() {
             <SidebarInset>
                 <SiteHeader title={t("title")} />
                 <div className="flex flex-1 flex-col">
-                    <div className="@container/main flex flex-1 flex-col gap-2">
+                    <div className="@container/main flex flex-1 flex-col gap-2 max-w-4xl w-full mx-auto">
                         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
                             <TeamDashboard initialTeams={teams as any} currentUserId={currentUserId} />
                         </div>

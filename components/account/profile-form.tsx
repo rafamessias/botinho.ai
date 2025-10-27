@@ -6,18 +6,18 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { IconCamera, IconUser } from "@tabler/icons-react"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { AlertTriangle } from "lucide-react"
 
-import { updateUserProfileAction, updateUserAvatarAction } from "@/components/server-actions/user"
+import { updateUserProfileAction, updateUserAvatarAction, deleteUserAccountAction } from "@/components/server-actions/user"
 import { useUser } from "@/components/user-provider"
+import { logoutAction } from "../server-actions/auth"
+import { useSession } from "next-auth/react"
 
 export function ProfileForm() {
     const t = useTranslations("Profile")
@@ -25,12 +25,37 @@ export function ProfileForm() {
     const { user, loading, refreshUser } = useUser()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isAvatarUpdating, setIsAvatarUpdating] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [deleteEmail, setDeleteEmail] = useState("")
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const { update } = useSession()
 
     // Profile form validation schema
     const profileFormSchema = React.useMemo(() => z.object({
         firstName: z.string().min(1, t("validation.firstNameRequired")).max(50, t("validation.firstNameTooLong")),
         lastName: z.string().max(50, t("validation.lastNameTooLong")).optional(),
-        phone: z.string().min(10, t("validation.phoneMinLength")).regex(/^[+]?[\d\s\-\(\)]{10,}$/, t("validation.phoneInvalid")).optional(),
+        phone: z.string().optional().refine((val) => {
+            // Allow empty, null, undefined, or whitespace-only values
+            if (val === "+1" || val === "+55") return true;
+
+            // If no digits after cleaning, consider it empty (valid)
+            if (val?.length === 0) return true;
+
+            // Remove all non-digit characters to check if there are actual phone digits
+            const digitsOnly = val?.replace(/\D/g, "") || "";
+
+            // If there are digits, validate the phone number format
+            return digitsOnly?.length >= 10 && /^\d+$/.test(digitsOnly);
+        }, {
+            message: t("validation.phoneInvalid")
+        }),
+        position: z.string().max(100).optional(),
+        companyName: z.string().max(100).optional(),
+        country: z.string().max(100).optional(),
+        linkedinUrl: z.string().url(t("validation.urlInvalid")).optional().or(z.literal("")),
+        twitterUrl: z.string().url(t("validation.urlInvalid")).optional().or(z.literal("")),
+        websiteUrl: z.string().url(t("validation.urlInvalid")).optional().or(z.literal("")),
+        githubUrl: z.string().url(t("validation.urlInvalid")).optional().or(z.literal("")),
     }), [t])
 
     type ProfileFormValues = z.infer<typeof profileFormSchema>
@@ -41,6 +66,13 @@ export function ProfileForm() {
             firstName: "",
             lastName: "",
             phone: "",
+            position: "",
+            companyName: "",
+            country: "",
+            linkedinUrl: "",
+            twitterUrl: "",
+            websiteUrl: "",
+            githubUrl: "",
         },
     })
 
@@ -51,6 +83,13 @@ export function ProfileForm() {
                 firstName: user.firstName || "",
                 lastName: user.lastName || "",
                 phone: user.phone || "",
+                position: user.position || "",
+                companyName: user.companyName || "",
+                country: user.country || "",
+                linkedinUrl: user.linkedinUrl || "",
+                twitterUrl: user.twitterUrl || "",
+                websiteUrl: user.websiteUrl || "",
+                githubUrl: user.githubUrl || "",
             })
         }
     }, [user, form.reset])
@@ -104,14 +143,40 @@ export function ProfileForm() {
         }
     }
 
+    const handleDeleteAccount = async () => {
+        if (!user) return
+
+        try {
+            setIsDeleting(true)
+
+            const result = await deleteUserAccountAction(deleteEmail)
+
+            if (result.success) {
+                toast.success(t("messages.accountDeleted"))
+                await update()
+                // Redirect to sign out or home page
+                logoutAction(`/sign-in`)
+            } else {
+                toast.error(result.error || t("messages.deleteFailed"))
+            }
+        } catch (error) {
+            console.error("Account deletion error:", error)
+            toast.error(t("messages.unexpectedError"))
+        } finally {
+            setIsDeleting(false)
+            setIsDeleteModalOpen(false)
+            setDeleteEmail("")
+        }
+    }
+
     if (loading || !user) {
         return (
-            <Card>
-                <CardHeader>
+            <Card className="border-none p-0">
+                <CardHeader className="p-0">
                     <CardTitle>{t("title")}</CardTitle>
                     <CardDescription>{t("description")}</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     <div className="space-y-4">
                         <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
                         <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
@@ -124,56 +189,14 @@ export function ProfileForm() {
 
     return (
         <div className="space-y-6">
-            {/* Avatar Section */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t("avatar.title")}</CardTitle>
-                    <CardDescription>{t("avatar.description")}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center space-x-4">
-                        <div className="relative">
-                            <Avatar className="h-20 w-20">
-                                <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
-                                <AvatarFallback className="text-lg">
-                                    {user.firstName?.charAt(0) || ""}{user.lastName?.charAt(0) || ""}
-                                </AvatarFallback>
-                            </Avatar>
-                            <label
-                                htmlFor="avatar-upload"
-                                className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-2 cursor-pointer hover:bg-primary/90 transition-colors"
-                                title={t("avatar.change")}
-                            >
-                                <IconCamera className="h-4 w-4" />
-                            </label>
-                            <input
-                                id="avatar-upload"
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={handleAvatarChange}
-                                disabled={isAvatarUpdating}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <p className="text-sm text-muted-foreground">
-                                {t("avatar.instructions")}
-                            </p>
-                            {isAvatarUpdating && (
-                                <p className="text-sm text-blue-600">{t("avatar.updating")}</p>
-                            )}
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
 
             {/* Profile Information Section */}
-            <Card>
-                <CardHeader>
+            <Card className="border-none p-0 shadow-none">
+                <CardHeader className="p-0">
                     <CardTitle>{t("profile.title")}</CardTitle>
                     <CardDescription>{t("profile.description")}</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -211,13 +234,125 @@ export function ProfileForm() {
                                 id="phone"
                                 placeholder={t("profile.phonePlaceholder")}
                                 value={form.watch("phone")}
-                                onChange={(value) => form.setValue("phone", value, { shouldValidate: true })}
+                                onChange={(value) => {
+                                    form.setValue("phone", value, { shouldValidate: true });
+                                }}
                             />
                             {form.formState.errors.phone && (
                                 <p className="text-sm text-red-500">
                                     {form.formState.errors.phone.message}
                                 </p>
                             )}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="position">{t("profile.position")}</Label>
+                                <Input
+                                    id="position"
+                                    placeholder={t("profile.positionPlaceholder")}
+                                    {...form.register("position")}
+                                />
+                                {form.formState.errors.position && (
+                                    <p className="text-sm text-red-500">
+                                        {form.formState.errors.position.message}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="companyName">{t("profile.companyName")}</Label>
+                                <Input
+                                    id="companyName"
+                                    placeholder={t("profile.companyNamePlaceholder")}
+                                    {...form.register("companyName")}
+                                />
+                                {form.formState.errors.companyName && (
+                                    <p className="text-sm text-red-500">
+                                        {form.formState.errors.companyName.message}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="country">{t("profile.country")}</Label>
+                            <Input
+                                id="country"
+                                placeholder={t("profile.countryPlaceholder")}
+                                {...form.register("country")}
+                            />
+                            {form.formState.errors.country && (
+                                <p className="text-sm text-red-500">
+                                    {form.formState.errors.country.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="space-y-4 pt-4 border-t">
+                            <h4 className="text-sm font-medium">{t("profile.socialLinks")}</h4>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="linkedinUrl">{t("profile.linkedinUrl")}</Label>
+                                    <Input
+                                        id="linkedinUrl"
+                                        type="url"
+                                        placeholder="https://linkedin.com/in/username"
+                                        {...form.register("linkedinUrl")}
+                                    />
+                                    {form.formState.errors.linkedinUrl && (
+                                        <p className="text-sm text-red-500">
+                                            {form.formState.errors.linkedinUrl.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="twitterUrl">{t("profile.twitterUrl")}</Label>
+                                    <Input
+                                        id="twitterUrl"
+                                        type="url"
+                                        placeholder="https://x.com/username"
+                                        {...form.register("twitterUrl")}
+                                    />
+                                    {form.formState.errors.twitterUrl && (
+                                        <p className="text-sm text-red-500">
+                                            {form.formState.errors.twitterUrl.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="websiteUrl">{t("profile.websiteUrl")}</Label>
+                                    <Input
+                                        id="websiteUrl"
+                                        type="url"
+                                        placeholder="https://example.com"
+                                        {...form.register("websiteUrl")}
+                                    />
+                                    {form.formState.errors.websiteUrl && (
+                                        <p className="text-sm text-red-500">
+                                            {form.formState.errors.websiteUrl.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="githubUrl">{t("profile.githubUrl")}</Label>
+                                    <Input
+                                        id="githubUrl"
+                                        type="url"
+                                        placeholder="https://github.com/username"
+                                        {...form.register("githubUrl")}
+                                    />
+                                    {form.formState.errors.githubUrl && (
+                                        <p className="text-sm text-red-500">
+                                            {form.formState.errors.githubUrl.message}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         <div className="space-y-2">
@@ -245,6 +380,92 @@ export function ProfileForm() {
                             </Button>
                         </div>
                     </form>
+                </CardContent>
+            </Card>
+
+            {/* Delete Account Section */}
+            <Card className="border-destructive/20 border-2 shadow-none p-4">
+                <CardHeader className="p-0">
+                    <CardTitle className="text-destructive">{t("deleteAccount.title")}</CardTitle>
+                    <CardDescription>{t("deleteAccount.description")}</CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                            {t("deleteAccount.warning")}
+                        </p>
+
+                        <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="destructive" className="w-full sm:w-auto">
+                                    {t("deleteAccount.button")}
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-md">
+                                <DialogHeader>
+                                    <DialogTitle className="flex items-center gap-2 text-destructive">
+                                        <AlertTriangle className="h-5 w-5" />
+                                        {t("deleteAccount.modal.title")}
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                        {t("deleteAccount.modal.description")}
+                                    </DialogDescription>
+                                </DialogHeader>
+
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="deleteEmail">
+                                            {t("deleteAccount.modal.emailLabel")}
+                                        </Label>
+                                        <Input
+                                            id="deleteEmail"
+                                            type="email"
+                                            placeholder={user.email}
+                                            value={deleteEmail}
+                                            onChange={(e) => setDeleteEmail(e.target.value)}
+                                            className="font-mono"
+                                        />
+                                        <p className="text-xs text-muted-foreground">
+                                            {t("deleteAccount.modal.emailNote")}
+                                        </p>
+                                    </div>
+
+                                    <div className="rounded-lg bg-destructive/10 p-4">
+                                        <h4 className="font-medium text-destructive mb-2">
+                                            {t("deleteAccount.modal.consequences.title")}
+                                        </h4>
+                                        <ul className="text-sm text-muted-foreground space-y-1">
+                                            <li>• {t("deleteAccount.modal.consequences.account")}</li>
+                                            <li>• {t("deleteAccount.modal.consequences.teams")}</li>
+                                            <li>• {t("deleteAccount.modal.consequences.data")}</li>
+                                            <li>• {t("deleteAccount.modal.consequences.irreversible")}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <DialogFooter className="flex-col sm:flex-row gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            setIsDeleteModalOpen(false)
+                                            setDeleteEmail("")
+                                        }}
+                                        disabled={isDeleting}
+                                    >
+                                        {commonT("cancel")}
+                                    </Button>
+                                    <Button
+                                        variant="destructive"
+                                        onClick={handleDeleteAccount}
+                                        disabled={isDeleting || deleteEmail !== user.email}
+                                        className="min-w-[100px]"
+                                    >
+                                        {isDeleting ? commonT("deleting") : t("deleteAccount.modal.confirm")}
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </CardContent>
             </Card>
         </div>

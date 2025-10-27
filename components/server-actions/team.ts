@@ -4,11 +4,12 @@ import { auth } from "@/app/auth"
 import { prisma } from "@/prisma/lib/prisma"
 import { z } from "zod"
 import { getTranslations } from "next-intl/server"
-import { TeamMemberStatus } from "@/lib/generated/prisma"
 import { generateConfirmationToken, getCurrentLocale } from "./auth"
+// Using Web Crypto API instead of Node.js crypto module
 import bcrypt from "bcryptjs"
 import resend from "@/lib/resend"
 import TeamInvitationEmail from "@/emails/TeamInvitationEmail"
+import { validateApiAccess } from "@/lib/services/subscription-validation"
 
 // Validation schemas
 const createTeamSchema = z.object({
@@ -41,6 +42,25 @@ const updateMemberSchema = z.object({
 const removeMemberSchema = z.object({
     teamId: z.number(),
     userId: z.number(),
+})
+
+const deleteTeamSchema = z.object({
+    teamId: z.number(),
+})
+
+const generateTeamTokenSchema = z.object({
+    teamId: z.number(),
+    tokenType: z.enum(["survey", "api"]).default("survey"),
+})
+
+const regenerateTeamTokenSchema = z.object({
+    teamId: z.number(),
+    tokenType: z.enum(["survey", "api"]).default("survey"),
+})
+
+const updateTeamBrandingSchema = z.object({
+    teamId: z.number(),
+    branding: z.boolean(),
 })
 
 /**
@@ -207,23 +227,17 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
             where: { email: validatedData.email }
         })
 
+        const currentLocale = await getCurrentLocale();
+        const confirmationToken = await generateConfirmationToken();
+        let invitedUserPassword;
+        const firstName = validatedData.email.trim().split('@')[0];
+
         if (!invitedUser) {
 
-
-            const invitedUserPassword = await generateConfirmationToken(12, 10)
+            invitedUserPassword = await generateConfirmationToken(12, 10)
 
             // Hash password
             const hashedPassword = await bcrypt.hash(invitedUserPassword, 12)
-
-            // Generate confirmation token
-            const confirmationToken = await generateConfirmationToken()
-
-            // Get current locale
-            const currentLocale = await getCurrentLocale()
-
-            // Split name into first and last name
-            const firstName = validatedData.email.trim().split('@')[0]
-
 
             // Create a placeholder user for the invitation
             invitedUser = await prisma.user.create({
@@ -241,38 +255,18 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                 }
             })
 
-            // Send invitation email
-            const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
-            const fromEmail = process.env.FROM_EMAIL || "SaaS Framework <noreply@example.com>"
-            const invitationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}&teamId=${validatedData.teamId}`
-
-            const { data, error } = await resend.emails.send({
-                from: fromEmail,
-                to: [validatedData.email],
-                subject: currentLocale === 'pt-BR' ? 'Convite para se juntar à equipe' : 'Invitation to join team',
-                react: await TeamInvitationEmail({
-                    userName: firstName,
-                    invitationUrl: invitationUrl,
-                    lang: currentLocale,
-                    baseUrl,
-                    teamName: teamMember.team.name,
-                    inviterName: session.user.email,
-                    password: invitedUserPassword,
-                }),
+        } else {
+            // Check if user is already a member
+            const existingMember = await prisma.teamMember.findFirst({
+                where: {
+                    teamId: validatedData.teamId,
+                    userId: invitedUser.id,
+                }
             })
 
-        }
-
-        // Check if user is already a member
-        const existingMember = await prisma.teamMember.findFirst({
-            where: {
-                teamId: validatedData.teamId,
-                userId: invitedUser.id,
+            if (existingMember) {
+                return { success: false, error: "User is already a member of this team" }
             }
-        })
-
-        if (existingMember) {
-            return { success: false, error: "User is already a member of this team" }
         }
 
         // Create team member invitation
@@ -281,11 +275,40 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
                 userId: invitedUser.id,
                 teamId: validatedData.teamId,
                 isAdmin: validatedData.isAdmin,
-                canPost: validatedData.canPost,
-                canApprove: validatedData.canApprove,
+                canPost: validatedData.isAdmin ? true : validatedData.canPost,
+                canApprove: true, //always can read
                 isOwner: false,
                 teamMemberStatus: "invited",
             }
+        })
+
+
+        if (!invitedUserPassword) {
+            //update user with confirmation token
+            await prisma.user.update({
+                where: { id: invitedUser.id },
+                data: { confirmationToken }
+            })
+        }
+
+        // Send invitation email
+        const baseUrl = process.env.HOST || process.env.NEXTAUTH_URL || 'http://localhost:3000'
+        const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>"
+        const invitationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}&teamId=${validatedData.teamId}`
+
+        const { data, error } = await resend.emails.send({
+            from: fromEmail,
+            to: [validatedData.email],
+            subject: currentLocale === 'pt-BR' ? 'Convite para se juntar à equipe' : 'Invitation to join team',
+            react: await TeamInvitationEmail({
+                userName: firstName,
+                invitationUrl: invitationUrl,
+                lang: currentLocale,
+                baseUrl,
+                teamName: teamMember.team.name,
+                inviterName: session.user.email,
+                ...(invitedUserPassword && { password: invitedUserPassword }),
+            }),
         })
 
         return {
@@ -342,8 +365,8 @@ export const updateMemberAction = async (formData: z.infer<typeof updateMemberSc
             },
             data: {
                 isAdmin: validatedData.isAdmin,
-                canPost: validatedData.canPost,
-                canApprove: validatedData.canApprove,
+                canPost: validatedData.isAdmin ? true : validatedData.canPost,
+                canApprove: true, //always can read
             }
         })
 
@@ -414,6 +437,12 @@ export const removeMemberAction = async (formData: z.infer<typeof removeMemberSc
             }
         })
 
+        //update user to remove default team
+        await prisma.user.update({
+            where: { id: validatedData.userId },
+            data: { defaultTeamId: null }
+        })
+
         return {
             success: true,
             message: t("messages.memberRemoveSuccess"),
@@ -428,6 +457,113 @@ export const removeMemberAction = async (formData: z.infer<typeof removeMemberSc
 
         return { success: false, error: t("messages.memberRemoveFailed") }
     }
+}
+
+/**
+ * Delete a team and all its members (only team owner can do this)
+ */
+export const deleteTeamAction = async (formData: z.infer<typeof deleteTeamSchema>) => {
+    const t = await getTranslations("Team")
+
+    //avoid deleting
+    return { success: false, error: "Deleting teams is not allowed" };
+    /*
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        const validatedData = deleteTeamSchema.parse(formData)
+
+        // Get current user
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email }
+        })
+
+        if (!user) {
+            return { success: false, error: "User not found" }
+        }
+
+        // Check if user is the owner of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId: validatedData.teamId,
+                userId: user.id,
+                isOwner: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: t("messages.onlyTeamOwnerCanDeleteTeam") }
+        }
+
+        // Check if this is the user's only team
+        const userTeamsCount = await prisma.teamMember.count({
+            where: {
+                userId: teamMember.userId,
+            }
+        })
+
+        if (userTeamsCount <= 1) {
+            return { success: false, error: t("messages.cannotDeleteOnlyTeam") }
+        }
+
+        // Check if the deleted team is the current user's default team
+        const isDefaultTeam = user.defaultTeamId === validatedData.teamId
+
+        // Delete team and all its members in a transaction
+        await prisma.$transaction(async (tx) => {
+            // Delete all team members first (due to foreign key constraints)
+            await tx.teamMember.deleteMany({
+                where: { teamId: validatedData.teamId }
+            })
+
+            // Delete the team
+            await tx.team.delete({
+                where: { id: validatedData.teamId }
+            })
+
+            // If the deleted team was the default team, set the oldest remaining team as the new default
+            if (isDefaultTeam) {
+                // Find the oldest remaining team for the user
+                const oldestTeam = await tx.teamMember.findFirst({
+                    where: { userId: user.id },
+                    include: { team: true },
+                    orderBy: { createdAt: 'asc' }
+                })
+
+                // Update user's default team to the oldest remaining team
+                if (oldestTeam) {
+                    await tx.user.update({
+                        where: { id: user.id },
+                        data: { defaultTeamId: oldestTeam.teamId }
+                    })
+                } else {
+                    // Fallback: set default team to null if no teams remain (shouldn't happen due to validation above)
+                    await tx.user.update({
+                        where: { id: user.id },
+                        data: { defaultTeamId: null }
+                    })
+                }
+            }
+        })
+
+        return {
+            success: true,
+            message: t("messages.deleteSuccess"),
+        }
+
+    } catch (error) {
+        console.error("Delete team error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("messages.deleteFailed") }
+    }
+    */
 }
 
 /**
@@ -490,7 +626,7 @@ export const getTeamAction = async (teamId: number) => {
 /**
  * Get all teams for the current user
  */
-export const getUserTeamsAction = async () => {
+export const getUserTeamsAction = async (onlyMyTeamsMembers: boolean = false) => {
     try {
         const session = await auth()
         if (!session?.user?.email) {
@@ -499,14 +635,33 @@ export const getUserTeamsAction = async () => {
 
         const teams = await prisma.team.findMany({
             where: {
-                members: {
-                    some: {
-                        user: { email: session.user.email }
+                ...(onlyMyTeamsMembers && {
+                    members: {
+                        some: {
+                            user: { email: session.user.email },
+                            teamMemberStatus: "accepted"
+                        }
                     }
-                }
+                }),
+                ...(!onlyMyTeamsMembers && {
+                    members: {
+                        some: {
+                            user: { email: session.user.email },
+                        }
+                    }
+                })
             },
-            include: {
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                tokenApi: true,
                 members: {
+                    ...(onlyMyTeamsMembers && {
+                        where: {
+                            teamMemberStatus: "accepted"
+                        }
+                    }),
                     include: {
                         user: {
                             select: {
@@ -532,3 +687,274 @@ export const getUserTeamsAction = async () => {
         return { success: false, error: "Failed to get teams" }
     }
 }
+
+/**
+ * Generate a team token for survey submissions
+ */
+export const generateTeamTokenAction = async (formData: z.infer<typeof generateTeamTokenSchema>) => {
+    const t = await getTranslations("Team")
+
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        const validatedData = generateTeamTokenSchema.parse(formData)
+
+        // Check if user is admin of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId: validatedData.teamId,
+                user: { email: session.user.email },
+                isAdmin: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to generate tokens for this team" }
+        }
+
+        // Validate API access for API tokens
+        if (validatedData.tokenType === "api") {
+            const hasApiAccess = await validateApiAccess(validatedData.teamId)
+
+            if (!hasApiAccess) {
+                return {
+                    success: false,
+                    error: "API access is not available in your current plan",
+                    requiresUpgrade: true,
+                    limitType: "apis"
+                }
+            }
+        }
+
+        // Generate a secure random token using bcrypt salt
+        const randomString = Math.random().toString(36) + Date.now().toString(36)
+        const token = await bcrypt.hash(randomString, 10)
+
+        // Update team with the new token based on type
+        const updateData = validatedData.tokenType === "api"
+            ? { tokenApi: token }
+            : {}
+        const updatedTeam = await prisma.team.update({
+            where: { id: validatedData.teamId },
+            data: updateData
+        })
+
+        return {
+            success: true,
+            message: t("messages.tokenGenerated"),
+            token: updatedTeam.tokenApi
+        }
+
+    } catch (error) {
+        console.error("Generate team token error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("messages.tokenGenerationFailed") }
+    }
+}
+
+/**
+ * Regenerate a team token (invalidate old one and create new one)
+ */
+export const regenerateTeamTokenAction = async (formData: z.infer<typeof regenerateTeamTokenSchema>) => {
+    const t = await getTranslations("Team")
+
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        const validatedData = regenerateTeamTokenSchema.parse(formData)
+
+        // Check if user is admin of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId: validatedData.teamId,
+                user: { email: session.user.email },
+                isAdmin: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to regenerate tokens for this team" }
+        }
+
+        // Validate API access for API tokens
+        if (validatedData.tokenType === "api") {
+            const hasApiAccess = await validateApiAccess(validatedData.teamId)
+
+            if (!hasApiAccess) {
+                return {
+                    success: false,
+                    error: "API access is not available in your current plan",
+                    requiresUpgrade: true,
+                    limitType: "apis"
+                }
+            }
+        }
+
+        // Generate a new secure random token using bcrypt salt
+        const randomString = Math.random().toString(36) + Date.now().toString(36)
+        const newToken = await bcrypt.hash(randomString, 10)
+
+        // Update team with the new token based on type (this will invalidate the old one)
+        const updateData = validatedData.tokenType === "api"
+            ? { tokenApi: newToken }
+            : {}
+
+        const updatedTeam = await prisma.team.update({
+            where: { id: validatedData.teamId },
+            data: updateData
+        })
+
+        return {
+            success: true,
+            message: t("messages.tokenRegenerated"),
+            token: updatedTeam.tokenApi
+        }
+
+    } catch (error) {
+        console.error("Regenerate team token error:", error)
+
+        if (error instanceof z.ZodError) {
+            return { success: false, error: error.errors[0].message }
+        }
+
+        return { success: false, error: t("messages.tokenRegenerationFailed") }
+    }
+}
+
+/**
+ * Get team token (only if user is admin)
+ */
+export const getTeamTokenAction = async (teamId: number) => {
+    try {
+        const session = await auth()
+        if (!session?.user?.email) {
+            return { success: false, error: "Not authenticated" }
+        }
+
+        // Check if user is admin of the team
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                teamId,
+                user: { email: session.user.email },
+                isAdmin: true,
+            }
+        })
+
+        if (!teamMember) {
+            return { success: false, error: "Not authorized to view tokens for this team" }
+        }
+
+        // Get team with tokens
+        const team = await prisma.team.findUnique({
+            where: { id: teamId },
+            select: { id: true, name: true, tokenApi: true }
+        })
+
+        if (!team) {
+            return { success: false, error: "Team not found" }
+        }
+
+        return {
+            success: true,
+            team: {
+                id: team.id,
+                name: team.name,
+                tokenApi: team.tokenApi
+            }
+        }
+
+    } catch (error) {
+        console.error("Get team token error:", error)
+        return { success: false, error: "Failed to get team token" }
+    }
+}
+
+export const getUserTeamsLightAction = async (userId: number, defaultTeamId: number) => {
+    try {
+        // Fetch only essential team data for navigation
+        const teams = await prisma.team.findMany({
+            where: {
+                members: {
+                    some: {
+                        userId: userId,
+                        teamMemberStatus: "accepted"
+                    }
+                }
+            },
+            select: {
+                id: true,
+                name: true,
+                members: {
+                    where: {
+                        userId: userId,
+                        teamMemberStatus: "accepted"
+                    },
+                    select: {
+                        id: true,
+                        isAdmin: true,
+                        canPost: true,
+                        canApprove: true,
+                        isOwner: true,
+                    }
+                }
+            }
+        })
+
+        let customerSubscription = null
+        if (defaultTeamId) {
+            customerSubscription = await prisma.customerSubscription.findFirst({
+                where: { teamId: defaultTeamId },
+                select: {
+                    id: true,
+                    status: true,
+                    billingInterval: true,
+                    plan: { select: { planType: true } }
+                }
+            })
+        }
+
+        return { success: true, teams, customerSubscription }
+    } catch (error) {
+        console.error("Get user teams light error:", error)
+        return { success: false, error: "Failed to get teams" }
+    }
+}
+
+export const getTeamById = async (teamId: number) => {
+    try {
+
+        if (!teamId) {
+            return { success: false, error: "Team id is required" }
+        }
+
+        const team = await prisma.team.findUnique({
+            where: { id: teamId },
+            select: {
+                id: true,
+                name: true,
+                tokenApi: true
+            }
+        })
+
+        if (!team) {
+            return { success: false, error: "Team not found" }
+        }
+
+        return { success: true, team }
+
+    } catch (error) {
+        console.error("Get team by id error:", error)
+        return { success: false, error: "Failed to get team" }
+    }
+}
+

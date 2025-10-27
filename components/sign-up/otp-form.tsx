@@ -13,6 +13,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { confirmOTPAction, resendOTPAction } from "@/components/server-actions/auth"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
+import { useSession } from "next-auth/react"
 
 type OTPFormData = {
     otp: string
@@ -30,10 +31,12 @@ export function OTPForm() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isResending, setIsResending] = useState(false)
     const [otp, setOtp] = useState("")
+    const [resendCountdown, setResendCountdown] = useState(0)
 
     const email = searchParams.get("email")
     const phone = searchParams.get("phone")
     const urlOtp = searchParams.get("otp")
+    const { update } = useSession()
 
     const {
         handleSubmit,
@@ -46,12 +49,19 @@ export function OTPForm() {
         defaultValues: { otp: "" }
     })
 
-    const formOtp = watch("otp")
+    // Countdown timer for resend button
+    useEffect(() => {
+        if (resendCountdown > 0) {
+            const timer = setTimeout(() => {
+                setResendCountdown(resendCountdown - 1)
+            }, 1000)
+            return () => clearTimeout(timer)
+        }
+    }, [resendCountdown])
 
     // Auto-submit if OTP is provided via URL
     useEffect(() => {
-        console.log("urlOtp", urlOtp)
-        console.log("isSubmitting", email, phone)
+
         if (urlOtp && urlOtp.length === 6 && !isSubmitting) {
             setOtp(urlOtp)
             setValue("otp", urlOtp)
@@ -74,14 +84,23 @@ export function OTPForm() {
 
         setIsSubmitting(true)
         try {
+            // Use server action for OTP confirmation and auto sign-in
             const result = await confirmOTPAction(data.otp, email || undefined, phone || undefined)
 
             if (result?.success === false) {
-                setError("otp", { message: result.error })
-                toast.error(result.error)
+                setError("otp", { message: result.message })
+                toast.error(result.message)
             } else if (result?.success === true) {
                 toast.success(result.message || t("accountConfirmed"))
-                router.push(`/${locale}/sign-in`)
+
+                if (result.needsCheckout && result.checkoutUrl) {
+                    // User needs subscription, redirect to Stripe checkout
+                    window.location.href = result.checkoutUrl
+                } else {
+                    // No checkout needed, redirect to main dashboard
+                    await update()
+                    router.push(`/${locale}`)
+                }
             }
         } catch (error) {
             console.error("OTP confirmation error:", error)
@@ -107,6 +126,7 @@ export function OTPForm() {
                 toast.success(result.message || t("otpSent"))
                 setOtp("") // Clear the OTP input
                 setValue("otp", "") // Clear the form value
+                setResendCountdown(60) // Start 60 second countdown
             }
         } catch (error) {
             console.error("Resend OTP error:", error)
@@ -120,7 +140,7 @@ export function OTPForm() {
         setOtp(value)
         setValue("otp", value)
         if (value.length === 6) {
-            // Auto-submit when 6 digits are entered
+            // Auto-submit when 6 digits are entered using server action
             handleSubmit(onSubmit)()
         }
     }
@@ -182,10 +202,14 @@ export function OTPForm() {
                             type="button"
                             variant="outline"
                             onClick={handleResendOTP}
-                            disabled={isResending}
+                            disabled={isResending || resendCountdown > 0}
                             className="cursor-pointer"
                         >
-                            {isResending ? t("resending") : t("resendButton")}
+                            {isResending
+                                ? t("resending")
+                                : resendCountdown > 0
+                                    ? `${t("resendButton")} (${resendCountdown}s)`
+                                    : t("resendButton")}
                         </Button>
                     </div>
                 </form>
