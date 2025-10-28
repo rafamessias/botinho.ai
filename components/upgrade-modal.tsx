@@ -80,7 +80,7 @@ export const UpgradeModal = ({
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/20">
+                        <div className="flex items-center justify-center w-12 h-12 rounded-full accent-orange">
                             <AlertTriangle className="h-6 w-6 text-orange-600 dark:text-orange-500" />
                         </div>
                         <DialogTitle className="text-xl">{getTitle()}</DialogTitle>
@@ -90,22 +90,22 @@ export const UpgradeModal = ({
                     </DialogDescription>
                 </DialogHeader>
 
-                <Card className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
+                <Card className="p-4 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
                     <div className="flex items-start gap-3">
-                        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 dark:bg-blue-500 shrink-0">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
                             <Zap className="h-5 w-5 text-white" />
                         </div>
                         <div className="space-y-1">
-                            <h4 className="font-semibold text-blue-900 dark:text-blue-100">
+                            <h4 className="font-semibold text-primary">
                                 {t("benefits.title")}
                             </h4>
-                            <ul className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
+                            <ul className="space-y-1 text-sm text-primary/80">
                                 <li className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                     {t("benefits.unlimited")}
                                 </li>
                                 <li className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                     {t("benefits.advanced")}
                                 </li>
                             </ul>

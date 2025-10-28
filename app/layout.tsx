@@ -9,8 +9,8 @@ import { Analytics } from "@vercel/analytics/next"
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
-    title: "Opineeo - The simplest survey widget for Devs and Founders",
-    description: "Lightweight, customizable survey widget for any website. Easy integration with vanilla JavaScript. Only 15KB minified.",
+    title: "botinho.ai - WhatsApp AI Automation",
+    description: "Automate your WhatsApp customer support with AI. Get started with a free trial.",
 }
 
 export default function RootLayout({

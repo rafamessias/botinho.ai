@@ -24,15 +24,12 @@ export default function AccountPage() {
             <SidebarInset>
                 <SiteHeader title={t("title")} />
                 <div className="flex flex-1 flex-col">
-                    <div className="@container/main flex flex-1 flex-col gap-2 max-w-4xl w-full mx-auto">
-                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                            <div className="px-4 lg:px-6 space-y-6">
-                                <div className="space-y-2">
-                                    <p className="text-muted-foreground">{t("description")}</p>
-                                </div>
-
-                                <ProfileForm />
+                    <div className="@container/main flex flex-1 flex-col gap-2 max-w-7xl w-full mx-auto">
+                        <div className="px-4 md:px-6 py-6 lg:px-8 space-y-6 md:space-y-8">
+                            <div className="space-y-2">
+                                <p className="text-muted-foreground">{t("description")}</p>
                             </div>
+                            <ProfileForm />
                         </div>
                     </div>
                 </div>

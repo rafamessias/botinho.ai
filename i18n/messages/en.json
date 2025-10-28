@@ -1,15 +1,138 @@
 {
-    "Page": {
-        "title": "Main Dashboard",
-        "description": "SaaS Framework Dashboard"
+    "Inbox": {
+        "title": "Inbox",
+        "searchPlaceholder": "Search conversations...",
+        "typeMessagePlaceholder": "Type a message...",
+        "status": {
+            "online": "Online",
+            "offline": "Offline"
+        },
+        "messageStatus": {
+            "sent": "Sent",
+            "delivered": "Delivered",
+            "read": "Read"
+        },
+        "empty": {
+            "title": "No conversations yet",
+            "description": "Start chatting with your customers to see conversations here"
+        }
+    },
+    "AiTraining": {
+        "title": "AI Training",
+        "subtitle": "Teach your bot about your business",
+        "buttons": {
+            "addKnowledge": "Add Knowledge",
+            "createTemplate": "Create Template",
+            "cancel": "Cancel",
+            "update": "Update",
+            "addOption": "Add Option"
+        },
+        "tabs": {
+            "knowledgeBase": "Knowledge Base",
+            "templates": "Templates",
+            "textContent": "Text Content",
+            "websiteUrl": "Website URL"
+        },
+        "form": {
+            "title": "Title",
+            "content": "Content",
+            "templateName": "Template Name",
+            "category": "Category",
+            "messageContent": "Message Content",
+            "quickReplyOptions": "Quick Reply Options",
+            "option": "Option",
+            "websiteUrl": "Website URL",
+            "titlePlaceholder": "e.g., Business Hours, Pricing, Return Policy",
+            "contentPlaceholder": "Enter the information you want your AI to know...",
+            "urlTitlePlaceholder": "e.g., Product Catalog, FAQ Page",
+            "urlPlaceholder": "https://example.com/page",
+            "urlDescription": "We'll extract and learn from this page's content",
+            "templateNamePlaceholder": "e.g., Welcome Message, Order Confirmation",
+            "selectCategory": "Select a category",
+            "messageContentPlaceholder": "Enter your template message... Use [VARIABLE_NAME] for dynamic content",
+            "messageContentTip": "Tip: Use [BRACKETS] for variables like [CUSTOMER_NAME], [ORDER_ID], etc.",
+            "quickReplyOptionsDescription": "Add buttons for customers to select from (optional)",
+            "buttonLabelPlaceholder": "Button label (what user sees)",
+            "buttonValuePlaceholder": "Value (what gets sent)",
+            "noOptionsAdded": "No options added yet",
+            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons"
+        },
+        "categories": {
+            "greeting": "Greeting",
+            "orders": "Orders",
+            "products": "Products",
+            "support": "Support",
+            "closing": "Closing"
+        },
+        "stats": {
+            "knowledgeItems": "Knowledge Items",
+            "templates": "Templates",
+            "trainingStatus": "Training Status",
+            "active": "Active",
+            "knowledgeItemsDescription": "Total items in knowledge base",
+            "templatesDescription": "Ready-to-use message templates",
+            "trainingStatusDescription": "AI is trained and ready"
+        },
+        "knowledge": {
+            "title": "Knowledge Base",
+            "description": "All information your AI uses to respond to customers",
+            "type": {
+                "text": "Text",
+                "url": "URL"
+            },
+            "added": "Added",
+            "empty": {
+                "title": "No knowledge yet",
+                "description": "Start training your AI by adding information",
+                "button": "Add First Item"
+            }
+        },
+        "templates": {
+            "title": "Message Templates",
+            "description": "Pre-written messages for common customer interactions",
+            "quickReplyOptions": "Quick Reply Options",
+            "created": "Created",
+            "empty": {
+                "title": "No templates yet",
+                "description": "Create your first message template",
+                "button": "Create First Template"
+            }
+        },
+        "dialog": {
+            "addKnowledge": "Add New Knowledge",
+            "editKnowledge": "Edit Knowledge",
+            "addKnowledgeDescription": "Add information to train your AI assistant",
+            "editKnowledgeDescription": "Update the information below",
+            "createTemplate": "Create New Template",
+            "editTemplate": "Edit Template",
+            "createTemplateDescription": "Create a reusable message template",
+            "editTemplateDescription": "Update your template below"
+        },
+        "errors": {
+            "fillAllFields": "Error",
+            "fillAllFieldsDescription": "Please fill in all fields"
+        },
+        "success": {
+            "knowledgeAdded": "Knowledge added!",
+            "knowledgeAddedDescription": "Your AI has been updated with new information",
+            "knowledgeUpdated": "Knowledge item has been updated",
+            "knowledgeDeleted": "Knowledge item removed",
+            "templateCreated": "Template created!",
+            "templateCreatedDescription": "Your new template is ready to use",
+            "templateUpdated": "Template has been updated",
+            "templateDeleted": "Template removed",
+            "copied": "Copied!",
+            "templateCopied": "Template copied to clipboard",
+            "deleted": "Deleted",
+            "updated": "Updated!"
+        }
     },
     "AppSidebar": {
-        "brand": "My SaaS",
         "navigation": {
             "dashboard": "Dashboard",
-            "surveys": "Surveys",
+            "inbox": "Inbox",
+            "aiTraining": "AI Training",
             "team": "Team",
-            "surveyDemo": "Survey Demo",
             "settings": "Settings",
             "support": "Support"
         },
@@ -1468,6 +1591,74 @@
                 "productFeedback": "Product Feedback",
                 "eventFeedback": "Event Feedback"
             }
+        }
+    },
+    "Dashboard": {
+        "title": "Dashboard",
+        "description": "Welcome back! Here's what's happening today.",
+        "stats": {
+            "messagesHandled": {
+                "title": "Messages Handled",
+                "value": "445",
+                "change": "12%",
+                "changeLabel": "vs last week"
+            },
+            "avgResponseTime": {
+                "title": "Avg Response Time",
+                "value": "1.2s",
+                "change": "8%",
+                "changeLabel": "faster"
+            },
+            "satisfactionRate": {
+                "title": "Satisfaction Rate",
+                "value": "94%",
+                "change": "3%",
+                "changeLabel": "improvement"
+            },
+            "activeCustomers": {
+                "title": "Active Customers",
+                "value": "1,234",
+                "change": "18%",
+                "changeLabel": "growth"
+            }
+        },
+        "charts": {
+            "messageVolume": {
+                "title": "Message Volume",
+                "description": "Daily messages handled this week",
+                "label": "Messages"
+            }
+        },
+        "recentActivity": {
+            "title": "Recent Activity",
+            "description": "Latest customer interactions",
+            "customers": {
+                "maria": "Maria Silva",
+                "joao": "João Santos",
+                "ana": "Ana Costa",
+                "pedro": "Pedro Lima"
+            },
+            "messages": {
+                "hours": "What are your business hours?",
+                "delivery": "Do you offer delivery?",
+                "price": "What's the price of product X?",
+                "cancel": "How do I cancel?"
+            },
+            "time": {
+                "2min": "2 min ago",
+                "5min": "5 min ago",
+                "12min": "12 min ago",
+                "18min": "18 min ago"
+            },
+            "status": {
+                "answered": "answered",
+                "pending": "pending"
+            }
+        },
+        "quickActions": {
+            "title": "Ready to train your AI?",
+            "description": "Add knowledge to make your bot even smarter",
+            "startTraining": "Start Training"
         }
     }
 }

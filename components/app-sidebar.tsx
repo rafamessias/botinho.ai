@@ -7,7 +7,8 @@ import {
   IconHelp,
   IconListDetails,
   IconSettings,
-  IconUsers
+  IconUsers,
+  IconMessageCircle
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -21,7 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { BarChart3, AlertTriangle, ArrowRight } from "lucide-react"
+import { MessageSquare, AlertTriangle, ArrowRight, Zap } from "lucide-react"
 import { Link } from "@/i18n/navigation"
 import { useUser } from "@/components/user-provider"
 
@@ -37,8 +38,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconDashboard,
       },
       {
-        title: t("navigation.surveys"),
-        url: "/survey",
+        title: t("navigation.inbox"),
+        url: "/inbox",
+        icon: IconMessageCircle,
+      },
+      {
+        title: t("navigation.aiTraining"),
+        url: "/ai-training",
         icon: IconListDetails,
       },
       {
@@ -66,13 +72,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-4 hover:bg-primary/5 transition-colors duration-200"
             >
               <Link href="/">
-                <span className="bg-primary rounded-sm p-1">
-                  <BarChart3 className="h-5 w-5 text-primary-foreground" />
-                </span>
-                <span className="text-base font-semibold">Opineeo</span>
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary rounded-lg p-2.5 shadow-sm">
+                    <MessageSquare className="h-6 w-6 text-primary-foreground" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-lg font-bold text-primary">botinho.ai</span>
+                    <span className="text-xs text-muted-foreground font-medium">WhatsApp AI Bot</span>
+                  </div>
+                </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -108,7 +119,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {usagePercentage >= 80 && usagePercentage < 100 && (
           <Link
             href="/subscription"
-            className="flex items-center gap-1 mb-2 px-2 py-1.5 rounded-full bg-orange-100/50 dark:bg-orange-900/70 hover:bg-orange-200/80 dark:hover:bg-orange-800/80 text-orange-800 dark:text-orange-100 text-xs transition-colors justify-between"
+            className="flex items-center gap-1 mb-2 px-2 py-1.5 rounded-full accent-orange text-xs transition-colors justify-between"
             aria-label="Usage warning"
             title="Almost reached your plan's limit"
           >

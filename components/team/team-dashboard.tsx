@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { IconPlus, IconEdit, IconUsers, IconChevronDown, IconTrash, IconCheck } from "@tabler/icons-react"
+import { IconPlus, IconEdit, IconUsers, IconChevronDown } from "@tabler/icons-react"
 import { toast } from "sonner"
 import { TeamForm } from "@/components/team/team-form"
 import { InviteMemberForm } from "@/components/team/invite-member-form"
@@ -26,14 +26,10 @@ import {
 } from "@/components/ui/popover"
 import {
     AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
-    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 //import { cn } from "@/lib/utils"
 //import { deleteTeamAction } from "@/components/server-actions/team"
@@ -170,7 +166,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
             </div>
 
             {/* Main Team Card */}
-            <Card className="border-none p-0 shadow-none bg-transparent">
+            <Card className="bg-transparent border-none shadow-none">
                 <CardHeader className="space-y-4 lg:space-y-6 p-0">
                     {/* Team Selection and Actions */}
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -235,9 +231,9 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                             <Separator />
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                 <div className="flex-1">
-                                    <CardTitle className="text-xl lg:text-2xl">{selectedTeam.name}</CardTitle>
+                                    <CardTitle className="heading-secondary text-xl lg:text-2xl">{selectedTeam.name}</CardTitle>
                                     {selectedTeam.description && (
-                                        <CardDescription className="mt-2 text-sm">
+                                        <CardDescription className="body-secondary mt-2 text-sm">
                                             {selectedTeam.description}
                                         </CardDescription>
                                     )}

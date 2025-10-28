@@ -49,10 +49,10 @@ export function NavUser() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" className="cursor-pointer">
-            <div className="h-8 w-8 rounded-lg bg-gray-200 animate-pulse" />
+            <div className="h-8 w-8 rounded-lg bg-muted animate-pulse" />
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <div className="h-4 bg-gray-200 rounded animate-pulse mb-1" />
-              <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3" />
+              <div className="h-4 bg-muted rounded animate-pulse mb-1" />
+              <div className="h-3 bg-muted rounded animate-pulse w-2/3" />
             </div>
           </SidebarMenuButton>
         </SidebarMenuItem>

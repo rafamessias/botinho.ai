@@ -1,17 +1,16 @@
-"use client"
-
 import * as React from "react"
 import { useTranslations } from "next-intl"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
-import ContactSection from "@/components/support/contact-section"
 import {
     SidebarInset,
     SidebarProvider,
 } from "@/components/ui/sidebar"
+import Inbox from "@/components/inbox/inbox-page"
 
-export default function SupportPage() {
-    const t = useTranslations("Support")
+export default function InboxPage() {
+    const t = useTranslations("Inbox")
+
     return (
         <SidebarProvider
             style={
@@ -23,13 +22,11 @@ export default function SupportPage() {
         >
             <AppSidebar variant="inset" />
             <SidebarInset>
-                <SiteHeader title={t("title")} />
+                <SiteHeader />
                 <div className="flex flex-1 flex-col">
                     <div className="@container/main flex flex-1 flex-col gap-2 max-w-7xl w-full mx-auto">
-                        <div className="px-4 md:px-6 py-6 lg:px-8 space-y-6 md:space-y-8">
-                            <div className="grid gap-6">
-                                <ContactSection />
-                            </div>
+                        <div className="px-4 md:px-6 lg:px-8 space-y-6 md:space-y-8">
+                            <Inbox />
                         </div>
                     </div>
                 </div>
@@ -37,4 +34,3 @@ export default function SupportPage() {
         </SidebarProvider>
     )
 }
-

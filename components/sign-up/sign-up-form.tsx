@@ -125,14 +125,14 @@ export function SignUpForm({
 
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
-            <Card>
+            <Card className="elegant-card">
                 <CardHeader className="text-center relative">
                     <div className="flex justify-end items-center gap-1">
                         <LanguageSelector variant="compact" />
                         <ThemeSelector variant="compact" />
                     </div>
-                    <CardTitle className="text-xl">{t("title")}</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="heading-secondary text-xl">{t("title")}</CardTitle>
+                    <CardDescription className="body-secondary">
                         {t("description")}
                     </CardDescription>
                 </CardHeader>

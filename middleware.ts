@@ -23,6 +23,9 @@ const publicRoutes = routing.locales.flatMap(locale => [
     `/reset-password/confirm`,
     `/${locale}/sign-up/otp`,
     `/sign-up/otp`,
+    `/${locale}/`,
+    `/${locale}`,
+    `/`,
 ]);
 
 function isPublicRoute(path: string) {
@@ -91,7 +94,7 @@ export default async function middleware(request: NextRequest) {
         // If user is trying to access public routes (sign-in, sign-up, etc.), redirect to home with their locale
         if (isPublicRoute(pathname)) {
 
-            const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}`);
+            const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}/dashboard`);
             return NextResponse.redirect(redirectUrl);
         }
 

@@ -1,15 +1,138 @@
 {
-    "Page": {
-        "title": "Painel Principal",
-        "description": "Painel do Framework SaaS"
+    "Inbox": {
+        "title": "Caixa de Entrada",
+        "searchPlaceholder": "Pesquisar conversas...",
+        "typeMessagePlaceholder": "Digite uma mensagem...",
+        "status": {
+            "online": "Online",
+            "offline": "Offline"
+        },
+        "messageStatus": {
+            "sent": "Enviado",
+            "delivered": "Entregue",
+            "read": "Lido"
+        },
+        "empty": {
+            "title": "Nenhuma conversa ainda",
+            "description": "Comece a conversar com seus clientes para ver as conversas aqui"
+        }
+    },
+    "AiTraining": {
+        "title": "Treinamento IA",
+        "subtitle": "Ensine seu bot sobre seu negócio",
+        "buttons": {
+            "addKnowledge": "Adicionar Conhecimento",
+            "createTemplate": "Criar Modelo",
+            "cancel": "Cancelar",
+            "update": "Atualizar",
+            "addOption": "Adicionar Opção"
+        },
+        "tabs": {
+            "knowledgeBase": "Base de Conhecimento",
+            "templates": "Modelos",
+            "textContent": "Conteúdo de Texto",
+            "websiteUrl": "URL do Site"
+        },
+        "form": {
+            "title": "Título",
+            "content": "Conteúdo",
+            "templateName": "Nome do Modelo",
+            "category": "Categoria",
+            "messageContent": "Conteúdo da Mensagem",
+            "quickReplyOptions": "Opções de Resposta Rápida",
+            "option": "Opção",
+            "websiteUrl": "URL do Site",
+            "titlePlaceholder": "ex., Horário de Funcionamento, Preços, Política de Devolução",
+            "contentPlaceholder": "Digite as informações que você quer que sua IA saiba...",
+            "urlTitlePlaceholder": "ex., Catálogo de Produtos, Página de FAQ",
+            "urlPlaceholder": "https://exemplo.com/pagina",
+            "urlDescription": "Extrairemos e aprenderemos com o conteúdo desta página",
+            "templateNamePlaceholder": "ex., Mensagem de Boas-vindas, Confirmação de Pedido",
+            "selectCategory": "Selecione uma categoria",
+            "messageContentPlaceholder": "Digite sua mensagem modelo... Use [NOME_DA_VARIAVEL] para conteúdo dinâmico",
+            "messageContentTip": "Dica: Use [COLCHETES] para variáveis como [NOME_CLIENTE], [ID_PEDIDO], etc.",
+            "quickReplyOptionsDescription": "Adicione botões para os clientes selecionarem (opcional)",
+            "buttonLabelPlaceholder": "Rótulo do botão (o que o usuário vê)",
+            "buttonValuePlaceholder": "Valor (o que é enviado)",
+            "noOptionsAdded": "Nenhuma opção adicionada ainda",
+            "noOptionsAddedDescription": "Clique em \"Adicionar Opção\" para criar botões de resposta rápida"
+        },
+        "categories": {
+            "greeting": "Saudação",
+            "orders": "Pedidos",
+            "products": "Produtos",
+            "support": "Suporte",
+            "closing": "Encerramento"
+        },
+        "stats": {
+            "knowledgeItems": "Itens de Conhecimento",
+            "templates": "Modelos",
+            "trainingStatus": "Status do Treinamento",
+            "active": "Ativo",
+            "knowledgeItemsDescription": "Total de itens na base de conhecimento",
+            "templatesDescription": "Modelos de mensagem prontos para uso",
+            "trainingStatusDescription": "IA está treinada e pronta"
+        },
+        "knowledge": {
+            "title": "Base de Conhecimento",
+            "description": "Todas as informações que sua IA usa para responder aos clientes",
+            "type": {
+                "text": "Texto",
+                "url": "URL"
+            },
+            "added": "Adicionado",
+            "empty": {
+                "title": "Nenhum conhecimento ainda",
+                "description": "Comece a treinar sua IA adicionando informações",
+                "button": "Adicionar Primeiro Item"
+            }
+        },
+        "templates": {
+            "title": "Modelos de Mensagem",
+            "description": "Mensagens pré-escritas para interações comuns com clientes",
+            "quickReplyOptions": "Opções de Resposta Rápida",
+            "created": "Criado",
+            "empty": {
+                "title": "Nenhum modelo ainda",
+                "description": "Crie seu primeiro modelo de mensagem",
+                "button": "Criar Primeiro Modelo"
+            }
+        },
+        "dialog": {
+            "addKnowledge": "Adicionar Novo Conhecimento",
+            "editKnowledge": "Editar Conhecimento",
+            "addKnowledgeDescription": "Adicione informações para treinar seu assistente de IA",
+            "editKnowledgeDescription": "Atualize as informações abaixo",
+            "createTemplate": "Criar Novo Modelo",
+            "editTemplate": "Editar Modelo",
+            "createTemplateDescription": "Crie um modelo de mensagem reutilizável",
+            "editTemplateDescription": "Atualize seu modelo abaixo"
+        },
+        "errors": {
+            "fillAllFields": "Erro",
+            "fillAllFieldsDescription": "Por favor, preencha todos os campos"
+        },
+        "success": {
+            "knowledgeAdded": "Conhecimento adicionado!",
+            "knowledgeAddedDescription": "Sua IA foi atualizada com novas informações",
+            "knowledgeUpdated": "Item de conhecimento foi atualizado",
+            "knowledgeDeleted": "Item de conhecimento removido",
+            "templateCreated": "Modelo criado!",
+            "templateCreatedDescription": "Seu novo modelo está pronto para uso",
+            "templateUpdated": "Modelo foi atualizado",
+            "templateDeleted": "Modelo removido",
+            "copied": "Copiado!",
+            "templateCopied": "Modelo copiado para a área de transferência",
+            "deleted": "Excluído",
+            "updated": "Atualizado!"
+        }
     },
     "AppSidebar": {
-        "brand": "Meu SaaS",
         "navigation": {
-            "dashboard": "Painel",
-            "surveys": "Pesquisas",
+            "dashboard": "Dashboard",
+            "inbox": "Caixa de Entrada",
+            "aiTraining": "Treinamento IA",
             "team": "Equipe",
-            "surveyDemo": "Demo de Pesquisa",
             "settings": "Configurações",
             "support": "Suporte"
         },
@@ -1469,6 +1592,74 @@
                 "productFeedback": "Feedback do Produto",
                 "eventFeedback": "Feedback do Evento"
             }
+        }
+    },
+    "Dashboard": {
+        "title": "Dashboard",
+        "description": "Bem-vindo de volta! Aqui está o que está acontecendo hoje.",
+        "stats": {
+            "messagesHandled": {
+                "title": "Mensagens Processadas",
+                "value": "445",
+                "change": "12%",
+                "changeLabel": "vs semana passada"
+            },
+            "avgResponseTime": {
+                "title": "Tempo Médio de Resposta",
+                "value": "1,2s",
+                "change": "8%",
+                "changeLabel": "mais rápido"
+            },
+            "satisfactionRate": {
+                "title": "Taxa de Satisfação",
+                "value": "94%",
+                "change": "3%",
+                "changeLabel": "melhoria"
+            },
+            "activeCustomers": {
+                "title": "Clientes Ativos",
+                "value": "1.234",
+                "change": "18%",
+                "changeLabel": "crescimento"
+            }
+        },
+        "charts": {
+            "messageVolume": {
+                "title": "Volume de Mensagens",
+                "description": "Mensagens diárias processadas esta semana",
+                "label": "Mensagens"
+            }
+        },
+        "recentActivity": {
+            "title": "Atividade Recente",
+            "description": "Últimas interações com clientes",
+            "customers": {
+                "maria": "Maria Silva",
+                "joao": "João Santos",
+                "ana": "Ana Costa",
+                "pedro": "Pedro Lima"
+            },
+            "messages": {
+                "hours": "Qual o horário de funcionamento?",
+                "delivery": "Vocês fazem entrega?",
+                "price": "Qual o preço do produto X?",
+                "cancel": "Como faço para cancelar?"
+            },
+            "time": {
+                "2min": "2 min atrás",
+                "5min": "5 min atrás",
+                "12min": "12 min atrás",
+                "18min": "18 min atrás"
+            },
+            "status": {
+                "answered": "respondida",
+                "pending": "pendente"
+            }
+        },
+        "quickActions": {
+            "title": "Pronto para treinar sua IA?",
+            "description": "Adicione conhecimento para tornar seu bot ainda mais inteligente",
+            "startTraining": "Começar Treinamento"
         }
     }
 }

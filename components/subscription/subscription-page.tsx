@@ -343,9 +343,9 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
             )}
 
             {/* Subscription Overview */}
-            <Card>
+            <Card className="elegant-card">
                 <CardHeader>
-                    <CardTitle className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <CardTitle className="heading-secondary relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div className="relative sm:absolute right-0 flex flex-col sm:flex-row items-end sm:items-center gap-2 w-full justify-end mb-2 sm:mb-0">
                             {/* Refresh Button */}
                             <Button
@@ -423,11 +423,11 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                         </div>
 
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="body-secondary">
                         {t("page.description")}
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="content-spacing">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">{t("page.plan")}</p>
@@ -472,17 +472,17 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
 
             {/* Usage Metrics */}
             {usage && usage.usage && usage.usage.length > 0 && (
-                <Card>
+                <Card className="elegant-card">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="heading-secondary flex items-center gap-2">
                             <BarChart3 className="h-5 w-5" />
                             {t("page.usageMetrics")}
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="body-secondary">
                             {t("page.currentUsage")}
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="content-spacing">
                         {usage.usage.map((metric: UsageMetric, index: number) => (
                             <div key={index} className="space-y-3">
                                 <div className="flex items-center justify-between">
