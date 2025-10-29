@@ -127,12 +127,12 @@ export async function POST(request: NextRequest) {
                             { expand: ['items.data.price.product'] }
                         );
 
-                        // Get team ID and CustomerSubscription ID from metadata
-                        const teamId = session.metadata?.teamId;
+                        // Get company ID and CustomerSubscription ID from metadata
+                        const companyId = session.metadata?.companyId;
                         const customerSubscriptionId = session.metadata?.customerSubscriptionId;
 
-                        if (!teamId) {
-                            console.error('No teamId found in session metadata');
+                        if (!companyId) {
+                            console.error('No companyId found in session metadata');
                             console.error('Available metadata:', session.metadata);
                             break;
                         }
@@ -197,11 +197,11 @@ export async function POST(request: NextRequest) {
                         } else {
 
 
-                            console.log(`Checking for existing FREE plan subscription for team ${teamId}`);
+                            console.log(`Checking for existing FREE plan subscription for company ${companyId}`);
 
                             const existingFreeSubscription = await prisma.customerSubscription.findFirst({
                                 where: {
-                                    teamId: parseInt(teamId),
+                                    companyId: parseInt(companyId),
                                     status: {
                                         in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
                                     }
@@ -229,10 +229,10 @@ export async function POST(request: NextRequest) {
                             }
 
                             // Create new CustomerSubscription
-                            console.log(`Creating new CustomerSubscription for team ${teamId}`);
+                            console.log(`Creating new CustomerSubscription for company ${companyId}`);
 
                             const result = await createCustomerSubscription({
-                                teamId: parseInt(teamId),
+                                companyId: parseInt(companyId),
                                 planId: plan.id,
                                 stripeCustomerId: session.customer as string,
                                 stripeSubscriptionId: subscription.id,
@@ -244,7 +244,7 @@ export async function POST(request: NextRequest) {
                             });
 
                             if (result.success) {
-                                console.log(`Subscription created successfully for team ${teamId}`);
+                                console.log(`Subscription created successfully for company ${companyId}`);
 
                                 // Migrate usage tracking from FREE subscription to new paid subscription
                                 if (existingFreeSubscription && existingFreeSubscription.plan.planType === PlanType.FREE) {
@@ -406,23 +406,23 @@ export async function POST(request: NextRequest) {
                                 const newActiveSurveysLimit = getLimitForMetric(plan, UsageMetricType.ACTIVE_SURVEYS);
 
                                 if (currentTracking && typeof currentTracking.currentUsage === "number" && currentTracking.currentUsage > newActiveSurveysLimit) {
-                                    // Archive the excess number of published surveys for the team
+                                    // Archive the excess number of published surveys for the company
                                     const extraToArchive = currentTracking.currentUsage - newActiveSurveysLimit;
 
                                     if (extraToArchive > 0) {
-                                        // Find the oldest published surveys for the team/subscription
+                                        // Find the oldest published surveys for the company/subscription
                                         const customerSub = await prisma.customerSubscription.findUnique({
                                             where: { id: currentSubscription.id },
                                             select: {
-                                                teamId: true
+                                                companyId: true
                                             }
                                         });
 
-                                        if (customerSub?.teamId) {
+                                        if (customerSub?.companyId) {
                                             // Get N oldest published surveys
                                             const publishedSurveys = await prisma.survey.findMany({
                                                 where: {
-                                                    teamId: customerSub.teamId,
+                                                    companyId: customerSub.companyId,
                                                     status: SurveyStatus.published
                                                 },
                                                 orderBy: {
@@ -444,7 +444,7 @@ export async function POST(request: NextRequest) {
                                                 });
                                                 surveysWereArchived = true;
 
-                                                console.log(`Archived ${publishedSurveyIds.length} excess published surveys for team ${customerSub.teamId} due to plan downgrade.`);
+                                                console.log(`Archived ${publishedSurveyIds.length} excess published surveys for company ${customerSub.companyId} due to plan downgrade.`);
                                             }
                                         }
                                     }
@@ -502,7 +502,7 @@ export async function POST(request: NextRequest) {
                     // Find the existing customer subscription
                     const existingSubscription = await prisma.customerSubscription.findFirst({
                         where: { stripeSubscriptionId: subscription.id },
-                        include: { team: true }
+                        include: { company: true }
                     });
 
                     if (!existingSubscription) {
@@ -510,8 +510,8 @@ export async function POST(request: NextRequest) {
                         break;
                     }
 
-                    const teamId = existingSubscription.teamId;
-                    console.log(`Processing cancellation for team ${teamId}`);
+                    const companyId = existingSubscription.companyId;
+                    console.log(`Processing cancellation for company ${companyId}`);
 
                     // 1. Mark the existing subscription as canceled
                     await prisma.customerSubscription.update({
@@ -524,10 +524,10 @@ export async function POST(request: NextRequest) {
 
                     console.log(`✅ Marked subscription as canceled: ${subscription.id}`);
 
-                    // 2. Find all published surveys for this team and archive them
+                    // 2. Find all published surveys for this company and archive them
                     const publishedSurveys = await prisma.survey.findMany({
                         where: {
-                            teamId: teamId,
+                            companyId: companyId,
                             status: SurveyStatus.published
                         }
                     });
@@ -535,19 +535,19 @@ export async function POST(request: NextRequest) {
                     if (publishedSurveys.length > 0) {
                         console.log(`Found ${publishedSurveys.length} published surveys to archive`);
 
-                        // Archive all published surveys and update team's total active surveys count in a transaction
+                        // Archive all published surveys and update company's total active surveys count in a transaction
                         await prisma.$transaction([
                             prisma.survey.updateMany({
                                 where: {
-                                    teamId: teamId,
+                                    companyId: companyId,
                                     status: SurveyStatus.published
                                 },
                                 data: {
                                     status: SurveyStatus.archived
                                 }
                             }),
-                            prisma.team.update({
-                                where: { id: teamId },
+                            prisma.company.update({
+                                where: { id: companyId },
                                 data: {
                                     totalActiveSurveys: 0
                                 }
@@ -570,10 +570,10 @@ export async function POST(request: NextRequest) {
                         break;
                     }
 
-                    // 4. Check if team already has an active Free plan subscription
+                    // 4. Check if company already has an active Free plan subscription
                     const existingFreeSubscription = await prisma.customerSubscription.findFirst({
                         where: {
-                            teamId: teamId,
+                            companyId: companyId,
                             status: SubscriptionStatus.active,
                             planId: freePlan.id
                         }
@@ -582,14 +582,14 @@ export async function POST(request: NextRequest) {
                     if (!existingFreeSubscription) {
                         // Create a new CustomerSubscription record for the Free plan
                         const freeSubscriptionResult = await createCustomerSubscription({
-                            teamId: teamId,
+                            companyId: companyId,
                             planId: freePlan.id,
                             status: SubscriptionStatus.active,
                             cancelAtPeriodEnd: false,
                         });
 
                         if (freeSubscriptionResult.success) {
-                            console.log(`✅ Created new Free plan subscription for team ${teamId}`);
+                            console.log(`✅ Created new Free plan subscription for company ${companyId}`);
 
                             // Initialize usage tracking for the new subscription
                             if (freeSubscriptionResult.data?.id) {
@@ -599,10 +599,10 @@ export async function POST(request: NextRequest) {
                             console.error('Failed to create free subscription:', freeSubscriptionResult.error);
                         }
                     } else {
-                        console.log(`✅ Team ${teamId} already has an active Free plan subscription`);
+                        console.log(`✅ Company ${companyId} already has an active Free plan subscription`);
                     }
 
-                    console.log(`✅ Subscription cancellation completed for team ${teamId}`);
+                    console.log(`✅ Subscription cancellation completed for company ${companyId}`);
                     console.log(`   - Canceled subscription: ${subscription.id}`);
                     console.log(`   - Archived ${publishedSurveys.length} published surveys`);
                     console.log(`   - Reset active surveys usage to 0`);

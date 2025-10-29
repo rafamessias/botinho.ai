@@ -71,7 +71,7 @@ export const createMonthlyUsageTrackingForYearlySubscriptions = async (): Promis
                         // For active surveys, check current actual count
                         const activeCount = await prisma.survey.count({
                             where: {
-                                teamId: subscription.teamId,
+                                companyId: subscription.companyId,
                                 status: 'published'
                             }
                         });
@@ -80,7 +80,7 @@ export const createMonthlyUsageTrackingForYearlySubscriptions = async (): Promis
 
                     await prisma.usageTracking.create({
                         data: {
-                            teamId: subscription.teamId,
+                            companyId: subscription.companyId,
                             subscriptionId: subscription.id,
                             metricType,
                             currentUsage: initialUsage,

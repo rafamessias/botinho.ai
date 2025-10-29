@@ -5,12 +5,12 @@ import { useSession } from "next-auth/react"
 import { getCurrentUserAction } from "@/components/server-actions/auth"
 import { useTheme } from "next-themes"
 import { BillingInterval, PlanType, SubscriptionStatus, Theme } from "@/lib/generated/prisma"
-import { getUserTeamsLightAction } from "./server-actions/team"
+import { getUserCompaniesLightAction } from "./server-actions/company"
 import LoadingComp from "./loading-comp"
 import { useRouter } from "next/navigation"
 import { createCheckoutSessionAction } from '@/components/server-actions/auth'
 
-export interface UserTeam {
+export interface UserCompany {
     id: number
     name: string
     members?: Array<{
@@ -33,8 +33,8 @@ export interface User {
     avatarUrl: string | null
     language: string
     theme: Theme
-    teams: UserTeam[] | null
-    defaultTeamId: number | null
+    companies: UserCompany[] | null
+    defaultCompanyId: number | null
     usagePercentage: number
     position?: string | null
     companyName?: string | null
@@ -51,7 +51,7 @@ interface UserContextType {
     setUser: (user: User | null) => void
     loading: boolean
     error: string | null
-    refreshUser: (teamsUpdate: boolean) => Promise<void>
+    refreshUser: (companiesUpdate: boolean) => Promise<void>
     isAuthenticated: boolean
     hasPermission: () => { isAdmin: boolean, canPost: boolean, canApprove: boolean }
     usagePercentage: number
@@ -75,7 +75,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
 
     // Function to fetch user data
-    const fetchUser = async (teamsUpdate: boolean = true) => {
+    const fetchUser = async (companiesUpdate: boolean = true) => {
         if (!session?.user?.email) {
             setUser(null)
             setLoading(false)
@@ -88,23 +88,23 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
             const result = await getCurrentUserAction()
 
             if (result.success && result.user) {
-                if (teamsUpdate) {
-                    const resultTeams = await getUserTeamsLightAction(result.user.id, result.user.defaultTeamId || 0)
-                    if (resultTeams && resultTeams?.success && resultTeams?.teams) {
-                        setUser({ ...result.user, teams: resultTeams.teams as UserTeam[] })
+                if (companiesUpdate) {
+                    const resultCompanies = await getUserCompaniesLightAction(result.user.id, result.user.defaultCompanyId || 0)
+                    if (resultCompanies && resultCompanies?.success && resultCompanies?.companies) {
+                        setUser({ ...result.user, companies: resultCompanies.companies as UserCompany[] })
                     } else {
-                        setUser({ ...result.user, teams: null })
+                        setUser({ ...result.user, companies: null })
                     }
 
 
                     // Check if user exists and has a pending subscription
-                    if (resultTeams?.customerSubscription && resultTeams.customerSubscription.status === SubscriptionStatus.pending) {
-                        const subscription = resultTeams.customerSubscription
+                    if (resultCompanies?.customerSubscription && resultCompanies.customerSubscription.status === SubscriptionStatus.pending) {
+                        const subscription = resultCompanies.customerSubscription
                         const checkoutResult = await createCheckoutSessionAction(
                             subscription.plan?.planType || PlanType.FREE,
                             subscription.billingInterval || BillingInterval.monthly,
                             session?.user?.email,
-                            result.user.defaultTeamId || 0,
+                            result.user.defaultCompanyId || 0,
                             subscription.id
                         )
 
@@ -116,7 +116,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
                     }
 
                 } else {
-                    setUser({ ...result.user, teams: user?.teams || null })
+                    setUser({ ...result.user, companies: user?.companies || null })
                 }
 
                 if (theme !== result.user?.theme) setTheme(result.user?.theme)
@@ -135,8 +135,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
 
     // Refresh user function (can be called manually)
-    const refreshUser = async (teamsUpdate: boolean = true) => {
-        await fetchUser(teamsUpdate)
+    const refreshUser = async (companiesUpdate: boolean = true) => {
+        await fetchUser(companiesUpdate)
     }
 
     // Fetch user data when session changes - simplified approach
@@ -167,14 +167,14 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const hasPermission = (): { isAdmin: boolean, canPost: boolean, canApprove: boolean } => {
         if (!user) return { isAdmin: false, canPost: false, canApprove: false }
 
-        // Assuming user.teams is an array of team objects with members
-        const team = user.teams?.find((t: any) => t.id === user.defaultTeamId)
-        if (!team || !team.members || !Array.isArray(team.members)) return { isAdmin: false, canPost: false, canApprove: false }
+        // Assuming user.companies is an array of company objects with members
+        const company = user.companies?.find((c: any) => c.id === user.defaultCompanyId)
+        if (!company || !company.members || !Array.isArray(company.members)) return { isAdmin: false, canPost: false, canApprove: false }
 
-        // Return true if the user has any member records in their default team
-        const userTeamMember = team.members[0]
+        // Return true if the user has any member records in their default company
+        const userCompanyMember = company.members[0]
 
-        return { isAdmin: userTeamMember?.isAdmin || false, canPost: userTeamMember?.canPost || false, canApprove: userTeamMember?.canApprove || false }
+        return { isAdmin: userCompanyMember?.isAdmin || false, canPost: userCompanyMember?.canPost || false, canApprove: userCompanyMember?.canApprove || false }
 
     }
     // Context value

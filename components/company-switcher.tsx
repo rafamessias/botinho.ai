@@ -19,19 +19,19 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 
-export function TeamSwitcher({
-  teams,
+export function CompanySwitcher({
+  companies,
 }: {
-  teams: {
+  companies: {
     name: string
     logo: React.ElementType
     plan: string
   }[]
 }) {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const [activeCompany, setActiveCompany] = React.useState(companies[0])
 
-  if (!activeTeam) {
+  if (!activeCompany) {
     return null
   }
 
@@ -45,11 +45,11 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <activeTeam.logo className="size-4" />
+                <activeCompany.logo className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeTeam.name}</span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate font-medium">{activeCompany.name}</span>
+                <span className="truncate text-xs">{activeCompany.plan}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -61,18 +61,18 @@ export function TeamSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Companies
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {companies.map((company, index) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={company.name}
+                onClick={() => setActiveCompany(company)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
+                  <company.logo className="size-3.5 shrink-0" />
                 </div>
-                {team.name}
+                {company.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
@@ -81,7 +81,7 @@ export function TeamSwitcher({
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">Add team</div>
+              <div className="text-muted-foreground font-medium">Add company</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

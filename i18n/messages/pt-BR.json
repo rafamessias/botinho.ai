@@ -1,6 +1,7 @@
 {
     "Inbox": {
         "title": "Caixa de Entrada",
+        "description": "Gerencie suas conversas e mensagens",
         "searchPlaceholder": "Pesquisar conversas...",
         "typeMessagePlaceholder": "Digite uma mensagem...",
         "status": {
@@ -19,6 +20,7 @@
     },
     "AiTraining": {
         "title": "Treinamento IA",
+        "description": "Treine seu assistente de IA com conhecimento e modelos",
         "subtitle": "Ensine seu bot sobre seu negócio",
         "buttons": {
             "addKnowledge": "Adicionar Conhecimento",
@@ -132,7 +134,7 @@
             "dashboard": "Dashboard",
             "inbox": "Caixa de Entrada",
             "aiTraining": "Treinamento IA",
-            "team": "Equipe",
+            "company": "Empresa",
             "settings": "Configurações",
             "support": "Suporte"
         },
@@ -142,13 +144,13 @@
     },
     "NavMain": {
         "quickCreate": "Criar Pesquisa",
-        "addTeam": "Adicionar Equipe",
-        "selectTeam": "Selecionar equipe...",
-        "searchTeams": "Pesquisar equipes...",
-        "noTeamsFound": "Nenhuma equipe encontrada.",
+        "addCompany": "Adicionar Empresa",
+        "selectCompany": "Selecionar empresa...",
+        "searchCompanies": "Pesquisar empresas...",
+        "noCompaniesFound": "Nenhuma empresa encontrada.",
         "messages": {
-            "teamsUpdated": "Equipes atualizadas com sucesso",
-            "failedToUpdateDefaultTeam": "Falha ao atualizar equipe padrão"
+            "companiesUpdated": "Empresas atualizadas com sucesso",
+            "failedToUpdateDefaultCompany": "Falha ao atualizar empresa padrão"
         }
     },
     "SiteHeader": {
@@ -755,13 +757,47 @@
             "removeSuccess": "Membro removido com sucesso",
             "removeFailed": "Falha ao remover membro",
             "updateSuccess": "Permissões do membro atualizadas com sucesso",
-            "updateFailed": "Falha ao atualizar permissões do membro"
+            "updateFailed": "Falha ao atualizar permissões do membro",
+            "actions": "Ações",
+            "openMenu": "Abrir menu",
+            "excel": {
+                "singleInvite": "Convite Individual",
+                "bulkImport": "Importação em Massa",
+                "uploadLabel": "Enviar Arquivo Excel",
+                "uploadDescription": "Envie um arquivo Excel ou CSV com informações dos membros para convidar vários membros de uma vez.",
+                "dropHere": "Solte o arquivo aqui",
+                "clickOrDrag": "Clique para enviar ou arraste e solte",
+                "supportedFormats": "Suporta arquivos .xlsx, .xls e .csv",
+                "formatInfo": "Colunas obrigatórias: email (obrigatório). Colunas opcionais: firstName, lastName, isAdmin, canPost, canApprove. Os nomes das colunas não diferenciam maiúsculas de minúsculas.",
+                "parseError": "Falha ao analisar arquivo Excel",
+                "readError": "Falha ao ler arquivo",
+                "invalidFileType": "Tipo de arquivo inválido. Por favor, envie arquivos .xlsx, .xls ou .csv.",
+                "parsedSuccess": "{count} membro(s) analisado(s) com sucesso",
+                "parsedWithErrors": "Analisado com {count} erro(s)",
+                "errorsFound": "{count} erro(s) encontrado(s)",
+                "noData": "Nenhum dado de membro válido encontrado no arquivo",
+                "email": "Email",
+                "firstName": "Primeiro Nome",
+                "lastName": "Sobrenome",
+                "admin": "Admin",
+                "canPost": "Pode Criar",
+                "canApprove": "Pode Ler",
+                "preview": "Visualização ({count} membros)",
+                "clear": "Limpar",
+                "inviting": "Convidando...",
+                "inviteAll": "Convidar Todos ({count})",
+                "bulkSuccess": "{count} membro(s) convidado(s) com sucesso",
+                "bulkErrors": "Falha ao convidar {count} membro(s)",
+                "bulkFailed": "Falha na importação em massa"
+            }
         },
         "messages": {
             "createSuccess": "Empresa criada com sucesso",
             "updateSuccess": "Empresa atualizada com sucesso",
             "operationFailed": "Operação falhou",
-            "unexpectedError": "Ocorreu um erro inesperado"
+            "unexpectedError": "Ocorreu um erro inesperado",
+            "bulkInviteSuccess": "{count} membro(s) convidado(s) com sucesso",
+            "bulkInviteFailed": "Falha ao convidar membros"
         }
     },
     "Profile": {

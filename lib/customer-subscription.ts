@@ -4,7 +4,7 @@ import { BillingInterval, SubscriptionStatus } from "@/lib/generated/prisma"
 
 // Validation schemas
 const createCustomerSubscriptionSchema = z.object({
-    teamId: z.number().int().positive("Team ID must be a positive integer"),
+    companyId: z.number().int().positive("Company ID must be a positive integer"),
     planId: z.string().min(1, "Plan ID is required"),
     status: z.nativeEnum(SubscriptionStatus).optional(),
     stripeCustomerId: z.string().optional(),
@@ -32,7 +32,7 @@ const updateCustomerSubscriptionSchema = z.object({
 })
 
 const getCustomerSubscriptionSchema = z.object({
-    teamId: z.number().int().positive("Team ID must be a positive integer"),
+    companyId: z.number().int().positive("Company ID must be a positive integer"),
 })
 
 const deleteCustomerSubscriptionSchema = z.object({
@@ -63,10 +63,10 @@ export const createCustomerSubscription = async (data: CreateCustomerSubscriptio
         // Validate input data
         const validatedData = createCustomerSubscriptionSchema.parse(data)
 
-        // Check if team already has an active or trialing subscription
+        // Check if company already has an active or trialing subscription
         const existingActiveSubscription = await prisma.customerSubscription.findFirst({
             where: {
-                teamId: validatedData.teamId,
+                companyId: validatedData.companyId,
                 status: {
                     in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
                 }
@@ -76,7 +76,7 @@ export const createCustomerSubscription = async (data: CreateCustomerSubscriptio
         if (existingActiveSubscription) {
             return {
                 success: false,
-                error: "Team already has an active subscription"
+                error: "Company already has an active subscription"
             }
         }
 
@@ -98,7 +98,7 @@ export const createCustomerSubscription = async (data: CreateCustomerSubscriptio
         // Create the subscription
         const subscription = await prisma.customerSubscription.create({
             data: {
-                teamId: validatedData.teamId,
+                companyId: validatedData.companyId,
                 planId: validatedData.planId,
                 stripeCustomerId: validatedData.stripeCustomerId,
                 stripeSubscriptionId: validatedData.stripeSubscriptionId,
@@ -112,7 +112,7 @@ export const createCustomerSubscription = async (data: CreateCustomerSubscriptio
             },
             include: {
                 plan: true,
-                team: {
+                company: {
                     select: {
                         id: true,
                         name: true
@@ -203,7 +203,7 @@ export const updateCustomerSubscription = async (data: UpdateCustomerSubscriptio
             data: updateData,
             include: {
                 plan: true,
-                team: {
+                company: {
                     select: {
                         id: true,
                         name: true
@@ -247,7 +247,7 @@ export const getCustomerSubscription = async (data: GetCustomerSubscriptionInput
         // Get the subscription
         const subscription = await prisma.customerSubscription.findFirst({
             where: {
-                teamId: validatedData.teamId,
+                companyId: validatedData.companyId,
                 status: {
                     in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
                 }
@@ -376,7 +376,7 @@ export const cancelCustomerSubscription = async (data: DeleteCustomerSubscriptio
             },
             include: {
                 plan: true,
-                team: {
+                company: {
                     select: {
                         id: true,
                         name: true
@@ -441,7 +441,7 @@ export const reactivateCustomerSubscription = async (data: DeleteCustomerSubscri
             },
             include: {
                 plan: true,
-                team: {
+                company: {
                     select: {
                         id: true,
                         name: true
@@ -480,7 +480,7 @@ export const reactivateCustomerSubscription = async (data: DeleteCustomerSubscri
 export const getAllCustomerSubscriptions = async (filters?: {
     status?: SubscriptionStatus
     planId?: string
-    teamId?: number
+    companyId?: number
 }): Promise<CustomerSubscriptionResult> => {
     try {
         const whereClause: any = {}
@@ -493,15 +493,15 @@ export const getAllCustomerSubscriptions = async (filters?: {
             whereClause.planId = filters.planId
         }
 
-        if (filters?.teamId) {
-            whereClause.teamId = filters.teamId
+        if (filters?.companyId) {
+            whereClause.companyId = filters.companyId
         }
 
         const subscriptions = await prisma.customerSubscription.findMany({
             where: whereClause,
             include: {
                 plan: true,
-                team: {
+                company: {
                     select: {
                         id: true,
                         name: true
@@ -572,7 +572,7 @@ export const updateSubscriptionStatus = async (
             data: updateData,
             include: {
                 plan: true,
-                team: {
+                company: {
                     select: {
                         id: true,
                         name: true

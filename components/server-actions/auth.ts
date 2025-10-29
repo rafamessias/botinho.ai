@@ -11,7 +11,7 @@ import ResetPasswordEmail from "@/emails/ResetPasswordEmail"
 import OTPEmail from "@/emails/OTPEmail"
 import { cookies } from "next/headers"
 import { getTranslations } from "next-intl/server"
-import { Provider, Theme, SubscriptionStatus, PlanType, Prisma, TeamMemberStatus, BillingInterval } from "@/lib/generated/prisma"
+import { Provider, Theme, SubscriptionStatus, PlanType, Prisma, CompanyMemberStatus, BillingInterval } from "@/lib/generated/prisma"
 import { createCustomerSubscription } from "@/lib/customer-subscription"
 import { createCheckoutSession } from "@/lib/stripe-service"
 
@@ -81,7 +81,7 @@ export const signInAction = async (formData: SignInFormData) => {
         }
 
         // If successful, check subscription and handle checkout if needed
-        const subscriptionCheck = await validateUserTeamAndSubscription(validatedData.email)
+        const subscriptionCheck = await validateUserCompanyAndSubscription(validatedData.email)
 
         if (subscriptionCheck?.success && subscriptionCheck.needsCheckout) {
             return {
@@ -131,42 +131,42 @@ export const signInAction = async (formData: SignInFormData) => {
 }
 
 /**
- * Create a default team with FREE plan subscription for a user
+ * Create a default company with FREE plan subscription for a user
  * @param userId - User ID
  * @param firstName - User's first name
- * @returns Promise with success status and team data
+ * @returns Promise with success status and company data
  */
-export const createDefaultTeamWithFreePlan = async (userId: number, firstName: string) => {
+export const createDefaultCompanyWithFreePlan = async (userId: number, firstName: string) => {
 
     try {
 
-        console.log(`Creating default team with FREE plan for user ${userId}`)
+        console.log(`Creating default company with FREE plan for user ${userId}`)
 
-        // Create a default team for the user
-        const newTeam = await prisma.team.create({
+        // Create a default company for the user
+        const newCompany = await prisma.company.create({
             data: {
-                name: "Team's " + firstName,
-                description: "Team's " + firstName
+                name: firstName + "'s Company",
+                description: firstName + "'s Company"
             }
         })
 
-        // Create team member (owner)
-        await prisma.teamMember.create({
+        // Create company member (owner)
+        await prisma.companyMember.create({
             data: {
                 userId: userId,
-                teamId: newTeam.id,
+                companyId: newCompany.id,
                 isAdmin: true,
                 canPost: true,
                 canApprove: true,
                 isOwner: true,
-                teamMemberStatus: TeamMemberStatus.accepted,
+                companyMemberStatus: CompanyMemberStatus.accepted,
             }
         })
 
-        // Update user's default team
+        // Update user's default company
         await prisma.user.update({
             where: { id: userId },
-            data: { defaultTeamId: newTeam.id }
+            data: { defaultCompanyId: newCompany.id }
         })
 
         // Find FREE plan
@@ -181,13 +181,13 @@ export const createDefaultTeamWithFreePlan = async (userId: number, firstName: s
             return {
                 success: false,
                 error: "Free plan not found",
-                team: null
+                company: null
             }
         }
 
         // Create FREE plan subscription
         const subscriptionResult = await createCustomerSubscription({
-            teamId: newTeam.id,
+            companyId: newCompany.id,
             planId: freePlan.id,
             status: SubscriptionStatus.active,
             cancelAtPeriodEnd: false
@@ -198,48 +198,48 @@ export const createDefaultTeamWithFreePlan = async (userId: number, firstName: s
             return {
                 success: false,
                 error: "Failed to create subscription",
-                team: null
+                company: null
             }
         }
 
-        console.log('✅ Created team with FREE plan subscription:', newTeam.id)
+        console.log('✅ Created company with FREE plan subscription:', newCompany.id)
         return {
             success: true,
-            message: "Team and FREE plan subscription created successfully",
-            team: newTeam
+            message: "Company and FREE plan subscription created successfully",
+            company: newCompany
         }
 
     } catch (error) {
-        console.error("Error creating default team with free plan:", error)
+        console.error("Error creating default company with free plan:", error)
         return {
             success: false,
             error: error instanceof Error ? error.message : "Unknown error occurred",
-            team: null
+            company: null
         }
     }
 }
 
 /**
- * Server action to validate user's default team and subscription
- * - Validates if user has a default team
- * - Validates if default team has active subscription
- * - Creates default team with FREE plan if no team exists
- * - Creates checkout URL if default team has pending subscription and user is owner
- * - Only validates the user's default team (set in defaultTeamId), not all teams user is member of
+ * Server action to validate user's default company and subscription
+ * - Validates if user has a default company
+ * - Validates if default company has active subscription
+ * - Creates default company with FREE plan if no company exists
+ * - Creates checkout URL if default company has pending subscription and user is owner
+ * - Only validates the user's default company (set in defaultCompanyId), not all companies user is member of
  */
-export const validateUserTeamAndSubscription = async (userEmail: string) => {
+export const validateUserCompanyAndSubscription = async (userEmail: string) => {
     const t = await getTranslations("AuthErrors")
 
     try {
 
-        console.log('Validating user team and subscription for:', userEmail)
+        console.log('Validating user company and subscription for:', userEmail)
 
         // Get user
         const user = await prisma.user.findUnique({
             where: { email: userEmail },
             select: {
                 id: true,
-                defaultTeamId: true,
+                defaultCompanyId: true,
                 firstName: true
             }
         })
@@ -248,14 +248,14 @@ export const validateUserTeamAndSubscription = async (userEmail: string) => {
             return { success: false, error: "User not found", needsCheckout: false }
         }
 
-        // Case 1: User has no default team - create one with FREE plan
-        if (!user.defaultTeamId) {
-            const createTeamResult = await createDefaultTeamWithFreePlan(user.id, user.firstName)
+        // Case 1: User has no default company - create one with FREE plan
+        if (!user.defaultCompanyId) {
+            const createCompanyResult = await createDefaultCompanyWithFreePlan(user.id, user.firstName)
 
-            if (!createTeamResult.success) {
+            if (!createCompanyResult.success) {
                 return {
                     success: false,
-                    error: createTeamResult.error || "Failed to create default team",
+                    error: createCompanyResult.error || "Failed to create default company",
                     needsCheckout: false,
                     checkoutUrl: null
                 }
@@ -268,11 +268,11 @@ export const validateUserTeamAndSubscription = async (userEmail: string) => {
             }
         }
 
-        // Case 2: User has default team - get team with subscription
-        const defaultTeam = await prisma.team.findUnique({
-            where: { id: user.defaultTeamId },
+        // Case 2: User has default company - get company with subscription
+        const defaultCompany = await prisma.company.findUnique({
+            where: { id: user.defaultCompanyId },
             include: {
-                subscriptions: {
+                CustomerSubscription: {
                     where: {
                         status: {
                             in: [SubscriptionStatus.active, SubscriptionStatus.trialing, SubscriptionStatus.pending]
@@ -294,20 +294,20 @@ export const validateUserTeamAndSubscription = async (userEmail: string) => {
                     take: 1
                 }
             }
-        }) as Prisma.TeamGetPayload<{
-            include: { subscriptions: { include: { plan: true } }, members: true }
+        }) as Prisma.CompanyGetPayload<{
+            include: { CustomerSubscription: { include: { plan: true } }, members: true }
         }> | null
 
-        if (!defaultTeam) {
-            // Default team ID exists but team not found - create a team and FREE plan subscription
-            console.log('Default team ID exists but team not found, creating new team with FREE plan')
+        if (!defaultCompany) {
+            // Default company ID exists but company not found - create a company and FREE plan subscription
+            console.log('Default company ID exists but company not found, creating new company with FREE plan')
 
-            const createTeamResult = await createDefaultTeamWithFreePlan(user.id, user.firstName)
+            const createCompanyResult = await createDefaultCompanyWithFreePlan(user.id, user.firstName)
 
-            if (!createTeamResult.success) {
+            if (!createCompanyResult.success) {
                 return {
                     success: false,
-                    error: createTeamResult.error || "Failed to create default team",
+                    error: createCompanyResult.error || "Failed to create default company",
                     needsCheckout: false,
                     checkoutUrl: null
                 }
@@ -320,12 +320,12 @@ export const validateUserTeamAndSubscription = async (userEmail: string) => {
             }
         }
 
-        const subscription = defaultTeam.subscriptions[0]
-        const isOwner = defaultTeam.members.length > 0
+        const subscription = defaultCompany.CustomerSubscription[0]
+        const isOwner = defaultCompany.members.length > 0
 
         // Case 2a: Has pending subscription and user is owner - create checkout
         if (subscription && subscription.status === SubscriptionStatus.pending && isOwner) {
-            console.log('Pending subscription found for default team, creating checkout URL')
+            console.log('Pending subscription found for default company, creating checkout URL')
 
             const planType: PlanType = subscription.plan?.planType as PlanType || PlanType.FREE
 
@@ -334,7 +334,7 @@ export const validateUserTeamAndSubscription = async (userEmail: string) => {
                 planId: planType,
                 billingCycle: BillingInterval.monthly,
                 userEmail: userEmail,
-                teamId: defaultTeam.id,
+                companyId: defaultCompany.id,
                 customerSubscriptionId: subscription.id
             })
 
@@ -356,19 +356,19 @@ export const validateUserTeamAndSubscription = async (userEmail: string) => {
             }
         }
 
-        // Case 2b: Has pending subscription but user is not owner of default team
+        // Case 2b: Has pending subscription but user is not owner of default company
         if (subscription && subscription.status === SubscriptionStatus.pending && !isOwner) {
-            console.log('Pending subscription found but user is not owner of default team')
+            console.log('Pending subscription found but user is not owner of default company')
             return {
                 success: false,
                 needsCheckout: false,
                 checkoutUrl: null,
-                message: "Only team owner can complete subscription checkout"
+                message: "Only company owner can complete subscription checkout"
             }
         }
 
-        // Case 2c: Has active subscription for default team
-        console.log('✅ Active subscription found for default team, no checkout needed')
+        // Case 2c: Has active subscription for default company
+        console.log('✅ Active subscription found for default company, no checkout needed')
         return {
             success: true,
             needsCheckout: false,
@@ -376,10 +376,10 @@ export const validateUserTeamAndSubscription = async (userEmail: string) => {
         }
 
     } catch (error) {
-        console.error("Error validating user team and subscription:", error)
+        console.error("Error validating user company and subscription:", error)
         return {
             success: false,
-            error: "Failed to validate team and subscription",
+            error: "Failed to validate company and subscription",
             needsCheckout: false,
             checkoutUrl: null
         }
@@ -433,7 +433,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
         const firstName = nameParts[0]
         const lastName = nameParts.slice(1).join(' ') || ''
 
-        // Create user and team in a transaction
+        // Create user and company in a transaction
         const result = await prisma.$transaction(async (tx) => {
             // Create user
             const newUser = await tx.user.create({
@@ -451,46 +451,38 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
                 }
             })
 
-            // Create a default team for the user
-            const team = await tx.team.create({
+            // Create a default company for the user
+            const company = await tx.company.create({
                 data: {
-                    name: t("defaultTeamName", { firstName }),
-                    description: t("defaultTeamDescription", { firstName })
+                    name: t("defaultCompanyName", { firstName }),
+                    description: t("defaultCompanyDescription", { firstName })
                 }
             })
 
-            // Create team member (owner)
-            await tx.teamMember.create({
+            // Create company member (owner)
+            await tx.companyMember.create({
                 data: {
                     userId: newUser.id,
-                    teamId: team.id,
+                    companyId: company.id,
                     isAdmin: true,
                     canPost: true,
                     canApprove: true,
                     isOwner: true,
-                    teamMemberStatus: TeamMemberStatus.accepted,
+                    companyMemberStatus: CompanyMemberStatus.accepted,
                 }
             })
 
-            // Add default survey types to the team using createMany for efficiency
-            let defaultSurveyTypes = [{ name: "Product Feedback", isDefault: true, teamId: team.id }]
-            defaultSurveyTypes.push(...["Customer Satisfaction", "Employee Engagement", "Market Research", "Event Feedback", "User Experience"].map(name => ({ name, isDefault: false, teamId: team.id })))
-
-            await tx.surveyType.createMany({
-                data: defaultSurveyTypes
-            })
-
-            // Update user's default team
+            // Update user's default company
             await tx.user.update({
                 where: { id: newUser.id },
-                data: { defaultTeamId: team.id }
+                data: { defaultCompanyId: company.id }
             })
 
-            return { user: newUser, team }
+            return { user: newUser, company }
         })
 
         const newUser = result.user
-        const team = result.team
+        const company = result.company
 
         // Create CustomerSubscription if plan parameter is provided
         if (planParam && planParam !== 'free') {
@@ -506,7 +498,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
                 if (subscriptionPlan) {
                     // Create customer subscription with pending status for paid plans
                     const subscriptionResult = await createCustomerSubscription({
-                        teamId: team.id,
+                        companyId: company.id,
                         planId: subscriptionPlan.id,
                         status: SubscriptionStatus.pending,
                         cancelAtPeriodEnd: false
@@ -534,7 +526,7 @@ export const signUpAction = async (formData: SignUpFormData, planParam?: string 
 
                 if (freePlan) {
                     const subscriptionResult = await createCustomerSubscription({
-                        teamId: team.id,
+                        companyId: company.id,
                         planId: freePlan.id,
                         status: SubscriptionStatus.active,
                         cancelAtPeriodEnd: false
@@ -661,7 +653,7 @@ export const logoutAction = async (redirectTo: string) => {
 /**
  * Server action to confirm email address
  */
-export const confirmEmailAction = async (token: string, teamId: number) => {
+export const confirmEmailAction = async (token: string, companyId: number) => {
     const t = await getTranslations("AuthErrors")
 
     try {
@@ -682,7 +674,7 @@ export const confirmEmailAction = async (token: string, teamId: number) => {
             return { success: false, error: t("invalidToken") }
         }
 
-        // Update user to confirmed and update any pending team invitations
+        // Update user to confirmed and update any pending company invitations
         await prisma.$transaction(async (tx) => {
             // Update user to confirmed
             await tx.user.update({
@@ -693,14 +685,14 @@ export const confirmEmailAction = async (token: string, teamId: number) => {
                 }
             })
 
-            // Update any pending team member invitations to accepted
-            await tx.teamMember.updateMany({
+            // Update any pending company member invitations to accepted
+            await tx.companyMember.updateMany({
                 where: {
                     userId: user.id,
-                    teamId: teamId,
+                    companyId: companyId,
                 },
                 data: {
-                    teamMemberStatus: "accepted"
+                    companyMemberStatus: "accepted"
                 }
             })
         })
@@ -802,7 +794,7 @@ export const getCurrentUserAction = async () => {
                 avatarUrl: true,
                 language: true,
                 theme: true,
-                defaultTeamId: true,
+                defaultCompanyId: true,
                 position: true,
                 companyName: true,
                 country: true,
@@ -824,13 +816,13 @@ export const getCurrentUserAction = async () => {
             return { success: false, error: "User not found", user: null }
         }
 
-        // Check if user's default team has exceeded usage metric
+        // Check if user's default company has exceeded usage metric
         let usagePercentage = 0;
-        if (user?.defaultTeamId) {
-            // Example: Check if team has exceeded ACTIVE_SURVEYS or TOTAL_COMPLETED_RESPONSES
+        if (user?.defaultCompanyId) {
+            // Example: Check if company has exceeded ACTIVE_SURVEYS or TOTAL_COMPLETED_RESPONSES
             const usage = await prisma.usageTracking.findMany({
                 where: {
-                    teamId: user.defaultTeamId,
+                    companyId: user.defaultCompanyId,
                     OR: [
                         { metricType: "ACTIVE_SURVEYS" },
                         { metricType: "TOTAL_COMPLETED_RESPONSES" }
@@ -877,7 +869,7 @@ export const getCurrentUserAction = async () => {
             avatarUrl: user.avatarUrl || user.avatar?.url || null,
             language: user.language === "pt_BR" ? "pt-BR" : "en",
             theme: user.theme as Theme,
-            defaultTeamId: user.defaultTeamId,
+            defaultCompanyId: user.defaultCompanyId,
             usagePercentage: usagePercentage,
             position: user.position,
             companyName: user.companyName,
@@ -1065,7 +1057,7 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
             }
 
             // Check if user needs subscription after successful sign-in
-            const subscriptionCheck = await validateUserTeamAndSubscription(email || "")
+            const subscriptionCheck = await validateUserCompanyAndSubscription(email || "")
 
             if (subscriptionCheck?.success && subscriptionCheck.needsCheckout) {
                 return {
@@ -1107,14 +1099,14 @@ export const confirmOTPAction = async (otp: string, email?: string, phone?: stri
 /**
  * Server action to create Stripe checkout session
  */
-export const createCheckoutSessionAction = async (planType: PlanType, billingCycle: string = 'monthly', userEmail?: string, teamId?: number, customerSubscriptionId?: string) => {
+export const createCheckoutSessionAction = async (planType: PlanType, billingCycle: string = 'monthly', userEmail?: string, companyId?: number, customerSubscriptionId?: string) => {
     try {
 
         const result = await createCheckoutSession({
             planId: planType as PlanType,
             billingCycle: billingCycle as 'monthly' | 'yearly',
             userEmail: userEmail,
-            teamId: teamId,
+            companyId: companyId,
             customerSubscriptionId: customerSubscriptionId
         })
 

@@ -10,9 +10,9 @@ datasource db {
 }
 
 model User {
-  id                   Int          @id @default(autoincrement())
-  email                String       @unique
-  provider             Provider     @default(local)
+  id                   Int             @id @default(autoincrement())
+  email                String          @unique
+  provider             Provider        @default(local)
   password             String?
   resetPasswordToken   String?
   confirmationToken    String?
@@ -30,25 +30,25 @@ model User {
   githubUrl            String?
   avatarUrl            String?
   language             Language
-  createdAt            DateTime     @default(now())
-  updatedAt            DateTime     @updatedAt
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
   avatarId             String?
   idProvider           String?
   resetPasswordExpires DateTime?
-  theme                Theme        @default(system)
-  defaultTeamId        Int?
+  theme                Theme           @default(system)
+  defaultCompanyId     Int?
   accounts             Account[]
   sessions             Session[]
-  teamMembers          TeamMember[] @relation("UserTeamMembers")
-  avatar               File?        @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: Cascade)
-  team                 Team?        @relation("UserDefaultTeam", fields: [defaultTeamId], references: [id])
-  files                File[]       @relation("UserFile")
+  companyMembers       CompanyMember[] @relation("UserCompanyMembers")
+  avatar               File?           @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: Cascade)
+  company              Company?        @relation("UserDefaultCompany", fields: [defaultCompanyId], references: [id])
+  files                File[]          @relation("UserFile")
 
   @@index([email])
   @@index([phone])
   @@index([resetPasswordToken])
   @@index([confirmationToken])
-  @@index([defaultTeamId])
+  @@index([defaultCompanyId])
   @@index([createdAt])
   @@map("users")
 }
@@ -111,43 +111,43 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-model Team {
+model Company {
   id                   Int                    @id @default(autoincrement())
   name                 String
   description          String?
   tokenApi             String?
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
-  members              TeamMember[]           @relation("TeamMembers")
-  user                 User[]                 @relation("UserDefaultTeam")
+  members              CompanyMember[]        @relation("CompanyMembers")
+  user                 User[]                 @relation("UserDefaultCompany")
   CustomerSubscription CustomerSubscription[]
   UsageTracking        UsageTracking[]
 
   @@index([createdAt])
-  @@map("teams")
+  @@map("companies")
 }
 
-model TeamMember {
-  id               Int              @id @default(autoincrement())
-  isAdmin          Boolean
-  canPost          Boolean
-  canApprove       Boolean
-  isOwner          Boolean
-  teamMemberStatus TeamMemberStatus
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-  userId           Int
-  teamId           Int
-  team             Team             @relation("TeamMembers", fields: [teamId], references: [id])
-  user             User             @relation("UserTeamMembers", fields: [userId], references: [id])
+model CompanyMember {
+  id                  Int                 @id @default(autoincrement())
+  isAdmin             Boolean
+  canPost             Boolean
+  canApprove          Boolean
+  isOwner             Boolean
+  companyMemberStatus CompanyMemberStatus
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  userId              Int
+  companyId           Int
+  company             Company             @relation("CompanyMembers", fields: [companyId], references: [id])
+  user                User                @relation("UserCompanyMembers", fields: [userId], references: [id])
 
-  @@unique([userId, teamId])
+  @@unique([userId, companyId])
   @@index([userId])
-  @@index([teamId])
-  @@index([teamMemberStatus])
+  @@index([companyId])
+  @@index([companyMemberStatus])
   @@index([isAdmin])
   @@index([isOwner])
-  @@map("team_members")
+  @@map("company_members")
 }
 
 model SubscriptionPlan {
@@ -171,7 +171,7 @@ model SubscriptionPlan {
 
 model CustomerSubscription {
   id                   String             @id @default(cuid())
-  teamId               Int
+  companyId            Int
   planId               String
   status               SubscriptionStatus @default(active)
   billingInterval      BillingInterval    @default(monthly)
@@ -185,24 +185,24 @@ model CustomerSubscription {
   trialEnd             DateTime?
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
-  team                 Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  company              Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
   plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
   usageTracking        UsageTracking[]
 
-  @@index([teamId])
+  @@index([companyId])
   @@index([planId])
   @@index([status])
   @@index([stripeCustomerId])
   @@index([stripeSubscriptionId])
   @@index([currentPeriodEnd])
   @@index([billingInterval])
-  @@index([teamId, status])
+  @@index([companyId, status])
   @@map("customer_subscriptions")
 }
 
 model UsageTracking {
   id             String               @id @default(cuid())
-  teamId         Int
+  companyId      Int
   subscriptionId String
   metricType     UsageMetricType
   currentUsage   Int                  @default(0)
@@ -212,11 +212,11 @@ model UsageTracking {
   lastResetDate  DateTime?
   lastUpdated    DateTime             @default(now())
   createdAt      DateTime             @default(now())
-  team           Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  company        Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
   subscription   CustomerSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
 
-  @@unique([teamId, metricType, periodStart])
-  @@index([teamId])
+  @@unique([companyId, metricType, periodStart])
+  @@index([companyId])
   @@index([subscriptionId])
   @@index([metricType])
   @@index([periodStart])
@@ -235,7 +235,7 @@ enum Provider {
   local
 }
 
-enum TeamMemberStatus {
+enum CompanyMemberStatus {
   invited
   accepted
   rejected

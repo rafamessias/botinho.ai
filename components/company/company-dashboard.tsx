@@ -5,25 +5,12 @@ import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { IconPlus, IconEdit, IconUsers, IconChevronDown } from "@tabler/icons-react"
+import { IconPlus, IconEdit, IconUsers } from "@tabler/icons-react"
 import { toast } from "sonner"
-import { TeamForm } from "@/components/team/team-form"
-import { InviteMemberForm } from "@/components/team/invite-member-form"
-import { TeamMembers } from "@/components/team/team-members"
+import { CompanyForm } from "@/components/company/company-form"
+import { InviteMemberForm } from "@/components/company/invite-member-form"
+import { CompanyMembers } from "@/components/company/company-members"
 import { useUser } from "@/components/user-provider"
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
 import {
     AlertDialog,
     AlertDialogContent,
@@ -32,9 +19,9 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 //import { cn } from "@/lib/utils"
-//import { deleteTeamAction } from "@/components/server-actions/team"
+//import { deleteCompanyAction } from "@/components/server-actions/company"
 
-interface Team {
+interface Company {
     id: number
     name: string
     description?: string | null
@@ -44,7 +31,7 @@ interface Team {
         canPost: boolean
         canApprove: boolean
         isOwner: boolean
-        teamMemberStatus: string
+        companyMemberStatus: string
         user: {
             id: number
             firstName: string
@@ -55,100 +42,100 @@ interface Team {
     }>
 }
 
-interface TeamDashboardProps {
-    initialTeams: Team[]
+interface CompanyDashboardProps {
+    initialCompanies: Company[]
     currentUserId: number
 }
 
-export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProps) => {
-    const t = useTranslations("Team")
+export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDashboardProps) => {
+    const t = useTranslations("Company")
     const tCommon = useTranslations("Common")
     const { user, refreshUser } = useUser()
-    const [teams, setTeams] = useState<Team[]>(initialTeams)
-    const [selectedTeam, setSelectedTeam] = useState<Team | null>(initialTeams.length > 0 ? initialTeams[0] : null)
+    const [companies, setCompanies] = useState<Company[]>(initialCompanies)
+    // Since each user only has one company, use the first (and only) company
+    const selectedCompany = companies.length > 0 ? companies[0] : null
 
     // Use current user ID from user context if available, fallback to prop
     const currentUserIdFromContext = user?.id || currentUserId
     const [showCreateForm, setShowCreateForm] = useState(false)
     const [showEditForm, setShowEditForm] = useState(false)
     const [showInviteForm, setShowInviteForm] = useState(false)
-    const [open, setOpen] = useState(false)
-    const [pendingNewTeamId, setPendingNewTeamId] = useState<number | null>(null)
+    const [pendingNewCompanyId, setPendingNewCompanyId] = useState<number | null>(null)
 
 
-    const handleTeamUpdate = async (newTeamId?: number) => {
+    const handleCompanyUpdate = async (newCompanyId?: number) => {
         try {
-            // If a new team was created, set it as pending
-            if (newTeamId) {
-                setPendingNewTeamId(newTeamId)
+            // If a new company was created, set it as pending
+            if (newCompanyId) {
+                setPendingNewCompanyId(newCompanyId)
             }
 
-            // Refresh user data which includes teams (set to true to refresh teams)
+            // Refresh user data which includes companies (set to true to refresh companies)
             await refreshUser(true)
 
-            toast.success(t("messages.teamsUpdated"))
+            toast.success(t("messages.companiesUpdated"))
         } catch (error) {
-            console.error("Failed to refresh teams:", error)
-            toast.error(t("messages.failedToRefreshTeams"))
+            console.error("Failed to refresh companies:", error)
+            toast.error(t("messages.failedToRefreshCompanies"))
         }
     }
 
-    const isCurrentUserAdmin = (team: Team) => {
-        const isAdmin = team.members.some(m =>
+    const isCurrentUserAdmin = (company: Company) => {
+        const isAdmin = company.members.some(m =>
             m.user.id === currentUserIdFromContext && m.isAdmin
         )
         return isAdmin
     }
 
-    const isCurrentUserOwner = (team: Team) => {
-        const isOwner = team.members.some(m =>
+    const isCurrentUserOwner = (company: Company) => {
+        const isOwner = company.members.some(m =>
             m.user.id === currentUserIdFromContext && m.isOwner
         )
         return isOwner
     }
 
     /*
-    const handleDeleteTeam = async (teamId: number) => {
+    const handleDeleteCompany = async (companyId: number) => {
         try {
-            setIsDeletingTeam(true)
-            const result = await deleteTeamAction({ teamId })
+            setIsDeletingCompany(true)
+            const result = await deleteCompanyAction({ companyId })
 
             if (result.success) {
                 toast.success(result.message)
-                // Refresh user data to update teams list
+                // Refresh user data to update companies list
                 await refreshUser(true)
-                // Clear selected team if it was deleted
-                setSelectedTeam(null)
+                // Clear selected company if it was deleted
+                setSelectedCompany(null)
             } else {
-                toast.error(result.error || "Failed to delete team")
+                toast.error(result.error || "Failed to delete company")
             }
         } catch (error) {
-            console.error("Delete team error:", error)
+            console.error("Delete company error:", error)
             toast.error("An unexpected error occurred")
         } finally {
-            setIsDeletingTeam(false)
+            setIsDeletingCompany(false)
         }
     }
     */
 
-    if (teams.length === 0) {
+    if (companies.length === 0) {
         return (
             <div className="max-w-2xl mx-auto text-center">
                 <IconUsers className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h1 className="text-2xl font-bold mb-2">{t("noTeams")}</h1>
-                <p className="text-muted-foreground mb-6">{t("noTeamsDescription")}</p>
+                <h1 className="text-2xl font-bold mb-2">{t("noCompanies")}</h1>
+                <p className="text-muted-foreground mb-6">{t("noCompaniesDescription")}</p>
                 <Button onClick={() => setShowCreateForm(true)}>
                     <IconPlus className="h-4 w-4 mr-2" />
-                    {t("createFirstTeam")}
+                    {t("createFirstCompany")}
                 </Button>
 
                 {showCreateForm && (
                     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                         <div className="max-w-md w-full">
-                            <TeamForm
-                                onSuccess={(newTeamId) => {
+                            <CompanyForm
+                                onSuccess={(newCompanyId) => {
                                     setShowCreateForm(false)
-                                    handleTeamUpdate(newTeamId)
+                                    handleCompanyUpdate(newCompanyId)
                                 }}
                                 onCancel={() => setShowCreateForm(false)}
                             />
@@ -161,88 +148,27 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
 
     return (
         <div className="px-4 lg:px-6">
-            <div className="mb-6 lg:mb-8">
-                <p className="text-muted-foreground text-sm lg:text-base">{t("description")}</p>
-            </div>
 
-            {/* Main Team Card */}
+            {/* Main Company Card */}
             <Card className="bg-transparent border-none shadow-none">
                 <CardHeader className="space-y-4 lg:space-y-6 p-0">
-                    {/* Team Selection and Actions */}
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                        <div className="flex items-center gap-4">
-                            <Popover open={open} onOpenChange={setOpen}>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={open}
-                                        className="w-full justify-between lg:w-[300px]"
-                                    >
-                                        {selectedTeam ? selectedTeam.name : "Select a team..."}
-                                        <IconChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[calc(100vw-2rem)] p-0 lg:w-[300px]">
-                                    <Command>
-                                        <CommandInput placeholder="Search teams..." />
-                                        <CommandList>
-                                            <CommandEmpty>No teams found.</CommandEmpty>
-                                            <CommandGroup>
-                                                {teams.map((team) => (
-                                                    <CommandItem
-                                                        key={team.id}
-                                                        value={team.name}
-                                                        onSelect={() => {
-                                                            setSelectedTeam(team)
-                                                            setOpen(false)
-                                                        }}
-                                                    >
-                                                        <IconUsers className="mr-2 h-4 w-4 text-muted" />
-                                                        <span className="truncate">{team.name}</span>
-                                                        <span className="ml-auto text-xs shrink-0">
-                                                            {team.members.length} member{team.members.length !== 1 ? 's' : ''}
-                                                        </span>
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-
-                        {/*<div className="flex gap-2">
-                            <Button
-                                onClick={() => setShowCreateForm(true)}
-                                variant="outline"
-                                className="w-full lg:w-auto"
-                            >
-                                <IconPlus className="h-4 w-4 mr-2" />
-                                <span className="hidden sm:inline">{t("createTeam")}</span>
-                                <span className="sm:hidden">Create</span>
-                            </Button>
-                        </div>*/}
-                    </div>
-
-                    {/* Team Info Section */}
-                    {selectedTeam && (
+                    {/* Company Info Section */}
+                    {selectedCompany && (
                         <>
-                            <Separator />
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                 <div className="flex-1">
-                                    <CardTitle className="heading-secondary text-xl lg:text-2xl">{selectedTeam.name}</CardTitle>
-                                    {selectedTeam.description && (
+                                    <CardTitle className="heading-secondary text-xl lg:text-2xl">{selectedCompany.name}</CardTitle>
+                                    {selectedCompany.description && (
                                         <CardDescription className="body-secondary mt-2 text-sm">
-                                            {selectedTeam.description}
+                                            {selectedCompany.description}
                                         </CardDescription>
                                     )}
                                     <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
-                                        <span>{selectedTeam.members.length} member{selectedTeam.members.length !== 1 ? 's' : ''}</span>
+                                        <span>{selectedCompany.members.length} member{selectedCompany.members.length !== 1 ? 's' : ''}</span>
                                     </div>
                                 </div>
                                 <div className="flex-col sm:flex-row gap-2">
-                                    {isCurrentUserAdmin(selectedTeam) && (
+                                    {isCurrentUserAdmin(selectedCompany) && (
                                         <Button
                                             variant="outline"
                                             size="sm"
@@ -251,11 +177,11 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                         >
                                             <IconEdit className="h-4 w-4 mr-2" />
                                             <span className="sm:hidden">Edit</span>
-                                            <span className="hidden sm:inline">{t("editTeam")}</span>
+                                            <span className="hidden sm:inline">{t("editCompany")}</span>
                                         </Button>
                                     )}
 
-                                    {isCurrentUserOwner(selectedTeam) && (
+                                    {isCurrentUserOwner(selectedCompany) && (
                                         <AlertDialog>
                                             {/*
                                             <AlertDialogTrigger asChild>
@@ -263,33 +189,33 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                                     variant="destructive"
                                                     size="sm"
                                                     className="w-full sm:w-auto mt-2 sm:mt-0 ml-0 sm:ml-2"
-                                                    disabled={isDeletingTeam}
+                                                    disabled={isDeletingCompany}
                                                 >
                                                     <IconTrash className="h-4 w-4 mr-2" />
                                                     <span className="sm:hidden">
-                                                        {isDeletingTeam ? "Deleting..." : "Delete"}
+                                                        {isDeletingCompany ? "Deleting..." : "Delete"}
                                                     </span>
                                                     <span className="hidden sm:inline">
-                                                        {isDeletingTeam ? "Deleting..." : t("deleteTeam")}
+                                                        {isDeletingCompany ? "Deleting..." : t("deleteCompany")}
                                                     </span>
                                                 </Button>
                                             </AlertDialogTrigger>
                                             */}
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
-                                                    <AlertDialogTitle>{t("deleteTeam")}</AlertDialogTitle>
+                                                    <AlertDialogTitle>{t("deleteCompany")}</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        {t("deleteTeamConfirmation", { teamName: selectedTeam.name })}
+                                                        {t("deleteCompanyConfirmation", { companyName: selectedCompany.name })}
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 {/*
                                                 <AlertDialogFooter>
                                                     <AlertDialogAction
-                                                        onClick={() => handleDeleteTeam(selectedTeam.id)}
+                                                        onClick={() => handleDeleteCompany(selectedCompany.id)}
                                                         className="w-full sm:w-auto bg-destructive text-white hover:bg-destructive/90"
-                                                        disabled={isDeletingTeam}
+                                                        disabled={isDeletingCompany}
                                                     >
-                                                        {isDeletingTeam ? "Deleting..." : t("delete")}
+                                                        {isDeletingCompany ? "Deleting..." : t("delete")}
                                                     </AlertDialogAction>
                                                     <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
                                                 </AlertDialogFooter>
@@ -303,16 +229,10 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                         </>
                     )}
 
-                    {/* No Team Selected */}
-                    {!selectedTeam && (
-                        <div className="text-center py-8">
-                            <p className="text-muted-foreground">{t("modals.noTeamSelected")}</p>
-                        </div>
-                    )}
                 </CardHeader>
 
-                {/* Team Members Section */}
-                {selectedTeam && (
+                {/* Company Members Section */}
+                {selectedCompany && (
                     <CardContent className="p-0">
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
@@ -320,7 +240,7 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                     <h3 className="text-lg font-semibold">{t("members.title")}</h3>
                                     <p className="text-sm text-muted-foreground">{t("members.description")}</p>
                                 </div>
-                                {isCurrentUserAdmin(selectedTeam) && (
+                                {isCurrentUserAdmin(selectedCompany) && (
                                     <div className="flex gap-2">
                                         <Button
                                             variant="outline"
@@ -336,12 +256,12 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                                 )}
                             </div>
 
-                            <TeamMembers
-                                teamId={selectedTeam.id}
-                                members={selectedTeam.members as any}
+                            <CompanyMembers
+                                companyId={selectedCompany.id}
+                                members={selectedCompany.members as any}
                                 currentUserId={currentUserIdFromContext}
-                                isCurrentUserAdmin={isCurrentUserAdmin(selectedTeam)}
-                                onMemberUpdate={handleTeamUpdate}
+                                isCurrentUserAdmin={isCurrentUserAdmin(selectedCompany)}
+                                onMemberUpdate={handleCompanyUpdate}
                                 onInviteMember={() => setShowInviteForm(true)}
                             />
                         </div>
@@ -354,10 +274,10 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
             {showCreateForm && (
                 <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="w-full max-w-md max-h-[90vh] overflow-y-auto">
-                        <TeamForm
-                            onSuccess={(newTeamId) => {
+                        <CompanyForm
+                            onSuccess={(newCompanyId) => {
                                 setShowCreateForm(false)
-                                handleTeamUpdate(newTeamId)
+                                handleCompanyUpdate(newCompanyId)
                             }}
                             onCancel={() => setShowCreateForm(false)}
                         />
@@ -365,14 +285,14 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                 </div>
             )}
 
-            {showEditForm && selectedTeam && (
+            {showEditForm && selectedCompany && (
                 <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="w-full max-w-md max-h-[90vh] overflow-y-auto">
-                        <TeamForm
-                            team={selectedTeam}
+                        <CompanyForm
+                            company={selectedCompany}
                             onSuccess={() => {
                                 setShowEditForm(false)
-                                handleTeamUpdate()
+                                handleCompanyUpdate()
                             }}
                             onCancel={() => setShowEditForm(false)}
                         />
@@ -380,14 +300,14 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
                 </div>
             )}
 
-            {showInviteForm && selectedTeam && (
+            {showInviteForm && selectedCompany && (
                 <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="w-full max-w-md max-h-[90vh] overflow-y-auto">
                         <InviteMemberForm
-                            teamId={selectedTeam.id}
+                            companyId={selectedCompany.id}
                             onSuccess={() => {
                                 setShowInviteForm(false)
-                                handleTeamUpdate()
+                                handleCompanyUpdate()
                             }}
                             onCancel={() => setShowInviteForm(false)}
                         />
@@ -397,3 +317,4 @@ export const TeamDashboard = ({ initialTeams, currentUserId }: TeamDashboardProp
         </div>
     )
 }
+

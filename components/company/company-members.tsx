@@ -7,19 +7,39 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from "sonner"
-import { updateMemberAction, removeMemberAction } from "@/components/server-actions/team"
-import { IconTrash, IconUser, IconEdit, IconX } from "@tabler/icons-react"
+import { updateMemberAction, removeMemberAction } from "@/components/server-actions/company"
+import { IconTrash, IconUser, IconEdit, IconX, IconPencilPlus, IconEye } from "@tabler/icons-react"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { IconDotsVertical } from "@tabler/icons-react"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
-interface TeamMember {
+interface CompanyMember {
     id: number
     isAdmin: boolean
     canPost: boolean
     canApprove: boolean
     isOwner: boolean
-    teamMemberStatus: "invited" | "accepted" | "rejected"
+    companyMemberStatus: "invited" | "accepted" | "rejected"
     user: {
         id: number
         firstName: string
@@ -29,34 +49,34 @@ interface TeamMember {
     }
 }
 
-interface TeamMembersProps {
-    teamId: number
-    members: TeamMember[]
+interface CompanyMembersProps {
+    companyId: number
+    members: CompanyMember[]
     currentUserId: number
     isCurrentUserAdmin: boolean
     onMemberUpdate: () => void
     onInviteMember: () => void
 }
 
-export const TeamMembers = ({
-    teamId,
+export const CompanyMembers = ({
+    companyId,
     members,
     currentUserId,
     isCurrentUserAdmin,
     onMemberUpdate,
     onInviteMember
-}: TeamMembersProps) => {
-    const t = useTranslations("Team")
+}: CompanyMembersProps) => {
+    const t = useTranslations("Company")
     const [updatingMember, setUpdatingMember] = useState<number | null>(null)
-    const [editingMember, setEditingMember] = useState<TeamMember | null>(null)
-    const [removingMember, setRemovingMember] = useState<TeamMember | null>(null)
+    const [editingMember, setEditingMember] = useState<CompanyMember | null>(null)
+    const [removingMember, setRemovingMember] = useState<CompanyMember | null>(null)
     const [editForm, setEditForm] = useState({
         isAdmin: false,
         canPost: false,
         canApprove: false
     })
 
-    const handleEditMember = (member: TeamMember) => {
+    const handleEditMember = (member: CompanyMember) => {
         setEditingMember(member)
         setEditForm({
             isAdmin: member.isAdmin,
@@ -72,7 +92,7 @@ export const TeamMembers = ({
             setUpdatingMember(editingMember.id)
 
             const result = await updateMemberAction({
-                teamId,
+                companyId,
                 userId: editingMember.user.id,
                 isAdmin: editForm.isAdmin,
                 canPost: editForm.canPost,
@@ -99,7 +119,7 @@ export const TeamMembers = ({
 
         try {
             const result = await removeMemberAction({
-                teamId,
+                companyId,
                 userId: removingMember.user.id,
             })
 
@@ -129,7 +149,7 @@ export const TeamMembers = ({
         }
     }
 
-    const getRoleBadge = (member: TeamMember) => {
+    const getRoleBadge = (member: CompanyMember) => {
         if (member.isOwner) {
             return <Badge variant="default">{t("members.owner")}</Badge>
         }
@@ -149,60 +169,120 @@ export const TeamMembers = ({
 
     return (
         <>
-            <div className="space-y-4">
-                {members.map((member) => (
-                    <div
-                        key={member.id}
-                        className="flex flex-col gap-4 p-4 border rounded-lg bg-card sm:flex-row sm:items-center sm:justify-between"
-                    >
-                        <div className="flex items-center space-x-4">
-                            <Avatar>
-                                <AvatarImage src={member.user.avatarUrl || undefined} />
-                                <AvatarFallback>
-                                    <IconUser className="h-4 w-4" />
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                                <div className="font-medium truncate">
-                                    {member.user.firstName} {member.user.lastName}
-                                </div>
-                                <div className="text-sm text-muted-foreground truncate">
-                                    {member.user.email}
-                                </div>
-                                <div className="flex gap-2 mt-1 flex-wrap">
-                                    {getRoleBadge(member)}
-                                    {getStatusBadge(member.teamMemberStatus)}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Actions */}
-                        {!member.isOwner && isCurrentUserAdmin && (
-                            <div className="flex flex-col lg:flex-row items-center gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleEditMember(member)}
-                                    className="w-full md:w-auto"
-                                >
-                                    <IconEdit className="h-4 w-4 mr-2" />
-                                    <span className="hidden sm:inline">{t("form.update")}</span>
-                                    <span className="sm:hidden">{t("form.update")}</span>
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setRemovingMember(member)}
-                                    className="w-full md:w-auto"
-                                >
-                                    <IconTrash className="h-4 w-4 mr-2" />
-                                    <span className="hidden sm:inline">{t("members.removeMember")}</span>
-                                    <span className="sm:hidden">{t("members.removeMember")}</span>
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-                ))}
+            <div className="border rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[250px]">{t("members.name")}</TableHead>
+                                <TableHead className="w-[200px]">{t("members.email")}</TableHead>
+                                <TableHead className="w-[120px]">{t("members.role")}</TableHead>
+                                <TableHead className="w-[100px]">{t("members.statusLabel")}</TableHead>
+                                <TableHead className="w-[150px]">{t("members.permissions")}</TableHead>
+                                {isCurrentUserAdmin && <TableHead className="w-[80px] text-right">{t("members.actions")}</TableHead>}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {members.map((member) => (
+                                <TableRow key={member.id}>
+                                    <TableCell>
+                                        <div className="flex items-center space-x-3">
+                                            <Avatar className="h-8 w-8">
+                                                <AvatarImage src={member.user.avatarUrl || undefined} />
+                                                <AvatarFallback>
+                                                    <IconUser className="h-4 w-4" />
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div className="min-w-0">
+                                                <div className="font-medium truncate">
+                                                    {member.user.firstName} {member.user.lastName}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="text-sm text-muted-foreground truncate max-w-[200px]">
+                                            {member.user.email}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        {getRoleBadge(member)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {getStatusBadge(member.companyMemberStatus)}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-3">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <div className="flex items-center justify-center cursor-help">
+                                                        <IconPencilPlus
+                                                            className={`h-5 w-5 ${member.canPost
+                                                                    ? "text-primary"
+                                                                    : "text-muted-foreground/30"
+                                                                }`}
+                                                        />
+                                                    </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>{t("members.canPost")}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <div className="flex items-center justify-center cursor-help">
+                                                        <IconEye
+                                                            className={`h-5 w-5 ${member.canApprove
+                                                                    ? "text-primary"
+                                                                    : "text-muted-foreground/30"
+                                                                }`}
+                                                        />
+                                                    </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>{t("members.canApprove")}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </div>
+                                    </TableCell>
+                                    {isCurrentUserAdmin && (
+                                        <TableCell className="text-right">
+                                            {!member.isOwner ? (
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="h-8 w-8 p-0"
+                                                        >
+                                                            <IconDotsVertical className="h-4 w-4" />
+                                                            <span className="sr-only">{t("members.openMenu")}</span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem onClick={() => handleEditMember(member)}>
+                                                            <IconEdit className="h-4 w-4 mr-2" />
+                                                            {t("form.update")}
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() => setRemovingMember(member)}
+                                                            className="text-destructive"
+                                                        >
+                                                            <IconTrash className="h-4 w-4 mr-2" />
+                                                            {t("members.removeMember")}
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            ) : (
+                                                <span className="text-muted-foreground text-sm">-</span>
+                                            )}
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
 
             {/* Edit Member Modal */}
@@ -254,7 +334,7 @@ export const TeamMembers = ({
                                             }
                                         />
                                         <Label htmlFor="edit-admin" className="text-sm font-medium">
-                                            {t("modals.editMember.teamAdministrator")}
+                                            {t("modals.editMember.companyAdministrator")}
                                         </Label>
                                     </div>
 
@@ -367,3 +447,4 @@ export const TeamMembers = ({
         </>
     )
 }
+

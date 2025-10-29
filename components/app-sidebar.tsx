@@ -48,8 +48,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconListDetails,
       },
       {
-        title: t("navigation.team"),
-        url: "/team",
+        title: t("navigation.company"),
+        url: "/company",
         icon: IconUsers,
       },
       {
@@ -66,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   }
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar className="border-r " collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

@@ -11,65 +11,65 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import { createTeamAction, updateTeamAction } from "@/components/server-actions/team"
+import { createCompanyAction, updateCompanyAction } from "@/components/server-actions/company"
 
-const teamSchema = z.object({
-    name: z.string().min(2, "Team name must be at least 2 characters"),
+const companySchema = z.object({
+    name: z.string().min(2, "Company name must be at least 2 characters"),
     description: z.string().optional(),
 })
 
-type TeamFormData = z.infer<typeof teamSchema>
+type CompanyFormData = z.infer<typeof companySchema>
 
-interface TeamFormProps {
-    team?: {
+interface CompanyFormProps {
+    company?: {
         id: number
         name: string
         description?: string | null
     }
-    onSuccess?: (newTeamId?: number) => void
+    onSuccess?: (newCompanyId?: number) => void
     onCancel?: () => void
 }
 
-export const TeamForm = ({ team, onSuccess, onCancel }: TeamFormProps) => {
-    const t = useTranslations("Team")
+export const CompanyForm = ({ company, onSuccess, onCancel }: CompanyFormProps) => {
+    const t = useTranslations("Company")
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<TeamFormData>({
-        resolver: zodResolver(teamSchema),
+    } = useForm<CompanyFormData>({
+        resolver: zodResolver(companySchema),
         defaultValues: {
-            name: team?.name || "",
-            description: team?.description || "",
+            name: company?.name || "",
+            description: company?.description || "",
         },
     })
 
-    const onSubmit = async (data: TeamFormData) => {
+    const onSubmit = async (data: CompanyFormData) => {
         try {
             setIsSubmitting(true)
 
             let result
-            if (team) {
-                result = await updateTeamAction({
-                    id: team.id,
+            if (company) {
+                result = await updateCompanyAction({
+                    id: company.id,
                     ...data,
                 })
             } else {
-                result = await createTeamAction(data)
+                result = await createCompanyAction(data)
             }
 
             if (result?.success) {
                 toast.success(result.message)
-                // Pass the team ID for new teams, undefined for updates
-                const newTeamId = team ? undefined : result.team?.id
-                onSuccess?.(newTeamId)
+                // Pass the company ID for new companies, undefined for updates
+                const newCompanyId = company ? undefined : result.company?.id
+                onSuccess?.(newCompanyId)
             } else {
                 toast.error(result?.error || "Operation failed")
             }
         } catch (error) {
-            console.error("Team form error:", error)
+            console.error("Company form error:", error)
             toast.error("An unexpected error occurred")
         } finally {
             setIsSubmitting(false)
@@ -80,10 +80,10 @@ export const TeamForm = ({ team, onSuccess, onCancel }: TeamFormProps) => {
         <Card>
             <CardHeader>
                 <CardTitle>
-                    {team ? t("editTeam") : t("createTeam")}
+                    {company ? t("editCompany") : t("createCompany")}
                 </CardTitle>
                 <CardDescription>
-                    {team ? t("editTeamDescription") : t("createTeamDescription")}
+                    {company ? t("editCompanyDescription") : t("createCompanyDescription")}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -122,8 +122,8 @@ export const TeamForm = ({ team, onSuccess, onCancel }: TeamFormProps) => {
                         )}
                         <Button type="submit" disabled={isSubmitting}>
                             {isSubmitting
-                                ? (team ? t("form.updating") : t("form.creating"))
-                                : (team ? t("form.update") : t("form.create"))
+                                ? (company ? t("form.updating") : t("form.creating"))
+                                : (company ? t("form.update") : t("form.create"))
                             }
                         </Button>
                     </div>
@@ -132,3 +132,4 @@ export const TeamForm = ({ team, onSuccess, onCancel }: TeamFormProps) => {
         </Card>
     )
 }
+

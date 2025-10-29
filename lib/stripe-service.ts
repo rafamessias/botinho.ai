@@ -7,7 +7,7 @@ export interface CreateCheckoutSessionParams {
     planId: PlanType;
     billingCycle: 'monthly' | 'yearly';
     userEmail?: string; // Optional - if not provided, will try to get from session
-    teamId?: number; // Optional - if not provided, will try to get from user's default team
+    companyId?: number; // Optional - if not provided, will try to get from user's default company
     customerSubscriptionId?: string; // Optional - if provided, will be included in metadata for webhook updates
 }
 
@@ -29,24 +29,24 @@ export interface CreatePortalSessionResult {
  */
 export const createCheckoutSession = async (params: CreateCheckoutSessionParams): Promise<CreateCheckoutSessionResult> => {
     try {
-        const { planId, billingCycle, userEmail, teamId, customerSubscriptionId } = params;
+        const { planId, billingCycle, userEmail, companyId, customerSubscriptionId } = params;
 
         // Get user email from params or from session
         let email = userEmail;
-        let userTeamId = teamId;
+        let userCompanyId = companyId;
 
-        if (!email || !userTeamId) {
+        if (!email || !userCompanyId) {
             const session = await auth();
             email = email || session?.user?.email;
-            userTeamId = userTeamId || session?.user?.defaultTeamId || undefined;
+            userCompanyId = userCompanyId || session?.user?.defaultCompanyId || undefined;
         }
 
         if (!email) {
             return { success: false, error: 'Unauthorized' };
         }
 
-        if (!userTeamId) {
-            return { success: false, error: 'No team found for user' };
+        if (!userCompanyId) {
+            return { success: false, error: 'No company found for user' };
         }
 
         if (!planId || !billingCycle) {
@@ -85,7 +85,7 @@ export const createCheckoutSession = async (params: CreateCheckoutSessionParams)
             cancel_url: `${baseUrl}/subscription?canceled=true`,
             metadata: {
                 userEmail: email,
-                teamId: userTeamId.toString(),
+                companyId: userCompanyId.toString(),
                 planId,
                 billingInterval: billingCycle,
                 ...(customerSubscriptionId && { customerSubscriptionId }),

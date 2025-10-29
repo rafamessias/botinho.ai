@@ -306,31 +306,31 @@ export const getUserPreferencesAction = async () => {
 }
 
 /**
- * Update user's default team
+ * Update user's default company
  */
-export const updateDefaultTeamAction = async (teamId: number) => {
+export const updateDefaultCompanyAction = async (companyId: number) => {
     try {
         const session = await auth()
         if (!session?.user?.email) {
             return { success: false, error: "Not authenticated" }
         }
 
-        // Verify user is a member of the team
-        const teamMember = await prisma.teamMember.findFirst({
+        // Verify user is a member of the company
+        const companyMember = await prisma.companyMember.findFirst({
             where: {
-                teamId,
+                companyId,
                 user: { email: session.user.email }
             }
         })
 
-        if (!teamMember) {
-            return { success: false, error: "Not authorized to set this team as default" }
+        if (!companyMember) {
+            return { success: false, error: "Not authorized to set this company as default" }
         }
 
-        // Update user's default team
+        // Update user's default company
         const updatedUser = await prisma.user.update({
             where: { email: session.user.email },
-            data: { defaultTeamId: teamId }
+            data: { defaultCompanyId: companyId }
         })
 
         return {
@@ -339,8 +339,8 @@ export const updateDefaultTeamAction = async (teamId: number) => {
         }
 
     } catch (error) {
-        console.error("Update default team error:", error)
-        return { success: false, error: "Failed to update default team" }
+        console.error("Update default company error:", error)
+        return { success: false, error: "Failed to update default company" }
     }
 }
 
@@ -366,9 +366,9 @@ export const deleteUserAccountAction = async (userEmail: string) => {
         const user = await prisma.user.findUnique({
             where: { email: session.user.email },
             include: {
-                teamMembers: {
+                companyMembers: {
                     include: {
-                        team: true
+                        company: true
                     }
                 }
             }
@@ -391,15 +391,15 @@ export const deleteUserAccountAction = async (userEmail: string) => {
 
         // Use transaction to ensure all operations succeed or fail together
         await prisma.$transaction(async (tx) => {
-            // Find teams where user is owner
-            const ownedTeams = user.teamMembers.filter(member => member.isOwner)
+            // Find companies where user is owner
+            const ownedCompanies = user.companyMembers.filter(member => member.isOwner)
 
-            // For each owned team, remove all members except the current user and set team as inactive
-            for (const ownedTeam of ownedTeams) {
-                // Get all team members for this team (except the owner)
-                const teamMembersToRemove = await tx.teamMember.findMany({
+            // For each owned company, remove all members except the current user and set company as inactive
+            for (const ownedCompany of ownedCompanies) {
+                // Get all company members for this company (except the owner)
+                const companyMembersToRemove = await tx.companyMember.findMany({
                     where: {
-                        teamId: ownedTeam.teamId,
+                        companyId: ownedCompany.companyId,
                         userId: { not: user.id }
                     },
                     include: {
@@ -407,13 +407,13 @@ export const deleteUserAccountAction = async (userEmail: string) => {
                     }
                 })
 
-                // For each team member, block and add deleted prefix to their user account
-                for (const teamMember of teamMembersToRemove) {
-                    const memberEmail = teamMember.user.email
+                // For each company member, block and add deleted prefix to their user account
+                for (const companyMember of companyMembersToRemove) {
+                    const memberEmail = companyMember.user.email
                     const memberDeletedEmail = `deleted_${dateStr}_${memberEmail}`
 
                     await tx.user.update({
-                        where: { id: teamMember.userId },
+                        where: { id: companyMember.userId },
                         data: {
                             blocked: true,
                             email: memberDeletedEmail,
@@ -421,21 +421,21 @@ export const deleteUserAccountAction = async (userEmail: string) => {
                     })
                 }
 
-                // Remove all team members except the owner
-                await tx.teamMember.deleteMany({
+                // Remove all company members except the owner
+                await tx.companyMember.deleteMany({
                     where: {
-                        teamId: ownedTeam.teamId,
+                        companyId: ownedCompany.companyId,
                         userId: { not: user.id }
                     }
                 })
 
-                // Set team as inactive (we'll add the active field later)
-                // For now, we'll just update the team name to indicate it's inactive
-                await tx.team.update({
-                    where: { id: ownedTeam.teamId },
+                // Set company as inactive (we'll add the active field later)
+                // For now, we'll just update the company name to indicate it's inactive
+                await tx.company.update({
+                    where: { id: ownedCompany.companyId },
                     data: {
-                        name: `[INACTIVE] ${ownedTeam.team.name}`,
-                        description: `Team deactivated due to owner account deletion on ${dateStr}`
+                        name: `[INACTIVE] ${ownedCompany.company.name}`,
+                        description: `Company deactivated due to owner account deletion on ${dateStr}`
                     }
                 })
             }

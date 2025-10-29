@@ -3,15 +3,15 @@ import { UsageMetricType } from '@/lib/generated/prisma';
 import { UsageTrackingUpdate } from '@/lib/types/subscription';
 
 /**
- * Update usage tracking for a team in current period
+ * Update usage tracking for a company in current period
  * This function is designed to be called within a database transaction
  */
-export const updateUsageTracking = async (teamId: number, subscriptionId: string): Promise<void> => {
+export const updateUsageTracking = async (companyId: number, subscriptionId: string): Promise<void> => {
     try {
         // Get current usage tracking record
         const usageTracking = await prisma.usageTracking.findFirst({
             where: {
-                teamId,
+                companyId,
                 subscriptionId,
                 metricType: UsageMetricType.TOTAL_COMPLETED_RESPONSES,
                 periodStart: {
@@ -48,13 +48,13 @@ export const updateUsageTracking = async (teamId: number, subscriptionId: string
  */
 export const updateUsageTrackingInTransaction = async (
     tx: any,
-    teamId: number,
+    companyId: number,
     subscriptionId: string
 ): Promise<void> => {
     try {
         await tx.usageTracking.updateMany({
             where: {
-                teamId,
+                companyId,
                 subscriptionId,
                 metricType: UsageMetricType.TOTAL_COMPLETED_RESPONSES,
                 periodStart: {
@@ -81,7 +81,7 @@ export const updateUsageTrackingInTransaction = async (
  */
 export const incrementActiveSurveysInTransaction = async (
     tx: any,
-    teamId: number,
+    companyId: number,
     subscriptionId: string
 ): Promise<void> => {
     try {
@@ -90,7 +90,7 @@ export const incrementActiveSurveysInTransaction = async (
         // Check if usage tracking record exists for current period
         const existingTracking = await tx.usageTracking.findFirst({
             where: {
-                teamId,
+                companyId,
                 subscriptionId,
                 metricType: UsageMetricType.ACTIVE_SURVEYS,
                 periodStart: {
@@ -124,7 +124,7 @@ export const incrementActiveSurveysInTransaction = async (
 
                 await tx.usageTracking.create({
                     data: {
-                        teamId,
+                        companyId,
                         subscriptionId,
                         metricType: UsageMetricType.ACTIVE_SURVEYS,
                         currentUsage: 1,
@@ -148,7 +148,7 @@ export const incrementActiveSurveysInTransaction = async (
  */
 export const decrementActiveSurveysInTransaction = async (
     tx: any,
-    teamId: number,
+    companyId: number,
     subscriptionId: string
 ): Promise<void> => {
     try {
@@ -157,7 +157,7 @@ export const decrementActiveSurveysInTransaction = async (
         // Check if usage tracking record exists for current period
         const existingTracking = await tx.usageTracking.findFirst({
             where: {
-                teamId,
+                companyId,
                 subscriptionId,
                 metricType: UsageMetricType.ACTIVE_SURVEYS,
                 periodStart: {
@@ -194,7 +194,7 @@ export const decrementActiveSurveysInTransaction = async (
 
                 await tx.usageTracking.create({
                     data: {
-                        teamId,
+                        companyId,
                         subscriptionId,
                         metricType: UsageMetricType.ACTIVE_SURVEYS,
                         currentUsage: 0,
@@ -213,9 +213,9 @@ export const decrementActiveSurveysInTransaction = async (
 };
 
 /**
- * Get current usage for a team and metric type
+ * Get current usage for a company and metric type
  */
-export const getCurrentUsage = async (teamId: number, metricType: UsageMetricType): Promise<{
+export const getCurrentUsage = async (companyId: number, metricType: UsageMetricType): Promise<{
     currentUsage: number;
     limit: number;
     remaining: number;
@@ -224,7 +224,7 @@ export const getCurrentUsage = async (teamId: number, metricType: UsageMetricTyp
 }> => {
     const usageTracking = await prisma.usageTracking.findFirst({
         where: {
-            teamId,
+            companyId,
             metricType,
             periodStart: {
                 lte: new Date()
@@ -239,9 +239,9 @@ export const getCurrentUsage = async (teamId: number, metricType: UsageMetricTyp
     });
 
     if (!usageTracking) {
-        // Fetch the team's subscription and plan details
+        // Fetch the company's subscription and plan details
         const subscription = await prisma.customerSubscription.findFirst({
-            where: { teamId },
+            where: { companyId },
             include: { plan: true }
         });
 
@@ -273,7 +273,7 @@ export const getCurrentUsage = async (teamId: number, metricType: UsageMetricTyp
 
         // Create a new usage tracking record for this context
         await createUsageTrackingRecord({
-            teamId,
+            companyId,
             subscriptionId: subscription.id,
             metricType,
             limitValue,
@@ -307,10 +307,10 @@ export const getCurrentUsage = async (teamId: number, metricType: UsageMetricTyp
 };
 
 /**
- * Create new usage tracking record for a team
+ * Create new usage tracking record for a company
  */
 export const createUsageTrackingRecord = async (data: {
-    teamId: number;
+    companyId: number;
     subscriptionId: string;
     metricType: UsageMetricType;
     limitValue: number;
@@ -319,7 +319,7 @@ export const createUsageTrackingRecord = async (data: {
 }): Promise<void> => {
     await prisma.usageTracking.create({
         data: {
-            teamId: data.teamId,
+            companyId: data.companyId,
             subscriptionId: data.subscriptionId,
             metricType: data.metricType,
             currentUsage: 0,
@@ -350,7 +350,7 @@ export const resetUsageForNewPeriod = async (subscriptionId: string): Promise<vo
     const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_COMPLETED_RESPONSES];
 
     const trackingRecords = metricTypes.map(metricType => ({
-        teamId: subscription.teamId,
+        companyId: subscription.companyId,
         subscriptionId: subscription.id,
         metricType,
         currentUsage: 0,
@@ -367,9 +367,9 @@ export const resetUsageForNewPeriod = async (subscriptionId: string): Promise<vo
 /**
  * Get usage report for current period
  */
-export const getCurrentPeriodUsageReport = async (teamId: number) => {
+export const getCurrentPeriodUsageReport = async (companyId: number) => {
     const subscription = await prisma.customerSubscription.findFirst({
-        where: { teamId },
+        where: { companyId },
         include: {
             plan: true,
             usageTracking: {
@@ -383,7 +383,7 @@ export const getCurrentPeriodUsageReport = async (teamId: number) => {
     });
 
     if (!subscription) {
-        throw new Error('No subscription found for team');
+        throw new Error('No subscription found for company');
     }
 
     const metricTypes = [UsageMetricType.ACTIVE_SURVEYS, UsageMetricType.TOTAL_COMPLETED_RESPONSES];
@@ -407,7 +407,7 @@ export const getCurrentPeriodUsageReport = async (teamId: number) => {
     });
 
     return {
-        teamId,
+        companyId,
         planType: subscription.plan.planType,
         status: subscription.status,
         currentPeriod: {
@@ -435,7 +435,7 @@ export const cleanupOldUsageRecords = async (): Promise<void> => {
 };
 
 /**
- * Get teams approaching their limits in current period
+ * Get companys approaching their limits in current period
  */
 export const getTeamsApproachingLimits = async (thresholdPercentage: number = 80) => {
     const now = new Date();
@@ -454,7 +454,7 @@ export const getTeamsApproachingLimits = async (thresholdPercentage: number = 80
             }
         },
         include: {
-            team: true,
+            company: true,
             subscription: {
                 include: {
                     plan: true
@@ -469,8 +469,8 @@ export const getTeamsApproachingLimits = async (thresholdPercentage: number = 80
             return percentageUsed >= thresholdPercentage;
         })
         .map((record: any) => ({
-            teamId: record.teamId,
-            teamName: record.team.name,
+            companyId: record.companyId,
+            companyName: record.company.name,
             metricType: record.metricType,
             currentUsage: record.currentUsage,
             limit: record.limitValue,

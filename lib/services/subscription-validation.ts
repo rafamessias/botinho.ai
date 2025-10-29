@@ -28,11 +28,11 @@ export enum ValidationType {
 
 /**
  * High-performance subscription and usage validation function
- * Validates if a team can receive survey responses based on their subscription limits
+ * Validates if a company can receive survey responses based on their subscription limits
  * Uses caching and single query optimization for maximum performance
  */
-export const validateSubscriptionAndUsage = async (teamId: number, validationType: ValidationType = ValidationType.TOTAL_COMPLETED_RESPONSES): Promise<SubscriptionValidationResult> => {
-    const cacheKey = `subscription-${teamId}-${validationType}`;
+export const validateSubscriptionAndUsage = async (companyId: number, validationType: ValidationType = ValidationType.TOTAL_COMPLETED_RESPONSES): Promise<SubscriptionValidationResult> => {
+    const cacheKey = `subscription-${companyId}-${validationType}`;
     const cached = subscriptionCache.get(cacheKey);
 
     // Check if cache is valid
@@ -42,7 +42,7 @@ export const validateSubscriptionAndUsage = async (teamId: number, validationTyp
 
     try {
         // Single optimized query to get subscription and usage data
-        const subscriptionData = await getSubscriptionData(teamId, validationType);
+        const subscriptionData = await getSubscriptionData(companyId, validationType);
 
         if (!subscriptionData) {
             // If no subscription found, create a free subscription as fallback
@@ -56,7 +56,7 @@ export const validateSubscriptionAndUsage = async (teamId: number, validationTyp
 
                 if (freePlan) {
                     const subscriptionResult = await createCustomerSubscription({
-                        teamId: teamId,
+                        companyId: companyId,
                         planId: freePlan.id,
                         status: SubscriptionStatus.active,
                         cancelAtPeriodEnd: false
@@ -64,7 +64,7 @@ export const validateSubscriptionAndUsage = async (teamId: number, validationTyp
 
                     if (subscriptionResult.success) {
                         // Retry getting subscription data after creating free subscription
-                        const newSubscriptionData = await getSubscriptionData(teamId, validationType);
+                        const newSubscriptionData = await getSubscriptionData(companyId, validationType);
                         if (newSubscriptionData) {
                             const usageInfo = await getOrCreateUsageTracking(newSubscriptionData, validationType);
                             const result = createValidationResult(newSubscriptionData, usageInfo, validationType);
@@ -77,7 +77,7 @@ export const validateSubscriptionAndUsage = async (teamId: number, validationTyp
                 console.error('Error creating fallback free subscription:', fallbackError);
             }
 
-            return createErrorResult(SubscriptionErrorCode.NO_ACTIVE_SUBSCRIPTION, teamId);
+            return createErrorResult(SubscriptionErrorCode.NO_ACTIVE_SUBSCRIPTION, companyId);
         }
 
         // Get current usage or create new tracking record if none exists
@@ -92,7 +92,7 @@ export const validateSubscriptionAndUsage = async (teamId: number, validationTyp
 
     } catch (error) {
         console.error('Error validating subscription and usage:', error);
-        return createErrorResult(SubscriptionErrorCode.VALIDATION_ERROR, teamId, error);
+        return createErrorResult(SubscriptionErrorCode.VALIDATION_ERROR, companyId, error);
     }
 };
 
@@ -164,17 +164,17 @@ const getFeatureName = (validationType: ValidationType): string => {
 /**
  * Get subscription data with related information
  */
-const getSubscriptionData = async (teamId: number, validationType: ValidationType): Promise<SubscriptionData | null> => {
+const getSubscriptionData = async (companyId: number, validationType: ValidationType): Promise<SubscriptionData | null> => {
     const subscriptionData = await prisma.customerSubscription.findFirst({
         where: {
-            teamId,
+            companyId,
             status: {
                 in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
             }
         },
         select: {
             id: true,
-            teamId: true,
+            companyId: true,
             planId: true,
             status: true,
             billingInterval: true,
@@ -242,7 +242,7 @@ const getOrCreateUsageTracking = async (subscriptionData: SubscriptionData, vali
 
         usageTracking = await prisma.usageTracking.create({
             data: {
-                teamId: subscriptionData.teamId,
+                companyId: subscriptionData.companyId,
                 subscriptionId: subscriptionData.id,
                 metricType,
                 currentUsage: 0,
@@ -319,11 +319,11 @@ const createValidationResult = (subscriptionData: SubscriptionData, usageTrackin
  */
 const createErrorResult = (
     errorCode: SubscriptionErrorCode,
-    teamId: number,
+    companyId: number,
     error?: any
 ): SubscriptionValidationResult => {
     const errorMessages = {
-        [SubscriptionErrorCode.NO_ACTIVE_SUBSCRIPTION]: 'No active subscription found for this team',
+        [SubscriptionErrorCode.NO_ACTIVE_SUBSCRIPTION]: 'No active subscription found for this company',
         [SubscriptionErrorCode.USAGE_LIMIT_EXCEEDED]: 'Usage limit exceeded',
         [SubscriptionErrorCode.VALIDATION_ERROR]: 'Error validating subscription and usage limits',
         [SubscriptionErrorCode.SUBSCRIPTION_EXPIRED]: 'Subscription has expired',
@@ -350,7 +350,7 @@ const createErrorResult = (
             code: errorCode,
             message: errorMessages[errorCode],
             details: {
-                teamId,
+                companyId,
                 ...(error && { error: error instanceof Error ? error.message : 'Unknown error' })
             }
         }
@@ -390,16 +390,16 @@ export const getStatusCodeForError = (errorCode: SubscriptionErrorCode): number 
 };
 
 /**
- * Invalidate subscription cache for a specific team and validation type
+ * Invalidate subscription cache for a specific company and validation type
  */
-export const invalidateSubscriptionCache = (teamId: number, validationType?: ValidationType): void => {
+export const invalidateSubscriptionCache = (companyId: number, validationType?: ValidationType): void => {
     if (validationType) {
-        const cacheKey = `subscription-${teamId}-${validationType}`;
+        const cacheKey = `subscription-${companyId}-${validationType}`;
         subscriptionCache.delete(cacheKey);
     } else {
-        // Invalidate all cache entries for this team
+        // Invalidate all cache entries for this company
         for (const [key] of subscriptionCache) {
-            if (key.startsWith(`subscription-${teamId}-`)) {
+            if (key.startsWith(`subscription-${companyId}-`)) {
                 subscriptionCache.delete(key);
             }
         }
@@ -418,15 +418,15 @@ export const clearSubscriptionCache = (): void => {
  * Returns a simple boolean indicating if the feature is allowed
  */
 const validateBooleanFeature = async (
-    teamId: number,
+    companyId: number,
     featureCheck: (plan: any) => boolean,
     featureName: string
 ): Promise<boolean> => {
     try {
-        // Get active subscription for the team
+        // Get active subscription for the company
         const subscription = await prisma.customerSubscription.findFirst({
             where: {
-                teamId,
+                companyId,
                 status: {
                     in: [SubscriptionStatus.active, SubscriptionStatus.trialing]
                 }
@@ -451,9 +451,9 @@ const validateBooleanFeature = async (
             });
 
             if (freePlan) {
-                // Create free subscription for the team
+                // Create free subscription for the company
                 await createCustomerSubscription({
-                    teamId: teamId,
+                    companyId: companyId,
                     planId: freePlan.id,
                     status: SubscriptionStatus.active,
                     cancelAtPeriodEnd: false
@@ -496,44 +496,44 @@ const validateBooleanFeature = async (
 /**
  * Convenience functions for specific validation types
  */
-export const validateActiveSurveys = async (teamId: number): Promise<SubscriptionValidationResult> => {
-    return validateSubscriptionAndUsage(teamId, ValidationType.ACTIVE_SURVEYS);
+export const validateActiveSurveys = async (companyId: number): Promise<SubscriptionValidationResult> => {
+    return validateSubscriptionAndUsage(companyId, ValidationType.ACTIVE_SURVEYS);
 };
 
-export const validateTotalCompletedResponses = async (teamId: number): Promise<SubscriptionValidationResult> => {
-    return validateSubscriptionAndUsage(teamId, ValidationType.TOTAL_COMPLETED_RESPONSES);
+export const validateTotalCompletedResponses = async (companyId: number): Promise<SubscriptionValidationResult> => {
+    return validateSubscriptionAndUsage(companyId, ValidationType.TOTAL_COMPLETED_RESPONSES);
 };
 
 /**
  * Boolean feature validators - return simple boolean values
  */
-export const validateRemoveBranding = async (teamId: number): Promise<boolean> => {
+export const validateRemoveBranding = async (companyId: number): Promise<boolean> => {
     return validateBooleanFeature(
-        teamId,
+        companyId,
         (plan) => plan.removeBranding === true,
         'remove branding'
     );
 };
 
-export const validateExportData = async (teamId: number): Promise<boolean> => {
+export const validateExportData = async (companyId: number): Promise<boolean> => {
     return validateBooleanFeature(
-        teamId,
+        companyId,
         (plan) => plan.allowExport === true,
         'export data'
     );
 };
 
-export const validateApiAccess = async (teamId: number): Promise<boolean> => {
+export const validateApiAccess = async (companyId: number): Promise<boolean> => {
     return validateBooleanFeature(
-        teamId,
+        companyId,
         (plan) => plan.allowApiAccess === true,
         'API access'
     );
 };
 
-export const validatePublicPages = async (teamId: number): Promise<boolean> => {
+export const validatePublicPages = async (companyId: number): Promise<boolean> => {
     return validateBooleanFeature(
-        teamId,
+        companyId,
         (plan) => plan.allowPublicPages === true,
         'public pages'
     );

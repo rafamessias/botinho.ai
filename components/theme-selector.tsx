@@ -49,24 +49,24 @@ export function ThemeSelector({ variant = "default" }: ThemeSelectorProps) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 hover:bg-muted/50 transition-colors"
+                        className="h-8 w-8 hover:bg-muted transition-colors"
                     >
-                        <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                        <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                        <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-foreground" />
+                        <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-foreground" />
                         <span className="sr-only">Toggle theme</span>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[120px]">
                     <DropdownMenuItem onClick={() => handleThemeChange("light")} className="cursor-pointer">
-                        <Sun className="mr-2 h-4 w-4" />
+                        <Sun className="mr-2 h-4 w-4 text-foreground" />
                         <span>Light</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleThemeChange("dark")} className="cursor-pointer">
-                        <Moon className="mr-2 h-4 w-4" />
+                        <Moon className="mr-2 h-4 w-4 text-foreground" />
                         <span>Dark</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleThemeChange("system")} className="cursor-pointer">
-                        <Monitor className="mr-2 h-4 w-4" />
+                        <Monitor className="mr-2 h-4 w-4 text-foreground" />
                         <span>System</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -81,22 +81,22 @@ export function ThemeSelector({ variant = "default" }: ThemeSelectorProps) {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="cursor-pointer">
-                        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-foreground" />
+                        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-foreground" />
                         <span className="sr-only">Toggle theme</span>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => handleThemeChange("light")}>
-                        <Sun className="mr-2 h-4 w-4" />
+                        <Sun className="mr-2 h-4 w-4 text-foreground" />
                         <span>{t("theme.light")}</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
-                        <Moon className="mr-2 h-4 w-4" />
+                        <Moon className="mr-2 h-4 w-4 text-foreground" />
                         <span>{t("theme.dark")}</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleThemeChange("system")}>
-                        <Monitor className="mr-2 h-4 w-4" />
+                        <Monitor className="mr-2 h-4 w-4 text-foreground" />
                         <span>{t("theme.system")}</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>

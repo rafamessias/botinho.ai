@@ -106,27 +106,24 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 hover:bg-muted/50 transition-colors"
+                        className="h-8 w-8 hover:bg-muted transition-colors"
                     >
-                        <Globe className="h-4 w-4" />
+                        <Globe className="h-4 w-4 text-foreground" />
                         <span className="sr-only">Select language</span>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[140px]">
                     {languages.map((language) => (
-                        <DropdownMenuItem key={language.code} asChild>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="cursor-pointer flex items-center w-full"
-                                onClick={() => handleLanguageChange(language.code, targetPath)}
-                            >
-                                <span className="mr-2">{language.flag}</span>
-                                <span>{language.name}</span>
-                                {currentLanguage?.code === language.code && (
-                                    <span className="ml-auto text-xs opacity-60">✓</span>
-                                )}
-                            </Button>
+                        <DropdownMenuItem
+                            key={language.code}
+                            onClick={() => handleLanguageChange(language.code, targetPath)}
+                            className="cursor-pointer"
+                        >
+                            <span className="mr-2">{language.flag}</span>
+                            <span>{language.name}</span>
+                            {currentLanguage?.code === language.code && (
+                                <span className="ml-auto text-xs opacity-60">✓</span>
+                            )}
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
@@ -140,22 +137,19 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="cursor-pointer">
-                        <Globe className="h-[1.2rem] w-[1.2rem]" />
+                        <Globe className="h-[1.2rem] w-[1.2rem] text-foreground" />
                         <span className="sr-only">Select language</span>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     {languages.map((language) => (
-                        <DropdownMenuItem key={language.code} asChild>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="cursor-pointer"
-                                onClick={() => handleLanguageChange(language.code, targetPath)}
-                            >
-                                <span className="mr-2">{language.flag}</span>
-                                <span>{language.name}</span>
-                            </Button>
+                        <DropdownMenuItem
+                            key={language.code}
+                            onClick={() => handleLanguageChange(language.code, targetPath)}
+                            className="cursor-pointer"
+                        >
+                            <span className="mr-2">{language.flag}</span>
+                            <span>{language.name}</span>
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>

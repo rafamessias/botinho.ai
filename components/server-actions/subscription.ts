@@ -3,7 +3,7 @@
 import { createCheckoutSession as createStripeCheckoutSession, createPortalSession as createStripePortalSession } from '@/lib/stripe-service';
 import { getCustomerSubscription } from '@/lib/customer-subscription';
 import { getCurrentPeriodUsageReport } from '@/lib/periodic-usage-tracking';
-import { getCurrentTeamId } from '@/lib/prisma-wrapper';
+import { getCurrentCompanyId } from '@/lib/prisma-wrapper';
 import { PlanType } from '@/lib/generated/prisma';
 
 export const createCheckoutSession = async (planId: PlanType, billingCycle: 'monthly' | 'yearly') => {
@@ -82,18 +82,18 @@ export const getSubscriptionStatus = async () => {
 
 export const getSubscriptionData = async () => {
     try {
-        const teamId = await getCurrentTeamId();
+        const companyId = await getCurrentCompanyId();
 
-        if (!teamId) {
+        if (!companyId) {
             return {
                 success: false,
-                error: 'No team found for current user',
+                error: 'No company found for current user',
                 data: null
             };
         }
 
         // Get subscription data
-        const subscriptionResult = await getCustomerSubscription({ teamId });
+        const subscriptionResult = await getCustomerSubscription({ companyId });
 
         if (!subscriptionResult.success || !subscriptionResult.data) {
             return {
@@ -116,7 +116,7 @@ export const getSubscriptionData = async () => {
         // Get usage metrics
         let usageReport = null;
         try {
-            usageReport = await getCurrentPeriodUsageReport(teamId);
+            usageReport = await getCurrentPeriodUsageReport(companyId);
         } catch (error) {
             console.warn('Failed to get usage report:', error);
             // Continue without usage data
@@ -141,18 +141,18 @@ export const getSubscriptionData = async () => {
 
 export const checkExportPermission = async () => {
     try {
-        const teamId = await getCurrentTeamId();
+        const companyId = await getCurrentCompanyId();
 
-        if (!teamId) {
+        if (!companyId) {
             return {
                 success: false,
                 canExport: false,
-                error: 'No team found for current user'
+                error: 'No company found for current user'
             };
         }
 
         // Get subscription data
-        const subscriptionResult = await getCustomerSubscription({ teamId });
+        const subscriptionResult = await getCustomerSubscription({ companyId });
 
         if (!subscriptionResult.success || !subscriptionResult.data) {
             return {
@@ -181,18 +181,18 @@ export const checkExportPermission = async () => {
 
 export const handleCanceledCheckout = async () => {
     try {
-        const teamId = await getCurrentTeamId();
+        const companyId = await getCurrentCompanyId();
 
-        if (!teamId) {
+        if (!companyId) {
             return {
                 success: false,
-                error: 'No team found for current user',
+                error: 'No company found for current user',
                 converted: false
             };
         }
 
         // Get current subscription
-        const subscriptionResult = await getCustomerSubscription({ teamId });
+        const subscriptionResult = await getCustomerSubscription({ companyId });
 
         if (!subscriptionResult.success || !subscriptionResult.data) {
             return {

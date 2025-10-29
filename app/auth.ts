@@ -26,7 +26,7 @@ interface User {
     company?: string | null
     language?: string | null
     avatarUrl?: string | null
-    defaultTeamId?: number | null
+    defaultCompanyId?: number | null
 }
 
 const locale = async () => {
@@ -118,7 +118,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         name: `${user.firstName} ${user.lastName}`,
                         language: user.language === "pt_BR" ? "pt-BR" : "en",
                         avatarUrl: user?.avatarUrl || user.avatar?.url || null,
-                        defaultTeamId: user.defaultTeamId
+                        defaultCompanyId: user.defaultCompanyId
                     }
                 } catch (error) {
                     console.error("Auth error:", error)
@@ -173,7 +173,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         name: `${user.firstName} ${user.lastName}`,
                         language: user.language === "pt_BR" ? "pt-BR" : "en",
                         avatarUrl: user?.avatarUrl || null,
-                        defaultTeamId: user.defaultTeamId
+                        defaultCompanyId: user.defaultCompanyId
                     }
                 } catch (error) {
                     console.error("OTP provider error:", error)
@@ -190,7 +190,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.name = user.name
                 token.language = (user as any)?.language
                 token.avatarUrl = (user as any)?.avatarUrl
-                token.defaultTeamId = (user as any)?.defaultTeamId
+                token.defaultCompanyId = (user as any)?.defaultCompanyId
 
                 // ✅ Store language in separate cookie for middleware access
                 const cookieStore = await cookies();
@@ -229,10 +229,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             },
                         })
 
-                        // Create a new team for the user and assign ownership
-                        const newTeam = await prisma.team.create({
+                        // Create a new company for the user and assign ownership
+                        const newCompany = await prisma.company.create({
                             data: {
-                                name: `${newUser.firstName || "New"}'s Team`,
+                                name: `${newUser.firstName || "New"}'s Company`,
                                 members: {
                                     create: [
                                         {
@@ -241,17 +241,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                             isAdmin: true,
                                             canPost: true,
                                             canApprove: true,
-                                            teamMemberStatus: 'accepted',
+                                            companyMemberStatus: 'accepted',
                                         }
                                     ]
                                 }
                             }
                         });
 
-                        // Update user's default team
+                        // Update user's default company
                         await prisma.user.update({
                             where: { id: newUser.id },
-                            data: { defaultTeamId: newTeam.id }
+                            data: { defaultCompanyId: newCompany.id }
                         });
 
                         // Create subscription for Google OAuth users
@@ -292,7 +292,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 if (subscriptionPlan) {
                                     // Create customer subscription with pending status for paid plans
                                     const subscriptionResult = await createCustomerSubscription({
-                                        teamId: newTeam.id,
+                                        companyId: newCompany.id,
                                         planId: subscriptionPlan.id,
                                         status: SubscriptionStatus.pending,
                                         cancelAtPeriodEnd: false,
@@ -314,7 +314,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                                 if (freePlan) {
                                     const subscriptionResult = await createCustomerSubscription({
-                                        teamId: newTeam.id,
+                                        companyId: newCompany.id,
                                         planId: freePlan.id,
                                         status: SubscriptionStatus.active,
                                         cancelAtPeriodEnd: false
@@ -335,7 +335,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         token.language = newUser.language
                         token.avatarUrl = newUser.avatarUrl
                         token.name = `${newUser.firstName} ${newUser.lastName}`
-                        token.defaultTeamId = newTeam.id
+                        token.defaultCompanyId = newCompany.id
 
                         const baseUrl = process.env.HOST;
                         const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>";
@@ -359,7 +359,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         token.language = existingUser.language === "pt_BR" ? "pt-BR" : "en"
                         token.avatarUrl = existingUser.avatarUrl
                         token.name = `${existingUser.firstName} ${existingUser.lastName}`
-                        token.defaultTeamId = existingUser.defaultTeamId
+                        token.defaultCompanyId = existingUser.defaultCompanyId
                     }
                 } catch (error) {
                     console.error('Error handling Google OAuth user:', error);
@@ -381,7 +381,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 firstName: true,
                                 lastName: true,
                                 avatarUrl: true,
-                                defaultTeamId: true
+                                defaultCompanyId: true
                             }
                         });
 
@@ -390,7 +390,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             token.language = updatedUser.language === "pt_BR" ? "pt-BR" : "en";
                             token.name = `${updatedUser.firstName} ${updatedUser.lastName || ''}`.trim();
                             token.avatarUrl = updatedUser.avatarUrl;
-                            token.defaultTeamId = updatedUser.defaultTeamId;
+                            token.defaultCompanyId = updatedUser.defaultCompanyId;
                         }
                     }
                 } catch (error) {
@@ -410,7 +410,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     name: token.name as string,
                     avatarUrl: token.avatarUrl as string,
                     language: token.language as string,
-                    defaultTeamId: token.defaultTeamId as number
+                    defaultCompanyId: token.defaultCompanyId as number
                 }
             }
 

@@ -15,28 +15,28 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
-interface TeamInvitationEmailProps {
+interface CompanyInvitationEmailProps {
     userName?: string;
     inviterName?: string;
-    teamName?: string;
+    companyName?: string;
     invitationUrl?: string;
     lang?: string;
     baseUrl?: string;
     password?: string;
 }
 
-const TeamInvitationEmail = ({
+const CompanyInvitationEmail = ({
     userName = 'User',
-    inviterName = 'Team Member',
-    teamName = 'Team',
+    inviterName = 'Company Member',
+    companyName = 'Company',
     password = '',
     invitationUrl = 'https://example.com',
     lang = 'en',
     baseUrl = 'http://localhost:3000'
-}: TeamInvitationEmailProps) => {
+}: CompanyInvitationEmailProps) => {
     const isPt = lang === 'pt-BR' || lang === 'pt_BR';
 
-    const { companyName, logoURL } = emailConfig;
+    const { companyName: emailCompanyName, logoURL } = emailConfig;
 
     return (
         <Html>
@@ -44,8 +44,8 @@ const TeamInvitationEmail = ({
             <Body style={main}>
                 <Preview>
                     {isPt
-                        ? `${companyName} - Você foi convidado para a equipe ${teamName}!`
-                        : `${companyName} - You've been invited to join ${teamName}!`
+                        ? `${emailCompanyName} - Você foi convidado para a empresa ${companyName}!`
+                        : `${emailCompanyName} - You've been invited to join ${companyName}!`
                     }
                 </Preview>
                 <Container style={container}>
@@ -53,7 +53,7 @@ const TeamInvitationEmail = ({
                         src={logoURL}
                         width="40"
                         height="40"
-                        alt={companyName}
+                        alt={emailCompanyName}
                         style={logo}
                     />
                     <Section>
@@ -62,26 +62,26 @@ const TeamInvitationEmail = ({
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? `Você foi convidado(a) para se juntar à equipe "${teamName}" no ${companyName}.`
-                                : `You've been invited to join the team "${teamName}" on ${companyName}.`
+                                ? `Você foi convidado(a) para se juntar à empresa "${companyName}" no ${emailCompanyName}.`
+                                : `You've been invited to join the company "${companyName}" on ${emailCompanyName}.`
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? `Como membro da equipe, você terá acesso as pesquisas e resultados para colaborar com a equipe.`
-                                : 'As a team member, you\'ll have access to surveys and results to collaborate with the team.'
+                                ? `Como membro da empresa, você terá acesso as pesquisas e resultados para colaborar com a empresa.`
+                                : 'As a company member, you\'ll have access to surveys and results to collaborate with the company.'
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? `O ${companyName} oferece uma plataforma completa para gerenciamento de pesquisas, permitindo que equipes trabalhem de forma eficiente e organizada.`
-                                : `${companyName} provides a comprehensive platform for survey management, enabling teams to work efficiently and organized.`
+                                ? `O ${emailCompanyName} oferece uma plataforma completa para gerenciamento de pesquisas, permitindo que empresas trabalhem de forma eficiente e organizada.`
+                                : `${emailCompanyName} provides a comprehensive platform for survey management, enabling companies to work efficiently and organized.`
                             }
                         </Text>
                         <Text style={text}>
                             {isPt
-                                ? 'Clique no botão abaixo para aceitar o convite e se tornar parte da equipe:'
-                                : 'Click the button below to accept the invitation and become part of the team:'
+                                ? 'Clique no botão abaixo para aceitar o convite e se tornar parte da empresa:'
+                                : 'Click the button below to accept the invitation and become part of the company:'
                             }
                         </Text>
                         <Button style={button} href={invitationUrl}>
@@ -136,7 +136,7 @@ const TeamInvitationEmail = ({
                 <Section style={footer}>
                     <Row>
                         <Text style={{ textAlign: 'center', color: '#706a7b' }}>
-                            {isPt ? `© 2025 ${companyName}, Todos os direitos reservados` : `© 2025 ${companyName}, All Rights Reserved`}
+                            {isPt ? `© 2025 ${emailCompanyName}, Todos os direitos reservados` : `© 2025 ${emailCompanyName}, All Rights Reserved`}
                         </Text>
                     </Row>
                 </Section>
@@ -146,7 +146,7 @@ const TeamInvitationEmail = ({
     );
 };
 
-TeamInvitationEmail.PreviewProps = {
+CompanyInvitationEmail.PreviewProps = {
     userName: 'Carlos Oliveira',
     inviterName: 'Ana Costa',
     companyName: 'Tech Solutions Ltda',
@@ -215,4 +215,5 @@ const hr = {
     margin: '20px 0',
 };
 
-export default TeamInvitationEmail; 
+export default CompanyInvitationEmail;
+

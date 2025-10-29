@@ -1,6 +1,7 @@
 {
     "Inbox": {
         "title": "Inbox",
+        "description": "Manage your conversations and messages",
         "searchPlaceholder": "Search conversations...",
         "typeMessagePlaceholder": "Type a message...",
         "status": {
@@ -19,6 +20,7 @@
     },
     "AiTraining": {
         "title": "AI Training",
+        "description": "Train your AI assistant with knowledge and templates",
         "subtitle": "Teach your bot about your business",
         "buttons": {
             "addKnowledge": "Add Knowledge",
@@ -132,7 +134,7 @@
             "dashboard": "Dashboard",
             "inbox": "Inbox",
             "aiTraining": "AI Training",
-            "team": "Team",
+            "company": "Company",
             "settings": "Settings",
             "support": "Support"
         },
@@ -142,13 +144,13 @@
     },
     "NavMain": {
         "quickCreate": "Create Survey",
-        "addTeam": "Add Team",
-        "selectTeam": "Select team...",
-        "searchTeams": "Search teams...",
-        "noTeamsFound": "No teams found.",
+        "addCompany": "Add Company",
+        "selectCompany": "Select company...",
+        "searchCompanies": "Search companies...",
+        "noCompaniesFound": "No companies found.",
         "messages": {
-            "teamsUpdated": "Teams updated successfully",
-            "failedToUpdateDefaultTeam": "Failed to update default team"
+            "companiesUpdated": "Companies updated successfully",
+            "failedToUpdateDefaultCompany": "Failed to update default company"
         }
     },
     "SiteHeader": {
@@ -348,7 +350,7 @@
             "description": "Control the display of branding in your surveys",
             "switchLabel": "Remove Branding",
             "switchDescription": "Hide branding from your surveys: 'Powered by Opineeo'",
-            "noTeam": "No team available. Please create or join a team first.",
+            "noCompany": "No company available. Please create or join a company first.",
             "notAuthorized": "You must be an admin to change branding settings",
             "brandingEnabled": "Branding has been enabled",
             "brandingDisabled": "Branding has been removed",
@@ -378,7 +380,7 @@
             "codeCopiedDescription": "Code example copied to clipboard",
             "endpointCopied": "Endpoint copied",
             "endpointCopiedDescription": "API endpoint URL copied to clipboard",
-            "noTeam": "No team available. Please create or join a team first.",
+            "noCompany": "No company available. Please create or join a company first.",
             "confirmRegenerateTitle": "Regenerate Token",
             "confirmRegenerateDescription": "Are you sure you want to regenerate this token? This action cannot be undone and will invalidate the current token.",
             "confirmRegenerate": "Regenerate Token",
@@ -420,7 +422,7 @@
                     "includeScript": "Include the widget script in your HTML",
                     "createContainer": "Add a container div element",
                     "configureQuestions": "Configure your survey questions",
-                    "addToken": "Add your team token for submissions",
+                    "addToken": "Add your company token for submissions",
                     "mount": "Mount the widget to your container"
                 }
             }
@@ -672,8 +674,8 @@
         "phoneAlreadyInUse": "Phone number is already in use",
         "profileUpdateFailed": "Failed to update profile",
         "avatarUpdateFailed": "Failed to update avatar",
-        "defaultTeamName": "Default Team",
-        "defaultTeamDescription": "Default team for {firstName}",
+        "defaultCompanyName": "Default Company",
+        "defaultCompanyDescription": "Default company for {firstName}",
         "invalidOTP": "Invalid or expired verification code",
         "otpRequired": "OTP and email or phone are required",
         "otpInvalidFormat": "OTP must be 6 digits",
@@ -685,9 +687,9 @@
     },
     "Company": {
         "title": "Company Management",
-        "description": "Manage your companies and team members",
+        "description": "Manage your companies and company members",
         "createCompany": "Create Company",
-        "createCompanyDescription": "Create a new company to get started with your team.",
+        "createCompanyDescription": "Create a new company to get started.",
         "editCompany": "Edit Company",
         "editCompanyDescription": "Update your company information.",
         "selectCompany": "Select Company",
@@ -742,8 +744,8 @@
             "makeAdmin": "Make Admin",
             "removeAdmin": "Remove Admin",
             "removeMember": "Remove Member",
-            "noMembers": "No team members",
-            "noMembersDescription": "Your company doesn't have any team members yet.",
+            "noMembers": "No company members",
+            "noMembersDescription": "Your company doesn't have any members yet.",
             "inviteFirstMember": "Invite Your First Member",
             "status": {
                 "invited": "Invited",
@@ -755,13 +757,47 @@
             "removeSuccess": "Member removed successfully",
             "removeFailed": "Failed to remove member",
             "updateSuccess": "Member permissions updated successfully",
-            "updateFailed": "Failed to update member permissions"
+            "updateFailed": "Failed to update member permissions",
+            "actions": "Actions",
+            "openMenu": "Open menu",
+            "excel": {
+                "singleInvite": "Single Invite",
+                "bulkImport": "Bulk Import",
+                "uploadLabel": "Upload Excel File",
+                "uploadDescription": "Upload an Excel or CSV file with member information to invite multiple members at once.",
+                "dropHere": "Drop the file here",
+                "clickOrDrag": "Click to upload or drag and drop",
+                "supportedFormats": "Supports .xlsx, .xls, and .csv files",
+                "formatInfo": "Required columns: email (required). Optional columns: firstName, lastName, isAdmin, canPost, canApprove. Column names are case-insensitive.",
+                "parseError": "Failed to parse Excel file",
+                "readError": "Failed to read file",
+                "invalidFileType": "Invalid file type. Please upload .xlsx, .xls, or .csv files.",
+                "parsedSuccess": "Successfully parsed {count} member(s)",
+                "parsedWithErrors": "Parsed with {count} error(s)",
+                "errorsFound": "{count} error(s) found",
+                "noData": "No valid member data found in file",
+                "email": "Email",
+                "firstName": "First Name",
+                "lastName": "Last Name",
+                "admin": "Admin",
+                "canPost": "Can Post",
+                "canApprove": "Can Approve",
+                "preview": "Preview ({count} members)",
+                "clear": "Clear",
+                "inviting": "Inviting...",
+                "inviteAll": "Invite All ({count})",
+                "bulkSuccess": "Successfully invited {count} member(s)",
+                "bulkErrors": "Failed to invite {count} member(s)",
+                "bulkFailed": "Bulk invite failed"
+            }
         },
         "messages": {
             "createSuccess": "Company created successfully",
             "updateSuccess": "Company updated successfully",
             "operationFailed": "Operation failed",
-            "unexpectedError": "An unexpected error occurred"
+            "unexpectedError": "An unexpected error occurred",
+            "bulkInviteSuccess": "Successfully invited {count} member(s)",
+            "bulkInviteFailed": "Failed to invite members"
         }
     },
     "Profile": {
@@ -817,7 +853,7 @@
         "deleteAccount": {
             "title": "Delete Account",
             "description": "Permanently delete your account and all associated data",
-            "warning": "This action cannot be undone. All your data, surveys, and team memberships will be permanently deleted.",
+            "warning": "This action cannot be undone. All your data, surveys, and company memberships will be permanently deleted.",
             "button": "Delete Account",
             "modal": {
                 "title": "Delete Account",
@@ -828,7 +864,7 @@
                 "consequences": {
                     "title": "What happens when you delete your account:",
                     "account": "Your account will be permanently deleted",
-                    "teams": "If you own any teams, all members will be removed and teams will be deactivated",
+                    "companies": "If you own any companies, all members will be removed and companies will be deactivated",
                     "data": "All your surveys, responses, and data will be permanently deleted",
                     "irreversible": "This action is irreversible and cannot be undone"
                 }
@@ -839,7 +875,7 @@
         "pageTitle": "Company Invitation",
         "title": "You've been invited!",
         "description": "You have received an invitation to join a company.",
-        "companyInvitation": "Company team invitation",
+        "companyInvitation": "Company invitation",
         "acceptInvitation": "Accept Invitation",
         "rejectInvitation": "Decline Invitation",
         "accepting": "Accepting...",
@@ -876,40 +912,40 @@
             "unexpectedError": "An unexpected error occurred"
         }
     },
-    "Team": {
-        "title": "Team Management",
-        "description": "Manage your teams and team members",
-        "teams": "Teams",
-        "createTeam": "Create Team",
-        "createTeamDescription": "Create a new team to collaborate with others.",
-        "editTeam": "Edit Team",
-        "editTeamDescription": "Update your team information.",
-        "deleteTeam": "Delete Team",
-        "deleteTeamConfirmation": "Are you sure you want to delete the team \"{teamName}\"? This action cannot be undone and will remove all team members and associated data.",
+    "Company": {
+        "title": "Company Management",
+        "description": "Manage your companies and company members",
+        "companies": "Companies",
+        "createCompany": "Create Company",
+        "createCompanyDescription": "Create a new company to collaborate with others.",
+        "editCompany": "Edit Company",
+        "editCompanyDescription": "Update your company information.",
+        "deleteCompany": "Delete Company",
+        "deleteCompanyConfirmation": "Are you sure you want to delete the company \"{companyName}\"? This action cannot be undone and will remove all company members and associated data.",
         "delete": "Delete",
-        "noTeams": "No teams found",
-        "noTeamsDescription": "You haven't created any teams yet. Create your first team to get started.",
-        "createFirstTeam": "Create Your First Team",
+        "noCompanies": "No companies found",
+        "noCompaniesDescription": "You haven't created any companies yet. Create your first company to get started.",
+        "createFirstCompany": "Create Your First Company",
         "form": {
-            "name": "Team Name",
-            "namePlaceholder": "Enter team name",
+            "name": "Company Name",
+            "namePlaceholder": "Enter company name",
             "description": "Description",
-            "descriptionPlaceholder": "Enter team description (optional)",
+            "descriptionPlaceholder": "Enter company description (optional)",
             "cancel": "Cancel",
-            "create": "Create Team",
+            "create": "Create Company",
             "creating": "Creating...",
-            "update": "Update Team",
+            "update": "Update Company",
             "updating": "Updating..."
         },
         "members": {
-            "title": "Team Members",
-            "description": "Manage your team members and their permissions",
+            "title": "Company Members",
+            "description": "Manage your company members and their permissions",
             "inviteMember": "Invite Member",
-            "inviteDescription": "Send an invitation to a new team member.",
+            "inviteDescription": "Send an invitation to a new company member.",
             "email": "Email Address",
             "emailPlaceholder": "member@example.com",
             "permissions": "Permissions",
-            "isAdmin": "Administrator - Can manage team and members",
+            "isAdmin": "Administrator - Can manage company and members",
             "canPost": "Can Create - Can create surveys",
             "canApprove": "Can Read - Can read surveys and results",
             "sendInvite": "Send Invitation",
@@ -923,8 +959,8 @@
             "makeAdmin": "Make Admin",
             "removeAdmin": "Remove Admin",
             "removeMember": "Remove Member",
-            "noMembers": "No team members",
-            "noMembersDescription": "Your team doesn't have any members yet.",
+            "noMembers": "No company members",
+            "noMembersDescription": "Your company doesn't have any members yet.",
             "inviteFirstMember": "Invite Your First Member",
             "status": {
                 "invited": "Invited",
@@ -939,33 +975,33 @@
             "updateFailed": "Failed to update member permissions"
         },
         "messages": {
-            "teamsUpdated": "Teams updated successfully",
-            "failedToRefreshTeams": "Failed to refresh teams",
-            "createSuccess": "Team created successfully",
-            "createFailed": "Failed to create team",
-            "updateSuccess": "Team updated successfully",
-            "updateFailed": "Failed to update team",
-            "deleteSuccess": "Team deleted successfully",
-            "deleteFailed": "Failed to delete team",
-            "cannotDeleteOnlyTeam": "Cannot delete the only team. You must have at least one team.",
-            "onlyTeamOwnerCanDeleteTeam": "Only the team owner can delete the team",
+            "companiesUpdated": "Companies updated successfully",
+            "failedToRefreshCompanies": "Failed to refresh companies",
+            "createSuccess": "Company created successfully",
+            "createFailed": "Failed to create company",
+            "updateSuccess": "Company updated successfully",
+            "updateFailed": "Failed to update company",
+            "deleteSuccess": "Company deleted successfully",
+            "deleteFailed": "Failed to delete company",
+            "cannotDeleteOnlyCompany": "Cannot delete the only company. You must have at least one company.",
+            "onlyCompanyOwnerCanDeleteCompany": "Only the company owner can delete the company",
             "inviteSuccess": "Member invited successfully",
             "inviteFailed": "Failed to invite member",
             "memberUpdateSuccess": "Member permissions updated successfully",
             "memberUpdateFailed": "Failed to update member permissions",
             "memberRemoveSuccess": "Member removed successfully",
             "memberRemoveFailed": "Failed to remove member",
-            "tokenGenerated": "Team token generated successfully",
-            "tokenGenerationFailed": "Failed to generate team token",
-            "tokenRegenerated": "Team token regenerated successfully",
-            "tokenRegenerationFailed": "Failed to regenerate team token"
+            "tokenGenerated": "Company token generated successfully",
+            "tokenGenerationFailed": "Failed to generate company token",
+            "tokenRegenerated": "Company token regenerated successfully",
+            "tokenRegenerationFailed": "Failed to regenerate company token"
         },
         "modals": {
             "editMember": {
-                "title": "Edit Team Member",
+                "title": "Edit Company Member",
                 "description": "Update permissions for {firstName} {lastName}",
                 "permissions": "Permissions",
-                "teamAdministrator": "Team Administrator",
+                "companyAdministrator": "Company Administrator",
                 "canPostContent": "Can Create Surveys",
                 "canApproveContent": "Can Read Surveys and Results",
                 "cancel": "Cancel",
@@ -973,13 +1009,13 @@
                 "saving": "Saving..."
             },
             "removeMember": {
-                "title": "Remove Team Member",
-                "description": "Are you sure you want to remove this member from the team?",
-                "warning": "This action cannot be undone. The member will lose access to the team and all associated content.",
+                "title": "Remove Company Member",
+                "description": "Are you sure you want to remove this member from the company?",
+                "warning": "This action cannot be undone. The member will lose access to the company and all associated content.",
                 "cancel": "Cancel",
                 "removeMember": "Remove Member"
             },
-            "noTeamSelected": "Select a team to view details"
+            "noCompanySelected": "Select a company to view details"
         }
     },
     "Subscription": {
@@ -1007,9 +1043,9 @@
         "plans": {
             "starter": {
                 "name": "Starter",
-                "description": "Perfect for individuals and small teams",
+                "description": "Perfect for individuals and small companies",
                 "features": [
-                    "Up to 5 team members",
+                    "Up to 5 company members",
                     "10GB storage",
                     "Basic analytics",
                     "Email support",
@@ -1022,13 +1058,13 @@
                 "name": "Professional",
                 "description": "Ideal for growing businesses",
                 "features": [
-                    "Up to 25 team members",
+                    "Up to 25 company members",
                     "100GB storage",
                     "Advanced analytics",
                     "Priority support",
                     "Custom templates",
                     "API access",
-                    "Team collaboration tools"
+                    "Company collaboration tools"
                 ],
                 "cta": "Start Free Trial",
                 "popular": true
@@ -1037,7 +1073,7 @@
                 "name": "Enterprise",
                 "description": "For large organizations with advanced needs",
                 "features": [
-                    "Unlimited team members",
+                    "Unlimited company members",
                     "Unlimited storage",
                     "Custom analytics",
                     "24/7 phone support",
@@ -1171,7 +1207,7 @@
             },
             "plans": {
                 "starter": {
-                    "description": "Perfect for small teams"
+                    "description": "Perfect for small companies"
                 },
                 "pro": {
                     "description": "For growing businesses"
@@ -1293,9 +1329,9 @@
             }
         },
         "emptyState": {
-            "title": "No Team Found",
-            "description": "You need to create or join a team to start creating surveys.",
-            "createTeamButton": "Go to Teams",
+            "title": "No Company Found",
+            "description": "You need to create or join a company to start creating surveys.",
+            "createCompanyButton": "Go to Companies",
             "noSurveys": {
                 "title": "Start Creating Your First Survey",
                 "subtitle": "Create engaging surveys to collect valuable feedback",

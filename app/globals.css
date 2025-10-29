@@ -84,7 +84,8 @@
   --destructive-foreground: oklch(0.96 0.003 120);
   --border: oklch(0.18 0.008 120);
   /* Dark green border */
-  --input: oklch(0.13 0.008 120);
+  --input: oklch(0.19 0.008 120);
+  /* Lighter input background for better contrast in dark mode */
   --ring: oklch(0.62 0.12 140);
   --chart-1: oklch(0.62 0.12 140);
   /* Primary elegant WhatsApp green */

@@ -5,23 +5,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "sonner"
 
 import {
-    Building2,
-    User,
     Bell,
     Smartphone,
-    CreditCard,
-    Shield,
     Save,
     Users,
     Plus,
     Trash2,
-    Mail,
     Phone,
 } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
@@ -35,7 +29,6 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
 
 type TeamMember = {
     id: string
@@ -77,11 +70,6 @@ export default function SettingsPage() {
 
     // AI settings
     const [autoReply, setAutoReply] = useState(true)
-
-    const handleSaveProfile = () => {
-        // In a real app, this would update the backend
-        toast.success("Profile updated!")
-    }
 
     const handleAddMember = () => {
         if (!newMemberName || !newMemberEmail) {
@@ -155,85 +143,21 @@ export default function SettingsPage() {
             </div>
 
             {/* Settings Tabs */}
-            <Tabs defaultValue="profile" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
-                    <TabsTrigger value="profile" className="gap-2">
-                        <User className="w-4 h-4" />
-                        Profile
-                    </TabsTrigger>
-                    <TabsTrigger value="team" className="gap-2">
+            <Tabs defaultValue="team" className="space-y-6">
+                <TabsList className="flex w-full min-h-16 overflow-x-auto lg:grid lg:grid-cols-3 lg:w-auto lg:overflow-x-visible">
+                    <TabsTrigger value="team" className="gap-2 flex-shrink-0">
                         <Users className="w-4 h-4" />
                         Team
                     </TabsTrigger>
-                    <TabsTrigger value="whatsapp" className="gap-2">
+                    <TabsTrigger value="whatsapp" className="gap-2 flex-shrink-0">
                         <Smartphone className="w-4 h-4" />
                         WhatsApp
                     </TabsTrigger>
-                    <TabsTrigger value="notifications" className="gap-2">
+                    <TabsTrigger value="notifications" className="gap-2 flex-shrink-0">
                         <Bell className="w-4 h-4" />
                         Notifications
                     </TabsTrigger>
-                    <TabsTrigger value="billing" className="gap-2">
-                        <CreditCard className="w-4 h-4" />
-                        Billing
-                    </TabsTrigger>
                 </TabsList>
-
-                {/* Profile Tab */}
-                <TabsContent value="profile" className="space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <User className="w-5 h-5" />
-                                Personal Information
-                            </CardTitle>
-                            <CardDescription>Update your personal details</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Full Name</Label>
-                                    <Input id="name" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" />
-                                </div>
-                            </div>
-                            <Button onClick={handleSaveProfile} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                                <Save className="w-4 h-4 mr-2" />
-                                Save Changes
-                            </Button>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Building2 className="w-5 h-5" />
-                                Business Information
-                            </CardTitle>
-                            <CardDescription>Manage your business details</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="businessName">Business Name</Label>
-                                <Input id="businessName" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="businessDescription">Business Description</Label>
-                                <Textarea
-                                    id="businessDescription"
-                                    rows={4}
-                                />
-                            </div>
-                            <Button onClick={handleSaveProfile} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                                <Save className="w-4 h-4 mr-2" />
-                                Save Changes
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
 
                 <TabsContent value="team" className="space-y-6">
                     <Card>
@@ -488,68 +412,6 @@ export default function SettingsPage() {
                     </Card>
                 </TabsContent>
 
-                {/* Billing Tab */}
-                <TabsContent value="billing" className="space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <CreditCard className="w-5 h-5" />
-                                Current Plan
-                            </CardTitle>
-                            <CardDescription>Manage your subscription</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-foreground">Starter Plan</h3>
-                                        <p className="text-muted-foreground mt-1">500 messages/month</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-3xl font-bold text-foreground">$9</p>
-                                        <p className="text-sm text-muted-foreground">per month</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Shield className="w-4 h-4" />
-                                    <span>Next billing date: February 15, 2025</span>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                                <Button variant="outline" className="flex-1 bg-transparent">
-                                    Change Plan
-                                </Button>
-                                <Button variant="outline" className="flex-1 text-red-600 hover:text-red-700 bg-transparent">
-                                    Cancel Subscription
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Payment Method</CardTitle>
-                            <CardDescription>Manage your payment information</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-12 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded flex items-center justify-center">
-                                        <CreditCard className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold text-foreground">•••• •••• •••• 4242</p>
-                                        <p className="text-sm text-muted-foreground">Expires 12/25</p>
-                                    </div>
-                                </div>
-                                <Button variant="outline" size="sm">
-                                    Update
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
             </Tabs>
         </div>
     )
