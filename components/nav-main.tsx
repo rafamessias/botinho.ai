@@ -43,8 +43,8 @@ export function NavMain({
                   asChild
                   tooltip={item.title}
                   size="lg"
-                  className={`cursor-pointer transition-colors duration-200 ${isSelected
-                    ? "bg-primary text-primary-foreground shadow-sm border-l-4 border-l-primary-foreground"
+                  className={`cursor-pointer transition-all duration-200 ${isSelected
+                    ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:text-primary-foreground"
                     : "hover:bg-primary/5 hover:text-primary"
                     }`}
                 >

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -61,6 +61,31 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
     const [showEditForm, setShowEditForm] = useState(false)
     const [showInviteForm, setShowInviteForm] = useState(false)
     const [pendingNewCompanyId, setPendingNewCompanyId] = useState<number | null>(null)
+
+    // Ref to store the addMember function from CompanyMembers
+    const addMemberRef = useRef<((member: any) => void) | null>(null)
+
+    // Function to add a new member to the current company
+    const handleMemberAdded = (newMember: any) => {
+        if (!selectedCompany) return
+
+        // Try to add via CompanyMembers component first (optimistic update)
+        if (addMemberRef.current) {
+            addMemberRef.current(newMember)
+        }
+
+        // Also update the companies state
+        setCompanies(prevCompanies =>
+            prevCompanies.map(company =>
+                company.id === selectedCompany.id
+                    ? {
+                        ...company,
+                        members: [...company.members, newMember]
+                    }
+                    : company
+            )
+        )
+    }
 
 
     const handleCompanyUpdate = async (newCompanyId?: number) => {
@@ -263,6 +288,10 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
                                 isCurrentUserAdmin={isCurrentUserAdmin(selectedCompany)}
                                 onMemberUpdate={handleCompanyUpdate}
                                 onInviteMember={() => setShowInviteForm(true)}
+                                onMemberAdded={(addMemberFn) => {
+                                    // Store the addMember function to use when inviting
+                                    addMemberRef.current = addMemberFn
+                                }}
                             />
                         </div>
                     </CardContent>
@@ -305,9 +334,14 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
                     <div className="w-full max-w-md max-h-[90vh] overflow-y-auto">
                         <InviteMemberForm
                             companyId={selectedCompany.id}
-                            onSuccess={() => {
+                            onSuccess={(newMember) => {
                                 setShowInviteForm(false)
-                                handleCompanyUpdate()
+                                if (newMember) {
+                                    handleMemberAdded(newMember)
+                                } else {
+                                    // Fallback to refresh if member data not available
+                                    handleCompanyUpdate()
+                                }
                             }}
                             onCancel={() => setShowInviteForm(false)}
                         />

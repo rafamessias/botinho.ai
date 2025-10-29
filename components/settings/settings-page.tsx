@@ -144,14 +144,14 @@ export default function SettingsPage() {
 
             {/* Settings Tabs */}
             <Tabs defaultValue="team" className="space-y-6">
-                <TabsList className="flex w-full min-h-16 overflow-x-auto lg:grid lg:grid-cols-3 lg:w-auto lg:overflow-x-visible">
-                    <TabsTrigger value="team" className="gap-2 flex-shrink-0">
-                        <Users className="w-4 h-4" />
-                        Team
-                    </TabsTrigger>
+                <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-3 lg:w-auto lg:overflow-x-visible">
                     <TabsTrigger value="whatsapp" className="gap-2 flex-shrink-0">
                         <Smartphone className="w-4 h-4" />
                         WhatsApp
+                    </TabsTrigger>
+                    <TabsTrigger value="team" className="gap-2 flex-shrink-0">
+                        <Users className="w-4 h-4" />
+                        Team
                     </TabsTrigger>
                     <TabsTrigger value="notifications" className="gap-2 flex-shrink-0">
                         <Bell className="w-4 h-4" />

@@ -668,7 +668,7 @@ export default function AITrainingPage() {
                                     {knowledgeBase.map((item) => (
                                         <div
                                             key={item.id}
-                                            className="refined-card p-4 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+                                            className="refined-card p-4 rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
                                         >
                                             <div
                                                 className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${item.type === "text" ? "accent-blue" : "accent-purple"
@@ -740,7 +740,7 @@ export default function AITrainingPage() {
                                     {templates.map((template) => (
                                         <div
                                             key={template.id}
-                                            className="refined-card p-4 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+                                            className="refined-card p-4 rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
                                         >
                                             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                                                 <MessageSquare className="w-5 h-5 text-primary" />

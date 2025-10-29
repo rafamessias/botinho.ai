@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -56,17 +56,20 @@ interface CompanyMembersProps {
     isCurrentUserAdmin: boolean
     onMemberUpdate: () => void
     onInviteMember: () => void
+    onMemberAdded?: (addMemberFn: (member: CompanyMember) => void) => void
 }
 
 export const CompanyMembers = ({
     companyId,
-    members,
+    members: initialMembers,
     currentUserId,
     isCurrentUserAdmin,
     onMemberUpdate,
-    onInviteMember
+    onInviteMember,
+    onMemberAdded
 }: CompanyMembersProps) => {
     const t = useTranslations("Company")
+    const [members, setMembers] = useState<CompanyMember[]>(initialMembers)
     const [updatingMember, setUpdatingMember] = useState<number | null>(null)
     const [editingMember, setEditingMember] = useState<CompanyMember | null>(null)
     const [removingMember, setRemovingMember] = useState<CompanyMember | null>(null)
@@ -75,6 +78,22 @@ export const CompanyMembers = ({
         canPost: false,
         canApprove: false
     })
+
+    // Update members when initialMembers prop changes
+    useEffect(() => {
+        setMembers(initialMembers)
+    }, [initialMembers])
+
+    // Expose addMember function to parent via callback
+    useEffect(() => {
+        if (onMemberAdded) {
+            const addMember = (newMember: CompanyMember) => {
+                setMembers(prev => [...prev, newMember])
+            }
+            // Call the callback with the addMember function
+            onMemberAdded(addMember as any)
+        }
+    }, [onMemberAdded])
 
     const handleEditMember = (member: CompanyMember) => {
         setEditingMember(member)
@@ -218,8 +237,8 @@ export const CompanyMembers = ({
                                                     <div className="flex items-center justify-center cursor-help">
                                                         <IconPencilPlus
                                                             className={`h-5 w-5 ${member.canPost
-                                                                    ? "text-primary"
-                                                                    : "text-muted-foreground/30"
+                                                                ? "text-primary"
+                                                                : "text-muted-foreground/30"
                                                                 }`}
                                                         />
                                                     </div>
@@ -233,8 +252,8 @@ export const CompanyMembers = ({
                                                     <div className="flex items-center justify-center cursor-help">
                                                         <IconEye
                                                             className={`h-5 w-5 ${member.canApprove
-                                                                    ? "text-primary"
-                                                                    : "text-muted-foreground/30"
+                                                                ? "text-primary"
+                                                                : "text-muted-foreground/30"
                                                                 }`}
                                                         />
                                                     </div>

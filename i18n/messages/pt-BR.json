@@ -688,6 +688,7 @@
     "Company": {
         "title": "Gestão de Empresa",
         "description": "Gerencie suas empresas e membros da equipe",
+        "companies": "Empresas",
         "createCompany": "Criar Empresa",
         "createCompanyDescription": "Crie uma nova empresa para começar com sua equipe.",
         "editCompany": "Editar Empresa",
@@ -697,9 +698,14 @@
         "noCompanies": "Nenhuma empresa encontrada",
         "noCompaniesDescription": "Você ainda não criou nenhuma empresa. Crie sua primeira empresa para começar.",
         "createFirstCompany": "Criar Sua Primeira Empresa",
+        "deleteCompany": "Excluir Empresa",
+        "deleteCompanyConfirmation": "Tem certeza de que deseja excluir a empresa \"{companyName}\"? Esta ação não pode ser desfeita e removerá todos os membros da empresa e dados associados.",
+        "delete": "Excluir",
         "form": {
             "name": "Nome da Empresa",
             "namePlaceholder": "Digite o nome da empresa",
+            "description": "Descrição",
+            "descriptionPlaceholder": "Digite a descrição da empresa (opcional)",
             "documentType": "Tipo de Documento",
             "selectDocumentType": "Tipo de documento",
             "document": "Número do Documento",
@@ -792,12 +798,51 @@
             }
         },
         "messages": {
+            "companiesUpdated": "Empresas atualizadas com sucesso",
+            "failedToRefreshCompanies": "Falha ao atualizar empresas",
             "createSuccess": "Empresa criada com sucesso",
+            "createFailed": "Falha ao criar empresa",
             "updateSuccess": "Empresa atualizada com sucesso",
+            "updateFailed": "Falha ao atualizar empresa",
+            "deleteSuccess": "Empresa excluída com sucesso",
+            "deleteFailed": "Falha ao excluir empresa",
+            "cannotDeleteOnlyCompany": "Não é possível excluir a única empresa. Você deve ter pelo menos uma empresa.",
+            "onlyCompanyOwnerCanDeleteCompany": "Apenas o proprietário da empresa pode excluir a empresa",
+            "inviteSuccess": "Membro convidado com sucesso",
+            "inviteFailed": "Falha ao convidar membro",
+            "memberUpdateSuccess": "Permissões do membro atualizadas com sucesso",
+            "memberUpdateFailed": "Falha ao atualizar permissões do membro",
+            "memberRemoveSuccess": "Membro removido com sucesso",
+            "memberRemoveFailed": "Falha ao remover membro",
+            "tokenGenerated": "Token da empresa gerado com sucesso",
+            "tokenGenerationFailed": "Falha ao gerar token da empresa",
+            "tokenRegenerated": "Token da empresa regenerado com sucesso",
+            "tokenRegenerationFailed": "Falha ao regenerar token da empresa",
             "operationFailed": "Operação falhou",
             "unexpectedError": "Ocorreu um erro inesperado",
             "bulkInviteSuccess": "{count} membro(s) convidado(s) com sucesso",
             "bulkInviteFailed": "Falha ao convidar membros"
+        },
+        "modals": {
+            "editMember": {
+                "title": "Editar Membro da Empresa",
+                "description": "Atualizar permissões para {firstName} {lastName}",
+                "permissions": "Permissões",
+                "companyAdministrator": "Administrador da Empresa",
+                "canPostContent": "Pode Criar Pesquisas",
+                "canApproveContent": "Pode Ler Pesquisas e Resultados",
+                "cancel": "Cancelar",
+                "saveChanges": "Salvar Alterações",
+                "saving": "Salvando..."
+            },
+            "removeMember": {
+                "title": "Remover Membro da Empresa",
+                "description": "Tem certeza de que deseja remover este membro da empresa?",
+                "warning": "Esta ação não pode ser desfeita. O membro perderá acesso à empresa e todo o conteúdo associado.",
+                "cancel": "Cancelar",
+                "removeMember": "Remover Membro"
+            },
+            "noCompanySelected": "Selecione uma empresa para ver detalhes"
         }
     },
     "Profile": {

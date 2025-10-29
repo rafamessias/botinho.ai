@@ -28,7 +28,7 @@ type InviteMemberFormData = z.infer<typeof inviteMemberSchema>
 
 interface InviteMemberFormProps {
     companyId: number
-    onSuccess?: () => void
+    onSuccess?: (newMember?: any) => void
     onCancel?: () => void
 }
 
@@ -220,7 +220,17 @@ export const InviteMemberForm = ({ companyId, onSuccess, onCancel }: InviteMembe
 
             if (result?.success) {
                 toast.success(result.message)
-                onSuccess?.()
+                // Transform the member data to match the expected structure
+                const formattedMember = result.member ? {
+                    id: result.member.id,
+                    isAdmin: result.member.isAdmin,
+                    canPost: result.member.canPost,
+                    canApprove: result.member.canApprove,
+                    isOwner: result.member.isOwner,
+                    companyMemberStatus: result.member.companyMemberStatus,
+                    user: result.member.user
+                } : undefined
+                onSuccess?.(formattedMember)
             } else {
                 toast.error(result?.error || "Failed to invite member")
             }
@@ -327,8 +337,8 @@ export const InviteMemberForm = ({ companyId, onSuccess, onCancel }: InviteMembe
                                 <div
                                     {...getRootProps()}
                                     className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${isDragActive
-                                            ? "border-primary bg-primary/5"
-                                            : "border-muted-foreground/25 hover:border-primary/50"
+                                        ? "border-primary bg-primary/5"
+                                        : "border-muted-foreground/25 hover:border-primary/50"
                                         }`}
                                 >
                                     <input {...getInputProps()} />
