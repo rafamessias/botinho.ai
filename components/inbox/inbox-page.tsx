@@ -490,7 +490,7 @@ export default function InboxPage() {
                 {/* Conversations List - Mobile: Hidden by default, Desktop: Always visible */}
                 <div className="hidden md:flex w-80 lg:w-96 border-r border-border/60 flex-col bg-card/95 backdrop-blur-sm flex-shrink-0 shadow-sm overflow-hidden">
                     {/* Search Header */}
-                    <div className="p-4 border-b border-border/60 bg-card/80 backdrop-blur-md flex-shrink-0">
+                    <div className="p-4 h-16 border-b border-border/60 bg-card/80 backdrop-blur-md flex-shrink-0">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input
@@ -668,7 +668,7 @@ export default function InboxPage() {
                 {/* Chat Area */}
                 <div className="flex-1 flex flex-col min-w-0 bg-gradient-to-b from-muted/20 via-muted/10 to-muted/30 overflow-hidden">
                     {/* Chat Header */}
-                    <div className="h-14 md:h-16 px-3 md:px-4 lg:px-6 flex items-center justify-between border-b border-border/60 bg-card/80 backdrop-blur-md shadow-sm flex-shrink-0">
+                    <div className="h-16 px-3 md:px-4 lg:px-6 flex items-center justify-between border-b border-border/60 bg-card/80 backdrop-blur-md shadow-sm flex-shrink-0">
                         <div className="flex items-center gap-2 md:gap-3 lg:gap-4 min-w-0 flex-1">
                             {/* Mobile: Back button to conversations */}
                             <Button
@@ -724,8 +724,8 @@ export default function InboxPage() {
                     </div>
 
                     {/* Messages */}
-                    <div className="flex-1 min-h-0 overflow-hidden">
-                        <ScrollArea className="h-full">
+                    <div className="min-h-0 overflow-hidden">
+                        <ScrollArea className="h-[calc(100vh-195px)]">
                             <div className="p-3 md:p-4 lg:p-6 space-y-2 md:space-y-3 lg:space-y-4">
                                 {selectedConversation.messages.map((message) => (
                                     <div
