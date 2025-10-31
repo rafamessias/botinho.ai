@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/ws-server/node_modules
+/ws-server/lib/generated
 
 # next.js
 /.next/

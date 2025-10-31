@@ -44,6 +44,26 @@ export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTok
  */
 export type Company = $Result.DefaultSelection<Prisma.$CompanyPayload>
 /**
+ * Model KnowledgeItem
+ * 
+ */
+export type KnowledgeItem = $Result.DefaultSelection<Prisma.$KnowledgeItemPayload>
+/**
+ * Model QuickAnswer
+ * 
+ */
+export type QuickAnswer = $Result.DefaultSelection<Prisma.$QuickAnswerPayload>
+/**
+ * Model AiTemplate
+ * 
+ */
+export type AiTemplate = $Result.DefaultSelection<Prisma.$AiTemplatePayload>
+/**
+ * Model AiTemplateOption
+ * 
+ */
+export type AiTemplateOption = $Result.DefaultSelection<Prisma.$AiTemplateOptionPayload>
+/**
  * Model CompanyMember
  * 
  */
@@ -63,12 +83,86 @@ export type CustomerSubscription = $Result.DefaultSelection<Prisma.$CustomerSubs
  * 
  */
 export type UsageTracking = $Result.DefaultSelection<Prisma.$UsageTrackingPayload>
+/**
+ * Model CompanySettings
+ * 
+ */
+export type CompanySettings = $Result.DefaultSelection<Prisma.$CompanySettingsPayload>
+/**
+ * Model CompanyWhatsappNumber
+ * 
+ */
+export type CompanyWhatsappNumber = $Result.DefaultSelection<Prisma.$CompanyWhatsappNumberPayload>
+/**
+ * Model InboxCustomer
+ * 
+ */
+export type InboxCustomer = $Result.DefaultSelection<Prisma.$InboxCustomerPayload>
+/**
+ * Model InboxConversation
+ * 
+ */
+export type InboxConversation = $Result.DefaultSelection<Prisma.$InboxConversationPayload>
+/**
+ * Model InboxMessage
+ * 
+ */
+export type InboxMessage = $Result.DefaultSelection<Prisma.$InboxMessagePayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const Language: {
+  export const KnowledgeItemType: {
+  TEXT: 'TEXT',
+  URL: 'URL'
+};
+
+export type KnowledgeItemType = (typeof KnowledgeItemType)[keyof typeof KnowledgeItemType]
+
+
+export const AiTemplateCategory: {
+  greeting: 'greeting',
+  orders: 'orders',
+  products: 'products',
+  support: 'support',
+  closing: 'closing'
+};
+
+export type AiTemplateCategory = (typeof AiTemplateCategory)[keyof typeof AiTemplateCategory]
+
+
+export const InboxMessageSenderType: {
+  customer: 'customer',
+  agent: 'agent',
+  bot: 'bot',
+  system: 'system'
+};
+
+export type InboxMessageSenderType = (typeof InboxMessageSenderType)[keyof typeof InboxMessageSenderType]
+
+
+export const InboxMessageStatus: {
+  pending: 'pending',
+  sent: 'sent',
+  delivered: 'delivered',
+  read: 'read',
+  failed: 'failed'
+};
+
+export type InboxMessageStatus = (typeof InboxMessageStatus)[keyof typeof InboxMessageStatus]
+
+
+export const InboxConversationPriority: {
+  low: 'low',
+  medium: 'medium',
+  high: 'high'
+};
+
+export type InboxConversationPriority = (typeof InboxConversationPriority)[keyof typeof InboxConversationPriority]
+
+
+export const Language: {
   en: 'en',
   pt_BR: 'pt_BR'
 };
@@ -143,6 +237,26 @@ export const UsageMetricType: {
 export type UsageMetricType = (typeof UsageMetricType)[keyof typeof UsageMetricType]
 
 }
+
+export type KnowledgeItemType = $Enums.KnowledgeItemType
+
+export const KnowledgeItemType: typeof $Enums.KnowledgeItemType
+
+export type AiTemplateCategory = $Enums.AiTemplateCategory
+
+export const AiTemplateCategory: typeof $Enums.AiTemplateCategory
+
+export type InboxMessageSenderType = $Enums.InboxMessageSenderType
+
+export const InboxMessageSenderType: typeof $Enums.InboxMessageSenderType
+
+export type InboxMessageStatus = $Enums.InboxMessageStatus
+
+export const InboxMessageStatus: typeof $Enums.InboxMessageStatus
+
+export type InboxConversationPriority = $Enums.InboxConversationPriority
+
+export const InboxConversationPriority: typeof $Enums.InboxConversationPriority
 
 export type Language = $Enums.Language
 
@@ -355,6 +469,46 @@ export class PrismaClient<
   get company(): Prisma.CompanyDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.knowledgeItem`: Exposes CRUD operations for the **KnowledgeItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more KnowledgeItems
+    * const knowledgeItems = await prisma.knowledgeItem.findMany()
+    * ```
+    */
+  get knowledgeItem(): Prisma.KnowledgeItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.quickAnswer`: Exposes CRUD operations for the **QuickAnswer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more QuickAnswers
+    * const quickAnswers = await prisma.quickAnswer.findMany()
+    * ```
+    */
+  get quickAnswer(): Prisma.QuickAnswerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.aiTemplate`: Exposes CRUD operations for the **AiTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiTemplates
+    * const aiTemplates = await prisma.aiTemplate.findMany()
+    * ```
+    */
+  get aiTemplate(): Prisma.AiTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.aiTemplateOption`: Exposes CRUD operations for the **AiTemplateOption** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiTemplateOptions
+    * const aiTemplateOptions = await prisma.aiTemplateOption.findMany()
+    * ```
+    */
+  get aiTemplateOption(): Prisma.AiTemplateOptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.companyMember`: Exposes CRUD operations for the **CompanyMember** model.
     * Example usage:
     * ```ts
@@ -393,6 +547,56 @@ export class PrismaClient<
     * ```
     */
   get usageTracking(): Prisma.UsageTrackingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.companySettings`: Exposes CRUD operations for the **CompanySettings** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompanySettings
+    * const companySettings = await prisma.companySettings.findMany()
+    * ```
+    */
+  get companySettings(): Prisma.CompanySettingsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.companyWhatsappNumber`: Exposes CRUD operations for the **CompanyWhatsappNumber** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompanyWhatsappNumbers
+    * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany()
+    * ```
+    */
+  get companyWhatsappNumber(): Prisma.CompanyWhatsappNumberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.inboxCustomer`: Exposes CRUD operations for the **InboxCustomer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InboxCustomers
+    * const inboxCustomers = await prisma.inboxCustomer.findMany()
+    * ```
+    */
+  get inboxCustomer(): Prisma.InboxCustomerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.inboxConversation`: Exposes CRUD operations for the **InboxConversation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InboxConversations
+    * const inboxConversations = await prisma.inboxConversation.findMany()
+    * ```
+    */
+  get inboxConversation(): Prisma.InboxConversationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.inboxMessage`: Exposes CRUD operations for the **InboxMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InboxMessages
+    * const inboxMessages = await prisma.inboxMessage.findMany()
+    * ```
+    */
+  get inboxMessage(): Prisma.InboxMessageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -839,10 +1043,19 @@ export namespace Prisma {
     Session: 'Session',
     VerificationToken: 'VerificationToken',
     Company: 'Company',
+    KnowledgeItem: 'KnowledgeItem',
+    QuickAnswer: 'QuickAnswer',
+    AiTemplate: 'AiTemplate',
+    AiTemplateOption: 'AiTemplateOption',
     CompanyMember: 'CompanyMember',
     SubscriptionPlan: 'SubscriptionPlan',
     CustomerSubscription: 'CustomerSubscription',
-    UsageTracking: 'UsageTracking'
+    UsageTracking: 'UsageTracking',
+    CompanySettings: 'CompanySettings',
+    CompanyWhatsappNumber: 'CompanyWhatsappNumber',
+    InboxCustomer: 'InboxCustomer',
+    InboxConversation: 'InboxConversation',
+    InboxMessage: 'InboxMessage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -861,7 +1074,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "company" | "companyMember" | "subscriptionPlan" | "customerSubscription" | "usageTracking"
+      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "company" | "knowledgeItem" | "quickAnswer" | "aiTemplate" | "aiTemplateOption" | "companyMember" | "subscriptionPlan" | "customerSubscription" | "usageTracking" | "companySettings" | "companyWhatsappNumber" | "inboxCustomer" | "inboxConversation" | "inboxMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1309,6 +1522,302 @@ export namespace Prisma {
           }
         }
       }
+      KnowledgeItem: {
+        payload: Prisma.$KnowledgeItemPayload<ExtArgs>
+        fields: Prisma.KnowledgeItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.KnowledgeItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.KnowledgeItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>
+          }
+          findFirst: {
+            args: Prisma.KnowledgeItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.KnowledgeItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>
+          }
+          findMany: {
+            args: Prisma.KnowledgeItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>[]
+          }
+          create: {
+            args: Prisma.KnowledgeItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>
+          }
+          createMany: {
+            args: Prisma.KnowledgeItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.KnowledgeItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>[]
+          }
+          delete: {
+            args: Prisma.KnowledgeItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>
+          }
+          update: {
+            args: Prisma.KnowledgeItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.KnowledgeItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.KnowledgeItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.KnowledgeItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.KnowledgeItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KnowledgeItemPayload>
+          }
+          aggregate: {
+            args: Prisma.KnowledgeItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateKnowledgeItem>
+          }
+          groupBy: {
+            args: Prisma.KnowledgeItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<KnowledgeItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.KnowledgeItemCountArgs<ExtArgs>
+            result: $Utils.Optional<KnowledgeItemCountAggregateOutputType> | number
+          }
+        }
+      }
+      QuickAnswer: {
+        payload: Prisma.$QuickAnswerPayload<ExtArgs>
+        fields: Prisma.QuickAnswerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.QuickAnswerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.QuickAnswerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>
+          }
+          findFirst: {
+            args: Prisma.QuickAnswerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.QuickAnswerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>
+          }
+          findMany: {
+            args: Prisma.QuickAnswerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>[]
+          }
+          create: {
+            args: Prisma.QuickAnswerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>
+          }
+          createMany: {
+            args: Prisma.QuickAnswerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.QuickAnswerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>[]
+          }
+          delete: {
+            args: Prisma.QuickAnswerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>
+          }
+          update: {
+            args: Prisma.QuickAnswerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>
+          }
+          deleteMany: {
+            args: Prisma.QuickAnswerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.QuickAnswerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.QuickAnswerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>[]
+          }
+          upsert: {
+            args: Prisma.QuickAnswerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuickAnswerPayload>
+          }
+          aggregate: {
+            args: Prisma.QuickAnswerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateQuickAnswer>
+          }
+          groupBy: {
+            args: Prisma.QuickAnswerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<QuickAnswerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.QuickAnswerCountArgs<ExtArgs>
+            result: $Utils.Optional<QuickAnswerCountAggregateOutputType> | number
+          }
+        }
+      }
+      AiTemplate: {
+        payload: Prisma.$AiTemplatePayload<ExtArgs>
+        fields: Prisma.AiTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AiTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AiTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.AiTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AiTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.AiTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.AiTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.AiTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AiTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.AiTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>
+          }
+          update: {
+            args: Prisma.AiTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.AiTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AiTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AiTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.AiTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.AiTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAiTemplate>
+          }
+          groupBy: {
+            args: Prisma.AiTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AiTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AiTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<AiTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      AiTemplateOption: {
+        payload: Prisma.$AiTemplateOptionPayload<ExtArgs>
+        fields: Prisma.AiTemplateOptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AiTemplateOptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AiTemplateOptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>
+          }
+          findFirst: {
+            args: Prisma.AiTemplateOptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AiTemplateOptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>
+          }
+          findMany: {
+            args: Prisma.AiTemplateOptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>[]
+          }
+          create: {
+            args: Prisma.AiTemplateOptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>
+          }
+          createMany: {
+            args: Prisma.AiTemplateOptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AiTemplateOptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>[]
+          }
+          delete: {
+            args: Prisma.AiTemplateOptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>
+          }
+          update: {
+            args: Prisma.AiTemplateOptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.AiTemplateOptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AiTemplateOptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AiTemplateOptionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>[]
+          }
+          upsert: {
+            args: Prisma.AiTemplateOptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiTemplateOptionPayload>
+          }
+          aggregate: {
+            args: Prisma.AiTemplateOptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAiTemplateOption>
+          }
+          groupBy: {
+            args: Prisma.AiTemplateOptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AiTemplateOptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AiTemplateOptionCountArgs<ExtArgs>
+            result: $Utils.Optional<AiTemplateOptionCountAggregateOutputType> | number
+          }
+        }
+      }
       CompanyMember: {
         payload: Prisma.$CompanyMemberPayload<ExtArgs>
         fields: Prisma.CompanyMemberFieldRefs
@@ -1605,6 +2114,376 @@ export namespace Prisma {
           }
         }
       }
+      CompanySettings: {
+        payload: Prisma.$CompanySettingsPayload<ExtArgs>
+        fields: Prisma.CompanySettingsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompanySettingsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompanySettingsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+          }
+          findFirst: {
+            args: Prisma.CompanySettingsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompanySettingsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+          }
+          findMany: {
+            args: Prisma.CompanySettingsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>[]
+          }
+          create: {
+            args: Prisma.CompanySettingsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+          }
+          createMany: {
+            args: Prisma.CompanySettingsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompanySettingsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>[]
+          }
+          delete: {
+            args: Prisma.CompanySettingsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+          }
+          update: {
+            args: Prisma.CompanySettingsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompanySettingsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompanySettingsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompanySettingsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompanySettingsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+          }
+          aggregate: {
+            args: Prisma.CompanySettingsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompanySettings>
+          }
+          groupBy: {
+            args: Prisma.CompanySettingsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanySettingsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompanySettingsCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanySettingsCountAggregateOutputType> | number
+          }
+        }
+      }
+      CompanyWhatsappNumber: {
+        payload: Prisma.$CompanyWhatsappNumberPayload<ExtArgs>
+        fields: Prisma.CompanyWhatsappNumberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompanyWhatsappNumberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          findFirst: {
+            args: Prisma.CompanyWhatsappNumberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          findMany: {
+            args: Prisma.CompanyWhatsappNumberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+          }
+          create: {
+            args: Prisma.CompanyWhatsappNumberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          createMany: {
+            args: Prisma.CompanyWhatsappNumberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+          }
+          delete: {
+            args: Prisma.CompanyWhatsappNumberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          update: {
+            args: Prisma.CompanyWhatsappNumberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompanyWhatsappNumberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompanyWhatsappNumberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompanyWhatsappNumberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          aggregate: {
+            args: Prisma.CompanyWhatsappNumberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompanyWhatsappNumber>
+          }
+          groupBy: {
+            args: Prisma.CompanyWhatsappNumberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanyWhatsappNumberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompanyWhatsappNumberCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanyWhatsappNumberCountAggregateOutputType> | number
+          }
+        }
+      }
+      InboxCustomer: {
+        payload: Prisma.$InboxCustomerPayload<ExtArgs>
+        fields: Prisma.InboxCustomerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InboxCustomerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InboxCustomerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>
+          }
+          findFirst: {
+            args: Prisma.InboxCustomerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InboxCustomerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>
+          }
+          findMany: {
+            args: Prisma.InboxCustomerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>[]
+          }
+          create: {
+            args: Prisma.InboxCustomerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>
+          }
+          createMany: {
+            args: Prisma.InboxCustomerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InboxCustomerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>[]
+          }
+          delete: {
+            args: Prisma.InboxCustomerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>
+          }
+          update: {
+            args: Prisma.InboxCustomerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>
+          }
+          deleteMany: {
+            args: Prisma.InboxCustomerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InboxCustomerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InboxCustomerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>[]
+          }
+          upsert: {
+            args: Prisma.InboxCustomerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxCustomerPayload>
+          }
+          aggregate: {
+            args: Prisma.InboxCustomerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInboxCustomer>
+          }
+          groupBy: {
+            args: Prisma.InboxCustomerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InboxCustomerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InboxCustomerCountArgs<ExtArgs>
+            result: $Utils.Optional<InboxCustomerCountAggregateOutputType> | number
+          }
+        }
+      }
+      InboxConversation: {
+        payload: Prisma.$InboxConversationPayload<ExtArgs>
+        fields: Prisma.InboxConversationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InboxConversationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InboxConversationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>
+          }
+          findFirst: {
+            args: Prisma.InboxConversationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InboxConversationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>
+          }
+          findMany: {
+            args: Prisma.InboxConversationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>[]
+          }
+          create: {
+            args: Prisma.InboxConversationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>
+          }
+          createMany: {
+            args: Prisma.InboxConversationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InboxConversationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>[]
+          }
+          delete: {
+            args: Prisma.InboxConversationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>
+          }
+          update: {
+            args: Prisma.InboxConversationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>
+          }
+          deleteMany: {
+            args: Prisma.InboxConversationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InboxConversationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InboxConversationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>[]
+          }
+          upsert: {
+            args: Prisma.InboxConversationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxConversationPayload>
+          }
+          aggregate: {
+            args: Prisma.InboxConversationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInboxConversation>
+          }
+          groupBy: {
+            args: Prisma.InboxConversationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InboxConversationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InboxConversationCountArgs<ExtArgs>
+            result: $Utils.Optional<InboxConversationCountAggregateOutputType> | number
+          }
+        }
+      }
+      InboxMessage: {
+        payload: Prisma.$InboxMessagePayload<ExtArgs>
+        fields: Prisma.InboxMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InboxMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InboxMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.InboxMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InboxMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+          }
+          findMany: {
+            args: Prisma.InboxMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>[]
+          }
+          create: {
+            args: Prisma.InboxMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+          }
+          createMany: {
+            args: Prisma.InboxMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InboxMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.InboxMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+          }
+          update: {
+            args: Prisma.InboxMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.InboxMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InboxMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InboxMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.InboxMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.InboxMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInboxMessage>
+          }
+          groupBy: {
+            args: Prisma.InboxMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InboxMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InboxMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<InboxMessageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1703,10 +2582,19 @@ export namespace Prisma {
     session?: SessionOmit
     verificationToken?: VerificationTokenOmit
     company?: CompanyOmit
+    knowledgeItem?: KnowledgeItemOmit
+    quickAnswer?: QuickAnswerOmit
+    aiTemplate?: AiTemplateOmit
+    aiTemplateOption?: AiTemplateOptionOmit
     companyMember?: CompanyMemberOmit
     subscriptionPlan?: SubscriptionPlanOmit
     customerSubscription?: CustomerSubscriptionOmit
     usageTracking?: UsageTrackingOmit
+    companySettings?: CompanySettingsOmit
+    companyWhatsappNumber?: CompanyWhatsappNumberOmit
+    inboxCustomer?: InboxCustomerOmit
+    inboxConversation?: InboxConversationOmit
+    inboxMessage?: InboxMessageOmit
   }
 
   /* Types for Logging */
@@ -1791,6 +2679,11 @@ export namespace Prisma {
     sessions: number
     companyMembers: number
     files: number
+    knowledgeItems: number
+    quickAnswers: number
+    aiTemplates: number
+    assignedInboxConversations: number
+    inboxMessages: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1798,6 +2691,11 @@ export namespace Prisma {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     companyMembers?: boolean | UserCountOutputTypeCountCompanyMembersArgs
     files?: boolean | UserCountOutputTypeCountFilesArgs
+    knowledgeItems?: boolean | UserCountOutputTypeCountKnowledgeItemsArgs
+    quickAnswers?: boolean | UserCountOutputTypeCountQuickAnswersArgs
+    aiTemplates?: boolean | UserCountOutputTypeCountAiTemplatesArgs
+    assignedInboxConversations?: boolean | UserCountOutputTypeCountAssignedInboxConversationsArgs
+    inboxMessages?: boolean | UserCountOutputTypeCountInboxMessagesArgs
   }
 
   // Custom InputTypes
@@ -1837,6 +2735,41 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FileWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountKnowledgeItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KnowledgeItemWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountQuickAnswersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuickAnswerWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAiTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiTemplateWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAssignedInboxConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxConversationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountInboxMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxMessageWhereInput
   }
 
 
@@ -1880,6 +2813,13 @@ export namespace Prisma {
     user: number
     CustomerSubscription: number
     UsageTracking: number
+    knowledgeItems: number
+    quickAnswers: number
+    aiTemplates: number
+    inboxCustomers: number
+    inboxConversations: number
+    inboxMessages: number
+    whatsappNumbers: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1887,6 +2827,13 @@ export namespace Prisma {
     user?: boolean | CompanyCountOutputTypeCountUserArgs
     CustomerSubscription?: boolean | CompanyCountOutputTypeCountCustomerSubscriptionArgs
     UsageTracking?: boolean | CompanyCountOutputTypeCountUsageTrackingArgs
+    knowledgeItems?: boolean | CompanyCountOutputTypeCountKnowledgeItemsArgs
+    quickAnswers?: boolean | CompanyCountOutputTypeCountQuickAnswersArgs
+    aiTemplates?: boolean | CompanyCountOutputTypeCountAiTemplatesArgs
+    inboxCustomers?: boolean | CompanyCountOutputTypeCountInboxCustomersArgs
+    inboxConversations?: boolean | CompanyCountOutputTypeCountInboxConversationsArgs
+    inboxMessages?: boolean | CompanyCountOutputTypeCountInboxMessagesArgs
+    whatsappNumbers?: boolean | CompanyCountOutputTypeCountWhatsappNumbersArgs
   }
 
   // Custom InputTypes
@@ -1926,6 +2873,86 @@ export namespace Prisma {
    */
   export type CompanyCountOutputTypeCountUsageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UsageTrackingWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountKnowledgeItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KnowledgeItemWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountQuickAnswersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuickAnswerWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountAiTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiTemplateWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountInboxCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxCustomerWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountInboxConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxConversationWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountInboxMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxMessageWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountWhatsappNumbersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyWhatsappNumberWhereInput
+  }
+
+
+  /**
+   * Count Type AiTemplateCountOutputType
+   */
+
+  export type AiTemplateCountOutputType = {
+    options: number
+  }
+
+  export type AiTemplateCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    options?: boolean | AiTemplateCountOutputTypeCountOptionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AiTemplateCountOutputType without action
+   */
+  export type AiTemplateCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateCountOutputType
+     */
+    select?: AiTemplateCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AiTemplateCountOutputType without action
+   */
+  export type AiTemplateCountOutputTypeCountOptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiTemplateOptionWhereInput
   }
 
 
@@ -1988,6 +3015,68 @@ export namespace Prisma {
    */
   export type CustomerSubscriptionCountOutputTypeCountUsageTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UsageTrackingWhereInput
+  }
+
+
+  /**
+   * Count Type InboxCustomerCountOutputType
+   */
+
+  export type InboxCustomerCountOutputType = {
+    conversations: number
+  }
+
+  export type InboxCustomerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversations?: boolean | InboxCustomerCountOutputTypeCountConversationsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * InboxCustomerCountOutputType without action
+   */
+  export type InboxCustomerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomerCountOutputType
+     */
+    select?: InboxCustomerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * InboxCustomerCountOutputType without action
+   */
+  export type InboxCustomerCountOutputTypeCountConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxConversationWhereInput
+  }
+
+
+  /**
+   * Count Type InboxConversationCountOutputType
+   */
+
+  export type InboxConversationCountOutputType = {
+    messages: number
+  }
+
+  export type InboxConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | InboxConversationCountOutputTypeCountMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * InboxConversationCountOutputType without action
+   */
+  export type InboxConversationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversationCountOutputType
+     */
+    select?: InboxConversationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * InboxConversationCountOutputType without action
+   */
+  export type InboxConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxMessageWhereInput
   }
 
 
@@ -2379,6 +3468,11 @@ export namespace Prisma {
     avatar?: boolean | User$avatarArgs<ExtArgs>
     company?: boolean | User$companyArgs<ExtArgs>
     files?: boolean | User$filesArgs<ExtArgs>
+    knowledgeItems?: boolean | User$knowledgeItemsArgs<ExtArgs>
+    quickAnswers?: boolean | User$quickAnswersArgs<ExtArgs>
+    aiTemplates?: boolean | User$aiTemplatesArgs<ExtArgs>
+    assignedInboxConversations?: boolean | User$assignedInboxConversationsArgs<ExtArgs>
+    inboxMessages?: boolean | User$inboxMessagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2484,6 +3578,11 @@ export namespace Prisma {
     avatar?: boolean | User$avatarArgs<ExtArgs>
     company?: boolean | User$companyArgs<ExtArgs>
     files?: boolean | User$filesArgs<ExtArgs>
+    knowledgeItems?: boolean | User$knowledgeItemsArgs<ExtArgs>
+    quickAnswers?: boolean | User$quickAnswersArgs<ExtArgs>
+    aiTemplates?: boolean | User$aiTemplatesArgs<ExtArgs>
+    assignedInboxConversations?: boolean | User$assignedInboxConversationsArgs<ExtArgs>
+    inboxMessages?: boolean | User$inboxMessagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2504,6 +3603,11 @@ export namespace Prisma {
       avatar: Prisma.$FilePayload<ExtArgs> | null
       company: Prisma.$CompanyPayload<ExtArgs> | null
       files: Prisma.$FilePayload<ExtArgs>[]
+      knowledgeItems: Prisma.$KnowledgeItemPayload<ExtArgs>[]
+      quickAnswers: Prisma.$QuickAnswerPayload<ExtArgs>[]
+      aiTemplates: Prisma.$AiTemplatePayload<ExtArgs>[]
+      assignedInboxConversations: Prisma.$InboxConversationPayload<ExtArgs>[]
+      inboxMessages: Prisma.$InboxMessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -2933,6 +4037,11 @@ export namespace Prisma {
     avatar<T extends User$avatarArgs<ExtArgs> = {}>(args?: Subset<T, User$avatarArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     company<T extends User$companyArgs<ExtArgs> = {}>(args?: Subset<T, User$companyArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     files<T extends User$filesArgs<ExtArgs> = {}>(args?: Subset<T, User$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    knowledgeItems<T extends User$knowledgeItemsArgs<ExtArgs> = {}>(args?: Subset<T, User$knowledgeItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    quickAnswers<T extends User$quickAnswersArgs<ExtArgs> = {}>(args?: Subset<T, User$quickAnswersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    aiTemplates<T extends User$aiTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, User$aiTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    assignedInboxConversations<T extends User$assignedInboxConversationsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedInboxConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inboxMessages<T extends User$inboxMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$inboxMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3516,6 +4625,126 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FileScalarFieldEnum | FileScalarFieldEnum[]
+  }
+
+  /**
+   * User.knowledgeItems
+   */
+  export type User$knowledgeItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    where?: KnowledgeItemWhereInput
+    orderBy?: KnowledgeItemOrderByWithRelationInput | KnowledgeItemOrderByWithRelationInput[]
+    cursor?: KnowledgeItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: KnowledgeItemScalarFieldEnum | KnowledgeItemScalarFieldEnum[]
+  }
+
+  /**
+   * User.quickAnswers
+   */
+  export type User$quickAnswersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    where?: QuickAnswerWhereInput
+    orderBy?: QuickAnswerOrderByWithRelationInput | QuickAnswerOrderByWithRelationInput[]
+    cursor?: QuickAnswerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuickAnswerScalarFieldEnum | QuickAnswerScalarFieldEnum[]
+  }
+
+  /**
+   * User.aiTemplates
+   */
+  export type User$aiTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    where?: AiTemplateWhereInput
+    orderBy?: AiTemplateOrderByWithRelationInput | AiTemplateOrderByWithRelationInput[]
+    cursor?: AiTemplateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AiTemplateScalarFieldEnum | AiTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * User.assignedInboxConversations
+   */
+  export type User$assignedInboxConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    where?: InboxConversationWhereInput
+    orderBy?: InboxConversationOrderByWithRelationInput | InboxConversationOrderByWithRelationInput[]
+    cursor?: InboxConversationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InboxConversationScalarFieldEnum | InboxConversationScalarFieldEnum[]
+  }
+
+  /**
+   * User.inboxMessages
+   */
+  export type User$inboxMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    where?: InboxMessageWhereInput
+    orderBy?: InboxMessageOrderByWithRelationInput | InboxMessageOrderByWithRelationInput[]
+    cursor?: InboxMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InboxMessageScalarFieldEnum | InboxMessageScalarFieldEnum[]
   }
 
   /**
@@ -8205,6 +9434,14 @@ export namespace Prisma {
     user?: boolean | Company$userArgs<ExtArgs>
     CustomerSubscription?: boolean | Company$CustomerSubscriptionArgs<ExtArgs>
     UsageTracking?: boolean | Company$UsageTrackingArgs<ExtArgs>
+    knowledgeItems?: boolean | Company$knowledgeItemsArgs<ExtArgs>
+    quickAnswers?: boolean | Company$quickAnswersArgs<ExtArgs>
+    aiTemplates?: boolean | Company$aiTemplatesArgs<ExtArgs>
+    inboxCustomers?: boolean | Company$inboxCustomersArgs<ExtArgs>
+    inboxConversations?: boolean | Company$inboxConversationsArgs<ExtArgs>
+    inboxMessages?: boolean | Company$inboxMessagesArgs<ExtArgs>
+    settings?: boolean | Company$settingsArgs<ExtArgs>
+    whatsappNumbers?: boolean | Company$whatsappNumbersArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -8241,6 +9478,14 @@ export namespace Prisma {
     user?: boolean | Company$userArgs<ExtArgs>
     CustomerSubscription?: boolean | Company$CustomerSubscriptionArgs<ExtArgs>
     UsageTracking?: boolean | Company$UsageTrackingArgs<ExtArgs>
+    knowledgeItems?: boolean | Company$knowledgeItemsArgs<ExtArgs>
+    quickAnswers?: boolean | Company$quickAnswersArgs<ExtArgs>
+    aiTemplates?: boolean | Company$aiTemplatesArgs<ExtArgs>
+    inboxCustomers?: boolean | Company$inboxCustomersArgs<ExtArgs>
+    inboxConversations?: boolean | Company$inboxConversationsArgs<ExtArgs>
+    inboxMessages?: boolean | Company$inboxMessagesArgs<ExtArgs>
+    settings?: boolean | Company$settingsArgs<ExtArgs>
+    whatsappNumbers?: boolean | Company$whatsappNumbersArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8253,6 +9498,14 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>[]
       CustomerSubscription: Prisma.$CustomerSubscriptionPayload<ExtArgs>[]
       UsageTracking: Prisma.$UsageTrackingPayload<ExtArgs>[]
+      knowledgeItems: Prisma.$KnowledgeItemPayload<ExtArgs>[]
+      quickAnswers: Prisma.$QuickAnswerPayload<ExtArgs>[]
+      aiTemplates: Prisma.$AiTemplatePayload<ExtArgs>[]
+      inboxCustomers: Prisma.$InboxCustomerPayload<ExtArgs>[]
+      inboxConversations: Prisma.$InboxConversationPayload<ExtArgs>[]
+      inboxMessages: Prisma.$InboxMessagePayload<ExtArgs>[]
+      settings: Prisma.$CompanySettingsPayload<ExtArgs> | null
+      whatsappNumbers: Prisma.$CompanyWhatsappNumberPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -8659,6 +9912,14 @@ export namespace Prisma {
     user<T extends Company$userArgs<ExtArgs> = {}>(args?: Subset<T, Company$userArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     CustomerSubscription<T extends Company$CustomerSubscriptionArgs<ExtArgs> = {}>(args?: Subset<T, Company$CustomerSubscriptionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     UsageTracking<T extends Company$UsageTrackingArgs<ExtArgs> = {}>(args?: Subset<T, Company$UsageTrackingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageTrackingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    knowledgeItems<T extends Company$knowledgeItemsArgs<ExtArgs> = {}>(args?: Subset<T, Company$knowledgeItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    quickAnswers<T extends Company$quickAnswersArgs<ExtArgs> = {}>(args?: Subset<T, Company$quickAnswersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    aiTemplates<T extends Company$aiTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, Company$aiTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inboxCustomers<T extends Company$inboxCustomersArgs<ExtArgs> = {}>(args?: Subset<T, Company$inboxCustomersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inboxConversations<T extends Company$inboxConversationsArgs<ExtArgs> = {}>(args?: Subset<T, Company$inboxConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    inboxMessages<T extends Company$inboxMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Company$inboxMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    settings<T extends Company$settingsArgs<ExtArgs> = {}>(args?: Subset<T, Company$settingsArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    whatsappNumbers<T extends Company$whatsappNumbersArgs<ExtArgs> = {}>(args?: Subset<T, Company$whatsappNumbersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9178,6 +10439,193 @@ export namespace Prisma {
   }
 
   /**
+   * Company.knowledgeItems
+   */
+  export type Company$knowledgeItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    where?: KnowledgeItemWhereInput
+    orderBy?: KnowledgeItemOrderByWithRelationInput | KnowledgeItemOrderByWithRelationInput[]
+    cursor?: KnowledgeItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: KnowledgeItemScalarFieldEnum | KnowledgeItemScalarFieldEnum[]
+  }
+
+  /**
+   * Company.quickAnswers
+   */
+  export type Company$quickAnswersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    where?: QuickAnswerWhereInput
+    orderBy?: QuickAnswerOrderByWithRelationInput | QuickAnswerOrderByWithRelationInput[]
+    cursor?: QuickAnswerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuickAnswerScalarFieldEnum | QuickAnswerScalarFieldEnum[]
+  }
+
+  /**
+   * Company.aiTemplates
+   */
+  export type Company$aiTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    where?: AiTemplateWhereInput
+    orderBy?: AiTemplateOrderByWithRelationInput | AiTemplateOrderByWithRelationInput[]
+    cursor?: AiTemplateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AiTemplateScalarFieldEnum | AiTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * Company.inboxCustomers
+   */
+  export type Company$inboxCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    where?: InboxCustomerWhereInput
+    orderBy?: InboxCustomerOrderByWithRelationInput | InboxCustomerOrderByWithRelationInput[]
+    cursor?: InboxCustomerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InboxCustomerScalarFieldEnum | InboxCustomerScalarFieldEnum[]
+  }
+
+  /**
+   * Company.inboxConversations
+   */
+  export type Company$inboxConversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    where?: InboxConversationWhereInput
+    orderBy?: InboxConversationOrderByWithRelationInput | InboxConversationOrderByWithRelationInput[]
+    cursor?: InboxConversationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InboxConversationScalarFieldEnum | InboxConversationScalarFieldEnum[]
+  }
+
+  /**
+   * Company.inboxMessages
+   */
+  export type Company$inboxMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    where?: InboxMessageWhereInput
+    orderBy?: InboxMessageOrderByWithRelationInput | InboxMessageOrderByWithRelationInput[]
+    cursor?: InboxMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InboxMessageScalarFieldEnum | InboxMessageScalarFieldEnum[]
+  }
+
+  /**
+   * Company.settings
+   */
+  export type Company$settingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    where?: CompanySettingsWhereInput
+  }
+
+  /**
+   * Company.whatsappNumbers
+   */
+  export type Company$whatsappNumbersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    where?: CompanyWhatsappNumberWhereInput
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+  }
+
+  /**
    * Company without action
    */
   export type CompanyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9193,6 +10641,4567 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CompanyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model KnowledgeItem
+   */
+
+  export type AggregateKnowledgeItem = {
+    _count: KnowledgeItemCountAggregateOutputType | null
+    _avg: KnowledgeItemAvgAggregateOutputType | null
+    _sum: KnowledgeItemSumAggregateOutputType | null
+    _min: KnowledgeItemMinAggregateOutputType | null
+    _max: KnowledgeItemMaxAggregateOutputType | null
+  }
+
+  export type KnowledgeItemAvgAggregateOutputType = {
+    companyId: number | null
+    createdById: number | null
+  }
+
+  export type KnowledgeItemSumAggregateOutputType = {
+    companyId: number | null
+    createdById: number | null
+  }
+
+  export type KnowledgeItemMinAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    type: $Enums.KnowledgeItemType | null
+    title: string | null
+    content: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    createdById: number | null
+  }
+
+  export type KnowledgeItemMaxAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    type: $Enums.KnowledgeItemType | null
+    title: string | null
+    content: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    createdById: number | null
+  }
+
+  export type KnowledgeItemCountAggregateOutputType = {
+    id: number
+    companyId: number
+    type: number
+    title: number
+    content: number
+    createdAt: number
+    updatedAt: number
+    createdById: number
+    _all: number
+  }
+
+
+  export type KnowledgeItemAvgAggregateInputType = {
+    companyId?: true
+    createdById?: true
+  }
+
+  export type KnowledgeItemSumAggregateInputType = {
+    companyId?: true
+    createdById?: true
+  }
+
+  export type KnowledgeItemMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    type?: true
+    title?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+  }
+
+  export type KnowledgeItemMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    type?: true
+    title?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+  }
+
+  export type KnowledgeItemCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    type?: true
+    title?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+    _all?: true
+  }
+
+  export type KnowledgeItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KnowledgeItem to aggregate.
+     */
+    where?: KnowledgeItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KnowledgeItems to fetch.
+     */
+    orderBy?: KnowledgeItemOrderByWithRelationInput | KnowledgeItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: KnowledgeItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KnowledgeItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KnowledgeItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned KnowledgeItems
+    **/
+    _count?: true | KnowledgeItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: KnowledgeItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: KnowledgeItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: KnowledgeItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: KnowledgeItemMaxAggregateInputType
+  }
+
+  export type GetKnowledgeItemAggregateType<T extends KnowledgeItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateKnowledgeItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateKnowledgeItem[P]>
+      : GetScalarType<T[P], AggregateKnowledgeItem[P]>
+  }
+
+
+
+
+  export type KnowledgeItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KnowledgeItemWhereInput
+    orderBy?: KnowledgeItemOrderByWithAggregationInput | KnowledgeItemOrderByWithAggregationInput[]
+    by: KnowledgeItemScalarFieldEnum[] | KnowledgeItemScalarFieldEnum
+    having?: KnowledgeItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: KnowledgeItemCountAggregateInputType | true
+    _avg?: KnowledgeItemAvgAggregateInputType
+    _sum?: KnowledgeItemSumAggregateInputType
+    _min?: KnowledgeItemMinAggregateInputType
+    _max?: KnowledgeItemMaxAggregateInputType
+  }
+
+  export type KnowledgeItemGroupByOutputType = {
+    id: string
+    companyId: number
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt: Date
+    updatedAt: Date
+    createdById: number | null
+    _count: KnowledgeItemCountAggregateOutputType | null
+    _avg: KnowledgeItemAvgAggregateOutputType | null
+    _sum: KnowledgeItemSumAggregateOutputType | null
+    _min: KnowledgeItemMinAggregateOutputType | null
+    _max: KnowledgeItemMaxAggregateOutputType | null
+  }
+
+  type GetKnowledgeItemGroupByPayload<T extends KnowledgeItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<KnowledgeItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof KnowledgeItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], KnowledgeItemGroupByOutputType[P]>
+            : GetScalarType<T[P], KnowledgeItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type KnowledgeItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    type?: boolean
+    title?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | KnowledgeItem$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["knowledgeItem"]>
+
+  export type KnowledgeItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    type?: boolean
+    title?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | KnowledgeItem$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["knowledgeItem"]>
+
+  export type KnowledgeItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    type?: boolean
+    title?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | KnowledgeItem$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["knowledgeItem"]>
+
+  export type KnowledgeItemSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    type?: boolean
+    title?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+  }
+
+  export type KnowledgeItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "type" | "title" | "content" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["knowledgeItem"]>
+  export type KnowledgeItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | KnowledgeItem$createdByArgs<ExtArgs>
+  }
+  export type KnowledgeItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | KnowledgeItem$createdByArgs<ExtArgs>
+  }
+  export type KnowledgeItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | KnowledgeItem$createdByArgs<ExtArgs>
+  }
+
+  export type $KnowledgeItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "KnowledgeItem"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: number
+      type: $Enums.KnowledgeItemType
+      title: string
+      content: string
+      createdAt: Date
+      updatedAt: Date
+      createdById: number | null
+    }, ExtArgs["result"]["knowledgeItem"]>
+    composites: {}
+  }
+
+  type KnowledgeItemGetPayload<S extends boolean | null | undefined | KnowledgeItemDefaultArgs> = $Result.GetResult<Prisma.$KnowledgeItemPayload, S>
+
+  type KnowledgeItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<KnowledgeItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: KnowledgeItemCountAggregateInputType | true
+    }
+
+  export interface KnowledgeItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['KnowledgeItem'], meta: { name: 'KnowledgeItem' } }
+    /**
+     * Find zero or one KnowledgeItem that matches the filter.
+     * @param {KnowledgeItemFindUniqueArgs} args - Arguments to find a KnowledgeItem
+     * @example
+     * // Get one KnowledgeItem
+     * const knowledgeItem = await prisma.knowledgeItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends KnowledgeItemFindUniqueArgs>(args: SelectSubset<T, KnowledgeItemFindUniqueArgs<ExtArgs>>): Prisma__KnowledgeItemClient<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one KnowledgeItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {KnowledgeItemFindUniqueOrThrowArgs} args - Arguments to find a KnowledgeItem
+     * @example
+     * // Get one KnowledgeItem
+     * const knowledgeItem = await prisma.knowledgeItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends KnowledgeItemFindUniqueOrThrowArgs>(args: SelectSubset<T, KnowledgeItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__KnowledgeItemClient<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KnowledgeItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeItemFindFirstArgs} args - Arguments to find a KnowledgeItem
+     * @example
+     * // Get one KnowledgeItem
+     * const knowledgeItem = await prisma.knowledgeItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends KnowledgeItemFindFirstArgs>(args?: SelectSubset<T, KnowledgeItemFindFirstArgs<ExtArgs>>): Prisma__KnowledgeItemClient<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KnowledgeItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeItemFindFirstOrThrowArgs} args - Arguments to find a KnowledgeItem
+     * @example
+     * // Get one KnowledgeItem
+     * const knowledgeItem = await prisma.knowledgeItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends KnowledgeItemFindFirstOrThrowArgs>(args?: SelectSubset<T, KnowledgeItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__KnowledgeItemClient<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more KnowledgeItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KnowledgeItems
+     * const knowledgeItems = await prisma.knowledgeItem.findMany()
+     * 
+     * // Get first 10 KnowledgeItems
+     * const knowledgeItems = await prisma.knowledgeItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const knowledgeItemWithIdOnly = await prisma.knowledgeItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends KnowledgeItemFindManyArgs>(args?: SelectSubset<T, KnowledgeItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a KnowledgeItem.
+     * @param {KnowledgeItemCreateArgs} args - Arguments to create a KnowledgeItem.
+     * @example
+     * // Create one KnowledgeItem
+     * const KnowledgeItem = await prisma.knowledgeItem.create({
+     *   data: {
+     *     // ... data to create a KnowledgeItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends KnowledgeItemCreateArgs>(args: SelectSubset<T, KnowledgeItemCreateArgs<ExtArgs>>): Prisma__KnowledgeItemClient<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many KnowledgeItems.
+     * @param {KnowledgeItemCreateManyArgs} args - Arguments to create many KnowledgeItems.
+     * @example
+     * // Create many KnowledgeItems
+     * const knowledgeItem = await prisma.knowledgeItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends KnowledgeItemCreateManyArgs>(args?: SelectSubset<T, KnowledgeItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many KnowledgeItems and returns the data saved in the database.
+     * @param {KnowledgeItemCreateManyAndReturnArgs} args - Arguments to create many KnowledgeItems.
+     * @example
+     * // Create many KnowledgeItems
+     * const knowledgeItem = await prisma.knowledgeItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many KnowledgeItems and only return the `id`
+     * const knowledgeItemWithIdOnly = await prisma.knowledgeItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends KnowledgeItemCreateManyAndReturnArgs>(args?: SelectSubset<T, KnowledgeItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a KnowledgeItem.
+     * @param {KnowledgeItemDeleteArgs} args - Arguments to delete one KnowledgeItem.
+     * @example
+     * // Delete one KnowledgeItem
+     * const KnowledgeItem = await prisma.knowledgeItem.delete({
+     *   where: {
+     *     // ... filter to delete one KnowledgeItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends KnowledgeItemDeleteArgs>(args: SelectSubset<T, KnowledgeItemDeleteArgs<ExtArgs>>): Prisma__KnowledgeItemClient<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one KnowledgeItem.
+     * @param {KnowledgeItemUpdateArgs} args - Arguments to update one KnowledgeItem.
+     * @example
+     * // Update one KnowledgeItem
+     * const knowledgeItem = await prisma.knowledgeItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends KnowledgeItemUpdateArgs>(args: SelectSubset<T, KnowledgeItemUpdateArgs<ExtArgs>>): Prisma__KnowledgeItemClient<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more KnowledgeItems.
+     * @param {KnowledgeItemDeleteManyArgs} args - Arguments to filter KnowledgeItems to delete.
+     * @example
+     * // Delete a few KnowledgeItems
+     * const { count } = await prisma.knowledgeItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends KnowledgeItemDeleteManyArgs>(args?: SelectSubset<T, KnowledgeItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KnowledgeItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KnowledgeItems
+     * const knowledgeItem = await prisma.knowledgeItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends KnowledgeItemUpdateManyArgs>(args: SelectSubset<T, KnowledgeItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KnowledgeItems and returns the data updated in the database.
+     * @param {KnowledgeItemUpdateManyAndReturnArgs} args - Arguments to update many KnowledgeItems.
+     * @example
+     * // Update many KnowledgeItems
+     * const knowledgeItem = await prisma.knowledgeItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more KnowledgeItems and only return the `id`
+     * const knowledgeItemWithIdOnly = await prisma.knowledgeItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends KnowledgeItemUpdateManyAndReturnArgs>(args: SelectSubset<T, KnowledgeItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one KnowledgeItem.
+     * @param {KnowledgeItemUpsertArgs} args - Arguments to update or create a KnowledgeItem.
+     * @example
+     * // Update or create a KnowledgeItem
+     * const knowledgeItem = await prisma.knowledgeItem.upsert({
+     *   create: {
+     *     // ... data to create a KnowledgeItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KnowledgeItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends KnowledgeItemUpsertArgs>(args: SelectSubset<T, KnowledgeItemUpsertArgs<ExtArgs>>): Prisma__KnowledgeItemClient<$Result.GetResult<Prisma.$KnowledgeItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of KnowledgeItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeItemCountArgs} args - Arguments to filter KnowledgeItems to count.
+     * @example
+     * // Count the number of KnowledgeItems
+     * const count = await prisma.knowledgeItem.count({
+     *   where: {
+     *     // ... the filter for the KnowledgeItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends KnowledgeItemCountArgs>(
+      args?: Subset<T, KnowledgeItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], KnowledgeItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a KnowledgeItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KnowledgeItemAggregateArgs>(args: Subset<T, KnowledgeItemAggregateArgs>): Prisma.PrismaPromise<GetKnowledgeItemAggregateType<T>>
+
+    /**
+     * Group by KnowledgeItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends KnowledgeItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: KnowledgeItemGroupByArgs['orderBy'] }
+        : { orderBy?: KnowledgeItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, KnowledgeItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKnowledgeItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the KnowledgeItem model
+   */
+  readonly fields: KnowledgeItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for KnowledgeItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__KnowledgeItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends KnowledgeItem$createdByArgs<ExtArgs> = {}>(args?: Subset<T, KnowledgeItem$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the KnowledgeItem model
+   */
+  interface KnowledgeItemFieldRefs {
+    readonly id: FieldRef<"KnowledgeItem", 'String'>
+    readonly companyId: FieldRef<"KnowledgeItem", 'Int'>
+    readonly type: FieldRef<"KnowledgeItem", 'KnowledgeItemType'>
+    readonly title: FieldRef<"KnowledgeItem", 'String'>
+    readonly content: FieldRef<"KnowledgeItem", 'String'>
+    readonly createdAt: FieldRef<"KnowledgeItem", 'DateTime'>
+    readonly updatedAt: FieldRef<"KnowledgeItem", 'DateTime'>
+    readonly createdById: FieldRef<"KnowledgeItem", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * KnowledgeItem findUnique
+   */
+  export type KnowledgeItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which KnowledgeItem to fetch.
+     */
+    where: KnowledgeItemWhereUniqueInput
+  }
+
+  /**
+   * KnowledgeItem findUniqueOrThrow
+   */
+  export type KnowledgeItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which KnowledgeItem to fetch.
+     */
+    where: KnowledgeItemWhereUniqueInput
+  }
+
+  /**
+   * KnowledgeItem findFirst
+   */
+  export type KnowledgeItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which KnowledgeItem to fetch.
+     */
+    where?: KnowledgeItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KnowledgeItems to fetch.
+     */
+    orderBy?: KnowledgeItemOrderByWithRelationInput | KnowledgeItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KnowledgeItems.
+     */
+    cursor?: KnowledgeItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KnowledgeItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KnowledgeItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KnowledgeItems.
+     */
+    distinct?: KnowledgeItemScalarFieldEnum | KnowledgeItemScalarFieldEnum[]
+  }
+
+  /**
+   * KnowledgeItem findFirstOrThrow
+   */
+  export type KnowledgeItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which KnowledgeItem to fetch.
+     */
+    where?: KnowledgeItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KnowledgeItems to fetch.
+     */
+    orderBy?: KnowledgeItemOrderByWithRelationInput | KnowledgeItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KnowledgeItems.
+     */
+    cursor?: KnowledgeItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KnowledgeItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KnowledgeItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KnowledgeItems.
+     */
+    distinct?: KnowledgeItemScalarFieldEnum | KnowledgeItemScalarFieldEnum[]
+  }
+
+  /**
+   * KnowledgeItem findMany
+   */
+  export type KnowledgeItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which KnowledgeItems to fetch.
+     */
+    where?: KnowledgeItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KnowledgeItems to fetch.
+     */
+    orderBy?: KnowledgeItemOrderByWithRelationInput | KnowledgeItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing KnowledgeItems.
+     */
+    cursor?: KnowledgeItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KnowledgeItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KnowledgeItems.
+     */
+    skip?: number
+    distinct?: KnowledgeItemScalarFieldEnum | KnowledgeItemScalarFieldEnum[]
+  }
+
+  /**
+   * KnowledgeItem create
+   */
+  export type KnowledgeItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a KnowledgeItem.
+     */
+    data: XOR<KnowledgeItemCreateInput, KnowledgeItemUncheckedCreateInput>
+  }
+
+  /**
+   * KnowledgeItem createMany
+   */
+  export type KnowledgeItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many KnowledgeItems.
+     */
+    data: KnowledgeItemCreateManyInput | KnowledgeItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KnowledgeItem createManyAndReturn
+   */
+  export type KnowledgeItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many KnowledgeItems.
+     */
+    data: KnowledgeItemCreateManyInput | KnowledgeItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * KnowledgeItem update
+   */
+  export type KnowledgeItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a KnowledgeItem.
+     */
+    data: XOR<KnowledgeItemUpdateInput, KnowledgeItemUncheckedUpdateInput>
+    /**
+     * Choose, which KnowledgeItem to update.
+     */
+    where: KnowledgeItemWhereUniqueInput
+  }
+
+  /**
+   * KnowledgeItem updateMany
+   */
+  export type KnowledgeItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update KnowledgeItems.
+     */
+    data: XOR<KnowledgeItemUpdateManyMutationInput, KnowledgeItemUncheckedUpdateManyInput>
+    /**
+     * Filter which KnowledgeItems to update
+     */
+    where?: KnowledgeItemWhereInput
+    /**
+     * Limit how many KnowledgeItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KnowledgeItem updateManyAndReturn
+   */
+  export type KnowledgeItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * The data used to update KnowledgeItems.
+     */
+    data: XOR<KnowledgeItemUpdateManyMutationInput, KnowledgeItemUncheckedUpdateManyInput>
+    /**
+     * Filter which KnowledgeItems to update
+     */
+    where?: KnowledgeItemWhereInput
+    /**
+     * Limit how many KnowledgeItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * KnowledgeItem upsert
+   */
+  export type KnowledgeItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the KnowledgeItem to update in case it exists.
+     */
+    where: KnowledgeItemWhereUniqueInput
+    /**
+     * In case the KnowledgeItem found by the `where` argument doesn't exist, create a new KnowledgeItem with this data.
+     */
+    create: XOR<KnowledgeItemCreateInput, KnowledgeItemUncheckedCreateInput>
+    /**
+     * In case the KnowledgeItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<KnowledgeItemUpdateInput, KnowledgeItemUncheckedUpdateInput>
+  }
+
+  /**
+   * KnowledgeItem delete
+   */
+  export type KnowledgeItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+    /**
+     * Filter which KnowledgeItem to delete.
+     */
+    where: KnowledgeItemWhereUniqueInput
+  }
+
+  /**
+   * KnowledgeItem deleteMany
+   */
+  export type KnowledgeItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KnowledgeItems to delete
+     */
+    where?: KnowledgeItemWhereInput
+    /**
+     * Limit how many KnowledgeItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * KnowledgeItem.createdBy
+   */
+  export type KnowledgeItem$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * KnowledgeItem without action
+   */
+  export type KnowledgeItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeItem
+     */
+    select?: KnowledgeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KnowledgeItem
+     */
+    omit?: KnowledgeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KnowledgeItemInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model QuickAnswer
+   */
+
+  export type AggregateQuickAnswer = {
+    _count: QuickAnswerCountAggregateOutputType | null
+    _avg: QuickAnswerAvgAggregateOutputType | null
+    _sum: QuickAnswerSumAggregateOutputType | null
+    _min: QuickAnswerMinAggregateOutputType | null
+    _max: QuickAnswerMaxAggregateOutputType | null
+  }
+
+  export type QuickAnswerAvgAggregateOutputType = {
+    companyId: number | null
+    createdById: number | null
+  }
+
+  export type QuickAnswerSumAggregateOutputType = {
+    companyId: number | null
+    createdById: number | null
+  }
+
+  export type QuickAnswerMinAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    title: string | null
+    content: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    createdById: number | null
+  }
+
+  export type QuickAnswerMaxAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    title: string | null
+    content: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    createdById: number | null
+  }
+
+  export type QuickAnswerCountAggregateOutputType = {
+    id: number
+    companyId: number
+    title: number
+    content: number
+    createdAt: number
+    updatedAt: number
+    createdById: number
+    _all: number
+  }
+
+
+  export type QuickAnswerAvgAggregateInputType = {
+    companyId?: true
+    createdById?: true
+  }
+
+  export type QuickAnswerSumAggregateInputType = {
+    companyId?: true
+    createdById?: true
+  }
+
+  export type QuickAnswerMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    title?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+  }
+
+  export type QuickAnswerMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    title?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+  }
+
+  export type QuickAnswerCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    title?: true
+    content?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+    _all?: true
+  }
+
+  export type QuickAnswerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QuickAnswer to aggregate.
+     */
+    where?: QuickAnswerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuickAnswers to fetch.
+     */
+    orderBy?: QuickAnswerOrderByWithRelationInput | QuickAnswerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: QuickAnswerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuickAnswers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuickAnswers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned QuickAnswers
+    **/
+    _count?: true | QuickAnswerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: QuickAnswerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: QuickAnswerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: QuickAnswerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: QuickAnswerMaxAggregateInputType
+  }
+
+  export type GetQuickAnswerAggregateType<T extends QuickAnswerAggregateArgs> = {
+        [P in keyof T & keyof AggregateQuickAnswer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateQuickAnswer[P]>
+      : GetScalarType<T[P], AggregateQuickAnswer[P]>
+  }
+
+
+
+
+  export type QuickAnswerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuickAnswerWhereInput
+    orderBy?: QuickAnswerOrderByWithAggregationInput | QuickAnswerOrderByWithAggregationInput[]
+    by: QuickAnswerScalarFieldEnum[] | QuickAnswerScalarFieldEnum
+    having?: QuickAnswerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: QuickAnswerCountAggregateInputType | true
+    _avg?: QuickAnswerAvgAggregateInputType
+    _sum?: QuickAnswerSumAggregateInputType
+    _min?: QuickAnswerMinAggregateInputType
+    _max?: QuickAnswerMaxAggregateInputType
+  }
+
+  export type QuickAnswerGroupByOutputType = {
+    id: string
+    companyId: number
+    title: string
+    content: string
+    createdAt: Date
+    updatedAt: Date
+    createdById: number | null
+    _count: QuickAnswerCountAggregateOutputType | null
+    _avg: QuickAnswerAvgAggregateOutputType | null
+    _sum: QuickAnswerSumAggregateOutputType | null
+    _min: QuickAnswerMinAggregateOutputType | null
+    _max: QuickAnswerMaxAggregateOutputType | null
+  }
+
+  type GetQuickAnswerGroupByPayload<T extends QuickAnswerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<QuickAnswerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof QuickAnswerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], QuickAnswerGroupByOutputType[P]>
+            : GetScalarType<T[P], QuickAnswerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type QuickAnswerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    title?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | QuickAnswer$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["quickAnswer"]>
+
+  export type QuickAnswerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    title?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | QuickAnswer$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["quickAnswer"]>
+
+  export type QuickAnswerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    title?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | QuickAnswer$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["quickAnswer"]>
+
+  export type QuickAnswerSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    title?: boolean
+    content?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+  }
+
+  export type QuickAnswerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "title" | "content" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["quickAnswer"]>
+  export type QuickAnswerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | QuickAnswer$createdByArgs<ExtArgs>
+  }
+  export type QuickAnswerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | QuickAnswer$createdByArgs<ExtArgs>
+  }
+  export type QuickAnswerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | QuickAnswer$createdByArgs<ExtArgs>
+  }
+
+  export type $QuickAnswerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "QuickAnswer"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: number
+      title: string
+      content: string
+      createdAt: Date
+      updatedAt: Date
+      createdById: number | null
+    }, ExtArgs["result"]["quickAnswer"]>
+    composites: {}
+  }
+
+  type QuickAnswerGetPayload<S extends boolean | null | undefined | QuickAnswerDefaultArgs> = $Result.GetResult<Prisma.$QuickAnswerPayload, S>
+
+  type QuickAnswerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<QuickAnswerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: QuickAnswerCountAggregateInputType | true
+    }
+
+  export interface QuickAnswerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['QuickAnswer'], meta: { name: 'QuickAnswer' } }
+    /**
+     * Find zero or one QuickAnswer that matches the filter.
+     * @param {QuickAnswerFindUniqueArgs} args - Arguments to find a QuickAnswer
+     * @example
+     * // Get one QuickAnswer
+     * const quickAnswer = await prisma.quickAnswer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends QuickAnswerFindUniqueArgs>(args: SelectSubset<T, QuickAnswerFindUniqueArgs<ExtArgs>>): Prisma__QuickAnswerClient<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one QuickAnswer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {QuickAnswerFindUniqueOrThrowArgs} args - Arguments to find a QuickAnswer
+     * @example
+     * // Get one QuickAnswer
+     * const quickAnswer = await prisma.quickAnswer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends QuickAnswerFindUniqueOrThrowArgs>(args: SelectSubset<T, QuickAnswerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__QuickAnswerClient<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QuickAnswer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuickAnswerFindFirstArgs} args - Arguments to find a QuickAnswer
+     * @example
+     * // Get one QuickAnswer
+     * const quickAnswer = await prisma.quickAnswer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends QuickAnswerFindFirstArgs>(args?: SelectSubset<T, QuickAnswerFindFirstArgs<ExtArgs>>): Prisma__QuickAnswerClient<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QuickAnswer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuickAnswerFindFirstOrThrowArgs} args - Arguments to find a QuickAnswer
+     * @example
+     * // Get one QuickAnswer
+     * const quickAnswer = await prisma.quickAnswer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends QuickAnswerFindFirstOrThrowArgs>(args?: SelectSubset<T, QuickAnswerFindFirstOrThrowArgs<ExtArgs>>): Prisma__QuickAnswerClient<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more QuickAnswers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuickAnswerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all QuickAnswers
+     * const quickAnswers = await prisma.quickAnswer.findMany()
+     * 
+     * // Get first 10 QuickAnswers
+     * const quickAnswers = await prisma.quickAnswer.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const quickAnswerWithIdOnly = await prisma.quickAnswer.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends QuickAnswerFindManyArgs>(args?: SelectSubset<T, QuickAnswerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a QuickAnswer.
+     * @param {QuickAnswerCreateArgs} args - Arguments to create a QuickAnswer.
+     * @example
+     * // Create one QuickAnswer
+     * const QuickAnswer = await prisma.quickAnswer.create({
+     *   data: {
+     *     // ... data to create a QuickAnswer
+     *   }
+     * })
+     * 
+     */
+    create<T extends QuickAnswerCreateArgs>(args: SelectSubset<T, QuickAnswerCreateArgs<ExtArgs>>): Prisma__QuickAnswerClient<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many QuickAnswers.
+     * @param {QuickAnswerCreateManyArgs} args - Arguments to create many QuickAnswers.
+     * @example
+     * // Create many QuickAnswers
+     * const quickAnswer = await prisma.quickAnswer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends QuickAnswerCreateManyArgs>(args?: SelectSubset<T, QuickAnswerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many QuickAnswers and returns the data saved in the database.
+     * @param {QuickAnswerCreateManyAndReturnArgs} args - Arguments to create many QuickAnswers.
+     * @example
+     * // Create many QuickAnswers
+     * const quickAnswer = await prisma.quickAnswer.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many QuickAnswers and only return the `id`
+     * const quickAnswerWithIdOnly = await prisma.quickAnswer.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends QuickAnswerCreateManyAndReturnArgs>(args?: SelectSubset<T, QuickAnswerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a QuickAnswer.
+     * @param {QuickAnswerDeleteArgs} args - Arguments to delete one QuickAnswer.
+     * @example
+     * // Delete one QuickAnswer
+     * const QuickAnswer = await prisma.quickAnswer.delete({
+     *   where: {
+     *     // ... filter to delete one QuickAnswer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends QuickAnswerDeleteArgs>(args: SelectSubset<T, QuickAnswerDeleteArgs<ExtArgs>>): Prisma__QuickAnswerClient<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one QuickAnswer.
+     * @param {QuickAnswerUpdateArgs} args - Arguments to update one QuickAnswer.
+     * @example
+     * // Update one QuickAnswer
+     * const quickAnswer = await prisma.quickAnswer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends QuickAnswerUpdateArgs>(args: SelectSubset<T, QuickAnswerUpdateArgs<ExtArgs>>): Prisma__QuickAnswerClient<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more QuickAnswers.
+     * @param {QuickAnswerDeleteManyArgs} args - Arguments to filter QuickAnswers to delete.
+     * @example
+     * // Delete a few QuickAnswers
+     * const { count } = await prisma.quickAnswer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends QuickAnswerDeleteManyArgs>(args?: SelectSubset<T, QuickAnswerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QuickAnswers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuickAnswerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many QuickAnswers
+     * const quickAnswer = await prisma.quickAnswer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends QuickAnswerUpdateManyArgs>(args: SelectSubset<T, QuickAnswerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QuickAnswers and returns the data updated in the database.
+     * @param {QuickAnswerUpdateManyAndReturnArgs} args - Arguments to update many QuickAnswers.
+     * @example
+     * // Update many QuickAnswers
+     * const quickAnswer = await prisma.quickAnswer.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more QuickAnswers and only return the `id`
+     * const quickAnswerWithIdOnly = await prisma.quickAnswer.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends QuickAnswerUpdateManyAndReturnArgs>(args: SelectSubset<T, QuickAnswerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one QuickAnswer.
+     * @param {QuickAnswerUpsertArgs} args - Arguments to update or create a QuickAnswer.
+     * @example
+     * // Update or create a QuickAnswer
+     * const quickAnswer = await prisma.quickAnswer.upsert({
+     *   create: {
+     *     // ... data to create a QuickAnswer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the QuickAnswer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends QuickAnswerUpsertArgs>(args: SelectSubset<T, QuickAnswerUpsertArgs<ExtArgs>>): Prisma__QuickAnswerClient<$Result.GetResult<Prisma.$QuickAnswerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of QuickAnswers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuickAnswerCountArgs} args - Arguments to filter QuickAnswers to count.
+     * @example
+     * // Count the number of QuickAnswers
+     * const count = await prisma.quickAnswer.count({
+     *   where: {
+     *     // ... the filter for the QuickAnswers we want to count
+     *   }
+     * })
+    **/
+    count<T extends QuickAnswerCountArgs>(
+      args?: Subset<T, QuickAnswerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], QuickAnswerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a QuickAnswer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuickAnswerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends QuickAnswerAggregateArgs>(args: Subset<T, QuickAnswerAggregateArgs>): Prisma.PrismaPromise<GetQuickAnswerAggregateType<T>>
+
+    /**
+     * Group by QuickAnswer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuickAnswerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends QuickAnswerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: QuickAnswerGroupByArgs['orderBy'] }
+        : { orderBy?: QuickAnswerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, QuickAnswerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQuickAnswerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the QuickAnswer model
+   */
+  readonly fields: QuickAnswerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for QuickAnswer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__QuickAnswerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends QuickAnswer$createdByArgs<ExtArgs> = {}>(args?: Subset<T, QuickAnswer$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the QuickAnswer model
+   */
+  interface QuickAnswerFieldRefs {
+    readonly id: FieldRef<"QuickAnswer", 'String'>
+    readonly companyId: FieldRef<"QuickAnswer", 'Int'>
+    readonly title: FieldRef<"QuickAnswer", 'String'>
+    readonly content: FieldRef<"QuickAnswer", 'String'>
+    readonly createdAt: FieldRef<"QuickAnswer", 'DateTime'>
+    readonly updatedAt: FieldRef<"QuickAnswer", 'DateTime'>
+    readonly createdById: FieldRef<"QuickAnswer", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * QuickAnswer findUnique
+   */
+  export type QuickAnswerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * Filter, which QuickAnswer to fetch.
+     */
+    where: QuickAnswerWhereUniqueInput
+  }
+
+  /**
+   * QuickAnswer findUniqueOrThrow
+   */
+  export type QuickAnswerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * Filter, which QuickAnswer to fetch.
+     */
+    where: QuickAnswerWhereUniqueInput
+  }
+
+  /**
+   * QuickAnswer findFirst
+   */
+  export type QuickAnswerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * Filter, which QuickAnswer to fetch.
+     */
+    where?: QuickAnswerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuickAnswers to fetch.
+     */
+    orderBy?: QuickAnswerOrderByWithRelationInput | QuickAnswerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QuickAnswers.
+     */
+    cursor?: QuickAnswerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuickAnswers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuickAnswers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QuickAnswers.
+     */
+    distinct?: QuickAnswerScalarFieldEnum | QuickAnswerScalarFieldEnum[]
+  }
+
+  /**
+   * QuickAnswer findFirstOrThrow
+   */
+  export type QuickAnswerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * Filter, which QuickAnswer to fetch.
+     */
+    where?: QuickAnswerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuickAnswers to fetch.
+     */
+    orderBy?: QuickAnswerOrderByWithRelationInput | QuickAnswerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QuickAnswers.
+     */
+    cursor?: QuickAnswerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuickAnswers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuickAnswers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QuickAnswers.
+     */
+    distinct?: QuickAnswerScalarFieldEnum | QuickAnswerScalarFieldEnum[]
+  }
+
+  /**
+   * QuickAnswer findMany
+   */
+  export type QuickAnswerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * Filter, which QuickAnswers to fetch.
+     */
+    where?: QuickAnswerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuickAnswers to fetch.
+     */
+    orderBy?: QuickAnswerOrderByWithRelationInput | QuickAnswerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing QuickAnswers.
+     */
+    cursor?: QuickAnswerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuickAnswers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuickAnswers.
+     */
+    skip?: number
+    distinct?: QuickAnswerScalarFieldEnum | QuickAnswerScalarFieldEnum[]
+  }
+
+  /**
+   * QuickAnswer create
+   */
+  export type QuickAnswerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a QuickAnswer.
+     */
+    data: XOR<QuickAnswerCreateInput, QuickAnswerUncheckedCreateInput>
+  }
+
+  /**
+   * QuickAnswer createMany
+   */
+  export type QuickAnswerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many QuickAnswers.
+     */
+    data: QuickAnswerCreateManyInput | QuickAnswerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * QuickAnswer createManyAndReturn
+   */
+  export type QuickAnswerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * The data used to create many QuickAnswers.
+     */
+    data: QuickAnswerCreateManyInput | QuickAnswerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * QuickAnswer update
+   */
+  export type QuickAnswerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a QuickAnswer.
+     */
+    data: XOR<QuickAnswerUpdateInput, QuickAnswerUncheckedUpdateInput>
+    /**
+     * Choose, which QuickAnswer to update.
+     */
+    where: QuickAnswerWhereUniqueInput
+  }
+
+  /**
+   * QuickAnswer updateMany
+   */
+  export type QuickAnswerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update QuickAnswers.
+     */
+    data: XOR<QuickAnswerUpdateManyMutationInput, QuickAnswerUncheckedUpdateManyInput>
+    /**
+     * Filter which QuickAnswers to update
+     */
+    where?: QuickAnswerWhereInput
+    /**
+     * Limit how many QuickAnswers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * QuickAnswer updateManyAndReturn
+   */
+  export type QuickAnswerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * The data used to update QuickAnswers.
+     */
+    data: XOR<QuickAnswerUpdateManyMutationInput, QuickAnswerUncheckedUpdateManyInput>
+    /**
+     * Filter which QuickAnswers to update
+     */
+    where?: QuickAnswerWhereInput
+    /**
+     * Limit how many QuickAnswers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * QuickAnswer upsert
+   */
+  export type QuickAnswerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the QuickAnswer to update in case it exists.
+     */
+    where: QuickAnswerWhereUniqueInput
+    /**
+     * In case the QuickAnswer found by the `where` argument doesn't exist, create a new QuickAnswer with this data.
+     */
+    create: XOR<QuickAnswerCreateInput, QuickAnswerUncheckedCreateInput>
+    /**
+     * In case the QuickAnswer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<QuickAnswerUpdateInput, QuickAnswerUncheckedUpdateInput>
+  }
+
+  /**
+   * QuickAnswer delete
+   */
+  export type QuickAnswerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+    /**
+     * Filter which QuickAnswer to delete.
+     */
+    where: QuickAnswerWhereUniqueInput
+  }
+
+  /**
+   * QuickAnswer deleteMany
+   */
+  export type QuickAnswerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QuickAnswers to delete
+     */
+    where?: QuickAnswerWhereInput
+    /**
+     * Limit how many QuickAnswers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * QuickAnswer.createdBy
+   */
+  export type QuickAnswer$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * QuickAnswer without action
+   */
+  export type QuickAnswerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuickAnswer
+     */
+    select?: QuickAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuickAnswer
+     */
+    omit?: QuickAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuickAnswerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AiTemplate
+   */
+
+  export type AggregateAiTemplate = {
+    _count: AiTemplateCountAggregateOutputType | null
+    _avg: AiTemplateAvgAggregateOutputType | null
+    _sum: AiTemplateSumAggregateOutputType | null
+    _min: AiTemplateMinAggregateOutputType | null
+    _max: AiTemplateMaxAggregateOutputType | null
+  }
+
+  export type AiTemplateAvgAggregateOutputType = {
+    companyId: number | null
+    createdById: number | null
+  }
+
+  export type AiTemplateSumAggregateOutputType = {
+    companyId: number | null
+    createdById: number | null
+  }
+
+  export type AiTemplateMinAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    name: string | null
+    content: string | null
+    category: $Enums.AiTemplateCategory | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    createdById: number | null
+  }
+
+  export type AiTemplateMaxAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    name: string | null
+    content: string | null
+    category: $Enums.AiTemplateCategory | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    createdById: number | null
+  }
+
+  export type AiTemplateCountAggregateOutputType = {
+    id: number
+    companyId: number
+    name: number
+    content: number
+    category: number
+    createdAt: number
+    updatedAt: number
+    createdById: number
+    _all: number
+  }
+
+
+  export type AiTemplateAvgAggregateInputType = {
+    companyId?: true
+    createdById?: true
+  }
+
+  export type AiTemplateSumAggregateInputType = {
+    companyId?: true
+    createdById?: true
+  }
+
+  export type AiTemplateMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    name?: true
+    content?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+  }
+
+  export type AiTemplateMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    name?: true
+    content?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+  }
+
+  export type AiTemplateCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    name?: true
+    content?: true
+    category?: true
+    createdAt?: true
+    updatedAt?: true
+    createdById?: true
+    _all?: true
+  }
+
+  export type AiTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiTemplate to aggregate.
+     */
+    where?: AiTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiTemplates to fetch.
+     */
+    orderBy?: AiTemplateOrderByWithRelationInput | AiTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AiTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AiTemplates
+    **/
+    _count?: true | AiTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AiTemplateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AiTemplateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AiTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AiTemplateMaxAggregateInputType
+  }
+
+  export type GetAiTemplateAggregateType<T extends AiTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateAiTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAiTemplate[P]>
+      : GetScalarType<T[P], AggregateAiTemplate[P]>
+  }
+
+
+
+
+  export type AiTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiTemplateWhereInput
+    orderBy?: AiTemplateOrderByWithAggregationInput | AiTemplateOrderByWithAggregationInput[]
+    by: AiTemplateScalarFieldEnum[] | AiTemplateScalarFieldEnum
+    having?: AiTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AiTemplateCountAggregateInputType | true
+    _avg?: AiTemplateAvgAggregateInputType
+    _sum?: AiTemplateSumAggregateInputType
+    _min?: AiTemplateMinAggregateInputType
+    _max?: AiTemplateMaxAggregateInputType
+  }
+
+  export type AiTemplateGroupByOutputType = {
+    id: string
+    companyId: number
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt: Date
+    updatedAt: Date
+    createdById: number | null
+    _count: AiTemplateCountAggregateOutputType | null
+    _avg: AiTemplateAvgAggregateOutputType | null
+    _sum: AiTemplateSumAggregateOutputType | null
+    _min: AiTemplateMinAggregateOutputType | null
+    _max: AiTemplateMaxAggregateOutputType | null
+  }
+
+  type GetAiTemplateGroupByPayload<T extends AiTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AiTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AiTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AiTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], AiTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AiTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    name?: boolean
+    content?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | AiTemplate$createdByArgs<ExtArgs>
+    options?: boolean | AiTemplate$optionsArgs<ExtArgs>
+    _count?: boolean | AiTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiTemplate"]>
+
+  export type AiTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    name?: boolean
+    content?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | AiTemplate$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["aiTemplate"]>
+
+  export type AiTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    name?: boolean
+    content?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | AiTemplate$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["aiTemplate"]>
+
+  export type AiTemplateSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    name?: boolean
+    content?: boolean
+    category?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdById?: boolean
+  }
+
+  export type AiTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "name" | "content" | "category" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["aiTemplate"]>
+  export type AiTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | AiTemplate$createdByArgs<ExtArgs>
+    options?: boolean | AiTemplate$optionsArgs<ExtArgs>
+    _count?: boolean | AiTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AiTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | AiTemplate$createdByArgs<ExtArgs>
+  }
+  export type AiTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    createdBy?: boolean | AiTemplate$createdByArgs<ExtArgs>
+  }
+
+  export type $AiTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AiTemplate"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+      options: Prisma.$AiTemplateOptionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: number
+      name: string
+      content: string
+      category: $Enums.AiTemplateCategory
+      createdAt: Date
+      updatedAt: Date
+      createdById: number | null
+    }, ExtArgs["result"]["aiTemplate"]>
+    composites: {}
+  }
+
+  type AiTemplateGetPayload<S extends boolean | null | undefined | AiTemplateDefaultArgs> = $Result.GetResult<Prisma.$AiTemplatePayload, S>
+
+  type AiTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AiTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AiTemplateCountAggregateInputType | true
+    }
+
+  export interface AiTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AiTemplate'], meta: { name: 'AiTemplate' } }
+    /**
+     * Find zero or one AiTemplate that matches the filter.
+     * @param {AiTemplateFindUniqueArgs} args - Arguments to find a AiTemplate
+     * @example
+     * // Get one AiTemplate
+     * const aiTemplate = await prisma.aiTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AiTemplateFindUniqueArgs>(args: SelectSubset<T, AiTemplateFindUniqueArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AiTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AiTemplateFindUniqueOrThrowArgs} args - Arguments to find a AiTemplate
+     * @example
+     * // Get one AiTemplate
+     * const aiTemplate = await prisma.aiTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AiTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, AiTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateFindFirstArgs} args - Arguments to find a AiTemplate
+     * @example
+     * // Get one AiTemplate
+     * const aiTemplate = await prisma.aiTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AiTemplateFindFirstArgs>(args?: SelectSubset<T, AiTemplateFindFirstArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateFindFirstOrThrowArgs} args - Arguments to find a AiTemplate
+     * @example
+     * // Get one AiTemplate
+     * const aiTemplate = await prisma.aiTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AiTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, AiTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AiTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AiTemplates
+     * const aiTemplates = await prisma.aiTemplate.findMany()
+     * 
+     * // Get first 10 AiTemplates
+     * const aiTemplates = await prisma.aiTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const aiTemplateWithIdOnly = await prisma.aiTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AiTemplateFindManyArgs>(args?: SelectSubset<T, AiTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AiTemplate.
+     * @param {AiTemplateCreateArgs} args - Arguments to create a AiTemplate.
+     * @example
+     * // Create one AiTemplate
+     * const AiTemplate = await prisma.aiTemplate.create({
+     *   data: {
+     *     // ... data to create a AiTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends AiTemplateCreateArgs>(args: SelectSubset<T, AiTemplateCreateArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AiTemplates.
+     * @param {AiTemplateCreateManyArgs} args - Arguments to create many AiTemplates.
+     * @example
+     * // Create many AiTemplates
+     * const aiTemplate = await prisma.aiTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AiTemplateCreateManyArgs>(args?: SelectSubset<T, AiTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AiTemplates and returns the data saved in the database.
+     * @param {AiTemplateCreateManyAndReturnArgs} args - Arguments to create many AiTemplates.
+     * @example
+     * // Create many AiTemplates
+     * const aiTemplate = await prisma.aiTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AiTemplates and only return the `id`
+     * const aiTemplateWithIdOnly = await prisma.aiTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AiTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, AiTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AiTemplate.
+     * @param {AiTemplateDeleteArgs} args - Arguments to delete one AiTemplate.
+     * @example
+     * // Delete one AiTemplate
+     * const AiTemplate = await prisma.aiTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one AiTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AiTemplateDeleteArgs>(args: SelectSubset<T, AiTemplateDeleteArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AiTemplate.
+     * @param {AiTemplateUpdateArgs} args - Arguments to update one AiTemplate.
+     * @example
+     * // Update one AiTemplate
+     * const aiTemplate = await prisma.aiTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AiTemplateUpdateArgs>(args: SelectSubset<T, AiTemplateUpdateArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AiTemplates.
+     * @param {AiTemplateDeleteManyArgs} args - Arguments to filter AiTemplates to delete.
+     * @example
+     * // Delete a few AiTemplates
+     * const { count } = await prisma.aiTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AiTemplateDeleteManyArgs>(args?: SelectSubset<T, AiTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AiTemplates
+     * const aiTemplate = await prisma.aiTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AiTemplateUpdateManyArgs>(args: SelectSubset<T, AiTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiTemplates and returns the data updated in the database.
+     * @param {AiTemplateUpdateManyAndReturnArgs} args - Arguments to update many AiTemplates.
+     * @example
+     * // Update many AiTemplates
+     * const aiTemplate = await prisma.aiTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AiTemplates and only return the `id`
+     * const aiTemplateWithIdOnly = await prisma.aiTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AiTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, AiTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AiTemplate.
+     * @param {AiTemplateUpsertArgs} args - Arguments to update or create a AiTemplate.
+     * @example
+     * // Update or create a AiTemplate
+     * const aiTemplate = await prisma.aiTemplate.upsert({
+     *   create: {
+     *     // ... data to create a AiTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AiTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AiTemplateUpsertArgs>(args: SelectSubset<T, AiTemplateUpsertArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AiTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateCountArgs} args - Arguments to filter AiTemplates to count.
+     * @example
+     * // Count the number of AiTemplates
+     * const count = await prisma.aiTemplate.count({
+     *   where: {
+     *     // ... the filter for the AiTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends AiTemplateCountArgs>(
+      args?: Subset<T, AiTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AiTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AiTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AiTemplateAggregateArgs>(args: Subset<T, AiTemplateAggregateArgs>): Prisma.PrismaPromise<GetAiTemplateAggregateType<T>>
+
+    /**
+     * Group by AiTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AiTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AiTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: AiTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AiTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAiTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AiTemplate model
+   */
+  readonly fields: AiTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AiTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AiTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends AiTemplate$createdByArgs<ExtArgs> = {}>(args?: Subset<T, AiTemplate$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    options<T extends AiTemplate$optionsArgs<ExtArgs> = {}>(args?: Subset<T, AiTemplate$optionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AiTemplate model
+   */
+  interface AiTemplateFieldRefs {
+    readonly id: FieldRef<"AiTemplate", 'String'>
+    readonly companyId: FieldRef<"AiTemplate", 'Int'>
+    readonly name: FieldRef<"AiTemplate", 'String'>
+    readonly content: FieldRef<"AiTemplate", 'String'>
+    readonly category: FieldRef<"AiTemplate", 'AiTemplateCategory'>
+    readonly createdAt: FieldRef<"AiTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"AiTemplate", 'DateTime'>
+    readonly createdById: FieldRef<"AiTemplate", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AiTemplate findUnique
+   */
+  export type AiTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplate to fetch.
+     */
+    where: AiTemplateWhereUniqueInput
+  }
+
+  /**
+   * AiTemplate findUniqueOrThrow
+   */
+  export type AiTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplate to fetch.
+     */
+    where: AiTemplateWhereUniqueInput
+  }
+
+  /**
+   * AiTemplate findFirst
+   */
+  export type AiTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplate to fetch.
+     */
+    where?: AiTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiTemplates to fetch.
+     */
+    orderBy?: AiTemplateOrderByWithRelationInput | AiTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiTemplates.
+     */
+    cursor?: AiTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiTemplates.
+     */
+    distinct?: AiTemplateScalarFieldEnum | AiTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * AiTemplate findFirstOrThrow
+   */
+  export type AiTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplate to fetch.
+     */
+    where?: AiTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiTemplates to fetch.
+     */
+    orderBy?: AiTemplateOrderByWithRelationInput | AiTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiTemplates.
+     */
+    cursor?: AiTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiTemplates.
+     */
+    distinct?: AiTemplateScalarFieldEnum | AiTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * AiTemplate findMany
+   */
+  export type AiTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplates to fetch.
+     */
+    where?: AiTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiTemplates to fetch.
+     */
+    orderBy?: AiTemplateOrderByWithRelationInput | AiTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AiTemplates.
+     */
+    cursor?: AiTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiTemplates.
+     */
+    skip?: number
+    distinct?: AiTemplateScalarFieldEnum | AiTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * AiTemplate create
+   */
+  export type AiTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AiTemplate.
+     */
+    data: XOR<AiTemplateCreateInput, AiTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * AiTemplate createMany
+   */
+  export type AiTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AiTemplates.
+     */
+    data: AiTemplateCreateManyInput | AiTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiTemplate createManyAndReturn
+   */
+  export type AiTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many AiTemplates.
+     */
+    data: AiTemplateCreateManyInput | AiTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiTemplate update
+   */
+  export type AiTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AiTemplate.
+     */
+    data: XOR<AiTemplateUpdateInput, AiTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which AiTemplate to update.
+     */
+    where: AiTemplateWhereUniqueInput
+  }
+
+  /**
+   * AiTemplate updateMany
+   */
+  export type AiTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AiTemplates.
+     */
+    data: XOR<AiTemplateUpdateManyMutationInput, AiTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which AiTemplates to update
+     */
+    where?: AiTemplateWhereInput
+    /**
+     * Limit how many AiTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiTemplate updateManyAndReturn
+   */
+  export type AiTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update AiTemplates.
+     */
+    data: XOR<AiTemplateUpdateManyMutationInput, AiTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which AiTemplates to update
+     */
+    where?: AiTemplateWhereInput
+    /**
+     * Limit how many AiTemplates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiTemplate upsert
+   */
+  export type AiTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AiTemplate to update in case it exists.
+     */
+    where: AiTemplateWhereUniqueInput
+    /**
+     * In case the AiTemplate found by the `where` argument doesn't exist, create a new AiTemplate with this data.
+     */
+    create: XOR<AiTemplateCreateInput, AiTemplateUncheckedCreateInput>
+    /**
+     * In case the AiTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AiTemplateUpdateInput, AiTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * AiTemplate delete
+   */
+  export type AiTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which AiTemplate to delete.
+     */
+    where: AiTemplateWhereUniqueInput
+  }
+
+  /**
+   * AiTemplate deleteMany
+   */
+  export type AiTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiTemplates to delete
+     */
+    where?: AiTemplateWhereInput
+    /**
+     * Limit how many AiTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiTemplate.createdBy
+   */
+  export type AiTemplate$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AiTemplate.options
+   */
+  export type AiTemplate$optionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    where?: AiTemplateOptionWhereInput
+    orderBy?: AiTemplateOptionOrderByWithRelationInput | AiTemplateOptionOrderByWithRelationInput[]
+    cursor?: AiTemplateOptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AiTemplateOptionScalarFieldEnum | AiTemplateOptionScalarFieldEnum[]
+  }
+
+  /**
+   * AiTemplate without action
+   */
+  export type AiTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplate
+     */
+    select?: AiTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplate
+     */
+    omit?: AiTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AiTemplateOption
+   */
+
+  export type AggregateAiTemplateOption = {
+    _count: AiTemplateOptionCountAggregateOutputType | null
+    _min: AiTemplateOptionMinAggregateOutputType | null
+    _max: AiTemplateOptionMaxAggregateOutputType | null
+  }
+
+  export type AiTemplateOptionMinAggregateOutputType = {
+    id: string | null
+    templateId: string | null
+    label: string | null
+    value: string | null
+    createdAt: Date | null
+  }
+
+  export type AiTemplateOptionMaxAggregateOutputType = {
+    id: string | null
+    templateId: string | null
+    label: string | null
+    value: string | null
+    createdAt: Date | null
+  }
+
+  export type AiTemplateOptionCountAggregateOutputType = {
+    id: number
+    templateId: number
+    label: number
+    value: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AiTemplateOptionMinAggregateInputType = {
+    id?: true
+    templateId?: true
+    label?: true
+    value?: true
+    createdAt?: true
+  }
+
+  export type AiTemplateOptionMaxAggregateInputType = {
+    id?: true
+    templateId?: true
+    label?: true
+    value?: true
+    createdAt?: true
+  }
+
+  export type AiTemplateOptionCountAggregateInputType = {
+    id?: true
+    templateId?: true
+    label?: true
+    value?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AiTemplateOptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiTemplateOption to aggregate.
+     */
+    where?: AiTemplateOptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiTemplateOptions to fetch.
+     */
+    orderBy?: AiTemplateOptionOrderByWithRelationInput | AiTemplateOptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AiTemplateOptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiTemplateOptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiTemplateOptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AiTemplateOptions
+    **/
+    _count?: true | AiTemplateOptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AiTemplateOptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AiTemplateOptionMaxAggregateInputType
+  }
+
+  export type GetAiTemplateOptionAggregateType<T extends AiTemplateOptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateAiTemplateOption]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAiTemplateOption[P]>
+      : GetScalarType<T[P], AggregateAiTemplateOption[P]>
+  }
+
+
+
+
+  export type AiTemplateOptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiTemplateOptionWhereInput
+    orderBy?: AiTemplateOptionOrderByWithAggregationInput | AiTemplateOptionOrderByWithAggregationInput[]
+    by: AiTemplateOptionScalarFieldEnum[] | AiTemplateOptionScalarFieldEnum
+    having?: AiTemplateOptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AiTemplateOptionCountAggregateInputType | true
+    _min?: AiTemplateOptionMinAggregateInputType
+    _max?: AiTemplateOptionMaxAggregateInputType
+  }
+
+  export type AiTemplateOptionGroupByOutputType = {
+    id: string
+    templateId: string
+    label: string
+    value: string
+    createdAt: Date
+    _count: AiTemplateOptionCountAggregateOutputType | null
+    _min: AiTemplateOptionMinAggregateOutputType | null
+    _max: AiTemplateOptionMaxAggregateOutputType | null
+  }
+
+  type GetAiTemplateOptionGroupByPayload<T extends AiTemplateOptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AiTemplateOptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AiTemplateOptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AiTemplateOptionGroupByOutputType[P]>
+            : GetScalarType<T[P], AiTemplateOptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AiTemplateOptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateId?: boolean
+    label?: boolean
+    value?: boolean
+    createdAt?: boolean
+    template?: boolean | AiTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiTemplateOption"]>
+
+  export type AiTemplateOptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateId?: boolean
+    label?: boolean
+    value?: boolean
+    createdAt?: boolean
+    template?: boolean | AiTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiTemplateOption"]>
+
+  export type AiTemplateOptionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateId?: boolean
+    label?: boolean
+    value?: boolean
+    createdAt?: boolean
+    template?: boolean | AiTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiTemplateOption"]>
+
+  export type AiTemplateOptionSelectScalar = {
+    id?: boolean
+    templateId?: boolean
+    label?: boolean
+    value?: boolean
+    createdAt?: boolean
+  }
+
+  export type AiTemplateOptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "templateId" | "label" | "value" | "createdAt", ExtArgs["result"]["aiTemplateOption"]>
+  export type AiTemplateOptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    template?: boolean | AiTemplateDefaultArgs<ExtArgs>
+  }
+  export type AiTemplateOptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    template?: boolean | AiTemplateDefaultArgs<ExtArgs>
+  }
+  export type AiTemplateOptionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    template?: boolean | AiTemplateDefaultArgs<ExtArgs>
+  }
+
+  export type $AiTemplateOptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AiTemplateOption"
+    objects: {
+      template: Prisma.$AiTemplatePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      templateId: string
+      label: string
+      value: string
+      createdAt: Date
+    }, ExtArgs["result"]["aiTemplateOption"]>
+    composites: {}
+  }
+
+  type AiTemplateOptionGetPayload<S extends boolean | null | undefined | AiTemplateOptionDefaultArgs> = $Result.GetResult<Prisma.$AiTemplateOptionPayload, S>
+
+  type AiTemplateOptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AiTemplateOptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AiTemplateOptionCountAggregateInputType | true
+    }
+
+  export interface AiTemplateOptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AiTemplateOption'], meta: { name: 'AiTemplateOption' } }
+    /**
+     * Find zero or one AiTemplateOption that matches the filter.
+     * @param {AiTemplateOptionFindUniqueArgs} args - Arguments to find a AiTemplateOption
+     * @example
+     * // Get one AiTemplateOption
+     * const aiTemplateOption = await prisma.aiTemplateOption.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AiTemplateOptionFindUniqueArgs>(args: SelectSubset<T, AiTemplateOptionFindUniqueArgs<ExtArgs>>): Prisma__AiTemplateOptionClient<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AiTemplateOption that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AiTemplateOptionFindUniqueOrThrowArgs} args - Arguments to find a AiTemplateOption
+     * @example
+     * // Get one AiTemplateOption
+     * const aiTemplateOption = await prisma.aiTemplateOption.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AiTemplateOptionFindUniqueOrThrowArgs>(args: SelectSubset<T, AiTemplateOptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AiTemplateOptionClient<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiTemplateOption that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateOptionFindFirstArgs} args - Arguments to find a AiTemplateOption
+     * @example
+     * // Get one AiTemplateOption
+     * const aiTemplateOption = await prisma.aiTemplateOption.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AiTemplateOptionFindFirstArgs>(args?: SelectSubset<T, AiTemplateOptionFindFirstArgs<ExtArgs>>): Prisma__AiTemplateOptionClient<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiTemplateOption that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateOptionFindFirstOrThrowArgs} args - Arguments to find a AiTemplateOption
+     * @example
+     * // Get one AiTemplateOption
+     * const aiTemplateOption = await prisma.aiTemplateOption.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AiTemplateOptionFindFirstOrThrowArgs>(args?: SelectSubset<T, AiTemplateOptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__AiTemplateOptionClient<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AiTemplateOptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateOptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AiTemplateOptions
+     * const aiTemplateOptions = await prisma.aiTemplateOption.findMany()
+     * 
+     * // Get first 10 AiTemplateOptions
+     * const aiTemplateOptions = await prisma.aiTemplateOption.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const aiTemplateOptionWithIdOnly = await prisma.aiTemplateOption.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AiTemplateOptionFindManyArgs>(args?: SelectSubset<T, AiTemplateOptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AiTemplateOption.
+     * @param {AiTemplateOptionCreateArgs} args - Arguments to create a AiTemplateOption.
+     * @example
+     * // Create one AiTemplateOption
+     * const AiTemplateOption = await prisma.aiTemplateOption.create({
+     *   data: {
+     *     // ... data to create a AiTemplateOption
+     *   }
+     * })
+     * 
+     */
+    create<T extends AiTemplateOptionCreateArgs>(args: SelectSubset<T, AiTemplateOptionCreateArgs<ExtArgs>>): Prisma__AiTemplateOptionClient<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AiTemplateOptions.
+     * @param {AiTemplateOptionCreateManyArgs} args - Arguments to create many AiTemplateOptions.
+     * @example
+     * // Create many AiTemplateOptions
+     * const aiTemplateOption = await prisma.aiTemplateOption.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AiTemplateOptionCreateManyArgs>(args?: SelectSubset<T, AiTemplateOptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AiTemplateOptions and returns the data saved in the database.
+     * @param {AiTemplateOptionCreateManyAndReturnArgs} args - Arguments to create many AiTemplateOptions.
+     * @example
+     * // Create many AiTemplateOptions
+     * const aiTemplateOption = await prisma.aiTemplateOption.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AiTemplateOptions and only return the `id`
+     * const aiTemplateOptionWithIdOnly = await prisma.aiTemplateOption.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AiTemplateOptionCreateManyAndReturnArgs>(args?: SelectSubset<T, AiTemplateOptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AiTemplateOption.
+     * @param {AiTemplateOptionDeleteArgs} args - Arguments to delete one AiTemplateOption.
+     * @example
+     * // Delete one AiTemplateOption
+     * const AiTemplateOption = await prisma.aiTemplateOption.delete({
+     *   where: {
+     *     // ... filter to delete one AiTemplateOption
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AiTemplateOptionDeleteArgs>(args: SelectSubset<T, AiTemplateOptionDeleteArgs<ExtArgs>>): Prisma__AiTemplateOptionClient<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AiTemplateOption.
+     * @param {AiTemplateOptionUpdateArgs} args - Arguments to update one AiTemplateOption.
+     * @example
+     * // Update one AiTemplateOption
+     * const aiTemplateOption = await prisma.aiTemplateOption.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AiTemplateOptionUpdateArgs>(args: SelectSubset<T, AiTemplateOptionUpdateArgs<ExtArgs>>): Prisma__AiTemplateOptionClient<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AiTemplateOptions.
+     * @param {AiTemplateOptionDeleteManyArgs} args - Arguments to filter AiTemplateOptions to delete.
+     * @example
+     * // Delete a few AiTemplateOptions
+     * const { count } = await prisma.aiTemplateOption.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AiTemplateOptionDeleteManyArgs>(args?: SelectSubset<T, AiTemplateOptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiTemplateOptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateOptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AiTemplateOptions
+     * const aiTemplateOption = await prisma.aiTemplateOption.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AiTemplateOptionUpdateManyArgs>(args: SelectSubset<T, AiTemplateOptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiTemplateOptions and returns the data updated in the database.
+     * @param {AiTemplateOptionUpdateManyAndReturnArgs} args - Arguments to update many AiTemplateOptions.
+     * @example
+     * // Update many AiTemplateOptions
+     * const aiTemplateOption = await prisma.aiTemplateOption.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AiTemplateOptions and only return the `id`
+     * const aiTemplateOptionWithIdOnly = await prisma.aiTemplateOption.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AiTemplateOptionUpdateManyAndReturnArgs>(args: SelectSubset<T, AiTemplateOptionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AiTemplateOption.
+     * @param {AiTemplateOptionUpsertArgs} args - Arguments to update or create a AiTemplateOption.
+     * @example
+     * // Update or create a AiTemplateOption
+     * const aiTemplateOption = await prisma.aiTemplateOption.upsert({
+     *   create: {
+     *     // ... data to create a AiTemplateOption
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AiTemplateOption we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AiTemplateOptionUpsertArgs>(args: SelectSubset<T, AiTemplateOptionUpsertArgs<ExtArgs>>): Prisma__AiTemplateOptionClient<$Result.GetResult<Prisma.$AiTemplateOptionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AiTemplateOptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateOptionCountArgs} args - Arguments to filter AiTemplateOptions to count.
+     * @example
+     * // Count the number of AiTemplateOptions
+     * const count = await prisma.aiTemplateOption.count({
+     *   where: {
+     *     // ... the filter for the AiTemplateOptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends AiTemplateOptionCountArgs>(
+      args?: Subset<T, AiTemplateOptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AiTemplateOptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AiTemplateOption.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateOptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AiTemplateOptionAggregateArgs>(args: Subset<T, AiTemplateOptionAggregateArgs>): Prisma.PrismaPromise<GetAiTemplateOptionAggregateType<T>>
+
+    /**
+     * Group by AiTemplateOption.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiTemplateOptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AiTemplateOptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AiTemplateOptionGroupByArgs['orderBy'] }
+        : { orderBy?: AiTemplateOptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AiTemplateOptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAiTemplateOptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AiTemplateOption model
+   */
+  readonly fields: AiTemplateOptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AiTemplateOption.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AiTemplateOptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    template<T extends AiTemplateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AiTemplateDefaultArgs<ExtArgs>>): Prisma__AiTemplateClient<$Result.GetResult<Prisma.$AiTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AiTemplateOption model
+   */
+  interface AiTemplateOptionFieldRefs {
+    readonly id: FieldRef<"AiTemplateOption", 'String'>
+    readonly templateId: FieldRef<"AiTemplateOption", 'String'>
+    readonly label: FieldRef<"AiTemplateOption", 'String'>
+    readonly value: FieldRef<"AiTemplateOption", 'String'>
+    readonly createdAt: FieldRef<"AiTemplateOption", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AiTemplateOption findUnique
+   */
+  export type AiTemplateOptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplateOption to fetch.
+     */
+    where: AiTemplateOptionWhereUniqueInput
+  }
+
+  /**
+   * AiTemplateOption findUniqueOrThrow
+   */
+  export type AiTemplateOptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplateOption to fetch.
+     */
+    where: AiTemplateOptionWhereUniqueInput
+  }
+
+  /**
+   * AiTemplateOption findFirst
+   */
+  export type AiTemplateOptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplateOption to fetch.
+     */
+    where?: AiTemplateOptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiTemplateOptions to fetch.
+     */
+    orderBy?: AiTemplateOptionOrderByWithRelationInput | AiTemplateOptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiTemplateOptions.
+     */
+    cursor?: AiTemplateOptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiTemplateOptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiTemplateOptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiTemplateOptions.
+     */
+    distinct?: AiTemplateOptionScalarFieldEnum | AiTemplateOptionScalarFieldEnum[]
+  }
+
+  /**
+   * AiTemplateOption findFirstOrThrow
+   */
+  export type AiTemplateOptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplateOption to fetch.
+     */
+    where?: AiTemplateOptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiTemplateOptions to fetch.
+     */
+    orderBy?: AiTemplateOptionOrderByWithRelationInput | AiTemplateOptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiTemplateOptions.
+     */
+    cursor?: AiTemplateOptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiTemplateOptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiTemplateOptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiTemplateOptions.
+     */
+    distinct?: AiTemplateOptionScalarFieldEnum | AiTemplateOptionScalarFieldEnum[]
+  }
+
+  /**
+   * AiTemplateOption findMany
+   */
+  export type AiTemplateOptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which AiTemplateOptions to fetch.
+     */
+    where?: AiTemplateOptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiTemplateOptions to fetch.
+     */
+    orderBy?: AiTemplateOptionOrderByWithRelationInput | AiTemplateOptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AiTemplateOptions.
+     */
+    cursor?: AiTemplateOptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiTemplateOptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiTemplateOptions.
+     */
+    skip?: number
+    distinct?: AiTemplateOptionScalarFieldEnum | AiTemplateOptionScalarFieldEnum[]
+  }
+
+  /**
+   * AiTemplateOption create
+   */
+  export type AiTemplateOptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AiTemplateOption.
+     */
+    data: XOR<AiTemplateOptionCreateInput, AiTemplateOptionUncheckedCreateInput>
+  }
+
+  /**
+   * AiTemplateOption createMany
+   */
+  export type AiTemplateOptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AiTemplateOptions.
+     */
+    data: AiTemplateOptionCreateManyInput | AiTemplateOptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiTemplateOption createManyAndReturn
+   */
+  export type AiTemplateOptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * The data used to create many AiTemplateOptions.
+     */
+    data: AiTemplateOptionCreateManyInput | AiTemplateOptionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiTemplateOption update
+   */
+  export type AiTemplateOptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AiTemplateOption.
+     */
+    data: XOR<AiTemplateOptionUpdateInput, AiTemplateOptionUncheckedUpdateInput>
+    /**
+     * Choose, which AiTemplateOption to update.
+     */
+    where: AiTemplateOptionWhereUniqueInput
+  }
+
+  /**
+   * AiTemplateOption updateMany
+   */
+  export type AiTemplateOptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AiTemplateOptions.
+     */
+    data: XOR<AiTemplateOptionUpdateManyMutationInput, AiTemplateOptionUncheckedUpdateManyInput>
+    /**
+     * Filter which AiTemplateOptions to update
+     */
+    where?: AiTemplateOptionWhereInput
+    /**
+     * Limit how many AiTemplateOptions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiTemplateOption updateManyAndReturn
+   */
+  export type AiTemplateOptionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * The data used to update AiTemplateOptions.
+     */
+    data: XOR<AiTemplateOptionUpdateManyMutationInput, AiTemplateOptionUncheckedUpdateManyInput>
+    /**
+     * Filter which AiTemplateOptions to update
+     */
+    where?: AiTemplateOptionWhereInput
+    /**
+     * Limit how many AiTemplateOptions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiTemplateOption upsert
+   */
+  export type AiTemplateOptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AiTemplateOption to update in case it exists.
+     */
+    where: AiTemplateOptionWhereUniqueInput
+    /**
+     * In case the AiTemplateOption found by the `where` argument doesn't exist, create a new AiTemplateOption with this data.
+     */
+    create: XOR<AiTemplateOptionCreateInput, AiTemplateOptionUncheckedCreateInput>
+    /**
+     * In case the AiTemplateOption was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AiTemplateOptionUpdateInput, AiTemplateOptionUncheckedUpdateInput>
+  }
+
+  /**
+   * AiTemplateOption delete
+   */
+  export type AiTemplateOptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
+    /**
+     * Filter which AiTemplateOption to delete.
+     */
+    where: AiTemplateOptionWhereUniqueInput
+  }
+
+  /**
+   * AiTemplateOption deleteMany
+   */
+  export type AiTemplateOptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiTemplateOptions to delete
+     */
+    where?: AiTemplateOptionWhereInput
+    /**
+     * Limit how many AiTemplateOptions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiTemplateOption without action
+   */
+  export type AiTemplateOptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiTemplateOption
+     */
+    select?: AiTemplateOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiTemplateOption
+     */
+    omit?: AiTemplateOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiTemplateOptionInclude<ExtArgs> | null
   }
 
 
@@ -14002,6 +20011,5963 @@ export namespace Prisma {
 
 
   /**
+   * Model CompanySettings
+   */
+
+  export type AggregateCompanySettings = {
+    _count: CompanySettingsCountAggregateOutputType | null
+    _avg: CompanySettingsAvgAggregateOutputType | null
+    _sum: CompanySettingsSumAggregateOutputType | null
+    _min: CompanySettingsMinAggregateOutputType | null
+    _max: CompanySettingsMaxAggregateOutputType | null
+  }
+
+  export type CompanySettingsAvgAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+  }
+
+  export type CompanySettingsSumAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+  }
+
+  export type CompanySettingsMinAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+    emailNotifications: boolean | null
+    newMessageAlerts: boolean | null
+    dailyReports: boolean | null
+    autoReply: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CompanySettingsMaxAggregateOutputType = {
+    id: number | null
+    companyId: number | null
+    emailNotifications: boolean | null
+    newMessageAlerts: boolean | null
+    dailyReports: boolean | null
+    autoReply: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CompanySettingsCountAggregateOutputType = {
+    id: number
+    companyId: number
+    emailNotifications: number
+    newMessageAlerts: number
+    dailyReports: number
+    autoReply: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CompanySettingsAvgAggregateInputType = {
+    id?: true
+    companyId?: true
+  }
+
+  export type CompanySettingsSumAggregateInputType = {
+    id?: true
+    companyId?: true
+  }
+
+  export type CompanySettingsMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    emailNotifications?: true
+    newMessageAlerts?: true
+    dailyReports?: true
+    autoReply?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CompanySettingsMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    emailNotifications?: true
+    newMessageAlerts?: true
+    dailyReports?: true
+    autoReply?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CompanySettingsCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    emailNotifications?: true
+    newMessageAlerts?: true
+    dailyReports?: true
+    autoReply?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CompanySettingsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanySettings to aggregate.
+     */
+    where?: CompanySettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanySettings to fetch.
+     */
+    orderBy?: CompanySettingsOrderByWithRelationInput | CompanySettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompanySettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanySettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanySettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompanySettings
+    **/
+    _count?: true | CompanySettingsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CompanySettingsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CompanySettingsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompanySettingsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompanySettingsMaxAggregateInputType
+  }
+
+  export type GetCompanySettingsAggregateType<T extends CompanySettingsAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompanySettings]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompanySettings[P]>
+      : GetScalarType<T[P], AggregateCompanySettings[P]>
+  }
+
+
+
+
+  export type CompanySettingsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanySettingsWhereInput
+    orderBy?: CompanySettingsOrderByWithAggregationInput | CompanySettingsOrderByWithAggregationInput[]
+    by: CompanySettingsScalarFieldEnum[] | CompanySettingsScalarFieldEnum
+    having?: CompanySettingsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompanySettingsCountAggregateInputType | true
+    _avg?: CompanySettingsAvgAggregateInputType
+    _sum?: CompanySettingsSumAggregateInputType
+    _min?: CompanySettingsMinAggregateInputType
+    _max?: CompanySettingsMaxAggregateInputType
+  }
+
+  export type CompanySettingsGroupByOutputType = {
+    id: number
+    companyId: number
+    emailNotifications: boolean
+    newMessageAlerts: boolean
+    dailyReports: boolean
+    autoReply: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: CompanySettingsCountAggregateOutputType | null
+    _avg: CompanySettingsAvgAggregateOutputType | null
+    _sum: CompanySettingsSumAggregateOutputType | null
+    _min: CompanySettingsMinAggregateOutputType | null
+    _max: CompanySettingsMaxAggregateOutputType | null
+  }
+
+  type GetCompanySettingsGroupByPayload<T extends CompanySettingsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompanySettingsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompanySettingsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompanySettingsGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanySettingsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompanySettingsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companySettings"]>
+
+  export type CompanySettingsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companySettings"]>
+
+  export type CompanySettingsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companySettings"]>
+
+  export type CompanySettingsSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CompanySettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "emailNotifications" | "newMessageAlerts" | "dailyReports" | "autoReply" | "createdAt" | "updatedAt", ExtArgs["result"]["companySettings"]>
+  export type CompanySettingsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type CompanySettingsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type CompanySettingsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+
+  export type $CompanySettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompanySettings"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      companyId: number
+      emailNotifications: boolean
+      newMessageAlerts: boolean
+      dailyReports: boolean
+      autoReply: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["companySettings"]>
+    composites: {}
+  }
+
+  type CompanySettingsGetPayload<S extends boolean | null | undefined | CompanySettingsDefaultArgs> = $Result.GetResult<Prisma.$CompanySettingsPayload, S>
+
+  type CompanySettingsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanySettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanySettingsCountAggregateInputType | true
+    }
+
+  export interface CompanySettingsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanySettings'], meta: { name: 'CompanySettings' } }
+    /**
+     * Find zero or one CompanySettings that matches the filter.
+     * @param {CompanySettingsFindUniqueArgs} args - Arguments to find a CompanySettings
+     * @example
+     * // Get one CompanySettings
+     * const companySettings = await prisma.companySettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompanySettingsFindUniqueArgs>(args: SelectSubset<T, CompanySettingsFindUniqueArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompanySettings that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompanySettingsFindUniqueOrThrowArgs} args - Arguments to find a CompanySettings
+     * @example
+     * // Get one CompanySettings
+     * const companySettings = await prisma.companySettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompanySettingsFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanySettingsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanySettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySettingsFindFirstArgs} args - Arguments to find a CompanySettings
+     * @example
+     * // Get one CompanySettings
+     * const companySettings = await prisma.companySettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompanySettingsFindFirstArgs>(args?: SelectSubset<T, CompanySettingsFindFirstArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanySettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySettingsFindFirstOrThrowArgs} args - Arguments to find a CompanySettings
+     * @example
+     * // Get one CompanySettings
+     * const companySettings = await prisma.companySettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompanySettingsFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanySettingsFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompanySettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySettingsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompanySettings
+     * const companySettings = await prisma.companySettings.findMany()
+     * 
+     * // Get first 10 CompanySettings
+     * const companySettings = await prisma.companySettings.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const companySettingsWithIdOnly = await prisma.companySettings.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CompanySettingsFindManyArgs>(args?: SelectSubset<T, CompanySettingsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompanySettings.
+     * @param {CompanySettingsCreateArgs} args - Arguments to create a CompanySettings.
+     * @example
+     * // Create one CompanySettings
+     * const CompanySettings = await prisma.companySettings.create({
+     *   data: {
+     *     // ... data to create a CompanySettings
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompanySettingsCreateArgs>(args: SelectSubset<T, CompanySettingsCreateArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompanySettings.
+     * @param {CompanySettingsCreateManyArgs} args - Arguments to create many CompanySettings.
+     * @example
+     * // Create many CompanySettings
+     * const companySettings = await prisma.companySettings.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompanySettingsCreateManyArgs>(args?: SelectSubset<T, CompanySettingsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompanySettings and returns the data saved in the database.
+     * @param {CompanySettingsCreateManyAndReturnArgs} args - Arguments to create many CompanySettings.
+     * @example
+     * // Create many CompanySettings
+     * const companySettings = await prisma.companySettings.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompanySettings and only return the `id`
+     * const companySettingsWithIdOnly = await prisma.companySettings.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompanySettingsCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanySettingsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompanySettings.
+     * @param {CompanySettingsDeleteArgs} args - Arguments to delete one CompanySettings.
+     * @example
+     * // Delete one CompanySettings
+     * const CompanySettings = await prisma.companySettings.delete({
+     *   where: {
+     *     // ... filter to delete one CompanySettings
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompanySettingsDeleteArgs>(args: SelectSubset<T, CompanySettingsDeleteArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompanySettings.
+     * @param {CompanySettingsUpdateArgs} args - Arguments to update one CompanySettings.
+     * @example
+     * // Update one CompanySettings
+     * const companySettings = await prisma.companySettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompanySettingsUpdateArgs>(args: SelectSubset<T, CompanySettingsUpdateArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompanySettings.
+     * @param {CompanySettingsDeleteManyArgs} args - Arguments to filter CompanySettings to delete.
+     * @example
+     * // Delete a few CompanySettings
+     * const { count } = await prisma.companySettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompanySettingsDeleteManyArgs>(args?: SelectSubset<T, CompanySettingsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanySettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompanySettings
+     * const companySettings = await prisma.companySettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompanySettingsUpdateManyArgs>(args: SelectSubset<T, CompanySettingsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanySettings and returns the data updated in the database.
+     * @param {CompanySettingsUpdateManyAndReturnArgs} args - Arguments to update many CompanySettings.
+     * @example
+     * // Update many CompanySettings
+     * const companySettings = await prisma.companySettings.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompanySettings and only return the `id`
+     * const companySettingsWithIdOnly = await prisma.companySettings.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompanySettingsUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanySettingsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompanySettings.
+     * @param {CompanySettingsUpsertArgs} args - Arguments to update or create a CompanySettings.
+     * @example
+     * // Update or create a CompanySettings
+     * const companySettings = await prisma.companySettings.upsert({
+     *   create: {
+     *     // ... data to create a CompanySettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompanySettings we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompanySettingsUpsertArgs>(args: SelectSubset<T, CompanySettingsUpsertArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompanySettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySettingsCountArgs} args - Arguments to filter CompanySettings to count.
+     * @example
+     * // Count the number of CompanySettings
+     * const count = await prisma.companySettings.count({
+     *   where: {
+     *     // ... the filter for the CompanySettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompanySettingsCountArgs>(
+      args?: Subset<T, CompanySettingsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompanySettingsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompanySettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompanySettingsAggregateArgs>(args: Subset<T, CompanySettingsAggregateArgs>): Prisma.PrismaPromise<GetCompanySettingsAggregateType<T>>
+
+    /**
+     * Group by CompanySettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompanySettingsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompanySettingsGroupByArgs['orderBy'] }
+        : { orderBy?: CompanySettingsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompanySettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanySettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompanySettings model
+   */
+  readonly fields: CompanySettingsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompanySettings.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompanySettingsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CompanySettings model
+   */
+  interface CompanySettingsFieldRefs {
+    readonly id: FieldRef<"CompanySettings", 'Int'>
+    readonly companyId: FieldRef<"CompanySettings", 'Int'>
+    readonly emailNotifications: FieldRef<"CompanySettings", 'Boolean'>
+    readonly newMessageAlerts: FieldRef<"CompanySettings", 'Boolean'>
+    readonly dailyReports: FieldRef<"CompanySettings", 'Boolean'>
+    readonly autoReply: FieldRef<"CompanySettings", 'Boolean'>
+    readonly createdAt: FieldRef<"CompanySettings", 'DateTime'>
+    readonly updatedAt: FieldRef<"CompanySettings", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CompanySettings findUnique
+   */
+  export type CompanySettingsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySettings to fetch.
+     */
+    where: CompanySettingsWhereUniqueInput
+  }
+
+  /**
+   * CompanySettings findUniqueOrThrow
+   */
+  export type CompanySettingsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySettings to fetch.
+     */
+    where: CompanySettingsWhereUniqueInput
+  }
+
+  /**
+   * CompanySettings findFirst
+   */
+  export type CompanySettingsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySettings to fetch.
+     */
+    where?: CompanySettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanySettings to fetch.
+     */
+    orderBy?: CompanySettingsOrderByWithRelationInput | CompanySettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanySettings.
+     */
+    cursor?: CompanySettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanySettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanySettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanySettings.
+     */
+    distinct?: CompanySettingsScalarFieldEnum | CompanySettingsScalarFieldEnum[]
+  }
+
+  /**
+   * CompanySettings findFirstOrThrow
+   */
+  export type CompanySettingsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySettings to fetch.
+     */
+    where?: CompanySettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanySettings to fetch.
+     */
+    orderBy?: CompanySettingsOrderByWithRelationInput | CompanySettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanySettings.
+     */
+    cursor?: CompanySettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanySettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanySettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanySettings.
+     */
+    distinct?: CompanySettingsScalarFieldEnum | CompanySettingsScalarFieldEnum[]
+  }
+
+  /**
+   * CompanySettings findMany
+   */
+  export type CompanySettingsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySettings to fetch.
+     */
+    where?: CompanySettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanySettings to fetch.
+     */
+    orderBy?: CompanySettingsOrderByWithRelationInput | CompanySettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CompanySettings.
+     */
+    cursor?: CompanySettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanySettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanySettings.
+     */
+    skip?: number
+    distinct?: CompanySettingsScalarFieldEnum | CompanySettingsScalarFieldEnum[]
+  }
+
+  /**
+   * CompanySettings create
+   */
+  export type CompanySettingsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CompanySettings.
+     */
+    data: XOR<CompanySettingsCreateInput, CompanySettingsUncheckedCreateInput>
+  }
+
+  /**
+   * CompanySettings createMany
+   */
+  export type CompanySettingsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CompanySettings.
+     */
+    data: CompanySettingsCreateManyInput | CompanySettingsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CompanySettings createManyAndReturn
+   */
+  export type CompanySettingsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * The data used to create many CompanySettings.
+     */
+    data: CompanySettingsCreateManyInput | CompanySettingsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanySettings update
+   */
+  export type CompanySettingsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CompanySettings.
+     */
+    data: XOR<CompanySettingsUpdateInput, CompanySettingsUncheckedUpdateInput>
+    /**
+     * Choose, which CompanySettings to update.
+     */
+    where: CompanySettingsWhereUniqueInput
+  }
+
+  /**
+   * CompanySettings updateMany
+   */
+  export type CompanySettingsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CompanySettings.
+     */
+    data: XOR<CompanySettingsUpdateManyMutationInput, CompanySettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanySettings to update
+     */
+    where?: CompanySettingsWhereInput
+    /**
+     * Limit how many CompanySettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanySettings updateManyAndReturn
+   */
+  export type CompanySettingsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * The data used to update CompanySettings.
+     */
+    data: XOR<CompanySettingsUpdateManyMutationInput, CompanySettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanySettings to update
+     */
+    where?: CompanySettingsWhereInput
+    /**
+     * Limit how many CompanySettings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanySettings upsert
+   */
+  export type CompanySettingsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CompanySettings to update in case it exists.
+     */
+    where: CompanySettingsWhereUniqueInput
+    /**
+     * In case the CompanySettings found by the `where` argument doesn't exist, create a new CompanySettings with this data.
+     */
+    create: XOR<CompanySettingsCreateInput, CompanySettingsUncheckedCreateInput>
+    /**
+     * In case the CompanySettings was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompanySettingsUpdateInput, CompanySettingsUncheckedUpdateInput>
+  }
+
+  /**
+   * CompanySettings delete
+   */
+  export type CompanySettingsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+    /**
+     * Filter which CompanySettings to delete.
+     */
+    where: CompanySettingsWhereUniqueInput
+  }
+
+  /**
+   * CompanySettings deleteMany
+   */
+  export type CompanySettingsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanySettings to delete
+     */
+    where?: CompanySettingsWhereInput
+    /**
+     * Limit how many CompanySettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanySettings without action
+   */
+  export type CompanySettingsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySettings
+     */
+    select?: CompanySettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySettings
+     */
+    omit?: CompanySettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySettingsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CompanyWhatsappNumber
+   */
+
+  export type AggregateCompanyWhatsappNumber = {
+    _count: CompanyWhatsappNumberCountAggregateOutputType | null
+    _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
+    _sum: CompanyWhatsappNumberSumAggregateOutputType | null
+    _min: CompanyWhatsappNumberMinAggregateOutputType | null
+    _max: CompanyWhatsappNumberMaxAggregateOutputType | null
+  }
+
+  export type CompanyWhatsappNumberAvgAggregateOutputType = {
+    companyId: number | null
+    messagesThisMonth: number | null
+  }
+
+  export type CompanyWhatsappNumberSumAggregateOutputType = {
+    companyId: number | null
+    messagesThisMonth: number | null
+  }
+
+  export type CompanyWhatsappNumberMinAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    displayName: string | null
+    phoneNumber: string | null
+    isConnected: boolean | null
+    messagesThisMonth: number | null
+    lastSyncedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CompanyWhatsappNumberMaxAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    displayName: string | null
+    phoneNumber: string | null
+    isConnected: boolean | null
+    messagesThisMonth: number | null
+    lastSyncedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CompanyWhatsappNumberCountAggregateOutputType = {
+    id: number
+    companyId: number
+    displayName: number
+    phoneNumber: number
+    isConnected: number
+    messagesThisMonth: number
+    lastSyncedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CompanyWhatsappNumberAvgAggregateInputType = {
+    companyId?: true
+    messagesThisMonth?: true
+  }
+
+  export type CompanyWhatsappNumberSumAggregateInputType = {
+    companyId?: true
+    messagesThisMonth?: true
+  }
+
+  export type CompanyWhatsappNumberMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    messagesThisMonth?: true
+    lastSyncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CompanyWhatsappNumberMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    messagesThisMonth?: true
+    lastSyncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CompanyWhatsappNumberCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    messagesThisMonth?: true
+    lastSyncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CompanyWhatsappNumberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyWhatsappNumber to aggregate.
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyWhatsappNumbers to fetch.
+     */
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyWhatsappNumbers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompanyWhatsappNumbers
+    **/
+    _count?: true | CompanyWhatsappNumberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CompanyWhatsappNumberAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CompanyWhatsappNumberSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompanyWhatsappNumberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompanyWhatsappNumberMaxAggregateInputType
+  }
+
+  export type GetCompanyWhatsappNumberAggregateType<T extends CompanyWhatsappNumberAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompanyWhatsappNumber]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompanyWhatsappNumber[P]>
+      : GetScalarType<T[P], AggregateCompanyWhatsappNumber[P]>
+  }
+
+
+
+
+  export type CompanyWhatsappNumberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyWhatsappNumberWhereInput
+    orderBy?: CompanyWhatsappNumberOrderByWithAggregationInput | CompanyWhatsappNumberOrderByWithAggregationInput[]
+    by: CompanyWhatsappNumberScalarFieldEnum[] | CompanyWhatsappNumberScalarFieldEnum
+    having?: CompanyWhatsappNumberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompanyWhatsappNumberCountAggregateInputType | true
+    _avg?: CompanyWhatsappNumberAvgAggregateInputType
+    _sum?: CompanyWhatsappNumberSumAggregateInputType
+    _min?: CompanyWhatsappNumberMinAggregateInputType
+    _max?: CompanyWhatsappNumberMaxAggregateInputType
+  }
+
+  export type CompanyWhatsappNumberGroupByOutputType = {
+    id: string
+    companyId: number
+    displayName: string
+    phoneNumber: string
+    isConnected: boolean
+    messagesThisMonth: number
+    lastSyncedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CompanyWhatsappNumberCountAggregateOutputType | null
+    _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
+    _sum: CompanyWhatsappNumberSumAggregateOutputType | null
+    _min: CompanyWhatsappNumberMinAggregateOutputType | null
+    _max: CompanyWhatsappNumberMaxAggregateOutputType | null
+  }
+
+  type GetCompanyWhatsappNumberGroupByPayload<T extends CompanyWhatsappNumberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompanyWhatsappNumberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompanyWhatsappNumberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompanyWhatsappNumberGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanyWhatsappNumberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompanyWhatsappNumberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    messagesThisMonth?: boolean
+    lastSyncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyWhatsappNumber"]>
+
+  export type CompanyWhatsappNumberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    messagesThisMonth?: boolean
+    lastSyncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyWhatsappNumber"]>
+
+  export type CompanyWhatsappNumberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    messagesThisMonth?: boolean
+    lastSyncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyWhatsappNumber"]>
+
+  export type CompanyWhatsappNumberSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    messagesThisMonth?: boolean
+    lastSyncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CompanyWhatsappNumberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "displayName" | "phoneNumber" | "isConnected" | "messagesThisMonth" | "lastSyncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["companyWhatsappNumber"]>
+  export type CompanyWhatsappNumberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type CompanyWhatsappNumberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type CompanyWhatsappNumberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+
+  export type $CompanyWhatsappNumberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompanyWhatsappNumber"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: number
+      displayName: string
+      phoneNumber: string
+      isConnected: boolean
+      messagesThisMonth: number
+      lastSyncedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["companyWhatsappNumber"]>
+    composites: {}
+  }
+
+  type CompanyWhatsappNumberGetPayload<S extends boolean | null | undefined | CompanyWhatsappNumberDefaultArgs> = $Result.GetResult<Prisma.$CompanyWhatsappNumberPayload, S>
+
+  type CompanyWhatsappNumberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanyWhatsappNumberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanyWhatsappNumberCountAggregateInputType | true
+    }
+
+  export interface CompanyWhatsappNumberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyWhatsappNumber'], meta: { name: 'CompanyWhatsappNumber' } }
+    /**
+     * Find zero or one CompanyWhatsappNumber that matches the filter.
+     * @param {CompanyWhatsappNumberFindUniqueArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @example
+     * // Get one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompanyWhatsappNumberFindUniqueArgs>(args: SelectSubset<T, CompanyWhatsappNumberFindUniqueArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompanyWhatsappNumber that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompanyWhatsappNumberFindUniqueOrThrowArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @example
+     * // Get one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompanyWhatsappNumberFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyWhatsappNumber that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberFindFirstArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @example
+     * // Get one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompanyWhatsappNumberFindFirstArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindFirstArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyWhatsappNumber that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberFindFirstOrThrowArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @example
+     * // Get one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompanyWhatsappNumberFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompanyWhatsappNumbers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompanyWhatsappNumbers
+     * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany()
+     * 
+     * // Get first 10 CompanyWhatsappNumbers
+     * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CompanyWhatsappNumberFindManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompanyWhatsappNumber.
+     * @param {CompanyWhatsappNumberCreateArgs} args - Arguments to create a CompanyWhatsappNumber.
+     * @example
+     * // Create one CompanyWhatsappNumber
+     * const CompanyWhatsappNumber = await prisma.companyWhatsappNumber.create({
+     *   data: {
+     *     // ... data to create a CompanyWhatsappNumber
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompanyWhatsappNumberCreateArgs>(args: SelectSubset<T, CompanyWhatsappNumberCreateArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompanyWhatsappNumbers.
+     * @param {CompanyWhatsappNumberCreateManyArgs} args - Arguments to create many CompanyWhatsappNumbers.
+     * @example
+     * // Create many CompanyWhatsappNumbers
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompanyWhatsappNumberCreateManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompanyWhatsappNumbers and returns the data saved in the database.
+     * @param {CompanyWhatsappNumberCreateManyAndReturnArgs} args - Arguments to create many CompanyWhatsappNumbers.
+     * @example
+     * // Create many CompanyWhatsappNumbers
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompanyWhatsappNumbers and only return the `id`
+     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompanyWhatsappNumberCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompanyWhatsappNumber.
+     * @param {CompanyWhatsappNumberDeleteArgs} args - Arguments to delete one CompanyWhatsappNumber.
+     * @example
+     * // Delete one CompanyWhatsappNumber
+     * const CompanyWhatsappNumber = await prisma.companyWhatsappNumber.delete({
+     *   where: {
+     *     // ... filter to delete one CompanyWhatsappNumber
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompanyWhatsappNumberDeleteArgs>(args: SelectSubset<T, CompanyWhatsappNumberDeleteArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompanyWhatsappNumber.
+     * @param {CompanyWhatsappNumberUpdateArgs} args - Arguments to update one CompanyWhatsappNumber.
+     * @example
+     * // Update one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompanyWhatsappNumberUpdateArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompanyWhatsappNumbers.
+     * @param {CompanyWhatsappNumberDeleteManyArgs} args - Arguments to filter CompanyWhatsappNumbers to delete.
+     * @example
+     * // Delete a few CompanyWhatsappNumbers
+     * const { count } = await prisma.companyWhatsappNumber.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompanyWhatsappNumberDeleteManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyWhatsappNumbers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompanyWhatsappNumbers
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompanyWhatsappNumberUpdateManyArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyWhatsappNumbers and returns the data updated in the database.
+     * @param {CompanyWhatsappNumberUpdateManyAndReturnArgs} args - Arguments to update many CompanyWhatsappNumbers.
+     * @example
+     * // Update many CompanyWhatsappNumbers
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompanyWhatsappNumbers and only return the `id`
+     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompanyWhatsappNumberUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompanyWhatsappNumber.
+     * @param {CompanyWhatsappNumberUpsertArgs} args - Arguments to update or create a CompanyWhatsappNumber.
+     * @example
+     * // Update or create a CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.upsert({
+     *   create: {
+     *     // ... data to create a CompanyWhatsappNumber
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompanyWhatsappNumber we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompanyWhatsappNumberUpsertArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpsertArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompanyWhatsappNumbers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberCountArgs} args - Arguments to filter CompanyWhatsappNumbers to count.
+     * @example
+     * // Count the number of CompanyWhatsappNumbers
+     * const count = await prisma.companyWhatsappNumber.count({
+     *   where: {
+     *     // ... the filter for the CompanyWhatsappNumbers we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompanyWhatsappNumberCountArgs>(
+      args?: Subset<T, CompanyWhatsappNumberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompanyWhatsappNumberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompanyWhatsappNumber.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompanyWhatsappNumberAggregateArgs>(args: Subset<T, CompanyWhatsappNumberAggregateArgs>): Prisma.PrismaPromise<GetCompanyWhatsappNumberAggregateType<T>>
+
+    /**
+     * Group by CompanyWhatsappNumber.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompanyWhatsappNumberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompanyWhatsappNumberGroupByArgs['orderBy'] }
+        : { orderBy?: CompanyWhatsappNumberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompanyWhatsappNumberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyWhatsappNumberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompanyWhatsappNumber model
+   */
+  readonly fields: CompanyWhatsappNumberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompanyWhatsappNumber.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompanyWhatsappNumberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CompanyWhatsappNumber model
+   */
+  interface CompanyWhatsappNumberFieldRefs {
+    readonly id: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly companyId: FieldRef<"CompanyWhatsappNumber", 'Int'>
+    readonly displayName: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly phoneNumber: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly isConnected: FieldRef<"CompanyWhatsappNumber", 'Boolean'>
+    readonly messagesThisMonth: FieldRef<"CompanyWhatsappNumber", 'Int'>
+    readonly lastSyncedAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
+    readonly createdAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
+    readonly updatedAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CompanyWhatsappNumber findUnique
+   */
+  export type CompanyWhatsappNumberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumber to fetch.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+  }
+
+  /**
+   * CompanyWhatsappNumber findUniqueOrThrow
+   */
+  export type CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumber to fetch.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+  }
+
+  /**
+   * CompanyWhatsappNumber findFirst
+   */
+  export type CompanyWhatsappNumberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumber to fetch.
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyWhatsappNumbers to fetch.
+     */
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyWhatsappNumbers.
+     */
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyWhatsappNumbers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyWhatsappNumbers.
+     */
+    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyWhatsappNumber findFirstOrThrow
+   */
+  export type CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumber to fetch.
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyWhatsappNumbers to fetch.
+     */
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyWhatsappNumbers.
+     */
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyWhatsappNumbers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyWhatsappNumbers.
+     */
+    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyWhatsappNumber findMany
+   */
+  export type CompanyWhatsappNumberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumbers to fetch.
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyWhatsappNumbers to fetch.
+     */
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CompanyWhatsappNumbers.
+     */
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyWhatsappNumbers.
+     */
+    skip?: number
+    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyWhatsappNumber create
+   */
+  export type CompanyWhatsappNumberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CompanyWhatsappNumber.
+     */
+    data: XOR<CompanyWhatsappNumberCreateInput, CompanyWhatsappNumberUncheckedCreateInput>
+  }
+
+  /**
+   * CompanyWhatsappNumber createMany
+   */
+  export type CompanyWhatsappNumberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CompanyWhatsappNumbers.
+     */
+    data: CompanyWhatsappNumberCreateManyInput | CompanyWhatsappNumberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CompanyWhatsappNumber createManyAndReturn
+   */
+  export type CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * The data used to create many CompanyWhatsappNumbers.
+     */
+    data: CompanyWhatsappNumberCreateManyInput | CompanyWhatsappNumberCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyWhatsappNumber update
+   */
+  export type CompanyWhatsappNumberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CompanyWhatsappNumber.
+     */
+    data: XOR<CompanyWhatsappNumberUpdateInput, CompanyWhatsappNumberUncheckedUpdateInput>
+    /**
+     * Choose, which CompanyWhatsappNumber to update.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+  }
+
+  /**
+   * CompanyWhatsappNumber updateMany
+   */
+  export type CompanyWhatsappNumberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CompanyWhatsappNumbers.
+     */
+    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyWhatsappNumbers to update
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * Limit how many CompanyWhatsappNumbers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyWhatsappNumber updateManyAndReturn
+   */
+  export type CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * The data used to update CompanyWhatsappNumbers.
+     */
+    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyWhatsappNumbers to update
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * Limit how many CompanyWhatsappNumbers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyWhatsappNumber upsert
+   */
+  export type CompanyWhatsappNumberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CompanyWhatsappNumber to update in case it exists.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * In case the CompanyWhatsappNumber found by the `where` argument doesn't exist, create a new CompanyWhatsappNumber with this data.
+     */
+    create: XOR<CompanyWhatsappNumberCreateInput, CompanyWhatsappNumberUncheckedCreateInput>
+    /**
+     * In case the CompanyWhatsappNumber was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompanyWhatsappNumberUpdateInput, CompanyWhatsappNumberUncheckedUpdateInput>
+  }
+
+  /**
+   * CompanyWhatsappNumber delete
+   */
+  export type CompanyWhatsappNumberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter which CompanyWhatsappNumber to delete.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+  }
+
+  /**
+   * CompanyWhatsappNumber deleteMany
+   */
+  export type CompanyWhatsappNumberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyWhatsappNumbers to delete
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * Limit how many CompanyWhatsappNumbers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyWhatsappNumber without action
+   */
+  export type CompanyWhatsappNumberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InboxCustomer
+   */
+
+  export type AggregateInboxCustomer = {
+    _count: InboxCustomerCountAggregateOutputType | null
+    _avg: InboxCustomerAvgAggregateOutputType | null
+    _sum: InboxCustomerSumAggregateOutputType | null
+    _min: InboxCustomerMinAggregateOutputType | null
+    _max: InboxCustomerMaxAggregateOutputType | null
+  }
+
+  export type InboxCustomerAvgAggregateOutputType = {
+    companyId: number | null
+  }
+
+  export type InboxCustomerSumAggregateOutputType = {
+    companyId: number | null
+  }
+
+  export type InboxCustomerMinAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    name: string | null
+    phone: string | null
+    email: string | null
+    address: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InboxCustomerMaxAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    name: string | null
+    phone: string | null
+    email: string | null
+    address: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InboxCustomerCountAggregateOutputType = {
+    id: number
+    companyId: number
+    name: number
+    phone: number
+    email: number
+    address: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type InboxCustomerAvgAggregateInputType = {
+    companyId?: true
+  }
+
+  export type InboxCustomerSumAggregateInputType = {
+    companyId?: true
+  }
+
+  export type InboxCustomerMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    name?: true
+    phone?: true
+    email?: true
+    address?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InboxCustomerMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    name?: true
+    phone?: true
+    email?: true
+    address?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InboxCustomerCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    name?: true
+    phone?: true
+    email?: true
+    address?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type InboxCustomerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InboxCustomer to aggregate.
+     */
+    where?: InboxCustomerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxCustomers to fetch.
+     */
+    orderBy?: InboxCustomerOrderByWithRelationInput | InboxCustomerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InboxCustomerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxCustomers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxCustomers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InboxCustomers
+    **/
+    _count?: true | InboxCustomerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InboxCustomerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InboxCustomerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InboxCustomerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InboxCustomerMaxAggregateInputType
+  }
+
+  export type GetInboxCustomerAggregateType<T extends InboxCustomerAggregateArgs> = {
+        [P in keyof T & keyof AggregateInboxCustomer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInboxCustomer[P]>
+      : GetScalarType<T[P], AggregateInboxCustomer[P]>
+  }
+
+
+
+
+  export type InboxCustomerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxCustomerWhereInput
+    orderBy?: InboxCustomerOrderByWithAggregationInput | InboxCustomerOrderByWithAggregationInput[]
+    by: InboxCustomerScalarFieldEnum[] | InboxCustomerScalarFieldEnum
+    having?: InboxCustomerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InboxCustomerCountAggregateInputType | true
+    _avg?: InboxCustomerAvgAggregateInputType
+    _sum?: InboxCustomerSumAggregateInputType
+    _min?: InboxCustomerMinAggregateInputType
+    _max?: InboxCustomerMaxAggregateInputType
+  }
+
+  export type InboxCustomerGroupByOutputType = {
+    id: string
+    companyId: number
+    name: string
+    phone: string | null
+    email: string | null
+    address: string | null
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: InboxCustomerCountAggregateOutputType | null
+    _avg: InboxCustomerAvgAggregateOutputType | null
+    _sum: InboxCustomerSumAggregateOutputType | null
+    _min: InboxCustomerMinAggregateOutputType | null
+    _max: InboxCustomerMaxAggregateOutputType | null
+  }
+
+  type GetInboxCustomerGroupByPayload<T extends InboxCustomerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InboxCustomerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InboxCustomerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InboxCustomerGroupByOutputType[P]>
+            : GetScalarType<T[P], InboxCustomerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InboxCustomerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    name?: boolean
+    phone?: boolean
+    email?: boolean
+    address?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    conversations?: boolean | InboxCustomer$conversationsArgs<ExtArgs>
+    _count?: boolean | InboxCustomerCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxCustomer"]>
+
+  export type InboxCustomerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    name?: boolean
+    phone?: boolean
+    email?: boolean
+    address?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxCustomer"]>
+
+  export type InboxCustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    name?: boolean
+    phone?: boolean
+    email?: boolean
+    address?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxCustomer"]>
+
+  export type InboxCustomerSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    name?: boolean
+    phone?: boolean
+    email?: boolean
+    address?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type InboxCustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "name" | "phone" | "email" | "address" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["inboxCustomer"]>
+  export type InboxCustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    conversations?: boolean | InboxCustomer$conversationsArgs<ExtArgs>
+    _count?: boolean | InboxCustomerCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type InboxCustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type InboxCustomerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+
+  export type $InboxCustomerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InboxCustomer"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      conversations: Prisma.$InboxConversationPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: number
+      name: string
+      phone: string | null
+      email: string | null
+      address: string | null
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["inboxCustomer"]>
+    composites: {}
+  }
+
+  type InboxCustomerGetPayload<S extends boolean | null | undefined | InboxCustomerDefaultArgs> = $Result.GetResult<Prisma.$InboxCustomerPayload, S>
+
+  type InboxCustomerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InboxCustomerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InboxCustomerCountAggregateInputType | true
+    }
+
+  export interface InboxCustomerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InboxCustomer'], meta: { name: 'InboxCustomer' } }
+    /**
+     * Find zero or one InboxCustomer that matches the filter.
+     * @param {InboxCustomerFindUniqueArgs} args - Arguments to find a InboxCustomer
+     * @example
+     * // Get one InboxCustomer
+     * const inboxCustomer = await prisma.inboxCustomer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InboxCustomerFindUniqueArgs>(args: SelectSubset<T, InboxCustomerFindUniqueArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InboxCustomer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InboxCustomerFindUniqueOrThrowArgs} args - Arguments to find a InboxCustomer
+     * @example
+     * // Get one InboxCustomer
+     * const inboxCustomer = await prisma.inboxCustomer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InboxCustomerFindUniqueOrThrowArgs>(args: SelectSubset<T, InboxCustomerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InboxCustomer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxCustomerFindFirstArgs} args - Arguments to find a InboxCustomer
+     * @example
+     * // Get one InboxCustomer
+     * const inboxCustomer = await prisma.inboxCustomer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InboxCustomerFindFirstArgs>(args?: SelectSubset<T, InboxCustomerFindFirstArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InboxCustomer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxCustomerFindFirstOrThrowArgs} args - Arguments to find a InboxCustomer
+     * @example
+     * // Get one InboxCustomer
+     * const inboxCustomer = await prisma.inboxCustomer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InboxCustomerFindFirstOrThrowArgs>(args?: SelectSubset<T, InboxCustomerFindFirstOrThrowArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InboxCustomers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxCustomerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InboxCustomers
+     * const inboxCustomers = await prisma.inboxCustomer.findMany()
+     * 
+     * // Get first 10 InboxCustomers
+     * const inboxCustomers = await prisma.inboxCustomer.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const inboxCustomerWithIdOnly = await prisma.inboxCustomer.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InboxCustomerFindManyArgs>(args?: SelectSubset<T, InboxCustomerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InboxCustomer.
+     * @param {InboxCustomerCreateArgs} args - Arguments to create a InboxCustomer.
+     * @example
+     * // Create one InboxCustomer
+     * const InboxCustomer = await prisma.inboxCustomer.create({
+     *   data: {
+     *     // ... data to create a InboxCustomer
+     *   }
+     * })
+     * 
+     */
+    create<T extends InboxCustomerCreateArgs>(args: SelectSubset<T, InboxCustomerCreateArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InboxCustomers.
+     * @param {InboxCustomerCreateManyArgs} args - Arguments to create many InboxCustomers.
+     * @example
+     * // Create many InboxCustomers
+     * const inboxCustomer = await prisma.inboxCustomer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InboxCustomerCreateManyArgs>(args?: SelectSubset<T, InboxCustomerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InboxCustomers and returns the data saved in the database.
+     * @param {InboxCustomerCreateManyAndReturnArgs} args - Arguments to create many InboxCustomers.
+     * @example
+     * // Create many InboxCustomers
+     * const inboxCustomer = await prisma.inboxCustomer.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InboxCustomers and only return the `id`
+     * const inboxCustomerWithIdOnly = await prisma.inboxCustomer.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InboxCustomerCreateManyAndReturnArgs>(args?: SelectSubset<T, InboxCustomerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InboxCustomer.
+     * @param {InboxCustomerDeleteArgs} args - Arguments to delete one InboxCustomer.
+     * @example
+     * // Delete one InboxCustomer
+     * const InboxCustomer = await prisma.inboxCustomer.delete({
+     *   where: {
+     *     // ... filter to delete one InboxCustomer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InboxCustomerDeleteArgs>(args: SelectSubset<T, InboxCustomerDeleteArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InboxCustomer.
+     * @param {InboxCustomerUpdateArgs} args - Arguments to update one InboxCustomer.
+     * @example
+     * // Update one InboxCustomer
+     * const inboxCustomer = await prisma.inboxCustomer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InboxCustomerUpdateArgs>(args: SelectSubset<T, InboxCustomerUpdateArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InboxCustomers.
+     * @param {InboxCustomerDeleteManyArgs} args - Arguments to filter InboxCustomers to delete.
+     * @example
+     * // Delete a few InboxCustomers
+     * const { count } = await prisma.inboxCustomer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InboxCustomerDeleteManyArgs>(args?: SelectSubset<T, InboxCustomerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InboxCustomers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxCustomerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InboxCustomers
+     * const inboxCustomer = await prisma.inboxCustomer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InboxCustomerUpdateManyArgs>(args: SelectSubset<T, InboxCustomerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InboxCustomers and returns the data updated in the database.
+     * @param {InboxCustomerUpdateManyAndReturnArgs} args - Arguments to update many InboxCustomers.
+     * @example
+     * // Update many InboxCustomers
+     * const inboxCustomer = await prisma.inboxCustomer.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InboxCustomers and only return the `id`
+     * const inboxCustomerWithIdOnly = await prisma.inboxCustomer.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InboxCustomerUpdateManyAndReturnArgs>(args: SelectSubset<T, InboxCustomerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InboxCustomer.
+     * @param {InboxCustomerUpsertArgs} args - Arguments to update or create a InboxCustomer.
+     * @example
+     * // Update or create a InboxCustomer
+     * const inboxCustomer = await prisma.inboxCustomer.upsert({
+     *   create: {
+     *     // ... data to create a InboxCustomer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InboxCustomer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InboxCustomerUpsertArgs>(args: SelectSubset<T, InboxCustomerUpsertArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InboxCustomers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxCustomerCountArgs} args - Arguments to filter InboxCustomers to count.
+     * @example
+     * // Count the number of InboxCustomers
+     * const count = await prisma.inboxCustomer.count({
+     *   where: {
+     *     // ... the filter for the InboxCustomers we want to count
+     *   }
+     * })
+    **/
+    count<T extends InboxCustomerCountArgs>(
+      args?: Subset<T, InboxCustomerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InboxCustomerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InboxCustomer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxCustomerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InboxCustomerAggregateArgs>(args: Subset<T, InboxCustomerAggregateArgs>): Prisma.PrismaPromise<GetInboxCustomerAggregateType<T>>
+
+    /**
+     * Group by InboxCustomer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxCustomerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InboxCustomerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InboxCustomerGroupByArgs['orderBy'] }
+        : { orderBy?: InboxCustomerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InboxCustomerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInboxCustomerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InboxCustomer model
+   */
+  readonly fields: InboxCustomerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InboxCustomer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InboxCustomerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    conversations<T extends InboxCustomer$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, InboxCustomer$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InboxCustomer model
+   */
+  interface InboxCustomerFieldRefs {
+    readonly id: FieldRef<"InboxCustomer", 'String'>
+    readonly companyId: FieldRef<"InboxCustomer", 'Int'>
+    readonly name: FieldRef<"InboxCustomer", 'String'>
+    readonly phone: FieldRef<"InboxCustomer", 'String'>
+    readonly email: FieldRef<"InboxCustomer", 'String'>
+    readonly address: FieldRef<"InboxCustomer", 'String'>
+    readonly notes: FieldRef<"InboxCustomer", 'String'>
+    readonly createdAt: FieldRef<"InboxCustomer", 'DateTime'>
+    readonly updatedAt: FieldRef<"InboxCustomer", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InboxCustomer findUnique
+   */
+  export type InboxCustomerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxCustomer to fetch.
+     */
+    where: InboxCustomerWhereUniqueInput
+  }
+
+  /**
+   * InboxCustomer findUniqueOrThrow
+   */
+  export type InboxCustomerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxCustomer to fetch.
+     */
+    where: InboxCustomerWhereUniqueInput
+  }
+
+  /**
+   * InboxCustomer findFirst
+   */
+  export type InboxCustomerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxCustomer to fetch.
+     */
+    where?: InboxCustomerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxCustomers to fetch.
+     */
+    orderBy?: InboxCustomerOrderByWithRelationInput | InboxCustomerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InboxCustomers.
+     */
+    cursor?: InboxCustomerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxCustomers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxCustomers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InboxCustomers.
+     */
+    distinct?: InboxCustomerScalarFieldEnum | InboxCustomerScalarFieldEnum[]
+  }
+
+  /**
+   * InboxCustomer findFirstOrThrow
+   */
+  export type InboxCustomerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxCustomer to fetch.
+     */
+    where?: InboxCustomerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxCustomers to fetch.
+     */
+    orderBy?: InboxCustomerOrderByWithRelationInput | InboxCustomerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InboxCustomers.
+     */
+    cursor?: InboxCustomerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxCustomers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxCustomers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InboxCustomers.
+     */
+    distinct?: InboxCustomerScalarFieldEnum | InboxCustomerScalarFieldEnum[]
+  }
+
+  /**
+   * InboxCustomer findMany
+   */
+  export type InboxCustomerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxCustomers to fetch.
+     */
+    where?: InboxCustomerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxCustomers to fetch.
+     */
+    orderBy?: InboxCustomerOrderByWithRelationInput | InboxCustomerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InboxCustomers.
+     */
+    cursor?: InboxCustomerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxCustomers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxCustomers.
+     */
+    skip?: number
+    distinct?: InboxCustomerScalarFieldEnum | InboxCustomerScalarFieldEnum[]
+  }
+
+  /**
+   * InboxCustomer create
+   */
+  export type InboxCustomerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InboxCustomer.
+     */
+    data: XOR<InboxCustomerCreateInput, InboxCustomerUncheckedCreateInput>
+  }
+
+  /**
+   * InboxCustomer createMany
+   */
+  export type InboxCustomerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InboxCustomers.
+     */
+    data: InboxCustomerCreateManyInput | InboxCustomerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InboxCustomer createManyAndReturn
+   */
+  export type InboxCustomerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * The data used to create many InboxCustomers.
+     */
+    data: InboxCustomerCreateManyInput | InboxCustomerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InboxCustomer update
+   */
+  export type InboxCustomerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InboxCustomer.
+     */
+    data: XOR<InboxCustomerUpdateInput, InboxCustomerUncheckedUpdateInput>
+    /**
+     * Choose, which InboxCustomer to update.
+     */
+    where: InboxCustomerWhereUniqueInput
+  }
+
+  /**
+   * InboxCustomer updateMany
+   */
+  export type InboxCustomerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InboxCustomers.
+     */
+    data: XOR<InboxCustomerUpdateManyMutationInput, InboxCustomerUncheckedUpdateManyInput>
+    /**
+     * Filter which InboxCustomers to update
+     */
+    where?: InboxCustomerWhereInput
+    /**
+     * Limit how many InboxCustomers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InboxCustomer updateManyAndReturn
+   */
+  export type InboxCustomerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * The data used to update InboxCustomers.
+     */
+    data: XOR<InboxCustomerUpdateManyMutationInput, InboxCustomerUncheckedUpdateManyInput>
+    /**
+     * Filter which InboxCustomers to update
+     */
+    where?: InboxCustomerWhereInput
+    /**
+     * Limit how many InboxCustomers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InboxCustomer upsert
+   */
+  export type InboxCustomerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InboxCustomer to update in case it exists.
+     */
+    where: InboxCustomerWhereUniqueInput
+    /**
+     * In case the InboxCustomer found by the `where` argument doesn't exist, create a new InboxCustomer with this data.
+     */
+    create: XOR<InboxCustomerCreateInput, InboxCustomerUncheckedCreateInput>
+    /**
+     * In case the InboxCustomer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InboxCustomerUpdateInput, InboxCustomerUncheckedUpdateInput>
+  }
+
+  /**
+   * InboxCustomer delete
+   */
+  export type InboxCustomerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+    /**
+     * Filter which InboxCustomer to delete.
+     */
+    where: InboxCustomerWhereUniqueInput
+  }
+
+  /**
+   * InboxCustomer deleteMany
+   */
+  export type InboxCustomerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InboxCustomers to delete
+     */
+    where?: InboxCustomerWhereInput
+    /**
+     * Limit how many InboxCustomers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InboxCustomer.conversations
+   */
+  export type InboxCustomer$conversationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    where?: InboxConversationWhereInput
+    orderBy?: InboxConversationOrderByWithRelationInput | InboxConversationOrderByWithRelationInput[]
+    cursor?: InboxConversationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InboxConversationScalarFieldEnum | InboxConversationScalarFieldEnum[]
+  }
+
+  /**
+   * InboxCustomer without action
+   */
+  export type InboxCustomerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxCustomer
+     */
+    select?: InboxCustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxCustomer
+     */
+    omit?: InboxCustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxCustomerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InboxConversation
+   */
+
+  export type AggregateInboxConversation = {
+    _count: InboxConversationCountAggregateOutputType | null
+    _avg: InboxConversationAvgAggregateOutputType | null
+    _sum: InboxConversationSumAggregateOutputType | null
+    _min: InboxConversationMinAggregateOutputType | null
+    _max: InboxConversationMaxAggregateOutputType | null
+  }
+
+  export type InboxConversationAvgAggregateOutputType = {
+    companyId: number | null
+    unreadCount: number | null
+    satisfactionScore: number | null
+    assignedToId: number | null
+  }
+
+  export type InboxConversationSumAggregateOutputType = {
+    companyId: number | null
+    unreadCount: number | null
+    satisfactionScore: number | null
+    assignedToId: number | null
+  }
+
+  export type InboxConversationMinAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    customerId: string | null
+    subject: string | null
+    lastMessagePreview: string | null
+    lastMessageSentAt: Date | null
+    unreadCount: number | null
+    priority: $Enums.InboxConversationPriority | null
+    satisfactionScore: number | null
+    assignedToId: number | null
+    isArchived: boolean | null
+    archivedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InboxConversationMaxAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    customerId: string | null
+    subject: string | null
+    lastMessagePreview: string | null
+    lastMessageSentAt: Date | null
+    unreadCount: number | null
+    priority: $Enums.InboxConversationPriority | null
+    satisfactionScore: number | null
+    assignedToId: number | null
+    isArchived: boolean | null
+    archivedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InboxConversationCountAggregateOutputType = {
+    id: number
+    companyId: number
+    customerId: number
+    subject: number
+    lastMessagePreview: number
+    lastMessageSentAt: number
+    unreadCount: number
+    priority: number
+    satisfactionScore: number
+    tags: number
+    assignedToId: number
+    isArchived: number
+    archivedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type InboxConversationAvgAggregateInputType = {
+    companyId?: true
+    unreadCount?: true
+    satisfactionScore?: true
+    assignedToId?: true
+  }
+
+  export type InboxConversationSumAggregateInputType = {
+    companyId?: true
+    unreadCount?: true
+    satisfactionScore?: true
+    assignedToId?: true
+  }
+
+  export type InboxConversationMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    customerId?: true
+    subject?: true
+    lastMessagePreview?: true
+    lastMessageSentAt?: true
+    unreadCount?: true
+    priority?: true
+    satisfactionScore?: true
+    assignedToId?: true
+    isArchived?: true
+    archivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InboxConversationMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    customerId?: true
+    subject?: true
+    lastMessagePreview?: true
+    lastMessageSentAt?: true
+    unreadCount?: true
+    priority?: true
+    satisfactionScore?: true
+    assignedToId?: true
+    isArchived?: true
+    archivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InboxConversationCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    customerId?: true
+    subject?: true
+    lastMessagePreview?: true
+    lastMessageSentAt?: true
+    unreadCount?: true
+    priority?: true
+    satisfactionScore?: true
+    tags?: true
+    assignedToId?: true
+    isArchived?: true
+    archivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type InboxConversationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InboxConversation to aggregate.
+     */
+    where?: InboxConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxConversations to fetch.
+     */
+    orderBy?: InboxConversationOrderByWithRelationInput | InboxConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InboxConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxConversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxConversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InboxConversations
+    **/
+    _count?: true | InboxConversationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InboxConversationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InboxConversationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InboxConversationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InboxConversationMaxAggregateInputType
+  }
+
+  export type GetInboxConversationAggregateType<T extends InboxConversationAggregateArgs> = {
+        [P in keyof T & keyof AggregateInboxConversation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInboxConversation[P]>
+      : GetScalarType<T[P], AggregateInboxConversation[P]>
+  }
+
+
+
+
+  export type InboxConversationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxConversationWhereInput
+    orderBy?: InboxConversationOrderByWithAggregationInput | InboxConversationOrderByWithAggregationInput[]
+    by: InboxConversationScalarFieldEnum[] | InboxConversationScalarFieldEnum
+    having?: InboxConversationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InboxConversationCountAggregateInputType | true
+    _avg?: InboxConversationAvgAggregateInputType
+    _sum?: InboxConversationSumAggregateInputType
+    _min?: InboxConversationMinAggregateInputType
+    _max?: InboxConversationMaxAggregateInputType
+  }
+
+  export type InboxConversationGroupByOutputType = {
+    id: string
+    companyId: number
+    customerId: string
+    subject: string | null
+    lastMessagePreview: string | null
+    lastMessageSentAt: Date | null
+    unreadCount: number
+    priority: $Enums.InboxConversationPriority
+    satisfactionScore: number | null
+    tags: string[]
+    assignedToId: number | null
+    isArchived: boolean
+    archivedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: InboxConversationCountAggregateOutputType | null
+    _avg: InboxConversationAvgAggregateOutputType | null
+    _sum: InboxConversationSumAggregateOutputType | null
+    _min: InboxConversationMinAggregateOutputType | null
+    _max: InboxConversationMaxAggregateOutputType | null
+  }
+
+  type GetInboxConversationGroupByPayload<T extends InboxConversationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InboxConversationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InboxConversationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InboxConversationGroupByOutputType[P]>
+            : GetScalarType<T[P], InboxConversationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InboxConversationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    customerId?: boolean
+    subject?: boolean
+    lastMessagePreview?: boolean
+    lastMessageSentAt?: boolean
+    unreadCount?: boolean
+    priority?: boolean
+    satisfactionScore?: boolean
+    tags?: boolean
+    assignedToId?: boolean
+    isArchived?: boolean
+    archivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    customer?: boolean | InboxCustomerDefaultArgs<ExtArgs>
+    assignedTo?: boolean | InboxConversation$assignedToArgs<ExtArgs>
+    messages?: boolean | InboxConversation$messagesArgs<ExtArgs>
+    _count?: boolean | InboxConversationCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxConversation"]>
+
+  export type InboxConversationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    customerId?: boolean
+    subject?: boolean
+    lastMessagePreview?: boolean
+    lastMessageSentAt?: boolean
+    unreadCount?: boolean
+    priority?: boolean
+    satisfactionScore?: boolean
+    tags?: boolean
+    assignedToId?: boolean
+    isArchived?: boolean
+    archivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    customer?: boolean | InboxCustomerDefaultArgs<ExtArgs>
+    assignedTo?: boolean | InboxConversation$assignedToArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxConversation"]>
+
+  export type InboxConversationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    customerId?: boolean
+    subject?: boolean
+    lastMessagePreview?: boolean
+    lastMessageSentAt?: boolean
+    unreadCount?: boolean
+    priority?: boolean
+    satisfactionScore?: boolean
+    tags?: boolean
+    assignedToId?: boolean
+    isArchived?: boolean
+    archivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    customer?: boolean | InboxCustomerDefaultArgs<ExtArgs>
+    assignedTo?: boolean | InboxConversation$assignedToArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxConversation"]>
+
+  export type InboxConversationSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    customerId?: boolean
+    subject?: boolean
+    lastMessagePreview?: boolean
+    lastMessageSentAt?: boolean
+    unreadCount?: boolean
+    priority?: boolean
+    satisfactionScore?: boolean
+    tags?: boolean
+    assignedToId?: boolean
+    isArchived?: boolean
+    archivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type InboxConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "customerId" | "subject" | "lastMessagePreview" | "lastMessageSentAt" | "unreadCount" | "priority" | "satisfactionScore" | "tags" | "assignedToId" | "isArchived" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["inboxConversation"]>
+  export type InboxConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    customer?: boolean | InboxCustomerDefaultArgs<ExtArgs>
+    assignedTo?: boolean | InboxConversation$assignedToArgs<ExtArgs>
+    messages?: boolean | InboxConversation$messagesArgs<ExtArgs>
+    _count?: boolean | InboxConversationCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type InboxConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    customer?: boolean | InboxCustomerDefaultArgs<ExtArgs>
+    assignedTo?: boolean | InboxConversation$assignedToArgs<ExtArgs>
+  }
+  export type InboxConversationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    customer?: boolean | InboxCustomerDefaultArgs<ExtArgs>
+    assignedTo?: boolean | InboxConversation$assignedToArgs<ExtArgs>
+  }
+
+  export type $InboxConversationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InboxConversation"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      customer: Prisma.$InboxCustomerPayload<ExtArgs>
+      assignedTo: Prisma.$UserPayload<ExtArgs> | null
+      messages: Prisma.$InboxMessagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: number
+      customerId: string
+      subject: string | null
+      lastMessagePreview: string | null
+      lastMessageSentAt: Date | null
+      unreadCount: number
+      priority: $Enums.InboxConversationPriority
+      satisfactionScore: number | null
+      tags: string[]
+      assignedToId: number | null
+      isArchived: boolean
+      archivedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["inboxConversation"]>
+    composites: {}
+  }
+
+  type InboxConversationGetPayload<S extends boolean | null | undefined | InboxConversationDefaultArgs> = $Result.GetResult<Prisma.$InboxConversationPayload, S>
+
+  type InboxConversationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InboxConversationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InboxConversationCountAggregateInputType | true
+    }
+
+  export interface InboxConversationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InboxConversation'], meta: { name: 'InboxConversation' } }
+    /**
+     * Find zero or one InboxConversation that matches the filter.
+     * @param {InboxConversationFindUniqueArgs} args - Arguments to find a InboxConversation
+     * @example
+     * // Get one InboxConversation
+     * const inboxConversation = await prisma.inboxConversation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InboxConversationFindUniqueArgs>(args: SelectSubset<T, InboxConversationFindUniqueArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InboxConversation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InboxConversationFindUniqueOrThrowArgs} args - Arguments to find a InboxConversation
+     * @example
+     * // Get one InboxConversation
+     * const inboxConversation = await prisma.inboxConversation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InboxConversationFindUniqueOrThrowArgs>(args: SelectSubset<T, InboxConversationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InboxConversation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxConversationFindFirstArgs} args - Arguments to find a InboxConversation
+     * @example
+     * // Get one InboxConversation
+     * const inboxConversation = await prisma.inboxConversation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InboxConversationFindFirstArgs>(args?: SelectSubset<T, InboxConversationFindFirstArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InboxConversation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxConversationFindFirstOrThrowArgs} args - Arguments to find a InboxConversation
+     * @example
+     * // Get one InboxConversation
+     * const inboxConversation = await prisma.inboxConversation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InboxConversationFindFirstOrThrowArgs>(args?: SelectSubset<T, InboxConversationFindFirstOrThrowArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InboxConversations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxConversationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InboxConversations
+     * const inboxConversations = await prisma.inboxConversation.findMany()
+     * 
+     * // Get first 10 InboxConversations
+     * const inboxConversations = await prisma.inboxConversation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const inboxConversationWithIdOnly = await prisma.inboxConversation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InboxConversationFindManyArgs>(args?: SelectSubset<T, InboxConversationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InboxConversation.
+     * @param {InboxConversationCreateArgs} args - Arguments to create a InboxConversation.
+     * @example
+     * // Create one InboxConversation
+     * const InboxConversation = await prisma.inboxConversation.create({
+     *   data: {
+     *     // ... data to create a InboxConversation
+     *   }
+     * })
+     * 
+     */
+    create<T extends InboxConversationCreateArgs>(args: SelectSubset<T, InboxConversationCreateArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InboxConversations.
+     * @param {InboxConversationCreateManyArgs} args - Arguments to create many InboxConversations.
+     * @example
+     * // Create many InboxConversations
+     * const inboxConversation = await prisma.inboxConversation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InboxConversationCreateManyArgs>(args?: SelectSubset<T, InboxConversationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InboxConversations and returns the data saved in the database.
+     * @param {InboxConversationCreateManyAndReturnArgs} args - Arguments to create many InboxConversations.
+     * @example
+     * // Create many InboxConversations
+     * const inboxConversation = await prisma.inboxConversation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InboxConversations and only return the `id`
+     * const inboxConversationWithIdOnly = await prisma.inboxConversation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InboxConversationCreateManyAndReturnArgs>(args?: SelectSubset<T, InboxConversationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InboxConversation.
+     * @param {InboxConversationDeleteArgs} args - Arguments to delete one InboxConversation.
+     * @example
+     * // Delete one InboxConversation
+     * const InboxConversation = await prisma.inboxConversation.delete({
+     *   where: {
+     *     // ... filter to delete one InboxConversation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InboxConversationDeleteArgs>(args: SelectSubset<T, InboxConversationDeleteArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InboxConversation.
+     * @param {InboxConversationUpdateArgs} args - Arguments to update one InboxConversation.
+     * @example
+     * // Update one InboxConversation
+     * const inboxConversation = await prisma.inboxConversation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InboxConversationUpdateArgs>(args: SelectSubset<T, InboxConversationUpdateArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InboxConversations.
+     * @param {InboxConversationDeleteManyArgs} args - Arguments to filter InboxConversations to delete.
+     * @example
+     * // Delete a few InboxConversations
+     * const { count } = await prisma.inboxConversation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InboxConversationDeleteManyArgs>(args?: SelectSubset<T, InboxConversationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InboxConversations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxConversationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InboxConversations
+     * const inboxConversation = await prisma.inboxConversation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InboxConversationUpdateManyArgs>(args: SelectSubset<T, InboxConversationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InboxConversations and returns the data updated in the database.
+     * @param {InboxConversationUpdateManyAndReturnArgs} args - Arguments to update many InboxConversations.
+     * @example
+     * // Update many InboxConversations
+     * const inboxConversation = await prisma.inboxConversation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InboxConversations and only return the `id`
+     * const inboxConversationWithIdOnly = await prisma.inboxConversation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InboxConversationUpdateManyAndReturnArgs>(args: SelectSubset<T, InboxConversationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InboxConversation.
+     * @param {InboxConversationUpsertArgs} args - Arguments to update or create a InboxConversation.
+     * @example
+     * // Update or create a InboxConversation
+     * const inboxConversation = await prisma.inboxConversation.upsert({
+     *   create: {
+     *     // ... data to create a InboxConversation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InboxConversation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InboxConversationUpsertArgs>(args: SelectSubset<T, InboxConversationUpsertArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InboxConversations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxConversationCountArgs} args - Arguments to filter InboxConversations to count.
+     * @example
+     * // Count the number of InboxConversations
+     * const count = await prisma.inboxConversation.count({
+     *   where: {
+     *     // ... the filter for the InboxConversations we want to count
+     *   }
+     * })
+    **/
+    count<T extends InboxConversationCountArgs>(
+      args?: Subset<T, InboxConversationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InboxConversationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InboxConversation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxConversationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InboxConversationAggregateArgs>(args: Subset<T, InboxConversationAggregateArgs>): Prisma.PrismaPromise<GetInboxConversationAggregateType<T>>
+
+    /**
+     * Group by InboxConversation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxConversationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InboxConversationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InboxConversationGroupByArgs['orderBy'] }
+        : { orderBy?: InboxConversationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InboxConversationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInboxConversationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InboxConversation model
+   */
+  readonly fields: InboxConversationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InboxConversation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InboxConversationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    customer<T extends InboxCustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InboxCustomerDefaultArgs<ExtArgs>>): Prisma__InboxCustomerClient<$Result.GetResult<Prisma.$InboxCustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    assignedTo<T extends InboxConversation$assignedToArgs<ExtArgs> = {}>(args?: Subset<T, InboxConversation$assignedToArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    messages<T extends InboxConversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, InboxConversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InboxConversation model
+   */
+  interface InboxConversationFieldRefs {
+    readonly id: FieldRef<"InboxConversation", 'String'>
+    readonly companyId: FieldRef<"InboxConversation", 'Int'>
+    readonly customerId: FieldRef<"InboxConversation", 'String'>
+    readonly subject: FieldRef<"InboxConversation", 'String'>
+    readonly lastMessagePreview: FieldRef<"InboxConversation", 'String'>
+    readonly lastMessageSentAt: FieldRef<"InboxConversation", 'DateTime'>
+    readonly unreadCount: FieldRef<"InboxConversation", 'Int'>
+    readonly priority: FieldRef<"InboxConversation", 'InboxConversationPriority'>
+    readonly satisfactionScore: FieldRef<"InboxConversation", 'Int'>
+    readonly tags: FieldRef<"InboxConversation", 'String[]'>
+    readonly assignedToId: FieldRef<"InboxConversation", 'Int'>
+    readonly isArchived: FieldRef<"InboxConversation", 'Boolean'>
+    readonly archivedAt: FieldRef<"InboxConversation", 'DateTime'>
+    readonly createdAt: FieldRef<"InboxConversation", 'DateTime'>
+    readonly updatedAt: FieldRef<"InboxConversation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InboxConversation findUnique
+   */
+  export type InboxConversationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxConversation to fetch.
+     */
+    where: InboxConversationWhereUniqueInput
+  }
+
+  /**
+   * InboxConversation findUniqueOrThrow
+   */
+  export type InboxConversationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxConversation to fetch.
+     */
+    where: InboxConversationWhereUniqueInput
+  }
+
+  /**
+   * InboxConversation findFirst
+   */
+  export type InboxConversationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxConversation to fetch.
+     */
+    where?: InboxConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxConversations to fetch.
+     */
+    orderBy?: InboxConversationOrderByWithRelationInput | InboxConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InboxConversations.
+     */
+    cursor?: InboxConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxConversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxConversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InboxConversations.
+     */
+    distinct?: InboxConversationScalarFieldEnum | InboxConversationScalarFieldEnum[]
+  }
+
+  /**
+   * InboxConversation findFirstOrThrow
+   */
+  export type InboxConversationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxConversation to fetch.
+     */
+    where?: InboxConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxConversations to fetch.
+     */
+    orderBy?: InboxConversationOrderByWithRelationInput | InboxConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InboxConversations.
+     */
+    cursor?: InboxConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxConversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxConversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InboxConversations.
+     */
+    distinct?: InboxConversationScalarFieldEnum | InboxConversationScalarFieldEnum[]
+  }
+
+  /**
+   * InboxConversation findMany
+   */
+  export type InboxConversationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxConversations to fetch.
+     */
+    where?: InboxConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxConversations to fetch.
+     */
+    orderBy?: InboxConversationOrderByWithRelationInput | InboxConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InboxConversations.
+     */
+    cursor?: InboxConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxConversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxConversations.
+     */
+    skip?: number
+    distinct?: InboxConversationScalarFieldEnum | InboxConversationScalarFieldEnum[]
+  }
+
+  /**
+   * InboxConversation create
+   */
+  export type InboxConversationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InboxConversation.
+     */
+    data: XOR<InboxConversationCreateInput, InboxConversationUncheckedCreateInput>
+  }
+
+  /**
+   * InboxConversation createMany
+   */
+  export type InboxConversationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InboxConversations.
+     */
+    data: InboxConversationCreateManyInput | InboxConversationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InboxConversation createManyAndReturn
+   */
+  export type InboxConversationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * The data used to create many InboxConversations.
+     */
+    data: InboxConversationCreateManyInput | InboxConversationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InboxConversation update
+   */
+  export type InboxConversationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InboxConversation.
+     */
+    data: XOR<InboxConversationUpdateInput, InboxConversationUncheckedUpdateInput>
+    /**
+     * Choose, which InboxConversation to update.
+     */
+    where: InboxConversationWhereUniqueInput
+  }
+
+  /**
+   * InboxConversation updateMany
+   */
+  export type InboxConversationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InboxConversations.
+     */
+    data: XOR<InboxConversationUpdateManyMutationInput, InboxConversationUncheckedUpdateManyInput>
+    /**
+     * Filter which InboxConversations to update
+     */
+    where?: InboxConversationWhereInput
+    /**
+     * Limit how many InboxConversations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InboxConversation updateManyAndReturn
+   */
+  export type InboxConversationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * The data used to update InboxConversations.
+     */
+    data: XOR<InboxConversationUpdateManyMutationInput, InboxConversationUncheckedUpdateManyInput>
+    /**
+     * Filter which InboxConversations to update
+     */
+    where?: InboxConversationWhereInput
+    /**
+     * Limit how many InboxConversations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InboxConversation upsert
+   */
+  export type InboxConversationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InboxConversation to update in case it exists.
+     */
+    where: InboxConversationWhereUniqueInput
+    /**
+     * In case the InboxConversation found by the `where` argument doesn't exist, create a new InboxConversation with this data.
+     */
+    create: XOR<InboxConversationCreateInput, InboxConversationUncheckedCreateInput>
+    /**
+     * In case the InboxConversation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InboxConversationUpdateInput, InboxConversationUncheckedUpdateInput>
+  }
+
+  /**
+   * InboxConversation delete
+   */
+  export type InboxConversationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+    /**
+     * Filter which InboxConversation to delete.
+     */
+    where: InboxConversationWhereUniqueInput
+  }
+
+  /**
+   * InboxConversation deleteMany
+   */
+  export type InboxConversationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InboxConversations to delete
+     */
+    where?: InboxConversationWhereInput
+    /**
+     * Limit how many InboxConversations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InboxConversation.assignedTo
+   */
+  export type InboxConversation$assignedToArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * InboxConversation.messages
+   */
+  export type InboxConversation$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    where?: InboxMessageWhereInput
+    orderBy?: InboxMessageOrderByWithRelationInput | InboxMessageOrderByWithRelationInput[]
+    cursor?: InboxMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InboxMessageScalarFieldEnum | InboxMessageScalarFieldEnum[]
+  }
+
+  /**
+   * InboxConversation without action
+   */
+  export type InboxConversationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxConversation
+     */
+    select?: InboxConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxConversation
+     */
+    omit?: InboxConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxConversationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InboxMessage
+   */
+
+  export type AggregateInboxMessage = {
+    _count: InboxMessageCountAggregateOutputType | null
+    _avg: InboxMessageAvgAggregateOutputType | null
+    _sum: InboxMessageSumAggregateOutputType | null
+    _min: InboxMessageMinAggregateOutputType | null
+    _max: InboxMessageMaxAggregateOutputType | null
+  }
+
+  export type InboxMessageAvgAggregateOutputType = {
+    companyId: number | null
+    senderUserId: number | null
+  }
+
+  export type InboxMessageSumAggregateOutputType = {
+    companyId: number | null
+    senderUserId: number | null
+  }
+
+  export type InboxMessageMinAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    conversationId: string | null
+    senderType: $Enums.InboxMessageSenderType | null
+    senderUserId: number | null
+    content: string | null
+    status: $Enums.InboxMessageStatus | null
+    sentAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InboxMessageMaxAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    conversationId: string | null
+    senderType: $Enums.InboxMessageSenderType | null
+    senderUserId: number | null
+    content: string | null
+    status: $Enums.InboxMessageStatus | null
+    sentAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InboxMessageCountAggregateOutputType = {
+    id: number
+    companyId: number
+    conversationId: number
+    senderType: number
+    senderUserId: number
+    content: number
+    attachments: number
+    status: number
+    sentAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type InboxMessageAvgAggregateInputType = {
+    companyId?: true
+    senderUserId?: true
+  }
+
+  export type InboxMessageSumAggregateInputType = {
+    companyId?: true
+    senderUserId?: true
+  }
+
+  export type InboxMessageMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    conversationId?: true
+    senderType?: true
+    senderUserId?: true
+    content?: true
+    status?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InboxMessageMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    conversationId?: true
+    senderType?: true
+    senderUserId?: true
+    content?: true
+    status?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InboxMessageCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    conversationId?: true
+    senderType?: true
+    senderUserId?: true
+    content?: true
+    attachments?: true
+    status?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type InboxMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InboxMessage to aggregate.
+     */
+    where?: InboxMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxMessages to fetch.
+     */
+    orderBy?: InboxMessageOrderByWithRelationInput | InboxMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InboxMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InboxMessages
+    **/
+    _count?: true | InboxMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InboxMessageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InboxMessageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InboxMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InboxMessageMaxAggregateInputType
+  }
+
+  export type GetInboxMessageAggregateType<T extends InboxMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateInboxMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInboxMessage[P]>
+      : GetScalarType<T[P], AggregateInboxMessage[P]>
+  }
+
+
+
+
+  export type InboxMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InboxMessageWhereInput
+    orderBy?: InboxMessageOrderByWithAggregationInput | InboxMessageOrderByWithAggregationInput[]
+    by: InboxMessageScalarFieldEnum[] | InboxMessageScalarFieldEnum
+    having?: InboxMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InboxMessageCountAggregateInputType | true
+    _avg?: InboxMessageAvgAggregateInputType
+    _sum?: InboxMessageSumAggregateInputType
+    _min?: InboxMessageMinAggregateInputType
+    _max?: InboxMessageMaxAggregateInputType
+  }
+
+  export type InboxMessageGroupByOutputType = {
+    id: string
+    companyId: number
+    conversationId: string
+    senderType: $Enums.InboxMessageSenderType
+    senderUserId: number | null
+    content: string
+    attachments: JsonValue | null
+    status: $Enums.InboxMessageStatus
+    sentAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: InboxMessageCountAggregateOutputType | null
+    _avg: InboxMessageAvgAggregateOutputType | null
+    _sum: InboxMessageSumAggregateOutputType | null
+    _min: InboxMessageMinAggregateOutputType | null
+    _max: InboxMessageMaxAggregateOutputType | null
+  }
+
+  type GetInboxMessageGroupByPayload<T extends InboxMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InboxMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InboxMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InboxMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], InboxMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InboxMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    conversationId?: boolean
+    senderType?: boolean
+    senderUserId?: boolean
+    content?: boolean
+    attachments?: boolean
+    status?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    conversation?: boolean | InboxConversationDefaultArgs<ExtArgs>
+    senderUser?: boolean | InboxMessage$senderUserArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxMessage"]>
+
+  export type InboxMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    conversationId?: boolean
+    senderType?: boolean
+    senderUserId?: boolean
+    content?: boolean
+    attachments?: boolean
+    status?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    conversation?: boolean | InboxConversationDefaultArgs<ExtArgs>
+    senderUser?: boolean | InboxMessage$senderUserArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxMessage"]>
+
+  export type InboxMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    conversationId?: boolean
+    senderType?: boolean
+    senderUserId?: boolean
+    content?: boolean
+    attachments?: boolean
+    status?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    conversation?: boolean | InboxConversationDefaultArgs<ExtArgs>
+    senderUser?: boolean | InboxMessage$senderUserArgs<ExtArgs>
+  }, ExtArgs["result"]["inboxMessage"]>
+
+  export type InboxMessageSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    conversationId?: boolean
+    senderType?: boolean
+    senderUserId?: boolean
+    content?: boolean
+    attachments?: boolean
+    status?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type InboxMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "conversationId" | "senderType" | "senderUserId" | "content" | "attachments" | "status" | "sentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["inboxMessage"]>
+  export type InboxMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    conversation?: boolean | InboxConversationDefaultArgs<ExtArgs>
+    senderUser?: boolean | InboxMessage$senderUserArgs<ExtArgs>
+  }
+  export type InboxMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    conversation?: boolean | InboxConversationDefaultArgs<ExtArgs>
+    senderUser?: boolean | InboxMessage$senderUserArgs<ExtArgs>
+  }
+  export type InboxMessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    conversation?: boolean | InboxConversationDefaultArgs<ExtArgs>
+    senderUser?: boolean | InboxMessage$senderUserArgs<ExtArgs>
+  }
+
+  export type $InboxMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InboxMessage"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      conversation: Prisma.$InboxConversationPayload<ExtArgs>
+      senderUser: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: number
+      conversationId: string
+      senderType: $Enums.InboxMessageSenderType
+      senderUserId: number | null
+      content: string
+      attachments: Prisma.JsonValue | null
+      status: $Enums.InboxMessageStatus
+      sentAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["inboxMessage"]>
+    composites: {}
+  }
+
+  type InboxMessageGetPayload<S extends boolean | null | undefined | InboxMessageDefaultArgs> = $Result.GetResult<Prisma.$InboxMessagePayload, S>
+
+  type InboxMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InboxMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InboxMessageCountAggregateInputType | true
+    }
+
+  export interface InboxMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InboxMessage'], meta: { name: 'InboxMessage' } }
+    /**
+     * Find zero or one InboxMessage that matches the filter.
+     * @param {InboxMessageFindUniqueArgs} args - Arguments to find a InboxMessage
+     * @example
+     * // Get one InboxMessage
+     * const inboxMessage = await prisma.inboxMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InboxMessageFindUniqueArgs>(args: SelectSubset<T, InboxMessageFindUniqueArgs<ExtArgs>>): Prisma__InboxMessageClient<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InboxMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InboxMessageFindUniqueOrThrowArgs} args - Arguments to find a InboxMessage
+     * @example
+     * // Get one InboxMessage
+     * const inboxMessage = await prisma.inboxMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InboxMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, InboxMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InboxMessageClient<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InboxMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxMessageFindFirstArgs} args - Arguments to find a InboxMessage
+     * @example
+     * // Get one InboxMessage
+     * const inboxMessage = await prisma.inboxMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InboxMessageFindFirstArgs>(args?: SelectSubset<T, InboxMessageFindFirstArgs<ExtArgs>>): Prisma__InboxMessageClient<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InboxMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxMessageFindFirstOrThrowArgs} args - Arguments to find a InboxMessage
+     * @example
+     * // Get one InboxMessage
+     * const inboxMessage = await prisma.inboxMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InboxMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, InboxMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__InboxMessageClient<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InboxMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InboxMessages
+     * const inboxMessages = await prisma.inboxMessage.findMany()
+     * 
+     * // Get first 10 InboxMessages
+     * const inboxMessages = await prisma.inboxMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const inboxMessageWithIdOnly = await prisma.inboxMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InboxMessageFindManyArgs>(args?: SelectSubset<T, InboxMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InboxMessage.
+     * @param {InboxMessageCreateArgs} args - Arguments to create a InboxMessage.
+     * @example
+     * // Create one InboxMessage
+     * const InboxMessage = await prisma.inboxMessage.create({
+     *   data: {
+     *     // ... data to create a InboxMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends InboxMessageCreateArgs>(args: SelectSubset<T, InboxMessageCreateArgs<ExtArgs>>): Prisma__InboxMessageClient<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InboxMessages.
+     * @param {InboxMessageCreateManyArgs} args - Arguments to create many InboxMessages.
+     * @example
+     * // Create many InboxMessages
+     * const inboxMessage = await prisma.inboxMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InboxMessageCreateManyArgs>(args?: SelectSubset<T, InboxMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InboxMessages and returns the data saved in the database.
+     * @param {InboxMessageCreateManyAndReturnArgs} args - Arguments to create many InboxMessages.
+     * @example
+     * // Create many InboxMessages
+     * const inboxMessage = await prisma.inboxMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InboxMessages and only return the `id`
+     * const inboxMessageWithIdOnly = await prisma.inboxMessage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InboxMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, InboxMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InboxMessage.
+     * @param {InboxMessageDeleteArgs} args - Arguments to delete one InboxMessage.
+     * @example
+     * // Delete one InboxMessage
+     * const InboxMessage = await prisma.inboxMessage.delete({
+     *   where: {
+     *     // ... filter to delete one InboxMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InboxMessageDeleteArgs>(args: SelectSubset<T, InboxMessageDeleteArgs<ExtArgs>>): Prisma__InboxMessageClient<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InboxMessage.
+     * @param {InboxMessageUpdateArgs} args - Arguments to update one InboxMessage.
+     * @example
+     * // Update one InboxMessage
+     * const inboxMessage = await prisma.inboxMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InboxMessageUpdateArgs>(args: SelectSubset<T, InboxMessageUpdateArgs<ExtArgs>>): Prisma__InboxMessageClient<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InboxMessages.
+     * @param {InboxMessageDeleteManyArgs} args - Arguments to filter InboxMessages to delete.
+     * @example
+     * // Delete a few InboxMessages
+     * const { count } = await prisma.inboxMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InboxMessageDeleteManyArgs>(args?: SelectSubset<T, InboxMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InboxMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InboxMessages
+     * const inboxMessage = await prisma.inboxMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InboxMessageUpdateManyArgs>(args: SelectSubset<T, InboxMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InboxMessages and returns the data updated in the database.
+     * @param {InboxMessageUpdateManyAndReturnArgs} args - Arguments to update many InboxMessages.
+     * @example
+     * // Update many InboxMessages
+     * const inboxMessage = await prisma.inboxMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InboxMessages and only return the `id`
+     * const inboxMessageWithIdOnly = await prisma.inboxMessage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InboxMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, InboxMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InboxMessage.
+     * @param {InboxMessageUpsertArgs} args - Arguments to update or create a InboxMessage.
+     * @example
+     * // Update or create a InboxMessage
+     * const inboxMessage = await prisma.inboxMessage.upsert({
+     *   create: {
+     *     // ... data to create a InboxMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InboxMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InboxMessageUpsertArgs>(args: SelectSubset<T, InboxMessageUpsertArgs<ExtArgs>>): Prisma__InboxMessageClient<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InboxMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxMessageCountArgs} args - Arguments to filter InboxMessages to count.
+     * @example
+     * // Count the number of InboxMessages
+     * const count = await prisma.inboxMessage.count({
+     *   where: {
+     *     // ... the filter for the InboxMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends InboxMessageCountArgs>(
+      args?: Subset<T, InboxMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InboxMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InboxMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InboxMessageAggregateArgs>(args: Subset<T, InboxMessageAggregateArgs>): Prisma.PrismaPromise<GetInboxMessageAggregateType<T>>
+
+    /**
+     * Group by InboxMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InboxMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InboxMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InboxMessageGroupByArgs['orderBy'] }
+        : { orderBy?: InboxMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InboxMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInboxMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InboxMessage model
+   */
+  readonly fields: InboxMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InboxMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InboxMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends InboxConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InboxConversationDefaultArgs<ExtArgs>>): Prisma__InboxConversationClient<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    senderUser<T extends InboxMessage$senderUserArgs<ExtArgs> = {}>(args?: Subset<T, InboxMessage$senderUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InboxMessage model
+   */
+  interface InboxMessageFieldRefs {
+    readonly id: FieldRef<"InboxMessage", 'String'>
+    readonly companyId: FieldRef<"InboxMessage", 'Int'>
+    readonly conversationId: FieldRef<"InboxMessage", 'String'>
+    readonly senderType: FieldRef<"InboxMessage", 'InboxMessageSenderType'>
+    readonly senderUserId: FieldRef<"InboxMessage", 'Int'>
+    readonly content: FieldRef<"InboxMessage", 'String'>
+    readonly attachments: FieldRef<"InboxMessage", 'Json'>
+    readonly status: FieldRef<"InboxMessage", 'InboxMessageStatus'>
+    readonly sentAt: FieldRef<"InboxMessage", 'DateTime'>
+    readonly createdAt: FieldRef<"InboxMessage", 'DateTime'>
+    readonly updatedAt: FieldRef<"InboxMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InboxMessage findUnique
+   */
+  export type InboxMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxMessage to fetch.
+     */
+    where: InboxMessageWhereUniqueInput
+  }
+
+  /**
+   * InboxMessage findUniqueOrThrow
+   */
+  export type InboxMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxMessage to fetch.
+     */
+    where: InboxMessageWhereUniqueInput
+  }
+
+  /**
+   * InboxMessage findFirst
+   */
+  export type InboxMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxMessage to fetch.
+     */
+    where?: InboxMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxMessages to fetch.
+     */
+    orderBy?: InboxMessageOrderByWithRelationInput | InboxMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InboxMessages.
+     */
+    cursor?: InboxMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InboxMessages.
+     */
+    distinct?: InboxMessageScalarFieldEnum | InboxMessageScalarFieldEnum[]
+  }
+
+  /**
+   * InboxMessage findFirstOrThrow
+   */
+  export type InboxMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxMessage to fetch.
+     */
+    where?: InboxMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxMessages to fetch.
+     */
+    orderBy?: InboxMessageOrderByWithRelationInput | InboxMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InboxMessages.
+     */
+    cursor?: InboxMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InboxMessages.
+     */
+    distinct?: InboxMessageScalarFieldEnum | InboxMessageScalarFieldEnum[]
+  }
+
+  /**
+   * InboxMessage findMany
+   */
+  export type InboxMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which InboxMessages to fetch.
+     */
+    where?: InboxMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InboxMessages to fetch.
+     */
+    orderBy?: InboxMessageOrderByWithRelationInput | InboxMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InboxMessages.
+     */
+    cursor?: InboxMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InboxMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InboxMessages.
+     */
+    skip?: number
+    distinct?: InboxMessageScalarFieldEnum | InboxMessageScalarFieldEnum[]
+  }
+
+  /**
+   * InboxMessage create
+   */
+  export type InboxMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InboxMessage.
+     */
+    data: XOR<InboxMessageCreateInput, InboxMessageUncheckedCreateInput>
+  }
+
+  /**
+   * InboxMessage createMany
+   */
+  export type InboxMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InboxMessages.
+     */
+    data: InboxMessageCreateManyInput | InboxMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InboxMessage createManyAndReturn
+   */
+  export type InboxMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many InboxMessages.
+     */
+    data: InboxMessageCreateManyInput | InboxMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InboxMessage update
+   */
+  export type InboxMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InboxMessage.
+     */
+    data: XOR<InboxMessageUpdateInput, InboxMessageUncheckedUpdateInput>
+    /**
+     * Choose, which InboxMessage to update.
+     */
+    where: InboxMessageWhereUniqueInput
+  }
+
+  /**
+   * InboxMessage updateMany
+   */
+  export type InboxMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InboxMessages.
+     */
+    data: XOR<InboxMessageUpdateManyMutationInput, InboxMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which InboxMessages to update
+     */
+    where?: InboxMessageWhereInput
+    /**
+     * Limit how many InboxMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InboxMessage updateManyAndReturn
+   */
+  export type InboxMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update InboxMessages.
+     */
+    data: XOR<InboxMessageUpdateManyMutationInput, InboxMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which InboxMessages to update
+     */
+    where?: InboxMessageWhereInput
+    /**
+     * Limit how many InboxMessages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InboxMessage upsert
+   */
+  export type InboxMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InboxMessage to update in case it exists.
+     */
+    where: InboxMessageWhereUniqueInput
+    /**
+     * In case the InboxMessage found by the `where` argument doesn't exist, create a new InboxMessage with this data.
+     */
+    create: XOR<InboxMessageCreateInput, InboxMessageUncheckedCreateInput>
+    /**
+     * In case the InboxMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InboxMessageUpdateInput, InboxMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * InboxMessage delete
+   */
+  export type InboxMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+    /**
+     * Filter which InboxMessage to delete.
+     */
+    where: InboxMessageWhereUniqueInput
+  }
+
+  /**
+   * InboxMessage deleteMany
+   */
+  export type InboxMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InboxMessages to delete
+     */
+    where?: InboxMessageWhereInput
+    /**
+     * Limit how many InboxMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InboxMessage.senderUser
+   */
+  export type InboxMessage$senderUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * InboxMessage without action
+   */
+  export type InboxMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InboxMessage
+     */
+    select?: InboxMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InboxMessage
+     */
+    omit?: InboxMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InboxMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -14114,6 +26080,58 @@ export namespace Prisma {
   export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
 
 
+  export const KnowledgeItemScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    type: 'type',
+    title: 'title',
+    content: 'content',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    createdById: 'createdById'
+  };
+
+  export type KnowledgeItemScalarFieldEnum = (typeof KnowledgeItemScalarFieldEnum)[keyof typeof KnowledgeItemScalarFieldEnum]
+
+
+  export const QuickAnswerScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    title: 'title',
+    content: 'content',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    createdById: 'createdById'
+  };
+
+  export type QuickAnswerScalarFieldEnum = (typeof QuickAnswerScalarFieldEnum)[keyof typeof QuickAnswerScalarFieldEnum]
+
+
+  export const AiTemplateScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    name: 'name',
+    content: 'content',
+    category: 'category',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    createdById: 'createdById'
+  };
+
+  export type AiTemplateScalarFieldEnum = (typeof AiTemplateScalarFieldEnum)[keyof typeof AiTemplateScalarFieldEnum]
+
+
+  export const AiTemplateOptionScalarFieldEnum: {
+    id: 'id',
+    templateId: 'templateId',
+    label: 'label',
+    value: 'value',
+    createdAt: 'createdAt'
+  };
+
+  export type AiTemplateOptionScalarFieldEnum = (typeof AiTemplateOptionScalarFieldEnum)[keyof typeof AiTemplateOptionScalarFieldEnum]
+
+
   export const CompanyMemberScalarFieldEnum: {
     id: 'id',
     isAdmin: 'isAdmin',
@@ -14185,12 +26203,102 @@ export namespace Prisma {
   export type UsageTrackingScalarFieldEnum = (typeof UsageTrackingScalarFieldEnum)[keyof typeof UsageTrackingScalarFieldEnum]
 
 
+  export const CompanySettingsScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    emailNotifications: 'emailNotifications',
+    newMessageAlerts: 'newMessageAlerts',
+    dailyReports: 'dailyReports',
+    autoReply: 'autoReply',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CompanySettingsScalarFieldEnum = (typeof CompanySettingsScalarFieldEnum)[keyof typeof CompanySettingsScalarFieldEnum]
+
+
+  export const CompanyWhatsappNumberScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    displayName: 'displayName',
+    phoneNumber: 'phoneNumber',
+    isConnected: 'isConnected',
+    messagesThisMonth: 'messagesThisMonth',
+    lastSyncedAt: 'lastSyncedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CompanyWhatsappNumberScalarFieldEnum = (typeof CompanyWhatsappNumberScalarFieldEnum)[keyof typeof CompanyWhatsappNumberScalarFieldEnum]
+
+
+  export const InboxCustomerScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    name: 'name',
+    phone: 'phone',
+    email: 'email',
+    address: 'address',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type InboxCustomerScalarFieldEnum = (typeof InboxCustomerScalarFieldEnum)[keyof typeof InboxCustomerScalarFieldEnum]
+
+
+  export const InboxConversationScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    customerId: 'customerId',
+    subject: 'subject',
+    lastMessagePreview: 'lastMessagePreview',
+    lastMessageSentAt: 'lastMessageSentAt',
+    unreadCount: 'unreadCount',
+    priority: 'priority',
+    satisfactionScore: 'satisfactionScore',
+    tags: 'tags',
+    assignedToId: 'assignedToId',
+    isArchived: 'isArchived',
+    archivedAt: 'archivedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type InboxConversationScalarFieldEnum = (typeof InboxConversationScalarFieldEnum)[keyof typeof InboxConversationScalarFieldEnum]
+
+
+  export const InboxMessageScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    conversationId: 'conversationId',
+    senderType: 'senderType',
+    senderUserId: 'senderUserId',
+    content: 'content',
+    attachments: 'attachments',
+    status: 'status',
+    sentAt: 'sentAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type InboxMessageScalarFieldEnum = (typeof InboxMessageScalarFieldEnum)[keyof typeof InboxMessageScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -14207,6 +26315,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -14306,6 +26423,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'KnowledgeItemType'
+   */
+  export type EnumKnowledgeItemTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KnowledgeItemType'>
+    
+
+
+  /**
+   * Reference to a field of type 'KnowledgeItemType[]'
+   */
+  export type ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KnowledgeItemType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AiTemplateCategory'
+   */
+  export type EnumAiTemplateCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AiTemplateCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'AiTemplateCategory[]'
+   */
+  export type ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AiTemplateCategory[]'>
+    
+
+
+  /**
    * Reference to a field of type 'CompanyMemberStatus'
    */
   export type EnumCompanyMemberStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompanyMemberStatus'>
@@ -14390,6 +26535,62 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'InboxConversationPriority'
+   */
+  export type EnumInboxConversationPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InboxConversationPriority'>
+    
+
+
+  /**
+   * Reference to a field of type 'InboxConversationPriority[]'
+   */
+  export type ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InboxConversationPriority[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'InboxMessageSenderType'
+   */
+  export type EnumInboxMessageSenderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InboxMessageSenderType'>
+    
+
+
+  /**
+   * Reference to a field of type 'InboxMessageSenderType[]'
+   */
+  export type ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InboxMessageSenderType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'InboxMessageStatus'
+   */
+  export type EnumInboxMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InboxMessageStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'InboxMessageStatus[]'
+   */
+  export type ListEnumInboxMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InboxMessageStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -14443,6 +26644,11 @@ export namespace Prisma {
     avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
     company?: XOR<CompanyNullableScalarRelationFilter, CompanyWhereInput> | null
     files?: FileListRelationFilter
+    knowledgeItems?: KnowledgeItemListRelationFilter
+    quickAnswers?: QuickAnswerListRelationFilter
+    aiTemplates?: AiTemplateListRelationFilter
+    assignedInboxConversations?: InboxConversationListRelationFilter
+    inboxMessages?: InboxMessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -14479,6 +26685,11 @@ export namespace Prisma {
     avatar?: FileOrderByWithRelationInput
     company?: CompanyOrderByWithRelationInput
     files?: FileOrderByRelationAggregateInput
+    knowledgeItems?: KnowledgeItemOrderByRelationAggregateInput
+    quickAnswers?: QuickAnswerOrderByRelationAggregateInput
+    aiTemplates?: AiTemplateOrderByRelationAggregateInput
+    assignedInboxConversations?: InboxConversationOrderByRelationAggregateInput
+    inboxMessages?: InboxMessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -14518,6 +26729,11 @@ export namespace Prisma {
     avatar?: XOR<FileNullableScalarRelationFilter, FileWhereInput> | null
     company?: XOR<CompanyNullableScalarRelationFilter, CompanyWhereInput> | null
     files?: FileListRelationFilter
+    knowledgeItems?: KnowledgeItemListRelationFilter
+    quickAnswers?: QuickAnswerListRelationFilter
+    aiTemplates?: AiTemplateListRelationFilter
+    assignedInboxConversations?: InboxConversationListRelationFilter
+    inboxMessages?: InboxMessageListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -14880,6 +27096,14 @@ export namespace Prisma {
     user?: UserListRelationFilter
     CustomerSubscription?: CustomerSubscriptionListRelationFilter
     UsageTracking?: UsageTrackingListRelationFilter
+    knowledgeItems?: KnowledgeItemListRelationFilter
+    quickAnswers?: QuickAnswerListRelationFilter
+    aiTemplates?: AiTemplateListRelationFilter
+    inboxCustomers?: InboxCustomerListRelationFilter
+    inboxConversations?: InboxConversationListRelationFilter
+    inboxMessages?: InboxMessageListRelationFilter
+    settings?: XOR<CompanySettingsNullableScalarRelationFilter, CompanySettingsWhereInput> | null
+    whatsappNumbers?: CompanyWhatsappNumberListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -14893,6 +27117,14 @@ export namespace Prisma {
     user?: UserOrderByRelationAggregateInput
     CustomerSubscription?: CustomerSubscriptionOrderByRelationAggregateInput
     UsageTracking?: UsageTrackingOrderByRelationAggregateInput
+    knowledgeItems?: KnowledgeItemOrderByRelationAggregateInput
+    quickAnswers?: QuickAnswerOrderByRelationAggregateInput
+    aiTemplates?: AiTemplateOrderByRelationAggregateInput
+    inboxCustomers?: InboxCustomerOrderByRelationAggregateInput
+    inboxConversations?: InboxConversationOrderByRelationAggregateInput
+    inboxMessages?: InboxMessageOrderByRelationAggregateInput
+    settings?: CompanySettingsOrderByWithRelationInput
+    whatsappNumbers?: CompanyWhatsappNumberOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -14909,6 +27141,14 @@ export namespace Prisma {
     user?: UserListRelationFilter
     CustomerSubscription?: CustomerSubscriptionListRelationFilter
     UsageTracking?: UsageTrackingListRelationFilter
+    knowledgeItems?: KnowledgeItemListRelationFilter
+    quickAnswers?: QuickAnswerListRelationFilter
+    aiTemplates?: AiTemplateListRelationFilter
+    inboxCustomers?: InboxCustomerListRelationFilter
+    inboxConversations?: InboxConversationListRelationFilter
+    inboxMessages?: InboxMessageListRelationFilter
+    settings?: XOR<CompanySettingsNullableScalarRelationFilter, CompanySettingsWhereInput> | null
+    whatsappNumbers?: CompanyWhatsappNumberListRelationFilter
   }, "id">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -14935,6 +27175,284 @@ export namespace Prisma {
     tokenApi?: StringNullableWithAggregatesFilter<"Company"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
+  }
+
+  export type KnowledgeItemWhereInput = {
+    AND?: KnowledgeItemWhereInput | KnowledgeItemWhereInput[]
+    OR?: KnowledgeItemWhereInput[]
+    NOT?: KnowledgeItemWhereInput | KnowledgeItemWhereInput[]
+    id?: StringFilter<"KnowledgeItem"> | string
+    companyId?: IntFilter<"KnowledgeItem"> | number
+    type?: EnumKnowledgeItemTypeFilter<"KnowledgeItem"> | $Enums.KnowledgeItemType
+    title?: StringFilter<"KnowledgeItem"> | string
+    content?: StringFilter<"KnowledgeItem"> | string
+    createdAt?: DateTimeFilter<"KnowledgeItem"> | Date | string
+    updatedAt?: DateTimeFilter<"KnowledgeItem"> | Date | string
+    createdById?: IntNullableFilter<"KnowledgeItem"> | number | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type KnowledgeItemOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    company?: CompanyOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type KnowledgeItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: KnowledgeItemWhereInput | KnowledgeItemWhereInput[]
+    OR?: KnowledgeItemWhereInput[]
+    NOT?: KnowledgeItemWhereInput | KnowledgeItemWhereInput[]
+    companyId?: IntFilter<"KnowledgeItem"> | number
+    type?: EnumKnowledgeItemTypeFilter<"KnowledgeItem"> | $Enums.KnowledgeItemType
+    title?: StringFilter<"KnowledgeItem"> | string
+    content?: StringFilter<"KnowledgeItem"> | string
+    createdAt?: DateTimeFilter<"KnowledgeItem"> | Date | string
+    updatedAt?: DateTimeFilter<"KnowledgeItem"> | Date | string
+    createdById?: IntNullableFilter<"KnowledgeItem"> | number | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type KnowledgeItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    _count?: KnowledgeItemCountOrderByAggregateInput
+    _avg?: KnowledgeItemAvgOrderByAggregateInput
+    _max?: KnowledgeItemMaxOrderByAggregateInput
+    _min?: KnowledgeItemMinOrderByAggregateInput
+    _sum?: KnowledgeItemSumOrderByAggregateInput
+  }
+
+  export type KnowledgeItemScalarWhereWithAggregatesInput = {
+    AND?: KnowledgeItemScalarWhereWithAggregatesInput | KnowledgeItemScalarWhereWithAggregatesInput[]
+    OR?: KnowledgeItemScalarWhereWithAggregatesInput[]
+    NOT?: KnowledgeItemScalarWhereWithAggregatesInput | KnowledgeItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"KnowledgeItem"> | string
+    companyId?: IntWithAggregatesFilter<"KnowledgeItem"> | number
+    type?: EnumKnowledgeItemTypeWithAggregatesFilter<"KnowledgeItem"> | $Enums.KnowledgeItemType
+    title?: StringWithAggregatesFilter<"KnowledgeItem"> | string
+    content?: StringWithAggregatesFilter<"KnowledgeItem"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"KnowledgeItem"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"KnowledgeItem"> | Date | string
+    createdById?: IntNullableWithAggregatesFilter<"KnowledgeItem"> | number | null
+  }
+
+  export type QuickAnswerWhereInput = {
+    AND?: QuickAnswerWhereInput | QuickAnswerWhereInput[]
+    OR?: QuickAnswerWhereInput[]
+    NOT?: QuickAnswerWhereInput | QuickAnswerWhereInput[]
+    id?: StringFilter<"QuickAnswer"> | string
+    companyId?: IntFilter<"QuickAnswer"> | number
+    title?: StringFilter<"QuickAnswer"> | string
+    content?: StringFilter<"QuickAnswer"> | string
+    createdAt?: DateTimeFilter<"QuickAnswer"> | Date | string
+    updatedAt?: DateTimeFilter<"QuickAnswer"> | Date | string
+    createdById?: IntNullableFilter<"QuickAnswer"> | number | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type QuickAnswerOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    company?: CompanyOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type QuickAnswerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: QuickAnswerWhereInput | QuickAnswerWhereInput[]
+    OR?: QuickAnswerWhereInput[]
+    NOT?: QuickAnswerWhereInput | QuickAnswerWhereInput[]
+    companyId?: IntFilter<"QuickAnswer"> | number
+    title?: StringFilter<"QuickAnswer"> | string
+    content?: StringFilter<"QuickAnswer"> | string
+    createdAt?: DateTimeFilter<"QuickAnswer"> | Date | string
+    updatedAt?: DateTimeFilter<"QuickAnswer"> | Date | string
+    createdById?: IntNullableFilter<"QuickAnswer"> | number | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type QuickAnswerOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    _count?: QuickAnswerCountOrderByAggregateInput
+    _avg?: QuickAnswerAvgOrderByAggregateInput
+    _max?: QuickAnswerMaxOrderByAggregateInput
+    _min?: QuickAnswerMinOrderByAggregateInput
+    _sum?: QuickAnswerSumOrderByAggregateInput
+  }
+
+  export type QuickAnswerScalarWhereWithAggregatesInput = {
+    AND?: QuickAnswerScalarWhereWithAggregatesInput | QuickAnswerScalarWhereWithAggregatesInput[]
+    OR?: QuickAnswerScalarWhereWithAggregatesInput[]
+    NOT?: QuickAnswerScalarWhereWithAggregatesInput | QuickAnswerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"QuickAnswer"> | string
+    companyId?: IntWithAggregatesFilter<"QuickAnswer"> | number
+    title?: StringWithAggregatesFilter<"QuickAnswer"> | string
+    content?: StringWithAggregatesFilter<"QuickAnswer"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"QuickAnswer"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"QuickAnswer"> | Date | string
+    createdById?: IntNullableWithAggregatesFilter<"QuickAnswer"> | number | null
+  }
+
+  export type AiTemplateWhereInput = {
+    AND?: AiTemplateWhereInput | AiTemplateWhereInput[]
+    OR?: AiTemplateWhereInput[]
+    NOT?: AiTemplateWhereInput | AiTemplateWhereInput[]
+    id?: StringFilter<"AiTemplate"> | string
+    companyId?: IntFilter<"AiTemplate"> | number
+    name?: StringFilter<"AiTemplate"> | string
+    content?: StringFilter<"AiTemplate"> | string
+    category?: EnumAiTemplateCategoryFilter<"AiTemplate"> | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFilter<"AiTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"AiTemplate"> | Date | string
+    createdById?: IntNullableFilter<"AiTemplate"> | number | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    options?: AiTemplateOptionListRelationFilter
+  }
+
+  export type AiTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    company?: CompanyOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+    options?: AiTemplateOptionOrderByRelationAggregateInput
+  }
+
+  export type AiTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AiTemplateWhereInput | AiTemplateWhereInput[]
+    OR?: AiTemplateWhereInput[]
+    NOT?: AiTemplateWhereInput | AiTemplateWhereInput[]
+    companyId?: IntFilter<"AiTemplate"> | number
+    name?: StringFilter<"AiTemplate"> | string
+    content?: StringFilter<"AiTemplate"> | string
+    category?: EnumAiTemplateCategoryFilter<"AiTemplate"> | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFilter<"AiTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"AiTemplate"> | Date | string
+    createdById?: IntNullableFilter<"AiTemplate"> | number | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    options?: AiTemplateOptionListRelationFilter
+  }, "id">
+
+  export type AiTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    _count?: AiTemplateCountOrderByAggregateInput
+    _avg?: AiTemplateAvgOrderByAggregateInput
+    _max?: AiTemplateMaxOrderByAggregateInput
+    _min?: AiTemplateMinOrderByAggregateInput
+    _sum?: AiTemplateSumOrderByAggregateInput
+  }
+
+  export type AiTemplateScalarWhereWithAggregatesInput = {
+    AND?: AiTemplateScalarWhereWithAggregatesInput | AiTemplateScalarWhereWithAggregatesInput[]
+    OR?: AiTemplateScalarWhereWithAggregatesInput[]
+    NOT?: AiTemplateScalarWhereWithAggregatesInput | AiTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AiTemplate"> | string
+    companyId?: IntWithAggregatesFilter<"AiTemplate"> | number
+    name?: StringWithAggregatesFilter<"AiTemplate"> | string
+    content?: StringWithAggregatesFilter<"AiTemplate"> | string
+    category?: EnumAiTemplateCategoryWithAggregatesFilter<"AiTemplate"> | $Enums.AiTemplateCategory
+    createdAt?: DateTimeWithAggregatesFilter<"AiTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AiTemplate"> | Date | string
+    createdById?: IntNullableWithAggregatesFilter<"AiTemplate"> | number | null
+  }
+
+  export type AiTemplateOptionWhereInput = {
+    AND?: AiTemplateOptionWhereInput | AiTemplateOptionWhereInput[]
+    OR?: AiTemplateOptionWhereInput[]
+    NOT?: AiTemplateOptionWhereInput | AiTemplateOptionWhereInput[]
+    id?: StringFilter<"AiTemplateOption"> | string
+    templateId?: StringFilter<"AiTemplateOption"> | string
+    label?: StringFilter<"AiTemplateOption"> | string
+    value?: StringFilter<"AiTemplateOption"> | string
+    createdAt?: DateTimeFilter<"AiTemplateOption"> | Date | string
+    template?: XOR<AiTemplateScalarRelationFilter, AiTemplateWhereInput>
+  }
+
+  export type AiTemplateOptionOrderByWithRelationInput = {
+    id?: SortOrder
+    templateId?: SortOrder
+    label?: SortOrder
+    value?: SortOrder
+    createdAt?: SortOrder
+    template?: AiTemplateOrderByWithRelationInput
+  }
+
+  export type AiTemplateOptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AiTemplateOptionWhereInput | AiTemplateOptionWhereInput[]
+    OR?: AiTemplateOptionWhereInput[]
+    NOT?: AiTemplateOptionWhereInput | AiTemplateOptionWhereInput[]
+    templateId?: StringFilter<"AiTemplateOption"> | string
+    label?: StringFilter<"AiTemplateOption"> | string
+    value?: StringFilter<"AiTemplateOption"> | string
+    createdAt?: DateTimeFilter<"AiTemplateOption"> | Date | string
+    template?: XOR<AiTemplateScalarRelationFilter, AiTemplateWhereInput>
+  }, "id">
+
+  export type AiTemplateOptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    templateId?: SortOrder
+    label?: SortOrder
+    value?: SortOrder
+    createdAt?: SortOrder
+    _count?: AiTemplateOptionCountOrderByAggregateInput
+    _max?: AiTemplateOptionMaxOrderByAggregateInput
+    _min?: AiTemplateOptionMinOrderByAggregateInput
+  }
+
+  export type AiTemplateOptionScalarWhereWithAggregatesInput = {
+    AND?: AiTemplateOptionScalarWhereWithAggregatesInput | AiTemplateOptionScalarWhereWithAggregatesInput[]
+    OR?: AiTemplateOptionScalarWhereWithAggregatesInput[]
+    NOT?: AiTemplateOptionScalarWhereWithAggregatesInput | AiTemplateOptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AiTemplateOption"> | string
+    templateId?: StringWithAggregatesFilter<"AiTemplateOption"> | string
+    label?: StringWithAggregatesFilter<"AiTemplateOption"> | string
+    value?: StringWithAggregatesFilter<"AiTemplateOption"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AiTemplateOption"> | Date | string
   }
 
   export type CompanyMemberWhereInput = {
@@ -15314,6 +27832,447 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"UsageTracking"> | Date | string
   }
 
+  export type CompanySettingsWhereInput = {
+    AND?: CompanySettingsWhereInput | CompanySettingsWhereInput[]
+    OR?: CompanySettingsWhereInput[]
+    NOT?: CompanySettingsWhereInput | CompanySettingsWhereInput[]
+    id?: IntFilter<"CompanySettings"> | number
+    companyId?: IntFilter<"CompanySettings"> | number
+    emailNotifications?: BoolFilter<"CompanySettings"> | boolean
+    newMessageAlerts?: BoolFilter<"CompanySettings"> | boolean
+    dailyReports?: BoolFilter<"CompanySettings"> | boolean
+    autoReply?: BoolFilter<"CompanySettings"> | boolean
+    createdAt?: DateTimeFilter<"CompanySettings"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanySettings"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }
+
+  export type CompanySettingsOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    emailNotifications?: SortOrder
+    newMessageAlerts?: SortOrder
+    dailyReports?: SortOrder
+    autoReply?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
+  }
+
+  export type CompanySettingsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    companyId?: number
+    AND?: CompanySettingsWhereInput | CompanySettingsWhereInput[]
+    OR?: CompanySettingsWhereInput[]
+    NOT?: CompanySettingsWhereInput | CompanySettingsWhereInput[]
+    emailNotifications?: BoolFilter<"CompanySettings"> | boolean
+    newMessageAlerts?: BoolFilter<"CompanySettings"> | boolean
+    dailyReports?: BoolFilter<"CompanySettings"> | boolean
+    autoReply?: BoolFilter<"CompanySettings"> | boolean
+    createdAt?: DateTimeFilter<"CompanySettings"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanySettings"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }, "id" | "companyId">
+
+  export type CompanySettingsOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    emailNotifications?: SortOrder
+    newMessageAlerts?: SortOrder
+    dailyReports?: SortOrder
+    autoReply?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CompanySettingsCountOrderByAggregateInput
+    _avg?: CompanySettingsAvgOrderByAggregateInput
+    _max?: CompanySettingsMaxOrderByAggregateInput
+    _min?: CompanySettingsMinOrderByAggregateInput
+    _sum?: CompanySettingsSumOrderByAggregateInput
+  }
+
+  export type CompanySettingsScalarWhereWithAggregatesInput = {
+    AND?: CompanySettingsScalarWhereWithAggregatesInput | CompanySettingsScalarWhereWithAggregatesInput[]
+    OR?: CompanySettingsScalarWhereWithAggregatesInput[]
+    NOT?: CompanySettingsScalarWhereWithAggregatesInput | CompanySettingsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"CompanySettings"> | number
+    companyId?: IntWithAggregatesFilter<"CompanySettings"> | number
+    emailNotifications?: BoolWithAggregatesFilter<"CompanySettings"> | boolean
+    newMessageAlerts?: BoolWithAggregatesFilter<"CompanySettings"> | boolean
+    dailyReports?: BoolWithAggregatesFilter<"CompanySettings"> | boolean
+    autoReply?: BoolWithAggregatesFilter<"CompanySettings"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"CompanySettings"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CompanySettings"> | Date | string
+  }
+
+  export type CompanyWhatsappNumberWhereInput = {
+    AND?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
+    OR?: CompanyWhatsappNumberWhereInput[]
+    NOT?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
+    id?: StringFilter<"CompanyWhatsappNumber"> | string
+    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
+    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
+    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
+    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
+    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
+    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
+    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }
+
+  export type CompanyWhatsappNumberOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
+  }
+
+  export type CompanyWhatsappNumberWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    companyId_phoneNumber?: CompanyWhatsappNumberCompanyIdPhoneNumberCompoundUniqueInput
+    AND?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
+    OR?: CompanyWhatsappNumberWhereInput[]
+    NOT?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
+    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
+    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
+    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
+    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
+    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
+    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
+    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }, "id" | "companyId_phoneNumber">
+
+  export type CompanyWhatsappNumberOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CompanyWhatsappNumberCountOrderByAggregateInput
+    _avg?: CompanyWhatsappNumberAvgOrderByAggregateInput
+    _max?: CompanyWhatsappNumberMaxOrderByAggregateInput
+    _min?: CompanyWhatsappNumberMinOrderByAggregateInput
+    _sum?: CompanyWhatsappNumberSumOrderByAggregateInput
+  }
+
+  export type CompanyWhatsappNumberScalarWhereWithAggregatesInput = {
+    AND?: CompanyWhatsappNumberScalarWhereWithAggregatesInput | CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
+    OR?: CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
+    NOT?: CompanyWhatsappNumberScalarWhereWithAggregatesInput | CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
+    companyId?: IntWithAggregatesFilter<"CompanyWhatsappNumber"> | number
+    displayName?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
+    phoneNumber?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
+    isConnected?: BoolWithAggregatesFilter<"CompanyWhatsappNumber"> | boolean
+    messagesThisMonth?: IntWithAggregatesFilter<"CompanyWhatsappNumber"> | number
+    lastSyncedAt?: DateTimeNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string
+  }
+
+  export type InboxCustomerWhereInput = {
+    AND?: InboxCustomerWhereInput | InboxCustomerWhereInput[]
+    OR?: InboxCustomerWhereInput[]
+    NOT?: InboxCustomerWhereInput | InboxCustomerWhereInput[]
+    id?: StringFilter<"InboxCustomer"> | string
+    companyId?: IntFilter<"InboxCustomer"> | number
+    name?: StringFilter<"InboxCustomer"> | string
+    phone?: StringNullableFilter<"InboxCustomer"> | string | null
+    email?: StringNullableFilter<"InboxCustomer"> | string | null
+    address?: StringNullableFilter<"InboxCustomer"> | string | null
+    notes?: StringNullableFilter<"InboxCustomer"> | string | null
+    createdAt?: DateTimeFilter<"InboxCustomer"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxCustomer"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    conversations?: InboxConversationListRelationFilter
+  }
+
+  export type InboxCustomerOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
+    conversations?: InboxConversationOrderByRelationAggregateInput
+  }
+
+  export type InboxCustomerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    companyId_phone?: InboxCustomerCompanyIdPhoneCompoundUniqueInput
+    companyId_email?: InboxCustomerCompanyIdEmailCompoundUniqueInput
+    AND?: InboxCustomerWhereInput | InboxCustomerWhereInput[]
+    OR?: InboxCustomerWhereInput[]
+    NOT?: InboxCustomerWhereInput | InboxCustomerWhereInput[]
+    companyId?: IntFilter<"InboxCustomer"> | number
+    name?: StringFilter<"InboxCustomer"> | string
+    phone?: StringNullableFilter<"InboxCustomer"> | string | null
+    email?: StringNullableFilter<"InboxCustomer"> | string | null
+    address?: StringNullableFilter<"InboxCustomer"> | string | null
+    notes?: StringNullableFilter<"InboxCustomer"> | string | null
+    createdAt?: DateTimeFilter<"InboxCustomer"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxCustomer"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    conversations?: InboxConversationListRelationFilter
+  }, "id" | "companyId_phone" | "companyId_email">
+
+  export type InboxCustomerOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: InboxCustomerCountOrderByAggregateInput
+    _avg?: InboxCustomerAvgOrderByAggregateInput
+    _max?: InboxCustomerMaxOrderByAggregateInput
+    _min?: InboxCustomerMinOrderByAggregateInput
+    _sum?: InboxCustomerSumOrderByAggregateInput
+  }
+
+  export type InboxCustomerScalarWhereWithAggregatesInput = {
+    AND?: InboxCustomerScalarWhereWithAggregatesInput | InboxCustomerScalarWhereWithAggregatesInput[]
+    OR?: InboxCustomerScalarWhereWithAggregatesInput[]
+    NOT?: InboxCustomerScalarWhereWithAggregatesInput | InboxCustomerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InboxCustomer"> | string
+    companyId?: IntWithAggregatesFilter<"InboxCustomer"> | number
+    name?: StringWithAggregatesFilter<"InboxCustomer"> | string
+    phone?: StringNullableWithAggregatesFilter<"InboxCustomer"> | string | null
+    email?: StringNullableWithAggregatesFilter<"InboxCustomer"> | string | null
+    address?: StringNullableWithAggregatesFilter<"InboxCustomer"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"InboxCustomer"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"InboxCustomer"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"InboxCustomer"> | Date | string
+  }
+
+  export type InboxConversationWhereInput = {
+    AND?: InboxConversationWhereInput | InboxConversationWhereInput[]
+    OR?: InboxConversationWhereInput[]
+    NOT?: InboxConversationWhereInput | InboxConversationWhereInput[]
+    id?: StringFilter<"InboxConversation"> | string
+    companyId?: IntFilter<"InboxConversation"> | number
+    customerId?: StringFilter<"InboxConversation"> | string
+    subject?: StringNullableFilter<"InboxConversation"> | string | null
+    lastMessagePreview?: StringNullableFilter<"InboxConversation"> | string | null
+    lastMessageSentAt?: DateTimeNullableFilter<"InboxConversation"> | Date | string | null
+    unreadCount?: IntFilter<"InboxConversation"> | number
+    priority?: EnumInboxConversationPriorityFilter<"InboxConversation"> | $Enums.InboxConversationPriority
+    satisfactionScore?: IntNullableFilter<"InboxConversation"> | number | null
+    tags?: StringNullableListFilter<"InboxConversation">
+    assignedToId?: IntNullableFilter<"InboxConversation"> | number | null
+    isArchived?: BoolFilter<"InboxConversation"> | boolean
+    archivedAt?: DateTimeNullableFilter<"InboxConversation"> | Date | string | null
+    createdAt?: DateTimeFilter<"InboxConversation"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxConversation"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    customer?: XOR<InboxCustomerScalarRelationFilter, InboxCustomerWhereInput>
+    assignedTo?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    messages?: InboxMessageListRelationFilter
+  }
+
+  export type InboxConversationOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    customerId?: SortOrder
+    subject?: SortOrderInput | SortOrder
+    lastMessagePreview?: SortOrderInput | SortOrder
+    lastMessageSentAt?: SortOrderInput | SortOrder
+    unreadCount?: SortOrder
+    priority?: SortOrder
+    satisfactionScore?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    assignedToId?: SortOrderInput | SortOrder
+    isArchived?: SortOrder
+    archivedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
+    customer?: InboxCustomerOrderByWithRelationInput
+    assignedTo?: UserOrderByWithRelationInput
+    messages?: InboxMessageOrderByRelationAggregateInput
+  }
+
+  export type InboxConversationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: InboxConversationWhereInput | InboxConversationWhereInput[]
+    OR?: InboxConversationWhereInput[]
+    NOT?: InboxConversationWhereInput | InboxConversationWhereInput[]
+    companyId?: IntFilter<"InboxConversation"> | number
+    customerId?: StringFilter<"InboxConversation"> | string
+    subject?: StringNullableFilter<"InboxConversation"> | string | null
+    lastMessagePreview?: StringNullableFilter<"InboxConversation"> | string | null
+    lastMessageSentAt?: DateTimeNullableFilter<"InboxConversation"> | Date | string | null
+    unreadCount?: IntFilter<"InboxConversation"> | number
+    priority?: EnumInboxConversationPriorityFilter<"InboxConversation"> | $Enums.InboxConversationPriority
+    satisfactionScore?: IntNullableFilter<"InboxConversation"> | number | null
+    tags?: StringNullableListFilter<"InboxConversation">
+    assignedToId?: IntNullableFilter<"InboxConversation"> | number | null
+    isArchived?: BoolFilter<"InboxConversation"> | boolean
+    archivedAt?: DateTimeNullableFilter<"InboxConversation"> | Date | string | null
+    createdAt?: DateTimeFilter<"InboxConversation"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxConversation"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    customer?: XOR<InboxCustomerScalarRelationFilter, InboxCustomerWhereInput>
+    assignedTo?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    messages?: InboxMessageListRelationFilter
+  }, "id">
+
+  export type InboxConversationOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    customerId?: SortOrder
+    subject?: SortOrderInput | SortOrder
+    lastMessagePreview?: SortOrderInput | SortOrder
+    lastMessageSentAt?: SortOrderInput | SortOrder
+    unreadCount?: SortOrder
+    priority?: SortOrder
+    satisfactionScore?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    assignedToId?: SortOrderInput | SortOrder
+    isArchived?: SortOrder
+    archivedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: InboxConversationCountOrderByAggregateInput
+    _avg?: InboxConversationAvgOrderByAggregateInput
+    _max?: InboxConversationMaxOrderByAggregateInput
+    _min?: InboxConversationMinOrderByAggregateInput
+    _sum?: InboxConversationSumOrderByAggregateInput
+  }
+
+  export type InboxConversationScalarWhereWithAggregatesInput = {
+    AND?: InboxConversationScalarWhereWithAggregatesInput | InboxConversationScalarWhereWithAggregatesInput[]
+    OR?: InboxConversationScalarWhereWithAggregatesInput[]
+    NOT?: InboxConversationScalarWhereWithAggregatesInput | InboxConversationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InboxConversation"> | string
+    companyId?: IntWithAggregatesFilter<"InboxConversation"> | number
+    customerId?: StringWithAggregatesFilter<"InboxConversation"> | string
+    subject?: StringNullableWithAggregatesFilter<"InboxConversation"> | string | null
+    lastMessagePreview?: StringNullableWithAggregatesFilter<"InboxConversation"> | string | null
+    lastMessageSentAt?: DateTimeNullableWithAggregatesFilter<"InboxConversation"> | Date | string | null
+    unreadCount?: IntWithAggregatesFilter<"InboxConversation"> | number
+    priority?: EnumInboxConversationPriorityWithAggregatesFilter<"InboxConversation"> | $Enums.InboxConversationPriority
+    satisfactionScore?: IntNullableWithAggregatesFilter<"InboxConversation"> | number | null
+    tags?: StringNullableListFilter<"InboxConversation">
+    assignedToId?: IntNullableWithAggregatesFilter<"InboxConversation"> | number | null
+    isArchived?: BoolWithAggregatesFilter<"InboxConversation"> | boolean
+    archivedAt?: DateTimeNullableWithAggregatesFilter<"InboxConversation"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"InboxConversation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"InboxConversation"> | Date | string
+  }
+
+  export type InboxMessageWhereInput = {
+    AND?: InboxMessageWhereInput | InboxMessageWhereInput[]
+    OR?: InboxMessageWhereInput[]
+    NOT?: InboxMessageWhereInput | InboxMessageWhereInput[]
+    id?: StringFilter<"InboxMessage"> | string
+    companyId?: IntFilter<"InboxMessage"> | number
+    conversationId?: StringFilter<"InboxMessage"> | string
+    senderType?: EnumInboxMessageSenderTypeFilter<"InboxMessage"> | $Enums.InboxMessageSenderType
+    senderUserId?: IntNullableFilter<"InboxMessage"> | number | null
+    content?: StringFilter<"InboxMessage"> | string
+    attachments?: JsonNullableFilter<"InboxMessage">
+    status?: EnumInboxMessageStatusFilter<"InboxMessage"> | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFilter<"InboxMessage"> | Date | string
+    createdAt?: DateTimeFilter<"InboxMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxMessage"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    conversation?: XOR<InboxConversationScalarRelationFilter, InboxConversationWhereInput>
+    senderUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type InboxMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    conversationId?: SortOrder
+    senderType?: SortOrder
+    senderUserId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    attachments?: SortOrderInput | SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
+    conversation?: InboxConversationOrderByWithRelationInput
+    senderUser?: UserOrderByWithRelationInput
+  }
+
+  export type InboxMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: InboxMessageWhereInput | InboxMessageWhereInput[]
+    OR?: InboxMessageWhereInput[]
+    NOT?: InboxMessageWhereInput | InboxMessageWhereInput[]
+    companyId?: IntFilter<"InboxMessage"> | number
+    conversationId?: StringFilter<"InboxMessage"> | string
+    senderType?: EnumInboxMessageSenderTypeFilter<"InboxMessage"> | $Enums.InboxMessageSenderType
+    senderUserId?: IntNullableFilter<"InboxMessage"> | number | null
+    content?: StringFilter<"InboxMessage"> | string
+    attachments?: JsonNullableFilter<"InboxMessage">
+    status?: EnumInboxMessageStatusFilter<"InboxMessage"> | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFilter<"InboxMessage"> | Date | string
+    createdAt?: DateTimeFilter<"InboxMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxMessage"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    conversation?: XOR<InboxConversationScalarRelationFilter, InboxConversationWhereInput>
+    senderUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type InboxMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    conversationId?: SortOrder
+    senderType?: SortOrder
+    senderUserId?: SortOrderInput | SortOrder
+    content?: SortOrder
+    attachments?: SortOrderInput | SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: InboxMessageCountOrderByAggregateInput
+    _avg?: InboxMessageAvgOrderByAggregateInput
+    _max?: InboxMessageMaxOrderByAggregateInput
+    _min?: InboxMessageMinOrderByAggregateInput
+    _sum?: InboxMessageSumOrderByAggregateInput
+  }
+
+  export type InboxMessageScalarWhereWithAggregatesInput = {
+    AND?: InboxMessageScalarWhereWithAggregatesInput | InboxMessageScalarWhereWithAggregatesInput[]
+    OR?: InboxMessageScalarWhereWithAggregatesInput[]
+    NOT?: InboxMessageScalarWhereWithAggregatesInput | InboxMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InboxMessage"> | string
+    companyId?: IntWithAggregatesFilter<"InboxMessage"> | number
+    conversationId?: StringWithAggregatesFilter<"InboxMessage"> | string
+    senderType?: EnumInboxMessageSenderTypeWithAggregatesFilter<"InboxMessage"> | $Enums.InboxMessageSenderType
+    senderUserId?: IntNullableWithAggregatesFilter<"InboxMessage"> | number | null
+    content?: StringWithAggregatesFilter<"InboxMessage"> | string
+    attachments?: JsonNullableWithAggregatesFilter<"InboxMessage">
+    status?: EnumInboxMessageStatusWithAggregatesFilter<"InboxMessage"> | $Enums.InboxMessageStatus
+    sentAt?: DateTimeWithAggregatesFilter<"InboxMessage"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"InboxMessage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"InboxMessage"> | Date | string
+  }
+
   export type UserCreateInput = {
     email: string
     provider?: $Enums.Provider
@@ -15345,6 +28304,11 @@ export namespace Prisma {
     avatar?: FileCreateNestedOneWithoutAvatarForInput
     company?: CompanyCreateNestedOneWithoutUserInput
     files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -15379,6 +28343,11 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserUpdateInput = {
@@ -15412,6 +28381,11 @@ export namespace Prisma {
     avatar?: FileUpdateOneWithoutAvatarForNestedInput
     company?: CompanyUpdateOneWithoutUserNestedInput
     files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -15446,6 +28420,11 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -15840,6 +28819,14 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutCompanyInput
     CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
     UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -15853,6 +28840,14 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutCompanyInput
     CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
     UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -15865,6 +28860,14 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutCompanyNestedInput
     CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
     UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -15878,6 +28881,14 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
     CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
     UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -15904,6 +28915,283 @@ export namespace Prisma {
     tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KnowledgeItemCreateInput = {
+    id?: string
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutKnowledgeItemsInput
+    createdBy?: UserCreateNestedOneWithoutKnowledgeItemsInput
+  }
+
+  export type KnowledgeItemUncheckedCreateInput = {
+    id?: string
+    companyId: number
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type KnowledgeItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutKnowledgeItemsNestedInput
+    createdBy?: UserUpdateOneWithoutKnowledgeItemsNestedInput
+  }
+
+  export type KnowledgeItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type KnowledgeItemCreateManyInput = {
+    id?: string
+    companyId: number
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type KnowledgeItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KnowledgeItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type QuickAnswerCreateInput = {
+    id?: string
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutQuickAnswersInput
+    createdBy?: UserCreateNestedOneWithoutQuickAnswersInput
+  }
+
+  export type QuickAnswerUncheckedCreateInput = {
+    id?: string
+    companyId: number
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type QuickAnswerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutQuickAnswersNestedInput
+    createdBy?: UserUpdateOneWithoutQuickAnswersNestedInput
+  }
+
+  export type QuickAnswerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type QuickAnswerCreateManyInput = {
+    id?: string
+    companyId: number
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type QuickAnswerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuickAnswerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type AiTemplateCreateInput = {
+    id?: string
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutAiTemplatesInput
+    createdBy?: UserCreateNestedOneWithoutAiTemplatesInput
+    options?: AiTemplateOptionCreateNestedManyWithoutTemplateInput
+  }
+
+  export type AiTemplateUncheckedCreateInput = {
+    id?: string
+    companyId: number
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+    options?: AiTemplateOptionUncheckedCreateNestedManyWithoutTemplateInput
+  }
+
+  export type AiTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutAiTemplatesNestedInput
+    createdBy?: UserUpdateOneWithoutAiTemplatesNestedInput
+    options?: AiTemplateOptionUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type AiTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    options?: AiTemplateOptionUncheckedUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type AiTemplateCreateManyInput = {
+    id?: string
+    companyId: number
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type AiTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type AiTemplateOptionCreateInput = {
+    id?: string
+    label: string
+    value: string
+    createdAt?: Date | string
+    template: AiTemplateCreateNestedOneWithoutOptionsInput
+  }
+
+  export type AiTemplateOptionUncheckedCreateInput = {
+    id?: string
+    templateId: string
+    label: string
+    value: string
+    createdAt?: Date | string
+  }
+
+  export type AiTemplateOptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    template?: AiTemplateUpdateOneRequiredWithoutOptionsNestedInput
+  }
+
+  export type AiTemplateOptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiTemplateOptionCreateManyInput = {
+    id?: string
+    templateId: string
+    label: string
+    value: string
+    createdAt?: Date | string
+  }
+
+  export type AiTemplateOptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiTemplateOptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CompanyMemberCreateInput = {
@@ -16318,6 +29606,471 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CompanySettingsCreateInput = {
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutSettingsInput
+  }
+
+  export type CompanySettingsUncheckedCreateInput = {
+    id?: number
+    companyId: number
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanySettingsUpdateInput = {
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    newMessageAlerts?: BoolFieldUpdateOperationsInput | boolean
+    dailyReports?: BoolFieldUpdateOperationsInput | boolean
+    autoReply?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutSettingsNestedInput
+  }
+
+  export type CompanySettingsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    newMessageAlerts?: BoolFieldUpdateOperationsInput | boolean
+    dailyReports?: BoolFieldUpdateOperationsInput | boolean
+    autoReply?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanySettingsCreateManyInput = {
+    id?: number
+    companyId: number
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanySettingsUpdateManyMutationInput = {
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    newMessageAlerts?: BoolFieldUpdateOperationsInput | boolean
+    dailyReports?: BoolFieldUpdateOperationsInput | boolean
+    autoReply?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanySettingsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    companyId?: IntFieldUpdateOperationsInput | number
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    newMessageAlerts?: BoolFieldUpdateOperationsInput | boolean
+    dailyReports?: BoolFieldUpdateOperationsInput | boolean
+    autoReply?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyWhatsappNumberCreateInput = {
+    id?: string
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutWhatsappNumbersInput
+  }
+
+  export type CompanyWhatsappNumberUncheckedCreateInput = {
+    id?: string
+    companyId: number
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanyWhatsappNumberUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput
+  }
+
+  export type CompanyWhatsappNumberUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyWhatsappNumberCreateManyInput = {
+    id?: string
+    companyId: number
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanyWhatsappNumberUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyWhatsappNumberUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxCustomerCreateInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    email?: string | null
+    address?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxCustomersInput
+    conversations?: InboxConversationCreateNestedManyWithoutCustomerInput
+  }
+
+  export type InboxCustomerUncheckedCreateInput = {
+    id?: string
+    companyId: number
+    name: string
+    phone?: string | null
+    email?: string | null
+    address?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: InboxConversationUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type InboxCustomerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxCustomersNestedInput
+    conversations?: InboxConversationUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type InboxCustomerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: InboxConversationUncheckedUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type InboxCustomerCreateManyInput = {
+    id?: string
+    companyId: number
+    name: string
+    phone?: string | null
+    email?: string | null
+    address?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxCustomerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxCustomerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxConversationCreateInput = {
+    id?: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxConversationsInput
+    customer: InboxCustomerCreateNestedOneWithoutConversationsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedInboxConversationsInput
+    messages?: InboxMessageCreateNestedManyWithoutConversationInput
+  }
+
+  export type InboxConversationUncheckedCreateInput = {
+    id?: string
+    companyId: number
+    customerId: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    assignedToId?: number | null
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: InboxMessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type InboxConversationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxConversationsNestedInput
+    customer?: InboxCustomerUpdateOneRequiredWithoutConversationsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedInboxConversationsNestedInput
+    messages?: InboxMessageUpdateManyWithoutConversationNestedInput
+  }
+
+  export type InboxConversationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    customerId?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    assignedToId?: NullableIntFieldUpdateOperationsInput | number | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: InboxMessageUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type InboxConversationCreateManyInput = {
+    id?: string
+    companyId: number
+    customerId: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    assignedToId?: number | null
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxConversationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxConversationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    customerId?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    assignedToId?: NullableIntFieldUpdateOperationsInput | number | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageCreateInput = {
+    id?: string
+    senderType: $Enums.InboxMessageSenderType
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxMessagesInput
+    conversation: InboxConversationCreateNestedOneWithoutMessagesInput
+    senderUser?: UserCreateNestedOneWithoutInboxMessagesInput
+  }
+
+  export type InboxMessageUncheckedCreateInput = {
+    id?: string
+    companyId: number
+    conversationId: string
+    senderType: $Enums.InboxMessageSenderType
+    senderUserId?: number | null
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxMessagesNestedInput
+    conversation?: InboxConversationUpdateOneRequiredWithoutMessagesNestedInput
+    senderUser?: UserUpdateOneWithoutInboxMessagesNestedInput
+  }
+
+  export type InboxMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    conversationId?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    senderUserId?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageCreateManyInput = {
+    id?: string
+    companyId: number
+    conversationId: string
+    senderType: $Enums.InboxMessageSenderType
+    senderUserId?: number | null
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    conversationId?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    senderUserId?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -16452,6 +30205,36 @@ export namespace Prisma {
     none?: FileWhereInput
   }
 
+  export type KnowledgeItemListRelationFilter = {
+    every?: KnowledgeItemWhereInput
+    some?: KnowledgeItemWhereInput
+    none?: KnowledgeItemWhereInput
+  }
+
+  export type QuickAnswerListRelationFilter = {
+    every?: QuickAnswerWhereInput
+    some?: QuickAnswerWhereInput
+    none?: QuickAnswerWhereInput
+  }
+
+  export type AiTemplateListRelationFilter = {
+    every?: AiTemplateWhereInput
+    some?: AiTemplateWhereInput
+    none?: AiTemplateWhereInput
+  }
+
+  export type InboxConversationListRelationFilter = {
+    every?: InboxConversationWhereInput
+    some?: InboxConversationWhereInput
+    none?: InboxConversationWhereInput
+  }
+
+  export type InboxMessageListRelationFilter = {
+    every?: InboxMessageWhereInput
+    some?: InboxMessageWhereInput
+    none?: InboxMessageWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -16470,6 +30253,26 @@ export namespace Prisma {
   }
 
   export type FileOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type KnowledgeItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type QuickAnswerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AiTemplateOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InboxConversationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InboxMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16903,11 +30706,36 @@ export namespace Prisma {
     none?: UsageTrackingWhereInput
   }
 
+  export type InboxCustomerListRelationFilter = {
+    every?: InboxCustomerWhereInput
+    some?: InboxCustomerWhereInput
+    none?: InboxCustomerWhereInput
+  }
+
+  export type CompanySettingsNullableScalarRelationFilter = {
+    is?: CompanySettingsWhereInput | null
+    isNot?: CompanySettingsWhereInput | null
+  }
+
+  export type CompanyWhatsappNumberListRelationFilter = {
+    every?: CompanyWhatsappNumberWhereInput
+    some?: CompanyWhatsappNumberWhereInput
+    none?: CompanyWhatsappNumberWhereInput
+  }
+
   export type CustomerSubscriptionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type UsageTrackingOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InboxCustomerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16946,6 +30774,210 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type EnumKnowledgeItemTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.KnowledgeItemType | EnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.KnowledgeItemType[] | ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KnowledgeItemType[] | ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumKnowledgeItemTypeFilter<$PrismaModel> | $Enums.KnowledgeItemType
+  }
+
+  export type CompanyScalarRelationFilter = {
+    is?: CompanyWhereInput
+    isNot?: CompanyWhereInput
+  }
+
+  export type KnowledgeItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type KnowledgeItemAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type KnowledgeItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type KnowledgeItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type KnowledgeItemSumOrderByAggregateInput = {
+    companyId?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type EnumKnowledgeItemTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KnowledgeItemType | EnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.KnowledgeItemType[] | ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KnowledgeItemType[] | ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumKnowledgeItemTypeWithAggregatesFilter<$PrismaModel> | $Enums.KnowledgeItemType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKnowledgeItemTypeFilter<$PrismaModel>
+    _max?: NestedEnumKnowledgeItemTypeFilter<$PrismaModel>
+  }
+
+  export type QuickAnswerCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type QuickAnswerAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type QuickAnswerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type QuickAnswerMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type QuickAnswerSumOrderByAggregateInput = {
+    companyId?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type EnumAiTemplateCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiTemplateCategory | EnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.AiTemplateCategory[] | ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiTemplateCategory[] | ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiTemplateCategoryFilter<$PrismaModel> | $Enums.AiTemplateCategory
+  }
+
+  export type AiTemplateOptionListRelationFilter = {
+    every?: AiTemplateOptionWhereInput
+    some?: AiTemplateOptionWhereInput
+    none?: AiTemplateOptionWhereInput
+  }
+
+  export type AiTemplateOptionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AiTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type AiTemplateAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type AiTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type AiTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type AiTemplateSumOrderByAggregateInput = {
+    companyId?: SortOrder
+    createdById?: SortOrder
+  }
+
+  export type EnumAiTemplateCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiTemplateCategory | EnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.AiTemplateCategory[] | ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiTemplateCategory[] | ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiTemplateCategoryWithAggregatesFilter<$PrismaModel> | $Enums.AiTemplateCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAiTemplateCategoryFilter<$PrismaModel>
+    _max?: NestedEnumAiTemplateCategoryFilter<$PrismaModel>
+  }
+
+  export type AiTemplateScalarRelationFilter = {
+    is?: AiTemplateWhereInput
+    isNot?: AiTemplateWhereInput
+  }
+
+  export type AiTemplateOptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    templateId?: SortOrder
+    label?: SortOrder
+    value?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiTemplateOptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    templateId?: SortOrder
+    label?: SortOrder
+    value?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiTemplateOptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    templateId?: SortOrder
+    label?: SortOrder
+    value?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -16956,11 +30988,6 @@ export namespace Prisma {
     in?: $Enums.CompanyMemberStatus[] | ListEnumCompanyMemberStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.CompanyMemberStatus[] | ListEnumCompanyMemberStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumCompanyMemberStatusFilter<$PrismaModel> | $Enums.CompanyMemberStatus
-  }
-
-  export type CompanyScalarRelationFilter = {
-    is?: CompanyWhereInput
-    isNot?: CompanyWhereInput
   }
 
   export type CompanyMemberUserIdCompanyIdCompoundUniqueInput = {
@@ -17316,6 +31343,388 @@ export namespace Prisma {
     _max?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
   }
 
+  export type CompanySettingsCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    emailNotifications?: SortOrder
+    newMessageAlerts?: SortOrder
+    dailyReports?: SortOrder
+    autoReply?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CompanySettingsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+  }
+
+  export type CompanySettingsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    emailNotifications?: SortOrder
+    newMessageAlerts?: SortOrder
+    dailyReports?: SortOrder
+    autoReply?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CompanySettingsMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    emailNotifications?: SortOrder
+    newMessageAlerts?: SortOrder
+    dailyReports?: SortOrder
+    autoReply?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CompanySettingsSumOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberCompanyIdPhoneNumberCompoundUniqueInput = {
+    companyId: number
+    phoneNumber: string
+  }
+
+  export type CompanyWhatsappNumberCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+    messagesThisMonth?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberSumOrderByAggregateInput = {
+    companyId?: SortOrder
+    messagesThisMonth?: SortOrder
+  }
+
+  export type InboxCustomerCompanyIdPhoneCompoundUniqueInput = {
+    companyId: number
+    phone: string
+  }
+
+  export type InboxCustomerCompanyIdEmailCompoundUniqueInput = {
+    companyId: number
+    email: string
+  }
+
+  export type InboxCustomerCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    address?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxCustomerAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+  }
+
+  export type InboxCustomerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    address?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxCustomerMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    name?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    address?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxCustomerSumOrderByAggregateInput = {
+    companyId?: SortOrder
+  }
+
+  export type EnumInboxConversationPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxConversationPriority | EnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxConversationPriority[] | ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxConversationPriority[] | ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxConversationPriorityFilter<$PrismaModel> | $Enums.InboxConversationPriority
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type InboxCustomerScalarRelationFilter = {
+    is?: InboxCustomerWhereInput
+    isNot?: InboxCustomerWhereInput
+  }
+
+  export type InboxConversationCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    customerId?: SortOrder
+    subject?: SortOrder
+    lastMessagePreview?: SortOrder
+    lastMessageSentAt?: SortOrder
+    unreadCount?: SortOrder
+    priority?: SortOrder
+    satisfactionScore?: SortOrder
+    tags?: SortOrder
+    assignedToId?: SortOrder
+    isArchived?: SortOrder
+    archivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxConversationAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+    unreadCount?: SortOrder
+    satisfactionScore?: SortOrder
+    assignedToId?: SortOrder
+  }
+
+  export type InboxConversationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    customerId?: SortOrder
+    subject?: SortOrder
+    lastMessagePreview?: SortOrder
+    lastMessageSentAt?: SortOrder
+    unreadCount?: SortOrder
+    priority?: SortOrder
+    satisfactionScore?: SortOrder
+    assignedToId?: SortOrder
+    isArchived?: SortOrder
+    archivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxConversationMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    customerId?: SortOrder
+    subject?: SortOrder
+    lastMessagePreview?: SortOrder
+    lastMessageSentAt?: SortOrder
+    unreadCount?: SortOrder
+    priority?: SortOrder
+    satisfactionScore?: SortOrder
+    assignedToId?: SortOrder
+    isArchived?: SortOrder
+    archivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxConversationSumOrderByAggregateInput = {
+    companyId?: SortOrder
+    unreadCount?: SortOrder
+    satisfactionScore?: SortOrder
+    assignedToId?: SortOrder
+  }
+
+  export type EnumInboxConversationPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxConversationPriority | EnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxConversationPriority[] | ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxConversationPriority[] | ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxConversationPriorityWithAggregatesFilter<$PrismaModel> | $Enums.InboxConversationPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInboxConversationPriorityFilter<$PrismaModel>
+    _max?: NestedEnumInboxConversationPriorityFilter<$PrismaModel>
+  }
+
+  export type EnumInboxMessageSenderTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxMessageSenderType | EnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxMessageSenderType[] | ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxMessageSenderType[] | ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxMessageSenderTypeFilter<$PrismaModel> | $Enums.InboxMessageSenderType
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type EnumInboxMessageStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxMessageStatus | EnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxMessageStatus[] | ListEnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxMessageStatus[] | ListEnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxMessageStatusFilter<$PrismaModel> | $Enums.InboxMessageStatus
+  }
+
+  export type InboxConversationScalarRelationFilter = {
+    is?: InboxConversationWhereInput
+    isNot?: InboxConversationWhereInput
+  }
+
+  export type InboxMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    conversationId?: SortOrder
+    senderType?: SortOrder
+    senderUserId?: SortOrder
+    content?: SortOrder
+    attachments?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxMessageAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+    senderUserId?: SortOrder
+  }
+
+  export type InboxMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    conversationId?: SortOrder
+    senderType?: SortOrder
+    senderUserId?: SortOrder
+    content?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    conversationId?: SortOrder
+    senderType?: SortOrder
+    senderUserId?: SortOrder
+    content?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InboxMessageSumOrderByAggregateInput = {
+    companyId?: SortOrder
+    senderUserId?: SortOrder
+  }
+
+  export type EnumInboxMessageSenderTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxMessageSenderType | EnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxMessageSenderType[] | ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxMessageSenderType[] | ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxMessageSenderTypeWithAggregatesFilter<$PrismaModel> | $Enums.InboxMessageSenderType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInboxMessageSenderTypeFilter<$PrismaModel>
+    _max?: NestedEnumInboxMessageSenderTypeFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type EnumInboxMessageStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxMessageStatus | EnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxMessageStatus[] | ListEnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxMessageStatus[] | ListEnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxMessageStatusWithAggregatesFilter<$PrismaModel> | $Enums.InboxMessageStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInboxMessageStatusFilter<$PrismaModel>
+    _max?: NestedEnumInboxMessageStatusFilter<$PrismaModel>
+  }
+
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -17356,6 +31765,41 @@ export namespace Prisma {
     connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
   }
 
+  export type KnowledgeItemCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<KnowledgeItemCreateWithoutCreatedByInput, KnowledgeItemUncheckedCreateWithoutCreatedByInput> | KnowledgeItemCreateWithoutCreatedByInput[] | KnowledgeItemUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: KnowledgeItemCreateOrConnectWithoutCreatedByInput | KnowledgeItemCreateOrConnectWithoutCreatedByInput[]
+    createMany?: KnowledgeItemCreateManyCreatedByInputEnvelope
+    connect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+  }
+
+  export type QuickAnswerCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<QuickAnswerCreateWithoutCreatedByInput, QuickAnswerUncheckedCreateWithoutCreatedByInput> | QuickAnswerCreateWithoutCreatedByInput[] | QuickAnswerUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: QuickAnswerCreateOrConnectWithoutCreatedByInput | QuickAnswerCreateOrConnectWithoutCreatedByInput[]
+    createMany?: QuickAnswerCreateManyCreatedByInputEnvelope
+    connect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+  }
+
+  export type AiTemplateCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<AiTemplateCreateWithoutCreatedByInput, AiTemplateUncheckedCreateWithoutCreatedByInput> | AiTemplateCreateWithoutCreatedByInput[] | AiTemplateUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutCreatedByInput | AiTemplateCreateOrConnectWithoutCreatedByInput[]
+    createMany?: AiTemplateCreateManyCreatedByInputEnvelope
+    connect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+  }
+
+  export type InboxConversationCreateNestedManyWithoutAssignedToInput = {
+    create?: XOR<InboxConversationCreateWithoutAssignedToInput, InboxConversationUncheckedCreateWithoutAssignedToInput> | InboxConversationCreateWithoutAssignedToInput[] | InboxConversationUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutAssignedToInput | InboxConversationCreateOrConnectWithoutAssignedToInput[]
+    createMany?: InboxConversationCreateManyAssignedToInputEnvelope
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+  }
+
+  export type InboxMessageCreateNestedManyWithoutSenderUserInput = {
+    create?: XOR<InboxMessageCreateWithoutSenderUserInput, InboxMessageUncheckedCreateWithoutSenderUserInput> | InboxMessageCreateWithoutSenderUserInput[] | InboxMessageUncheckedCreateWithoutSenderUserInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutSenderUserInput | InboxMessageCreateOrConnectWithoutSenderUserInput[]
+    createMany?: InboxMessageCreateManySenderUserInputEnvelope
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -17382,6 +31826,41 @@ export namespace Prisma {
     connectOrCreate?: FileCreateOrConnectWithoutUserInput | FileCreateOrConnectWithoutUserInput[]
     createMany?: FileCreateManyUserInputEnvelope
     connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
+  }
+
+  export type KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<KnowledgeItemCreateWithoutCreatedByInput, KnowledgeItemUncheckedCreateWithoutCreatedByInput> | KnowledgeItemCreateWithoutCreatedByInput[] | KnowledgeItemUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: KnowledgeItemCreateOrConnectWithoutCreatedByInput | KnowledgeItemCreateOrConnectWithoutCreatedByInput[]
+    createMany?: KnowledgeItemCreateManyCreatedByInputEnvelope
+    connect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+  }
+
+  export type QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<QuickAnswerCreateWithoutCreatedByInput, QuickAnswerUncheckedCreateWithoutCreatedByInput> | QuickAnswerCreateWithoutCreatedByInput[] | QuickAnswerUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: QuickAnswerCreateOrConnectWithoutCreatedByInput | QuickAnswerCreateOrConnectWithoutCreatedByInput[]
+    createMany?: QuickAnswerCreateManyCreatedByInputEnvelope
+    connect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+  }
+
+  export type AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<AiTemplateCreateWithoutCreatedByInput, AiTemplateUncheckedCreateWithoutCreatedByInput> | AiTemplateCreateWithoutCreatedByInput[] | AiTemplateUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutCreatedByInput | AiTemplateCreateOrConnectWithoutCreatedByInput[]
+    createMany?: AiTemplateCreateManyCreatedByInputEnvelope
+    connect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+  }
+
+  export type InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput = {
+    create?: XOR<InboxConversationCreateWithoutAssignedToInput, InboxConversationUncheckedCreateWithoutAssignedToInput> | InboxConversationCreateWithoutAssignedToInput[] | InboxConversationUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutAssignedToInput | InboxConversationCreateOrConnectWithoutAssignedToInput[]
+    createMany?: InboxConversationCreateManyAssignedToInputEnvelope
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+  }
+
+  export type InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput = {
+    create?: XOR<InboxMessageCreateWithoutSenderUserInput, InboxMessageUncheckedCreateWithoutSenderUserInput> | InboxMessageCreateWithoutSenderUserInput[] | InboxMessageUncheckedCreateWithoutSenderUserInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutSenderUserInput | InboxMessageCreateOrConnectWithoutSenderUserInput[]
+    createMany?: InboxMessageCreateManySenderUserInputEnvelope
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -17492,6 +31971,76 @@ export namespace Prisma {
     deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
   }
 
+  export type KnowledgeItemUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<KnowledgeItemCreateWithoutCreatedByInput, KnowledgeItemUncheckedCreateWithoutCreatedByInput> | KnowledgeItemCreateWithoutCreatedByInput[] | KnowledgeItemUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: KnowledgeItemCreateOrConnectWithoutCreatedByInput | KnowledgeItemCreateOrConnectWithoutCreatedByInput[]
+    upsert?: KnowledgeItemUpsertWithWhereUniqueWithoutCreatedByInput | KnowledgeItemUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: KnowledgeItemCreateManyCreatedByInputEnvelope
+    set?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    disconnect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    delete?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    connect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    update?: KnowledgeItemUpdateWithWhereUniqueWithoutCreatedByInput | KnowledgeItemUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: KnowledgeItemUpdateManyWithWhereWithoutCreatedByInput | KnowledgeItemUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: KnowledgeItemScalarWhereInput | KnowledgeItemScalarWhereInput[]
+  }
+
+  export type QuickAnswerUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<QuickAnswerCreateWithoutCreatedByInput, QuickAnswerUncheckedCreateWithoutCreatedByInput> | QuickAnswerCreateWithoutCreatedByInput[] | QuickAnswerUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: QuickAnswerCreateOrConnectWithoutCreatedByInput | QuickAnswerCreateOrConnectWithoutCreatedByInput[]
+    upsert?: QuickAnswerUpsertWithWhereUniqueWithoutCreatedByInput | QuickAnswerUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: QuickAnswerCreateManyCreatedByInputEnvelope
+    set?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    disconnect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    delete?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    connect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    update?: QuickAnswerUpdateWithWhereUniqueWithoutCreatedByInput | QuickAnswerUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: QuickAnswerUpdateManyWithWhereWithoutCreatedByInput | QuickAnswerUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: QuickAnswerScalarWhereInput | QuickAnswerScalarWhereInput[]
+  }
+
+  export type AiTemplateUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<AiTemplateCreateWithoutCreatedByInput, AiTemplateUncheckedCreateWithoutCreatedByInput> | AiTemplateCreateWithoutCreatedByInput[] | AiTemplateUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutCreatedByInput | AiTemplateCreateOrConnectWithoutCreatedByInput[]
+    upsert?: AiTemplateUpsertWithWhereUniqueWithoutCreatedByInput | AiTemplateUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: AiTemplateCreateManyCreatedByInputEnvelope
+    set?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    disconnect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    delete?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    connect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    update?: AiTemplateUpdateWithWhereUniqueWithoutCreatedByInput | AiTemplateUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: AiTemplateUpdateManyWithWhereWithoutCreatedByInput | AiTemplateUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: AiTemplateScalarWhereInput | AiTemplateScalarWhereInput[]
+  }
+
+  export type InboxConversationUpdateManyWithoutAssignedToNestedInput = {
+    create?: XOR<InboxConversationCreateWithoutAssignedToInput, InboxConversationUncheckedCreateWithoutAssignedToInput> | InboxConversationCreateWithoutAssignedToInput[] | InboxConversationUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutAssignedToInput | InboxConversationCreateOrConnectWithoutAssignedToInput[]
+    upsert?: InboxConversationUpsertWithWhereUniqueWithoutAssignedToInput | InboxConversationUpsertWithWhereUniqueWithoutAssignedToInput[]
+    createMany?: InboxConversationCreateManyAssignedToInputEnvelope
+    set?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    disconnect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    delete?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    update?: InboxConversationUpdateWithWhereUniqueWithoutAssignedToInput | InboxConversationUpdateWithWhereUniqueWithoutAssignedToInput[]
+    updateMany?: InboxConversationUpdateManyWithWhereWithoutAssignedToInput | InboxConversationUpdateManyWithWhereWithoutAssignedToInput[]
+    deleteMany?: InboxConversationScalarWhereInput | InboxConversationScalarWhereInput[]
+  }
+
+  export type InboxMessageUpdateManyWithoutSenderUserNestedInput = {
+    create?: XOR<InboxMessageCreateWithoutSenderUserInput, InboxMessageUncheckedCreateWithoutSenderUserInput> | InboxMessageCreateWithoutSenderUserInput[] | InboxMessageUncheckedCreateWithoutSenderUserInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutSenderUserInput | InboxMessageCreateOrConnectWithoutSenderUserInput[]
+    upsert?: InboxMessageUpsertWithWhereUniqueWithoutSenderUserInput | InboxMessageUpsertWithWhereUniqueWithoutSenderUserInput[]
+    createMany?: InboxMessageCreateManySenderUserInputEnvelope
+    set?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    disconnect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    delete?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    update?: InboxMessageUpdateWithWhereUniqueWithoutSenderUserInput | InboxMessageUpdateWithWhereUniqueWithoutSenderUserInput[]
+    updateMany?: InboxMessageUpdateManyWithWhereWithoutSenderUserInput | InboxMessageUpdateManyWithWhereWithoutSenderUserInput[]
+    deleteMany?: InboxMessageScalarWhereInput | InboxMessageScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -17562,6 +32111,76 @@ export namespace Prisma {
     update?: FileUpdateWithWhereUniqueWithoutUserInput | FileUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: FileUpdateManyWithWhereWithoutUserInput | FileUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
+  }
+
+  export type KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<KnowledgeItemCreateWithoutCreatedByInput, KnowledgeItemUncheckedCreateWithoutCreatedByInput> | KnowledgeItemCreateWithoutCreatedByInput[] | KnowledgeItemUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: KnowledgeItemCreateOrConnectWithoutCreatedByInput | KnowledgeItemCreateOrConnectWithoutCreatedByInput[]
+    upsert?: KnowledgeItemUpsertWithWhereUniqueWithoutCreatedByInput | KnowledgeItemUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: KnowledgeItemCreateManyCreatedByInputEnvelope
+    set?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    disconnect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    delete?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    connect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    update?: KnowledgeItemUpdateWithWhereUniqueWithoutCreatedByInput | KnowledgeItemUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: KnowledgeItemUpdateManyWithWhereWithoutCreatedByInput | KnowledgeItemUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: KnowledgeItemScalarWhereInput | KnowledgeItemScalarWhereInput[]
+  }
+
+  export type QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<QuickAnswerCreateWithoutCreatedByInput, QuickAnswerUncheckedCreateWithoutCreatedByInput> | QuickAnswerCreateWithoutCreatedByInput[] | QuickAnswerUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: QuickAnswerCreateOrConnectWithoutCreatedByInput | QuickAnswerCreateOrConnectWithoutCreatedByInput[]
+    upsert?: QuickAnswerUpsertWithWhereUniqueWithoutCreatedByInput | QuickAnswerUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: QuickAnswerCreateManyCreatedByInputEnvelope
+    set?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    disconnect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    delete?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    connect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    update?: QuickAnswerUpdateWithWhereUniqueWithoutCreatedByInput | QuickAnswerUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: QuickAnswerUpdateManyWithWhereWithoutCreatedByInput | QuickAnswerUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: QuickAnswerScalarWhereInput | QuickAnswerScalarWhereInput[]
+  }
+
+  export type AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<AiTemplateCreateWithoutCreatedByInput, AiTemplateUncheckedCreateWithoutCreatedByInput> | AiTemplateCreateWithoutCreatedByInput[] | AiTemplateUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutCreatedByInput | AiTemplateCreateOrConnectWithoutCreatedByInput[]
+    upsert?: AiTemplateUpsertWithWhereUniqueWithoutCreatedByInput | AiTemplateUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: AiTemplateCreateManyCreatedByInputEnvelope
+    set?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    disconnect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    delete?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    connect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    update?: AiTemplateUpdateWithWhereUniqueWithoutCreatedByInput | AiTemplateUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: AiTemplateUpdateManyWithWhereWithoutCreatedByInput | AiTemplateUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: AiTemplateScalarWhereInput | AiTemplateScalarWhereInput[]
+  }
+
+  export type InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput = {
+    create?: XOR<InboxConversationCreateWithoutAssignedToInput, InboxConversationUncheckedCreateWithoutAssignedToInput> | InboxConversationCreateWithoutAssignedToInput[] | InboxConversationUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutAssignedToInput | InboxConversationCreateOrConnectWithoutAssignedToInput[]
+    upsert?: InboxConversationUpsertWithWhereUniqueWithoutAssignedToInput | InboxConversationUpsertWithWhereUniqueWithoutAssignedToInput[]
+    createMany?: InboxConversationCreateManyAssignedToInputEnvelope
+    set?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    disconnect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    delete?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    update?: InboxConversationUpdateWithWhereUniqueWithoutAssignedToInput | InboxConversationUpdateWithWhereUniqueWithoutAssignedToInput[]
+    updateMany?: InboxConversationUpdateManyWithWhereWithoutAssignedToInput | InboxConversationUpdateManyWithWhereWithoutAssignedToInput[]
+    deleteMany?: InboxConversationScalarWhereInput | InboxConversationScalarWhereInput[]
+  }
+
+  export type InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput = {
+    create?: XOR<InboxMessageCreateWithoutSenderUserInput, InboxMessageUncheckedCreateWithoutSenderUserInput> | InboxMessageCreateWithoutSenderUserInput[] | InboxMessageUncheckedCreateWithoutSenderUserInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutSenderUserInput | InboxMessageCreateOrConnectWithoutSenderUserInput[]
+    upsert?: InboxMessageUpsertWithWhereUniqueWithoutSenderUserInput | InboxMessageUpsertWithWhereUniqueWithoutSenderUserInput[]
+    createMany?: InboxMessageCreateManySenderUserInputEnvelope
+    set?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    disconnect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    delete?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    update?: InboxMessageUpdateWithWhereUniqueWithoutSenderUserInput | InboxMessageUpdateWithWhereUniqueWithoutSenderUserInput[]
+    updateMany?: InboxMessageUpdateManyWithWhereWithoutSenderUserInput | InboxMessageUpdateManyWithWhereWithoutSenderUserInput[]
+    deleteMany?: InboxMessageScalarWhereInput | InboxMessageScalarWhereInput[]
   }
 
   export type UserCreateNestedManyWithoutAvatarInput = {
@@ -17678,6 +32297,61 @@ export namespace Prisma {
     connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
   }
 
+  export type KnowledgeItemCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<KnowledgeItemCreateWithoutCompanyInput, KnowledgeItemUncheckedCreateWithoutCompanyInput> | KnowledgeItemCreateWithoutCompanyInput[] | KnowledgeItemUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: KnowledgeItemCreateOrConnectWithoutCompanyInput | KnowledgeItemCreateOrConnectWithoutCompanyInput[]
+    createMany?: KnowledgeItemCreateManyCompanyInputEnvelope
+    connect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+  }
+
+  export type QuickAnswerCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<QuickAnswerCreateWithoutCompanyInput, QuickAnswerUncheckedCreateWithoutCompanyInput> | QuickAnswerCreateWithoutCompanyInput[] | QuickAnswerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: QuickAnswerCreateOrConnectWithoutCompanyInput | QuickAnswerCreateOrConnectWithoutCompanyInput[]
+    createMany?: QuickAnswerCreateManyCompanyInputEnvelope
+    connect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+  }
+
+  export type AiTemplateCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<AiTemplateCreateWithoutCompanyInput, AiTemplateUncheckedCreateWithoutCompanyInput> | AiTemplateCreateWithoutCompanyInput[] | AiTemplateUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutCompanyInput | AiTemplateCreateOrConnectWithoutCompanyInput[]
+    createMany?: AiTemplateCreateManyCompanyInputEnvelope
+    connect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+  }
+
+  export type InboxCustomerCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<InboxCustomerCreateWithoutCompanyInput, InboxCustomerUncheckedCreateWithoutCompanyInput> | InboxCustomerCreateWithoutCompanyInput[] | InboxCustomerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxCustomerCreateOrConnectWithoutCompanyInput | InboxCustomerCreateOrConnectWithoutCompanyInput[]
+    createMany?: InboxCustomerCreateManyCompanyInputEnvelope
+    connect?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+  }
+
+  export type InboxConversationCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<InboxConversationCreateWithoutCompanyInput, InboxConversationUncheckedCreateWithoutCompanyInput> | InboxConversationCreateWithoutCompanyInput[] | InboxConversationUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutCompanyInput | InboxConversationCreateOrConnectWithoutCompanyInput[]
+    createMany?: InboxConversationCreateManyCompanyInputEnvelope
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+  }
+
+  export type InboxMessageCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<InboxMessageCreateWithoutCompanyInput, InboxMessageUncheckedCreateWithoutCompanyInput> | InboxMessageCreateWithoutCompanyInput[] | InboxMessageUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutCompanyInput | InboxMessageCreateOrConnectWithoutCompanyInput[]
+    createMany?: InboxMessageCreateManyCompanyInputEnvelope
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+  }
+
+  export type CompanySettingsCreateNestedOneWithoutCompanyInput = {
+    create?: XOR<CompanySettingsCreateWithoutCompanyInput, CompanySettingsUncheckedCreateWithoutCompanyInput>
+    connectOrCreate?: CompanySettingsCreateOrConnectWithoutCompanyInput
+    connect?: CompanySettingsWhereUniqueInput
+  }
+
+  export type CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput> | CompanyWhatsappNumberCreateWithoutCompanyInput[] | CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput | CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanyWhatsappNumberCreateManyCompanyInputEnvelope
+    connect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+  }
+
   export type CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput = {
     create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
@@ -17704,6 +32378,61 @@ export namespace Prisma {
     connectOrCreate?: UsageTrackingCreateOrConnectWithoutCompanyInput | UsageTrackingCreateOrConnectWithoutCompanyInput[]
     createMany?: UsageTrackingCreateManyCompanyInputEnvelope
     connect?: UsageTrackingWhereUniqueInput | UsageTrackingWhereUniqueInput[]
+  }
+
+  export type KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<KnowledgeItemCreateWithoutCompanyInput, KnowledgeItemUncheckedCreateWithoutCompanyInput> | KnowledgeItemCreateWithoutCompanyInput[] | KnowledgeItemUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: KnowledgeItemCreateOrConnectWithoutCompanyInput | KnowledgeItemCreateOrConnectWithoutCompanyInput[]
+    createMany?: KnowledgeItemCreateManyCompanyInputEnvelope
+    connect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+  }
+
+  export type QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<QuickAnswerCreateWithoutCompanyInput, QuickAnswerUncheckedCreateWithoutCompanyInput> | QuickAnswerCreateWithoutCompanyInput[] | QuickAnswerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: QuickAnswerCreateOrConnectWithoutCompanyInput | QuickAnswerCreateOrConnectWithoutCompanyInput[]
+    createMany?: QuickAnswerCreateManyCompanyInputEnvelope
+    connect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+  }
+
+  export type AiTemplateUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<AiTemplateCreateWithoutCompanyInput, AiTemplateUncheckedCreateWithoutCompanyInput> | AiTemplateCreateWithoutCompanyInput[] | AiTemplateUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutCompanyInput | AiTemplateCreateOrConnectWithoutCompanyInput[]
+    createMany?: AiTemplateCreateManyCompanyInputEnvelope
+    connect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+  }
+
+  export type InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<InboxCustomerCreateWithoutCompanyInput, InboxCustomerUncheckedCreateWithoutCompanyInput> | InboxCustomerCreateWithoutCompanyInput[] | InboxCustomerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxCustomerCreateOrConnectWithoutCompanyInput | InboxCustomerCreateOrConnectWithoutCompanyInput[]
+    createMany?: InboxCustomerCreateManyCompanyInputEnvelope
+    connect?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+  }
+
+  export type InboxConversationUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<InboxConversationCreateWithoutCompanyInput, InboxConversationUncheckedCreateWithoutCompanyInput> | InboxConversationCreateWithoutCompanyInput[] | InboxConversationUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutCompanyInput | InboxConversationCreateOrConnectWithoutCompanyInput[]
+    createMany?: InboxConversationCreateManyCompanyInputEnvelope
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+  }
+
+  export type InboxMessageUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<InboxMessageCreateWithoutCompanyInput, InboxMessageUncheckedCreateWithoutCompanyInput> | InboxMessageCreateWithoutCompanyInput[] | InboxMessageUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutCompanyInput | InboxMessageCreateOrConnectWithoutCompanyInput[]
+    createMany?: InboxMessageCreateManyCompanyInputEnvelope
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+  }
+
+  export type CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput = {
+    create?: XOR<CompanySettingsCreateWithoutCompanyInput, CompanySettingsUncheckedCreateWithoutCompanyInput>
+    connectOrCreate?: CompanySettingsCreateOrConnectWithoutCompanyInput
+    connect?: CompanySettingsWhereUniqueInput
+  }
+
+  export type CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput> | CompanyWhatsappNumberCreateWithoutCompanyInput[] | CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput | CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanyWhatsappNumberCreateManyCompanyInputEnvelope
+    connect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
   }
 
   export type CompanyMemberUpdateManyWithoutCompanyNestedInput = {
@@ -17762,6 +32491,114 @@ export namespace Prisma {
     deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
   }
 
+  export type KnowledgeItemUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<KnowledgeItemCreateWithoutCompanyInput, KnowledgeItemUncheckedCreateWithoutCompanyInput> | KnowledgeItemCreateWithoutCompanyInput[] | KnowledgeItemUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: KnowledgeItemCreateOrConnectWithoutCompanyInput | KnowledgeItemCreateOrConnectWithoutCompanyInput[]
+    upsert?: KnowledgeItemUpsertWithWhereUniqueWithoutCompanyInput | KnowledgeItemUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: KnowledgeItemCreateManyCompanyInputEnvelope
+    set?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    disconnect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    delete?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    connect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    update?: KnowledgeItemUpdateWithWhereUniqueWithoutCompanyInput | KnowledgeItemUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: KnowledgeItemUpdateManyWithWhereWithoutCompanyInput | KnowledgeItemUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: KnowledgeItemScalarWhereInput | KnowledgeItemScalarWhereInput[]
+  }
+
+  export type QuickAnswerUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<QuickAnswerCreateWithoutCompanyInput, QuickAnswerUncheckedCreateWithoutCompanyInput> | QuickAnswerCreateWithoutCompanyInput[] | QuickAnswerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: QuickAnswerCreateOrConnectWithoutCompanyInput | QuickAnswerCreateOrConnectWithoutCompanyInput[]
+    upsert?: QuickAnswerUpsertWithWhereUniqueWithoutCompanyInput | QuickAnswerUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: QuickAnswerCreateManyCompanyInputEnvelope
+    set?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    disconnect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    delete?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    connect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    update?: QuickAnswerUpdateWithWhereUniqueWithoutCompanyInput | QuickAnswerUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: QuickAnswerUpdateManyWithWhereWithoutCompanyInput | QuickAnswerUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: QuickAnswerScalarWhereInput | QuickAnswerScalarWhereInput[]
+  }
+
+  export type AiTemplateUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<AiTemplateCreateWithoutCompanyInput, AiTemplateUncheckedCreateWithoutCompanyInput> | AiTemplateCreateWithoutCompanyInput[] | AiTemplateUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutCompanyInput | AiTemplateCreateOrConnectWithoutCompanyInput[]
+    upsert?: AiTemplateUpsertWithWhereUniqueWithoutCompanyInput | AiTemplateUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: AiTemplateCreateManyCompanyInputEnvelope
+    set?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    disconnect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    delete?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    connect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    update?: AiTemplateUpdateWithWhereUniqueWithoutCompanyInput | AiTemplateUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: AiTemplateUpdateManyWithWhereWithoutCompanyInput | AiTemplateUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: AiTemplateScalarWhereInput | AiTemplateScalarWhereInput[]
+  }
+
+  export type InboxCustomerUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<InboxCustomerCreateWithoutCompanyInput, InboxCustomerUncheckedCreateWithoutCompanyInput> | InboxCustomerCreateWithoutCompanyInput[] | InboxCustomerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxCustomerCreateOrConnectWithoutCompanyInput | InboxCustomerCreateOrConnectWithoutCompanyInput[]
+    upsert?: InboxCustomerUpsertWithWhereUniqueWithoutCompanyInput | InboxCustomerUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: InboxCustomerCreateManyCompanyInputEnvelope
+    set?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+    disconnect?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+    delete?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+    connect?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+    update?: InboxCustomerUpdateWithWhereUniqueWithoutCompanyInput | InboxCustomerUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: InboxCustomerUpdateManyWithWhereWithoutCompanyInput | InboxCustomerUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: InboxCustomerScalarWhereInput | InboxCustomerScalarWhereInput[]
+  }
+
+  export type InboxConversationUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<InboxConversationCreateWithoutCompanyInput, InboxConversationUncheckedCreateWithoutCompanyInput> | InboxConversationCreateWithoutCompanyInput[] | InboxConversationUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutCompanyInput | InboxConversationCreateOrConnectWithoutCompanyInput[]
+    upsert?: InboxConversationUpsertWithWhereUniqueWithoutCompanyInput | InboxConversationUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: InboxConversationCreateManyCompanyInputEnvelope
+    set?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    disconnect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    delete?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    update?: InboxConversationUpdateWithWhereUniqueWithoutCompanyInput | InboxConversationUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: InboxConversationUpdateManyWithWhereWithoutCompanyInput | InboxConversationUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: InboxConversationScalarWhereInput | InboxConversationScalarWhereInput[]
+  }
+
+  export type InboxMessageUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<InboxMessageCreateWithoutCompanyInput, InboxMessageUncheckedCreateWithoutCompanyInput> | InboxMessageCreateWithoutCompanyInput[] | InboxMessageUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutCompanyInput | InboxMessageCreateOrConnectWithoutCompanyInput[]
+    upsert?: InboxMessageUpsertWithWhereUniqueWithoutCompanyInput | InboxMessageUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: InboxMessageCreateManyCompanyInputEnvelope
+    set?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    disconnect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    delete?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    update?: InboxMessageUpdateWithWhereUniqueWithoutCompanyInput | InboxMessageUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: InboxMessageUpdateManyWithWhereWithoutCompanyInput | InboxMessageUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: InboxMessageScalarWhereInput | InboxMessageScalarWhereInput[]
+  }
+
+  export type CompanySettingsUpdateOneWithoutCompanyNestedInput = {
+    create?: XOR<CompanySettingsCreateWithoutCompanyInput, CompanySettingsUncheckedCreateWithoutCompanyInput>
+    connectOrCreate?: CompanySettingsCreateOrConnectWithoutCompanyInput
+    upsert?: CompanySettingsUpsertWithoutCompanyInput
+    disconnect?: CompanySettingsWhereInput | boolean
+    delete?: CompanySettingsWhereInput | boolean
+    connect?: CompanySettingsWhereUniqueInput
+    update?: XOR<XOR<CompanySettingsUpdateToOneWithWhereWithoutCompanyInput, CompanySettingsUpdateWithoutCompanyInput>, CompanySettingsUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput> | CompanyWhatsappNumberCreateWithoutCompanyInput[] | CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput | CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput | CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanyWhatsappNumberCreateManyCompanyInputEnvelope
+    set?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+    disconnect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+    delete?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+    connect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+    update?: CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput | CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput | CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanyWhatsappNumberScalarWhereInput | CompanyWhatsappNumberScalarWhereInput[]
+  }
+
   export type CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput = {
     create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
@@ -17816,6 +32653,268 @@ export namespace Prisma {
     update?: UsageTrackingUpdateWithWhereUniqueWithoutCompanyInput | UsageTrackingUpdateWithWhereUniqueWithoutCompanyInput[]
     updateMany?: UsageTrackingUpdateManyWithWhereWithoutCompanyInput | UsageTrackingUpdateManyWithWhereWithoutCompanyInput[]
     deleteMany?: UsageTrackingScalarWhereInput | UsageTrackingScalarWhereInput[]
+  }
+
+  export type KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<KnowledgeItemCreateWithoutCompanyInput, KnowledgeItemUncheckedCreateWithoutCompanyInput> | KnowledgeItemCreateWithoutCompanyInput[] | KnowledgeItemUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: KnowledgeItemCreateOrConnectWithoutCompanyInput | KnowledgeItemCreateOrConnectWithoutCompanyInput[]
+    upsert?: KnowledgeItemUpsertWithWhereUniqueWithoutCompanyInput | KnowledgeItemUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: KnowledgeItemCreateManyCompanyInputEnvelope
+    set?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    disconnect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    delete?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    connect?: KnowledgeItemWhereUniqueInput | KnowledgeItemWhereUniqueInput[]
+    update?: KnowledgeItemUpdateWithWhereUniqueWithoutCompanyInput | KnowledgeItemUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: KnowledgeItemUpdateManyWithWhereWithoutCompanyInput | KnowledgeItemUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: KnowledgeItemScalarWhereInput | KnowledgeItemScalarWhereInput[]
+  }
+
+  export type QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<QuickAnswerCreateWithoutCompanyInput, QuickAnswerUncheckedCreateWithoutCompanyInput> | QuickAnswerCreateWithoutCompanyInput[] | QuickAnswerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: QuickAnswerCreateOrConnectWithoutCompanyInput | QuickAnswerCreateOrConnectWithoutCompanyInput[]
+    upsert?: QuickAnswerUpsertWithWhereUniqueWithoutCompanyInput | QuickAnswerUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: QuickAnswerCreateManyCompanyInputEnvelope
+    set?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    disconnect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    delete?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    connect?: QuickAnswerWhereUniqueInput | QuickAnswerWhereUniqueInput[]
+    update?: QuickAnswerUpdateWithWhereUniqueWithoutCompanyInput | QuickAnswerUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: QuickAnswerUpdateManyWithWhereWithoutCompanyInput | QuickAnswerUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: QuickAnswerScalarWhereInput | QuickAnswerScalarWhereInput[]
+  }
+
+  export type AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<AiTemplateCreateWithoutCompanyInput, AiTemplateUncheckedCreateWithoutCompanyInput> | AiTemplateCreateWithoutCompanyInput[] | AiTemplateUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutCompanyInput | AiTemplateCreateOrConnectWithoutCompanyInput[]
+    upsert?: AiTemplateUpsertWithWhereUniqueWithoutCompanyInput | AiTemplateUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: AiTemplateCreateManyCompanyInputEnvelope
+    set?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    disconnect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    delete?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    connect?: AiTemplateWhereUniqueInput | AiTemplateWhereUniqueInput[]
+    update?: AiTemplateUpdateWithWhereUniqueWithoutCompanyInput | AiTemplateUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: AiTemplateUpdateManyWithWhereWithoutCompanyInput | AiTemplateUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: AiTemplateScalarWhereInput | AiTemplateScalarWhereInput[]
+  }
+
+  export type InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<InboxCustomerCreateWithoutCompanyInput, InboxCustomerUncheckedCreateWithoutCompanyInput> | InboxCustomerCreateWithoutCompanyInput[] | InboxCustomerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxCustomerCreateOrConnectWithoutCompanyInput | InboxCustomerCreateOrConnectWithoutCompanyInput[]
+    upsert?: InboxCustomerUpsertWithWhereUniqueWithoutCompanyInput | InboxCustomerUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: InboxCustomerCreateManyCompanyInputEnvelope
+    set?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+    disconnect?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+    delete?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+    connect?: InboxCustomerWhereUniqueInput | InboxCustomerWhereUniqueInput[]
+    update?: InboxCustomerUpdateWithWhereUniqueWithoutCompanyInput | InboxCustomerUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: InboxCustomerUpdateManyWithWhereWithoutCompanyInput | InboxCustomerUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: InboxCustomerScalarWhereInput | InboxCustomerScalarWhereInput[]
+  }
+
+  export type InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<InboxConversationCreateWithoutCompanyInput, InboxConversationUncheckedCreateWithoutCompanyInput> | InboxConversationCreateWithoutCompanyInput[] | InboxConversationUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutCompanyInput | InboxConversationCreateOrConnectWithoutCompanyInput[]
+    upsert?: InboxConversationUpsertWithWhereUniqueWithoutCompanyInput | InboxConversationUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: InboxConversationCreateManyCompanyInputEnvelope
+    set?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    disconnect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    delete?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    update?: InboxConversationUpdateWithWhereUniqueWithoutCompanyInput | InboxConversationUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: InboxConversationUpdateManyWithWhereWithoutCompanyInput | InboxConversationUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: InboxConversationScalarWhereInput | InboxConversationScalarWhereInput[]
+  }
+
+  export type InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<InboxMessageCreateWithoutCompanyInput, InboxMessageUncheckedCreateWithoutCompanyInput> | InboxMessageCreateWithoutCompanyInput[] | InboxMessageUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutCompanyInput | InboxMessageCreateOrConnectWithoutCompanyInput[]
+    upsert?: InboxMessageUpsertWithWhereUniqueWithoutCompanyInput | InboxMessageUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: InboxMessageCreateManyCompanyInputEnvelope
+    set?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    disconnect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    delete?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    update?: InboxMessageUpdateWithWhereUniqueWithoutCompanyInput | InboxMessageUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: InboxMessageUpdateManyWithWhereWithoutCompanyInput | InboxMessageUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: InboxMessageScalarWhereInput | InboxMessageScalarWhereInput[]
+  }
+
+  export type CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput = {
+    create?: XOR<CompanySettingsCreateWithoutCompanyInput, CompanySettingsUncheckedCreateWithoutCompanyInput>
+    connectOrCreate?: CompanySettingsCreateOrConnectWithoutCompanyInput
+    upsert?: CompanySettingsUpsertWithoutCompanyInput
+    disconnect?: CompanySettingsWhereInput | boolean
+    delete?: CompanySettingsWhereInput | boolean
+    connect?: CompanySettingsWhereUniqueInput
+    update?: XOR<XOR<CompanySettingsUpdateToOneWithWhereWithoutCompanyInput, CompanySettingsUpdateWithoutCompanyInput>, CompanySettingsUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput> | CompanyWhatsappNumberCreateWithoutCompanyInput[] | CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput | CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput | CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanyWhatsappNumberCreateManyCompanyInputEnvelope
+    set?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+    disconnect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+    delete?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+    connect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+    update?: CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput | CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput | CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanyWhatsappNumberScalarWhereInput | CompanyWhatsappNumberScalarWhereInput[]
+  }
+
+  export type CompanyCreateNestedOneWithoutKnowledgeItemsInput = {
+    create?: XOR<CompanyCreateWithoutKnowledgeItemsInput, CompanyUncheckedCreateWithoutKnowledgeItemsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutKnowledgeItemsInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutKnowledgeItemsInput = {
+    create?: XOR<UserCreateWithoutKnowledgeItemsInput, UserUncheckedCreateWithoutKnowledgeItemsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutKnowledgeItemsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumKnowledgeItemTypeFieldUpdateOperationsInput = {
+    set?: $Enums.KnowledgeItemType
+  }
+
+  export type CompanyUpdateOneRequiredWithoutKnowledgeItemsNestedInput = {
+    create?: XOR<CompanyCreateWithoutKnowledgeItemsInput, CompanyUncheckedCreateWithoutKnowledgeItemsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutKnowledgeItemsInput
+    upsert?: CompanyUpsertWithoutKnowledgeItemsInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutKnowledgeItemsInput, CompanyUpdateWithoutKnowledgeItemsInput>, CompanyUncheckedUpdateWithoutKnowledgeItemsInput>
+  }
+
+  export type UserUpdateOneWithoutKnowledgeItemsNestedInput = {
+    create?: XOR<UserCreateWithoutKnowledgeItemsInput, UserUncheckedCreateWithoutKnowledgeItemsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutKnowledgeItemsInput
+    upsert?: UserUpsertWithoutKnowledgeItemsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutKnowledgeItemsInput, UserUpdateWithoutKnowledgeItemsInput>, UserUncheckedUpdateWithoutKnowledgeItemsInput>
+  }
+
+  export type CompanyCreateNestedOneWithoutQuickAnswersInput = {
+    create?: XOR<CompanyCreateWithoutQuickAnswersInput, CompanyUncheckedCreateWithoutQuickAnswersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutQuickAnswersInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutQuickAnswersInput = {
+    create?: XOR<UserCreateWithoutQuickAnswersInput, UserUncheckedCreateWithoutQuickAnswersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutQuickAnswersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutQuickAnswersNestedInput = {
+    create?: XOR<CompanyCreateWithoutQuickAnswersInput, CompanyUncheckedCreateWithoutQuickAnswersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutQuickAnswersInput
+    upsert?: CompanyUpsertWithoutQuickAnswersInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutQuickAnswersInput, CompanyUpdateWithoutQuickAnswersInput>, CompanyUncheckedUpdateWithoutQuickAnswersInput>
+  }
+
+  export type UserUpdateOneWithoutQuickAnswersNestedInput = {
+    create?: XOR<UserCreateWithoutQuickAnswersInput, UserUncheckedCreateWithoutQuickAnswersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutQuickAnswersInput
+    upsert?: UserUpsertWithoutQuickAnswersInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutQuickAnswersInput, UserUpdateWithoutQuickAnswersInput>, UserUncheckedUpdateWithoutQuickAnswersInput>
+  }
+
+  export type CompanyCreateNestedOneWithoutAiTemplatesInput = {
+    create?: XOR<CompanyCreateWithoutAiTemplatesInput, CompanyUncheckedCreateWithoutAiTemplatesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutAiTemplatesInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAiTemplatesInput = {
+    create?: XOR<UserCreateWithoutAiTemplatesInput, UserUncheckedCreateWithoutAiTemplatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAiTemplatesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AiTemplateOptionCreateNestedManyWithoutTemplateInput = {
+    create?: XOR<AiTemplateOptionCreateWithoutTemplateInput, AiTemplateOptionUncheckedCreateWithoutTemplateInput> | AiTemplateOptionCreateWithoutTemplateInput[] | AiTemplateOptionUncheckedCreateWithoutTemplateInput[]
+    connectOrCreate?: AiTemplateOptionCreateOrConnectWithoutTemplateInput | AiTemplateOptionCreateOrConnectWithoutTemplateInput[]
+    createMany?: AiTemplateOptionCreateManyTemplateInputEnvelope
+    connect?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+  }
+
+  export type AiTemplateOptionUncheckedCreateNestedManyWithoutTemplateInput = {
+    create?: XOR<AiTemplateOptionCreateWithoutTemplateInput, AiTemplateOptionUncheckedCreateWithoutTemplateInput> | AiTemplateOptionCreateWithoutTemplateInput[] | AiTemplateOptionUncheckedCreateWithoutTemplateInput[]
+    connectOrCreate?: AiTemplateOptionCreateOrConnectWithoutTemplateInput | AiTemplateOptionCreateOrConnectWithoutTemplateInput[]
+    createMany?: AiTemplateOptionCreateManyTemplateInputEnvelope
+    connect?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+  }
+
+  export type EnumAiTemplateCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.AiTemplateCategory
+  }
+
+  export type CompanyUpdateOneRequiredWithoutAiTemplatesNestedInput = {
+    create?: XOR<CompanyCreateWithoutAiTemplatesInput, CompanyUncheckedCreateWithoutAiTemplatesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutAiTemplatesInput
+    upsert?: CompanyUpsertWithoutAiTemplatesInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutAiTemplatesInput, CompanyUpdateWithoutAiTemplatesInput>, CompanyUncheckedUpdateWithoutAiTemplatesInput>
+  }
+
+  export type UserUpdateOneWithoutAiTemplatesNestedInput = {
+    create?: XOR<UserCreateWithoutAiTemplatesInput, UserUncheckedCreateWithoutAiTemplatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAiTemplatesInput
+    upsert?: UserUpsertWithoutAiTemplatesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAiTemplatesInput, UserUpdateWithoutAiTemplatesInput>, UserUncheckedUpdateWithoutAiTemplatesInput>
+  }
+
+  export type AiTemplateOptionUpdateManyWithoutTemplateNestedInput = {
+    create?: XOR<AiTemplateOptionCreateWithoutTemplateInput, AiTemplateOptionUncheckedCreateWithoutTemplateInput> | AiTemplateOptionCreateWithoutTemplateInput[] | AiTemplateOptionUncheckedCreateWithoutTemplateInput[]
+    connectOrCreate?: AiTemplateOptionCreateOrConnectWithoutTemplateInput | AiTemplateOptionCreateOrConnectWithoutTemplateInput[]
+    upsert?: AiTemplateOptionUpsertWithWhereUniqueWithoutTemplateInput | AiTemplateOptionUpsertWithWhereUniqueWithoutTemplateInput[]
+    createMany?: AiTemplateOptionCreateManyTemplateInputEnvelope
+    set?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+    disconnect?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+    delete?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+    connect?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+    update?: AiTemplateOptionUpdateWithWhereUniqueWithoutTemplateInput | AiTemplateOptionUpdateWithWhereUniqueWithoutTemplateInput[]
+    updateMany?: AiTemplateOptionUpdateManyWithWhereWithoutTemplateInput | AiTemplateOptionUpdateManyWithWhereWithoutTemplateInput[]
+    deleteMany?: AiTemplateOptionScalarWhereInput | AiTemplateOptionScalarWhereInput[]
+  }
+
+  export type AiTemplateOptionUncheckedUpdateManyWithoutTemplateNestedInput = {
+    create?: XOR<AiTemplateOptionCreateWithoutTemplateInput, AiTemplateOptionUncheckedCreateWithoutTemplateInput> | AiTemplateOptionCreateWithoutTemplateInput[] | AiTemplateOptionUncheckedCreateWithoutTemplateInput[]
+    connectOrCreate?: AiTemplateOptionCreateOrConnectWithoutTemplateInput | AiTemplateOptionCreateOrConnectWithoutTemplateInput[]
+    upsert?: AiTemplateOptionUpsertWithWhereUniqueWithoutTemplateInput | AiTemplateOptionUpsertWithWhereUniqueWithoutTemplateInput[]
+    createMany?: AiTemplateOptionCreateManyTemplateInputEnvelope
+    set?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+    disconnect?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+    delete?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+    connect?: AiTemplateOptionWhereUniqueInput | AiTemplateOptionWhereUniqueInput[]
+    update?: AiTemplateOptionUpdateWithWhereUniqueWithoutTemplateInput | AiTemplateOptionUpdateWithWhereUniqueWithoutTemplateInput[]
+    updateMany?: AiTemplateOptionUpdateManyWithWhereWithoutTemplateInput | AiTemplateOptionUpdateManyWithWhereWithoutTemplateInput[]
+    deleteMany?: AiTemplateOptionScalarWhereInput | AiTemplateOptionScalarWhereInput[]
+  }
+
+  export type AiTemplateCreateNestedOneWithoutOptionsInput = {
+    create?: XOR<AiTemplateCreateWithoutOptionsInput, AiTemplateUncheckedCreateWithoutOptionsInput>
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutOptionsInput
+    connect?: AiTemplateWhereUniqueInput
+  }
+
+  export type AiTemplateUpdateOneRequiredWithoutOptionsNestedInput = {
+    create?: XOR<AiTemplateCreateWithoutOptionsInput, AiTemplateUncheckedCreateWithoutOptionsInput>
+    connectOrCreate?: AiTemplateCreateOrConnectWithoutOptionsInput
+    upsert?: AiTemplateUpsertWithoutOptionsInput
+    connect?: AiTemplateWhereUniqueInput
+    update?: XOR<XOR<AiTemplateUpdateToOneWithWhereWithoutOptionsInput, AiTemplateUpdateWithoutOptionsInput>, AiTemplateUncheckedUpdateWithoutOptionsInput>
   }
 
   export type CompanyCreateNestedOneWithoutMembersInput = {
@@ -18016,6 +33115,241 @@ export namespace Prisma {
     upsert?: CustomerSubscriptionUpsertWithoutUsageTrackingInput
     connect?: CustomerSubscriptionWhereUniqueInput
     update?: XOR<XOR<CustomerSubscriptionUpdateToOneWithWhereWithoutUsageTrackingInput, CustomerSubscriptionUpdateWithoutUsageTrackingInput>, CustomerSubscriptionUncheckedUpdateWithoutUsageTrackingInput>
+  }
+
+  export type CompanyCreateNestedOneWithoutSettingsInput = {
+    create?: XOR<CompanyCreateWithoutSettingsInput, CompanyUncheckedCreateWithoutSettingsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutSettingsInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutSettingsNestedInput = {
+    create?: XOR<CompanyCreateWithoutSettingsInput, CompanyUncheckedCreateWithoutSettingsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutSettingsInput
+    upsert?: CompanyUpsertWithoutSettingsInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutSettingsInput, CompanyUpdateWithoutSettingsInput>, CompanyUncheckedUpdateWithoutSettingsInput>
+  }
+
+  export type CompanyCreateNestedOneWithoutWhatsappNumbersInput = {
+    create?: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutWhatsappNumbersInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput = {
+    create?: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutWhatsappNumbersInput
+    upsert?: CompanyUpsertWithoutWhatsappNumbersInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutWhatsappNumbersInput, CompanyUpdateWithoutWhatsappNumbersInput>, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
+  }
+
+  export type CompanyCreateNestedOneWithoutInboxCustomersInput = {
+    create?: XOR<CompanyCreateWithoutInboxCustomersInput, CompanyUncheckedCreateWithoutInboxCustomersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInboxCustomersInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type InboxConversationCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<InboxConversationCreateWithoutCustomerInput, InboxConversationUncheckedCreateWithoutCustomerInput> | InboxConversationCreateWithoutCustomerInput[] | InboxConversationUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutCustomerInput | InboxConversationCreateOrConnectWithoutCustomerInput[]
+    createMany?: InboxConversationCreateManyCustomerInputEnvelope
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+  }
+
+  export type InboxConversationUncheckedCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<InboxConversationCreateWithoutCustomerInput, InboxConversationUncheckedCreateWithoutCustomerInput> | InboxConversationCreateWithoutCustomerInput[] | InboxConversationUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutCustomerInput | InboxConversationCreateOrConnectWithoutCustomerInput[]
+    createMany?: InboxConversationCreateManyCustomerInputEnvelope
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+  }
+
+  export type CompanyUpdateOneRequiredWithoutInboxCustomersNestedInput = {
+    create?: XOR<CompanyCreateWithoutInboxCustomersInput, CompanyUncheckedCreateWithoutInboxCustomersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInboxCustomersInput
+    upsert?: CompanyUpsertWithoutInboxCustomersInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutInboxCustomersInput, CompanyUpdateWithoutInboxCustomersInput>, CompanyUncheckedUpdateWithoutInboxCustomersInput>
+  }
+
+  export type InboxConversationUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<InboxConversationCreateWithoutCustomerInput, InboxConversationUncheckedCreateWithoutCustomerInput> | InboxConversationCreateWithoutCustomerInput[] | InboxConversationUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutCustomerInput | InboxConversationCreateOrConnectWithoutCustomerInput[]
+    upsert?: InboxConversationUpsertWithWhereUniqueWithoutCustomerInput | InboxConversationUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: InboxConversationCreateManyCustomerInputEnvelope
+    set?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    disconnect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    delete?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    update?: InboxConversationUpdateWithWhereUniqueWithoutCustomerInput | InboxConversationUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: InboxConversationUpdateManyWithWhereWithoutCustomerInput | InboxConversationUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: InboxConversationScalarWhereInput | InboxConversationScalarWhereInput[]
+  }
+
+  export type InboxConversationUncheckedUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<InboxConversationCreateWithoutCustomerInput, InboxConversationUncheckedCreateWithoutCustomerInput> | InboxConversationCreateWithoutCustomerInput[] | InboxConversationUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutCustomerInput | InboxConversationCreateOrConnectWithoutCustomerInput[]
+    upsert?: InboxConversationUpsertWithWhereUniqueWithoutCustomerInput | InboxConversationUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: InboxConversationCreateManyCustomerInputEnvelope
+    set?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    disconnect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    delete?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    connect?: InboxConversationWhereUniqueInput | InboxConversationWhereUniqueInput[]
+    update?: InboxConversationUpdateWithWhereUniqueWithoutCustomerInput | InboxConversationUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: InboxConversationUpdateManyWithWhereWithoutCustomerInput | InboxConversationUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: InboxConversationScalarWhereInput | InboxConversationScalarWhereInput[]
+  }
+
+  export type InboxConversationCreatetagsInput = {
+    set: string[]
+  }
+
+  export type CompanyCreateNestedOneWithoutInboxConversationsInput = {
+    create?: XOR<CompanyCreateWithoutInboxConversationsInput, CompanyUncheckedCreateWithoutInboxConversationsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInboxConversationsInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type InboxCustomerCreateNestedOneWithoutConversationsInput = {
+    create?: XOR<InboxCustomerCreateWithoutConversationsInput, InboxCustomerUncheckedCreateWithoutConversationsInput>
+    connectOrCreate?: InboxCustomerCreateOrConnectWithoutConversationsInput
+    connect?: InboxCustomerWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAssignedInboxConversationsInput = {
+    create?: XOR<UserCreateWithoutAssignedInboxConversationsInput, UserUncheckedCreateWithoutAssignedInboxConversationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedInboxConversationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type InboxMessageCreateNestedManyWithoutConversationInput = {
+    create?: XOR<InboxMessageCreateWithoutConversationInput, InboxMessageUncheckedCreateWithoutConversationInput> | InboxMessageCreateWithoutConversationInput[] | InboxMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutConversationInput | InboxMessageCreateOrConnectWithoutConversationInput[]
+    createMany?: InboxMessageCreateManyConversationInputEnvelope
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+  }
+
+  export type InboxMessageUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<InboxMessageCreateWithoutConversationInput, InboxMessageUncheckedCreateWithoutConversationInput> | InboxMessageCreateWithoutConversationInput[] | InboxMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutConversationInput | InboxMessageCreateOrConnectWithoutConversationInput[]
+    createMany?: InboxMessageCreateManyConversationInputEnvelope
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+  }
+
+  export type EnumInboxConversationPriorityFieldUpdateOperationsInput = {
+    set?: $Enums.InboxConversationPriority
+  }
+
+  export type InboxConversationUpdatetagsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type CompanyUpdateOneRequiredWithoutInboxConversationsNestedInput = {
+    create?: XOR<CompanyCreateWithoutInboxConversationsInput, CompanyUncheckedCreateWithoutInboxConversationsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInboxConversationsInput
+    upsert?: CompanyUpsertWithoutInboxConversationsInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutInboxConversationsInput, CompanyUpdateWithoutInboxConversationsInput>, CompanyUncheckedUpdateWithoutInboxConversationsInput>
+  }
+
+  export type InboxCustomerUpdateOneRequiredWithoutConversationsNestedInput = {
+    create?: XOR<InboxCustomerCreateWithoutConversationsInput, InboxCustomerUncheckedCreateWithoutConversationsInput>
+    connectOrCreate?: InboxCustomerCreateOrConnectWithoutConversationsInput
+    upsert?: InboxCustomerUpsertWithoutConversationsInput
+    connect?: InboxCustomerWhereUniqueInput
+    update?: XOR<XOR<InboxCustomerUpdateToOneWithWhereWithoutConversationsInput, InboxCustomerUpdateWithoutConversationsInput>, InboxCustomerUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type UserUpdateOneWithoutAssignedInboxConversationsNestedInput = {
+    create?: XOR<UserCreateWithoutAssignedInboxConversationsInput, UserUncheckedCreateWithoutAssignedInboxConversationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedInboxConversationsInput
+    upsert?: UserUpsertWithoutAssignedInboxConversationsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAssignedInboxConversationsInput, UserUpdateWithoutAssignedInboxConversationsInput>, UserUncheckedUpdateWithoutAssignedInboxConversationsInput>
+  }
+
+  export type InboxMessageUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<InboxMessageCreateWithoutConversationInput, InboxMessageUncheckedCreateWithoutConversationInput> | InboxMessageCreateWithoutConversationInput[] | InboxMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutConversationInput | InboxMessageCreateOrConnectWithoutConversationInput[]
+    upsert?: InboxMessageUpsertWithWhereUniqueWithoutConversationInput | InboxMessageUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: InboxMessageCreateManyConversationInputEnvelope
+    set?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    disconnect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    delete?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    update?: InboxMessageUpdateWithWhereUniqueWithoutConversationInput | InboxMessageUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: InboxMessageUpdateManyWithWhereWithoutConversationInput | InboxMessageUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: InboxMessageScalarWhereInput | InboxMessageScalarWhereInput[]
+  }
+
+  export type InboxMessageUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<InboxMessageCreateWithoutConversationInput, InboxMessageUncheckedCreateWithoutConversationInput> | InboxMessageCreateWithoutConversationInput[] | InboxMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: InboxMessageCreateOrConnectWithoutConversationInput | InboxMessageCreateOrConnectWithoutConversationInput[]
+    upsert?: InboxMessageUpsertWithWhereUniqueWithoutConversationInput | InboxMessageUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: InboxMessageCreateManyConversationInputEnvelope
+    set?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    disconnect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    delete?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    connect?: InboxMessageWhereUniqueInput | InboxMessageWhereUniqueInput[]
+    update?: InboxMessageUpdateWithWhereUniqueWithoutConversationInput | InboxMessageUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: InboxMessageUpdateManyWithWhereWithoutConversationInput | InboxMessageUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: InboxMessageScalarWhereInput | InboxMessageScalarWhereInput[]
+  }
+
+  export type CompanyCreateNestedOneWithoutInboxMessagesInput = {
+    create?: XOR<CompanyCreateWithoutInboxMessagesInput, CompanyUncheckedCreateWithoutInboxMessagesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInboxMessagesInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type InboxConversationCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<InboxConversationCreateWithoutMessagesInput, InboxConversationUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutMessagesInput
+    connect?: InboxConversationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutInboxMessagesInput = {
+    create?: XOR<UserCreateWithoutInboxMessagesInput, UserUncheckedCreateWithoutInboxMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInboxMessagesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumInboxMessageSenderTypeFieldUpdateOperationsInput = {
+    set?: $Enums.InboxMessageSenderType
+  }
+
+  export type EnumInboxMessageStatusFieldUpdateOperationsInput = {
+    set?: $Enums.InboxMessageStatus
+  }
+
+  export type CompanyUpdateOneRequiredWithoutInboxMessagesNestedInput = {
+    create?: XOR<CompanyCreateWithoutInboxMessagesInput, CompanyUncheckedCreateWithoutInboxMessagesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInboxMessagesInput
+    upsert?: CompanyUpsertWithoutInboxMessagesInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutInboxMessagesInput, CompanyUpdateWithoutInboxMessagesInput>, CompanyUncheckedUpdateWithoutInboxMessagesInput>
+  }
+
+  export type InboxConversationUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<InboxConversationCreateWithoutMessagesInput, InboxConversationUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: InboxConversationCreateOrConnectWithoutMessagesInput
+    upsert?: InboxConversationUpsertWithoutMessagesInput
+    connect?: InboxConversationWhereUniqueInput
+    update?: XOR<XOR<InboxConversationUpdateToOneWithWhereWithoutMessagesInput, InboxConversationUpdateWithoutMessagesInput>, InboxConversationUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserUpdateOneWithoutInboxMessagesNestedInput = {
+    create?: XOR<UserCreateWithoutInboxMessagesInput, UserUncheckedCreateWithoutInboxMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInboxMessagesInput
+    upsert?: UserUpsertWithoutInboxMessagesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInboxMessagesInput, UserUpdateWithoutInboxMessagesInput>, UserUncheckedUpdateWithoutInboxMessagesInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -18270,6 +33604,40 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumKnowledgeItemTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.KnowledgeItemType | EnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.KnowledgeItemType[] | ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KnowledgeItemType[] | ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumKnowledgeItemTypeFilter<$PrismaModel> | $Enums.KnowledgeItemType
+  }
+
+  export type NestedEnumKnowledgeItemTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KnowledgeItemType | EnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.KnowledgeItemType[] | ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KnowledgeItemType[] | ListEnumKnowledgeItemTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumKnowledgeItemTypeWithAggregatesFilter<$PrismaModel> | $Enums.KnowledgeItemType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKnowledgeItemTypeFilter<$PrismaModel>
+    _max?: NestedEnumKnowledgeItemTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAiTemplateCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiTemplateCategory | EnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.AiTemplateCategory[] | ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiTemplateCategory[] | ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiTemplateCategoryFilter<$PrismaModel> | $Enums.AiTemplateCategory
+  }
+
+  export type NestedEnumAiTemplateCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiTemplateCategory | EnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.AiTemplateCategory[] | ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiTemplateCategory[] | ListEnumAiTemplateCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiTemplateCategoryWithAggregatesFilter<$PrismaModel> | $Enums.AiTemplateCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAiTemplateCategoryFilter<$PrismaModel>
+    _max?: NestedEnumAiTemplateCategoryFilter<$PrismaModel>
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -18393,6 +33761,80 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
     _max?: NestedEnumUsageMetricTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumInboxConversationPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxConversationPriority | EnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxConversationPriority[] | ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxConversationPriority[] | ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxConversationPriorityFilter<$PrismaModel> | $Enums.InboxConversationPriority
+  }
+
+  export type NestedEnumInboxConversationPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxConversationPriority | EnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxConversationPriority[] | ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxConversationPriority[] | ListEnumInboxConversationPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxConversationPriorityWithAggregatesFilter<$PrismaModel> | $Enums.InboxConversationPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInboxConversationPriorityFilter<$PrismaModel>
+    _max?: NestedEnumInboxConversationPriorityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumInboxMessageSenderTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxMessageSenderType | EnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxMessageSenderType[] | ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxMessageSenderType[] | ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxMessageSenderTypeFilter<$PrismaModel> | $Enums.InboxMessageSenderType
+  }
+
+  export type NestedEnumInboxMessageStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxMessageStatus | EnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxMessageStatus[] | ListEnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxMessageStatus[] | ListEnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxMessageStatusFilter<$PrismaModel> | $Enums.InboxMessageStatus
+  }
+
+  export type NestedEnumInboxMessageSenderTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxMessageSenderType | EnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxMessageSenderType[] | ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxMessageSenderType[] | ListEnumInboxMessageSenderTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxMessageSenderTypeWithAggregatesFilter<$PrismaModel> | $Enums.InboxMessageSenderType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInboxMessageSenderTypeFilter<$PrismaModel>
+    _max?: NestedEnumInboxMessageSenderTypeFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumInboxMessageStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InboxMessageStatus | EnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.InboxMessageStatus[] | ListEnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InboxMessageStatus[] | ListEnumInboxMessageStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumInboxMessageStatusWithAggregatesFilter<$PrismaModel> | $Enums.InboxMessageStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInboxMessageStatusFilter<$PrismaModel>
+    _max?: NestedEnumInboxMessageStatusFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -18530,6 +33972,14 @@ export namespace Prisma {
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
     UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutUserInput = {
@@ -18542,6 +33992,14 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
     UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutUserInput = {
@@ -18584,6 +34042,178 @@ export namespace Prisma {
 
   export type FileCreateManyUserInputEnvelope = {
     data: FileCreateManyUserInput | FileCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type KnowledgeItemCreateWithoutCreatedByInput = {
+    id?: string
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutKnowledgeItemsInput
+  }
+
+  export type KnowledgeItemUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    companyId: number
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KnowledgeItemCreateOrConnectWithoutCreatedByInput = {
+    where: KnowledgeItemWhereUniqueInput
+    create: XOR<KnowledgeItemCreateWithoutCreatedByInput, KnowledgeItemUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type KnowledgeItemCreateManyCreatedByInputEnvelope = {
+    data: KnowledgeItemCreateManyCreatedByInput | KnowledgeItemCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type QuickAnswerCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutQuickAnswersInput
+  }
+
+  export type QuickAnswerUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    companyId: number
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type QuickAnswerCreateOrConnectWithoutCreatedByInput = {
+    where: QuickAnswerWhereUniqueInput
+    create: XOR<QuickAnswerCreateWithoutCreatedByInput, QuickAnswerUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type QuickAnswerCreateManyCreatedByInputEnvelope = {
+    data: QuickAnswerCreateManyCreatedByInput | QuickAnswerCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AiTemplateCreateWithoutCreatedByInput = {
+    id?: string
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutAiTemplatesInput
+    options?: AiTemplateOptionCreateNestedManyWithoutTemplateInput
+  }
+
+  export type AiTemplateUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    companyId: number
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    options?: AiTemplateOptionUncheckedCreateNestedManyWithoutTemplateInput
+  }
+
+  export type AiTemplateCreateOrConnectWithoutCreatedByInput = {
+    where: AiTemplateWhereUniqueInput
+    create: XOR<AiTemplateCreateWithoutCreatedByInput, AiTemplateUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type AiTemplateCreateManyCreatedByInputEnvelope = {
+    data: AiTemplateCreateManyCreatedByInput | AiTemplateCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InboxConversationCreateWithoutAssignedToInput = {
+    id?: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxConversationsInput
+    customer: InboxCustomerCreateNestedOneWithoutConversationsInput
+    messages?: InboxMessageCreateNestedManyWithoutConversationInput
+  }
+
+  export type InboxConversationUncheckedCreateWithoutAssignedToInput = {
+    id?: string
+    companyId: number
+    customerId: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: InboxMessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type InboxConversationCreateOrConnectWithoutAssignedToInput = {
+    where: InboxConversationWhereUniqueInput
+    create: XOR<InboxConversationCreateWithoutAssignedToInput, InboxConversationUncheckedCreateWithoutAssignedToInput>
+  }
+
+  export type InboxConversationCreateManyAssignedToInputEnvelope = {
+    data: InboxConversationCreateManyAssignedToInput | InboxConversationCreateManyAssignedToInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InboxMessageCreateWithoutSenderUserInput = {
+    id?: string
+    senderType: $Enums.InboxMessageSenderType
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxMessagesInput
+    conversation: InboxConversationCreateNestedOneWithoutMessagesInput
+  }
+
+  export type InboxMessageUncheckedCreateWithoutSenderUserInput = {
+    id?: string
+    companyId: number
+    conversationId: string
+    senderType: $Enums.InboxMessageSenderType
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxMessageCreateOrConnectWithoutSenderUserInput = {
+    where: InboxMessageWhereUniqueInput
+    create: XOR<InboxMessageCreateWithoutSenderUserInput, InboxMessageUncheckedCreateWithoutSenderUserInput>
+  }
+
+  export type InboxMessageCreateManySenderUserInputEnvelope = {
+    data: InboxMessageCreateManySenderUserInput | InboxMessageCreateManySenderUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -18738,6 +34368,14 @@ export namespace Prisma {
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
     UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutUserInput = {
@@ -18750,6 +34388,14 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
     UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type FileUpsertWithWhereUniqueWithoutUserInput = {
@@ -18785,6 +34431,165 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"File"> | Date | string
   }
 
+  export type KnowledgeItemUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: KnowledgeItemWhereUniqueInput
+    update: XOR<KnowledgeItemUpdateWithoutCreatedByInput, KnowledgeItemUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<KnowledgeItemCreateWithoutCreatedByInput, KnowledgeItemUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type KnowledgeItemUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: KnowledgeItemWhereUniqueInput
+    data: XOR<KnowledgeItemUpdateWithoutCreatedByInput, KnowledgeItemUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type KnowledgeItemUpdateManyWithWhereWithoutCreatedByInput = {
+    where: KnowledgeItemScalarWhereInput
+    data: XOR<KnowledgeItemUpdateManyMutationInput, KnowledgeItemUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type KnowledgeItemScalarWhereInput = {
+    AND?: KnowledgeItemScalarWhereInput | KnowledgeItemScalarWhereInput[]
+    OR?: KnowledgeItemScalarWhereInput[]
+    NOT?: KnowledgeItemScalarWhereInput | KnowledgeItemScalarWhereInput[]
+    id?: StringFilter<"KnowledgeItem"> | string
+    companyId?: IntFilter<"KnowledgeItem"> | number
+    type?: EnumKnowledgeItemTypeFilter<"KnowledgeItem"> | $Enums.KnowledgeItemType
+    title?: StringFilter<"KnowledgeItem"> | string
+    content?: StringFilter<"KnowledgeItem"> | string
+    createdAt?: DateTimeFilter<"KnowledgeItem"> | Date | string
+    updatedAt?: DateTimeFilter<"KnowledgeItem"> | Date | string
+    createdById?: IntNullableFilter<"KnowledgeItem"> | number | null
+  }
+
+  export type QuickAnswerUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: QuickAnswerWhereUniqueInput
+    update: XOR<QuickAnswerUpdateWithoutCreatedByInput, QuickAnswerUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<QuickAnswerCreateWithoutCreatedByInput, QuickAnswerUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type QuickAnswerUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: QuickAnswerWhereUniqueInput
+    data: XOR<QuickAnswerUpdateWithoutCreatedByInput, QuickAnswerUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type QuickAnswerUpdateManyWithWhereWithoutCreatedByInput = {
+    where: QuickAnswerScalarWhereInput
+    data: XOR<QuickAnswerUpdateManyMutationInput, QuickAnswerUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type QuickAnswerScalarWhereInput = {
+    AND?: QuickAnswerScalarWhereInput | QuickAnswerScalarWhereInput[]
+    OR?: QuickAnswerScalarWhereInput[]
+    NOT?: QuickAnswerScalarWhereInput | QuickAnswerScalarWhereInput[]
+    id?: StringFilter<"QuickAnswer"> | string
+    companyId?: IntFilter<"QuickAnswer"> | number
+    title?: StringFilter<"QuickAnswer"> | string
+    content?: StringFilter<"QuickAnswer"> | string
+    createdAt?: DateTimeFilter<"QuickAnswer"> | Date | string
+    updatedAt?: DateTimeFilter<"QuickAnswer"> | Date | string
+    createdById?: IntNullableFilter<"QuickAnswer"> | number | null
+  }
+
+  export type AiTemplateUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: AiTemplateWhereUniqueInput
+    update: XOR<AiTemplateUpdateWithoutCreatedByInput, AiTemplateUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<AiTemplateCreateWithoutCreatedByInput, AiTemplateUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type AiTemplateUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: AiTemplateWhereUniqueInput
+    data: XOR<AiTemplateUpdateWithoutCreatedByInput, AiTemplateUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type AiTemplateUpdateManyWithWhereWithoutCreatedByInput = {
+    where: AiTemplateScalarWhereInput
+    data: XOR<AiTemplateUpdateManyMutationInput, AiTemplateUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type AiTemplateScalarWhereInput = {
+    AND?: AiTemplateScalarWhereInput | AiTemplateScalarWhereInput[]
+    OR?: AiTemplateScalarWhereInput[]
+    NOT?: AiTemplateScalarWhereInput | AiTemplateScalarWhereInput[]
+    id?: StringFilter<"AiTemplate"> | string
+    companyId?: IntFilter<"AiTemplate"> | number
+    name?: StringFilter<"AiTemplate"> | string
+    content?: StringFilter<"AiTemplate"> | string
+    category?: EnumAiTemplateCategoryFilter<"AiTemplate"> | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFilter<"AiTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"AiTemplate"> | Date | string
+    createdById?: IntNullableFilter<"AiTemplate"> | number | null
+  }
+
+  export type InboxConversationUpsertWithWhereUniqueWithoutAssignedToInput = {
+    where: InboxConversationWhereUniqueInput
+    update: XOR<InboxConversationUpdateWithoutAssignedToInput, InboxConversationUncheckedUpdateWithoutAssignedToInput>
+    create: XOR<InboxConversationCreateWithoutAssignedToInput, InboxConversationUncheckedCreateWithoutAssignedToInput>
+  }
+
+  export type InboxConversationUpdateWithWhereUniqueWithoutAssignedToInput = {
+    where: InboxConversationWhereUniqueInput
+    data: XOR<InboxConversationUpdateWithoutAssignedToInput, InboxConversationUncheckedUpdateWithoutAssignedToInput>
+  }
+
+  export type InboxConversationUpdateManyWithWhereWithoutAssignedToInput = {
+    where: InboxConversationScalarWhereInput
+    data: XOR<InboxConversationUpdateManyMutationInput, InboxConversationUncheckedUpdateManyWithoutAssignedToInput>
+  }
+
+  export type InboxConversationScalarWhereInput = {
+    AND?: InboxConversationScalarWhereInput | InboxConversationScalarWhereInput[]
+    OR?: InboxConversationScalarWhereInput[]
+    NOT?: InboxConversationScalarWhereInput | InboxConversationScalarWhereInput[]
+    id?: StringFilter<"InboxConversation"> | string
+    companyId?: IntFilter<"InboxConversation"> | number
+    customerId?: StringFilter<"InboxConversation"> | string
+    subject?: StringNullableFilter<"InboxConversation"> | string | null
+    lastMessagePreview?: StringNullableFilter<"InboxConversation"> | string | null
+    lastMessageSentAt?: DateTimeNullableFilter<"InboxConversation"> | Date | string | null
+    unreadCount?: IntFilter<"InboxConversation"> | number
+    priority?: EnumInboxConversationPriorityFilter<"InboxConversation"> | $Enums.InboxConversationPriority
+    satisfactionScore?: IntNullableFilter<"InboxConversation"> | number | null
+    tags?: StringNullableListFilter<"InboxConversation">
+    assignedToId?: IntNullableFilter<"InboxConversation"> | number | null
+    isArchived?: BoolFilter<"InboxConversation"> | boolean
+    archivedAt?: DateTimeNullableFilter<"InboxConversation"> | Date | string | null
+    createdAt?: DateTimeFilter<"InboxConversation"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxConversation"> | Date | string
+  }
+
+  export type InboxMessageUpsertWithWhereUniqueWithoutSenderUserInput = {
+    where: InboxMessageWhereUniqueInput
+    update: XOR<InboxMessageUpdateWithoutSenderUserInput, InboxMessageUncheckedUpdateWithoutSenderUserInput>
+    create: XOR<InboxMessageCreateWithoutSenderUserInput, InboxMessageUncheckedCreateWithoutSenderUserInput>
+  }
+
+  export type InboxMessageUpdateWithWhereUniqueWithoutSenderUserInput = {
+    where: InboxMessageWhereUniqueInput
+    data: XOR<InboxMessageUpdateWithoutSenderUserInput, InboxMessageUncheckedUpdateWithoutSenderUserInput>
+  }
+
+  export type InboxMessageUpdateManyWithWhereWithoutSenderUserInput = {
+    where: InboxMessageScalarWhereInput
+    data: XOR<InboxMessageUpdateManyMutationInput, InboxMessageUncheckedUpdateManyWithoutSenderUserInput>
+  }
+
+  export type InboxMessageScalarWhereInput = {
+    AND?: InboxMessageScalarWhereInput | InboxMessageScalarWhereInput[]
+    OR?: InboxMessageScalarWhereInput[]
+    NOT?: InboxMessageScalarWhereInput | InboxMessageScalarWhereInput[]
+    id?: StringFilter<"InboxMessage"> | string
+    companyId?: IntFilter<"InboxMessage"> | number
+    conversationId?: StringFilter<"InboxMessage"> | string
+    senderType?: EnumInboxMessageSenderTypeFilter<"InboxMessage"> | $Enums.InboxMessageSenderType
+    senderUserId?: IntNullableFilter<"InboxMessage"> | number | null
+    content?: StringFilter<"InboxMessage"> | string
+    attachments?: JsonNullableFilter<"InboxMessage">
+    status?: EnumInboxMessageStatusFilter<"InboxMessage"> | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFilter<"InboxMessage"> | Date | string
+    createdAt?: DateTimeFilter<"InboxMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxMessage"> | Date | string
+  }
+
   export type UserCreateWithoutAvatarInput = {
     email: string
     provider?: $Enums.Provider
@@ -18815,6 +34620,11 @@ export namespace Prisma {
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     company?: CompanyCreateNestedOneWithoutUserInput
     files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserUncheckedCreateWithoutAvatarInput = {
@@ -18848,6 +34658,11 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserCreateOrConnectWithoutAvatarInput = {
@@ -18890,6 +34705,11 @@ export namespace Prisma {
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     avatar?: FileCreateNestedOneWithoutAvatarForInput
     company?: CompanyCreateNestedOneWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserUncheckedCreateWithoutFilesInput = {
@@ -18923,6 +34743,11 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserCreateOrConnectWithoutFilesInput = {
@@ -19020,6 +34845,11 @@ export namespace Prisma {
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     avatar?: FileUpdateOneWithoutAvatarForNestedInput
     company?: CompanyUpdateOneWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesInput = {
@@ -19053,6 +34883,11 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -19085,6 +34920,11 @@ export namespace Prisma {
     avatar?: FileCreateNestedOneWithoutAvatarForInput
     company?: CompanyCreateNestedOneWithoutUserInput
     files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -19118,6 +34958,11 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -19166,6 +35011,11 @@ export namespace Prisma {
     avatar?: FileUpdateOneWithoutAvatarForNestedInput
     company?: CompanyUpdateOneWithoutUserNestedInput
     files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -19199,6 +35049,11 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -19231,6 +35086,11 @@ export namespace Prisma {
     avatar?: FileCreateNestedOneWithoutAvatarForInput
     company?: CompanyCreateNestedOneWithoutUserInput
     files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -19264,6 +35124,11 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -19312,6 +35177,11 @@ export namespace Prisma {
     avatar?: FileUpdateOneWithoutAvatarForNestedInput
     company?: CompanyUpdateOneWithoutUserNestedInput
     files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -19345,6 +35215,11 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
   }
 
   export type CompanyMemberCreateWithoutCompanyInput = {
@@ -19410,6 +35285,11 @@ export namespace Prisma {
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     avatar?: FileCreateNestedOneWithoutAvatarForInput
     files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserUncheckedCreateWithoutCompanyInput = {
@@ -19443,6 +35323,11 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserCreateOrConnectWithoutCompanyInput = {
@@ -19534,6 +35419,268 @@ export namespace Prisma {
 
   export type UsageTrackingCreateManyCompanyInputEnvelope = {
     data: UsageTrackingCreateManyCompanyInput | UsageTrackingCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type KnowledgeItemCreateWithoutCompanyInput = {
+    id?: string
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutKnowledgeItemsInput
+  }
+
+  export type KnowledgeItemUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type KnowledgeItemCreateOrConnectWithoutCompanyInput = {
+    where: KnowledgeItemWhereUniqueInput
+    create: XOR<KnowledgeItemCreateWithoutCompanyInput, KnowledgeItemUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type KnowledgeItemCreateManyCompanyInputEnvelope = {
+    data: KnowledgeItemCreateManyCompanyInput | KnowledgeItemCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type QuickAnswerCreateWithoutCompanyInput = {
+    id?: string
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutQuickAnswersInput
+  }
+
+  export type QuickAnswerUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type QuickAnswerCreateOrConnectWithoutCompanyInput = {
+    where: QuickAnswerWhereUniqueInput
+    create: XOR<QuickAnswerCreateWithoutCompanyInput, QuickAnswerUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type QuickAnswerCreateManyCompanyInputEnvelope = {
+    data: QuickAnswerCreateManyCompanyInput | QuickAnswerCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AiTemplateCreateWithoutCompanyInput = {
+    id?: string
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutAiTemplatesInput
+    options?: AiTemplateOptionCreateNestedManyWithoutTemplateInput
+  }
+
+  export type AiTemplateUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+    options?: AiTemplateOptionUncheckedCreateNestedManyWithoutTemplateInput
+  }
+
+  export type AiTemplateCreateOrConnectWithoutCompanyInput = {
+    where: AiTemplateWhereUniqueInput
+    create: XOR<AiTemplateCreateWithoutCompanyInput, AiTemplateUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type AiTemplateCreateManyCompanyInputEnvelope = {
+    data: AiTemplateCreateManyCompanyInput | AiTemplateCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InboxCustomerCreateWithoutCompanyInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    email?: string | null
+    address?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: InboxConversationCreateNestedManyWithoutCustomerInput
+  }
+
+  export type InboxCustomerUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    email?: string | null
+    address?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversations?: InboxConversationUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type InboxCustomerCreateOrConnectWithoutCompanyInput = {
+    where: InboxCustomerWhereUniqueInput
+    create: XOR<InboxCustomerCreateWithoutCompanyInput, InboxCustomerUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type InboxCustomerCreateManyCompanyInputEnvelope = {
+    data: InboxCustomerCreateManyCompanyInput | InboxCustomerCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InboxConversationCreateWithoutCompanyInput = {
+    id?: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer: InboxCustomerCreateNestedOneWithoutConversationsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedInboxConversationsInput
+    messages?: InboxMessageCreateNestedManyWithoutConversationInput
+  }
+
+  export type InboxConversationUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    customerId: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    assignedToId?: number | null
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: InboxMessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type InboxConversationCreateOrConnectWithoutCompanyInput = {
+    where: InboxConversationWhereUniqueInput
+    create: XOR<InboxConversationCreateWithoutCompanyInput, InboxConversationUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type InboxConversationCreateManyCompanyInputEnvelope = {
+    data: InboxConversationCreateManyCompanyInput | InboxConversationCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InboxMessageCreateWithoutCompanyInput = {
+    id?: string
+    senderType: $Enums.InboxMessageSenderType
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation: InboxConversationCreateNestedOneWithoutMessagesInput
+    senderUser?: UserCreateNestedOneWithoutInboxMessagesInput
+  }
+
+  export type InboxMessageUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    conversationId: string
+    senderType: $Enums.InboxMessageSenderType
+    senderUserId?: number | null
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxMessageCreateOrConnectWithoutCompanyInput = {
+    where: InboxMessageWhereUniqueInput
+    create: XOR<InboxMessageCreateWithoutCompanyInput, InboxMessageUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type InboxMessageCreateManyCompanyInputEnvelope = {
+    data: InboxMessageCreateManyCompanyInput | InboxMessageCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanySettingsCreateWithoutCompanyInput = {
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanySettingsUncheckedCreateWithoutCompanyInput = {
+    id?: number
+    emailNotifications?: boolean
+    newMessageAlerts?: boolean
+    dailyReports?: boolean
+    autoReply?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanySettingsCreateOrConnectWithoutCompanyInput = {
+    where: CompanySettingsWhereUniqueInput
+    create: XOR<CompanySettingsCreateWithoutCompanyInput, CompanySettingsUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyWhatsappNumberCreateWithoutCompanyInput = {
+    id?: string
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput = {
+    where: CompanyWhatsappNumberWhereUniqueInput
+    create: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyWhatsappNumberCreateManyCompanyInputEnvelope = {
+    data: CompanyWhatsappNumberCreateManyCompanyInput | CompanyWhatsappNumberCreateManyCompanyInput[]
     skipDuplicates?: boolean
   }
 
@@ -19639,6 +35786,1069 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"UsageTracking"> | Date | string
   }
 
+  export type KnowledgeItemUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: KnowledgeItemWhereUniqueInput
+    update: XOR<KnowledgeItemUpdateWithoutCompanyInput, KnowledgeItemUncheckedUpdateWithoutCompanyInput>
+    create: XOR<KnowledgeItemCreateWithoutCompanyInput, KnowledgeItemUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type KnowledgeItemUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: KnowledgeItemWhereUniqueInput
+    data: XOR<KnowledgeItemUpdateWithoutCompanyInput, KnowledgeItemUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type KnowledgeItemUpdateManyWithWhereWithoutCompanyInput = {
+    where: KnowledgeItemScalarWhereInput
+    data: XOR<KnowledgeItemUpdateManyMutationInput, KnowledgeItemUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type QuickAnswerUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: QuickAnswerWhereUniqueInput
+    update: XOR<QuickAnswerUpdateWithoutCompanyInput, QuickAnswerUncheckedUpdateWithoutCompanyInput>
+    create: XOR<QuickAnswerCreateWithoutCompanyInput, QuickAnswerUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type QuickAnswerUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: QuickAnswerWhereUniqueInput
+    data: XOR<QuickAnswerUpdateWithoutCompanyInput, QuickAnswerUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type QuickAnswerUpdateManyWithWhereWithoutCompanyInput = {
+    where: QuickAnswerScalarWhereInput
+    data: XOR<QuickAnswerUpdateManyMutationInput, QuickAnswerUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type AiTemplateUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: AiTemplateWhereUniqueInput
+    update: XOR<AiTemplateUpdateWithoutCompanyInput, AiTemplateUncheckedUpdateWithoutCompanyInput>
+    create: XOR<AiTemplateCreateWithoutCompanyInput, AiTemplateUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type AiTemplateUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: AiTemplateWhereUniqueInput
+    data: XOR<AiTemplateUpdateWithoutCompanyInput, AiTemplateUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type AiTemplateUpdateManyWithWhereWithoutCompanyInput = {
+    where: AiTemplateScalarWhereInput
+    data: XOR<AiTemplateUpdateManyMutationInput, AiTemplateUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type InboxCustomerUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: InboxCustomerWhereUniqueInput
+    update: XOR<InboxCustomerUpdateWithoutCompanyInput, InboxCustomerUncheckedUpdateWithoutCompanyInput>
+    create: XOR<InboxCustomerCreateWithoutCompanyInput, InboxCustomerUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type InboxCustomerUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: InboxCustomerWhereUniqueInput
+    data: XOR<InboxCustomerUpdateWithoutCompanyInput, InboxCustomerUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type InboxCustomerUpdateManyWithWhereWithoutCompanyInput = {
+    where: InboxCustomerScalarWhereInput
+    data: XOR<InboxCustomerUpdateManyMutationInput, InboxCustomerUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type InboxCustomerScalarWhereInput = {
+    AND?: InboxCustomerScalarWhereInput | InboxCustomerScalarWhereInput[]
+    OR?: InboxCustomerScalarWhereInput[]
+    NOT?: InboxCustomerScalarWhereInput | InboxCustomerScalarWhereInput[]
+    id?: StringFilter<"InboxCustomer"> | string
+    companyId?: IntFilter<"InboxCustomer"> | number
+    name?: StringFilter<"InboxCustomer"> | string
+    phone?: StringNullableFilter<"InboxCustomer"> | string | null
+    email?: StringNullableFilter<"InboxCustomer"> | string | null
+    address?: StringNullableFilter<"InboxCustomer"> | string | null
+    notes?: StringNullableFilter<"InboxCustomer"> | string | null
+    createdAt?: DateTimeFilter<"InboxCustomer"> | Date | string
+    updatedAt?: DateTimeFilter<"InboxCustomer"> | Date | string
+  }
+
+  export type InboxConversationUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: InboxConversationWhereUniqueInput
+    update: XOR<InboxConversationUpdateWithoutCompanyInput, InboxConversationUncheckedUpdateWithoutCompanyInput>
+    create: XOR<InboxConversationCreateWithoutCompanyInput, InboxConversationUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type InboxConversationUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: InboxConversationWhereUniqueInput
+    data: XOR<InboxConversationUpdateWithoutCompanyInput, InboxConversationUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type InboxConversationUpdateManyWithWhereWithoutCompanyInput = {
+    where: InboxConversationScalarWhereInput
+    data: XOR<InboxConversationUpdateManyMutationInput, InboxConversationUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type InboxMessageUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: InboxMessageWhereUniqueInput
+    update: XOR<InboxMessageUpdateWithoutCompanyInput, InboxMessageUncheckedUpdateWithoutCompanyInput>
+    create: XOR<InboxMessageCreateWithoutCompanyInput, InboxMessageUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type InboxMessageUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: InboxMessageWhereUniqueInput
+    data: XOR<InboxMessageUpdateWithoutCompanyInput, InboxMessageUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type InboxMessageUpdateManyWithWhereWithoutCompanyInput = {
+    where: InboxMessageScalarWhereInput
+    data: XOR<InboxMessageUpdateManyMutationInput, InboxMessageUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type CompanySettingsUpsertWithoutCompanyInput = {
+    update: XOR<CompanySettingsUpdateWithoutCompanyInput, CompanySettingsUncheckedUpdateWithoutCompanyInput>
+    create: XOR<CompanySettingsCreateWithoutCompanyInput, CompanySettingsUncheckedCreateWithoutCompanyInput>
+    where?: CompanySettingsWhereInput
+  }
+
+  export type CompanySettingsUpdateToOneWithWhereWithoutCompanyInput = {
+    where?: CompanySettingsWhereInput
+    data: XOR<CompanySettingsUpdateWithoutCompanyInput, CompanySettingsUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CompanySettingsUpdateWithoutCompanyInput = {
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    newMessageAlerts?: BoolFieldUpdateOperationsInput | boolean
+    dailyReports?: BoolFieldUpdateOperationsInput | boolean
+    autoReply?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanySettingsUncheckedUpdateWithoutCompanyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    emailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    newMessageAlerts?: BoolFieldUpdateOperationsInput | boolean
+    dailyReports?: BoolFieldUpdateOperationsInput | boolean
+    autoReply?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: CompanyWhatsappNumberWhereUniqueInput
+    update: XOR<CompanyWhatsappNumberUpdateWithoutCompanyInput, CompanyWhatsappNumberUncheckedUpdateWithoutCompanyInput>
+    create: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: CompanyWhatsappNumberWhereUniqueInput
+    data: XOR<CompanyWhatsappNumberUpdateWithoutCompanyInput, CompanyWhatsappNumberUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput = {
+    where: CompanyWhatsappNumberScalarWhereInput
+    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type CompanyWhatsappNumberScalarWhereInput = {
+    AND?: CompanyWhatsappNumberScalarWhereInput | CompanyWhatsappNumberScalarWhereInput[]
+    OR?: CompanyWhatsappNumberScalarWhereInput[]
+    NOT?: CompanyWhatsappNumberScalarWhereInput | CompanyWhatsappNumberScalarWhereInput[]
+    id?: StringFilter<"CompanyWhatsappNumber"> | string
+    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
+    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
+    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
+    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
+    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
+    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
+    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+  }
+
+  export type CompanyCreateWithoutKnowledgeItemsInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutKnowledgeItemsInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutKnowledgeItemsInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutKnowledgeItemsInput, CompanyUncheckedCreateWithoutKnowledgeItemsInput>
+  }
+
+  export type UserCreateWithoutKnowledgeItemsInput = {
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    company?: CompanyCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
+  }
+
+  export type UserUncheckedCreateWithoutKnowledgeItemsInput = {
+    id?: number
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    defaultCompanyId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  }
+
+  export type UserCreateOrConnectWithoutKnowledgeItemsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutKnowledgeItemsInput, UserUncheckedCreateWithoutKnowledgeItemsInput>
+  }
+
+  export type CompanyUpsertWithoutKnowledgeItemsInput = {
+    update: XOR<CompanyUpdateWithoutKnowledgeItemsInput, CompanyUncheckedUpdateWithoutKnowledgeItemsInput>
+    create: XOR<CompanyCreateWithoutKnowledgeItemsInput, CompanyUncheckedCreateWithoutKnowledgeItemsInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutKnowledgeItemsInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutKnowledgeItemsInput, CompanyUncheckedUpdateWithoutKnowledgeItemsInput>
+  }
+
+  export type CompanyUpdateWithoutKnowledgeItemsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutKnowledgeItemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type UserUpsertWithoutKnowledgeItemsInput = {
+    update: XOR<UserUpdateWithoutKnowledgeItemsInput, UserUncheckedUpdateWithoutKnowledgeItemsInput>
+    create: XOR<UserCreateWithoutKnowledgeItemsInput, UserUncheckedCreateWithoutKnowledgeItemsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutKnowledgeItemsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutKnowledgeItemsInput, UserUncheckedUpdateWithoutKnowledgeItemsInput>
+  }
+
+  export type UserUpdateWithoutKnowledgeItemsInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    company?: CompanyUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutKnowledgeItemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    defaultCompanyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  }
+
+  export type CompanyCreateWithoutQuickAnswersInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutQuickAnswersInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutQuickAnswersInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutQuickAnswersInput, CompanyUncheckedCreateWithoutQuickAnswersInput>
+  }
+
+  export type UserCreateWithoutQuickAnswersInput = {
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    company?: CompanyCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
+  }
+
+  export type UserUncheckedCreateWithoutQuickAnswersInput = {
+    id?: number
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    defaultCompanyId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  }
+
+  export type UserCreateOrConnectWithoutQuickAnswersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutQuickAnswersInput, UserUncheckedCreateWithoutQuickAnswersInput>
+  }
+
+  export type CompanyUpsertWithoutQuickAnswersInput = {
+    update: XOR<CompanyUpdateWithoutQuickAnswersInput, CompanyUncheckedUpdateWithoutQuickAnswersInput>
+    create: XOR<CompanyCreateWithoutQuickAnswersInput, CompanyUncheckedCreateWithoutQuickAnswersInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutQuickAnswersInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutQuickAnswersInput, CompanyUncheckedUpdateWithoutQuickAnswersInput>
+  }
+
+  export type CompanyUpdateWithoutQuickAnswersInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutQuickAnswersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type UserUpsertWithoutQuickAnswersInput = {
+    update: XOR<UserUpdateWithoutQuickAnswersInput, UserUncheckedUpdateWithoutQuickAnswersInput>
+    create: XOR<UserCreateWithoutQuickAnswersInput, UserUncheckedCreateWithoutQuickAnswersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutQuickAnswersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutQuickAnswersInput, UserUncheckedUpdateWithoutQuickAnswersInput>
+  }
+
+  export type UserUpdateWithoutQuickAnswersInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    company?: CompanyUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutQuickAnswersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    defaultCompanyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  }
+
+  export type CompanyCreateWithoutAiTemplatesInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutAiTemplatesInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutAiTemplatesInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutAiTemplatesInput, CompanyUncheckedCreateWithoutAiTemplatesInput>
+  }
+
+  export type UserCreateWithoutAiTemplatesInput = {
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    company?: CompanyCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAiTemplatesInput = {
+    id?: number
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    defaultCompanyId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAiTemplatesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAiTemplatesInput, UserUncheckedCreateWithoutAiTemplatesInput>
+  }
+
+  export type AiTemplateOptionCreateWithoutTemplateInput = {
+    id?: string
+    label: string
+    value: string
+    createdAt?: Date | string
+  }
+
+  export type AiTemplateOptionUncheckedCreateWithoutTemplateInput = {
+    id?: string
+    label: string
+    value: string
+    createdAt?: Date | string
+  }
+
+  export type AiTemplateOptionCreateOrConnectWithoutTemplateInput = {
+    where: AiTemplateOptionWhereUniqueInput
+    create: XOR<AiTemplateOptionCreateWithoutTemplateInput, AiTemplateOptionUncheckedCreateWithoutTemplateInput>
+  }
+
+  export type AiTemplateOptionCreateManyTemplateInputEnvelope = {
+    data: AiTemplateOptionCreateManyTemplateInput | AiTemplateOptionCreateManyTemplateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanyUpsertWithoutAiTemplatesInput = {
+    update: XOR<CompanyUpdateWithoutAiTemplatesInput, CompanyUncheckedUpdateWithoutAiTemplatesInput>
+    create: XOR<CompanyCreateWithoutAiTemplatesInput, CompanyUncheckedCreateWithoutAiTemplatesInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutAiTemplatesInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutAiTemplatesInput, CompanyUncheckedUpdateWithoutAiTemplatesInput>
+  }
+
+  export type CompanyUpdateWithoutAiTemplatesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutAiTemplatesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type UserUpsertWithoutAiTemplatesInput = {
+    update: XOR<UserUpdateWithoutAiTemplatesInput, UserUncheckedUpdateWithoutAiTemplatesInput>
+    create: XOR<UserCreateWithoutAiTemplatesInput, UserUncheckedCreateWithoutAiTemplatesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAiTemplatesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAiTemplatesInput, UserUncheckedUpdateWithoutAiTemplatesInput>
+  }
+
+  export type UserUpdateWithoutAiTemplatesInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    company?: CompanyUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAiTemplatesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    defaultCompanyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  }
+
+  export type AiTemplateOptionUpsertWithWhereUniqueWithoutTemplateInput = {
+    where: AiTemplateOptionWhereUniqueInput
+    update: XOR<AiTemplateOptionUpdateWithoutTemplateInput, AiTemplateOptionUncheckedUpdateWithoutTemplateInput>
+    create: XOR<AiTemplateOptionCreateWithoutTemplateInput, AiTemplateOptionUncheckedCreateWithoutTemplateInput>
+  }
+
+  export type AiTemplateOptionUpdateWithWhereUniqueWithoutTemplateInput = {
+    where: AiTemplateOptionWhereUniqueInput
+    data: XOR<AiTemplateOptionUpdateWithoutTemplateInput, AiTemplateOptionUncheckedUpdateWithoutTemplateInput>
+  }
+
+  export type AiTemplateOptionUpdateManyWithWhereWithoutTemplateInput = {
+    where: AiTemplateOptionScalarWhereInput
+    data: XOR<AiTemplateOptionUpdateManyMutationInput, AiTemplateOptionUncheckedUpdateManyWithoutTemplateInput>
+  }
+
+  export type AiTemplateOptionScalarWhereInput = {
+    AND?: AiTemplateOptionScalarWhereInput | AiTemplateOptionScalarWhereInput[]
+    OR?: AiTemplateOptionScalarWhereInput[]
+    NOT?: AiTemplateOptionScalarWhereInput | AiTemplateOptionScalarWhereInput[]
+    id?: StringFilter<"AiTemplateOption"> | string
+    templateId?: StringFilter<"AiTemplateOption"> | string
+    label?: StringFilter<"AiTemplateOption"> | string
+    value?: StringFilter<"AiTemplateOption"> | string
+    createdAt?: DateTimeFilter<"AiTemplateOption"> | Date | string
+  }
+
+  export type AiTemplateCreateWithoutOptionsInput = {
+    id?: string
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutAiTemplatesInput
+    createdBy?: UserCreateNestedOneWithoutAiTemplatesInput
+  }
+
+  export type AiTemplateUncheckedCreateWithoutOptionsInput = {
+    id?: string
+    companyId: number
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type AiTemplateCreateOrConnectWithoutOptionsInput = {
+    where: AiTemplateWhereUniqueInput
+    create: XOR<AiTemplateCreateWithoutOptionsInput, AiTemplateUncheckedCreateWithoutOptionsInput>
+  }
+
+  export type AiTemplateUpsertWithoutOptionsInput = {
+    update: XOR<AiTemplateUpdateWithoutOptionsInput, AiTemplateUncheckedUpdateWithoutOptionsInput>
+    create: XOR<AiTemplateCreateWithoutOptionsInput, AiTemplateUncheckedCreateWithoutOptionsInput>
+    where?: AiTemplateWhereInput
+  }
+
+  export type AiTemplateUpdateToOneWithWhereWithoutOptionsInput = {
+    where?: AiTemplateWhereInput
+    data: XOR<AiTemplateUpdateWithoutOptionsInput, AiTemplateUncheckedUpdateWithoutOptionsInput>
+  }
+
+  export type AiTemplateUpdateWithoutOptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutAiTemplatesNestedInput
+    createdBy?: UserUpdateOneWithoutAiTemplatesNestedInput
+  }
+
+  export type AiTemplateUncheckedUpdateWithoutOptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
   export type CompanyCreateWithoutMembersInput = {
     name: string
     description?: string | null
@@ -19648,6 +36858,14 @@ export namespace Prisma {
     user?: UserCreateNestedManyWithoutCompanyInput
     CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
     UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutMembersInput = {
@@ -19660,6 +36878,14 @@ export namespace Prisma {
     user?: UserUncheckedCreateNestedManyWithoutCompanyInput
     CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
     UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutMembersInput = {
@@ -19697,6 +36923,11 @@ export namespace Prisma {
     avatar?: FileCreateNestedOneWithoutAvatarForInput
     company?: CompanyCreateNestedOneWithoutUserInput
     files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserUncheckedCreateWithoutCompanyMembersInput = {
@@ -19730,6 +36961,11 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
   }
 
   export type UserCreateOrConnectWithoutCompanyMembersInput = {
@@ -19757,6 +36993,14 @@ export namespace Prisma {
     user?: UserUpdateManyWithoutCompanyNestedInput
     CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
     UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutMembersInput = {
@@ -19769,6 +37013,14 @@ export namespace Prisma {
     user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
     CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
     UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutCompanyMembersInput = {
@@ -19812,6 +37064,11 @@ export namespace Prisma {
     avatar?: FileUpdateOneWithoutAvatarForNestedInput
     company?: CompanyUpdateOneWithoutUserNestedInput
     files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyMembersInput = {
@@ -19845,6 +37102,11 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
   }
 
   export type CustomerSubscriptionCreateWithoutPlanInput = {
@@ -19918,6 +37180,14 @@ export namespace Prisma {
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     user?: UserCreateNestedManyWithoutCompanyInput
     UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutCustomerSubscriptionInput = {
@@ -19930,6 +37200,14 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     user?: UserUncheckedCreateNestedManyWithoutCompanyInput
     UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutCustomerSubscriptionInput = {
@@ -20026,6 +37304,14 @@ export namespace Prisma {
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     user?: UserUpdateManyWithoutCompanyNestedInput
     UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutCustomerSubscriptionInput = {
@@ -20038,6 +37324,14 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
     UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type SubscriptionPlanUpsertWithoutSubscriptionsInput = {
@@ -20104,6 +37398,14 @@ export namespace Prisma {
     members?: CompanyMemberCreateNestedManyWithoutCompanyInput
     user?: UserCreateNestedManyWithoutCompanyInput
     CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutUsageTrackingInput = {
@@ -20116,6 +37418,14 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
     user?: UserUncheckedCreateNestedManyWithoutCompanyInput
     CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutUsageTrackingInput = {
@@ -20184,6 +37494,14 @@ export namespace Prisma {
     members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
     user?: UserUpdateManyWithoutCompanyNestedInput
     CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutUsageTrackingInput = {
@@ -20196,6 +37514,14 @@ export namespace Prisma {
     members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
     user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
     CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CustomerSubscriptionUpsertWithoutUsageTrackingInput = {
@@ -20245,6 +37571,1074 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CompanyCreateWithoutSettingsInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutSettingsInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutSettingsInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutSettingsInput, CompanyUncheckedCreateWithoutSettingsInput>
+  }
+
+  export type CompanyUpsertWithoutSettingsInput = {
+    update: XOR<CompanyUpdateWithoutSettingsInput, CompanyUncheckedUpdateWithoutSettingsInput>
+    create: XOR<CompanyCreateWithoutSettingsInput, CompanyUncheckedCreateWithoutSettingsInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutSettingsInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutSettingsInput, CompanyUncheckedUpdateWithoutSettingsInput>
+  }
+
+  export type CompanyUpdateWithoutSettingsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutSettingsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyCreateWithoutWhatsappNumbersInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutWhatsappNumbersInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutWhatsappNumbersInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+  }
+
+  export type CompanyUpsertWithoutWhatsappNumbersInput = {
+    update: XOR<CompanyUpdateWithoutWhatsappNumbersInput, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
+    create: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutWhatsappNumbersInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutWhatsappNumbersInput, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
+  }
+
+  export type CompanyUpdateWithoutWhatsappNumbersInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutWhatsappNumbersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+  }
+
+  export type CompanyCreateWithoutInboxCustomersInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutInboxCustomersInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutInboxCustomersInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutInboxCustomersInput, CompanyUncheckedCreateWithoutInboxCustomersInput>
+  }
+
+  export type InboxConversationCreateWithoutCustomerInput = {
+    id?: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxConversationsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedInboxConversationsInput
+    messages?: InboxMessageCreateNestedManyWithoutConversationInput
+  }
+
+  export type InboxConversationUncheckedCreateWithoutCustomerInput = {
+    id?: string
+    companyId: number
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    assignedToId?: number | null
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: InboxMessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type InboxConversationCreateOrConnectWithoutCustomerInput = {
+    where: InboxConversationWhereUniqueInput
+    create: XOR<InboxConversationCreateWithoutCustomerInput, InboxConversationUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type InboxConversationCreateManyCustomerInputEnvelope = {
+    data: InboxConversationCreateManyCustomerInput | InboxConversationCreateManyCustomerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanyUpsertWithoutInboxCustomersInput = {
+    update: XOR<CompanyUpdateWithoutInboxCustomersInput, CompanyUncheckedUpdateWithoutInboxCustomersInput>
+    create: XOR<CompanyCreateWithoutInboxCustomersInput, CompanyUncheckedCreateWithoutInboxCustomersInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutInboxCustomersInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutInboxCustomersInput, CompanyUncheckedUpdateWithoutInboxCustomersInput>
+  }
+
+  export type CompanyUpdateWithoutInboxCustomersInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutInboxCustomersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type InboxConversationUpsertWithWhereUniqueWithoutCustomerInput = {
+    where: InboxConversationWhereUniqueInput
+    update: XOR<InboxConversationUpdateWithoutCustomerInput, InboxConversationUncheckedUpdateWithoutCustomerInput>
+    create: XOR<InboxConversationCreateWithoutCustomerInput, InboxConversationUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type InboxConversationUpdateWithWhereUniqueWithoutCustomerInput = {
+    where: InboxConversationWhereUniqueInput
+    data: XOR<InboxConversationUpdateWithoutCustomerInput, InboxConversationUncheckedUpdateWithoutCustomerInput>
+  }
+
+  export type InboxConversationUpdateManyWithWhereWithoutCustomerInput = {
+    where: InboxConversationScalarWhereInput
+    data: XOR<InboxConversationUpdateManyMutationInput, InboxConversationUncheckedUpdateManyWithoutCustomerInput>
+  }
+
+  export type CompanyCreateWithoutInboxConversationsInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutInboxConversationsInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutInboxConversationsInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutInboxConversationsInput, CompanyUncheckedCreateWithoutInboxConversationsInput>
+  }
+
+  export type InboxCustomerCreateWithoutConversationsInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    email?: string | null
+    address?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxCustomersInput
+  }
+
+  export type InboxCustomerUncheckedCreateWithoutConversationsInput = {
+    id?: string
+    companyId: number
+    name: string
+    phone?: string | null
+    email?: string | null
+    address?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxCustomerCreateOrConnectWithoutConversationsInput = {
+    where: InboxCustomerWhereUniqueInput
+    create: XOR<InboxCustomerCreateWithoutConversationsInput, InboxCustomerUncheckedCreateWithoutConversationsInput>
+  }
+
+  export type UserCreateWithoutAssignedInboxConversationsInput = {
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    company?: CompanyCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutSenderUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAssignedInboxConversationsInput = {
+    id?: number
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    defaultCompanyId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAssignedInboxConversationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAssignedInboxConversationsInput, UserUncheckedCreateWithoutAssignedInboxConversationsInput>
+  }
+
+  export type InboxMessageCreateWithoutConversationInput = {
+    id?: string
+    senderType: $Enums.InboxMessageSenderType
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxMessagesInput
+    senderUser?: UserCreateNestedOneWithoutInboxMessagesInput
+  }
+
+  export type InboxMessageUncheckedCreateWithoutConversationInput = {
+    id?: string
+    companyId: number
+    senderType: $Enums.InboxMessageSenderType
+    senderUserId?: number | null
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxMessageCreateOrConnectWithoutConversationInput = {
+    where: InboxMessageWhereUniqueInput
+    create: XOR<InboxMessageCreateWithoutConversationInput, InboxMessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type InboxMessageCreateManyConversationInputEnvelope = {
+    data: InboxMessageCreateManyConversationInput | InboxMessageCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanyUpsertWithoutInboxConversationsInput = {
+    update: XOR<CompanyUpdateWithoutInboxConversationsInput, CompanyUncheckedUpdateWithoutInboxConversationsInput>
+    create: XOR<CompanyCreateWithoutInboxConversationsInput, CompanyUncheckedCreateWithoutInboxConversationsInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutInboxConversationsInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutInboxConversationsInput, CompanyUncheckedUpdateWithoutInboxConversationsInput>
+  }
+
+  export type CompanyUpdateWithoutInboxConversationsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutInboxConversationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type InboxCustomerUpsertWithoutConversationsInput = {
+    update: XOR<InboxCustomerUpdateWithoutConversationsInput, InboxCustomerUncheckedUpdateWithoutConversationsInput>
+    create: XOR<InboxCustomerCreateWithoutConversationsInput, InboxCustomerUncheckedCreateWithoutConversationsInput>
+    where?: InboxCustomerWhereInput
+  }
+
+  export type InboxCustomerUpdateToOneWithWhereWithoutConversationsInput = {
+    where?: InboxCustomerWhereInput
+    data: XOR<InboxCustomerUpdateWithoutConversationsInput, InboxCustomerUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type InboxCustomerUpdateWithoutConversationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxCustomersNestedInput
+  }
+
+  export type InboxCustomerUncheckedUpdateWithoutConversationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutAssignedInboxConversationsInput = {
+    update: XOR<UserUpdateWithoutAssignedInboxConversationsInput, UserUncheckedUpdateWithoutAssignedInboxConversationsInput>
+    create: XOR<UserCreateWithoutAssignedInboxConversationsInput, UserUncheckedCreateWithoutAssignedInboxConversationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAssignedInboxConversationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAssignedInboxConversationsInput, UserUncheckedUpdateWithoutAssignedInboxConversationsInput>
+  }
+
+  export type UserUpdateWithoutAssignedInboxConversationsInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    company?: CompanyUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAssignedInboxConversationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    defaultCompanyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  }
+
+  export type InboxMessageUpsertWithWhereUniqueWithoutConversationInput = {
+    where: InboxMessageWhereUniqueInput
+    update: XOR<InboxMessageUpdateWithoutConversationInput, InboxMessageUncheckedUpdateWithoutConversationInput>
+    create: XOR<InboxMessageCreateWithoutConversationInput, InboxMessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type InboxMessageUpdateWithWhereUniqueWithoutConversationInput = {
+    where: InboxMessageWhereUniqueInput
+    data: XOR<InboxMessageUpdateWithoutConversationInput, InboxMessageUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type InboxMessageUpdateManyWithWhereWithoutConversationInput = {
+    where: InboxMessageScalarWhereInput
+    data: XOR<InboxMessageUpdateManyMutationInput, InboxMessageUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type CompanyCreateWithoutInboxMessagesInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutInboxMessagesInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutInboxMessagesInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutInboxMessagesInput, CompanyUncheckedCreateWithoutInboxMessagesInput>
+  }
+
+  export type InboxConversationCreateWithoutMessagesInput = {
+    id?: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInboxConversationsInput
+    customer: InboxCustomerCreateNestedOneWithoutConversationsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedInboxConversationsInput
+  }
+
+  export type InboxConversationUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    companyId: number
+    customerId: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    assignedToId?: number | null
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxConversationCreateOrConnectWithoutMessagesInput = {
+    where: InboxConversationWhereUniqueInput
+    create: XOR<InboxConversationCreateWithoutMessagesInput, InboxConversationUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserCreateWithoutInboxMessagesInput = {
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
+    avatar?: FileCreateNestedOneWithoutAvatarForInput
+    company?: CompanyCreateNestedOneWithoutUserInput
+    files?: FileCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationCreateNestedManyWithoutAssignedToInput
+  }
+
+  export type UserUncheckedCreateWithoutInboxMessagesInput = {
+    id?: number
+    email: string
+    provider?: $Enums.Provider
+    password?: string | null
+    resetPasswordToken?: string | null
+    confirmationToken?: string | null
+    confirmed?: boolean | null
+    blocked?: boolean | null
+    phone?: string | null
+    firstName: string
+    lastName?: string | null
+    position?: string | null
+    companyName?: string | null
+    country?: string | null
+    linkedinUrl?: string | null
+    twitterUrl?: string | null
+    websiteUrl?: string | null
+    githubUrl?: string | null
+    avatarUrl?: string | null
+    language: $Enums.Language
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    avatarId?: string | null
+    idProvider?: string | null
+    resetPasswordExpires?: Date | string | null
+    theme?: $Enums.Theme
+    defaultCompanyId?: number | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    files?: FileUncheckedCreateNestedManyWithoutUserInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCreatedByInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCreatedByInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedInboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutAssignedToInput
+  }
+
+  export type UserCreateOrConnectWithoutInboxMessagesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutInboxMessagesInput, UserUncheckedCreateWithoutInboxMessagesInput>
+  }
+
+  export type CompanyUpsertWithoutInboxMessagesInput = {
+    update: XOR<CompanyUpdateWithoutInboxMessagesInput, CompanyUncheckedUpdateWithoutInboxMessagesInput>
+    create: XOR<CompanyCreateWithoutInboxMessagesInput, CompanyUncheckedCreateWithoutInboxMessagesInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutInboxMessagesInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutInboxMessagesInput, CompanyUncheckedUpdateWithoutInboxMessagesInput>
+  }
+
+  export type CompanyUpdateWithoutInboxMessagesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutInboxMessagesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type InboxConversationUpsertWithoutMessagesInput = {
+    update: XOR<InboxConversationUpdateWithoutMessagesInput, InboxConversationUncheckedUpdateWithoutMessagesInput>
+    create: XOR<InboxConversationCreateWithoutMessagesInput, InboxConversationUncheckedCreateWithoutMessagesInput>
+    where?: InboxConversationWhereInput
+  }
+
+  export type InboxConversationUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: InboxConversationWhereInput
+    data: XOR<InboxConversationUpdateWithoutMessagesInput, InboxConversationUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type InboxConversationUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxConversationsNestedInput
+    customer?: InboxCustomerUpdateOneRequiredWithoutConversationsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedInboxConversationsNestedInput
+  }
+
+  export type InboxConversationUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    customerId?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    assignedToId?: NullableIntFieldUpdateOperationsInput | number | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutInboxMessagesInput = {
+    update: XOR<UserUpdateWithoutInboxMessagesInput, UserUncheckedUpdateWithoutInboxMessagesInput>
+    create: XOR<UserCreateWithoutInboxMessagesInput, UserUncheckedCreateWithoutInboxMessagesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutInboxMessagesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutInboxMessagesInput, UserUncheckedUpdateWithoutInboxMessagesInput>
+  }
+
+  export type UserUpdateWithoutInboxMessagesInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
+    avatar?: FileUpdateOneWithoutAvatarForNestedInput
+    company?: CompanyUpdateOneWithoutUserNestedInput
+    files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInboxMessagesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    provider?: EnumProviderFieldUpdateOperationsInput | $Enums.Provider
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    blocked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarId?: NullableStringFieldUpdateOperationsInput | string | null
+    idProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    theme?: EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+    defaultCompanyId?: NullableIntFieldUpdateOperationsInput | number | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+  }
+
   export type AccountCreateManyUserInput = {
     id?: string
     type: string
@@ -20286,6 +38680,65 @@ export namespace Prisma {
     version?: string | null
     mimeType?: string | null
     size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KnowledgeItemCreateManyCreatedByInput = {
+    id?: string
+    companyId: number
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type QuickAnswerCreateManyCreatedByInput = {
+    id?: string
+    companyId: number
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AiTemplateCreateManyCreatedByInput = {
+    id?: string
+    companyId: number
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxConversationCreateManyAssignedToInput = {
+    id?: string
+    companyId: number
+    customerId: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxMessageCreateManySenderUserInput = {
+    id?: string
+    companyId: number
+    conversationId: string
+    senderType: $Enums.InboxMessageSenderType
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -20426,6 +38879,187 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type KnowledgeItemUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutKnowledgeItemsNestedInput
+  }
+
+  export type KnowledgeItemUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KnowledgeItemUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuickAnswerUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutQuickAnswersNestedInput
+  }
+
+  export type QuickAnswerUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuickAnswerUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiTemplateUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutAiTemplatesNestedInput
+    options?: AiTemplateOptionUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type AiTemplateUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    options?: AiTemplateOptionUncheckedUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type AiTemplateUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxConversationUpdateWithoutAssignedToInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxConversationsNestedInput
+    customer?: InboxCustomerUpdateOneRequiredWithoutConversationsNestedInput
+    messages?: InboxMessageUpdateManyWithoutConversationNestedInput
+  }
+
+  export type InboxConversationUncheckedUpdateWithoutAssignedToInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    customerId?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: InboxMessageUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type InboxConversationUncheckedUpdateManyWithoutAssignedToInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    customerId?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageUpdateWithoutSenderUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxMessagesNestedInput
+    conversation?: InboxConversationUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type InboxMessageUncheckedUpdateWithoutSenderUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    conversationId?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageUncheckedUpdateManyWithoutSenderUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    conversationId?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyAvatarInput = {
     id?: number
     email: string
@@ -20485,6 +39119,11 @@ export namespace Prisma {
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     company?: CompanyUpdateOneWithoutUserNestedInput
     files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAvatarInput = {
@@ -20518,6 +39157,11 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAvatarInput = {
@@ -20620,6 +39264,87 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type KnowledgeItemCreateManyCompanyInput = {
+    id?: string
+    type: $Enums.KnowledgeItemType
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type QuickAnswerCreateManyCompanyInput = {
+    id?: string
+    title: string
+    content: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type AiTemplateCreateManyCompanyInput = {
+    id?: string
+    name: string
+    content: string
+    category: $Enums.AiTemplateCategory
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: number | null
+  }
+
+  export type InboxCustomerCreateManyCompanyInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    email?: string | null
+    address?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxConversationCreateManyCompanyInput = {
+    id?: string
+    customerId: string
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    assignedToId?: number | null
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxMessageCreateManyCompanyInput = {
+    id?: string
+    conversationId: string
+    senderType: $Enums.InboxMessageSenderType
+    senderUserId?: number | null
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanyWhatsappNumberCreateManyCompanyInput = {
+    id?: string
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type CompanyMemberUpdateWithoutCompanyInput = {
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     canPost?: BoolFieldUpdateOperationsInput | boolean
@@ -20685,6 +39410,11 @@ export namespace Prisma {
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     avatar?: FileUpdateOneWithoutAvatarForNestedInput
     files?: FileUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyInput = {
@@ -20718,6 +39448,11 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     files?: FileUncheckedUpdateManyWithoutUserNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCreatedByNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCreatedByNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutSenderUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCompanyInput = {
@@ -20841,6 +39576,283 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type KnowledgeItemUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutKnowledgeItemsNestedInput
+  }
+
+  export type KnowledgeItemUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type KnowledgeItemUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumKnowledgeItemTypeFieldUpdateOperationsInput | $Enums.KnowledgeItemType
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type QuickAnswerUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutQuickAnswersNestedInput
+  }
+
+  export type QuickAnswerUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type QuickAnswerUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type AiTemplateUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutAiTemplatesNestedInput
+    options?: AiTemplateOptionUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type AiTemplateUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+    options?: AiTemplateOptionUncheckedUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type AiTemplateUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumAiTemplateCategoryFieldUpdateOperationsInput | $Enums.AiTemplateCategory
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type InboxCustomerUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: InboxConversationUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type InboxCustomerUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversations?: InboxConversationUncheckedUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type InboxCustomerUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxConversationUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: InboxCustomerUpdateOneRequiredWithoutConversationsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedInboxConversationsNestedInput
+    messages?: InboxMessageUpdateManyWithoutConversationNestedInput
+  }
+
+  export type InboxConversationUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    assignedToId?: NullableIntFieldUpdateOperationsInput | number | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: InboxMessageUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type InboxConversationUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    assignedToId?: NullableIntFieldUpdateOperationsInput | number | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: InboxConversationUpdateOneRequiredWithoutMessagesNestedInput
+    senderUser?: UserUpdateOneWithoutInboxMessagesNestedInput
+  }
+
+  export type InboxMessageUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    senderUserId?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    senderUserId?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyWhatsappNumberUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyWhatsappNumberUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiTemplateOptionCreateManyTemplateInput = {
+    id?: string
+    label: string
+    value: string
+    createdAt?: Date | string
+  }
+
+  export type AiTemplateOptionUpdateWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiTemplateOptionUncheckedUpdateWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiTemplateOptionUncheckedUpdateManyWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CustomerSubscriptionCreateManyPlanInput = {
     id?: string
     companyId: number
@@ -20961,6 +39973,128 @@ export namespace Prisma {
     lastResetDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxConversationCreateManyCustomerInput = {
+    id?: string
+    companyId: number
+    subject?: string | null
+    lastMessagePreview?: string | null
+    lastMessageSentAt?: Date | string | null
+    unreadCount?: number
+    priority?: $Enums.InboxConversationPriority
+    satisfactionScore?: number | null
+    tags?: InboxConversationCreatetagsInput | string[]
+    assignedToId?: number | null
+    isArchived?: boolean
+    archivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxConversationUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxConversationsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedInboxConversationsNestedInput
+    messages?: InboxMessageUpdateManyWithoutConversationNestedInput
+  }
+
+  export type InboxConversationUncheckedUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    assignedToId?: NullableIntFieldUpdateOperationsInput | number | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: InboxMessageUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type InboxConversationUncheckedUpdateManyWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessagePreview?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    priority?: EnumInboxConversationPriorityFieldUpdateOperationsInput | $Enums.InboxConversationPriority
+    satisfactionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    tags?: InboxConversationUpdatetagsInput | string[]
+    assignedToId?: NullableIntFieldUpdateOperationsInput | number | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageCreateManyConversationInput = {
+    id?: string
+    companyId: number
+    senderType: $Enums.InboxMessageSenderType
+    senderUserId?: number | null
+    content: string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.InboxMessageStatus
+    sentAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InboxMessageUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInboxMessagesNestedInput
+    senderUser?: UserUpdateOneWithoutInboxMessagesNestedInput
+  }
+
+  export type InboxMessageUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    senderUserId?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InboxMessageUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    senderType?: EnumInboxMessageSenderTypeFieldUpdateOperationsInput | $Enums.InboxMessageSenderType
+    senderUserId?: NullableIntFieldUpdateOperationsInput | number | null
+    content?: StringFieldUpdateOperationsInput | string
+    attachments?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

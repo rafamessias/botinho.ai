@@ -39,6 +39,10 @@ function isPublicRoute(path: string) {
 export default async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+    if (request.headers.get("upgrade")?.toLowerCase() === "websocket") {
+        return NextResponse.next();
+    }
+
     // Early returns for requests that don't need auth checking
     if (
         pathname.startsWith('/api') ||
@@ -93,6 +97,13 @@ export default async function middleware(request: NextRequest) {
 
         // If user is trying to access public routes (sign-in, sign-up, etc.), redirect to home with their locale
         if (isPublicRoute(pathname)) {
+            // If the user is authenticated and the pathname is "/" or exactly "/[locale]", let them access it
+            if (
+                pathname === "/" ||
+                routing.locales.some(locale => pathname === `/${locale}`)
+            ) {
+                return intlResponse;
+            }
 
             const redirectUrl = new URL(`${request.nextUrl.origin}/${userLocale}/dashboard`);
             return NextResponse.redirect(redirectUrl);

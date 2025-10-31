@@ -1,3 +1,6 @@
+// AUTO-GENERATED FILE. Run "npm run prisma:sync" in ws-server to refresh.
+// Source: ../../prisma/schema.prisma
+
 generator client {
   provider        = "prisma-client-js"
   output          = "../lib/generated/prisma"

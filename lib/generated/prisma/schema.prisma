@@ -10,39 +10,44 @@ datasource db {
 }
 
 model User {
-  id                   Int             @id @default(autoincrement())
-  email                String          @unique
-  provider             Provider        @default(local)
-  password             String?
-  resetPasswordToken   String?
-  confirmationToken    String?
-  confirmed            Boolean?
-  blocked              Boolean?
-  phone                String?
-  firstName            String
-  lastName             String?
-  position             String?
-  companyName          String?
-  country              String?
-  linkedinUrl          String?
-  twitterUrl           String?
-  websiteUrl           String?
-  githubUrl            String?
-  avatarUrl            String?
-  language             Language
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
-  avatarId             String?
-  idProvider           String?
-  resetPasswordExpires DateTime?
-  theme                Theme           @default(system)
-  defaultCompanyId     Int?
-  accounts             Account[]
-  sessions             Session[]
-  companyMembers       CompanyMember[] @relation("UserCompanyMembers")
-  avatar               File?           @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: Cascade)
-  company              Company?        @relation("UserDefaultCompany", fields: [defaultCompanyId], references: [id])
-  files                File[]          @relation("UserFile")
+  id                         Int                 @id @default(autoincrement())
+  email                      String              @unique
+  provider                   Provider            @default(local)
+  password                   String?
+  resetPasswordToken         String?
+  confirmationToken          String?
+  confirmed                  Boolean?
+  blocked                    Boolean?
+  phone                      String?
+  firstName                  String
+  lastName                   String?
+  position                   String?
+  companyName                String?
+  country                    String?
+  linkedinUrl                String?
+  twitterUrl                 String?
+  websiteUrl                 String?
+  githubUrl                  String?
+  avatarUrl                  String?
+  language                   Language
+  createdAt                  DateTime            @default(now())
+  updatedAt                  DateTime            @updatedAt
+  avatarId                   String?
+  idProvider                 String?
+  resetPasswordExpires       DateTime?
+  theme                      Theme               @default(system)
+  defaultCompanyId           Int?
+  accounts                   Account[]
+  sessions                   Session[]
+  companyMembers             CompanyMember[]     @relation("UserCompanyMembers")
+  avatar                     File?               @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: Cascade)
+  company                    Company?            @relation("UserDefaultCompany", fields: [defaultCompanyId], references: [id])
+  files                      File[]              @relation("UserFile")
+  knowledgeItems             KnowledgeItem[]
+  quickAnswers               QuickAnswer[]
+  aiTemplates                AiTemplate[]
+  assignedInboxConversations InboxConversation[] @relation("InboxConversationAssignedUser")
+  inboxMessages              InboxMessage[]      @relation("InboxMessageSenderUser")
 
   @@index([email])
   @@index([phone])
@@ -112,19 +117,124 @@ model VerificationToken {
 }
 
 model Company {
-  id                   Int                    @id @default(autoincrement())
+  id                   Int                     @id @default(autoincrement())
   name                 String
   description          String?
   tokenApi             String?
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
-  members              CompanyMember[]        @relation("CompanyMembers")
-  user                 User[]                 @relation("UserDefaultCompany")
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  members              CompanyMember[]         @relation("CompanyMembers")
+  user                 User[]                  @relation("UserDefaultCompany")
   CustomerSubscription CustomerSubscription[]
   UsageTracking        UsageTracking[]
+  knowledgeItems       KnowledgeItem[]
+  quickAnswers         QuickAnswer[]
+  aiTemplates          AiTemplate[]
+  inboxCustomers       InboxCustomer[]
+  inboxConversations   InboxConversation[]
+  inboxMessages        InboxMessage[]
+  settings             CompanySettings?
+  whatsappNumbers      CompanyWhatsappNumber[]
 
   @@index([createdAt])
   @@map("companies")
+}
+
+model KnowledgeItem {
+  id          String            @id @default(cuid())
+  companyId   Int
+  type        KnowledgeItemType
+  title       String
+  content     String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  createdById Int?
+  company     Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdBy   User?             @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+  @@index([createdAt])
+  @@map("knowledge_items")
+}
+
+model QuickAnswer {
+  id          String   @id @default(cuid())
+  companyId   Int
+  title       String
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById Int?
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+  @@index([createdAt])
+  @@map("quick_answers")
+}
+
+model AiTemplate {
+  id          String             @id @default(cuid())
+  companyId   Int
+  name        String
+  content     String
+  category    AiTemplateCategory
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  createdById Int?
+  company     Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdBy   User?              @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  options     AiTemplateOption[]
+
+  @@index([companyId])
+  @@index([createdAt])
+  @@map("ai_templates")
+}
+
+model AiTemplateOption {
+  id         String     @id @default(cuid())
+  templateId String
+  label      String
+  value      String
+  createdAt  DateTime   @default(now())
+  template   AiTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId])
+  @@map("ai_template_options")
+}
+
+enum KnowledgeItemType {
+  TEXT
+  URL
+}
+
+enum AiTemplateCategory {
+  greeting
+  orders
+  products
+  support
+  closing
+}
+
+enum InboxMessageSenderType {
+  customer
+  agent
+  bot
+  system
+}
+
+enum InboxMessageStatus {
+  pending
+  sent
+  delivered
+  read
+  failed
+}
+
+enum InboxConversationPriority {
+  low
+  medium
+  high
 }
 
 model CompanyMember {
@@ -225,6 +335,37 @@ model UsageTracking {
   @@map("usage_tracking")
 }
 
+model CompanySettings {
+  id                 Int      @id @default(autoincrement())
+  companyId          Int      @unique
+  emailNotifications Boolean  @default(true)
+  newMessageAlerts   Boolean  @default(true)
+  dailyReports       Boolean  @default(false)
+  autoReply          Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  company            Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("company_settings")
+}
+
+model CompanyWhatsappNumber {
+  id                String    @id @default(cuid())
+  companyId         Int
+  displayName       String
+  phoneNumber       String
+  isConnected       Boolean   @default(false)
+  messagesThisMonth Int       @default(0)
+  lastSyncedAt      DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, phoneNumber])
+  @@index([companyId])
+  @@map("company_whatsapp_numbers")
+}
+
 enum Language {
   en
   pt_BR
@@ -274,4 +415,74 @@ enum SubscriptionStatus {
 enum UsageMetricType {
   ACTIVE_SURVEYS
   TOTAL_COMPLETED_RESPONSES
+}
+
+model InboxCustomer {
+  id            String              @id @default(cuid())
+  companyId     Int
+  name          String
+  phone         String?
+  email         String?
+  address       String?
+  notes         String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  company       Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  conversations InboxConversation[]
+
+  @@unique([companyId, phone], map: "inbox_customer_company_phone_unique")
+  @@unique([companyId, email], map: "inbox_customer_company_email_unique")
+  @@index([companyId])
+  @@map("inbox_customers")
+}
+
+model InboxConversation {
+  id                 String                    @id @default(cuid())
+  companyId          Int
+  customerId         String
+  subject            String?
+  lastMessagePreview String?
+  lastMessageSentAt  DateTime?
+  unreadCount        Int                       @default(0)
+  priority           InboxConversationPriority @default(medium)
+  satisfactionScore  Int?
+  tags               String[]                  @default([])
+  assignedToId       Int?
+  isArchived         Boolean                   @default(false)
+  archivedAt         DateTime?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+  company            Company                   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer           InboxCustomer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  assignedTo         User?                     @relation("InboxConversationAssignedUser", fields: [assignedToId], references: [id], onDelete: SetNull)
+  messages           InboxMessage[]
+
+  @@index([companyId])
+  @@index([customerId])
+  @@index([assignedToId])
+  @@index([isArchived])
+  @@index([lastMessageSentAt])
+  @@map("inbox_conversations")
+}
+
+model InboxMessage {
+  id             String                 @id @default(cuid())
+  companyId      Int
+  conversationId String
+  senderType     InboxMessageSenderType
+  senderUserId   Int?
+  content        String
+  attachments    Json?
+  status         InboxMessageStatus     @default(sent)
+  sentAt         DateTime               @default(now())
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  company        Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  conversation   InboxConversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderUser     User?                  @relation("InboxMessageSenderUser", fields: [senderUserId], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+  @@index([conversationId])
+  @@index([sentAt])
+  @@map("inbox_messages")
 }
