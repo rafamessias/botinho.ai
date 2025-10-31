@@ -24,6 +24,7 @@
         "subtitle": "Teach your bot about your business",
         "buttons": {
             "addKnowledge": "Add Knowledge",
+            "addQuickAnswer": "Add Quick Answer",
             "createTemplate": "Create Template",
             "cancel": "Cancel",
             "update": "Update",
@@ -31,6 +32,7 @@
         },
         "tabs": {
             "knowledgeBase": "Knowledge Base",
+            "quickAnswers": "Quick Answers",
             "templates": "Templates",
             "textContent": "Text Content",
             "websiteUrl": "Website URL"
@@ -69,10 +71,12 @@
         "stats": {
             "knowledgeItems": "Knowledge Items",
             "templates": "Templates",
+            "quickAnswers": "Quick Answers",
             "trainingStatus": "Training Status",
             "active": "Active",
             "knowledgeItemsDescription": "Total items in knowledge base",
             "templatesDescription": "Ready-to-use message templates",
+            "quickAnswersDescription": "Saved replies for rapid responses",
             "trainingStatusDescription": "AI is trained and ready"
         },
         "knowledge": {
@@ -87,6 +91,17 @@
                 "title": "No knowledge yet",
                 "description": "Start training your AI by adding information",
                 "button": "Add First Item"
+            }
+        },
+        "quickAnswers": {
+            "title": "Quick Answers",
+            "description": "Short responses you can reuse in conversations",
+            "label": "Quick Answer",
+            "added": "Added",
+            "empty": {
+                "title": "No quick answers yet",
+                "description": "Create quick answers for your most common replies",
+                "button": "Create First Quick Answer"
             }
         },
         "templates": {
@@ -108,7 +123,11 @@
             "createTemplate": "Create New Template",
             "editTemplate": "Edit Template",
             "createTemplateDescription": "Create a reusable message template",
-            "editTemplateDescription": "Update your template below"
+            "editTemplateDescription": "Update your template below",
+            "createQuickAnswer": "Create Quick Answer",
+            "editQuickAnswer": "Edit Quick Answer",
+            "createQuickAnswerDescription": "Save a short response to reuse later",
+            "editQuickAnswerDescription": "Update the quick answer below"
         },
         "errors": {
             "fillAllFields": "Error",
@@ -126,12 +145,17 @@
             "copied": "Copied!",
             "templateCopied": "Template copied to clipboard",
             "deleted": "Deleted",
-            "updated": "Updated!"
+            "updated": "Updated!",
+            "quickAnswerCreated": "Quick answer created!",
+            "quickAnswerCreatedDescription": "Your new quick answer is ready to use",
+            "quickAnswerUpdated": "Quick answer has been updated",
+            "quickAnswerDeleted": "Quick answer removed"
         }
     },
     "AppSidebar": {
         "navigation": {
             "dashboard": "Dashboard",
+            "customer": "Customers",
             "inbox": "Inbox",
             "aiTraining": "AI Training",
             "company": "Company",
@@ -864,6 +888,7 @@
                 "consequences": {
                     "title": "What happens when you delete your account:",
                     "account": "Your account will be permanently deleted",
+                    "teams": "If you own any teams, all members will be removed and teams will be deactivated",
                     "companies": "If you own any companies, all members will be removed and companies will be deactivated",
                     "data": "All your surveys, responses, and data will be permanently deleted",
                     "irreversible": "This action is irreversible and cannot be undone"
@@ -1659,6 +1684,82 @@
                 "productFeedback": "Product Feedback",
                 "eventFeedback": "Event Feedback"
             }
+        }
+    },
+    "Customer": {
+        "title": "Customers",
+        "description": "Manage your customer directory and keep their details up to date.",
+        "toolbar": {
+            "searchPlaceholder": "Search customers...",
+            "addCustomer": "Add Customer"
+        },
+        "table": {
+            "columns": {
+                "name": "Name",
+                "email": "Email",
+                "phone": "Phone",
+                "company": "Company",
+                "status": "Status",
+                "createdAt": "Created"
+            },
+            "empty": {
+                "title": "No customers yet",
+                "description": "Start by adding your first customer."
+            },
+            "actions": {
+                "edit": "Edit"
+            },
+            "badges": {
+                "active": "Active",
+                "inactive": "Inactive",
+                "prospect": "Prospect"
+            }
+        },
+        "form": {
+            "title": {
+                "create": "Add Customer",
+                "edit": "Edit Customer"
+            },
+            "description": {
+                "create": "Create a new customer entry.",
+                "edit": "Update the customer information."
+            },
+            "fields": {
+                "name": {
+                    "label": "Full Name",
+                    "placeholder": "Enter full name"
+                },
+                "email": {
+                    "label": "Email",
+                    "placeholder": "Enter email address"
+                },
+                "phone": {
+                    "label": "Phone",
+                    "placeholder": "Enter phone number"
+                },
+                "company": {
+                    "label": "Company",
+                    "placeholder": "Enter company name"
+                },
+                "status": {
+                    "label": "Status",
+                    "placeholder": "Select status"
+                }
+            },
+            "buttons": {
+                "cancel": "Cancel",
+                "save": "Save Customer",
+                "update": "Update Customer"
+            },
+            "validation": {
+                "nameRequired": "Full name is required",
+                "emailRequired": "Please enter a valid email address"
+            }
+        },
+        "messages": {
+            "customerCreated": "Customer added successfully",
+            "customerUpdated": "Customer updated successfully",
+            "customerSaveError": "Something went wrong while saving the customer."
         }
     },
     "Dashboard": {

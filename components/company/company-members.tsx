@@ -201,7 +201,7 @@ export const CompanyMembers = ({
                                 {isCurrentUserAdmin && <TableHead className="w-[80px] text-right">{t("members.actions")}</TableHead>}
                             </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <TableBody className="bg-card">
                             {members.map((member) => (
                                 <TableRow key={member.id}>
                                     <TableCell>

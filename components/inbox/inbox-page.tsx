@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import {
     Search,
@@ -17,20 +16,18 @@ import {
     Clock,
     CheckCheck,
     Info,
-    MessageSquare,
     Phone,
     Mail,
     MapPin,
     X,
-    Sparkles,
-    History,
-    Star,
-    AlertCircle,
     PanelRight,
     PanelRightClose,
     ArrowLeft,
+    PanelLeft,
+    PanelLeftClose,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useSidebar } from "../ui/sidebar"
 
 interface Message {
     id: string
@@ -59,6 +56,30 @@ interface SuggestedResponse {
     id: string
     text: string
     category: string
+}
+
+const useMediaQuery = (query: string) => {
+    const [matches, setMatches] = useState(false)
+
+    useEffect(() => {
+        if (typeof window === "undefined") return
+
+        const mediaQueryList = window.matchMedia(query)
+        const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
+            setMatches(event.matches)
+        }
+
+        handleChange(mediaQueryList)
+
+        const listener = (event: MediaQueryListEvent) => handleChange(event)
+        mediaQueryList.addEventListener("change", listener)
+
+        return () => {
+            mediaQueryList.removeEventListener("change", listener)
+        }
+    }, [query])
+
+    return matches
 }
 
 const mockConversations: Conversation[] = [
@@ -257,9 +278,16 @@ export default function InboxPage() {
     const [searchQuery, setSearchQuery] = useState("")
     const [messageInput, setMessageInput] = useState("")
     const [showContextPanel, setShowContextPanel] = useState(false)
+    const [showDesktopConversations, setShowDesktopConversations] = useState(false)
     const [showConversationsList, setShowConversationsList] = useState(false)
     const messageInputRef = useRef<HTMLTextAreaElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const isDesktop = useMediaQuery("(min-width: 768px)")
+    const { setOpen } = useSidebar()
+
+    useEffect(() => {
+        setOpen(false)
+    }, [])
 
     const filteredConversations = conversations.filter(
         (conv) =>
@@ -273,6 +301,17 @@ export default function InboxPage() {
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [selectedConversation.messages])
+
+    useEffect(() => {
+        if (!isDesktop) {
+            setShowContextPanel(false)
+            setShowDesktopConversations(false)
+            return
+        }
+
+        setShowContextPanel(true)
+        setShowDesktopConversations(true)
+    }, [isDesktop])
 
     useEffect(() => {
         if (selectedConversation) {
@@ -342,273 +381,155 @@ export default function InboxPage() {
     }
 
     const ContextPanelContent = () => (
-        <>
-            <ScrollArea className="h-full">
-                <div className="p-4 md:p-5 space-y-4">
-                    {/* Customer Info */}
-                    <Card className="refined-card border-border/50">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
-                                <User className="w-4 h-4 text-primary" />
-                                Customer Information
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3.5">
-                            <div className="flex items-start gap-3">
-                                <Phone className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                                <div className="min-w-0 flex-1">
-                                    <p className="text-xs text-muted-foreground">Phone</p>
-                                    <p className="text-sm font-medium">{selectedConversation.customerPhone}</p>
-                                </div>
+        <div className="h-full overflow-y-auto">
+            <div className="p-4 space-y-4 pb-6">
+                <Card className="shadow-none">
+                    <CardHeader>
+                        <CardTitle className="text-sm font-medium">Customer</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                            <Phone className="w-3.5 h-3.5" aria-hidden="true" />
+                            <span>{selectedConversation.customerPhone}</span>
+                        </div>
+                        {selectedConversation.customerEmail && (
+                            <div className="flex items-center gap-2">
+                                <Mail className="w-3.5 h-3.5" aria-hidden="true" />
+                                <span className="truncate">{selectedConversation.customerEmail}</span>
                             </div>
-                            {selectedConversation.customerEmail && (
-                                <div className="flex items-start gap-3">
-                                    <Mail className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-xs text-muted-foreground">Email</p>
-                                        <p className="text-sm font-medium truncate">{selectedConversation.customerEmail}</p>
-                                    </div>
-                                </div>
-                            )}
-                            {selectedConversation.customerAddress && (
-                                <div className="flex items-start gap-3">
-                                    <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-xs text-muted-foreground">Location</p>
-                                        <p className="text-sm font-medium">{selectedConversation.customerAddress}</p>
-                                    </div>
-                                </div>
-                            )}
-                            {selectedConversation.satisfactionScore && (
-                                <div className="flex items-start gap-3">
-                                    <Star className="w-4 h-4 mt-0.5 flex-shrink-0 fill-yellow-500 text-yellow-500" />
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-xs text-muted-foreground">Satisfaction</p>
-                                        <p className="text-sm font-medium">{selectedConversation.satisfactionScore}/5</p>
-                                    </div>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                        )}
+                        {selectedConversation.customerAddress && (
+                            <div className="flex items-start gap-2">
+                                <MapPin className="w-3.5 h-3.5 mt-0.5" aria-hidden="true" />
+                                <span>{selectedConversation.customerAddress}</span>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
 
-                    {/* Conversation Summary */}
-                    <Card className="refined-card border-border/50">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
-                                <MessageSquare className="w-4 h-4 text-primary" />
-                                Conversation Summary
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-sm text-muted-foreground mb-3">
-                                {selectedConversation.messages.length} message
-                                {selectedConversation.messages.length !== 1 ? "s" : ""} in this conversation
-                            </p>
-                            {selectedConversation.priority && (
-                                <div>
-                                    <Badge
-                                        variant="outline"
-                                        className={cn("text-xs px-2 py-1 font-medium border", getPriorityColor(selectedConversation.priority))}
-                                    >
-                                        Priority: {selectedConversation.priority}
-                                    </Badge>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Suggested Responses */}
-                    <Card className="refined-card border-border/50">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
-                                <Sparkles className="w-4 h-4 text-primary" />
-                                Suggested Responses
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                            {suggestedResponses.map((suggestion) => (
-                                <Button
-                                    key={suggestion.id}
-                                    variant="outline"
-                                    className="w-full justify-start text-left h-auto py-2.5 px-3.5 text-sm whitespace-normal hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group"
-                                    onClick={() => {
-                                        handleUseSuggestedResponse(suggestion.text)
-                                        setShowContextPanel(false)
-                                    }}
-                                >
-                                    <span className="line-clamp-2 group-hover:text-foreground transition-colors">
-                                        {suggestion.text}
-                                    </span>
-                                </Button>
-                            ))}
-                        </CardContent>
-                    </Card>
-
-                    {/* Quick Actions */}
-                    <Card className="refined-card border-border/50">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
-                                <History className="w-4 h-4 text-primary" />
-                                Quick Actions
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
+                <Card className="shadow-none">
+                    <CardHeader>
+                        <CardTitle className="text-sm font-medium">Quick replies</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        {suggestedResponses.map((suggestion) => (
                             <Button
+                                key={suggestion.id}
                                 variant="outline"
-                                className="w-full justify-start text-sm hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
-                                size="sm"
+                                className="w-full justify-start items-start text-left text-xs h-auto py-2 px-3 whitespace-normal break-words"
+                                onClick={() => {
+                                    handleUseSuggestedResponse(suggestion.text)
+                                }}
                             >
-                                <Star className="w-4 h-4 mr-2 text-primary" />
-                                Mark as Important
+                                {suggestion.text}
                             </Button>
-                            <Button
-                                variant="outline"
-                                className="w-full justify-start text-sm hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
-                                size="sm"
-                            >
-                                <AlertCircle className="w-4 h-4 mr-2 text-primary" />
-                                Escalate to Manager
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="w-full justify-start text-sm hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
-                                size="sm"
-                            >
-                                <History className="w-4 h-4 mr-2 text-primary" />
-                                View History
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </div>
-            </ScrollArea>
-        </>
+                        ))}
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
     )
 
     return (
-        <div className="h-full w-full flex flex-col overflow-hidden">
-            <div className="flex-1 flex overflow-hidden bg-muted/30">
+        <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden bg-background">
+            <div className="flex-1 min-h-0 flex overflow-hidden bg-background">
                 {/* Conversations List - Mobile: Hidden by default, Desktop: Always visible */}
-                <div className="hidden md:flex w-80 lg:w-96 border-r border-border/60 flex-col bg-card/95 backdrop-blur-sm flex-shrink-0 shadow-sm overflow-hidden">
-                    {/* Search Header */}
-                    <div className="p-4 h-16 border-b border-border/60 bg-card/80 backdrop-blur-md flex-shrink-0">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search conversations..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="elegant-input pl-10 bg-background/50 border-border/60 focus:bg-background transition-all duration-200"
-                            />
+                {showDesktopConversations && (
+                    <div className="hidden md:flex w-64 border-r border-border/60 flex-col bg-background flex-shrink-0 overflow-hidden">
+                        <div className="h-14 px-4 flex items-center border-b border-border/60">
+                            <div className="relative w-full">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                                <Input
+                                    placeholder="Search"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="h-9 pl-9 text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary"
+                                    aria-label="Search conversations"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex-1 min-h-0 overflow-y-auto">
+                            <div className="p-2 pb-4 space-y-1">
+                                {filteredConversations.map((conversation) => (
+                                    <button
+                                        key={conversation.id}
+                                        onClick={() => handleSelectConversation(conversation)}
+                                        className={cn(
+                                            "w-full rounded-lg px-3 py-2 flex items-start gap-3 text-left transition-colors",
+                                            selectedConversation.id === conversation.id
+                                                ? "bg-primary/10 border border-primary/30"
+                                                : "hover:bg-muted"
+                                        )}
+                                        aria-label={`Select conversation with ${conversation.customerName}`}
+                                    >
+                                        <Avatar className="w-10 h-10 flex-shrink-0 border border-border/70">
+                                            <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
+                                                {conversation.customerName
+                                                    .split(" ")
+                                                    .map((n) => n[0])
+                                                    .join("")
+                                                    .toUpperCase()
+                                                    .slice(0, 2)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <h4 className="font-semibold text-sm text-foreground truncate">
+                                                    {conversation.customerName}
+                                                </h4>
+                                                <span className="text-[11px] text-muted-foreground flex-shrink-0">
+                                                    {conversation.timestamp}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground truncate mt-1">
+                                                {conversation.lastMessage}
+                                            </p>
+                                        </div>
+                                        {conversation.unread > 0 && (
+                                            <Badge className="bg-primary text-primary-foreground flex-shrink-0 h-5 min-w-5 items-center justify-center text-[11px] font-semibold">
+                                                {conversation.unread}
+                                            </Badge>
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
-
-                    {/* Conversations */}
-                    <ScrollArea className="flex-1 min-h-0">
-                        <div className="p-2 space-y-1">
-                            {filteredConversations.map((conversation) => (
-                                <button
-                                    key={conversation.id}
-                                    onClick={() => handleSelectConversation(conversation)}
-                                    className={cn(
-                                        "w-full p-3 md:p-4 flex items-start gap-3 rounded-xl transition-all duration-200 group",
-                                        "hover:bg-primary/5 hover:shadow-sm border border-transparent",
-                                        selectedConversation.id === conversation.id
-                                            ? "bg-primary/10 border-primary/20 shadow-sm"
-                                            : "hover:border-border/50",
-                                    )}
-                                >
-                                    <Avatar className="w-11 h-11 md:w-12 md:h-12 flex-shrink-0 ring-2 ring-offset-2 ring-offset-background ring-primary/10 group-hover:ring-primary/20 transition-all duration-200">
-                                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm">
-                                            {conversation.customerName
-                                                .split(" ")
-                                                .map((n) => n[0])
-                                                .join("")
-                                                .toUpperCase()
-                                                .slice(0, 2)}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex-1 min-w-0 text-left">
-                                        <div className="flex items-center justify-between gap-2 mb-1.5">
-                                            <h4 className="font-semibold text-sm text-foreground truncate">
-                                                {conversation.customerName}
-                                            </h4>
-                                            <span className="text-xs text-muted-foreground flex-shrink-0 font-medium">
-                                                {conversation.timestamp}
-                                            </span>
-                                        </div>
-                                        <p className="text-xs md:text-sm text-muted-foreground truncate mb-2 leading-relaxed">
-                                            {conversation.lastMessage}
-                                        </p>
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                            {conversation.priority && (
-                                                <Badge
-                                                    variant="outline"
-                                                    className={cn(
-                                                        "text-xs px-2 py-0.5 font-medium border",
-                                                        getPriorityColor(conversation.priority),
-                                                    )}
-                                                >
-                                                    {conversation.priority}
-                                                </Badge>
-                                            )}
-                                            {conversation.tags?.slice(0, 1).map((tag) => (
-                                                <Badge
-                                                    key={tag}
-                                                    variant="secondary"
-                                                    className="text-xs px-2 py-0.5 font-medium bg-muted/80"
-                                                >
-                                                    {tag}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    {conversation.unread > 0 && (
-                                        <Badge className="bg-primary text-primary-foreground flex-shrink-0 h-6 min-w-6 items-center justify-center text-xs font-semibold shadow-sm animate-pulse">
-                                            {conversation.unread}
-                                        </Badge>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    </ScrollArea>
-                </div>
+                )}
 
                 {/* Mobile Conversations List Sheet */}
                 <Sheet open={showConversationsList} onOpenChange={setShowConversationsList}>
-                    <SheetContent side="left" className="w-full sm:w-80 p-0 flex flex-col">
+                    <SheetContent side="left" className="w-full sm:w-72 p-0 flex flex-col">
                         <SheetHeader className="px-4 py-4 border-b border-border/60">
                             <SheetTitle className="text-left">Conversations</SheetTitle>
                         </SheetHeader>
                         <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-                            {/* Search */}
-                            <div className="p-4 border-b border-border/60 bg-card/80 backdrop-blur-md flex-shrink-0">
+                            <div className="px-4 py-3 border-b border-border/60">
                                 <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
                                     <Input
-                                        placeholder="Search conversations..."
+                                        placeholder="Search"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="elegant-input pl-10 bg-background/50 border-border/60 focus:bg-background transition-all duration-200"
+                                        className="h-9 pl-9 text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary"
                                     />
                                 </div>
                             </div>
-                            {/* Conversations */}
-                            <ScrollArea className="flex-1 min-h-0">
-                                <div className="p-2 space-y-1">
+                            <div className="flex-1 min-h-0 overflow-y-auto">
+                                <div className="p-2 pb-4 space-y-1">
                                     {filteredConversations.map((conversation) => (
                                         <button
                                             key={conversation.id}
                                             onClick={() => handleSelectConversation(conversation)}
                                             className={cn(
-                                                "w-full p-3 flex items-start gap-3 rounded-xl transition-all duration-200 group",
-                                                "hover:bg-primary/5 hover:shadow-sm border border-transparent",
+                                                "w-full rounded-lg px-3 py-2 flex items-start gap-3 text-left transition-colors",
                                                 selectedConversation.id === conversation.id
-                                                    ? "bg-primary/10 border-primary/20 shadow-sm"
-                                                    : "hover:border-border/50",
+                                                    ? "bg-primary/10 border border-primary/30"
+                                                    : "hover:bg-muted"
                                             )}
                                         >
-                                            <Avatar className="w-11 h-11 flex-shrink-0 ring-2 ring-offset-2 ring-offset-background ring-primary/10 group-hover:ring-primary/20 transition-all duration-200">
-                                                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm">
+                                            <Avatar className="w-10 h-10 flex-shrink-0 border border-border/70">
+                                                <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
                                                     {conversation.customerName
                                                         .split(" ")
                                                         .map((n) => n[0])
@@ -617,71 +538,75 @@ export default function InboxPage() {
                                                         .slice(0, 2)}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <div className="flex-1 min-w-0 text-left">
-                                                <div className="flex items-center justify-between gap-2 mb-1.5">
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center justify-between gap-2">
                                                     <h4 className="font-semibold text-sm text-foreground truncate">
                                                         {conversation.customerName}
                                                     </h4>
-                                                    <span className="text-xs text-muted-foreground flex-shrink-0 font-medium">
+                                                    <span className="text-[11px] text-muted-foreground flex-shrink-0">
                                                         {conversation.timestamp}
                                                     </span>
                                                 </div>
-                                                <p className="text-xs text-muted-foreground truncate mb-2 leading-relaxed">
+                                                <p className="text-xs text-muted-foreground truncate mt-1">
                                                     {conversation.lastMessage}
                                                 </p>
-                                                <div className="flex items-center gap-2 flex-wrap">
+                                                <div className="flex items-center gap-2 mt-2">
                                                     {conversation.priority && (
                                                         <Badge
                                                             variant="outline"
-                                                            className={cn(
-                                                                "text-xs px-2 py-0.5 font-medium border",
-                                                                getPriorityColor(conversation.priority),
-                                                            )}
+                                                            className={cn("text-[11px] px-1.5 py-0.5 border", getPriorityColor(conversation.priority))}
                                                         >
                                                             {conversation.priority}
                                                         </Badge>
                                                     )}
                                                     {conversation.tags?.slice(0, 1).map((tag) => (
-                                                        <Badge
-                                                            key={tag}
-                                                            variant="secondary"
-                                                            className="text-xs px-2 py-0.5 font-medium bg-muted/80"
-                                                        >
+                                                        <Badge key={tag} variant="secondary" className="text-[11px] px-1.5 py-0.5">
                                                             {tag}
                                                         </Badge>
                                                     ))}
                                                 </div>
                                             </div>
                                             {conversation.unread > 0 && (
-                                                <Badge className="bg-primary text-primary-foreground flex-shrink-0 h-6 min-w-6 items-center justify-center text-xs font-semibold shadow-sm animate-pulse">
+                                                <Badge className="bg-primary text-primary-foreground flex-shrink-0 h-5 min-w-5 items-center justify-center text-[11px] font-semibold">
                                                     {conversation.unread}
                                                 </Badge>
                                             )}
                                         </button>
                                     ))}
                                 </div>
-                            </ScrollArea>
+                            </div>
                         </div>
                     </SheetContent>
                 </Sheet>
 
                 {/* Chat Area */}
-                <div className="flex-1 flex flex-col min-w-0 bg-gradient-to-b from-muted/20 via-muted/10 to-muted/30 overflow-hidden">
-                    {/* Chat Header */}
-                    <div className="h-16 px-3 md:px-4 lg:px-6 flex items-center justify-between border-b border-border/60 bg-card/80 backdrop-blur-md shadow-sm flex-shrink-0">
-                        <div className="flex items-center gap-2 md:gap-3 lg:gap-4 min-w-0 flex-1">
-                            {/* Mobile: Back button to conversations */}
+                <div className="flex-1 min-h-0 flex flex-col min-w-0">
+                    <div className="h-14 px-4 flex items-center justify-between border-b border-border/60 flex-shrink-0">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setShowConversationsList(true)}
-                                className="md:hidden flex-shrink-0"
-                                title="Back to conversations"
+                                className="md:hidden"
+                                title="Toggle conversations list"
                             >
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
-                            <Avatar className="w-9 h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 flex-shrink-0 ring-2 ring-offset-2 ring-offset-background ring-primary/10">
-                                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setShowDesktopConversations(!showDesktopConversations)}
+                                className="hidden md:inline-flex hover:bg-muted"
+                                title={showDesktopConversations ? "Collapse conversations" : "Show conversations"}
+                            >
+                                {showDesktopConversations ? (
+                                    <PanelLeftClose className="w-4 h-4 text-muted-foreground" />
+                                ) : (
+                                    <PanelLeft className="w-4 h-4 text-muted-foreground" />
+                                )}
+                            </Button>
+                            <Avatar className="w-9 h-9 flex-shrink-0 border border-border/70">
+                                <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
                                     {selectedConversation.customerName
                                         .split(" ")
                                         .map((n) => n[0])
@@ -690,106 +615,81 @@ export default function InboxPage() {
                                         .slice(0, 2)}
                                 </AvatarFallback>
                             </Avatar>
-                            <div className="min-w-0 flex-1">
-                                <h3 className="font-semibold text-sm md:text-base lg:text-lg text-foreground truncate">
-                                    {selectedConversation.customerName}
-                                </h3>
-                                <p className="text-xs md:text-sm text-muted-foreground truncate mt-0.5">
-                                    {selectedConversation.customerPhone}
-                                </p>
+                            <div className="min-w-0">
+                                <h3 className="font-semibold text-sm text-foreground truncate">{selectedConversation.customerName}</h3>
+                                <p className="text-xs text-muted-foreground truncate">{selectedConversation.customerPhone}</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
-                            <Badge
-                                variant="secondary"
-                                className="gap-1.5 text-xs px-2 md:px-3 py-1 md:py-1.5 bg-primary/10 text-primary border-primary/20 font-medium"
-                            >
-                                <Bot className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                                <span className="hidden sm:inline">AI Active</span>
-                            </Badge>
+                        <div className="flex items-center gap-2">
                             <Button
                                 variant="ghost"
-                                size="sm"
+                                size="icon"
                                 onClick={() => setShowContextPanel(!showContextPanel)}
-                                className="hover:bg-primary/5 transition-colors"
-                                title={showContextPanel ? "Hide context panel" : "Show context panel"}
+                                className="hover:bg-muted"
+                                title={showContextPanel ? "Hide context" : "Show context"}
                             >
                                 {showContextPanel ? (
-                                    <PanelRightClose className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                                    <PanelRightClose className="w-4 h-4 text-muted-foreground" />
                                 ) : (
-                                    <PanelRight className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                                    <PanelRight className="w-4 h-4 text-muted-foreground" />
                                 )}
                             </Button>
                         </div>
                     </div>
 
-                    {/* Messages */}
-                    <div className="min-h-0 overflow-hidden">
-                        <ScrollArea className="h-[calc(100vh-195px)]">
-                            <div className="p-3 md:p-4 lg:p-6 space-y-2 md:space-y-3 lg:space-y-4">
-                                {selectedConversation.messages.map((message) => (
-                                    <div
-                                        key={message.id}
-                                        className={cn(
-                                            "flex items-end gap-2 md:gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300",
-                                            message.sender === "bot" && "flex-row-reverse",
-                                        )}
-                                    >
-                                        <Avatar className="w-8 h-8 md:w-9 md:h-9 flex-shrink-0">
-                                            <AvatarFallback
-                                                className={cn(
-                                                    "text-xs font-semibold",
-                                                    message.sender === "customer"
-                                                        ? "bg-muted text-muted-foreground"
-                                                        : "bg-gradient-to-br from-primary/20 to-primary/10 text-primary",
-                                                )}
-                                            >
-                                                {message.sender === "customer" ? (
-                                                    <User className="w-4 h-4" />
-                                                ) : (
-                                                    <Bot className="w-4 h-4" />
-                                                )}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div
+                    <div className="flex-1 min-h-0 overflow-y-auto bg-secondary">
+                        <div className="px-4 py-5 space-y-3">
+                            {selectedConversation.messages.map((message) => (
+                                <div
+                                    key={message.id}
+                                    className={cn("flex items-end gap-2", message.sender === "bot" && "flex-row-reverse")}
+                                >
+                                    <Avatar className="w-8 h-8 flex-shrink-0 border border-border/70">
+                                        <AvatarFallback
                                             className={cn(
-                                                "max-w-[85%] md:max-w-[70%] rounded-2xl px-4 md:px-5 py-2.5 md:py-3 shadow-sm transition-all duration-200",
+                                                "text-xs font-semibold",
                                                 message.sender === "customer"
-                                                    ? "rounded-bl-sm bg-card border border-border/50 text-card-foreground"
-                                                    : "rounded-br-sm bg-primary text-primary-foreground",
+                                                    ? "bg-muted text-muted-foreground"
+                                                    : "bg-primary/10 text-primary"
                                             )}
                                         >
-                                            <p className="text-sm md:text-base leading-relaxed">{message.text}</p>
-                                            <div
-                                                className={cn(
-                                                    "flex items-center gap-1.5 mt-2 text-xs",
-                                                    message.sender === "customer"
-                                                        ? "text-muted-foreground"
-                                                        : "text-primary-foreground/70",
-                                                )}
-                                            >
-                                                <Clock className="w-3 h-3" />
-                                                <span className="font-medium">{message.timestamp}</span>
-                                                {message.sender === "bot" && message.status && (
-                                                    <CheckCheck
-                                                        className={cn(
-                                                            "w-3.5 h-3.5 ml-1",
-                                                            message.status === "read" && "text-primary-foreground/50",
-                                                        )}
-                                                    />
-                                                )}
-                                            </div>
+                                            {message.sender === "customer" ? (
+                                                <User className="w-4 h-4" />
+                                            ) : (
+                                                <Bot className="w-4 h-4" />
+                                            )}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div
+                                        className={cn(
+                                            "max-w-[80%] md:max-w-[70%] rounded-lg px-3 py-2 text-sm",
+                                            message.sender === "customer"
+                                                ? "bg-card border border-border text-foreground"
+                                                : "bg-primary/5 border border-primary/20 text-foreground"
+                                        )}
+                                    >
+                                        <p>{message.text}</p>
+                                        <div
+                                            className={cn(
+                                                "flex items-center gap-1.5 mt-2 text-[11px]",
+                                                message.sender === "customer" ? "text-muted-foreground" : "text-primary/60"
+                                            )}
+                                        >
+                                            <Clock className="w-3 h-3" aria-hidden="true" />
+                                            <span>{message.timestamp}</span>
+                                            {message.sender === "bot" && message.status && (
+                                                <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />
+                                            )}
                                         </div>
                                     </div>
-                                ))}
-                                <div ref={messagesEndRef} />
-                            </div>
-                        </ScrollArea>
+                                </div>
+                            ))}
+                            <div ref={messagesEndRef} />
+                        </div>
                     </div>
 
-                    {/* Message Input */}
-                    <div className="bg-card/95 backdrop-blur-md border-t border-border/60 p-3 md:p-4 lg:p-5 shadow-lg flex-shrink-0">
-                        <div className="flex items-end gap-2 md:gap-3 lg:gap-4">
+                    <div className="border-t border-border/60 px-4 py-3 flex-shrink-0">
+                        <div className="flex items-end gap-3">
                             <div className="flex-1 relative">
                                 <Textarea
                                     ref={messageInputRef}
@@ -802,11 +702,11 @@ export default function InboxPage() {
                                             handleSendMessage()
                                         }
                                     }}
-                                    className="flex-1 min-h-[56px] md:min-h-[64px] max-h-[120px] md:max-h-[140px] resize-none text-sm md:text-base bg-background/80 border-border/60 focus:bg-background focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all duration-200 pr-10 md:pr-12"
+                                    className="flex-1 min-h-[48px] max-h-[120px] resize-none text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary pr-9"
                                     rows={2}
                                 />
                                 {messageInput.trim() && (
-                                    <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
+                                    <div className="absolute bottom-2 right-2 text-[11px] text-muted-foreground">
                                         {messageInput.length}
                                     </div>
                                 )}
@@ -815,52 +715,48 @@ export default function InboxPage() {
                                 onClick={handleSendMessage}
                                 disabled={!messageInput.trim()}
                                 size="icon"
-                                className="bg-primary hover:bg-primary/90 text-primary-foreground h-[56px] w-[56px] md:h-[64px] md:w-[64px] flex-shrink-0 shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground h-[48px] w-[48px] flex-shrink-0 disabled:opacity-50"
                             >
-                                <Send className="w-4 h-4 md:w-5 md:h-5" />
+                                <Send className="w-4 h-4" />
                             </Button>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-2 md:mt-3 hidden md:flex items-center gap-1.5">
-                            <Bot className="w-3.5 h-3.5" />
-                            AI is handling responses automatically. You can take over anytime.
-                        </p>
                     </div>
                 </div>
 
                 {/* Desktop Context Panel */}
                 {showContextPanel && (
-                    <div className="hidden md:flex w-80 lg:w-96 border-l border-border/60 flex-col bg-card/95 backdrop-blur-sm flex-shrink-0 shadow-sm animate-in slide-in-from-right duration-200 overflow-hidden">
-                        <div className="h-16 px-4 md:px-5 flex items-center justify-between border-b border-border/60 bg-card/80 backdrop-blur-md flex-shrink-0">
-                            <h3 className="font-semibold text-sm md:text-base flex items-center gap-2 text-foreground">
-                                <Info className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                    <div className="hidden md:flex w-72 border-l border-border/60 flex-col bg-background flex-shrink-0 overflow-hidden">
+                        <div className="h-14 px-4 flex items-center justify-between border-b border-border/60">
+                            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                                <Info className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
                                 Context
                             </h3>
                             <Button
                                 variant="ghost"
-                                size="sm"
+                                size="icon"
                                 onClick={() => setShowContextPanel(false)}
-                                className="hover:bg-muted/50 transition-colors"
-                                title="Close context panel"
+                                className="hover:bg-muted"
+                                title="Close context"
                             >
                                 <X className="w-4 h-4" />
                             </Button>
                         </div>
-                        <div className="flex-1 min-h-0 overflow-hidden">
+                        <div className="flex-1 min-h-0">
                             <ContextPanelContent />
                         </div>
                     </div>
                 )}
 
                 {/* Mobile Context Panel Sheet */}
-                <Sheet open={showContextPanel} onOpenChange={setShowContextPanel}>
-                    <SheetContent side="right" className="w-full sm:w-80 md:hidden p-0 flex flex-col overflow-hidden">
+                <Sheet open={showContextPanel && !isDesktop} onOpenChange={setShowContextPanel}>
+                    <SheetContent side="right" className="w-full sm:w-72 md:hidden p-0 flex flex-col overflow-hidden">
                         <SheetHeader className="px-4 py-4 border-b border-border/60 flex-shrink-0">
                             <SheetTitle className="text-left flex items-center gap-2">
-                                <Info className="w-5 h-5 text-primary" />
+                                <Info className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
                                 Context
                             </SheetTitle>
                         </SheetHeader>
-                        <div className="flex-1 min-h-0 overflow-hidden">
+                        <div className="flex-1 min-h-0">
                             <ContextPanelContent />
                         </div>
                     </SheetContent>

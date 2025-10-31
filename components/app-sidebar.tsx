@@ -8,7 +8,8 @@ import {
   IconListDetails,
   IconSettings,
   IconUsers,
-  IconMessageCircle
+  IconMessageCircle,
+  IconUserCircle,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -19,12 +20,13 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+
 } from "@/components/ui/sidebar"
-import { MessageSquare, AlertTriangle, ArrowRight, Zap } from "lucide-react"
+import { AlertTriangle, ArrowRight, } from "lucide-react"
 import { Link } from "@/i18n/navigation"
 import { useUser } from "@/components/user-provider"
+import Image from "next/image"
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations("AppSidebar")
@@ -34,13 +36,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     navMain: [
       {
         title: t("navigation.dashboard"),
-        url: "/",
+        url: "/dashboard",
         icon: IconDashboard,
       },
       {
         title: t("navigation.inbox"),
         url: "/inbox",
         icon: IconMessageCircle,
+      },
+      {
+        title: t("navigation.customer"),
+        url: "/customer",
+        icon: IconUserCircle,
       },
       {
         title: t("navigation.aiTraining"),
@@ -66,29 +73,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   }
   return (
-    <Sidebar className="border-r " collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-4 hover:bg-primary/5 transition-colors duration-200"
-            >
-              <Link href="/">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary rounded-lg p-2.5 shadow-sm">
-                    <MessageSquare className="h-6 w-6 text-primary-foreground" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-bold text-primary">botinho.ai</span>
-                    <span className="text-xs text-muted-foreground font-medium">WhatsApp AI Bot</span>
-                  </div>
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+    <Sidebar className="border-r p-0" collapsible="offcanvas" {...props}>
+      <SidebarHeader className="p-0 h-[48px]">
+        <SidebarMenu >
+
+          <div className="flex items-center gap-3 pl-1">
+            <div className="relative h-[55px] w-[125px]">
+              <Image
+                src="/logo-green.png"
+                alt="botinho.ai"
+                fill
+                className="object-contain dark:hidden"
+              />
+              <Image
+                src="/logo-white.png"
+                alt="botinho.ai"
+                fill
+                className="hidden object-contain dark:block"
+              />
+            </div>
+          </div>
+
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         <NavMain items={data.navMain} />
         {/* <NavDocuments items={data.documents} /> */}

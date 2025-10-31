@@ -24,6 +24,7 @@
         "subtitle": "Ensine seu bot sobre seu negócio",
         "buttons": {
             "addKnowledge": "Adicionar Conhecimento",
+            "addQuickAnswer": "Adicionar Resposta Rápida",
             "createTemplate": "Criar Modelo",
             "cancel": "Cancelar",
             "update": "Atualizar",
@@ -31,6 +32,7 @@
         },
         "tabs": {
             "knowledgeBase": "Base de Conhecimento",
+            "quickAnswers": "Respostas Rápidas",
             "templates": "Modelos",
             "textContent": "Conteúdo de Texto",
             "websiteUrl": "URL do Site"
@@ -69,10 +71,12 @@
         "stats": {
             "knowledgeItems": "Itens de Conhecimento",
             "templates": "Modelos",
+            "quickAnswers": "Respostas Rápidas",
             "trainingStatus": "Status do Treinamento",
             "active": "Ativo",
             "knowledgeItemsDescription": "Total de itens na base de conhecimento",
             "templatesDescription": "Modelos de mensagem prontos para uso",
+            "quickAnswersDescription": "Respostas salvas para retornos imediatos",
             "trainingStatusDescription": "IA está treinada e pronta"
         },
         "knowledge": {
@@ -87,6 +91,17 @@
                 "title": "Nenhum conhecimento ainda",
                 "description": "Comece a treinar sua IA adicionando informações",
                 "button": "Adicionar Primeiro Item"
+            }
+        },
+        "quickAnswers": {
+            "title": "Respostas Rápidas",
+            "description": "Respostas curtas que você pode reutilizar em conversas",
+            "label": "Resposta Rápida",
+            "added": "Adicionada",
+            "empty": {
+                "title": "Nenhuma resposta rápida ainda",
+                "description": "Crie respostas rápidas para suas respostas mais comuns",
+                "button": "Criar Primeira Resposta Rápida"
             }
         },
         "templates": {
@@ -108,7 +123,11 @@
             "createTemplate": "Criar Novo Modelo",
             "editTemplate": "Editar Modelo",
             "createTemplateDescription": "Crie um modelo de mensagem reutilizável",
-            "editTemplateDescription": "Atualize seu modelo abaixo"
+            "editTemplateDescription": "Atualize seu modelo abaixo",
+            "createQuickAnswer": "Criar Resposta Rápida",
+            "editQuickAnswer": "Editar Resposta Rápida",
+            "createQuickAnswerDescription": "Salve uma resposta curta para reutilizar depois",
+            "editQuickAnswerDescription": "Atualize a resposta rápida abaixo"
         },
         "errors": {
             "fillAllFields": "Erro",
@@ -126,12 +145,17 @@
             "copied": "Copiado!",
             "templateCopied": "Modelo copiado para a área de transferência",
             "deleted": "Excluído",
-            "updated": "Atualizado!"
+            "updated": "Atualizado!",
+            "quickAnswerCreated": "Resposta rápida criada!",
+            "quickAnswerCreatedDescription": "Sua nova resposta rápida está pronta para uso",
+            "quickAnswerUpdated": "Resposta rápida foi atualizada",
+            "quickAnswerDeleted": "Resposta rápida removida"
         }
     },
     "AppSidebar": {
         "navigation": {
             "dashboard": "Dashboard",
+            "customer": "Clientes",
             "inbox": "Caixa de Entrada",
             "aiTraining": "Treinamento IA",
             "company": "Empresa",
@@ -1673,6 +1697,82 @@
                 "productFeedback": "Feedback do Produto",
                 "eventFeedback": "Feedback do Evento"
             }
+        }
+    },
+    "Customer": {
+        "title": "Clientes",
+        "description": "Gerencie sua base de clientes e mantenha os dados sempre atualizados.",
+        "toolbar": {
+            "searchPlaceholder": "Buscar clientes...",
+            "addCustomer": "Novo cliente"
+        },
+        "table": {
+            "columns": {
+                "name": "Nome",
+                "email": "E-mail",
+                "phone": "Telefone",
+                "company": "Empresa",
+                "status": "Status",
+                "createdAt": "Criado em"
+            },
+            "empty": {
+                "title": "Nenhum cliente ainda",
+                "description": "Comece adicionando o seu primeiro cliente."
+            },
+            "actions": {
+                "edit": "Editar"
+            },
+            "badges": {
+                "active": "Ativo",
+                "inactive": "Inativo",
+                "prospect": "Potencial"
+            }
+        },
+        "form": {
+            "title": {
+                "create": "Adicionar cliente",
+                "edit": "Editar cliente"
+            },
+            "description": {
+                "create": "Crie um novo registro de cliente.",
+                "edit": "Atualize as informações do cliente."
+            },
+            "fields": {
+                "name": {
+                    "label": "Nome completo",
+                    "placeholder": "Informe o nome completo"
+                },
+                "email": {
+                    "label": "E-mail",
+                    "placeholder": "Informe o e-mail"
+                },
+                "phone": {
+                    "label": "Telefone",
+                    "placeholder": "Informe o telefone"
+                },
+                "company": {
+                    "label": "Empresa",
+                    "placeholder": "Informe a empresa"
+                },
+                "status": {
+                    "label": "Status",
+                    "placeholder": "Selecione o status"
+                }
+            },
+            "buttons": {
+                "cancel": "Cancelar",
+                "save": "Salvar cliente",
+                "update": "Atualizar cliente"
+            },
+            "validation": {
+                "nameRequired": "O nome é obrigatório",
+                "emailRequired": "Informe um e-mail válido"
+            }
+        },
+        "messages": {
+            "customerCreated": "Cliente adicionado com sucesso",
+            "customerUpdated": "Cliente atualizado com sucesso",
+            "customerSaveError": "Ocorreu um erro ao salvar o cliente."
         }
     },
     "Dashboard": {

@@ -17,6 +17,7 @@ import {
     Plus,
     Trash2,
     Phone,
+    Edit,
 } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -62,6 +63,10 @@ export default function SettingsPage() {
     const [isAddNumberOpen, setIsAddNumberOpen] = useState(false)
     const [newNumberPhone, setNewNumberPhone] = useState("")
     const [newNumberName, setNewNumberName] = useState("")
+    const [isEditNumberOpen, setIsEditNumberOpen] = useState(false)
+    const [editingNumber, setEditingNumber] = useState<WhatsAppNumber | null>(null)
+    const [editNumberPhone, setEditNumberPhone] = useState("")
+    const [editNumberName, setEditNumberName] = useState("")
 
     // Notification settings
     const [emailNotifications, setEmailNotifications] = useState(true)
@@ -130,30 +135,69 @@ export default function SettingsPage() {
         toast.success("WhatsApp settings updated!")
     }
 
+    const resetEditNumberState = () => {
+        setIsEditNumberOpen(false)
+        setEditingNumber(null)
+        setEditNumberPhone("")
+        setEditNumberName("")
+    }
+
+    const handleOpenEditNumber = (number: WhatsAppNumber) => {
+        setEditingNumber(number)
+        setEditNumberName(number.name)
+        setEditNumberPhone(number.number)
+        setIsEditNumberOpen(true)
+    }
+
+    const handleUpdateNumber = () => {
+        if (!editingNumber) {
+            return
+        }
+
+        if (!editNumberName || !editNumberPhone) {
+            toast.error("Missing information", {
+                description: "Please fill in all fields.",
+            })
+            return
+        }
+
+        setWhatsappNumbers((numbers) =>
+            numbers.map((item) =>
+                item.id === editingNumber.id
+                    ? {
+                        ...item,
+                        name: editNumberName,
+                        number: editNumberPhone,
+                    }
+                    : item,
+            ),
+        )
+
+        toast.success("WhatsApp number updated!")
+        resetEditNumberState()
+    }
+
     const handleSaveNotifications = () => {
         toast.success("Notification preferences saved!")
     }
 
     return (
-        <div className="section-spacing">
-            {/* Header */}
-            <div>
-                <h1 className="heading-primary text-3xl">Settings</h1>
-                <p className="body-secondary mt-1">Manage your account and preferences</p>
-            </div>
+        <div className="">
 
             {/* Settings Tabs */}
-            <Tabs defaultValue="team" className="space-y-6">
-                <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-3 lg:w-auto lg:overflow-x-visible">
-                    <TabsTrigger value="whatsapp" className="gap-2 flex-shrink-0">
+            <Tabs defaultValue="whatsapp" className="space-y-6">
+                <TabsList className="flex w-full overflow-x-auto sm:w-min">
+                    <TabsTrigger value="whatsapp" className="gap-2 flex-shrink-0 px-6">
                         <Smartphone className="w-4 h-4" />
                         WhatsApp
                     </TabsTrigger>
+                    {/*}
                     <TabsTrigger value="team" className="gap-2 flex-shrink-0">
                         <Users className="w-4 h-4" />
                         Team
                     </TabsTrigger>
-                    <TabsTrigger value="notifications" className="gap-2 flex-shrink-0">
+                    */}
+                    <TabsTrigger value="notifications" className="gap-2 flex-shrink-0 px-6">
                         <Bell className="w-4 h-4" />
                         Notifications
                     </TabsTrigger>
@@ -291,59 +335,111 @@ export default function SettingsPage() {
                             {whatsappNumbers.map((number) => (
                                 <div
                                     key={number.id}
-                                    className={`p-4 rounded-xl border ${number.connected ? "bg-primary/5 border-primary/20" : "bg-muted/50 border-border"
-                                        }`}
+                                    className={`space-y-4 rounded-xl border p-4 ${number.connected ? "bg-primary/5 border-primary/20" : "bg-muted/50 border-border"}`}
                                 >
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-3">
+                                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                                             <div
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center ${number.connected ? "status-connected" : "status-disconnected"
-                                                    }`}
+                                                className={`flex h-12 w-12 items-center justify-center rounded-full ${number.connected ? "status-connected" : "status-disconnected"}`}
                                             >
-                                                <Smartphone className="w-5 h-5 text-white" />
+                                                <Smartphone className="h-5 w-5" />
                                             </div>
-                                            <div>
-                                                <p className="font-semibold text-foreground">{number.name}</p>
-                                                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                                                    <Phone className="w-3 h-3" />
-                                                    {number.number}
+                                            <div className="space-y-1">
+                                                <p className="heading-secondary text-base">{number.name}</p>
+                                                <p className="body-secondary flex items-center gap-1 text-sm">
+                                                    <Phone className="h-3 w-3" />
+                                                    <span>{number.number}</span>
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            <div className="text-right">
-                                                <div className="flex items-center gap-2">
-                                                    <span
-                                                        className={`text-sm font-medium ${number.connected ? "text-primary" : "text-muted-foreground"
-                                                            }`}
-                                                    >
-                                                        {number.connected ? "Connected" : "Disconnected"}
-                                                    </span>
-                                                    {number.connected && <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />}
-                                                </div>
+                                        <div className="flex flex-col gap-3 md:items-end">
+                                            <div className="flex flex-col items-start gap-2 text-sm md:items-end">
+                                                <span className={`${number.connected ? "text-primary" : "text-muted-foreground"} font-medium`}>
+                                                    {number.connected ? "Connected" : "Disconnected"}
+                                                </span>
                                                 {number.connected && (
-                                                    <p className="text-xs text-muted-foreground mt-1">
-                                                        {number.messagesThisMonth} messages this month
-                                                    </p>
+                                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                        <span>{number.messagesThisMonth} messages this month</span>
+                                                        <div className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+                                                    </div>
                                                 )}
                                             </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => handleRemoveNumber(number.id)}
-                                                className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
+                                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-3 md:justify-end">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleOpenEditNumber(number)}
+                                                    className="w-full text-muted-foreground hover:bg-muted/40 hover:text-foreground md:w-auto"
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleRemoveNumber(number.id)}
+                                                    className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive/80 md:w-auto"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                     {!number.connected && (
-                                        <Button size="sm" variant="outline" className="w-full bg-transparent">
-                                            Connect Number
-                                        </Button>
+                                        <div className="flex w-full items-center justify-center sm:justify-end">
+                                            <Button size="sm" variant="outline" className="w-full sm:w-auto">
+                                                Connect Number
+                                            </Button>
+                                        </div>
                                     )}
                                 </div>
                             ))}
+
+                            <Dialog
+                                open={isEditNumberOpen}
+                                onOpenChange={(open) => {
+                                    if (!open) {
+                                        resetEditNumberState()
+                                    }
+                                }}
+                            >
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Edit WhatsApp Number</DialogTitle>
+                                        <DialogDescription>Update the name and phone number for this WhatsApp connection.</DialogDescription>
+                                    </DialogHeader>
+                                    <div className="space-y-4 py-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="editNumberName">Number Name</Label>
+                                            <Input
+                                                id="editNumberName"
+                                                placeholder="e.g., Main Support"
+                                                value={editNumberName}
+                                                onChange={(e) => setEditNumberName(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="editNumberPhone">Phone Number</Label>
+                                            <Input
+                                                id="editNumberPhone"
+                                                placeholder="+55 11 98765-4321"
+                                                value={editNumberPhone}
+                                                onChange={(e) => setEditNumberPhone(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                                        <Button variant="outline" onClick={resetEditNumberState} className="w-full sm:w-auto">
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            onClick={handleUpdateNumber}
+                                            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
+                                        >
+                                            Save Changes
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
 
                             <Separator className="my-6" />
 

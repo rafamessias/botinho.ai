@@ -50,19 +50,16 @@ export function NavMain({
                 >
                   <Link href={item.url} className="flex items-center gap-3 py-3">
                     {item.icon && <item.icon className="h-5 w-5" />}
-                    <span className="text-base font-medium">{item.title}</span>
+                    <span className="text-base ">{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )
           })}
-        </SidebarMenu>
-
-        {/* Feedback Survey Item */}
-        <SidebarMenu className="mt-auto">
+          {/* Feedback Survey Item */}
           <SidebarMenuItem>
             <SidebarMenuButton
-              className="cursor-pointer [&:hover_.star-bounce]:animate-bounce [&:hover_.star-text-yellow]:text-yellow-400 [&:hover_.star-fill-yellow]:fill-yellow-400"
+              className="cursor-pointer [&:hover_.star-bounce]:animate-bounce [&:hover_.star-text-yellow]:text-yellow-400 [&:hover_.star-fill-yellow]:fill-yellow-400 text-base font-medium h-12"
             >
               <IconStar className="h-5 w-5 star-bounce star-text-yellow star-fill-yellow" />
               <span>Rate our Service</span>

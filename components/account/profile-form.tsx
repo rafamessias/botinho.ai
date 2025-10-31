@@ -191,12 +191,12 @@ export function ProfileForm() {
         <div className="space-y-6">
 
             {/* Profile Information Section */}
-            <Card className="border-none p-0 shadow-none">
-                <CardHeader className="p-0">
+            <Card className="">
+                <CardHeader>
                     <CardTitle>{t("profile.title")}</CardTitle>
                     <CardDescription>{t("profile.description")}</CardDescription>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent>
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -287,72 +287,6 @@ export function ProfileForm() {
                                     {form.formState.errors.country.message}
                                 </p>
                             )}
-                        </div>
-
-                        <div className="space-y-4 pt-4 border-t">
-                            <h4 className="text-sm font-medium">{t("profile.socialLinks")}</h4>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="linkedinUrl">{t("profile.linkedinUrl")}</Label>
-                                    <Input
-                                        id="linkedinUrl"
-                                        type="url"
-                                        placeholder="https://linkedin.com/in/username"
-                                        {...form.register("linkedinUrl")}
-                                    />
-                                    {form.formState.errors.linkedinUrl && (
-                                        <p className="text-sm text-red-500">
-                                            {form.formState.errors.linkedinUrl.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="twitterUrl">{t("profile.twitterUrl")}</Label>
-                                    <Input
-                                        id="twitterUrl"
-                                        type="url"
-                                        placeholder="https://x.com/username"
-                                        {...form.register("twitterUrl")}
-                                    />
-                                    {form.formState.errors.twitterUrl && (
-                                        <p className="text-sm text-red-500">
-                                            {form.formState.errors.twitterUrl.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="websiteUrl">{t("profile.websiteUrl")}</Label>
-                                    <Input
-                                        id="websiteUrl"
-                                        type="url"
-                                        placeholder="https://example.com"
-                                        {...form.register("websiteUrl")}
-                                    />
-                                    {form.formState.errors.websiteUrl && (
-                                        <p className="text-sm text-red-500">
-                                            {form.formState.errors.websiteUrl.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="githubUrl">{t("profile.githubUrl")}</Label>
-                                    <Input
-                                        id="githubUrl"
-                                        type="url"
-                                        placeholder="https://github.com/username"
-                                        {...form.register("githubUrl")}
-                                    />
-                                    {form.formState.errors.githubUrl && (
-                                        <p className="text-sm text-red-500">
-                                            {form.formState.errors.githubUrl.message}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
                         </div>
 
                         <div className="space-y-2">

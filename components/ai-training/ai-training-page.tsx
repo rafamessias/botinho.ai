@@ -18,11 +18,13 @@ import {
     Edit,
     Save,
     CheckCircle2,
+    MessageCircle,
     MessageSquare,
     Copy,
     Tag,
     X,
     MousePointerClick,
+    Sparkles,
 } from "lucide-react"
 import {
     Dialog,
@@ -43,6 +45,13 @@ interface KnowledgeItem {
     createdAt: string
 }
 
+interface QuickAnswerItem {
+    id: string
+    title: string
+    content: string
+    createdAt: string
+}
+
 interface TemplateOption {
     id: string
     label: string
@@ -58,11 +67,13 @@ interface Template {
     createdAt: string
 }
 
+type MainTab = "knowledge" | "templates" | "quickAnswers"
+
 export default function AITrainingPage() {
     const t = useTranslations("AiTraining")
     const { toast } = useToast()
 
-    const [mainTab, setMainTab] = useState<"knowledge" | "templates">("knowledge")
+    const [mainTab, setMainTab] = useState<MainTab>("knowledge")
 
     const [knowledgeBase, setKnowledgeBase] = useState<KnowledgeItem[]>([
         {
@@ -85,6 +96,27 @@ export default function AITrainingPage() {
             title: "Product Catalog",
             content: "https://example.com/products",
             createdAt: "2024-01-13",
+        },
+    ])
+
+    const [quickAnswers, setQuickAnswers] = useState<QuickAnswerItem[]>([
+        {
+            id: "qa-1",
+            title: "Shipping Time",
+            content: "Most orders ship within 24 hours and arrive within 3-5 business days.",
+            createdAt: "2024-01-12",
+        },
+        {
+            id: "qa-2",
+            title: "Return Policy",
+            content: "You can request a return within 30 days of delivery as long as the item is unused.",
+            createdAt: "2024-01-11",
+        },
+        {
+            id: "qa-3",
+            title: "Contact Support",
+            content: "Reach our support team at support@example.com or call (555) 123-4567.",
+            createdAt: "2024-01-10",
         },
     ])
 
@@ -140,6 +172,11 @@ export default function AITrainingPage() {
     const [newTitle, setNewTitle] = useState("")
     const [newContent, setNewContent] = useState("")
     const [activeTab, setActiveTab] = useState<"text" | "url">("text")
+
+    const [isQuickAnswerDialogOpen, setIsQuickAnswerDialogOpen] = useState(false)
+    const [editingQuickAnswer, setEditingQuickAnswer] = useState<QuickAnswerItem | null>(null)
+    const [quickAnswerTitle, setQuickAnswerTitle] = useState("")
+    const [quickAnswerContent, setQuickAnswerContent] = useState("")
 
     const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
     const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
@@ -210,6 +247,85 @@ export default function AITrainingPage() {
         toast({
             title: t("success.updated"),
             description: t("success.knowledgeUpdated"),
+        })
+    }
+
+    const resetQuickAnswerForm = () => {
+        setEditingQuickAnswer(null)
+        setQuickAnswerTitle("")
+        setQuickAnswerContent("")
+    }
+
+    const handleCloseQuickAnswerDialog = () => {
+        resetQuickAnswerForm()
+        setIsQuickAnswerDialogOpen(false)
+    }
+
+    const handleAddQuickAnswer = () => {
+        if (!quickAnswerTitle.trim() || !quickAnswerContent.trim()) {
+            toast({
+                title: t("errors.fillAllFields"),
+                description: t("errors.fillAllFieldsDescription"),
+                variant: "destructive",
+            })
+            return
+        }
+
+        const newQuickAnswer: QuickAnswerItem = {
+            id: Date.now().toString(),
+            title: quickAnswerTitle.trim(),
+            content: quickAnswerContent.trim(),
+            createdAt: new Date().toISOString().split("T")[0],
+        }
+
+        setQuickAnswers([newQuickAnswer, ...quickAnswers])
+        handleCloseQuickAnswerDialog()
+
+        toast({
+            title: t("success.quickAnswerCreated"),
+            description: t("success.quickAnswerCreatedDescription"),
+        })
+    }
+
+    const handleEditQuickAnswer = (item: QuickAnswerItem) => {
+        setEditingQuickAnswer(item)
+        setQuickAnswerTitle(item.title)
+        setQuickAnswerContent(item.content)
+        setIsQuickAnswerDialogOpen(true)
+    }
+
+    const handleUpdateQuickAnswer = () => {
+        if (!editingQuickAnswer || !quickAnswerTitle.trim() || !quickAnswerContent.trim()) {
+            toast({
+                title: t("errors.fillAllFields"),
+                description: t("errors.fillAllFieldsDescription"),
+                variant: "destructive",
+            })
+            return
+        }
+
+        setQuickAnswers(
+            quickAnswers.map((item) =>
+                item.id === editingQuickAnswer.id
+                    ? { ...item, title: quickAnswerTitle.trim(), content: quickAnswerContent.trim() }
+                    : item,
+            ),
+        )
+
+        handleCloseQuickAnswerDialog()
+
+        toast({
+            title: t("success.updated"),
+            description: t("success.quickAnswerUpdated"),
+        })
+    }
+
+    const handleDeleteQuickAnswer = (id: string) => {
+        setQuickAnswers(quickAnswers.filter((item) => item.id !== id))
+
+        toast({
+            title: t("success.deleted"),
+            description: t("success.quickAnswerDeleted"),
         })
     }
 
@@ -333,14 +449,10 @@ export default function AITrainingPage() {
     }
 
     return (
-        <div className="p-8 space-y-8">
+        <div className=" space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="heading-primary text-3xl">{t("title")}</h1>
-                    <p className="body-secondary mt-1">{t("subtitle")}</p>
-                </div>
-                {mainTab === "knowledge" ? (
+                {mainTab === "knowledge" && (
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
                             <Button
@@ -439,7 +551,9 @@ export default function AITrainingPage() {
                             </div>
                         </DialogContent>
                     </Dialog>
-                ) : (
+                )}
+
+                {mainTab === "templates" && (
                     <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
                         <DialogTrigger asChild>
                             <Button
@@ -592,10 +706,81 @@ export default function AITrainingPage() {
                         </DialogContent>
                     </Dialog>
                 )}
+
+                {mainTab === "quickAnswers" && (
+                    <Dialog
+                        open={isQuickAnswerDialogOpen}
+                        onOpenChange={(open) => {
+                            if (open) {
+                                setIsQuickAnswerDialogOpen(true)
+                                return
+                            }
+                            handleCloseQuickAnswerDialog()
+                        }}
+                    >
+                        <DialogTrigger asChild>
+                            <Button
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                                onClick={() => {
+                                    resetQuickAnswerForm()
+                                    setIsQuickAnswerDialogOpen(true)
+                                }}
+                            >
+                                <Plus className="w-4 h-4 mr-2" />
+                                {t("buttons.addQuickAnswer")}
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[600px]">
+                            <DialogHeader>
+                                <DialogTitle>
+                                    {editingQuickAnswer ? t("dialog.editQuickAnswer") : t("dialog.createQuickAnswer")}
+                                </DialogTitle>
+                                <DialogDescription>
+                                    {editingQuickAnswer
+                                        ? t("dialog.editQuickAnswerDescription")
+                                        : t("dialog.createQuickAnswerDescription")}
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 mt-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="quick-answer-title">{t("form.title")}</Label>
+                                    <Input
+                                        id="quick-answer-title"
+                                        placeholder={t("form.titlePlaceholder")}
+                                        value={quickAnswerTitle}
+                                        onChange={(e) => setQuickAnswerTitle(e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="quick-answer-content">{t("form.content")}</Label>
+                                    <Textarea
+                                        id="quick-answer-content"
+                                        placeholder={t("form.contentPlaceholder")}
+                                        value={quickAnswerContent}
+                                        onChange={(e) => setQuickAnswerContent(e.target.value)}
+                                        rows={6}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-3 mt-6">
+                                <Button variant="outline" onClick={handleCloseQuickAnswerDialog}>
+                                    {t("buttons.cancel")}
+                                </Button>
+                                <Button
+                                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                                    onClick={editingQuickAnswer ? handleUpdateQuickAnswer : handleAddQuickAnswer}
+                                >
+                                    <Save className="w-4 h-4 mr-2" />
+                                    {editingQuickAnswer ? t("buttons.update") : t("buttons.addQuickAnswer")}
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                )}
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                 <Card className="elegant-card">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="caption-text">{t("stats.knowledgeItems")}</CardTitle>
@@ -620,6 +805,17 @@ export default function AITrainingPage() {
 
                 <Card className="elegant-card">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="caption-text">{t("stats.quickAnswers")}</CardTitle>
+                        <Sparkles className="w-4 h-4 text-primary" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-bold text-foreground">{quickAnswers.length}</div>
+                        <p className="text-xs text-muted-foreground mt-1">{t("stats.quickAnswersDescription")}</p>
+                    </CardContent>
+                </Card>
+
+                <Card className="elegant-card">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="caption-text">{t("stats.trainingStatus")}</CardTitle>
                         <CheckCircle2 className="w-4 h-4 text-primary" />
                     </CardHeader>
@@ -630,11 +826,15 @@ export default function AITrainingPage() {
                 </Card>
             </div>
 
-            <Tabs value={mainTab} onValueChange={(v) => setMainTab(v as "knowledge" | "templates")}>
-                <TabsList className="grid w-full max-w-md grid-cols-2">
+            <Tabs value={mainTab} onValueChange={(v) => setMainTab(v as MainTab)}>
+                <TabsList className="grid w-full max-w-2xl grid-cols-3">
                     <TabsTrigger value="knowledge">
                         <Brain className="w-4 h-4 mr-2" />
                         {t("tabs.knowledgeBase")}
+                    </TabsTrigger>
+                    <TabsTrigger value="quickAnswers">
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        {t("tabs.quickAnswers")}
                     </TabsTrigger>
                     <TabsTrigger value="templates">
                         <MessageSquare className="w-4 h-4 mr-2" />
@@ -668,19 +868,19 @@ export default function AITrainingPage() {
                                     {knowledgeBase.map((item) => (
                                         <div
                                             key={item.id}
-                                            className="refined-card p-4 rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+                                            className="refined-card p-4 rounded-xl border border-primary/10 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
                                         >
                                             <div
                                                 className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${item.type === "text" ? "accent-blue" : "accent-purple"
                                                     }`}
                                             >
                                                 {item.type === "text" ? (
-                                                    <FileText className="w-5 h-5" />
+                                                    <FileText className="w-5 h-5 text-primary" />
                                                 ) : (
-                                                    <LinkIcon className="w-5 h-5" />
+                                                    <LinkIcon className="w-5 h-5 text-primary" />
                                                 )}
                                             </div>
-                                            <div className="flex-1 min-w-0">
+                                            <div className="flex-1 min-w-0 mt-2">
                                                 <div className="flex items-start justify-between gap-2">
                                                     <div className="flex-1">
                                                         <h4 className="heading-secondary">{item.title}</h4>
@@ -689,7 +889,7 @@ export default function AITrainingPage() {
                                                             <Badge variant="secondary" className="text-xs">
                                                                 {item.type === "text" ? t("knowledge.type.text") : t("knowledge.type.url")}
                                                             </Badge>
-                                                            <span className="caption-text">{t("knowledge.added")} {item.createdAt}</span>
+                                                            <span className="text-xs text-muted-foreground">{t("knowledge.added")} {item.createdAt}</span>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-2">
@@ -701,6 +901,74 @@ export default function AITrainingPage() {
                                                             size="sm"
                                                             onClick={() => handleDeleteItem(item.id)}
                                                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="quickAnswers" className="mt-6">
+                    <Card className="elegant-card">
+                        <CardHeader>
+                            <CardTitle className="heading-secondary">{t("quickAnswers.title")}</CardTitle>
+                            <CardDescription className="body-secondary">{t("quickAnswers.description")}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {quickAnswers.length === 0 ? (
+                                <div className="text-center py-12">
+                                    <MessageCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                                    <h3 className="heading-secondary text-lg mb-2">{t("quickAnswers.empty.title")}</h3>
+                                    <p className="body-secondary mb-4">{t("quickAnswers.empty.description")}</p>
+                                    <Button
+                                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                                        onClick={() => {
+                                            resetQuickAnswerForm()
+                                            setIsQuickAnswerDialogOpen(true)
+                                        }}
+                                    >
+                                        <Plus className="w-4 h-4 mr-2" />
+                                        {t("quickAnswers.empty.button")}
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {quickAnswers.map((item) => (
+                                        <div
+                                            key={item.id}
+                                            className="refined-card p-4 rounded-xl border border-primary/10 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+                                        >
+                                            <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 accent-orange">
+                                                <MessageCircle className="w-5 h-5 text-primary" />
+                                            </div>
+                                            <div className="flex-1 min-w-0 mt-2">
+                                                <div className="flex items-start justify-between gap-2">
+                                                    <div className="flex-1">
+                                                        <h4 className="heading-secondary">{item.title}</h4>
+                                                        <p className="body-secondary text-sm mt-1 line-clamp-2">{item.content}</p>
+                                                        <div className="flex items-center gap-3 mt-2">
+                                                            <Badge variant="secondary" className="text-xs">
+                                                                {t("quickAnswers.label")}
+                                                            </Badge>
+                                                            <span className="text-xs text-muted-foreground">{t("quickAnswers.added")} {item.createdAt}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Button variant="ghost" size="sm" onClick={() => handleEditQuickAnswer(item)}>
+                                                            <Edit className="w-4 h-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => handleDeleteQuickAnswer(item.id)}
+                                                            className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
                                                         >
                                                             <Trash2 className="w-4 h-4" />
                                                         </Button>
@@ -740,11 +1008,8 @@ export default function AITrainingPage() {
                                     {templates.map((template) => (
                                         <div
                                             key={template.id}
-                                            className="refined-card p-4 rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+                                            className="refined-card p-4 rounded-xl border border-primary/10 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
                                         >
-                                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                                <MessageSquare className="w-5 h-5 text-primary" />
-                                            </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-start justify-between gap-2">
                                                     <div className="flex-1">
@@ -776,7 +1041,7 @@ export default function AITrainingPage() {
                                                                 <Tag className="w-3 h-3 mr-1" />
                                                                 {t(`categories.${template.category}`)}
                                                             </Badge>
-                                                            <span className="caption-text">{t("templates.created")} {template.createdAt}</span>
+                                                            <span className="text-xs text-muted-foreground">{t("templates.created")} {template.createdAt}</span>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-2">
