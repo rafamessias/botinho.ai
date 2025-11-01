@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl"
 import { useParams, usePathname, useSearchParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Globe } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -48,17 +49,25 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
             // Update user language preference in database
             const result = await updateUserLanguageAction(newLanguage as "en" | "pt-BR")
 
+            if (!result?.success) {
+                toast.error(result?.error || "Failed to update language")
+                return
+            }
+
+            const updatedLocale = result.locale ?? newLanguage
+
             // Update the session with new language
             await update({
-                language: newLanguage
+                language: updatedLocale
             })
 
             // Navigate to the new language
-            const newPath = `/${newLanguage}${targetPath || "/"}`
+            const newPath = `/${updatedLocale}${targetPath || "/"}`
             router.push(newPath)
         } catch (error) {
             // Avoid returning error to the client
             console.error("Language update error:", error)
+            toast.error("Unexpected error while changing language")
         }
     }
 

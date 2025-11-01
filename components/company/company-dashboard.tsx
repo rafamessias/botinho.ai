@@ -172,11 +172,11 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
     }
 
     return (
-        <div className="px-4 lg:px-6">
+        <div className="max-w-7xl w-full mx-auto">
 
             {/* Main Company Card */}
-            <Card className="bg-transparent border-none shadow-none">
-                <CardHeader className="space-y-4 lg:space-y-6 p-0">
+            <Card className="bg-transparent border-none shadow-none py-0">
+                <CardHeader className=" p-0">
                     {/* Company Info Section */}
                     {selectedCompany && (
                         <>

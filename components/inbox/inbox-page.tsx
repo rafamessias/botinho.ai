@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useTranslations } from "next-intl"
 import { format, formatDistanceToNow } from "date-fns"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -150,12 +151,15 @@ const formatMessageTimestamp = (value?: string | Date | null) => {
     return format(date, "HH:mm")
 }
 
-const mapConversationSummary = (conversation: ConversationEntity): InboxConversationSummary => {
+const mapConversationSummary = (
+    conversation: ConversationEntity,
+    fallbackName: string,
+): InboxConversationSummary => {
     const lastMessageAt = conversation.lastMessageSentAt || conversation.updatedAt || conversation.createdAt
 
     return {
         id: conversation.id,
-        customerName: conversation.customer?.name?.trim() || "Cliente",
+        customerName: conversation.customer?.name?.trim() || fallbackName,
         customerPhone: conversation.customer?.phone || undefined,
         customerEmail: conversation.customer?.email || undefined,
         customerAddress: conversation.customer?.address || undefined,
@@ -212,6 +216,7 @@ export default function InboxPage() {
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
     const { setOpen } = useSidebar()
+    const t = useTranslations("Inbox")
 
     const selectedConversation = useMemo(
         () => conversations.find((conversation) => conversation.id === selectedConversationId) ?? null,
@@ -219,6 +224,26 @@ export default function InboxPage() {
     )
 
     const hasClosedSidebarRef = useRef(false)
+
+    const buildConversationSummary = useCallback(
+        (conversation: ConversationEntity) => mapConversationSummary(conversation, t("labels.customerFallback")),
+        [t],
+    )
+
+    const getPriorityLabel = useCallback(
+        (priority?: InboxConversationPriority | null) => {
+            if (priority === "high") {
+                return t("priority.high")
+            }
+
+            if (priority === "low") {
+                return t("priority.low")
+            }
+
+            return t("priority.medium")
+        },
+        [t],
+    )
 
     useEffect(() => {
         if (hasClosedSidebarRef.current) {
@@ -279,7 +304,7 @@ export default function InboxPage() {
                     throw new Error(result.error || "Unable to load conversation")
                 }
 
-                const summaryBase = mapConversationSummary(result.data as ConversationEntity)
+                const summaryBase = buildConversationSummary(result.data as ConversationEntity)
                 const summary = { ...summaryBase, unreadCount: 0 }
                 const mappedMessages = (result.data.messages as MessageEntity[]).map(mapMessage)
 
@@ -304,7 +329,7 @@ export default function InboxPage() {
                 setIsLoadingMessages(false)
             }
         },
-        [loadSuggestedResponses],
+        [buildConversationSummary, loadSuggestedResponses],
     )
 
     const loadConversations = useCallback(
@@ -322,7 +347,7 @@ export default function InboxPage() {
                 }
 
                 const mapped = sortConversations(
-                    (result.data.conversations as ConversationEntity[]).map(mapConversationSummary),
+                    (result.data.conversations as ConversationEntity[]).map(buildConversationSummary),
                 )
 
                 setConversations(mapped)
@@ -356,7 +381,7 @@ export default function InboxPage() {
                 setIsLoadingConversations(false)
             }
         },
-        [fetchConversationDetail, selectedConversationId],
+        [buildConversationSummary, fetchConversationDetail, selectedConversationId],
     )
 
     useEffect(() => {
@@ -425,7 +450,7 @@ export default function InboxPage() {
             }
 
             const mappedMessage = mapMessage(result.data.message as MessageEntity)
-            const summary = mapConversationSummary(result.data.conversation as ConversationEntity)
+            const summary = buildConversationSummary(result.data.conversation as ConversationEntity)
 
             setMessages((previous) => [...previous, mappedMessage])
             setConversations((previous) => {
@@ -450,7 +475,7 @@ export default function InboxPage() {
         } finally {
             setIsSendingMessage(false)
         }
-    }, [loadSuggestedResponses, messageInput, selectedConversationId])
+    }, [buildConversationSummary, loadSuggestedResponses, messageInput, selectedConversationId])
 
     const handleUseSuggestedResponse = useCallback((text: string) => {
         setMessageInput(text)
@@ -486,10 +511,8 @@ export default function InboxPage() {
                         <Inbox className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div className="space-y-1">
-                        <h3 className="text-sm font-semibold text-foreground">No conversations yet</h3>
-                        <p className="text-xs text-muted-foreground">
-                            Conversations you start or receive will appear here. Keep engaging with your customers!
-                        </p>
+                        <h3 className="text-sm font-semibold text-foreground">{t("conversations.empty.title")}</h3>
+                        <p className="text-xs text-muted-foreground">{t("conversations.empty.description")}</p>
                     </div>
                 </div>
             )
@@ -507,7 +530,7 @@ export default function InboxPage() {
                         ? "bg-primary/10 border border-primary/30"
                         : "hover:bg-muted",
                 )}
-                aria-label={`Select conversation with ${conversation.customerName}`}
+                aria-label={t("conversations.selectConversationAria", { name: conversation.customerName })}
             >
                 <Avatar className="w-10 h-10 flex-shrink-0 border border-border/70">
                     <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
@@ -529,7 +552,7 @@ export default function InboxPage() {
                         </span>
                     </div>
                     <p className="text-xs text-muted-foreground truncate mt-1">
-                        {conversation.lastMessage || "No messages yet"}
+                        {conversation.lastMessage || t("conversations.noMessage")}
                     </p>
                     <div className="flex items-center gap-2 mt-2">
                         {conversation.priority && (
@@ -540,7 +563,7 @@ export default function InboxPage() {
                                     getPriorityColor(conversation.priority),
                                 )}
                             >
-                                {conversation.priority}
+                                {getPriorityLabel(conversation.priority)}
                             </Badge>
                         )}
                         {conversation.tags.slice(0, 1).map((tag) => (
@@ -567,10 +590,8 @@ export default function InboxPage() {
                         <Contact className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div className="space-y-1">
-                        <h3 className="text-sm font-semibold text-foreground">Customer context</h3>
-                        <p className="text-xs text-muted-foreground">
-                            Pick a conversation to see customer details, saved notes, and smart replies.
-                        </p>
+                        <h3 className="text-sm font-semibold text-foreground">{t("context.empty.title")}</h3>
+                        <p className="text-xs text-muted-foreground">{t("context.empty.description")}</p>
                     </div>
                 </div>
             )
@@ -581,7 +602,7 @@ export default function InboxPage() {
                 <div className="p-4 space-y-4 pb-6">
                     <Card className="shadow-none">
                         <CardHeader>
-                            <CardTitle className="text-sm font-medium">Customer</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t("context.customer.title")}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3 text-xs text-muted-foreground">
                             {selectedConversation.customerPhone && (
@@ -606,7 +627,9 @@ export default function InboxPage() {
                                 <div className="flex items-center gap-2">
                                     <Info className="w-3.5 h-3.5" aria-hidden="true" />
                                     <span>
-                                        Satisfaction score: {selectedConversation.satisfactionScore}
+                                        {t("context.customer.satisfaction", {
+                                            score: selectedConversation.satisfactionScore,
+                                        })}
                                     </span>
                                 </div>
                             )}
@@ -615,16 +638,18 @@ export default function InboxPage() {
 
                     <Card className="shadow-none">
                         <CardHeader>
-                            <CardTitle className="text-sm font-medium">Quick replies</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t("context.quickReplies.title")}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                             {suggestedResponses.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/60 bg-muted/40 px-4 py-6 text-center">
                                     <Sparkles className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                                     <div className="space-y-1">
-                                        <p className="text-xs font-medium text-foreground">No suggestions yet</p>
+                                        <p className="text-xs font-medium text-foreground">
+                                            {t("context.quickReplies.empty.title")}
+                                        </p>
                                         <p className="text-[11px] text-muted-foreground">
-                                            Keep the conversation going—AI replies will show up once customers message you.
+                                            {t("context.quickReplies.empty.description")}
                                         </p>
                                     </div>
                                 </div>
@@ -657,10 +682,8 @@ export default function InboxPage() {
                         <MessageSquarePlus className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div className="space-y-1">
-                        <h3 className="text-sm font-semibold text-foreground">Select a conversation</h3>
-                        <p className="text-xs text-muted-foreground">
-                            Choose a thread from the left panel to review the history and respond to customers.
-                        </p>
+                        <h3 className="text-sm font-semibold text-foreground">{t("messages.empty.title")}</h3>
+                        <p className="text-xs text-muted-foreground">{t("messages.empty.description")}</p>
                     </div>
                 </div>
             )
@@ -689,10 +712,8 @@ export default function InboxPage() {
                         <MessageCircle className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div className="space-y-1">
-                        <h3 className="text-sm font-semibold text-foreground">No messages yet</h3>
-                        <p className="text-xs text-muted-foreground">
-                            Break the ice and send the first reply to keep the conversation flowing.
-                        </p>
+                        <h3 className="text-sm font-semibold text-foreground">{t("messages.noMessages.title")}</h3>
+                        <p className="text-xs text-muted-foreground">{t("messages.noMessages.description")}</p>
                     </div>
                 </div>
             )
@@ -756,11 +777,11 @@ export default function InboxPage() {
                             <div className="relative w-full">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
                                 <Input
-                                    placeholder="Search"
+                                    placeholder={t("searchPlaceholder")}
                                     value={searchQuery}
                                     onChange={(event) => setSearchQuery(event.target.value)}
                                     className="h-9 pl-9 text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary"
-                                    aria-label="Search conversations"
+                                    aria-label={t("searchPlaceholder")}
                                 />
                             </div>
                         </div>
@@ -773,17 +794,18 @@ export default function InboxPage() {
                 <Sheet open={showConversationsList} onOpenChange={setShowConversationsList}>
                     <SheetContent side="left" className="w-full sm:w-72 p-0 flex flex-col">
                         <SheetHeader className="px-4 py-4 border-b border-border/60">
-                            <SheetTitle className="text-left">Conversations</SheetTitle>
+                            <SheetTitle className="text-left">{t("conversations.title")}</SheetTitle>
                         </SheetHeader>
                         <div className="flex-1 overflow-hidden flex flex-col min-h-0">
                             <div className="px-4 py-3 border-b border-border/60">
                                 <div className="relative">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
                                     <Input
-                                        placeholder="Search"
+                                        placeholder={t("searchPlaceholder")}
                                         value={searchQuery}
                                         onChange={(event) => setSearchQuery(event.target.value)}
                                         className="h-9 pl-9 text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary"
+                                        aria-label={t("searchPlaceholder")}
                                     />
                                 </div>
                             </div>
@@ -802,7 +824,8 @@ export default function InboxPage() {
                                 size="icon"
                                 onClick={() => setShowConversationsList(true)}
                                 className="md:hidden"
-                                title="Toggle conversations list"
+                                title={t("actions.openConversations")}
+                                aria-label={t("actions.openConversations")}
                             >
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
@@ -811,7 +834,12 @@ export default function InboxPage() {
                                 size="icon"
                                 onClick={() => setShowDesktopConversations(!showDesktopConversations)}
                                 className="hidden md:inline-flex hover:bg-muted"
-                                title={showDesktopConversations ? "Collapse conversations" : "Show conversations"}
+                                title={
+                                    showDesktopConversations ? t("actions.hideConversations") : t("actions.showConversations")
+                                }
+                                aria-label={
+                                    showDesktopConversations ? t("actions.hideConversations") : t("actions.showConversations")
+                                }
                             >
                                 {showDesktopConversations ? (
                                     <PanelLeftClose className="w-4 h-4 text-muted-foreground" />
@@ -831,7 +859,7 @@ export default function InboxPage() {
                             </Avatar>
                             <div className="min-w-0">
                                 <h3 className="font-semibold text-sm text-foreground truncate">
-                                    {selectedConversation?.customerName || "Select a conversation"}
+                                    {selectedConversation?.customerName || t("messages.empty.title")}
                                 </h3>
                                 <p className="text-xs text-muted-foreground truncate">
                                     {selectedConversation?.customerPhone || ""}
@@ -844,7 +872,8 @@ export default function InboxPage() {
                                 size="icon"
                                 onClick={() => setShowContextPanel(!showContextPanel)}
                                 className="hover:bg-muted"
-                                title={showContextPanel ? "Hide context" : "Show context"}
+                                title={showContextPanel ? t("actions.hideContext") : t("actions.showContext")}
+                                aria-label={showContextPanel ? t("actions.hideContext") : t("actions.showContext")}
                             >
                                 {showContextPanel ? (
                                     <PanelRightClose className="w-4 h-4 text-muted-foreground" />
@@ -862,7 +891,11 @@ export default function InboxPage() {
                             <div className="flex-1 relative">
                                 <Textarea
                                     ref={messageInputRef}
-                                    placeholder={selectedConversation ? "Type a message..." : "Select a conversation to reply"}
+                                    placeholder={
+                                        selectedConversation
+                                            ? t("typeMessagePlaceholder")
+                                            : t("messages.inputPlaceholderNoSelection")
+                                    }
                                     value={messageInput}
                                     onChange={(event) => setMessageInput(event.target.value)}
                                     onKeyDown={(event) => {
@@ -874,6 +907,11 @@ export default function InboxPage() {
                                     className="flex-1 min-h-[48px] max-h-[120px] resize-none text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary pr-9"
                                     rows={2}
                                     disabled={!selectedConversationId}
+                                    aria-label={
+                                        selectedConversation
+                                            ? t("typeMessagePlaceholder")
+                                            : t("messages.inputPlaceholderNoSelection")
+                                    }
                                 />
                                 {messageInput.trim() && (
                                     <div className="absolute bottom-2 right-2 text-[11px] text-muted-foreground">
@@ -886,6 +924,7 @@ export default function InboxPage() {
                                 disabled={!messageInput.trim() || !selectedConversationId || isSendingMessage}
                                 size="icon"
                                 className="bg-primary hover:bg-primary/90 text-primary-foreground h-[48px] w-[48px] flex-shrink-0 disabled:opacity-50"
+                                aria-label={t("actions.send")}
                             >
                                 <Send className="w-4 h-4" />
                             </Button>
@@ -898,14 +937,15 @@ export default function InboxPage() {
                         <div className="h-14 px-4 flex items-center justify-between border-b border-border/60">
                             <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                                 <Info className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                                Context
+                                {t("context.title")}
                             </h3>
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setShowContextPanel(false)}
                                 className="hover:bg-muted"
-                                title="Close context"
+                                title={t("context.close")}
+                                aria-label={t("context.close")}
                             >
                                 <X className="w-4 h-4" />
                             </Button>
@@ -921,7 +961,7 @@ export default function InboxPage() {
                         <SheetHeader className="px-4 py-4 border-b border-border/60 flex-shrink-0">
                             <SheetTitle className="text-left flex items-center gap-2">
                                 <Info className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
-                                Context
+                                {t("context.title")}
                             </SheetTitle>
                         </SheetHeader>
                         <div className="flex-1 min-h-0">

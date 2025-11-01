@@ -5,6 +5,7 @@ import { prisma } from "@/prisma/lib/prisma"
 import { z } from "zod"
 import { Theme } from "@/lib/generated/prisma"
 import { getTranslations } from "next-intl/server"
+import { cookies } from "next/headers"
 
 // Validation schemas
 const updateThemeSchema = z.object({
@@ -186,7 +187,15 @@ export const updateUserLanguageAction = async (language: "en" | "pt-BR") => {
             data: { language: dbLanguage }
         })
 
-        return { success: true, message: "Language updated successfully" }
+        const cookieStore = await cookies()
+        cookieStore.set("user-language", dbLanguage, {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 30 * 24 * 60 * 60,
+        })
+
+        return { success: true, message: "Language updated successfully", locale: validatedData.language }
 
     } catch (error) {
         console.error("Update language error:", error)

@@ -4,6 +4,7 @@
 /node_modules
 /ws-server/node_modules
 /ws-server/lib/generated
+/.wwebjs_auth
 
 # next.js
 /.next/

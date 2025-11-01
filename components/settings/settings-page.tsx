@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "sonner"
-import { AlertCircle, Bell, CheckCircle2, Edit, Link2, Loader2, Phone, Plus, QrCode, RefreshCw, Save, Smartphone, Trash2 } from "lucide-react"
+import { AlertCircle, Bell, CheckCircle2, Edit, Loader2, Phone, Plus, QrCode, RefreshCw, Save, Smartphone, Trash2 } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import {
     Dialog,
@@ -53,11 +54,6 @@ const defaultSettings: SettingsState = {
     newMessageAlerts: true,
     dailyReports: false,
     autoReply: true,
-}
-
-const emptyAddForm = {
-    displayName: "",
-    phoneNumber: "",
 }
 
 const emptyEditForm = {
@@ -106,29 +102,29 @@ export default function SettingsPage() {
     const { user } = useUser()
     const companyId = user?.defaultCompanyId ?? undefined
 
+    const t = useTranslations("Settings.page")
+    const commonT = useTranslations("Common")
+
     const [settings, setSettings] = useState<SettingsState | null>(null)
     const [whatsappNumbers, setWhatsappNumbers] = useState<WhatsAppNumber[]>([])
     const [loadError, setLoadError] = useState<string | null>(null)
     const [isLoadingOverview, setIsLoadingOverview] = useState(true)
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-    const [addForm, setAddForm] = useState(emptyAddForm)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [editForm, setEditForm] = useState(emptyEditForm)
+    const [latestLinkedNumber, setLatestLinkedNumber] = useState<WhatsAppNumber | null>(null)
 
-    const [isSubmittingNumber, setIsSubmittingNumber] = useState(false)
     const [isDeletingNumberId, setIsDeletingNumberId] = useState<string | null>(null)
+    const [isSubmittingNumber, setIsSubmittingNumber] = useState(false)
     const [isSavingSettings, setIsSavingSettings] = useState(false)
 
     const pairingSocketRef = useRef<WebSocket | null>(null)
-    const pairingTokenRef = useRef<string | null>(null)
     const pairingPhaseRef = useRef<PairingPhase>("idle")
     const [pairingPhaseState, setPairingPhaseState] = useState<PairingPhase>("idle")
     const [pairingMessage, setPairingMessage] = useState<string>("")
     const [pairingError, setPairingError] = useState<string | null>(null)
-    const [pairingUrl, setPairingUrl] = useState<string>("")
     const [qrImageDataUrl, setQrImageDataUrl] = useState<string>("")
-    const [isGeneratingQr, setIsGeneratingQr] = useState(false)
     const [isPairingConnected, setIsPairingConnected] = useState(false)
 
     const setPairingPhase = useCallback((nextPhase: PairingPhase) => {
@@ -148,50 +144,26 @@ export default function SettingsPage() {
 
     const resetPairingState = useCallback(() => {
         closePairingSocket()
-        pairingTokenRef.current = null
         setPairingPhase("idle")
         setPairingMessage("")
         setPairingError(null)
-        setPairingUrl("")
         setQrImageDataUrl("")
-        setIsGeneratingQr(false)
         setIsPairingConnected(false)
     }, [closePairingSocket, setPairingPhase])
 
-    const generateQrImage = useCallback(async (value: string) => {
-        setIsGeneratingQr(true)
-        try {
-            const module = await import("qrcode")
-            const dataUrl = await module.toDataURL(value, {
-                width: 320,
-                margin: 1,
-                errorCorrectionLevel: "H",
-            })
-            setQrImageDataUrl(dataUrl)
-            setPairingError(null)
-        } catch (error) {
-            console.error("QR code generation error", error)
-            setQrImageDataUrl("")
-            setPairingError("Unable to generate QR code")
-            setPairingPhase("error")
-        } finally {
-            setIsGeneratingQr(false)
-        }
-    }, [setPairingPhase])
-
     const handleStartPairing = useCallback(() => {
         if (!companyId) {
-            toast.error("Select a company before pairing a number")
+            toast.error(t("toasts.selectCompany"))
             return
         }
 
         if (typeof window === "undefined") {
-            toast.error("QR pairing is only available in the browser")
+            toast.error(t("toasts.browserOnly"))
             return
         }
 
         resetPairingState()
-        setAddForm(emptyAddForm)
+        setLatestLinkedNumber(null)
 
         const resolveSocketUrl = () => {
             const configured = process.env.NEXT_PUBLIC_WS_SERVER_URL?.trim()
@@ -217,12 +189,12 @@ export default function SettingsPage() {
 
         pairingSocketRef.current = socket
         setPairingPhase("connecting")
-        setPairingMessage("Connecting to pairing service…")
+        setPairingMessage(t("whatsapp.pairing.messages.connecting"))
         setPairingError(null)
 
         socket.onopen = () => {
             setPairingPhase("waiting")
-            setPairingMessage("Generating QR code…")
+            setPairingMessage(t("whatsapp.pairing.messages.requesting"))
             socket.send(
                 JSON.stringify({
                     type: "server",
@@ -241,26 +213,27 @@ export default function SettingsPage() {
                 }
 
                 if (typeof payload.code === "number" && payload.code !== 0) {
-                    setPairingError(payload.msg ?? "Pairing failed")
-                    setPairingMessage(payload.msg ?? "Pairing failed")
+                    const fallback = t("whatsapp.pairing.messages.failed")
+                    const message = payload.msg ?? fallback
+                    setPairingError(message)
+                    setPairingMessage(message)
                     setPairingPhase("error")
                     return
                 }
 
                 const step = payload?.data?.step
 
-                if (step === 0) {
-                    pairingTokenRef.current = payload.data.token
-                    setPairingUrl(payload.data.pairingUrl)
+                if (payload?.data?.whatsappQr) {
+                    setQrImageDataUrl(payload.data.whatsappQr)
                     setPairingPhase("waiting")
-                    setPairingMessage("Scan this QR code with your phone to link it.")
-                    void generateQrImage(payload.data.pairingUrl)
+                    setPairingMessage(t("whatsapp.pairing.messages.scan"))
+                    setPairingError(null)
                     return
                 }
 
                 if (step === 1) {
                     setPairingPhase("scanned")
-                    setPairingMessage("Device detected. Waiting for confirmation…")
+                    setPairingMessage(t("whatsapp.pairing.messages.scanned"))
                     return
                 }
 
@@ -290,7 +263,7 @@ export default function SettingsPage() {
                                         : new Date(record.lastSyncedAt).toISOString(),
                         }
 
-                        setAddForm({ displayName: normalized.displayName, phoneNumber: normalized.phoneNumber })
+                        setLatestLinkedNumber(normalized)
                         setWhatsappNumbers((previous) => {
                             const withoutCurrent = previous.filter((entry) => entry.id !== normalized.id)
                             return [normalized, ...withoutCurrent]
@@ -298,42 +271,44 @@ export default function SettingsPage() {
                     }
 
                     setPairingPhase("completed")
-                    setPairingMessage("Device linked and saved. Review the details below.")
+                    setPairingMessage(t("whatsapp.pairing.messages.completed"))
                     setPairingError(null)
                     setIsPairingConnected(true)
-                    toast.success("WhatsApp number linked")
+                    setQrImageDataUrl("")
+                    toast.success(t("toasts.whatsappLinked"))
 
                     closePairingSocket()
                 }
             } catch (error) {
                 console.error("Pairing message error", error)
-                setPairingError("Unexpected pairing response")
-                setPairingMessage("Unexpected pairing response")
+                const fallback = t("whatsapp.pairing.messages.unexpected")
+                setPairingError(fallback)
+                setPairingMessage(fallback)
                 setPairingPhase("error")
                 closePairingSocket()
             }
         }
 
         socket.onerror = () => {
+            const fallback = t("whatsapp.pairing.messages.connectionFailed")
             setPairingPhase("error")
-            setPairingError("Pairing connection failed")
-            setPairingMessage("Pairing connection failed")
+            setPairingError(fallback)
+            setPairingMessage(fallback)
         }
 
         socket.onclose = () => {
             if (pairingPhaseRef.current !== "completed" && pairingPhaseRef.current !== "idle") {
                 setPairingPhase("idle")
-                setPairingMessage("Pairing session closed")
+                setPairingMessage(t("whatsapp.pairing.messages.sessionClosed"))
             }
         }
-    }, [closePairingSocket, companyId, generateQrImage, resetPairingState, setPairingPhase])
+    }, [closePairingSocket, companyId, resetPairingState, setPairingPhase, t])
 
     const handleCancelPairing = useCallback(() => {
         resetPairingState()
-        setAddForm(emptyAddForm)
-        setPairingMessage("Pairing cancelled")
+        setPairingMessage(t("whatsapp.pairing.messages.cancelled"))
         setPairingPhase("idle")
-    }, [resetPairingState, setPairingPhase])
+    }, [resetPairingState, setPairingPhase, t])
 
     useEffect(() => {
         let isMounted = true
@@ -350,7 +325,7 @@ export default function SettingsPage() {
                 }
 
                 if (!response.success || !response.data) {
-                    setLoadError(response.error ?? "Unable to load settings")
+                    setLoadError(response.error ?? t("load.unable"))
                     setSettings(defaultSettings)
                     setWhatsappNumbers([])
                     setIsLoadingOverview(false)
@@ -378,7 +353,7 @@ export default function SettingsPage() {
             } catch (error) {
                 console.error("Load settings error:", error)
                 if (isMounted) {
-                    setLoadError("Unexpected error while loading settings")
+                    setLoadError(t("load.unexpected"))
                     setSettings(defaultSettings)
                     setWhatsappNumbers([])
                 }
@@ -394,7 +369,7 @@ export default function SettingsPage() {
         return () => {
             isMounted = false
         }
-    }, [companyId])
+    }, [companyId, t])
 
     useEffect(() => {
         return () => {
@@ -408,23 +383,23 @@ export default function SettingsPage() {
 
     const pairingPrimaryLabel = useMemo(() => {
         if (pairingPhase === "connecting" || pairingPhase === "waiting") {
-            return "Preparing…"
+            return t("whatsapp.pairing.button.preparing")
         }
 
         if (pairingPhase === "scanned") {
-            return "Waiting for phone"
+            return t("whatsapp.pairing.button.waiting")
         }
 
         if (pairingPhase === "completed") {
-            return "Restart pairing"
+            return t("whatsapp.pairing.button.restart")
         }
 
         if (pairingPhase === "error") {
-            return "Try again"
+            return t("whatsapp.pairing.button.retry")
         }
 
-        return "Start pairing"
-    }, [pairingPhase])
+        return t("whatsapp.pairing.button.start")
+    }, [pairingPhase, t])
 
     const isPairingBusy = useMemo(() => pairingPhase === "connecting" || pairingPhase === "waiting", [pairingPhase])
 
@@ -441,9 +416,9 @@ export default function SettingsPage() {
         })
     }
 
-    const handlePersistSettings = async (successMessage: string) => {
+    const handlePersistSettings = async (successKey: string) => {
         if (!settings) {
-            toast.error("Settings are not ready yet")
+            toast.error(t("toasts.settingsNotReady"))
             return
         }
 
@@ -459,7 +434,7 @@ export default function SettingsPage() {
             })
 
             if (!response.success || !response.data) {
-                toast.error(response.error ?? "Failed to update settings")
+                toast.error(response.error ?? t("toasts.updateFailed"))
                 return
             }
 
@@ -471,17 +446,16 @@ export default function SettingsPage() {
                 autoReply: updated.autoReply,
             })
 
-            toast.success(successMessage)
+            toast.success(t(successKey))
         } catch (error) {
             console.error("Update settings error:", error)
-            toast.error("Unable to update settings")
+            toast.error(t("toasts.unableToUpdate"))
         } finally {
             setIsSavingSettings(false)
         }
     }
 
     const resetAddDialog = () => {
-        setAddForm(emptyAddForm)
         setIsAddDialogOpen(false)
         resetPairingState()
         setIsPairingConnected(false)
@@ -506,12 +480,12 @@ export default function SettingsPage() {
         const phoneNumber = editForm.phoneNumber.trim()
 
         if (!editForm.id) {
-            toast.error("Select a number to update")
+            toast.error(t("toasts.selectNumber"))
             return
         }
 
         if (!displayName || !phoneNumber) {
-            toast.error("Please fill in name and phone number")
+            toast.error(t("toasts.fillNameAndPhone"))
             return
         }
 
@@ -526,7 +500,7 @@ export default function SettingsPage() {
             })
 
             if (!response.success || !response.data) {
-                toast.error(response.error ?? "Failed to update WhatsApp number")
+                toast.error(response.error ?? t("toasts.updateWhatsappFailed"))
                 return
             }
 
@@ -559,11 +533,11 @@ export default function SettingsPage() {
                 ),
             )
 
-            toast.success("WhatsApp number updated")
+            toast.success(t("toasts.updateWhatsappSuccess"))
             resetEditDialog()
         } catch (error) {
             console.error("Update WhatsApp number error:", error)
-            toast.error("Unexpected error while updating number")
+            toast.error(t("toasts.unexpectedUpdateWhatsapp"))
         } finally {
             setIsSubmittingNumber(false)
         }
@@ -576,15 +550,15 @@ export default function SettingsPage() {
             const response = await deleteWhatsappNumberAction({ companyId, id })
 
             if (!response.success) {
-                toast.error(response.error ?? "Failed to remove WhatsApp number")
+                toast.error(response.error ?? t("toasts.removeWhatsappFailed"))
                 return
             }
 
             setWhatsappNumbers((previous) => previous.filter((entry) => entry.id !== id))
-            toast.success("WhatsApp number removed")
+            toast.success(t("toasts.removeWhatsappSuccess"))
         } catch (error) {
             console.error("Delete WhatsApp number error:", error)
-            toast.error("Unexpected error while removing number")
+            toast.error(t("toasts.unexpectedRemoveWhatsapp"))
         } finally {
             setIsDeletingNumberId(null)
         }
@@ -596,11 +570,11 @@ export default function SettingsPage() {
                 <TabsList className="flex w-full overflow-x-auto sm:w-min">
                     <TabsTrigger value="whatsapp" className="flex-shrink-0 gap-2 px-6">
                         <Smartphone className="h-4 w-4" />
-                        WhatsApp
+                        {t("tabs.whatsapp")}
                     </TabsTrigger>
                     <TabsTrigger value="notifications" className="flex-shrink-0 gap-2 px-6">
                         <Bell className="h-4 w-4" />
-                        Notifications
+                        {t("tabs.notifications")}
                     </TabsTrigger>
                 </TabsList>
 
@@ -611,9 +585,9 @@ export default function SettingsPage() {
                                 <div>
                                     <CardTitle className="flex items-center gap-2">
                                         <Smartphone className="h-5 w-5" />
-                                        WhatsApp Numbers
+                                        {t("whatsapp.card.title")}
                                     </CardTitle>
-                                    <CardDescription>Manage WhatsApp Business numbers connected to your company</CardDescription>
+                                    <CardDescription>{t("whatsapp.card.description")}</CardDescription>
                                 </div>
                                 <Button
                                     onClick={() => {
@@ -625,7 +599,7 @@ export default function SettingsPage() {
                                     className="bg-primary text-primary-foreground hover:bg-primary/90"
                                 >
                                     <Plus className="mr-2 h-4 w-4" />
-                                    Add Number
+                                    {t("whatsapp.card.addButton")}
                                 </Button>
                             </div>
                         </CardHeader>
@@ -638,8 +612,8 @@ export default function SettingsPage() {
                                 </div>
                             ) : sortedWhatsappNumbers.length === 0 ? (
                                 <div className="rounded-lg border border-dashed border-muted-foreground/30 p-6 text-center">
-                                    <p className="text-sm text-muted-foreground">No WhatsApp numbers connected yet.</p>
-                                    <p className="text-sm text-muted-foreground">Click the button above to connect your first number.</p>
+                                    <p className="text-sm text-muted-foreground">{t("whatsapp.empty.title")}</p>
+                                    <p className="text-sm text-muted-foreground">{t("whatsapp.empty.description")}</p>
                                 </div>
                             ) : (
                                 sortedWhatsappNumbers.map((number) => (
@@ -676,11 +650,17 @@ export default function SettingsPage() {
                                                             number.isConnected ? "text-primary" : "text-muted-foreground",
                                                         )}
                                                     >
-                                                        {number.isConnected ? "Connected" : "Disconnected"}
+                                                        {number.isConnected
+                                                            ? t("whatsapp.status.connected")
+                                                            : t("whatsapp.status.disconnected")}
                                                     </span>
                                                     {number.isConnected && (
                                                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                            <span>{number.messagesThisMonth} messages this month</span>
+                                                            <span>
+                                                                {t("whatsapp.messages.messagesThisMonth", {
+                                                                    count: number.messagesThisMonth,
+                                                                })}
+                                                            </span>
                                                             <span className="h-2 w-2 animate-pulse rounded-full bg-primary" aria-hidden="true" />
                                                         </div>
                                                     )}
@@ -692,7 +672,7 @@ export default function SettingsPage() {
                                                         size="sm"
                                                         onClick={() => handleOpenEditNumber(number)}
                                                         className="w-full text-muted-foreground hover:bg-muted/40 hover:text-foreground md:w-auto"
-                                                        aria-label={`Edit WhatsApp number ${number.displayName}`}
+                                                        aria-label={t("whatsapp.actions.editAria", { name: number.displayName })}
                                                     >
                                                         <Edit className="h-4 w-4" aria-hidden="true" />
                                                     </Button>
@@ -702,7 +682,7 @@ export default function SettingsPage() {
                                                         size="sm"
                                                         onClick={() => handleDeleteWhatsappNumber(number.id)}
                                                         className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive/80 md:w-auto"
-                                                        aria-label={`Remove WhatsApp number ${number.displayName}`}
+                                                        aria-label={t("whatsapp.actions.removeAria", { name: number.displayName })}
                                                         disabled={isDeletingNumberId === number.id}
                                                     >
                                                         <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -713,7 +693,7 @@ export default function SettingsPage() {
                                         {!number.isConnected && (
                                             <div className="flex w-full items-center justify-center sm:justify-end">
                                                 <Button size="sm" variant="outline" className="w-full sm:w-auto">
-                                                    Connect Number
+                                                    {t("whatsapp.actions.connect")}
                                                 </Button>
                                             </div>
                                         )}
@@ -726,27 +706,27 @@ export default function SettingsPage() {
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="space-y-0.5">
-                                        <Label htmlFor="autoReplySwitch">Auto-Reply</Label>
-                                        <p className="text-sm text-muted-foreground">Automatically respond to customer messages</p>
+                                        <Label htmlFor="autoReplySwitch">{t("whatsapp.autoReply.label")}</Label>
+                                        <p className="text-sm text-muted-foreground">{t("whatsapp.autoReply.description")}</p>
                                     </div>
                                     <Switch
                                         id="autoReplySwitch"
                                         checked={settings?.autoReply ?? defaultSettings.autoReply}
                                         disabled={isLoadingOverview || settings === null}
                                         onCheckedChange={(checked) => handleSettingToggle("autoReply", checked)}
-                                        aria-label="Toggle automatic reply"
+                                        aria-label={t("whatsapp.autoReply.aria")}
                                     />
                                 </div>
                             </div>
 
                             <Button
                                 type="button"
-                                onClick={() => handlePersistSettings("WhatsApp settings updated")}
+                                onClick={() => handlePersistSettings("toasts.updateSuccessWhatsapp")}
                                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                                 disabled={isLoadingOverview || settings === null || isSavingSettings}
                             >
                                 <Save className="mr-2 h-4 w-4" aria-hidden="true" />
-                                Save Changes
+                                {t("whatsapp.autoReply.save")}
                             </Button>
                         </CardContent>
                     </Card>
@@ -757,9 +737,9 @@ export default function SettingsPage() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Bell className="h-5 w-5" />
-                                Notification Preferences
+                                {t("notifications.card.title")}
                             </CardTitle>
-                            <CardDescription>Choose how you want to be notified</CardDescription>
+                            <CardDescription>{t("notifications.card.description")}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             {isLoadingOverview ? (
@@ -772,15 +752,15 @@ export default function SettingsPage() {
                                 <>
                                     <div className="flex items-center justify-between">
                                         <div className="space-y-0.5">
-                                            <Label htmlFor="emailNotificationsSwitch">Email Notifications</Label>
-                                            <p className="text-sm text-muted-foreground">Receive notifications via email</p>
+                                            <Label htmlFor="emailNotificationsSwitch">{t("notifications.email.label")}</Label>
+                                            <p className="text-sm text-muted-foreground">{t("notifications.email.description")}</p>
                                         </div>
                                         <Switch
                                             id="emailNotificationsSwitch"
                                             checked={settings?.emailNotifications ?? defaultSettings.emailNotifications}
                                             disabled={settings === null}
                                             onCheckedChange={(checked) => handleSettingToggle("emailNotifications", checked)}
-                                            aria-label="Toggle email notifications"
+                                            aria-label={t("notifications.email.aria")}
                                         />
                                     </div>
 
@@ -788,15 +768,15 @@ export default function SettingsPage() {
 
                                     <div className="flex items-center justify-between">
                                         <div className="space-y-0.5">
-                                            <Label htmlFor="newMessageAlertsSwitch">New Message Alerts</Label>
-                                            <p className="text-sm text-muted-foreground">Get notified when customers send messages</p>
+                                            <Label htmlFor="newMessageAlertsSwitch">{t("notifications.newMessage.label")}</Label>
+                                            <p className="text-sm text-muted-foreground">{t("notifications.newMessage.description")}</p>
                                         </div>
                                         <Switch
                                             id="newMessageAlertsSwitch"
                                             checked={settings?.newMessageAlerts ?? defaultSettings.newMessageAlerts}
                                             disabled={settings === null}
                                             onCheckedChange={(checked) => handleSettingToggle("newMessageAlerts", checked)}
-                                            aria-label="Toggle new message alerts"
+                                            aria-label={t("notifications.newMessage.aria")}
                                         />
                                     </div>
 
@@ -804,26 +784,26 @@ export default function SettingsPage() {
 
                                     <div className="flex items-center justify-between">
                                         <div className="space-y-0.5">
-                                            <Label htmlFor="dailyReportsSwitch">Daily Reports</Label>
-                                            <p className="text-sm text-muted-foreground">Receive daily summaries of your bot's activity</p>
+                                            <Label htmlFor="dailyReportsSwitch">{t("notifications.dailyReports.label")}</Label>
+                                            <p className="text-sm text-muted-foreground">{t("notifications.dailyReports.description")}</p>
                                         </div>
                                         <Switch
                                             id="dailyReportsSwitch"
                                             checked={settings?.dailyReports ?? defaultSettings.dailyReports}
                                             disabled={settings === null}
                                             onCheckedChange={(checked) => handleSettingToggle("dailyReports", checked)}
-                                            aria-label="Toggle daily reports"
+                                            aria-label={t("notifications.dailyReports.aria")}
                                         />
                                     </div>
 
                                     <Button
                                         type="button"
-                                        onClick={() => handlePersistSettings("Notification preferences saved")}
+                                        onClick={() => handlePersistSettings("toasts.updateSuccessNotifications")}
                                         className="bg-primary text-primary-foreground hover:bg-primary/90"
                                         disabled={settings === null || isSavingSettings}
                                     >
                                         <Save className="mr-2 h-4 w-4" aria-hidden="true" />
-                                        Save Preferences
+                                        {t("notifications.save")}
                                     </Button>
                                 </>
                             )}
@@ -835,8 +815,8 @@ export default function SettingsPage() {
             <Dialog open={isAddDialogOpen} onOpenChange={(open) => (open ? setIsAddDialogOpen(true) : resetAddDialog())}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Add WhatsApp Number</DialogTitle>
-                        <DialogDescription>Connect a new WhatsApp Business number to your company</DialogDescription>
+                        <DialogTitle>{t("whatsapp.dialog.title")}</DialogTitle>
+                        <DialogDescription>{t("whatsapp.dialog.description")}</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-6 py-4">
                         <div className="space-y-4 rounded-xl border border-dashed border-muted-foreground/40 p-4">
@@ -846,10 +826,8 @@ export default function SettingsPage() {
                                         <QrCode className="h-5 w-5" aria-hidden="true" />
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-sm font-semibold sm:text-base">Link phone via QR code</p>
-                                        <p className="text-xs text-muted-foreground sm:text-sm">
-                                            Scan a secure QR code on the phone that will handle this WhatsApp number.
-                                        </p>
+                                        <p className="text-sm font-semibold sm:text-base">{t("whatsapp.pairing.title")}</p>
+                                        <p className="text-xs text-muted-foreground sm:text-sm">{t("whatsapp.pairing.description")}</p>
                                     </div>
                                 </div>
                                 <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
@@ -858,8 +836,8 @@ export default function SettingsPage() {
                                         variant="outline"
                                         onClick={handleStartPairing}
                                         className="w-full sm:w-auto"
-                                        disabled={isPairingBusy || isGeneratingQr}
-                                        aria-label="Start QR code pairing"
+                                        disabled={isPairingBusy}
+                                        aria-label={t("whatsapp.pairing.actions.startAria")}
                                     >
                                         {isPairingBusy ? (
                                             <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
@@ -870,15 +848,15 @@ export default function SettingsPage() {
                                         )}
                                         {pairingPrimaryLabel}
                                     </Button>
-                                    {(pairingPhase !== "idle" && pairingPhase !== "completed") && (
+                                    {pairingPhase !== "idle" && pairingPhase !== "completed" && (
                                         <Button
                                             type="button"
                                             variant="ghost"
                                             onClick={handleCancelPairing}
                                             className="w-full text-muted-foreground hover:bg-muted/50 sm:w-auto"
-                                            aria-label="Cancel QR code pairing"
+                                            aria-label={t("whatsapp.pairing.actions.cancelAria")}
                                         >
-                                            Cancel
+                                            {commonT("cancel")}
                                         </Button>
                                     )}
                                 </div>
@@ -907,71 +885,53 @@ export default function SettingsPage() {
                             )}
 
                             <div className="flex flex-col items-center gap-4">
-                                {isGeneratingQr && (
-                                    <div className="flex h-48 w-48 items-center justify-center rounded-xl border border-dashed border-muted-foreground/40">
-                                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden="true" />
-                                        <span className="sr-only">Generating QR code</span>
-                                    </div>
-                                )}
-
-                                {!isGeneratingQr && qrImageDataUrl && (
+                                {qrImageDataUrl ? (
                                     <img
                                         src={qrImageDataUrl}
-                                        alt="WhatsApp pairing QR code"
+                                        alt={t("whatsapp.pairing.qrAlt")}
                                         className="h-48 w-48 rounded-xl border border-border bg-background p-3 shadow-sm"
                                     />
-                                )}
-
-                                {!isGeneratingQr && !qrImageDataUrl && pairingPhase === "idle" && (
-                                    <p className="text-center text-xs text-muted-foreground sm:text-sm">
-                                        Start pairing to generate a QR code for this phone.
-                                    </p>
-                                )}
-
-                                {pairingUrl && (
-                                    <a
-                                        href={pairingUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 text-xs font-medium text-primary underline underline-offset-4 sm:text-sm"
-                                        aria-label="Open pairing link in a new tab"
-                                    >
-                                        <Link2 className="h-4 w-4" aria-hidden="true" />
-                                        Open pairing link
-                                    </a>
+                                ) : (
+                                    <div className="flex h-48 w-48 items-center justify-center rounded-xl border border-dashed border-muted-foreground/30 bg-muted/30 p-4 text-center text-xs text-muted-foreground sm:text-sm">
+                                        {pairingPhase === "connecting"
+                                            ? t("whatsapp.pairing.messages.connecting")
+                                            : pairingPhase === "scanned"
+                                                ? t("whatsapp.pairing.messages.scanned")
+                                                : t("whatsapp.pairing.messages.idle")}
+                                    </div>
                                 )}
                             </div>
                         </div>
-                        {isPairingConnected ? (
+                        {latestLinkedNumber ? (
                             <div className="space-y-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
                                 <div className="flex items-center gap-3">
                                     <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
                                     <div>
-                                        <p className="text-sm font-semibold text-foreground">Device paired</p>
-                                        <p className="text-xs text-muted-foreground">Confirm the details below and save.</p>
+                                        <p className="text-sm font-semibold text-foreground">{t("whatsapp.pairing.latest.title")}</p>
+                                        <p className="text-xs text-muted-foreground">{t("whatsapp.pairing.latest.description")}</p>
                                     </div>
                                 </div>
                                 <div className="space-y-2 rounded-lg bg-background p-3 text-sm">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">Label</span>
-                                        <span className="font-medium text-foreground">{addForm.displayName}</span>
+                                        <span className="text-muted-foreground">{t("whatsapp.pairing.latest.label")}</span>
+                                        <span className="font-medium text-foreground">{latestLinkedNumber.displayName}</span>
                                     </div>
                                     <Separator />
                                     <div className="flex items-center justify-between">
-                                        <span className="text-muted-foreground">Number</span>
-                                        <span className="font-medium text-foreground">{addForm.phoneNumber}</span>
+                                        <span className="text-muted-foreground">{t("whatsapp.pairing.latest.number")}</span>
+                                        <span className="font-medium text-foreground">{latestLinkedNumber.phoneNumber}</span>
                                     </div>
                                 </div>
                             </div>
                         ) : (
                             <div className="rounded-xl border border-dashed border-muted-foreground/30 bg-muted/30 p-4 text-center text-sm text-muted-foreground">
-                                Pairing must complete before the number appears here.
+                                {t("whatsapp.pairing.latest.pending")}
                             </div>
                         )}
                     </div>
                     <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                         <Button type="button" variant="outline" onClick={resetAddDialog} className="w-full sm:w-auto">
-                            {isPairingConnected ? "Close" : "Cancel"}
+                            {isPairingConnected ? commonT("close") : commonT("cancel")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -980,24 +940,24 @@ export default function SettingsPage() {
             <Dialog open={isEditDialogOpen} onOpenChange={(open) => (open ? setIsEditDialogOpen(true) : resetEditDialog())}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Edit WhatsApp Number</DialogTitle>
-                        <DialogDescription>Update the name or phone number for this WhatsApp connection</DialogDescription>
+                        <DialogTitle>{t("dialogs.edit.title")}</DialogTitle>
+                        <DialogDescription>{t("dialogs.edit.description")}</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                         <div className="space-y-2">
-                            <Label htmlFor="editDisplayName">Number Name</Label>
+                            <Label htmlFor="editDisplayName">{t("dialogs.edit.displayNameLabel")}</Label>
                             <Input
                                 id="editDisplayName"
-                                placeholder="e.g., Main Support"
+                                placeholder={t("dialogs.edit.displayNamePlaceholder")}
                                 value={editForm.displayName}
                                 onChange={(event) => setEditForm((previous) => ({ ...previous, displayName: event.target.value }))}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="editPhoneNumber">Phone Number</Label>
+                            <Label htmlFor="editPhoneNumber">{t("dialogs.edit.phoneLabel")}</Label>
                             <Input
                                 id="editPhoneNumber"
-                                placeholder="+55 11 98765-4321"
+                                placeholder={t("dialogs.edit.phonePlaceholder")}
                                 value={editForm.phoneNumber}
                                 onChange={(event) => setEditForm((previous) => ({ ...previous, phoneNumber: event.target.value }))}
                             />
@@ -1005,7 +965,7 @@ export default function SettingsPage() {
                     </div>
                     <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                         <Button type="button" variant="outline" onClick={resetEditDialog} className="w-full sm:w-auto">
-                            Cancel
+                            {commonT("cancel")}
                         </Button>
                         <Button
                             type="button"
@@ -1013,7 +973,7 @@ export default function SettingsPage() {
                             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
                             disabled={isSubmittingNumber}
                         >
-                            Save Changes
+                            {t("dialogs.edit.save")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

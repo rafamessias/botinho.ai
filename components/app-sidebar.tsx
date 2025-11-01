@@ -20,9 +20,8 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-
 } from "@/components/ui/sidebar"
-import { AlertTriangle, ArrowRight, } from "lucide-react"
+import { AlertTriangle, ArrowRight } from "lucide-react"
 import { Link } from "@/i18n/navigation"
 import { useUser } from "@/components/user-provider"
 import Image from "next/image"
@@ -73,34 +72,41 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   }
   return (
-    <Sidebar className="border-r p-0" collapsible="offcanvas" {...props}>
-      <SidebarHeader className="p-0 h-[48px]">
-        <SidebarMenu >
-
-          <div className="flex items-center gap-3 pl-1">
-            <div className="relative h-[55px] w-[125px]">
+    <Sidebar
+      className="border-r border-border/60 bg-background/80 backdrop-blur"
+      collapsible="offcanvas"
+      {...props}
+    >
+      <SidebarHeader className="px-1 py-0">
+        <SidebarMenu>
+          <Link
+            href="/"
+            aria-label="botinho.ai home"
+            className="flex items-center justify-start px-1"
+            tabIndex={0}
+          >
+            <div className="relative h-14 w-32 ">
               <Image
                 src="/logo-green.png"
                 alt="botinho.ai"
                 fill
                 className="object-contain dark:hidden"
+                priority
               />
               <Image
                 src="/logo-white.png"
                 alt="botinho.ai"
                 fill
                 className="hidden object-contain dark:block"
+                priority
               />
             </div>
-          </div>
-
+          </Link>
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-1">
         <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} /> */}
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         {/* 
@@ -110,55 +116,54 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {usagePercentage >= 65 && usagePercentage < 80 && (
           <Link
             href="/subscription"
-            className="flex items-center gap-1 mb-2 px-2 py-1.5 rounded-full bg-cyan-100/50 dark:bg-cyan-900/70 hover:bg-cyan-200/80 dark:hover:bg-cyan-800/80 text-cyan-800 dark:text-cyan-100 text-xs transition-colors justify-between"
+            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-cyan-100/60 px-3 py-2 text-xs font-medium text-cyan-900 transition-colors hover:bg-cyan-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 dark:bg-cyan-900/60 dark:text-cyan-100 dark:hover:bg-cyan-800/70"
             aria-label="Usage approaching limit"
             title="Starting to reach plan limit"
+            tabIndex={0}
           >
-            <div className="flex items-center gap-1">
-              <AlertTriangle className="h-4 w-4 text-cyan-500 dark:text-cyan-300 mr-1" />
-              <span className="font-medium">
-                {Math.trunc(usagePercentage)}%
-              </span>
-              <span className="ml-1 ">Limit utilization</span>
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
+              <span>{Math.trunc(usagePercentage)}%</span>
+              <span className="text-[11px] uppercase tracking-wide">Limit utilization</span>
             </div>
-            <ArrowRight className="h-4 w-4 text-cyan-500 dark:text-cyan-300 mr-1" />
+            <ArrowRight className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
           </Link>
         )}
         {usagePercentage >= 80 && usagePercentage < 100 && (
           <Link
             href="/subscription"
-            className="flex items-center gap-1 mb-2 px-2 py-1.5 rounded-full accent-orange text-xs transition-colors justify-between"
+            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-orange-100/70 px-3 py-2 text-xs font-semibold text-orange-800 transition-colors hover:bg-orange-200/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:bg-orange-900/70 dark:text-orange-200 dark:hover:bg-orange-800/70"
             aria-label="Usage warning"
             title="Almost reached your plan's limit"
+            tabIndex={0}
           >
-            <div className="flex items-center gap-1">
-              <AlertTriangle className="h-4 w-4 text-orange-500 dark:text-orange-300 mr-1" />
-              <span className="font-medium">
-                {Math.trunc(usagePercentage)}%
-              </span>
-              <span className="ml-1 ">Limit utilization</span>
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-orange-500 dark:text-orange-300" />
+              <span>{Math.trunc(usagePercentage)}%</span>
+              <span className="text-[11px] uppercase tracking-wide">Limit utilization</span>
             </div>
-            <ArrowRight className="h-4 w-4 text-orange-500 dark:text-orange-300 mr-1" />
+            <ArrowRight className="h-4 w-4 text-orange-500 dark:text-orange-300" />
           </Link>
         )}
         {usagePercentage >= 100 && (
           <Link
             href="/subscription"
-            className="flex items-center gap-1 mb-2 px-2 py-1.5 rounded-full bg-rose-100/60 dark:bg-rose-900/80 hover:bg-rose-200 dark:hover:bg-rose-800 text-rose-800 dark:text-rose-100 text-xs transition-colors font-bold justify-between"
+            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-rose-100/70 px-3 py-2 text-xs font-bold text-rose-800 transition-colors hover:bg-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 dark:bg-rose-900/80 dark:text-rose-100 dark:hover:bg-rose-800"
             aria-label="Limit reached"
             title="Plan limit reached. Upgrade required."
+            tabIndex={0}
           >
-            <div className="flex items-center gap-1">
-              <AlertTriangle className="h-4 w-4 text-rose-500 dark:text-rose-300 mr-1" />
-              <span className="font-bold">
-                {Math.trunc(usagePercentage)}%
-              </span>
-              <span className="ml-1 ">Limit reached</span>
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-rose-500 dark:text-rose-300" />
+              <span>{Math.trunc(usagePercentage)}%</span>
+              <span className="text-[11px] uppercase tracking-wide">Limit reached</span>
             </div>
-            <ArrowRight className="h-4 w-4 text-rose-500 dark:text-rose-300 mr-1" />
+            <ArrowRight className="h-4 w-4 text-rose-500 dark:text-rose-300" />
           </Link>
         )}
-        <NavUser />
+        <div className="rounded-xl bg-muted/40 px-3 py-2">
+          <NavUser />
+        </div>
       </SidebarFooter>
     </Sidebar>
   )

@@ -1,4 +1,282 @@
 {
+    "Landing": {
+        "shared": {
+            "logoAlt": "botinho logo"
+        },
+        "header": {
+            "logoAria": "Go to botinho home",
+            "nav": {
+                "about": "What is botinho",
+                "sessions": "Sessions",
+                "features": "Features",
+                "pricing": "Pricing",
+                "faq": "FAQ",
+                "contact": "Contact",
+                "itemAria": "Navigate to {section}"
+            },
+            "auth": {
+                "login": "Login",
+                "start": "Start free",
+                "loginAria": "Login to botinho",
+                "startAria": "Create your botinho account"
+            },
+            "mobileMenu": {
+                "open": "Open navigation menu"
+            }
+        },
+        "hero": {
+            "badge": "WhatsApp AI, reimagined",
+            "title": "Turn every WhatsApp conversation into a loyal customer moment",
+            "description": "botinho automates support, sales, and follow-ups with a friendly AI assistant that knows your business by heart, hands off seamlessly to your team, and never misses a message.",
+            "primaryCta": "Start free in 5 minutes",
+            "primaryCtaAria": "Start your free botinho trial",
+            "secondaryCta": "Talk to our team",
+            "secondaryCtaAria": "Talk to the botinho team",
+            "rating": "4.9/5 from 200+ teams",
+            "compliance": "GDPR, LGPD ready",
+            "inbox": {
+                "title": "WhatsApp Inbox",
+                "customerName": "Julia Andrade",
+                "customerQuestion": "Hello! Do you have vegetarian options for lunch today?",
+                "aiReply": "Hi Julia! We have mushroom stroganoff, Mediterranean salad, and zucchini lasagna today. Can I reserve a table for you?",
+                "customerConfirmation": "Yes! Please reserve for 12:30 under Julia.",
+                "followUpsTitle": "Automated follow-ups",
+                "followUpsDescription": "Send reservation reminders automatically via WhatsApp",
+                "followUpsAria": "Activate follow ups"
+            }
+        },
+        "about": {
+            "badge": "What is botinho",
+            "title": "Your WhatsApp co-pilot for hospitality, retail, and service brands",
+            "description": "botinho centralizes every message, automates responses with an AI trained on your business DNA, and keeps humans in the loop for delicate conversations. No code, no stress, just delighted customers.",
+            "cards": {
+                "humanFriendly": {
+                    "title": "Human-friendly AI",
+                    "description": "Train botinho once and it keeps learning from every resolved conversation, so each reply feels personal."
+                },
+                "builtForTeams": {
+                    "title": "Built for teams",
+                    "description": "Collaborate in real-time, leave internal notes, and assign chats while the AI covers the repetitive tasks."
+                }
+            },
+            "reasons": {
+                "title": "Why brands choose botinho",
+                "items": [
+                    "24/7 instant replies trained on your own knowledge base.",
+                    "Seamless human handoff with full conversation history.",
+                    "Smart automations for orders, reservations, and follow-ups.",
+                    "Rich analytics to understand sentiment, conversions, and team performance."
+                ]
+            }
+        },
+        "sessions": {
+            "badge": "How it works",
+            "title": "Four simple sessions to launch your AI",
+            "description": "We guide you through every stage so your team feels confident automating conversations without losing the human touch.",
+            "steps": {
+                "connect": {
+                    "title": "Connect WhatsApp",
+                    "description": "Link your WhatsApp Business number in minutes with a guided setup that anyone can follow."
+                },
+                "train": {
+                    "title": "Train Your AI",
+                    "description": "Upload FAQs, menus, promotions, and documents so botinho speaks exactly like your brand."
+                },
+                "automate": {
+                    "title": "Automate Conversations",
+                    "description": "Let botinho answer instantly, qualify leads, schedule appointments, and escalate when needed."
+                },
+                "measure": {
+                    "title": "Measure & Improve",
+                    "description": "Track satisfaction, response times, and sales impact inside an intuitive analytics dashboard."
+                }
+            }
+        },
+        "features": {
+            "badge": "Capabilities",
+            "title": "Everything you need to automate WhatsApp conversations",
+            "description": "Combine AI, automation, and analytics in one tool that your team enjoys using.",
+            "cards": {
+                "humanFriendly": {
+                    "title": "Human-friendly AI",
+                    "description": "Conversational flows that remember context, adapt tone, and stay on brand in every language."
+                },
+                "secure": {
+                    "title": "Secure by Design",
+                    "description": "Enterprise-grade encryption, role-based permissions, and compliance-first infrastructure."
+                },
+                "collaboration": {
+                    "title": "Team Collaboration",
+                    "description": "Assign conversations, leave internal notes, and jump in the moment a human touch is required."
+                },
+                "appointments": {
+                    "title": "Appointments & Reminders",
+                    "description": "Confirm bookings, send reminders, and sync calendars automatically without any manual work."
+                },
+                "integrations": {
+                    "title": "Smart Integrations",
+                    "description": "Connect your CRM, delivery platform, or e-commerce tools to trigger workflows instantly."
+                },
+                "playbooks": {
+                    "title": "Guided Playbooks",
+                    "description": "Use pre-built templates for sales, support, reservations, and follow-ups to launch faster."
+                }
+            },
+            "banner": {
+                "title": "Integrations that boost your workflows",
+                "tag": "Coming soon",
+                "description": "Sync Shopify, RD Station, HubSpot, Google Calendar, iFood, Zendesk, and more. Use webhooks for custom flows tailored to your operations.",
+                "cta": "Explore integrations"
+            }
+        },
+        "testimonials": {
+            "badge": "Trusted by teams",
+            "title": "Less busywork, happier customers",
+            "description": "See how hospitality, retail, and services teams are creating delightful customer moments with botinho.",
+            "items": [
+                {
+                    "quote": "botinho handles more than 80% of our WhatsApp messages. Customers get answers instantly and our team can focus on the tough questions.",
+                    "name": "Ana Torres",
+                    "role": "Owner, Bistro Verde"
+                },
+                {
+                    "quote": "We connected Shopify and our CRM in minutes. The automation playbooks doubled our qualified leads in the first month.",
+                    "name": "Daniel Costa",
+                    "role": "Sales Lead, Techfy"
+                },
+                {
+                    "quote": "Support response times went from hours to seconds. The handoff to our human team is seamless when VIP clients reach out.",
+                    "name": "Larissa Mendes",
+                    "role": "CX Manager, Studio Lume"
+                }
+            ]
+        },
+        "pricing": {
+            "badge": "Pricing",
+            "title": "Simple plans that scale with you",
+            "description": "Start for free, upgrade when you are ready. Cancel anytime, no hidden fees, unlimited teammates on every plan.",
+            "savingsNote": "Pay yearly and save 20% on Starter, Pro, and Business plans.",
+            "mostLoved": "Most loved",
+            "perMonthLabel": "/month",
+            "plans": {
+                "free": {
+                    "name": "Free",
+                    "price": "$0",
+                    "description": "Perfect for testing",
+                    "cta": "Start for free",
+                    "features": [
+                        "50 messages/month",
+                        "1 WhatsApp number",
+                        "Basic AI training",
+                        "Community support"
+                    ]
+                },
+                "starter": {
+                    "name": "Starter",
+                    "price": "$9",
+                    "description": "For small teams",
+                    "cta": "Choose Starter",
+                    "features": [
+                        "500 messages/month",
+                        "1 WhatsApp number",
+                        "Advanced AI training",
+                        "Email support"
+                    ]
+                },
+                "pro": {
+                    "name": "Pro",
+                    "price": "$19",
+                    "description": "Our most popular",
+                    "cta": "Upgrade to Pro",
+                    "features": [
+                        "2,000 messages/month",
+                        "3 WhatsApp numbers",
+                        "Premium AI training",
+                        "Priority support",
+                        "Analytics dashboard"
+                    ]
+                },
+                "business": {
+                    "name": "Business",
+                    "price": "$39",
+                    "description": "For scaling companies",
+                    "cta": "Talk to sales",
+                    "features": [
+                        "10,000 messages/month",
+                        "Unlimited numbers",
+                        "Custom AI models",
+                        "Dedicated success manager",
+                        "API & webhooks"
+                    ]
+                }
+            }
+        },
+        "faq": {
+            "badge": "FAQ",
+            "title": "Answers to popular questions",
+            "description": "Everything you need to know about onboarding, security, and pricing. Still curious? We are a DM away.",
+            "items": [
+                {
+                    "question": "How long does it take to get started?",
+                    "answer": "Most customers connect their WhatsApp number and publish their first AI flows in under 15 minutes. Our guided onboarding walks you through every step."
+                },
+                {
+                    "question": "What integrations are available?",
+                    "answer": "botinho connects with CRMs, e-commerce platforms, delivery services, and more. Use native integrations or webhooks to plug into your stack."
+                },
+                {
+                    "question": "Can I escalate conversations to humans?",
+                    "answer": "Yes. You can set smart routing rules, assign agents, and resume the AI once humans finish. Your team stays in full control."
+                },
+                {
+                    "question": "Is my customer data secure?",
+                    "answer": "We use encrypted storage, strict access controls, and GDPR-compliant infrastructure. You decide how long data stays in the system."
+                },
+                {
+                    "question": "Do you offer support in Portuguese and Spanish?",
+                    "answer": "Absolutely. botinho understands and responds in multiple languages, and our support team is multilingual as well."
+                },
+                {
+                    "question": "What happens if I exceed my plan limits?",
+                    "answer": "We will notify you before you reach your limits so you can upgrade seamlessly or purchase usage add-ons without interruptions."
+                }
+            ]
+        },
+        "contact": {
+            "badge": "Contact",
+            "title": "We are here to help you automate",
+            "description": "Want a guided tour or help scoping your use case? Reach out and we will respond within minutes during business hours.",
+            "specialist": {
+                "title": "Talk to a specialist",
+                "description": "Available Monday to Friday, 8am-8pm (BRT). We will tailor a plan for your volume and workflows.",
+                "emailCta": "Email oi@botinho.ai",
+                "whatsappCta": "Message us on WhatsApp"
+            },
+            "demo": {
+                "title": "Book a live demo",
+                "description": "Pick a timeslot that works for you and see how botinho can fit your operations end-to-end.",
+                "note": "30-minute product walkthrough + live Q&A.",
+                "cta": "Schedule a demo"
+            }
+        },
+        "cta": {
+            "title": "Ready to delight your customers on WhatsApp?",
+            "description": "Join hundreds of fast-moving teams automating their conversations with botinho. No credit card required to get started.",
+            "primaryCta": "Create your free account",
+            "secondaryCta": "Compare plans"
+        },
+        "footer": {
+            "description": "Automate conversations, delight customers, and grow smarter with every WhatsApp interaction.",
+            "exploreTitle": "Explore",
+            "contactTitle": "Get in touch",
+            "whatsappLabel": "WhatsApp us",
+            "address": "Rua Faria Lima, 1234 · São Paulo",
+            "privacy": "Privacy",
+            "terms": "Terms",
+            "security": "Security",
+            "copyright": "© {year} botinho.ai. All rights reserved."
+        }
+    },
     "Inbox": {
         "title": "Inbox",
         "description": "Manage your conversations and messages",
@@ -16,6 +294,61 @@
         "empty": {
             "title": "No conversations yet",
             "description": "Start chatting with your customers to see conversations here"
+        },
+        "labels": {
+            "customerFallback": "Customer"
+        },
+        "conversations": {
+            "title": "Conversations",
+            "empty": {
+                "title": "No conversations yet",
+                "description": "Conversations you start or receive will appear here. Keep engaging with your customers!"
+            },
+            "noMessage": "No messages yet",
+            "selectConversationAria": "Select conversation with {name}"
+        },
+        "context": {
+            "title": "Context",
+            "close": "Close context",
+            "empty": {
+                "title": "Customer context",
+                "description": "Pick a conversation to see customer details, saved notes, and smart replies."
+            },
+            "customer": {
+                "title": "Customer",
+                "satisfaction": "Satisfaction score: {score}"
+            },
+            "quickReplies": {
+                "title": "Quick replies",
+                "empty": {
+                    "title": "No suggestions yet",
+                    "description": "Keep the conversation going—AI replies will show up once customers message you."
+                }
+            }
+        },
+        "messages": {
+            "empty": {
+                "title": "Select a conversation",
+                "description": "Choose a thread from the left panel to review the history and respond to customers."
+            },
+            "noMessages": {
+                "title": "No messages yet",
+                "description": "Break the ice and send the first reply to keep the conversation flowing."
+            },
+            "inputPlaceholderNoSelection": "Select a conversation to reply"
+        },
+        "actions": {
+            "openConversations": "Open conversations list",
+            "showConversations": "Show conversations",
+            "hideConversations": "Collapse conversations",
+            "showContext": "Show context",
+            "hideContext": "Hide context",
+            "send": "Send message"
+        },
+        "priority": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
         }
     },
     "AiTraining": {
@@ -448,6 +781,136 @@
                     "configureQuestions": "Configure your survey questions",
                     "addToken": "Add your company token for submissions",
                     "mount": "Mount the widget to your container"
+                }
+            }
+        },
+        "page": {
+            "tabs": {
+                "whatsapp": "WhatsApp",
+                "notifications": "Notifications"
+            },
+            "load": {
+                "unable": "Unable to load settings",
+                "unexpected": "Unexpected error while loading settings"
+            },
+            "toasts": {
+                "selectCompany": "Select a company before pairing a number",
+                "browserOnly": "QR pairing is only available in the browser",
+                "whatsappLinked": "WhatsApp number linked",
+                "settingsNotReady": "Settings are not ready yet",
+                "updateFailed": "Failed to update settings",
+                "updateSuccessWhatsapp": "WhatsApp settings updated",
+                "unableToUpdate": "Unable to update settings",
+                "updateSuccessNotifications": "Notification preferences saved",
+                "selectNumber": "Select a number to update",
+                "fillNameAndPhone": "Please fill in name and phone number",
+                "updateWhatsappFailed": "Failed to update WhatsApp number",
+                "updateWhatsappSuccess": "WhatsApp number updated",
+                "unexpectedUpdateWhatsapp": "Unexpected error while updating number",
+                "removeWhatsappFailed": "Failed to remove WhatsApp number",
+                "removeWhatsappSuccess": "WhatsApp number removed",
+                "unexpectedRemoveWhatsapp": "Unexpected error while removing number"
+            },
+            "whatsapp": {
+                "card": {
+                    "title": "WhatsApp Numbers",
+                    "description": "Manage WhatsApp Business numbers connected to your company",
+                    "addButton": "Add Number"
+                },
+                "empty": {
+                    "title": "No WhatsApp numbers connected yet.",
+                    "description": "Click the button above to connect your first number."
+                },
+                "status": {
+                    "connected": "Connected",
+                    "disconnected": "Disconnected"
+                },
+                "messages": {
+                    "messagesThisMonth": "{count} messages this month"
+                },
+                "actions": {
+                    "editAria": "Edit WhatsApp number {name}",
+                    "removeAria": "Remove WhatsApp number {name}",
+                    "connect": "Connect Number"
+                },
+                "autoReply": {
+                    "label": "Auto-Reply",
+                    "description": "Automatically respond to customer messages",
+                    "aria": "Toggle automatic reply",
+                    "save": "Save Changes"
+                },
+                "dialog": {
+                    "title": "Add WhatsApp Number",
+                    "description": "Connect a new WhatsApp Business number to your company"
+                },
+                "pairing": {
+                    "title": "Link phone via QR code",
+                    "description": "Scan a secure QR code on the phone that will handle this WhatsApp number.",
+                    "actions": {
+                        "startAria": "Start WhatsApp pairing",
+                        "cancelAria": "Cancel WhatsApp pairing"
+                    },
+                    "button": {
+                        "start": "Start pairing",
+                        "preparing": "Preparing…",
+                        "waiting": "Waiting for phone",
+                        "restart": "Restart pairing",
+                        "retry": "Try again"
+                    },
+                    "messages": {
+                        "connecting": "Connecting to WhatsApp…",
+                        "requesting": "Requesting WhatsApp QR code…",
+                        "scan": "Scan this QR code with WhatsApp on your phone.",
+                        "scanned": "Authentication successful. Finalizing setup…",
+                        "completed": "WhatsApp number linked successfully.",
+                        "failed": "Pairing failed",
+                        "unexpected": "Unexpected pairing response",
+                        "connectionFailed": "Pairing connection failed",
+                        "sessionClosed": "Pairing session closed",
+                        "cancelled": "Pairing cancelled",
+                        "idle": "Start pairing to generate a WhatsApp QR code."
+                    },
+                    "qrAlt": "WhatsApp pairing QR code",
+                    "latest": {
+                        "title": "WhatsApp connected",
+                        "description": "Latest linked number is ready to use.",
+                        "label": "Label",
+                        "number": "Number",
+                        "pending": "Pairing must complete before the number appears here."
+                    }
+                }
+            },
+            "notifications": {
+                "card": {
+                    "title": "Notification Preferences",
+                    "description": "Choose how you want to be notified"
+                },
+                "email": {
+                    "label": "Email Notifications",
+                    "description": "Receive notifications via email",
+                    "aria": "Toggle email notifications"
+                },
+                "newMessage": {
+                    "label": "New Message Alerts",
+                    "description": "Get notified when customers send messages",
+                    "aria": "Toggle new message alerts"
+                },
+                "dailyReports": {
+                    "label": "Daily Reports",
+                    "description": "Receive daily summaries of your bot's activity",
+                    "aria": "Toggle daily reports"
+                },
+                "save": "Save Preferences"
+            },
+            "dialogs": {
+                "edit": {
+                    "title": "Edit WhatsApp Number",
+                    "description": "Update the name or phone number for this WhatsApp connection",
+                    "displayNameLabel": "Number Name",
+                    "displayNamePlaceholder": "e.g., Main Support",
+                    "phoneLabel": "Phone Number",
+                    "phonePlaceholder": "+55 11 98765-4321",
+                    "save": "Save Changes"
                 }
             }
         }
@@ -1796,6 +2259,41 @@
                 "title": "Message Volume",
                 "description": "Daily messages handled this week",
                 "label": "Messages"
+            },
+            "performance": {
+                "title": "Area Chart",
+                "description": "Showing total visitors for the last 6 months",
+                "trend": "Trending up by 5.2% this month",
+                "period": "January - June 2024",
+                "series": {
+                    "desktop": "Desktop"
+                }
+            }
+        },
+        "months": {
+            "january": {
+                "short": "Jan",
+                "full": "January"
+            },
+            "february": {
+                "short": "Feb",
+                "full": "February"
+            },
+            "march": {
+                "short": "Mar",
+                "full": "March"
+            },
+            "april": {
+                "short": "Apr",
+                "full": "April"
+            },
+            "may": {
+                "short": "May",
+                "full": "May"
+            },
+            "june": {
+                "short": "Jun",
+                "full": "June"
             }
         },
         "recentActivity": {

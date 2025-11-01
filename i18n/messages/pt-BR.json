@@ -1,4 +1,282 @@
 {
+    "Landing": {
+        "shared": {
+            "logoAlt": "logotipo da botinho"
+        },
+        "header": {
+            "logoAria": "Ir para a página inicial da botinho",
+            "nav": {
+                "about": "O que é a botinho",
+                "sessions": "Sessões",
+                "features": "Recursos",
+                "pricing": "Planos",
+                "faq": "FAQ",
+                "contact": "Contato",
+                "itemAria": "Navegar para {section}"
+            },
+            "auth": {
+                "login": "Entrar",
+                "start": "Começar grátis",
+                "loginAria": "Entrar na botinho",
+                "startAria": "Criar sua conta na botinho"
+            },
+            "mobileMenu": {
+                "open": "Abrir menu de navegação"
+            }
+        },
+        "hero": {
+            "badge": "IA para WhatsApp, reinventada",
+            "title": "Transforme cada conversa no WhatsApp em um momento de fidelização",
+            "description": "A botinho automatiza suporte, vendas e follow-ups com um assistente de IA amigável que conhece seu negócio de cabo a rabo, aciona seu time sem atritos e nunca perde uma mensagem.",
+            "primaryCta": "Comece grátis em 5 minutos",
+            "primaryCtaAria": "Inicie seu teste gratuito na botinho",
+            "secondaryCta": "Fale com nosso time",
+            "secondaryCtaAria": "Falar com o time da botinho",
+            "rating": "Nota 4,9/5 de 200+ equipes",
+            "compliance": "Pronta para GDPR e LGPD",
+            "inbox": {
+                "title": "Inbox do WhatsApp",
+                "customerName": "Julia Andrade",
+                "customerQuestion": "Olá! Vocês têm opções vegetarianas para o almoço de hoje?",
+                "aiReply": "Oi, Julia! Hoje temos strogonoff de cogumelos, salada mediterrânea e lasanha de abobrinha. Posso reservar para você?",
+                "customerConfirmation": "Sim! Reserva para 12h30 no nome da Julia.",
+                "followUpsTitle": "Follow-ups automatizados",
+                "followUpsDescription": "Envie lembretes de reserva automaticamente via WhatsApp",
+                "followUpsAria": "Ativar follow-ups"
+            }
+        },
+        "about": {
+            "badge": "O que é a botinho",
+            "title": "Seu co-piloto de WhatsApp para marcas de hospitalidade, varejo e serviços",
+            "description": "A botinho centraliza cada mensagem, automatiza respostas com uma IA treinada no DNA do seu negócio e mantém humanos no loop para conversas delicadas. Sem código, sem estresse, só clientes encantados.",
+            "cards": {
+                "humanFriendly": {
+                    "title": "IA com jeito de gente",
+                    "description": "Treine a botinho uma vez e ela segue aprendendo com cada conversa resolvida, deixando cada resposta mais pessoal."
+                },
+                "builtForTeams": {
+                    "title": "Feita para equipes",
+                    "description": "Colabore em tempo real, deixe notas internas e distribua chats enquanto a IA cuida das tarefas repetitivas."
+                }
+            },
+            "reasons": {
+                "title": "Por que as marcas escolhem a botinho",
+                "items": [
+                    "Respostas instantâneas 24/7 treinadas com a sua base de conhecimento.",
+                    "Handoff humano sem atritos com todo o histórico da conversa.",
+                    "Automatizações inteligentes para pedidos, reservas e follow-ups.",
+                    "Analytics completos para entender sentimento, conversões e performance do time."
+                ]
+            }
+        },
+        "sessions": {
+            "badge": "Como funciona",
+            "title": "Quatro sessões para lançar sua IA",
+            "description": "Guiamos cada etapa para que seu time automatize conversas com confiança sem perder o toque humano.",
+            "steps": {
+                "connect": {
+                    "title": "Conecte o WhatsApp",
+                    "description": "Integre seu número comercial do WhatsApp em minutos com um passo a passo guiado."
+                },
+                "train": {
+                    "title": "Treine sua IA",
+                    "description": "Envie FAQs, cardápios, promoções e documentos para a botinho falar exatamente como a sua marca."
+                },
+                "automate": {
+                    "title": "Automatize conversas",
+                    "description": "Deixe a botinho responder na hora, qualificar leads, agendar horários e escalar quando necessário."
+                },
+                "measure": {
+                    "title": "Meça e evolua",
+                    "description": "Acompanhe satisfação, tempo de resposta e impacto nas vendas em um dashboard intuitivo."
+                }
+            }
+        },
+        "features": {
+            "badge": "Recursos",
+            "title": "Tudo que você precisa para automatizar conversas no WhatsApp",
+            "description": "Combine IA, automação e analytics em uma ferramenta que o seu time adora usar.",
+            "cards": {
+                "humanFriendly": {
+                    "title": "IA com jeito de gente",
+                    "description": "Fluxos conversacionais que lembram contexto, ajustam o tom e mantêm sua voz em qualquer idioma."
+                },
+                "secure": {
+                    "title": "Segurança desde a origem",
+                    "description": "Criptografia de nível empresarial, permissões por função e infraestrutura pensada para compliance."
+                },
+                "collaboration": {
+                    "title": "Colaboração em equipe",
+                    "description": "Atribua conversas, deixe notas internas e intervenha na hora certa quando um toque humano é necessário."
+                },
+                "appointments": {
+                    "title": "Agendamentos e lembretes",
+                    "description": "Confirme reservas, envie lembretes e sincronize agendas automaticamente sem trabalho manual."
+                },
+                "integrations": {
+                    "title": "Integrações inteligentes",
+                    "description": "Conecte CRM, delivery ou e-commerce para disparar fluxos em segundos."
+                },
+                "playbooks": {
+                    "title": "Playbooks guiados",
+                    "description": "Use modelos prontos para vendas, suporte, reservas e follow-ups e lance mais rápido."
+                }
+            },
+            "banner": {
+                "title": "Integrações que aceleram seus fluxos",
+                "tag": "Em breve",
+                "description": "Sincronize Shopify, RD Station, HubSpot, Google Calendar, iFood, Zendesk e muito mais. Use webhooks para fluxos sob medida.",
+                "cta": "Explorar integrações"
+            }
+        },
+        "testimonials": {
+            "badge": "Confiado por equipes",
+            "title": "Menos tarefas repetitivas, clientes mais felizes",
+            "description": "Veja como equipes de hospitalidade, varejo e serviços criam experiências memoráveis com a botinho.",
+            "items": [
+                {
+                    "quote": "A botinho resolve mais de 80% das nossas mensagens no WhatsApp. Os clientes recebem resposta na hora e o time foca no que é complexo.",
+                    "name": "Ana Torres",
+                    "role": "Proprietária, Bistro Verde"
+                },
+                {
+                    "quote": "Conectamos Shopify e CRM em minutos. Os playbooks dobraram nossos leads qualificados no primeiro mês.",
+                    "name": "Daniel Costa",
+                    "role": "Líder de Vendas, Techfy"
+                },
+                {
+                    "quote": "Nosso tempo de resposta caiu de horas para segundos. A transição para o time humano é perfeita quando clientes VIP entram.",
+                    "name": "Larissa Mendes",
+                    "role": "Gerente de CX, Studio Lume"
+                }
+            ]
+        },
+        "pricing": {
+            "badge": "Planos",
+            "title": "Planos simples que crescem com você",
+            "description": "Comece grátis e faça upgrade quando estiver pronto. Cancele a qualquer momento, sem taxas escondidas e com membros ilimitados em todos os planos.",
+            "savingsNote": "Pague anual e economize 20% nos planos Starter, Pro e Business.",
+            "mostLoved": "Queridinho",
+            "perMonthLabel": "/mês",
+            "plans": {
+                "free": {
+                    "name": "Grátis",
+                    "price": "$0",
+                    "description": "Perfeito para testar",
+                    "cta": "Começar grátis",
+                    "features": [
+                        "50 mensagens/mês",
+                        "1 número do WhatsApp",
+                        "Treinamento de IA básico",
+                        "Suporte comunitário"
+                    ]
+                },
+                "starter": {
+                    "name": "Starter",
+                    "price": "$9",
+                    "description": "Para equipes pequenas",
+                    "cta": "Escolher o Starter",
+                    "features": [
+                        "500 mensagens/mês",
+                        "1 número do WhatsApp",
+                        "Treinamento de IA avançado",
+                        "Suporte por e-mail"
+                    ]
+                },
+                "pro": {
+                    "name": "Pro",
+                    "price": "$19",
+                    "description": "Nosso plano mais popular",
+                    "cta": "Fazer upgrade para o Pro",
+                    "features": [
+                        "2.000 mensagens/mês",
+                        "3 números do WhatsApp",
+                        "Treinamento de IA premium",
+                        "Suporte prioritário",
+                        "Dashboard de analytics"
+                    ]
+                },
+                "business": {
+                    "name": "Business",
+                    "price": "$39",
+                    "description": "Para empresas em escala",
+                    "cta": "Falar com vendas",
+                    "features": [
+                        "10.000 mensagens/mês",
+                        "Números ilimitados",
+                        "Modelos de IA customizados",
+                        "Customer success dedicado",
+                        "API e webhooks"
+                    ]
+                }
+            }
+        },
+        "faq": {
+            "badge": "FAQ",
+            "title": "Respostas para as principais dúvidas",
+            "description": "Tudo o que você precisa saber sobre onboarding, segurança e planos. Ficou curioso? É só chamar no direct.",
+            "items": [
+                {
+                    "question": "Quanto tempo leva para começar?",
+                    "answer": "A maioria dos clientes conecta o número do WhatsApp e publica os primeiros fluxos de IA em menos de 15 minutos. Nosso onboarding guiado mostra cada passo."
+                },
+                {
+                    "question": "Quais integrações estão disponíveis?",
+                    "answer": "A botinho conecta com CRMs, plataformas de e-commerce, delivery e muito mais. Use integrações nativas ou webhooks para plugar no seu stack."
+                },
+                {
+                    "question": "Posso escalar conversas para humanos?",
+                    "answer": "Sim. Defina regras inteligentes de roteamento, atribua agentes e retome a IA assim que o atendimento humano terminar. Seu time segue no controle."
+                },
+                {
+                    "question": "Meus dados de clientes ficam seguros?",
+                    "answer": "Usamos armazenamento criptografado, controles rígidos de acesso e infraestrutura compatível com GDPR. Você define por quanto tempo os dados ficam no sistema."
+                },
+                {
+                    "question": "Vocês oferecem suporte em português e espanhol?",
+                    "answer": "Com certeza. A botinho entende e responde em vários idiomas, e nosso time de suporte também é multilíngue."
+                },
+                {
+                    "question": "O que acontece se eu ultrapassar os limites do plano?",
+                    "answer": "Avisamos antes de você chegar ao limite para fazer upgrade com tranquilidade ou comprar pacotes extras sem interrupções."
+                }
+            ]
+        },
+        "contact": {
+            "badge": "Contato",
+            "title": "Estamos aqui para ajudar você a automatizar",
+            "description": "Quer um tour guiado ou ajuda para mapear o uso? Fale com a gente e respondemos em minutos durante o horário comercial.",
+            "specialist": {
+                "title": "Fale com um especialista",
+                "description": "Disponível de segunda a sexta, 8h às 20h (BRT). Montamos um plano sob medida para o seu volume e operações.",
+                "emailCta": "Enviar e-mail para oi@botinho.ai",
+                "whatsappCta": "Chamar no WhatsApp"
+            },
+            "demo": {
+                "title": "Agende uma demonstração ao vivo",
+                "description": "Escolha um horário que funcione para você e veja como a botinho encaixa no seu fluxo de ponta a ponta.",
+                "note": "30 minutos de produto + Q&A ao vivo.",
+                "cta": "Agendar demo"
+            }
+        },
+        "cta": {
+            "title": "Pronto para encantar seus clientes no WhatsApp?",
+            "description": "Junte-se a centenas de equipes ágeis automatizando conversas com a botinho. Não precisa de cartão para começar.",
+            "primaryCta": "Crie sua conta grátis",
+            "secondaryCta": "Comparar planos"
+        },
+        "footer": {
+            "description": "Automatize conversas, encante clientes e evolua com cada interação no WhatsApp.",
+            "exploreTitle": "Explore",
+            "contactTitle": "Fale com a gente",
+            "whatsappLabel": "Fale no WhatsApp",
+            "address": "Rua Faria Lima, 1234 · São Paulo",
+            "privacy": "Privacidade",
+            "terms": "Termos",
+            "security": "Segurança",
+            "copyright": "© {year} botinho.ai. Todos os direitos reservados."
+        }
+    },
     "Inbox": {
         "title": "Caixa de Entrada",
         "description": "Gerencie suas conversas e mensagens",
@@ -16,6 +294,61 @@
         "empty": {
             "title": "Nenhuma conversa ainda",
             "description": "Comece a conversar com seus clientes para ver as conversas aqui"
+        },
+        "labels": {
+            "customerFallback": "Cliente"
+        },
+        "conversations": {
+            "title": "Conversas",
+            "empty": {
+                "title": "Nenhuma conversa ainda",
+                "description": "As conversas que você iniciar ou receber aparecerão aqui. Continue interagindo com seus clientes!"
+            },
+            "noMessage": "Nenhuma mensagem ainda",
+            "selectConversationAria": "Selecionar conversa com {name}"
+        },
+        "context": {
+            "title": "Contexto",
+            "close": "Fechar contexto",
+            "empty": {
+                "title": "Contexto do cliente",
+                "description": "Escolha uma conversa para ver detalhes do cliente, notas salvas e respostas inteligentes."
+            },
+            "customer": {
+                "title": "Cliente",
+                "satisfaction": "Pontuação de satisfação: {score}"
+            },
+            "quickReplies": {
+                "title": "Respostas rápidas",
+                "empty": {
+                    "title": "Nenhuma sugestão ainda",
+                    "description": "Mantenha a conversa fluindo—respostas da IA aparecerão assim que os clientes enviarem mensagens."
+                }
+            }
+        },
+        "messages": {
+            "empty": {
+                "title": "Selecione uma conversa",
+                "description": "Escolha uma conversa no painel à esquerda para revisar o histórico e responder aos clientes."
+            },
+            "noMessages": {
+                "title": "Nenhuma mensagem ainda",
+                "description": "Quebre o gelo e envie a primeira resposta para manter a conversa em andamento."
+            },
+            "inputPlaceholderNoSelection": "Selecione uma conversa para responder"
+        },
+        "actions": {
+            "openConversations": "Abrir lista de conversas",
+            "showConversations": "Mostrar conversas",
+            "hideConversations": "Recolher conversas",
+            "showContext": "Mostrar contexto",
+            "hideContext": "Ocultar contexto",
+            "send": "Enviar mensagem"
+        },
+        "priority": {
+            "low": "Baixa",
+            "medium": "Média",
+            "high": "Alta"
         }
     },
     "AiTraining": {
@@ -1809,6 +2142,41 @@
                 "title": "Volume de Mensagens",
                 "description": "Mensagens diárias processadas esta semana",
                 "label": "Mensagens"
+            },
+            "performance": {
+                "title": "Gráfico de Área",
+                "description": "Mostrando visitantes totais nos últimos 6 meses",
+                "trend": "Em alta 5,2% este mês",
+                "period": "Janeiro - Junho 2024",
+                "series": {
+                    "desktop": "Computador"
+                }
+            }
+        },
+        "months": {
+            "january": {
+                "short": "Jan",
+                "full": "Janeiro"
+            },
+            "february": {
+                "short": "Fev",
+                "full": "Fevereiro"
+            },
+            "march": {
+                "short": "Mar",
+                "full": "Março"
+            },
+            "april": {
+                "short": "Abr",
+                "full": "Abril"
+            },
+            "may": {
+                "short": "Mai",
+                "full": "Maio"
+            },
+            "june": {
+                "short": "Jun",
+                "full": "Junho"
             }
         },
         "recentActivity": {
@@ -1841,6 +2209,236 @@
             "title": "Pronto para treinar sua IA?",
             "description": "Adicione conhecimento para tornar seu bot ainda mais inteligente",
             "startTraining": "Começar Treinamento"
+        }
+    },
+    "Settings": {
+        "title": "Configurações",
+        "description": "Gerencie as configurações e preferências da sua conta",
+        "appearance": {
+            "title": "Aparência",
+            "description": "Personalize como o aplicativo se parece e se sente"
+        },
+        "language": {
+            "title": "Idioma",
+            "description": "Escolha seu idioma preferido para o aplicativo"
+        },
+        "theme": {
+            "light": "Claro",
+            "dark": "Escuro",
+            "system": "Sistema",
+            "description": "Selecione seu tema preferido para o aplicativo"
+        },
+        "branding": {
+            "title": "Marca",
+            "description": "Controle a exibição da marca em suas pesquisas",
+            "switchLabel": "Remover Marca",
+            "switchDescription": "Ocultar a marca de suas pesquisas: 'Powered by Opineeo'",
+            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
+            "notAuthorized": "Você deve ser um administrador para alterar as configurações de marca",
+            "brandingEnabled": "A marca foi ativada",
+            "brandingDisabled": "A marca foi removida",
+            "upgradeRequired": "A remoção da marca não está disponível em seu plano atual",
+            "updateFailed": "Falha ao atualizar as configurações de marca"
+        },
+        "api": {
+            "title": "Configuração da API",
+            "description": "Gerencie tokens da API e acesso para envio de pesquisas",
+            "surveyToken": "Token de Pesquisa",
+            "apiToken": "Token da API",
+            "noTokenGenerated": "Nenhum token gerado",
+            "generateToken": "Gerar Token",
+            "regenerateToken": "Regenerar Token",
+            "generating": "Gerando...",
+            "regenerating": "Regenerando...",
+            "apiEndpoint": "Endpoint da API",
+            "documentation": "Documentação da API",
+            "documentationDescription": "Visualize exemplos de código e referência da API",
+            "showDocs": "Mostrar Docs",
+            "hideDocs": "Ocultar Docs",
+            "requestBody": "Corpo da Requisição",
+            "successResponse": "Resposta de Sucesso",
+            "tokenCopied": "Token copiado",
+            "tokenCopiedDescription": "Token da API foi copiado para a área de transferência",
+            "codeCopied": "Código copiado",
+            "codeCopiedDescription": "Exemplo de código copiado para a área de transferência",
+            "endpointCopied": "Endpoint copiado",
+            "endpointCopiedDescription": "URL do endpoint da API copiada para a área de transferência",
+            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
+            "confirmRegenerateTitle": "Regenerar Token",
+            "confirmRegenerateDescription": "Tem certeza de que deseja regenerar este token? Esta ação não pode ser desfeita e invalidará o token atual.",
+            "confirmRegenerate": "Regenerar Token",
+            "cancel": "Cancelar",
+            "tabs": {
+                "surveyToken": "Token de Pesquisa",
+                "apiToken": "Token da API"
+            },
+            "codeSnippets": {
+                "surveyWidget": {
+                    "title": "Integração do Widget de Pesquisa",
+                    "description": "Use este token para incorporar pesquisas diretamente no seu site",
+                    "example": "Exemplo do Widget de Pesquisa",
+                    "copyCode": "Copiar Código"
+                },
+                "apiIntegration": {
+                    "title": "Integração da API",
+                    "description": "Use este token para enviar respostas de pesquisa via API",
+                    "example": "Exemplo de Integração da API",
+                    "copyCode": "Copiar Código"
+                }
+            },
+            "widget": {
+                "title": "Integração do Widget de Pesquisa",
+                "description": "Incorpore pesquisas diretamente no seu site com nosso widget JavaScript",
+                "show": "Mostrar Guia",
+                "hide": "Ocultar Guia",
+                "codeCopied": "Código copiado para a área de transferência",
+                "htmlSetup": "Configuração HTML",
+                "fullExample": "Implementação Completa",
+                "questionFormats": "Referência de Tipos de Pergunta",
+                "quickStart": "Guia de Início Rápido",
+                "tabs": {
+                    "setup": "Configuração",
+                    "implementation": "Implementação",
+                    "formats": "Tipos de Pergunta"
+                },
+                "steps": {
+                    "includeScript": "Inclua o script do widget no seu HTML",
+                    "createContainer": "Adicione um elemento div container",
+                    "configureQuestions": "Configure as perguntas da sua pesquisa",
+                    "addToken": "Adicione seu token da equipe para envios",
+                    "mount": "Monte o widget no seu container"
+                }
+            }
+        },
+        "page": {
+            "tabs": {
+                "whatsapp": "WhatsApp",
+                "notifications": "Notificações"
+            },
+            "load": {
+                "unable": "Não foi possível carregar as configurações",
+                "unexpected": "Erro inesperado ao carregar as configurações"
+            },
+            "toasts": {
+                "selectCompany": "Selecione uma empresa antes de parear um número",
+                "browserOnly": "O pareamento por QR está disponível apenas no navegador",
+                "whatsappLinked": "Número do WhatsApp conectado",
+                "settingsNotReady": "As configurações ainda não estão prontas",
+                "updateFailed": "Falha ao atualizar as configurações",
+                "updateSuccessWhatsapp": "Configurações do WhatsApp atualizadas",
+                "unableToUpdate": "Não foi possível atualizar as configurações",
+                "updateSuccessNotifications": "Preferências de notificações salvas",
+                "selectNumber": "Selecione um número para atualizar",
+                "fillNameAndPhone": "Preencha o nome e o número de telefone",
+                "updateWhatsappFailed": "Falha ao atualizar o número do WhatsApp",
+                "updateWhatsappSuccess": "Número do WhatsApp atualizado",
+                "unexpectedUpdateWhatsapp": "Erro inesperado ao atualizar o número",
+                "removeWhatsappFailed": "Falha ao remover o número do WhatsApp",
+                "removeWhatsappSuccess": "Número do WhatsApp removido",
+                "unexpectedRemoveWhatsapp": "Erro inesperado ao remover o número"
+            },
+            "whatsapp": {
+                "card": {
+                    "title": "Números de WhatsApp",
+                    "description": "Gerencie os números do WhatsApp Business conectados à sua empresa",
+                    "addButton": "Adicionar Número"
+                },
+                "empty": {
+                    "title": "Nenhum número de WhatsApp conectado ainda.",
+                    "description": "Clique no botão acima para conectar o seu primeiro número."
+                },
+                "status": {
+                    "connected": "Conectado",
+                    "disconnected": "Desconectado"
+                },
+                "messages": {
+                    "messagesThisMonth": "{count} mensagens neste mês"
+                },
+                "actions": {
+                    "editAria": "Editar número do WhatsApp {name}",
+                    "removeAria": "Remover número do WhatsApp {name}",
+                    "connect": "Conectar Número"
+                },
+                "autoReply": {
+                    "label": "Resposta Automática",
+                    "description": "Responda automaticamente às mensagens dos clientes",
+                    "aria": "Alternar resposta automática",
+                    "save": "Salvar Alterações"
+                },
+                "dialog": {
+                    "title": "Adicionar Número de WhatsApp",
+                    "description": "Conecte um novo número do WhatsApp Business à sua empresa"
+                },
+                "pairing": {
+                    "title": "Vincular telefone via QR code",
+                    "description": "Escaneie um QR code seguro no telefone que usará este número de WhatsApp.",
+                    "actions": {
+                        "startAria": "Iniciar pareamento do WhatsApp",
+                        "cancelAria": "Cancelar pareamento do WhatsApp"
+                    },
+                    "button": {
+                        "start": "Iniciar pareamento",
+                        "preparing": "Preparando…",
+                        "waiting": "Aguardando o telefone",
+                        "restart": "Reiniciar pareamento",
+                        "retry": "Tentar novamente"
+                    },
+                    "messages": {
+                        "connecting": "Conectando ao WhatsApp…",
+                        "requesting": "Solicitando QR code do WhatsApp…",
+                        "scan": "Escaneie este QR code com o WhatsApp no seu telefone.",
+                        "scanned": "Autenticação concluída. Finalizando configuração…",
+                        "completed": "Número do WhatsApp conectado com sucesso.",
+                        "failed": "Pareamento falhou",
+                        "unexpected": "Resposta de pareamento inesperada",
+                        "connectionFailed": "Falha na conexão de pareamento",
+                        "sessionClosed": "Sessão de pareamento encerrada",
+                        "cancelled": "Pareamento cancelado",
+                        "idle": "Inicie o pareamento para gerar um QR code do WhatsApp."
+                    },
+                    "qrAlt": "QR code de pareamento do WhatsApp",
+                    "latest": {
+                        "title": "WhatsApp conectado",
+                        "description": "O último número vinculado já está pronto para uso.",
+                        "label": "Identificador",
+                        "number": "Número",
+                        "pending": "O pareamento precisa ser concluído para o número aparecer aqui."
+                    }
+                }
+            },
+            "notifications": {
+                "card": {
+                    "title": "Preferências de Notificações",
+                    "description": "Escolha como deseja ser notificado"
+                },
+                "email": {
+                    "label": "Notificações por E-mail",
+                    "description": "Receba notificações por e-mail",
+                    "aria": "Alternar notificações por e-mail"
+                },
+                "newMessage": {
+                    "label": "Alertas de Novas Mensagens",
+                    "description": "Seja notificado quando os clientes enviarem mensagens",
+                    "aria": "Alternar alertas de novas mensagens"
+                },
+                "dailyReports": {
+                    "label": "Relatórios Diários",
+                    "description": "Receba resumos diários da atividade do seu bot",
+                    "aria": "Alternar relatórios diários"
+                },
+                "save": "Salvar Preferências"
+            },
+            "dialogs": {
+                "edit": {
+                    "title": "Editar Número de WhatsApp",
+                    "description": "Atualize o nome ou telefone deste número conectado",
+                    "displayNameLabel": "Nome do Número",
+                    "displayNamePlaceholder": "ex.: Suporte Principal",
+                    "phoneLabel": "Número de Telefone",
+                    "phonePlaceholder": "+55 11 98765-4321",
+                    "save": "Salvar Alterações"
+                }
+            }
         }
     }
 }

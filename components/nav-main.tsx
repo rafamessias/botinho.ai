@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 
 export function NavMain({
   items,
@@ -28,8 +29,7 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
-
+      <SidebarGroupContent className="flex flex-col gap-1">
         <SidebarMenu>
           {items.map((item) => {
             // Check if this item is selected based on the current pathname
@@ -42,15 +42,23 @@ export function NavMain({
                 <SidebarMenuButton
                   asChild
                   tooltip={item.title}
-                  size="lg"
-                  className={`cursor-pointer transition-all duration-200 ${isSelected
-                    ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:text-primary-foreground"
-                    : "hover:bg-primary/5 hover:text-primary"
-                    }`}
+                  className={cn(
+                    "group cursor-pointer rounded-xl px-1 py-[6px] transition-all",
+                    isSelected
+                      ? "bg-primary/15 text-primary shadow-sm hover:bg-primary/20"
+                      : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                  )}
                 >
-                  <Link href={item.url} className="flex items-center gap-3 py-3">
-                    {item.icon && <item.icon className="h-5 w-5" />}
-                    <span className="text-base ">{item.title}</span>
+                  <Link
+                    href={item.url}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    tabIndex={0}
+                    aria-label={item.title}
+                  >
+                    {item.icon && (
+                      <item.icon className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
+                    )}
+                    <span className="text-sm font-medium tracking-tight">{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -58,11 +66,9 @@ export function NavMain({
           })}
           {/* Feedback Survey Item */}
           <SidebarMenuItem>
-            <SidebarMenuButton
-              className="cursor-pointer [&:hover_.star-bounce]:animate-bounce [&:hover_.star-text-yellow]:text-yellow-400 [&:hover_.star-fill-yellow]:fill-yellow-400 text-base font-medium h-12"
-            >
-              <IconStar className="h-5 w-5 star-bounce star-text-yellow star-fill-yellow" />
-              <span>Rate our Service</span>
+            <SidebarMenuButton className="group h-11 cursor-pointer rounded-xl px-3 text-sm font-semibold text-muted-foreground transition-all hover:bg-muted/60 hover:text-foreground">
+              <IconStar className="h-4 w-4 text-yellow-400 transition-transform group-hover:-rotate-12" />
+              <span className="tracking-tight">Rate our service</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
