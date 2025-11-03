@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { resolveWsBackendUrl } from "@/lib/ws-utils"
 
 type PairingState = "idle" | "connecting" | "ready" | "sending" | "success" | "error"
 
@@ -16,30 +17,6 @@ const statusCopy: Record<PairingState, string> = {
     sending: "Sending details to dashboard…",
     success: "Device linked successfully. You can return to the dashboard.",
     error: "",
-}
-
-const getSocketUrl = () => {
-    if (typeof window === "undefined") {
-        return ""
-    }
-
-    const configured = process.env.NEXT_PUBLIC_WS_SERVER_URL?.trim()
-
-    if (configured) {
-        if (configured.startsWith("ws://") || configured.startsWith("wss://")) {
-            return configured
-        }
-
-        if (configured.startsWith("http://") || configured.startsWith("https://")) {
-            return configured.replace(/^http/, "ws").replace(/^https/, "wss")
-        }
-
-        return `ws://${configured.replace(/^\/\//, "")}`
-    }
-
-    const isHttps = window.location.protocol === "https:"
-    const defaultPort = process.env.NEXT_PUBLIC_WS_SERVER_PORT ?? "3100"
-    return `${isHttps ? "wss" : "ws"}://${window.location.hostname}:${defaultPort}`
 }
 
 export default function WhatsappQrPage() {
@@ -78,7 +55,7 @@ export default function WhatsappQrPage() {
             return
         }
 
-        const url = getSocketUrl()
+        const url = resolveWsBackendUrl()
 
         if (!url) {
             setState("error", { error: "Unsupported environment" })

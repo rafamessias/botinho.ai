@@ -2222,7 +2222,39 @@
         "messages": {
             "customerCreated": "Customer added successfully",
             "customerUpdated": "Customer updated successfully",
-            "customerSaveError": "Something went wrong while saving the customer."
+            "customerSaveError": "Something went wrong while saving the customer.",
+            "customersImported": "{count} customer(s) imported successfully",
+            "customersImportError": "Failed to import customers"
+        },
+        "import": {
+            "singleCustomer": "Single Customer",
+            "bulkImport": "Bulk Import",
+            "uploadLabel": "Upload Excel File",
+            "uploadDescription": "Upload an Excel or CSV file with customer information to add multiple customers at once.",
+            "dropHere": "Drop the file here",
+            "clickOrDrag": "Click to upload or drag and drop",
+            "supportedFormats": "Supports .xlsx, .xls, and .csv files",
+            "formatInfo": "Required columns: name, email. Optional columns: phone, company, status. Column names are case-insensitive.",
+            "parseError": "Failed to parse Excel file",
+            "readError": "Failed to read file",
+            "invalidFileType": "Invalid file type. Please upload .xlsx, .xls, or .csv files.",
+            "parsedSuccess": "Successfully parsed {count} customer(s)",
+            "parsedWithErrors": "Parsed with {count} error(s)",
+            "errorsFound": "{count} error(s) found",
+            "noData": "No valid customer data found in file",
+            "name": "Name",
+            "email": "Email",
+            "phone": "Phone",
+            "company": "Company",
+            "status": "Status",
+            "preview": "Preview ({count} customers)",
+            "clear": "Clear",
+            "importing": "Importing...",
+            "importAll": "Import All ({count})",
+            "bulkSuccess": "Successfully imported {count} customer(s)",
+            "bulkErrors": "Failed to import {count} customer(s)",
+            "bulkFailed": "Bulk import failed",
+            "invalidStatus": "Invalid status. Must be one of: active, inactive, prospect"
         }
     },
     "Dashboard": {

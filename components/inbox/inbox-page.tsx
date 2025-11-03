@@ -34,6 +34,8 @@ import {
     Sparkles,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { resolveWsBackendUrl } from "@/lib/ws-utils"
+import { useUser } from "@/components/user-provider"
 import { useSidebar } from "../ui/sidebar"
 import {
     getInboxConversationsAction,
@@ -213,10 +215,17 @@ export default function InboxPage() {
     const messageInputRef = useRef<HTMLTextAreaElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const initialLoadRef = useRef(false)
+    const socketRef = useRef<WebSocket | null>(null)
+    const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const reconnectAttemptsRef = useRef(0)
+    const shouldReconnectRef = useRef(true)
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
     const { setOpen } = useSidebar()
     const t = useTranslations("Inbox")
+    const { user } = useUser()
+
+    const companyId = user?.defaultCompanyId ?? null
 
     const selectedConversation = useMemo(
         () => conversations.find((conversation) => conversation.id === selectedConversationId) ?? null,
@@ -385,11 +394,34 @@ export default function InboxPage() {
     )
 
     useEffect(() => {
-        if (!initialLoadRef.current) {
-            initialLoadRef.current = true
-            void loadConversations(1, "")
+        if (!companyId || initialLoadRef.current) {
+            return
         }
-    }, [loadConversations])
+
+        initialLoadRef.current = true
+        void loadConversations(1, "")
+    }, [companyId, loadConversations])
+
+    useEffect(() => {
+        if (!companyId) {
+            initialLoadRef.current = false
+            setConversations([])
+            setMessages([])
+            setSuggestedResponses([])
+            setSelectedConversationId(null)
+        setSearchQuery("")
+        setMessageInput("")
+            return
+        }
+
+        initialLoadRef.current = false
+        setConversations([])
+        setMessages([])
+        setSuggestedResponses([])
+        setSelectedConversationId(null)
+    setSearchQuery("")
+    setMessageInput("")
+    }, [companyId])
 
     useEffect(() => {
         if (!initialLoadRef.current) {
@@ -402,6 +434,218 @@ export default function InboxPage() {
 
         return () => clearTimeout(handler)
     }, [loadConversations, searchQuery])
+
+    const handleRealtimeEvent = useCallback(
+        (raw: unknown) => {
+            if (!raw || typeof raw !== "object") {
+                return
+            }
+
+            const payload = raw as {
+                type?: string
+                event?: string
+                channel?: string
+                data?: Record<string, unknown>
+            }
+
+            const typeCandidate = payload.type ?? payload.event
+            const normalizedType = typeof typeCandidate === "string" ? typeCandidate.toLowerCase() : ""
+            const normalizedChannel = typeof payload.channel === "string" ? payload.channel.toLowerCase() : ""
+
+            if (!normalizedType.includes("inbox") && normalizedChannel !== "inbox") {
+                return
+            }
+
+            const data = (payload.data ?? {}) as Record<string, unknown>
+            const conversation = data.conversation as ConversationEntity | undefined
+            const message = data.message as MessageEntity | undefined
+            const fallbackConversationId = typeof data.id === "string" ? data.id : undefined
+            const conversationId =
+                (data.conversationId as string | undefined) ??
+                conversation?.id ??
+                (message as { conversationId?: string })?.conversationId ??
+                fallbackConversationId
+
+            if (conversationId && normalizedType.includes("conversation") && normalizedType.includes("deleted")) {
+                setConversations((previous) => previous.filter((item) => item.id !== conversationId))
+                if (selectedConversationId === conversationId) {
+                    setSelectedConversationId(null)
+                    setMessages([])
+                    setSuggestedResponses([])
+                }
+                return
+            }
+
+            if (conversation) {
+                const summary = buildConversationSummary(conversation)
+                setConversations((previous) => {
+                    const index = previous.findIndex((item) => item.id === summary.id)
+                    if (index === -1) {
+                        return sortConversations([summary, ...previous])
+                    }
+
+                    const updated = [...previous]
+                    updated[index] = summary
+                    return sortConversations(updated)
+                })
+            } else if (normalizedType.includes("conversation") && conversationId) {
+                void loadConversations(1, searchQuery)
+            }
+
+            if (message && conversationId) {
+                const mappedMessage = mapMessage(message)
+
+                if (selectedConversationId === conversationId) {
+                    setMessages((previous) => {
+                        if (previous.some((entry) => entry.id === mappedMessage.id)) {
+                            return previous
+                        }
+
+                        const next = [...previous, mappedMessage]
+                        return next.sort((a, b) => {
+                            const aTime = new Date(a.sentAt).getTime()
+                            const bTime = new Date(b.sentAt).getTime()
+                            return aTime - bTime
+                        })
+                    })
+
+                    requestAnimationFrame(() => {
+                        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+                    })
+                } else {
+                    setConversations((previous) => {
+                        const index = previous.findIndex((item) => item.id === conversationId)
+
+                        if (index === -1) {
+                            if (conversation) {
+                                const summary = buildConversationSummary(conversation)
+                                return sortConversations([summary, ...previous])
+                            }
+
+                            return previous
+                        }
+
+                        const updated = [...previous]
+                        const existing = updated[index]
+                        updated[index] = {
+                            ...existing,
+                            lastMessage: mappedMessage.content,
+                            lastMessageAt: mappedMessage.sentAt,
+                            timestampLabel: formatRelativeTimestamp(mappedMessage.sentAt),
+                            unreadCount: existing.unreadCount + 1,
+                        }
+
+                        return sortConversations(updated)
+                    })
+                }
+
+                return
+            }
+
+            if (conversationId && normalizedType.includes("message")) {
+                if (selectedConversationId === conversationId) {
+                    void fetchConversationDetail(conversationId)
+                } else {
+                    void loadConversations(1, searchQuery)
+                }
+            }
+        },
+        [
+            buildConversationSummary,
+            fetchConversationDetail,
+            loadConversations,
+            searchQuery,
+            selectedConversationId,
+        ],
+    )
+
+    useEffect(() => {
+        if (!companyId) {
+            return
+        }
+
+        shouldReconnectRef.current = true
+
+        const connectionUrl = resolveWsBackendUrl()
+
+        const connect = () => {
+            if (!shouldReconnectRef.current) {
+                return
+            }
+
+            let socket: WebSocket
+
+            try {
+                socket = new WebSocket(connectionUrl)
+            } catch (error) {
+                console.error("Inbox realtime socket initialization failed", error)
+                const attempt = reconnectAttemptsRef.current
+                const delay = Math.min(1000 * 2 ** attempt, 15000)
+                reconnectAttemptsRef.current = attempt + 1
+                reconnectTimeoutRef.current = window.setTimeout(connect, delay)
+                return
+            }
+
+            socketRef.current = socket
+
+            socket.onopen = () => {
+                reconnectAttemptsRef.current = 0
+
+                try {
+                    socket.send(
+                        JSON.stringify({
+                            type: "inbox.subscribe",
+                            companyId,
+                        }),
+                    )
+                } catch (error) {
+                    console.error("Inbox realtime subscription failed", error)
+                }
+            }
+
+            socket.onmessage = (event) => {
+                try {
+                    const payload = typeof event.data === "string" ? JSON.parse(event.data) : null
+                    handleRealtimeEvent(payload)
+                } catch (error) {
+                    console.error("Inbox realtime message parse error", error)
+                }
+            }
+
+            socket.onerror = (error) => {
+                console.error("Inbox realtime socket error", error)
+            }
+
+            socket.onclose = () => {
+                socketRef.current = null
+
+                if (!shouldReconnectRef.current) {
+                    return
+                }
+
+                const attempt = reconnectAttemptsRef.current
+                const delay = Math.min(1000 * 2 ** attempt, 15000)
+                reconnectAttemptsRef.current = attempt + 1
+                reconnectTimeoutRef.current = window.setTimeout(connect, delay)
+            }
+        }
+
+        connect()
+
+        return () => {
+            shouldReconnectRef.current = false
+
+            if (reconnectTimeoutRef.current) {
+                clearTimeout(reconnectTimeoutRef.current)
+                reconnectTimeoutRef.current = null
+            }
+
+            if (socketRef.current) {
+                socketRef.current.close()
+                socketRef.current = null
+            }
+        }
+    }, [companyId, handleRealtimeEvent])
 
     const handleSelectConversation = useCallback(
         async (conversationId: string) => {

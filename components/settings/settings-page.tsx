@@ -22,6 +22,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { useUser } from "@/components/user-provider"
 import { cn } from "@/lib/utils"
+import { resolveWsBackendUrl } from "@/lib/ws-utils"
 import {
     deleteWhatsappNumberAction,
     getSettingsOverviewAction,
@@ -165,27 +166,20 @@ export default function SettingsPage() {
         resetPairingState()
         setLatestLinkedNumber(null)
 
-        const resolveSocketUrl = () => {
-            const configured = process.env.NEXT_PUBLIC_WS_SERVER_URL?.trim()
+        const socketUrl = resolveWsBackendUrl()
 
-            if (configured) {
-                if (configured.startsWith("ws://") || configured.startsWith("wss://")) {
-                    return configured
-                }
+        let socket: WebSocket
 
-                if (configured.startsWith("http://") || configured.startsWith("https://")) {
-                    return configured.replace(/^http/, "ws").replace(/^https/, "wss")
-                }
-
-                return `ws://${configured.replace(/^\/\//, "")}`
-            }
-
-            const isHttps = window.location.protocol === "https:"
-            const defaultPort = process.env.NEXT_PUBLIC_WS_SERVER_PORT ?? "3100"
-            return `${isHttps ? "wss" : "ws"}://${window.location.hostname}:${defaultPort}`
+        try {
+            socket = new WebSocket(socketUrl)
+        } catch (error) {
+            console.error("Pairing socket initialization failed", error)
+            const fallback = t("whatsapp.pairing.messages.connectionFailed")
+            setPairingPhase("error")
+            setPairingError(fallback)
+            setPairingMessage(fallback)
+            return
         }
-
-        const socket = new WebSocket(resolveSocketUrl())
 
         pairingSocketRef.current = socket
         setPairingPhase("connecting")
@@ -592,7 +586,6 @@ export default function SettingsPage() {
                                 <Button
                                     onClick={() => {
                                         resetPairingState()
-                                        setAddForm(emptyAddForm)
                                         setIsPairingConnected(false)
                                         setIsAddDialogOpen(true)
                                     }}

@@ -2105,7 +2105,39 @@
         "messages": {
             "customerCreated": "Cliente adicionado com sucesso",
             "customerUpdated": "Cliente atualizado com sucesso",
-            "customerSaveError": "Ocorreu um erro ao salvar o cliente."
+            "customerSaveError": "Ocorreu um erro ao salvar o cliente.",
+            "customersImported": "{count} cliente(s) importado(s) com sucesso",
+            "customersImportError": "Falha ao importar clientes"
+        },
+        "import": {
+            "singleCustomer": "Cliente Único",
+            "bulkImport": "Importação em Massa",
+            "uploadLabel": "Enviar Arquivo Excel",
+            "uploadDescription": "Envie um arquivo Excel ou CSV com informações de clientes para adicionar múltiplos clientes de uma vez.",
+            "dropHere": "Solte o arquivo aqui",
+            "clickOrDrag": "Clique para enviar ou arraste e solte",
+            "supportedFormats": "Suporta arquivos .xlsx, .xls e .csv",
+            "formatInfo": "Colunas obrigatórias: name, email. Colunas opcionais: phone, company, status. Os nomes das colunas não diferenciam maiúsculas de minúsculas.",
+            "parseError": "Falha ao analisar arquivo Excel",
+            "readError": "Falha ao ler arquivo",
+            "invalidFileType": "Tipo de arquivo inválido. Por favor, envie arquivos .xlsx, .xls ou .csv.",
+            "parsedSuccess": "Analisado com sucesso {count} cliente(s)",
+            "parsedWithErrors": "Analisado com {count} erro(s)",
+            "errorsFound": "{count} erro(s) encontrado(s)",
+            "noData": "Nenhum dado de cliente válido encontrado no arquivo",
+            "name": "Nome",
+            "email": "E-mail",
+            "phone": "Telefone",
+            "company": "Empresa",
+            "status": "Status",
+            "preview": "Pré-visualizar ({count} clientes)",
+            "clear": "Limpar",
+            "importing": "Importando...",
+            "importAll": "Importar Tudo ({count})",
+            "bulkSuccess": "Importado com sucesso {count} cliente(s)",
+            "bulkErrors": "Falha ao importar {count} cliente(s)",
+            "bulkFailed": "Falha na importação em massa",
+            "invalidStatus": "Status inválido. Deve ser um dos: active, inactive, prospect"
         }
     },
     "Dashboard": {

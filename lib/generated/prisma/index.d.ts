@@ -89,11 +89,6 @@ export type UsageTracking = $Result.DefaultSelection<Prisma.$UsageTrackingPayloa
  */
 export type CompanySettings = $Result.DefaultSelection<Prisma.$CompanySettingsPayload>
 /**
- * Model CompanyWhatsappNumber
- * 
- */
-export type CompanyWhatsappNumber = $Result.DefaultSelection<Prisma.$CompanyWhatsappNumberPayload>
-/**
  * Model InboxCustomer
  * 
  */
@@ -108,6 +103,16 @@ export type InboxConversation = $Result.DefaultSelection<Prisma.$InboxConversati
  * 
  */
 export type InboxMessage = $Result.DefaultSelection<Prisma.$InboxMessagePayload>
+/**
+ * Model KvBackup
+ * 
+ */
+export type KvBackup = $Result.DefaultSelection<Prisma.$KvBackupPayload>
+/**
+ * Model CompanyWhatsappNumber
+ * 
+ */
+export type CompanyWhatsappNumber = $Result.DefaultSelection<Prisma.$CompanyWhatsappNumberPayload>
 
 /**
  * Enums
@@ -559,16 +564,6 @@ export class PrismaClient<
   get companySettings(): Prisma.CompanySettingsDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.companyWhatsappNumber`: Exposes CRUD operations for the **CompanyWhatsappNumber** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more CompanyWhatsappNumbers
-    * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany()
-    * ```
-    */
-  get companyWhatsappNumber(): Prisma.CompanyWhatsappNumberDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.inboxCustomer`: Exposes CRUD operations for the **InboxCustomer** model.
     * Example usage:
     * ```ts
@@ -597,6 +592,26 @@ export class PrismaClient<
     * ```
     */
   get inboxMessage(): Prisma.InboxMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.kvBackup`: Exposes CRUD operations for the **KvBackup** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more KvBackups
+    * const kvBackups = await prisma.kvBackup.findMany()
+    * ```
+    */
+  get kvBackup(): Prisma.KvBackupDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.companyWhatsappNumber`: Exposes CRUD operations for the **CompanyWhatsappNumber** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompanyWhatsappNumbers
+    * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany()
+    * ```
+    */
+  get companyWhatsappNumber(): Prisma.CompanyWhatsappNumberDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1053,10 +1068,11 @@ export namespace Prisma {
     CustomerSubscription: 'CustomerSubscription',
     UsageTracking: 'UsageTracking',
     CompanySettings: 'CompanySettings',
-    CompanyWhatsappNumber: 'CompanyWhatsappNumber',
     InboxCustomer: 'InboxCustomer',
     InboxConversation: 'InboxConversation',
-    InboxMessage: 'InboxMessage'
+    InboxMessage: 'InboxMessage',
+    KvBackup: 'KvBackup',
+    CompanyWhatsappNumber: 'CompanyWhatsappNumber'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1075,7 +1091,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "company" | "knowledgeItem" | "quickAnswer" | "aiTemplate" | "aiTemplateOption" | "companyMember" | "subscriptionPlan" | "customerSubscription" | "usageTracking" | "companySettings" | "companyWhatsappNumber" | "inboxCustomer" | "inboxConversation" | "inboxMessage"
+      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "company" | "knowledgeItem" | "quickAnswer" | "aiTemplate" | "aiTemplateOption" | "companyMember" | "subscriptionPlan" | "customerSubscription" | "usageTracking" | "companySettings" | "inboxCustomer" | "inboxConversation" | "inboxMessage" | "kvBackup" | "companyWhatsappNumber"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2189,80 +2205,6 @@ export namespace Prisma {
           }
         }
       }
-      CompanyWhatsappNumber: {
-        payload: Prisma.$CompanyWhatsappNumberPayload<ExtArgs>
-        fields: Prisma.CompanyWhatsappNumberFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.CompanyWhatsappNumberFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
-          }
-          findFirst: {
-            args: Prisma.CompanyWhatsappNumberFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
-          }
-          findMany: {
-            args: Prisma.CompanyWhatsappNumberFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
-          }
-          create: {
-            args: Prisma.CompanyWhatsappNumberCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
-          }
-          createMany: {
-            args: Prisma.CompanyWhatsappNumberCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
-          }
-          delete: {
-            args: Prisma.CompanyWhatsappNumberDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
-          }
-          update: {
-            args: Prisma.CompanyWhatsappNumberUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
-          }
-          deleteMany: {
-            args: Prisma.CompanyWhatsappNumberDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.CompanyWhatsappNumberUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
-          }
-          upsert: {
-            args: Prisma.CompanyWhatsappNumberUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
-          }
-          aggregate: {
-            args: Prisma.CompanyWhatsappNumberAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCompanyWhatsappNumber>
-          }
-          groupBy: {
-            args: Prisma.CompanyWhatsappNumberGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CompanyWhatsappNumberGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.CompanyWhatsappNumberCountArgs<ExtArgs>
-            result: $Utils.Optional<CompanyWhatsappNumberCountAggregateOutputType> | number
-          }
-        }
-      }
       InboxCustomer: {
         payload: Prisma.$InboxCustomerPayload<ExtArgs>
         fields: Prisma.InboxCustomerFieldRefs
@@ -2485,6 +2427,154 @@ export namespace Prisma {
           }
         }
       }
+      KvBackup: {
+        payload: Prisma.$KvBackupPayload<ExtArgs>
+        fields: Prisma.KvBackupFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.KvBackupFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.KvBackupFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>
+          }
+          findFirst: {
+            args: Prisma.KvBackupFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.KvBackupFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>
+          }
+          findMany: {
+            args: Prisma.KvBackupFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>[]
+          }
+          create: {
+            args: Prisma.KvBackupCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>
+          }
+          createMany: {
+            args: Prisma.KvBackupCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.KvBackupCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>[]
+          }
+          delete: {
+            args: Prisma.KvBackupDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>
+          }
+          update: {
+            args: Prisma.KvBackupUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>
+          }
+          deleteMany: {
+            args: Prisma.KvBackupDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.KvBackupUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.KvBackupUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>[]
+          }
+          upsert: {
+            args: Prisma.KvBackupUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KvBackupPayload>
+          }
+          aggregate: {
+            args: Prisma.KvBackupAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateKvBackup>
+          }
+          groupBy: {
+            args: Prisma.KvBackupGroupByArgs<ExtArgs>
+            result: $Utils.Optional<KvBackupGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.KvBackupCountArgs<ExtArgs>
+            result: $Utils.Optional<KvBackupCountAggregateOutputType> | number
+          }
+        }
+      }
+      CompanyWhatsappNumber: {
+        payload: Prisma.$CompanyWhatsappNumberPayload<ExtArgs>
+        fields: Prisma.CompanyWhatsappNumberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompanyWhatsappNumberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          findFirst: {
+            args: Prisma.CompanyWhatsappNumberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          findMany: {
+            args: Prisma.CompanyWhatsappNumberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+          }
+          create: {
+            args: Prisma.CompanyWhatsappNumberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          createMany: {
+            args: Prisma.CompanyWhatsappNumberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+          }
+          delete: {
+            args: Prisma.CompanyWhatsappNumberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          update: {
+            args: Prisma.CompanyWhatsappNumberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompanyWhatsappNumberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompanyWhatsappNumberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompanyWhatsappNumberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+          }
+          aggregate: {
+            args: Prisma.CompanyWhatsappNumberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompanyWhatsappNumber>
+          }
+          groupBy: {
+            args: Prisma.CompanyWhatsappNumberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanyWhatsappNumberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompanyWhatsappNumberCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanyWhatsappNumberCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2596,10 +2686,11 @@ export namespace Prisma {
     customerSubscription?: CustomerSubscriptionOmit
     usageTracking?: UsageTrackingOmit
     companySettings?: CompanySettingsOmit
-    companyWhatsappNumber?: CompanyWhatsappNumberOmit
     inboxCustomer?: InboxCustomerOmit
     inboxConversation?: InboxConversationOmit
     inboxMessage?: InboxMessageOmit
+    kvBackup?: KvBackupOmit
+    companyWhatsappNumber?: CompanyWhatsappNumberOmit
   }
 
   /* Types for Logging */
@@ -21151,1154 +21242,6 @@ export namespace Prisma {
 
 
   /**
-   * Model CompanyWhatsappNumber
-   */
-
-  export type AggregateCompanyWhatsappNumber = {
-    _count: CompanyWhatsappNumberCountAggregateOutputType | null
-    _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
-    _sum: CompanyWhatsappNumberSumAggregateOutputType | null
-    _min: CompanyWhatsappNumberMinAggregateOutputType | null
-    _max: CompanyWhatsappNumberMaxAggregateOutputType | null
-  }
-
-  export type CompanyWhatsappNumberAvgAggregateOutputType = {
-    companyId: number | null
-    messagesThisMonth: number | null
-  }
-
-  export type CompanyWhatsappNumberSumAggregateOutputType = {
-    companyId: number | null
-    messagesThisMonth: number | null
-  }
-
-  export type CompanyWhatsappNumberMinAggregateOutputType = {
-    id: string | null
-    companyId: number | null
-    displayName: string | null
-    phoneNumber: string | null
-    isConnected: boolean | null
-    messagesThisMonth: number | null
-    lastSyncedAt: Date | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type CompanyWhatsappNumberMaxAggregateOutputType = {
-    id: string | null
-    companyId: number | null
-    displayName: string | null
-    phoneNumber: string | null
-    isConnected: boolean | null
-    messagesThisMonth: number | null
-    lastSyncedAt: Date | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type CompanyWhatsappNumberCountAggregateOutputType = {
-    id: number
-    companyId: number
-    displayName: number
-    phoneNumber: number
-    isConnected: number
-    messagesThisMonth: number
-    lastSyncedAt: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type CompanyWhatsappNumberAvgAggregateInputType = {
-    companyId?: true
-    messagesThisMonth?: true
-  }
-
-  export type CompanyWhatsappNumberSumAggregateInputType = {
-    companyId?: true
-    messagesThisMonth?: true
-  }
-
-  export type CompanyWhatsappNumberMinAggregateInputType = {
-    id?: true
-    companyId?: true
-    displayName?: true
-    phoneNumber?: true
-    isConnected?: true
-    messagesThisMonth?: true
-    lastSyncedAt?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type CompanyWhatsappNumberMaxAggregateInputType = {
-    id?: true
-    companyId?: true
-    displayName?: true
-    phoneNumber?: true
-    isConnected?: true
-    messagesThisMonth?: true
-    lastSyncedAt?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type CompanyWhatsappNumberCountAggregateInputType = {
-    id?: true
-    companyId?: true
-    displayName?: true
-    phoneNumber?: true
-    isConnected?: true
-    messagesThisMonth?: true
-    lastSyncedAt?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type CompanyWhatsappNumberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which CompanyWhatsappNumber to aggregate.
-     */
-    where?: CompanyWhatsappNumberWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanyWhatsappNumbers to fetch.
-     */
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanyWhatsappNumbers.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned CompanyWhatsappNumbers
-    **/
-    _count?: true | CompanyWhatsappNumberCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: CompanyWhatsappNumberAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: CompanyWhatsappNumberSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: CompanyWhatsappNumberMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: CompanyWhatsappNumberMaxAggregateInputType
-  }
-
-  export type GetCompanyWhatsappNumberAggregateType<T extends CompanyWhatsappNumberAggregateArgs> = {
-        [P in keyof T & keyof AggregateCompanyWhatsappNumber]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateCompanyWhatsappNumber[P]>
-      : GetScalarType<T[P], AggregateCompanyWhatsappNumber[P]>
-  }
-
-
-
-
-  export type CompanyWhatsappNumberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanyWhatsappNumberWhereInput
-    orderBy?: CompanyWhatsappNumberOrderByWithAggregationInput | CompanyWhatsappNumberOrderByWithAggregationInput[]
-    by: CompanyWhatsappNumberScalarFieldEnum[] | CompanyWhatsappNumberScalarFieldEnum
-    having?: CompanyWhatsappNumberScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: CompanyWhatsappNumberCountAggregateInputType | true
-    _avg?: CompanyWhatsappNumberAvgAggregateInputType
-    _sum?: CompanyWhatsappNumberSumAggregateInputType
-    _min?: CompanyWhatsappNumberMinAggregateInputType
-    _max?: CompanyWhatsappNumberMaxAggregateInputType
-  }
-
-  export type CompanyWhatsappNumberGroupByOutputType = {
-    id: string
-    companyId: number
-    displayName: string
-    phoneNumber: string
-    isConnected: boolean
-    messagesThisMonth: number
-    lastSyncedAt: Date | null
-    createdAt: Date
-    updatedAt: Date
-    _count: CompanyWhatsappNumberCountAggregateOutputType | null
-    _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
-    _sum: CompanyWhatsappNumberSumAggregateOutputType | null
-    _min: CompanyWhatsappNumberMinAggregateOutputType | null
-    _max: CompanyWhatsappNumberMaxAggregateOutputType | null
-  }
-
-  type GetCompanyWhatsappNumberGroupByPayload<T extends CompanyWhatsappNumberGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<CompanyWhatsappNumberGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof CompanyWhatsappNumberGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], CompanyWhatsappNumberGroupByOutputType[P]>
-            : GetScalarType<T[P], CompanyWhatsappNumberGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type CompanyWhatsappNumberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    companyId?: boolean
-    displayName?: boolean
-    phoneNumber?: boolean
-    isConnected?: boolean
-    messagesThisMonth?: boolean
-    lastSyncedAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyWhatsappNumber"]>
-
-  export type CompanyWhatsappNumberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    companyId?: boolean
-    displayName?: boolean
-    phoneNumber?: boolean
-    isConnected?: boolean
-    messagesThisMonth?: boolean
-    lastSyncedAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyWhatsappNumber"]>
-
-  export type CompanyWhatsappNumberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    companyId?: boolean
-    displayName?: boolean
-    phoneNumber?: boolean
-    isConnected?: boolean
-    messagesThisMonth?: boolean
-    lastSyncedAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyWhatsappNumber"]>
-
-  export type CompanyWhatsappNumberSelectScalar = {
-    id?: boolean
-    companyId?: boolean
-    displayName?: boolean
-    phoneNumber?: boolean
-    isConnected?: boolean
-    messagesThisMonth?: boolean
-    lastSyncedAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type CompanyWhatsappNumberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "displayName" | "phoneNumber" | "isConnected" | "messagesThisMonth" | "lastSyncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["companyWhatsappNumber"]>
-  export type CompanyWhatsappNumberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-  export type CompanyWhatsappNumberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-  export type CompanyWhatsappNumberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-
-  export type $CompanyWhatsappNumberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "CompanyWhatsappNumber"
-    objects: {
-      company: Prisma.$CompanyPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      companyId: number
-      displayName: string
-      phoneNumber: string
-      isConnected: boolean
-      messagesThisMonth: number
-      lastSyncedAt: Date | null
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["companyWhatsappNumber"]>
-    composites: {}
-  }
-
-  type CompanyWhatsappNumberGetPayload<S extends boolean | null | undefined | CompanyWhatsappNumberDefaultArgs> = $Result.GetResult<Prisma.$CompanyWhatsappNumberPayload, S>
-
-  type CompanyWhatsappNumberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CompanyWhatsappNumberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CompanyWhatsappNumberCountAggregateInputType | true
-    }
-
-  export interface CompanyWhatsappNumberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyWhatsappNumber'], meta: { name: 'CompanyWhatsappNumber' } }
-    /**
-     * Find zero or one CompanyWhatsappNumber that matches the filter.
-     * @param {CompanyWhatsappNumberFindUniqueArgs} args - Arguments to find a CompanyWhatsappNumber
-     * @example
-     * // Get one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends CompanyWhatsappNumberFindUniqueArgs>(args: SelectSubset<T, CompanyWhatsappNumberFindUniqueArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one CompanyWhatsappNumber that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {CompanyWhatsappNumberFindUniqueOrThrowArgs} args - Arguments to find a CompanyWhatsappNumber
-     * @example
-     * // Get one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends CompanyWhatsappNumberFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first CompanyWhatsappNumber that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberFindFirstArgs} args - Arguments to find a CompanyWhatsappNumber
-     * @example
-     * // Get one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends CompanyWhatsappNumberFindFirstArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindFirstArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first CompanyWhatsappNumber that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberFindFirstOrThrowArgs} args - Arguments to find a CompanyWhatsappNumber
-     * @example
-     * // Get one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends CompanyWhatsappNumberFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more CompanyWhatsappNumbers that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all CompanyWhatsappNumbers
-     * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany()
-     * 
-     * // Get first 10 CompanyWhatsappNumbers
-     * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends CompanyWhatsappNumberFindManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a CompanyWhatsappNumber.
-     * @param {CompanyWhatsappNumberCreateArgs} args - Arguments to create a CompanyWhatsappNumber.
-     * @example
-     * // Create one CompanyWhatsappNumber
-     * const CompanyWhatsappNumber = await prisma.companyWhatsappNumber.create({
-     *   data: {
-     *     // ... data to create a CompanyWhatsappNumber
-     *   }
-     * })
-     * 
-     */
-    create<T extends CompanyWhatsappNumberCreateArgs>(args: SelectSubset<T, CompanyWhatsappNumberCreateArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many CompanyWhatsappNumbers.
-     * @param {CompanyWhatsappNumberCreateManyArgs} args - Arguments to create many CompanyWhatsappNumbers.
-     * @example
-     * // Create many CompanyWhatsappNumbers
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends CompanyWhatsappNumberCreateManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many CompanyWhatsappNumbers and returns the data saved in the database.
-     * @param {CompanyWhatsappNumberCreateManyAndReturnArgs} args - Arguments to create many CompanyWhatsappNumbers.
-     * @example
-     * // Create many CompanyWhatsappNumbers
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many CompanyWhatsappNumbers and only return the `id`
-     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends CompanyWhatsappNumberCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a CompanyWhatsappNumber.
-     * @param {CompanyWhatsappNumberDeleteArgs} args - Arguments to delete one CompanyWhatsappNumber.
-     * @example
-     * // Delete one CompanyWhatsappNumber
-     * const CompanyWhatsappNumber = await prisma.companyWhatsappNumber.delete({
-     *   where: {
-     *     // ... filter to delete one CompanyWhatsappNumber
-     *   }
-     * })
-     * 
-     */
-    delete<T extends CompanyWhatsappNumberDeleteArgs>(args: SelectSubset<T, CompanyWhatsappNumberDeleteArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one CompanyWhatsappNumber.
-     * @param {CompanyWhatsappNumberUpdateArgs} args - Arguments to update one CompanyWhatsappNumber.
-     * @example
-     * // Update one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends CompanyWhatsappNumberUpdateArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more CompanyWhatsappNumbers.
-     * @param {CompanyWhatsappNumberDeleteManyArgs} args - Arguments to filter CompanyWhatsappNumbers to delete.
-     * @example
-     * // Delete a few CompanyWhatsappNumbers
-     * const { count } = await prisma.companyWhatsappNumber.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends CompanyWhatsappNumberDeleteManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more CompanyWhatsappNumbers.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many CompanyWhatsappNumbers
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends CompanyWhatsappNumberUpdateManyArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more CompanyWhatsappNumbers and returns the data updated in the database.
-     * @param {CompanyWhatsappNumberUpdateManyAndReturnArgs} args - Arguments to update many CompanyWhatsappNumbers.
-     * @example
-     * // Update many CompanyWhatsappNumbers
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more CompanyWhatsappNumbers and only return the `id`
-     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends CompanyWhatsappNumberUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one CompanyWhatsappNumber.
-     * @param {CompanyWhatsappNumberUpsertArgs} args - Arguments to update or create a CompanyWhatsappNumber.
-     * @example
-     * // Update or create a CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.upsert({
-     *   create: {
-     *     // ... data to create a CompanyWhatsappNumber
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the CompanyWhatsappNumber we want to update
-     *   }
-     * })
-     */
-    upsert<T extends CompanyWhatsappNumberUpsertArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpsertArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of CompanyWhatsappNumbers.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberCountArgs} args - Arguments to filter CompanyWhatsappNumbers to count.
-     * @example
-     * // Count the number of CompanyWhatsappNumbers
-     * const count = await prisma.companyWhatsappNumber.count({
-     *   where: {
-     *     // ... the filter for the CompanyWhatsappNumbers we want to count
-     *   }
-     * })
-    **/
-    count<T extends CompanyWhatsappNumberCountArgs>(
-      args?: Subset<T, CompanyWhatsappNumberCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], CompanyWhatsappNumberCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a CompanyWhatsappNumber.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends CompanyWhatsappNumberAggregateArgs>(args: Subset<T, CompanyWhatsappNumberAggregateArgs>): Prisma.PrismaPromise<GetCompanyWhatsappNumberAggregateType<T>>
-
-    /**
-     * Group by CompanyWhatsappNumber.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends CompanyWhatsappNumberGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CompanyWhatsappNumberGroupByArgs['orderBy'] }
-        : { orderBy?: CompanyWhatsappNumberGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, CompanyWhatsappNumberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyWhatsappNumberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the CompanyWhatsappNumber model
-   */
-  readonly fields: CompanyWhatsappNumberFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for CompanyWhatsappNumber.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__CompanyWhatsappNumberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the CompanyWhatsappNumber model
-   */
-  interface CompanyWhatsappNumberFieldRefs {
-    readonly id: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly companyId: FieldRef<"CompanyWhatsappNumber", 'Int'>
-    readonly displayName: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly phoneNumber: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly isConnected: FieldRef<"CompanyWhatsappNumber", 'Boolean'>
-    readonly messagesThisMonth: FieldRef<"CompanyWhatsappNumber", 'Int'>
-    readonly lastSyncedAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
-    readonly createdAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
-    readonly updatedAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * CompanyWhatsappNumber findUnique
-   */
-  export type CompanyWhatsappNumberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyWhatsappNumber to fetch.
-     */
-    where: CompanyWhatsappNumberWhereUniqueInput
-  }
-
-  /**
-   * CompanyWhatsappNumber findUniqueOrThrow
-   */
-  export type CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyWhatsappNumber to fetch.
-     */
-    where: CompanyWhatsappNumberWhereUniqueInput
-  }
-
-  /**
-   * CompanyWhatsappNumber findFirst
-   */
-  export type CompanyWhatsappNumberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyWhatsappNumber to fetch.
-     */
-    where?: CompanyWhatsappNumberWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanyWhatsappNumbers to fetch.
-     */
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for CompanyWhatsappNumbers.
-     */
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanyWhatsappNumbers.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CompanyWhatsappNumbers.
-     */
-    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
-  }
-
-  /**
-   * CompanyWhatsappNumber findFirstOrThrow
-   */
-  export type CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyWhatsappNumber to fetch.
-     */
-    where?: CompanyWhatsappNumberWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanyWhatsappNumbers to fetch.
-     */
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for CompanyWhatsappNumbers.
-     */
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanyWhatsappNumbers.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CompanyWhatsappNumbers.
-     */
-    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
-  }
-
-  /**
-   * CompanyWhatsappNumber findMany
-   */
-  export type CompanyWhatsappNumberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyWhatsappNumbers to fetch.
-     */
-    where?: CompanyWhatsappNumberWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanyWhatsappNumbers to fetch.
-     */
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing CompanyWhatsappNumbers.
-     */
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanyWhatsappNumbers.
-     */
-    skip?: number
-    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
-  }
-
-  /**
-   * CompanyWhatsappNumber create
-   */
-  export type CompanyWhatsappNumberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * The data needed to create a CompanyWhatsappNumber.
-     */
-    data: XOR<CompanyWhatsappNumberCreateInput, CompanyWhatsappNumberUncheckedCreateInput>
-  }
-
-  /**
-   * CompanyWhatsappNumber createMany
-   */
-  export type CompanyWhatsappNumberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many CompanyWhatsappNumbers.
-     */
-    data: CompanyWhatsappNumberCreateManyInput | CompanyWhatsappNumberCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * CompanyWhatsappNumber createManyAndReturn
-   */
-  export type CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * The data used to create many CompanyWhatsappNumbers.
-     */
-    data: CompanyWhatsappNumberCreateManyInput | CompanyWhatsappNumberCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * CompanyWhatsappNumber update
-   */
-  export type CompanyWhatsappNumberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * The data needed to update a CompanyWhatsappNumber.
-     */
-    data: XOR<CompanyWhatsappNumberUpdateInput, CompanyWhatsappNumberUncheckedUpdateInput>
-    /**
-     * Choose, which CompanyWhatsappNumber to update.
-     */
-    where: CompanyWhatsappNumberWhereUniqueInput
-  }
-
-  /**
-   * CompanyWhatsappNumber updateMany
-   */
-  export type CompanyWhatsappNumberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update CompanyWhatsappNumbers.
-     */
-    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyInput>
-    /**
-     * Filter which CompanyWhatsappNumbers to update
-     */
-    where?: CompanyWhatsappNumberWhereInput
-    /**
-     * Limit how many CompanyWhatsappNumbers to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * CompanyWhatsappNumber updateManyAndReturn
-   */
-  export type CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * The data used to update CompanyWhatsappNumbers.
-     */
-    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyInput>
-    /**
-     * Filter which CompanyWhatsappNumbers to update
-     */
-    where?: CompanyWhatsappNumberWhereInput
-    /**
-     * Limit how many CompanyWhatsappNumbers to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * CompanyWhatsappNumber upsert
-   */
-  export type CompanyWhatsappNumberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * The filter to search for the CompanyWhatsappNumber to update in case it exists.
-     */
-    where: CompanyWhatsappNumberWhereUniqueInput
-    /**
-     * In case the CompanyWhatsappNumber found by the `where` argument doesn't exist, create a new CompanyWhatsappNumber with this data.
-     */
-    create: XOR<CompanyWhatsappNumberCreateInput, CompanyWhatsappNumberUncheckedCreateInput>
-    /**
-     * In case the CompanyWhatsappNumber was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<CompanyWhatsappNumberUpdateInput, CompanyWhatsappNumberUncheckedUpdateInput>
-  }
-
-  /**
-   * CompanyWhatsappNumber delete
-   */
-  export type CompanyWhatsappNumberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    /**
-     * Filter which CompanyWhatsappNumber to delete.
-     */
-    where: CompanyWhatsappNumberWhereUniqueInput
-  }
-
-  /**
-   * CompanyWhatsappNumber deleteMany
-   */
-  export type CompanyWhatsappNumberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which CompanyWhatsappNumbers to delete
-     */
-    where?: CompanyWhatsappNumberWhereInput
-    /**
-     * Limit how many CompanyWhatsappNumbers to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * CompanyWhatsappNumber without action
-   */
-  export type CompanyWhatsappNumberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
-     */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyWhatsappNumber
-     */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model InboxCustomer
    */
 
@@ -25973,6 +24916,2188 @@ export namespace Prisma {
 
 
   /**
+   * Model KvBackup
+   */
+
+  export type AggregateKvBackup = {
+    _count: KvBackupCountAggregateOutputType | null
+    _min: KvBackupMinAggregateOutputType | null
+    _max: KvBackupMaxAggregateOutputType | null
+  }
+
+  export type KvBackupMinAggregateOutputType = {
+    key: string | null
+    value: Bytes | null
+    updatedAt: Date | null
+  }
+
+  export type KvBackupMaxAggregateOutputType = {
+    key: string | null
+    value: Bytes | null
+    updatedAt: Date | null
+  }
+
+  export type KvBackupCountAggregateOutputType = {
+    key: number
+    value: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type KvBackupMinAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+  }
+
+  export type KvBackupMaxAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+  }
+
+  export type KvBackupCountAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type KvBackupAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KvBackup to aggregate.
+     */
+    where?: KvBackupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KvBackups to fetch.
+     */
+    orderBy?: KvBackupOrderByWithRelationInput | KvBackupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: KvBackupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KvBackups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KvBackups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned KvBackups
+    **/
+    _count?: true | KvBackupCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: KvBackupMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: KvBackupMaxAggregateInputType
+  }
+
+  export type GetKvBackupAggregateType<T extends KvBackupAggregateArgs> = {
+        [P in keyof T & keyof AggregateKvBackup]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateKvBackup[P]>
+      : GetScalarType<T[P], AggregateKvBackup[P]>
+  }
+
+
+
+
+  export type KvBackupGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KvBackupWhereInput
+    orderBy?: KvBackupOrderByWithAggregationInput | KvBackupOrderByWithAggregationInput[]
+    by: KvBackupScalarFieldEnum[] | KvBackupScalarFieldEnum
+    having?: KvBackupScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: KvBackupCountAggregateInputType | true
+    _min?: KvBackupMinAggregateInputType
+    _max?: KvBackupMaxAggregateInputType
+  }
+
+  export type KvBackupGroupByOutputType = {
+    key: string
+    value: Bytes
+    updatedAt: Date
+    _count: KvBackupCountAggregateOutputType | null
+    _min: KvBackupMinAggregateOutputType | null
+    _max: KvBackupMaxAggregateOutputType | null
+  }
+
+  type GetKvBackupGroupByPayload<T extends KvBackupGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<KvBackupGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof KvBackupGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], KvBackupGroupByOutputType[P]>
+            : GetScalarType<T[P], KvBackupGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type KvBackupSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["kvBackup"]>
+
+  export type KvBackupSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["kvBackup"]>
+
+  export type KvBackupSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["kvBackup"]>
+
+  export type KvBackupSelectScalar = {
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+  }
+
+  export type KvBackupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "value" | "updatedAt", ExtArgs["result"]["kvBackup"]>
+
+  export type $KvBackupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "KvBackup"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      key: string
+      value: Prisma.Bytes
+      updatedAt: Date
+    }, ExtArgs["result"]["kvBackup"]>
+    composites: {}
+  }
+
+  type KvBackupGetPayload<S extends boolean | null | undefined | KvBackupDefaultArgs> = $Result.GetResult<Prisma.$KvBackupPayload, S>
+
+  type KvBackupCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<KvBackupFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: KvBackupCountAggregateInputType | true
+    }
+
+  export interface KvBackupDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['KvBackup'], meta: { name: 'KvBackup' } }
+    /**
+     * Find zero or one KvBackup that matches the filter.
+     * @param {KvBackupFindUniqueArgs} args - Arguments to find a KvBackup
+     * @example
+     * // Get one KvBackup
+     * const kvBackup = await prisma.kvBackup.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends KvBackupFindUniqueArgs>(args: SelectSubset<T, KvBackupFindUniqueArgs<ExtArgs>>): Prisma__KvBackupClient<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one KvBackup that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {KvBackupFindUniqueOrThrowArgs} args - Arguments to find a KvBackup
+     * @example
+     * // Get one KvBackup
+     * const kvBackup = await prisma.kvBackup.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends KvBackupFindUniqueOrThrowArgs>(args: SelectSubset<T, KvBackupFindUniqueOrThrowArgs<ExtArgs>>): Prisma__KvBackupClient<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KvBackup that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KvBackupFindFirstArgs} args - Arguments to find a KvBackup
+     * @example
+     * // Get one KvBackup
+     * const kvBackup = await prisma.kvBackup.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends KvBackupFindFirstArgs>(args?: SelectSubset<T, KvBackupFindFirstArgs<ExtArgs>>): Prisma__KvBackupClient<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KvBackup that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KvBackupFindFirstOrThrowArgs} args - Arguments to find a KvBackup
+     * @example
+     * // Get one KvBackup
+     * const kvBackup = await prisma.kvBackup.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends KvBackupFindFirstOrThrowArgs>(args?: SelectSubset<T, KvBackupFindFirstOrThrowArgs<ExtArgs>>): Prisma__KvBackupClient<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more KvBackups that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KvBackupFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KvBackups
+     * const kvBackups = await prisma.kvBackup.findMany()
+     * 
+     * // Get first 10 KvBackups
+     * const kvBackups = await prisma.kvBackup.findMany({ take: 10 })
+     * 
+     * // Only select the `key`
+     * const kvBackupWithKeyOnly = await prisma.kvBackup.findMany({ select: { key: true } })
+     * 
+     */
+    findMany<T extends KvBackupFindManyArgs>(args?: SelectSubset<T, KvBackupFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a KvBackup.
+     * @param {KvBackupCreateArgs} args - Arguments to create a KvBackup.
+     * @example
+     * // Create one KvBackup
+     * const KvBackup = await prisma.kvBackup.create({
+     *   data: {
+     *     // ... data to create a KvBackup
+     *   }
+     * })
+     * 
+     */
+    create<T extends KvBackupCreateArgs>(args: SelectSubset<T, KvBackupCreateArgs<ExtArgs>>): Prisma__KvBackupClient<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many KvBackups.
+     * @param {KvBackupCreateManyArgs} args - Arguments to create many KvBackups.
+     * @example
+     * // Create many KvBackups
+     * const kvBackup = await prisma.kvBackup.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends KvBackupCreateManyArgs>(args?: SelectSubset<T, KvBackupCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many KvBackups and returns the data saved in the database.
+     * @param {KvBackupCreateManyAndReturnArgs} args - Arguments to create many KvBackups.
+     * @example
+     * // Create many KvBackups
+     * const kvBackup = await prisma.kvBackup.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many KvBackups and only return the `key`
+     * const kvBackupWithKeyOnly = await prisma.kvBackup.createManyAndReturn({
+     *   select: { key: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends KvBackupCreateManyAndReturnArgs>(args?: SelectSubset<T, KvBackupCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a KvBackup.
+     * @param {KvBackupDeleteArgs} args - Arguments to delete one KvBackup.
+     * @example
+     * // Delete one KvBackup
+     * const KvBackup = await prisma.kvBackup.delete({
+     *   where: {
+     *     // ... filter to delete one KvBackup
+     *   }
+     * })
+     * 
+     */
+    delete<T extends KvBackupDeleteArgs>(args: SelectSubset<T, KvBackupDeleteArgs<ExtArgs>>): Prisma__KvBackupClient<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one KvBackup.
+     * @param {KvBackupUpdateArgs} args - Arguments to update one KvBackup.
+     * @example
+     * // Update one KvBackup
+     * const kvBackup = await prisma.kvBackup.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends KvBackupUpdateArgs>(args: SelectSubset<T, KvBackupUpdateArgs<ExtArgs>>): Prisma__KvBackupClient<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more KvBackups.
+     * @param {KvBackupDeleteManyArgs} args - Arguments to filter KvBackups to delete.
+     * @example
+     * // Delete a few KvBackups
+     * const { count } = await prisma.kvBackup.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends KvBackupDeleteManyArgs>(args?: SelectSubset<T, KvBackupDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KvBackups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KvBackupUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KvBackups
+     * const kvBackup = await prisma.kvBackup.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends KvBackupUpdateManyArgs>(args: SelectSubset<T, KvBackupUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KvBackups and returns the data updated in the database.
+     * @param {KvBackupUpdateManyAndReturnArgs} args - Arguments to update many KvBackups.
+     * @example
+     * // Update many KvBackups
+     * const kvBackup = await prisma.kvBackup.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more KvBackups and only return the `key`
+     * const kvBackupWithKeyOnly = await prisma.kvBackup.updateManyAndReturn({
+     *   select: { key: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends KvBackupUpdateManyAndReturnArgs>(args: SelectSubset<T, KvBackupUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one KvBackup.
+     * @param {KvBackupUpsertArgs} args - Arguments to update or create a KvBackup.
+     * @example
+     * // Update or create a KvBackup
+     * const kvBackup = await prisma.kvBackup.upsert({
+     *   create: {
+     *     // ... data to create a KvBackup
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KvBackup we want to update
+     *   }
+     * })
+     */
+    upsert<T extends KvBackupUpsertArgs>(args: SelectSubset<T, KvBackupUpsertArgs<ExtArgs>>): Prisma__KvBackupClient<$Result.GetResult<Prisma.$KvBackupPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of KvBackups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KvBackupCountArgs} args - Arguments to filter KvBackups to count.
+     * @example
+     * // Count the number of KvBackups
+     * const count = await prisma.kvBackup.count({
+     *   where: {
+     *     // ... the filter for the KvBackups we want to count
+     *   }
+     * })
+    **/
+    count<T extends KvBackupCountArgs>(
+      args?: Subset<T, KvBackupCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], KvBackupCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a KvBackup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KvBackupAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KvBackupAggregateArgs>(args: Subset<T, KvBackupAggregateArgs>): Prisma.PrismaPromise<GetKvBackupAggregateType<T>>
+
+    /**
+     * Group by KvBackup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KvBackupGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends KvBackupGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: KvBackupGroupByArgs['orderBy'] }
+        : { orderBy?: KvBackupGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, KvBackupGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKvBackupGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the KvBackup model
+   */
+  readonly fields: KvBackupFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for KvBackup.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__KvBackupClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the KvBackup model
+   */
+  interface KvBackupFieldRefs {
+    readonly key: FieldRef<"KvBackup", 'String'>
+    readonly value: FieldRef<"KvBackup", 'Bytes'>
+    readonly updatedAt: FieldRef<"KvBackup", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * KvBackup findUnique
+   */
+  export type KvBackupFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * Filter, which KvBackup to fetch.
+     */
+    where: KvBackupWhereUniqueInput
+  }
+
+  /**
+   * KvBackup findUniqueOrThrow
+   */
+  export type KvBackupFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * Filter, which KvBackup to fetch.
+     */
+    where: KvBackupWhereUniqueInput
+  }
+
+  /**
+   * KvBackup findFirst
+   */
+  export type KvBackupFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * Filter, which KvBackup to fetch.
+     */
+    where?: KvBackupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KvBackups to fetch.
+     */
+    orderBy?: KvBackupOrderByWithRelationInput | KvBackupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KvBackups.
+     */
+    cursor?: KvBackupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KvBackups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KvBackups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KvBackups.
+     */
+    distinct?: KvBackupScalarFieldEnum | KvBackupScalarFieldEnum[]
+  }
+
+  /**
+   * KvBackup findFirstOrThrow
+   */
+  export type KvBackupFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * Filter, which KvBackup to fetch.
+     */
+    where?: KvBackupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KvBackups to fetch.
+     */
+    orderBy?: KvBackupOrderByWithRelationInput | KvBackupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KvBackups.
+     */
+    cursor?: KvBackupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KvBackups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KvBackups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KvBackups.
+     */
+    distinct?: KvBackupScalarFieldEnum | KvBackupScalarFieldEnum[]
+  }
+
+  /**
+   * KvBackup findMany
+   */
+  export type KvBackupFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * Filter, which KvBackups to fetch.
+     */
+    where?: KvBackupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KvBackups to fetch.
+     */
+    orderBy?: KvBackupOrderByWithRelationInput | KvBackupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing KvBackups.
+     */
+    cursor?: KvBackupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KvBackups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KvBackups.
+     */
+    skip?: number
+    distinct?: KvBackupScalarFieldEnum | KvBackupScalarFieldEnum[]
+  }
+
+  /**
+   * KvBackup create
+   */
+  export type KvBackupCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * The data needed to create a KvBackup.
+     */
+    data: XOR<KvBackupCreateInput, KvBackupUncheckedCreateInput>
+  }
+
+  /**
+   * KvBackup createMany
+   */
+  export type KvBackupCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many KvBackups.
+     */
+    data: KvBackupCreateManyInput | KvBackupCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KvBackup createManyAndReturn
+   */
+  export type KvBackupCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * The data used to create many KvBackups.
+     */
+    data: KvBackupCreateManyInput | KvBackupCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KvBackup update
+   */
+  export type KvBackupUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * The data needed to update a KvBackup.
+     */
+    data: XOR<KvBackupUpdateInput, KvBackupUncheckedUpdateInput>
+    /**
+     * Choose, which KvBackup to update.
+     */
+    where: KvBackupWhereUniqueInput
+  }
+
+  /**
+   * KvBackup updateMany
+   */
+  export type KvBackupUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update KvBackups.
+     */
+    data: XOR<KvBackupUpdateManyMutationInput, KvBackupUncheckedUpdateManyInput>
+    /**
+     * Filter which KvBackups to update
+     */
+    where?: KvBackupWhereInput
+    /**
+     * Limit how many KvBackups to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KvBackup updateManyAndReturn
+   */
+  export type KvBackupUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * The data used to update KvBackups.
+     */
+    data: XOR<KvBackupUpdateManyMutationInput, KvBackupUncheckedUpdateManyInput>
+    /**
+     * Filter which KvBackups to update
+     */
+    where?: KvBackupWhereInput
+    /**
+     * Limit how many KvBackups to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KvBackup upsert
+   */
+  export type KvBackupUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * The filter to search for the KvBackup to update in case it exists.
+     */
+    where: KvBackupWhereUniqueInput
+    /**
+     * In case the KvBackup found by the `where` argument doesn't exist, create a new KvBackup with this data.
+     */
+    create: XOR<KvBackupCreateInput, KvBackupUncheckedCreateInput>
+    /**
+     * In case the KvBackup was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<KvBackupUpdateInput, KvBackupUncheckedUpdateInput>
+  }
+
+  /**
+   * KvBackup delete
+   */
+  export type KvBackupDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+    /**
+     * Filter which KvBackup to delete.
+     */
+    where: KvBackupWhereUniqueInput
+  }
+
+  /**
+   * KvBackup deleteMany
+   */
+  export type KvBackupDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KvBackups to delete
+     */
+    where?: KvBackupWhereInput
+    /**
+     * Limit how many KvBackups to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * KvBackup without action
+   */
+  export type KvBackupDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KvBackup
+     */
+    select?: KvBackupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KvBackup
+     */
+    omit?: KvBackupOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CompanyWhatsappNumber
+   */
+
+  export type AggregateCompanyWhatsappNumber = {
+    _count: CompanyWhatsappNumberCountAggregateOutputType | null
+    _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
+    _sum: CompanyWhatsappNumberSumAggregateOutputType | null
+    _min: CompanyWhatsappNumberMinAggregateOutputType | null
+    _max: CompanyWhatsappNumberMaxAggregateOutputType | null
+  }
+
+  export type CompanyWhatsappNumberAvgAggregateOutputType = {
+    companyId: number | null
+    messagesThisMonth: number | null
+  }
+
+  export type CompanyWhatsappNumberSumAggregateOutputType = {
+    companyId: number | null
+    messagesThisMonth: number | null
+  }
+
+  export type CompanyWhatsappNumberMinAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    displayName: string | null
+    phoneNumber: string | null
+    isConnected: boolean | null
+    messagesThisMonth: number | null
+    lastSyncedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    remoteAuthNamespace: string | null
+    remoteAuthKey: string | null
+    tenantId: string | null
+    workerId: string | null
+    status: string | null
+  }
+
+  export type CompanyWhatsappNumberMaxAggregateOutputType = {
+    id: string | null
+    companyId: number | null
+    displayName: string | null
+    phoneNumber: string | null
+    isConnected: boolean | null
+    messagesThisMonth: number | null
+    lastSyncedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    remoteAuthNamespace: string | null
+    remoteAuthKey: string | null
+    tenantId: string | null
+    workerId: string | null
+    status: string | null
+  }
+
+  export type CompanyWhatsappNumberCountAggregateOutputType = {
+    id: number
+    companyId: number
+    displayName: number
+    phoneNumber: number
+    isConnected: number
+    messagesThisMonth: number
+    lastSyncedAt: number
+    createdAt: number
+    updatedAt: number
+    remoteAuthNamespace: number
+    remoteAuthKey: number
+    tenantId: number
+    workerId: number
+    status: number
+    _all: number
+  }
+
+
+  export type CompanyWhatsappNumberAvgAggregateInputType = {
+    companyId?: true
+    messagesThisMonth?: true
+  }
+
+  export type CompanyWhatsappNumberSumAggregateInputType = {
+    companyId?: true
+    messagesThisMonth?: true
+  }
+
+  export type CompanyWhatsappNumberMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    messagesThisMonth?: true
+    lastSyncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    remoteAuthNamespace?: true
+    remoteAuthKey?: true
+    tenantId?: true
+    workerId?: true
+    status?: true
+  }
+
+  export type CompanyWhatsappNumberMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    messagesThisMonth?: true
+    lastSyncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    remoteAuthNamespace?: true
+    remoteAuthKey?: true
+    tenantId?: true
+    workerId?: true
+    status?: true
+  }
+
+  export type CompanyWhatsappNumberCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    messagesThisMonth?: true
+    lastSyncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    remoteAuthNamespace?: true
+    remoteAuthKey?: true
+    tenantId?: true
+    workerId?: true
+    status?: true
+    _all?: true
+  }
+
+  export type CompanyWhatsappNumberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyWhatsappNumber to aggregate.
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyWhatsappNumbers to fetch.
+     */
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyWhatsappNumbers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompanyWhatsappNumbers
+    **/
+    _count?: true | CompanyWhatsappNumberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CompanyWhatsappNumberAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CompanyWhatsappNumberSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompanyWhatsappNumberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompanyWhatsappNumberMaxAggregateInputType
+  }
+
+  export type GetCompanyWhatsappNumberAggregateType<T extends CompanyWhatsappNumberAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompanyWhatsappNumber]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompanyWhatsappNumber[P]>
+      : GetScalarType<T[P], AggregateCompanyWhatsappNumber[P]>
+  }
+
+
+
+
+  export type CompanyWhatsappNumberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyWhatsappNumberWhereInput
+    orderBy?: CompanyWhatsappNumberOrderByWithAggregationInput | CompanyWhatsappNumberOrderByWithAggregationInput[]
+    by: CompanyWhatsappNumberScalarFieldEnum[] | CompanyWhatsappNumberScalarFieldEnum
+    having?: CompanyWhatsappNumberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompanyWhatsappNumberCountAggregateInputType | true
+    _avg?: CompanyWhatsappNumberAvgAggregateInputType
+    _sum?: CompanyWhatsappNumberSumAggregateInputType
+    _min?: CompanyWhatsappNumberMinAggregateInputType
+    _max?: CompanyWhatsappNumberMaxAggregateInputType
+  }
+
+  export type CompanyWhatsappNumberGroupByOutputType = {
+    id: string
+    companyId: number
+    displayName: string
+    phoneNumber: string
+    isConnected: boolean
+    messagesThisMonth: number
+    lastSyncedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    remoteAuthNamespace: string | null
+    remoteAuthKey: string | null
+    tenantId: string | null
+    workerId: string | null
+    status: string | null
+    _count: CompanyWhatsappNumberCountAggregateOutputType | null
+    _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
+    _sum: CompanyWhatsappNumberSumAggregateOutputType | null
+    _min: CompanyWhatsappNumberMinAggregateOutputType | null
+    _max: CompanyWhatsappNumberMaxAggregateOutputType | null
+  }
+
+  type GetCompanyWhatsappNumberGroupByPayload<T extends CompanyWhatsappNumberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompanyWhatsappNumberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompanyWhatsappNumberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompanyWhatsappNumberGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanyWhatsappNumberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompanyWhatsappNumberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    messagesThisMonth?: boolean
+    lastSyncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    remoteAuthNamespace?: boolean
+    remoteAuthKey?: boolean
+    tenantId?: boolean
+    workerId?: boolean
+    status?: boolean
+    Company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyWhatsappNumber"]>
+
+  export type CompanyWhatsappNumberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    messagesThisMonth?: boolean
+    lastSyncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    remoteAuthNamespace?: boolean
+    remoteAuthKey?: boolean
+    tenantId?: boolean
+    workerId?: boolean
+    status?: boolean
+    Company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyWhatsappNumber"]>
+
+  export type CompanyWhatsappNumberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    messagesThisMonth?: boolean
+    lastSyncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    remoteAuthNamespace?: boolean
+    remoteAuthKey?: boolean
+    tenantId?: boolean
+    workerId?: boolean
+    status?: boolean
+    Company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyWhatsappNumber"]>
+
+  export type CompanyWhatsappNumberSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    messagesThisMonth?: boolean
+    lastSyncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    remoteAuthNamespace?: boolean
+    remoteAuthKey?: boolean
+    tenantId?: boolean
+    workerId?: boolean
+    status?: boolean
+  }
+
+  export type CompanyWhatsappNumberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "displayName" | "phoneNumber" | "isConnected" | "messagesThisMonth" | "lastSyncedAt" | "createdAt" | "updatedAt" | "remoteAuthNamespace" | "remoteAuthKey" | "tenantId" | "workerId" | "status", ExtArgs["result"]["companyWhatsappNumber"]>
+  export type CompanyWhatsappNumberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type CompanyWhatsappNumberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type CompanyWhatsappNumberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+
+  export type $CompanyWhatsappNumberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompanyWhatsappNumber"
+    objects: {
+      Company: Prisma.$CompanyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: number
+      displayName: string
+      phoneNumber: string
+      isConnected: boolean
+      messagesThisMonth: number
+      lastSyncedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+      remoteAuthNamespace: string | null
+      remoteAuthKey: string | null
+      tenantId: string | null
+      workerId: string | null
+      status: string | null
+    }, ExtArgs["result"]["companyWhatsappNumber"]>
+    composites: {}
+  }
+
+  type CompanyWhatsappNumberGetPayload<S extends boolean | null | undefined | CompanyWhatsappNumberDefaultArgs> = $Result.GetResult<Prisma.$CompanyWhatsappNumberPayload, S>
+
+  type CompanyWhatsappNumberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanyWhatsappNumberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanyWhatsappNumberCountAggregateInputType | true
+    }
+
+  export interface CompanyWhatsappNumberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyWhatsappNumber'], meta: { name: 'CompanyWhatsappNumber' } }
+    /**
+     * Find zero or one CompanyWhatsappNumber that matches the filter.
+     * @param {CompanyWhatsappNumberFindUniqueArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @example
+     * // Get one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompanyWhatsappNumberFindUniqueArgs>(args: SelectSubset<T, CompanyWhatsappNumberFindUniqueArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompanyWhatsappNumber that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompanyWhatsappNumberFindUniqueOrThrowArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @example
+     * // Get one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompanyWhatsappNumberFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyWhatsappNumber that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberFindFirstArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @example
+     * // Get one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompanyWhatsappNumberFindFirstArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindFirstArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyWhatsappNumber that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberFindFirstOrThrowArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @example
+     * // Get one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompanyWhatsappNumberFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompanyWhatsappNumbers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompanyWhatsappNumbers
+     * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany()
+     * 
+     * // Get first 10 CompanyWhatsappNumbers
+     * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CompanyWhatsappNumberFindManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompanyWhatsappNumber.
+     * @param {CompanyWhatsappNumberCreateArgs} args - Arguments to create a CompanyWhatsappNumber.
+     * @example
+     * // Create one CompanyWhatsappNumber
+     * const CompanyWhatsappNumber = await prisma.companyWhatsappNumber.create({
+     *   data: {
+     *     // ... data to create a CompanyWhatsappNumber
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompanyWhatsappNumberCreateArgs>(args: SelectSubset<T, CompanyWhatsappNumberCreateArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompanyWhatsappNumbers.
+     * @param {CompanyWhatsappNumberCreateManyArgs} args - Arguments to create many CompanyWhatsappNumbers.
+     * @example
+     * // Create many CompanyWhatsappNumbers
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompanyWhatsappNumberCreateManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompanyWhatsappNumbers and returns the data saved in the database.
+     * @param {CompanyWhatsappNumberCreateManyAndReturnArgs} args - Arguments to create many CompanyWhatsappNumbers.
+     * @example
+     * // Create many CompanyWhatsappNumbers
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompanyWhatsappNumbers and only return the `id`
+     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompanyWhatsappNumberCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompanyWhatsappNumber.
+     * @param {CompanyWhatsappNumberDeleteArgs} args - Arguments to delete one CompanyWhatsappNumber.
+     * @example
+     * // Delete one CompanyWhatsappNumber
+     * const CompanyWhatsappNumber = await prisma.companyWhatsappNumber.delete({
+     *   where: {
+     *     // ... filter to delete one CompanyWhatsappNumber
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompanyWhatsappNumberDeleteArgs>(args: SelectSubset<T, CompanyWhatsappNumberDeleteArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompanyWhatsappNumber.
+     * @param {CompanyWhatsappNumberUpdateArgs} args - Arguments to update one CompanyWhatsappNumber.
+     * @example
+     * // Update one CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompanyWhatsappNumberUpdateArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompanyWhatsappNumbers.
+     * @param {CompanyWhatsappNumberDeleteManyArgs} args - Arguments to filter CompanyWhatsappNumbers to delete.
+     * @example
+     * // Delete a few CompanyWhatsappNumbers
+     * const { count } = await prisma.companyWhatsappNumber.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompanyWhatsappNumberDeleteManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyWhatsappNumbers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompanyWhatsappNumbers
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompanyWhatsappNumberUpdateManyArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyWhatsappNumbers and returns the data updated in the database.
+     * @param {CompanyWhatsappNumberUpdateManyAndReturnArgs} args - Arguments to update many CompanyWhatsappNumbers.
+     * @example
+     * // Update many CompanyWhatsappNumbers
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompanyWhatsappNumbers and only return the `id`
+     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompanyWhatsappNumberUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompanyWhatsappNumber.
+     * @param {CompanyWhatsappNumberUpsertArgs} args - Arguments to update or create a CompanyWhatsappNumber.
+     * @example
+     * // Update or create a CompanyWhatsappNumber
+     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.upsert({
+     *   create: {
+     *     // ... data to create a CompanyWhatsappNumber
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompanyWhatsappNumber we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompanyWhatsappNumberUpsertArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpsertArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompanyWhatsappNumbers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberCountArgs} args - Arguments to filter CompanyWhatsappNumbers to count.
+     * @example
+     * // Count the number of CompanyWhatsappNumbers
+     * const count = await prisma.companyWhatsappNumber.count({
+     *   where: {
+     *     // ... the filter for the CompanyWhatsappNumbers we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompanyWhatsappNumberCountArgs>(
+      args?: Subset<T, CompanyWhatsappNumberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompanyWhatsappNumberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompanyWhatsappNumber.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompanyWhatsappNumberAggregateArgs>(args: Subset<T, CompanyWhatsappNumberAggregateArgs>): Prisma.PrismaPromise<GetCompanyWhatsappNumberAggregateType<T>>
+
+    /**
+     * Group by CompanyWhatsappNumber.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyWhatsappNumberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompanyWhatsappNumberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompanyWhatsappNumberGroupByArgs['orderBy'] }
+        : { orderBy?: CompanyWhatsappNumberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompanyWhatsappNumberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyWhatsappNumberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompanyWhatsappNumber model
+   */
+  readonly fields: CompanyWhatsappNumberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompanyWhatsappNumber.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompanyWhatsappNumberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    Company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CompanyWhatsappNumber model
+   */
+  interface CompanyWhatsappNumberFieldRefs {
+    readonly id: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly companyId: FieldRef<"CompanyWhatsappNumber", 'Int'>
+    readonly displayName: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly phoneNumber: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly isConnected: FieldRef<"CompanyWhatsappNumber", 'Boolean'>
+    readonly messagesThisMonth: FieldRef<"CompanyWhatsappNumber", 'Int'>
+    readonly lastSyncedAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
+    readonly createdAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
+    readonly updatedAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
+    readonly remoteAuthNamespace: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly remoteAuthKey: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly tenantId: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly workerId: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly status: FieldRef<"CompanyWhatsappNumber", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CompanyWhatsappNumber findUnique
+   */
+  export type CompanyWhatsappNumberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumber to fetch.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+  }
+
+  /**
+   * CompanyWhatsappNumber findUniqueOrThrow
+   */
+  export type CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumber to fetch.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+  }
+
+  /**
+   * CompanyWhatsappNumber findFirst
+   */
+  export type CompanyWhatsappNumberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumber to fetch.
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyWhatsappNumbers to fetch.
+     */
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyWhatsappNumbers.
+     */
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyWhatsappNumbers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyWhatsappNumbers.
+     */
+    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyWhatsappNumber findFirstOrThrow
+   */
+  export type CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumber to fetch.
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyWhatsappNumbers to fetch.
+     */
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanyWhatsappNumbers.
+     */
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyWhatsappNumbers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanyWhatsappNumbers.
+     */
+    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyWhatsappNumber findMany
+   */
+  export type CompanyWhatsappNumberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanyWhatsappNumbers to fetch.
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyWhatsappNumbers to fetch.
+     */
+    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CompanyWhatsappNumbers.
+     */
+    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyWhatsappNumbers.
+     */
+    skip?: number
+    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+  }
+
+  /**
+   * CompanyWhatsappNumber create
+   */
+  export type CompanyWhatsappNumberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CompanyWhatsappNumber.
+     */
+    data: XOR<CompanyWhatsappNumberCreateInput, CompanyWhatsappNumberUncheckedCreateInput>
+  }
+
+  /**
+   * CompanyWhatsappNumber createMany
+   */
+  export type CompanyWhatsappNumberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CompanyWhatsappNumbers.
+     */
+    data: CompanyWhatsappNumberCreateManyInput | CompanyWhatsappNumberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CompanyWhatsappNumber createManyAndReturn
+   */
+  export type CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * The data used to create many CompanyWhatsappNumbers.
+     */
+    data: CompanyWhatsappNumberCreateManyInput | CompanyWhatsappNumberCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyWhatsappNumber update
+   */
+  export type CompanyWhatsappNumberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CompanyWhatsappNumber.
+     */
+    data: XOR<CompanyWhatsappNumberUpdateInput, CompanyWhatsappNumberUncheckedUpdateInput>
+    /**
+     * Choose, which CompanyWhatsappNumber to update.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+  }
+
+  /**
+   * CompanyWhatsappNumber updateMany
+   */
+  export type CompanyWhatsappNumberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CompanyWhatsappNumbers.
+     */
+    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyWhatsappNumbers to update
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * Limit how many CompanyWhatsappNumbers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyWhatsappNumber updateManyAndReturn
+   */
+  export type CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * The data used to update CompanyWhatsappNumbers.
+     */
+    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanyWhatsappNumbers to update
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * Limit how many CompanyWhatsappNumbers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanyWhatsappNumber upsert
+   */
+  export type CompanyWhatsappNumberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CompanyWhatsappNumber to update in case it exists.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+    /**
+     * In case the CompanyWhatsappNumber found by the `where` argument doesn't exist, create a new CompanyWhatsappNumber with this data.
+     */
+    create: XOR<CompanyWhatsappNumberCreateInput, CompanyWhatsappNumberUncheckedCreateInput>
+    /**
+     * In case the CompanyWhatsappNumber was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompanyWhatsappNumberUpdateInput, CompanyWhatsappNumberUncheckedUpdateInput>
+  }
+
+  /**
+   * CompanyWhatsappNumber delete
+   */
+  export type CompanyWhatsappNumberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    /**
+     * Filter which CompanyWhatsappNumber to delete.
+     */
+    where: CompanyWhatsappNumberWhereUniqueInput
+  }
+
+  /**
+   * CompanyWhatsappNumber deleteMany
+   */
+  export type CompanyWhatsappNumberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyWhatsappNumbers to delete
+     */
+    where?: CompanyWhatsappNumberWhereInput
+    /**
+     * Limit how many CompanyWhatsappNumbers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanyWhatsappNumber without action
+   */
+  export type CompanyWhatsappNumberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyWhatsappNumber
+     */
+    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyWhatsappNumber
+     */
+    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -26222,21 +27347,6 @@ export namespace Prisma {
   export type CompanySettingsScalarFieldEnum = (typeof CompanySettingsScalarFieldEnum)[keyof typeof CompanySettingsScalarFieldEnum]
 
 
-  export const CompanyWhatsappNumberScalarFieldEnum: {
-    id: 'id',
-    companyId: 'companyId',
-    displayName: 'displayName',
-    phoneNumber: 'phoneNumber',
-    isConnected: 'isConnected',
-    messagesThisMonth: 'messagesThisMonth',
-    lastSyncedAt: 'lastSyncedAt',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type CompanyWhatsappNumberScalarFieldEnum = (typeof CompanyWhatsappNumberScalarFieldEnum)[keyof typeof CompanyWhatsappNumberScalarFieldEnum]
-
-
   export const InboxCustomerScalarFieldEnum: {
     id: 'id',
     companyId: 'companyId',
@@ -26288,6 +27398,35 @@ export namespace Prisma {
   };
 
   export type InboxMessageScalarFieldEnum = (typeof InboxMessageScalarFieldEnum)[keyof typeof InboxMessageScalarFieldEnum]
+
+
+  export const KvBackupScalarFieldEnum: {
+    key: 'key',
+    value: 'value',
+    updatedAt: 'updatedAt'
+  };
+
+  export type KvBackupScalarFieldEnum = (typeof KvBackupScalarFieldEnum)[keyof typeof KvBackupScalarFieldEnum]
+
+
+  export const CompanyWhatsappNumberScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    displayName: 'displayName',
+    phoneNumber: 'phoneNumber',
+    isConnected: 'isConnected',
+    messagesThisMonth: 'messagesThisMonth',
+    lastSyncedAt: 'lastSyncedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    remoteAuthNamespace: 'remoteAuthNamespace',
+    remoteAuthKey: 'remoteAuthKey',
+    tenantId: 'tenantId',
+    workerId: 'workerId',
+    status: 'status'
+  };
+
+  export type CompanyWhatsappNumberScalarFieldEnum = (typeof CompanyWhatsappNumberScalarFieldEnum)[keyof typeof CompanyWhatsappNumberScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -26592,6 +27731,20 @@ export namespace Prisma {
    * Reference to a field of type 'InboxMessageStatus[]'
    */
   export type ListEnumInboxMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InboxMessageStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes'
+   */
+  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes[]'
+   */
+  export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
     
 
 
@@ -27909,84 +29062,6 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"CompanySettings"> | Date | string
   }
 
-  export type CompanyWhatsappNumberWhereInput = {
-    AND?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
-    OR?: CompanyWhatsappNumberWhereInput[]
-    NOT?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
-    id?: StringFilter<"CompanyWhatsappNumber"> | string
-    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
-    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
-    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
-    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
-    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
-    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
-    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
-  }
-
-  export type CompanyWhatsappNumberOrderByWithRelationInput = {
-    id?: SortOrder
-    companyId?: SortOrder
-    displayName?: SortOrder
-    phoneNumber?: SortOrder
-    isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    company?: CompanyOrderByWithRelationInput
-  }
-
-  export type CompanyWhatsappNumberWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    companyId_phoneNumber?: CompanyWhatsappNumberCompanyIdPhoneNumberCompoundUniqueInput
-    AND?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
-    OR?: CompanyWhatsappNumberWhereInput[]
-    NOT?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
-    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
-    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
-    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
-    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
-    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
-    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
-    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
-  }, "id" | "companyId_phoneNumber">
-
-  export type CompanyWhatsappNumberOrderByWithAggregationInput = {
-    id?: SortOrder
-    companyId?: SortOrder
-    displayName?: SortOrder
-    phoneNumber?: SortOrder
-    isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: CompanyWhatsappNumberCountOrderByAggregateInput
-    _avg?: CompanyWhatsappNumberAvgOrderByAggregateInput
-    _max?: CompanyWhatsappNumberMaxOrderByAggregateInput
-    _min?: CompanyWhatsappNumberMinOrderByAggregateInput
-    _sum?: CompanyWhatsappNumberSumOrderByAggregateInput
-  }
-
-  export type CompanyWhatsappNumberScalarWhereWithAggregatesInput = {
-    AND?: CompanyWhatsappNumberScalarWhereWithAggregatesInput | CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
-    OR?: CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
-    NOT?: CompanyWhatsappNumberScalarWhereWithAggregatesInput | CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
-    companyId?: IntWithAggregatesFilter<"CompanyWhatsappNumber"> | number
-    displayName?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
-    phoneNumber?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
-    isConnected?: BoolWithAggregatesFilter<"CompanyWhatsappNumber"> | boolean
-    messagesThisMonth?: IntWithAggregatesFilter<"CompanyWhatsappNumber"> | number
-    lastSyncedAt?: DateTimeNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string
-  }
-
   export type InboxCustomerWhereInput = {
     AND?: InboxCustomerWhereInput | InboxCustomerWhereInput[]
     OR?: InboxCustomerWhereInput[]
@@ -28276,6 +29351,151 @@ export namespace Prisma {
     sentAt?: DateTimeWithAggregatesFilter<"InboxMessage"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"InboxMessage"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"InboxMessage"> | Date | string
+  }
+
+  export type KvBackupWhereInput = {
+    AND?: KvBackupWhereInput | KvBackupWhereInput[]
+    OR?: KvBackupWhereInput[]
+    NOT?: KvBackupWhereInput | KvBackupWhereInput[]
+    key?: StringFilter<"KvBackup"> | string
+    value?: BytesFilter<"KvBackup"> | Bytes
+    updatedAt?: DateTimeFilter<"KvBackup"> | Date | string
+  }
+
+  export type KvBackupOrderByWithRelationInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KvBackupWhereUniqueInput = Prisma.AtLeast<{
+    key?: string
+    AND?: KvBackupWhereInput | KvBackupWhereInput[]
+    OR?: KvBackupWhereInput[]
+    NOT?: KvBackupWhereInput | KvBackupWhereInput[]
+    value?: BytesFilter<"KvBackup"> | Bytes
+    updatedAt?: DateTimeFilter<"KvBackup"> | Date | string
+  }, "key">
+
+  export type KvBackupOrderByWithAggregationInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    _count?: KvBackupCountOrderByAggregateInput
+    _max?: KvBackupMaxOrderByAggregateInput
+    _min?: KvBackupMinOrderByAggregateInput
+  }
+
+  export type KvBackupScalarWhereWithAggregatesInput = {
+    AND?: KvBackupScalarWhereWithAggregatesInput | KvBackupScalarWhereWithAggregatesInput[]
+    OR?: KvBackupScalarWhereWithAggregatesInput[]
+    NOT?: KvBackupScalarWhereWithAggregatesInput | KvBackupScalarWhereWithAggregatesInput[]
+    key?: StringWithAggregatesFilter<"KvBackup"> | string
+    value?: BytesWithAggregatesFilter<"KvBackup"> | Bytes
+    updatedAt?: DateTimeWithAggregatesFilter<"KvBackup"> | Date | string
+  }
+
+  export type CompanyWhatsappNumberWhereInput = {
+    AND?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
+    OR?: CompanyWhatsappNumberWhereInput[]
+    NOT?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
+    id?: StringFilter<"CompanyWhatsappNumber"> | string
+    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
+    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
+    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
+    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
+    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
+    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
+    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    remoteAuthNamespace?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    Company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }
+
+  export type CompanyWhatsappNumberOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    remoteAuthNamespace?: SortOrderInput | SortOrder
+    remoteAuthKey?: SortOrderInput | SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    workerId?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    Company?: CompanyOrderByWithRelationInput
+  }
+
+  export type CompanyWhatsappNumberWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    companyId_phoneNumber?: CompanyWhatsappNumberCompanyIdPhoneNumberCompoundUniqueInput
+    AND?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
+    OR?: CompanyWhatsappNumberWhereInput[]
+    NOT?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
+    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
+    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
+    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
+    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
+    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
+    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
+    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    remoteAuthNamespace?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    Company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }, "id" | "companyId_phoneNumber">
+
+  export type CompanyWhatsappNumberOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    remoteAuthNamespace?: SortOrderInput | SortOrder
+    remoteAuthKey?: SortOrderInput | SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    workerId?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    _count?: CompanyWhatsappNumberCountOrderByAggregateInput
+    _avg?: CompanyWhatsappNumberAvgOrderByAggregateInput
+    _max?: CompanyWhatsappNumberMaxOrderByAggregateInput
+    _min?: CompanyWhatsappNumberMinOrderByAggregateInput
+    _sum?: CompanyWhatsappNumberSumOrderByAggregateInput
+  }
+
+  export type CompanyWhatsappNumberScalarWhereWithAggregatesInput = {
+    AND?: CompanyWhatsappNumberScalarWhereWithAggregatesInput | CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
+    OR?: CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
+    NOT?: CompanyWhatsappNumberScalarWhereWithAggregatesInput | CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
+    companyId?: IntWithAggregatesFilter<"CompanyWhatsappNumber"> | number
+    displayName?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
+    phoneNumber?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
+    isConnected?: BoolWithAggregatesFilter<"CompanyWhatsappNumber"> | boolean
+    messagesThisMonth?: IntWithAggregatesFilter<"CompanyWhatsappNumber"> | number
+    lastSyncedAt?: DateTimeNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string
+    remoteAuthNamespace?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
+    remoteAuthKey?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
+    tenantId?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
+    workerId?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
+    status?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
   }
 
   export type UserCreateInput = {
@@ -29684,89 +30904,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyWhatsappNumberCreateInput = {
-    id?: string
-    displayName: string
-    phoneNumber: string
-    isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    company: CompanyCreateNestedOneWithoutWhatsappNumbersInput
-  }
-
-  export type CompanyWhatsappNumberUncheckedCreateInput = {
-    id?: string
-    companyId: number
-    displayName: string
-    phoneNumber: string
-    isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CompanyWhatsappNumberUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    company?: CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput
-  }
-
-  export type CompanyWhatsappNumberUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyId?: IntFieldUpdateOperationsInput | number
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CompanyWhatsappNumberCreateManyInput = {
-    id?: string
-    companyId: number
-    displayName: string
-    phoneNumber: string
-    isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CompanyWhatsappNumberUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CompanyWhatsappNumberUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyId?: IntFieldUpdateOperationsInput | number
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type InboxCustomerCreateInput = {
     id?: string
     name: string
@@ -30074,6 +31211,166 @@ export namespace Prisma {
     sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KvBackupCreateInput = {
+    key: string
+    value: Bytes
+    updatedAt?: Date | string
+  }
+
+  export type KvBackupUncheckedCreateInput = {
+    key: string
+    value: Bytes
+    updatedAt?: Date | string
+  }
+
+  export type KvBackupUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: BytesFieldUpdateOperationsInput | Bytes
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KvBackupUncheckedUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: BytesFieldUpdateOperationsInput | Bytes
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KvBackupCreateManyInput = {
+    key: string
+    value: Bytes
+    updatedAt?: Date | string
+  }
+
+  export type KvBackupUpdateManyMutationInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: BytesFieldUpdateOperationsInput | Bytes
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KvBackupUncheckedUpdateManyInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: BytesFieldUpdateOperationsInput | Bytes
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyWhatsappNumberCreateInput = {
+    id?: string
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    remoteAuthNamespace?: string | null
+    remoteAuthKey?: string | null
+    tenantId?: string | null
+    workerId?: string | null
+    status?: string | null
+    Company: CompanyCreateNestedOneWithoutWhatsappNumbersInput
+  }
+
+  export type CompanyWhatsappNumberUncheckedCreateInput = {
+    id?: string
+    companyId: number
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    remoteAuthNamespace?: string | null
+    remoteAuthKey?: string | null
+    tenantId?: string | null
+    workerId?: string | null
+    status?: string | null
+  }
+
+  export type CompanyWhatsappNumberUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    Company?: CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput
+  }
+
+  export type CompanyWhatsappNumberUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CompanyWhatsappNumberCreateManyInput = {
+    id?: string
+    companyId: number
+    displayName: string
+    phoneNumber: string
+    isConnected?: boolean
+    messagesThisMonth?: number
+    lastSyncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    remoteAuthNamespace?: string | null
+    remoteAuthKey?: string | null
+    tenantId?: string | null
+    workerId?: string | null
+    status?: string | null
+  }
+
+  export type CompanyWhatsappNumberUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CompanyWhatsappNumberUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    displayName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    messagesThisMonth?: IntFieldUpdateOperationsInput | number
+    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -31391,57 +32688,6 @@ export namespace Prisma {
     companyId?: SortOrder
   }
 
-  export type CompanyWhatsappNumberCompanyIdPhoneNumberCompoundUniqueInput = {
-    companyId: number
-    phoneNumber: string
-  }
-
-  export type CompanyWhatsappNumberCountOrderByAggregateInput = {
-    id?: SortOrder
-    companyId?: SortOrder
-    displayName?: SortOrder
-    phoneNumber?: SortOrder
-    isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type CompanyWhatsappNumberAvgOrderByAggregateInput = {
-    companyId?: SortOrder
-    messagesThisMonth?: SortOrder
-  }
-
-  export type CompanyWhatsappNumberMaxOrderByAggregateInput = {
-    id?: SortOrder
-    companyId?: SortOrder
-    displayName?: SortOrder
-    phoneNumber?: SortOrder
-    isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type CompanyWhatsappNumberMinOrderByAggregateInput = {
-    id?: SortOrder
-    companyId?: SortOrder
-    displayName?: SortOrder
-    phoneNumber?: SortOrder
-    isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type CompanyWhatsappNumberSumOrderByAggregateInput = {
-    companyId?: SortOrder
-    messagesThisMonth?: SortOrder
-  }
-
   export type InboxCustomerCompanyIdPhoneCompoundUniqueInput = {
     companyId: number
     phone: string
@@ -31728,6 +32974,107 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInboxMessageStatusFilter<$PrismaModel>
     _max?: NestedEnumInboxMessageStatusFilter<$PrismaModel>
+  }
+
+  export type BytesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesFilter<$PrismaModel> | Bytes
+  }
+
+  export type KvBackupCountOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KvBackupMaxOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KvBackupMinOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Bytes
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
+  }
+
+  export type CompanyWhatsappNumberCompanyIdPhoneNumberCompoundUniqueInput = {
+    companyId: number
+    phoneNumber: string
+  }
+
+  export type CompanyWhatsappNumberCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    remoteAuthNamespace?: SortOrder
+    remoteAuthKey?: SortOrder
+    tenantId?: SortOrder
+    workerId?: SortOrder
+    status?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+    messagesThisMonth?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    remoteAuthNamespace?: SortOrder
+    remoteAuthKey?: SortOrder
+    tenantId?: SortOrder
+    workerId?: SortOrder
+    status?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    displayName?: SortOrder
+    phoneNumber?: SortOrder
+    isConnected?: SortOrder
+    messagesThisMonth?: SortOrder
+    lastSyncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    remoteAuthNamespace?: SortOrder
+    remoteAuthKey?: SortOrder
+    tenantId?: SortOrder
+    workerId?: SortOrder
+    status?: SortOrder
+  }
+
+  export type CompanyWhatsappNumberSumOrderByAggregateInput = {
+    companyId?: SortOrder
+    messagesThisMonth?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -33136,20 +34483,6 @@ export namespace Prisma {
     update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutSettingsInput, CompanyUpdateWithoutSettingsInput>, CompanyUncheckedUpdateWithoutSettingsInput>
   }
 
-  export type CompanyCreateNestedOneWithoutWhatsappNumbersInput = {
-    create?: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutWhatsappNumbersInput
-    connect?: CompanyWhereUniqueInput
-  }
-
-  export type CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput = {
-    create?: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutWhatsappNumbersInput
-    upsert?: CompanyUpsertWithoutWhatsappNumbersInput
-    connect?: CompanyWhereUniqueInput
-    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutWhatsappNumbersInput, CompanyUpdateWithoutWhatsappNumbersInput>, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
-  }
-
   export type CompanyCreateNestedOneWithoutInboxCustomersInput = {
     create?: XOR<CompanyCreateWithoutInboxCustomersInput, CompanyUncheckedCreateWithoutInboxCustomersInput>
     connectOrCreate?: CompanyCreateOrConnectWithoutInboxCustomersInput
@@ -33355,6 +34688,24 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInboxMessagesInput, UserUpdateWithoutInboxMessagesInput>, UserUncheckedUpdateWithoutInboxMessagesInput>
+  }
+
+  export type BytesFieldUpdateOperationsInput = {
+    set?: Bytes
+  }
+
+  export type CompanyCreateNestedOneWithoutWhatsappNumbersInput = {
+    create?: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutWhatsappNumbersInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput = {
+    create?: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutWhatsappNumbersInput
+    upsert?: CompanyUpsertWithoutWhatsappNumbersInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutWhatsappNumbersInput, CompanyUpdateWithoutWhatsappNumbersInput>, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -33840,6 +35191,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInboxMessageStatusFilter<$PrismaModel>
     _max?: NestedEnumInboxMessageStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBytesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesFilter<$PrismaModel> | Bytes
+  }
+
+  export type NestedBytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel>
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Bytes
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -35666,6 +37034,11 @@ export namespace Prisma {
     lastSyncedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    remoteAuthNamespace?: string | null
+    remoteAuthKey?: string | null
+    tenantId?: string | null
+    workerId?: string | null
+    status?: string | null
   }
 
   export type CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput = {
@@ -35677,6 +37050,11 @@ export namespace Prisma {
     lastSyncedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    remoteAuthNamespace?: string | null
+    remoteAuthKey?: string | null
+    tenantId?: string | null
+    workerId?: string | null
+    status?: string | null
   }
 
   export type CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput = {
@@ -35961,6 +37339,11 @@ export namespace Prisma {
     lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
     createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
     updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
+    remoteAuthNamespace?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
   }
 
   export type CompanyCreateWithoutKnowledgeItemsInput = {
@@ -37670,100 +39053,6 @@ export namespace Prisma {
     whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
-  export type CompanyCreateWithoutWhatsappNumbersInput = {
-    name: string
-    description?: string | null
-    tokenApi?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
-    user?: UserCreateNestedManyWithoutCompanyInput
-    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
-    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
-    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
-    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
-    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
-    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
-    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
-    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
-    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-  }
-
-  export type CompanyUncheckedCreateWithoutWhatsappNumbersInput = {
-    id?: number
-    name: string
-    description?: string | null
-    tokenApi?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
-    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
-    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
-    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
-    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
-    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
-    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
-    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
-    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
-    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
-    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-  }
-
-  export type CompanyCreateOrConnectWithoutWhatsappNumbersInput = {
-    where: CompanyWhereUniqueInput
-    create: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
-  }
-
-  export type CompanyUpsertWithoutWhatsappNumbersInput = {
-    update: XOR<CompanyUpdateWithoutWhatsappNumbersInput, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
-    create: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
-    where?: CompanyWhereInput
-  }
-
-  export type CompanyUpdateToOneWithWhereWithoutWhatsappNumbersInput = {
-    where?: CompanyWhereInput
-    data: XOR<CompanyUpdateWithoutWhatsappNumbersInput, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
-  }
-
-  export type CompanyUpdateWithoutWhatsappNumbersInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
-    user?: UserUpdateManyWithoutCompanyNestedInput
-    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
-    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
-    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
-    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
-    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
-    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
-    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
-    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
-    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-  }
-
-  export type CompanyUncheckedUpdateWithoutWhatsappNumbersInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
-    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
-    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
-    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
-    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
-    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
-    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
-    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
-    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
-    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
-    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-  }
-
   export type CompanyCreateWithoutInboxCustomersInput = {
     name: string
     description?: string | null
@@ -38644,6 +39933,100 @@ export namespace Prisma {
     assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
   }
 
+  export type CompanyCreateWithoutWhatsappNumbersInput = {
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    user?: UserCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutWhatsappNumbersInput = {
+    id?: number
+    name: string
+    description?: string | null
+    tokenApi?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    user?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedCreateNestedManyWithoutCompanyInput
+    UsageTracking?: UsageTrackingUncheckedCreateNestedManyWithoutCompanyInput
+    knowledgeItems?: KnowledgeItemUncheckedCreateNestedManyWithoutCompanyInput
+    quickAnswers?: QuickAnswerUncheckedCreateNestedManyWithoutCompanyInput
+    aiTemplates?: AiTemplateUncheckedCreateNestedManyWithoutCompanyInput
+    inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
+    inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
+    inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
+    settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutWhatsappNumbersInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+  }
+
+  export type CompanyUpsertWithoutWhatsappNumbersInput = {
+    update: XOR<CompanyUpdateWithoutWhatsappNumbersInput, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
+    create: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutWhatsappNumbersInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutWhatsappNumbersInput, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
+  }
+
+  export type CompanyUpdateWithoutWhatsappNumbersInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    user?: UserUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutWhatsappNumbersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    user?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    CustomerSubscription?: CustomerSubscriptionUncheckedUpdateManyWithoutCompanyNestedInput
+    UsageTracking?: UsageTrackingUncheckedUpdateManyWithoutCompanyNestedInput
+    knowledgeItems?: KnowledgeItemUncheckedUpdateManyWithoutCompanyNestedInput
+    quickAnswers?: QuickAnswerUncheckedUpdateManyWithoutCompanyNestedInput
+    aiTemplates?: AiTemplateUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
+    inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
+    settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
+  }
+
   export type AccountCreateManyUserInput = {
     id?: string
     type: string
@@ -39348,6 +40731,11 @@ export namespace Prisma {
     lastSyncedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    remoteAuthNamespace?: string | null
+    remoteAuthKey?: string | null
+    tenantId?: string | null
+    workerId?: string | null
+    status?: string | null
   }
 
   export type CompanyMemberUpdateWithoutCompanyInput = {
@@ -39806,6 +41194,11 @@ export namespace Prisma {
     lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CompanyWhatsappNumberUncheckedUpdateWithoutCompanyInput = {
@@ -39817,6 +41210,11 @@ export namespace Prisma {
     lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyInput = {
@@ -39828,6 +41226,11 @@ export namespace Prisma {
     lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AiTemplateOptionCreateManyTemplateInput = {

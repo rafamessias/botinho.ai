@@ -349,23 +349,6 @@ model CompanySettings {
   @@map("company_settings")
 }
 
-model CompanyWhatsappNumber {
-  id                String    @id @default(cuid())
-  companyId         Int
-  displayName       String
-  phoneNumber       String
-  isConnected       Boolean   @default(false)
-  messagesThisMonth Int       @default(0)
-  lastSyncedAt      DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@unique([companyId, phoneNumber])
-  @@index([companyId])
-  @@map("company_whatsapp_numbers")
-}
-
 enum Language {
   en
   pt_BR
@@ -485,4 +468,34 @@ model InboxMessage {
   @@index([conversationId])
   @@index([sentAt])
   @@map("inbox_messages")
+}
+
+model KvBackup {
+  key       String   @id
+  value     Bytes
+  updatedAt DateTime @updatedAt
+}
+
+model CompanyWhatsappNumber {
+  id                String    @id @default(cuid())
+  companyId         Int
+  displayName       String
+  phoneNumber       String
+  isConnected       Boolean   @default(false)
+  messagesThisMonth Int       @default(0)
+  lastSyncedAt      DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  remoteAuthNamespace String?
+  remoteAuthKey       String? // equals sessionId
+
+  tenantId String?
+  workerId String?
+  status   String?
+  Company  Company @relation(fields: [companyId], references: [id])
+
+  @@unique([companyId, phoneNumber])
+  @@index([companyId])
+  @@map("company_whatsapp_numbers")
 }

@@ -131,6 +131,29 @@ export const CustomerPage = () => {
         [handleCloseModal, modalMode, selectedCustomer, t],
     )
 
+    const handleBulkImport = useCallback(
+        async (customersToImport: Omit<Customer, "id" | "createdAt" | "updatedAt">[]) => {
+            try {
+                const timestamp = new Date().toISOString()
+                const newCustomers: Customer[] = customersToImport.map((customer) => ({
+                    ...customer,
+                    id: generateCustomerId(),
+                    createdAt: timestamp,
+                    updatedAt: timestamp,
+                }))
+
+                setCustomers((previous) => [...newCustomers, ...previous])
+                toast.success(t("messages.customersImported", { count: newCustomers.length }))
+                handleCloseModal()
+            } catch (error) {
+                console.error("Failed to import customers", error)
+                toast.error(t("messages.customersImportError"))
+                throw error
+            }
+        },
+        [handleCloseModal, t],
+    )
+
     const filteredCustomers = useMemo(() => {
         const query = searchTerm.trim().toLowerCase()
         if (!query) {
@@ -190,6 +213,7 @@ export const CustomerPage = () => {
                 onSubmit={handleSubmitCustomer}
                 initialCustomer={selectedCustomer}
                 isSubmitting={isSaving}
+                onBulkImport={handleBulkImport}
             />
         </div>
     )
