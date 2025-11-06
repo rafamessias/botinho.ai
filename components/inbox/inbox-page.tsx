@@ -34,13 +34,13 @@ import {
     Sparkles,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { resolveWsBackendUrl } from "@/lib/ws-utils"
 import { useUser } from "@/components/user-provider"
 import { useSidebar } from "../ui/sidebar"
 import {
     getInboxConversationsAction,
     getInboxConversationDetailAction,
     getSuggestedResponsesAction,
+    getInboxWhatsappWsUrlAction,
     markInboxConversationReadAction,
     sendInboxMessageAction,
 } from "../server-actions/inbox"
@@ -212,11 +212,12 @@ export default function InboxPage() {
     const [isLoadingConversations, setIsLoadingConversations] = useState(true)
     const [isLoadingMessages, setIsLoadingMessages] = useState(false)
     const [isSendingMessage, setIsSendingMessage] = useState(false)
+    const [wsUrl, setWsUrl] = useState<string | null>(null)
     const messageInputRef = useRef<HTMLTextAreaElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const initialLoadRef = useRef(false)
     const socketRef = useRef<WebSocket | null>(null)
-    const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const reconnectTimeoutRef = useRef<number | null>(null)
     const reconnectAttemptsRef = useRef(0)
     const shouldReconnectRef = useRef(true)
 
@@ -393,14 +394,35 @@ export default function InboxPage() {
         [buildConversationSummary, fetchConversationDetail, selectedConversationId],
     )
 
+    const loadWhatsappWsUrl = useCallback(async () => {
+        if (!companyId) {
+            setWsUrl(null)
+            return
+        }
+
+        try {
+            const result = await getInboxWhatsappWsUrlAction({ companyId })
+            console.log("WhatsApp WebSocket URL result:", result)
+            if (result.success && result.data) {
+                setWsUrl(result.data.wsUrl)
+            } else {
+                setWsUrl(null)
+            }
+        } catch (error) {
+            console.error("Failed to load WhatsApp WebSocket URL", error)
+            setWsUrl(null)
+        }
+    }, [companyId])
+
     useEffect(() => {
         if (!companyId || initialLoadRef.current) {
             return
         }
 
         initialLoadRef.current = true
+        void loadWhatsappWsUrl()
         void loadConversations(1, "")
-    }, [companyId, loadConversations])
+    }, [companyId, loadConversations, loadWhatsappWsUrl])
 
     useEffect(() => {
         if (!companyId) {
@@ -409,8 +431,9 @@ export default function InboxPage() {
             setMessages([])
             setSuggestedResponses([])
             setSelectedConversationId(null)
-        setSearchQuery("")
-        setMessageInput("")
+            setSearchQuery("")
+            setMessageInput("")
+            setWsUrl(null)
             return
         }
 
@@ -419,9 +442,10 @@ export default function InboxPage() {
         setMessages([])
         setSuggestedResponses([])
         setSelectedConversationId(null)
-    setSearchQuery("")
-    setMessageInput("")
-    }, [companyId])
+        setSearchQuery("")
+        setMessageInput("")
+        void loadWhatsappWsUrl()
+    }, [companyId, loadWhatsappWsUrl])
 
     useEffect(() => {
         if (!initialLoadRef.current) {
@@ -560,13 +584,15 @@ export default function InboxPage() {
     )
 
     useEffect(() => {
-        if (!companyId) {
+        if (!companyId || !wsUrl) {
+            if (socketRef.current) {
+                socketRef.current.close()
+                socketRef.current = null
+            }
             return
         }
 
         shouldReconnectRef.current = true
-
-        const connectionUrl = resolveWsBackendUrl()
 
         const connect = () => {
             if (!shouldReconnectRef.current) {
@@ -576,7 +602,7 @@ export default function InboxPage() {
             let socket: WebSocket
 
             try {
-                socket = new WebSocket(connectionUrl)
+                socket = new WebSocket(wsUrl)
             } catch (error) {
                 console.error("Inbox realtime socket initialization failed", error)
                 const attempt = reconnectAttemptsRef.current
@@ -645,7 +671,7 @@ export default function InboxPage() {
                 socketRef.current = null
             }
         }
-    }, [companyId, handleRealtimeEvent])
+    }, [companyId, wsUrl, handleRealtimeEvent])
 
     const handleSelectConversation = useCallback(
         async (conversationId: string) => {

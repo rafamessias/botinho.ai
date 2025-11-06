@@ -492,6 +492,7 @@ model CompanyWhatsappNumber {
 
   tenantId String?
   workerId String?
+  wsUrl    String?
   status   String?
   Company  Company @relation(fields: [companyId], references: [id])
 

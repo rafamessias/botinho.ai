@@ -5,6 +5,131 @@ import { InboxConversationPriority, InboxMessageSenderType, InboxMessageStatus, 
 import { z } from "zod"
 import { BaseActionResponse, handleAction, resolveCompanyContext } from "./utils"
 
+// WhatsApp Controller URL
+const WHATSAPP_CONTROLLER_URL = process.env.WHATSAPP_CONTROLLER_URL || process.env.NEXT_PUBLIC_WHATSAPP_CONTROLLER_URL || "http://localhost:8080"
+
+// Normalize phone number (remove +, spaces, dashes, etc.)
+const normalizePhoneNumber = (phone: string): string => {
+    return phone.replace(/[^\d]/g, "")
+}
+
+// Find WhatsApp number for a conversation (by customer phone)
+const findWhatsAppNumberForConversation = async (
+    companyId: number,
+    conversationId: string,
+): Promise<{ whatsappNumber: { id: string; phoneNumber: string; tenantId: string | null; sessionId: string | null } | null; customerPhone: string | null }> => {
+    const conversation = await prisma.inboxConversation.findFirst({
+        where: {
+            id: conversationId,
+            companyId,
+        },
+        include: {
+            customer: {
+                select: {
+                    phone: true,
+                },
+            },
+        },
+    })
+
+    if (!conversation || !conversation.customer.phone) {
+        return { whatsappNumber: null, customerPhone: null }
+    }
+
+    const normalizedCustomerPhone = normalizePhoneNumber(conversation.customer.phone)
+
+    // Find WhatsApp number that matches the customer's phone or is connected
+    const whatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+        where: {
+            companyId,
+            isConnected: true,
+            OR: [
+                { phoneNumber: normalizedCustomerPhone },
+                { phoneNumber: conversation.customer.phone },
+            ],
+        },
+        select: {
+            id: true,
+            phoneNumber: true,
+            tenantId: true,
+            remoteAuthKey: true,
+        },
+    })
+
+    if (!whatsappNumber) {
+        // If no exact match, try to find any connected WhatsApp number for this company
+        // This allows sending to any number if the company has a WhatsApp number configured
+        const fallbackWhatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+            where: {
+                companyId,
+                isConnected: true,
+            },
+            select: {
+                id: true,
+                phoneNumber: true,
+                tenantId: true,
+                remoteAuthKey: true,
+            },
+        })
+
+        return {
+            whatsappNumber: fallbackWhatsappNumber
+                ? {
+                    id: fallbackWhatsappNumber.id,
+                    phoneNumber: fallbackWhatsappNumber.phoneNumber,
+                    tenantId: fallbackWhatsappNumber.tenantId,
+                    sessionId: fallbackWhatsappNumber.remoteAuthKey,
+                }
+                : null,
+            customerPhone: conversation.customer.phone,
+        }
+    }
+
+    return {
+        whatsappNumber: {
+            id: whatsappNumber.id,
+            phoneNumber: whatsappNumber.phoneNumber,
+            tenantId: whatsappNumber.tenantId,
+            sessionId: whatsappNumber.remoteAuthKey,
+        },
+        customerPhone: conversation.customer.phone,
+    }
+}
+
+// Send message via WhatsApp Controller API
+const sendWhatsAppMessage = async (
+    tenantId: string,
+    sessionId: string,
+    to: string,
+    content: string,
+): Promise<{ success: boolean; error?: string }> => {
+    try {
+        const controllerResponse = await fetch(`${WHATSAPP_CONTROLLER_URL}/sessions/${sessionId}/messages`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                tenantId,
+                to,
+                message: {
+                    body: content,
+                    type: "text",
+                },
+            }),
+        })
+
+        if (!controllerResponse.ok) {
+            const errorText = await controllerResponse.text().catch(() => "Unknown error")
+            console.error("Failed to send WhatsApp message:", controllerResponse.status, errorText)
+            return { success: false, error: `Failed to send WhatsApp message: ${controllerResponse.status} ${errorText}` }
+        }
+
+        return { success: true }
+    } catch (error) {
+        console.error("Error sending WhatsApp message:", error)
+        return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
+    }
+}
+
 const baseCustomerSchema = z.object({
     name: z.string().trim().min(1),
     phone: z
@@ -99,7 +224,7 @@ export const getInboxConversationsAction = async (
 
         const searchTerm = payload.search?.trim() ?? ""
 
-        const where = {
+        const where: Prisma.InboxConversationWhereInput = {
             companyId,
             ...(payload.includeArchived ? {} : { isArchived: false }),
             ...(searchTerm
@@ -145,13 +270,13 @@ export const getInboxConversationsAction = async (
 
         const totalPages = Math.max(1, Math.ceil(total / pageSize))
         const metrics = payload.includeCounts
-            ? { unreadTotal: unreadAggregate._sum.unreadCount ?? 0 }
+            ? { unreadTotal: unreadAggregate._sum?.unreadCount ?? 0 }
             : undefined
 
         return {
             success: true,
             data: {
-                conversations,
+                conversations: conversations as ConversationWithRelations[],
                 pagination: { page, pageSize, total, totalPages },
                 ...(metrics ? { metrics } : {}),
             },
@@ -387,6 +512,68 @@ export const sendInboxMessageAction = async (
 
             return { message, conversation: updatedConversation }
         })
+
+        // If message is from agent, try to send via WhatsApp
+        if (payload.senderType === InboxMessageSenderType.agent) {
+            try {
+                const { whatsappNumber, customerPhone } = await findWhatsAppNumberForConversation(
+                    companyId,
+                    payload.conversationId,
+                )
+
+                if (whatsappNumber && customerPhone && whatsappNumber.sessionId && whatsappNumber.tenantId) {
+                    const normalizedCustomerPhone = normalizePhoneNumber(customerPhone)
+                    const whatsappResult = await sendWhatsAppMessage(
+                        whatsappNumber.tenantId,
+                        whatsappNumber.sessionId,
+                        normalizedCustomerPhone,
+                        payload.content,
+                    )
+
+                    if (whatsappResult.success) {
+                        // Update message count for WhatsApp number
+                        await prisma.companyWhatsappNumber.update({
+                            where: { id: whatsappNumber.id },
+                            data: {
+                                messagesThisMonth: { increment: 1 },
+                                lastSyncedAt: new Date(),
+                            },
+                        })
+
+                        // Notify WebSocket server about sent message
+                        await notifyWebSocketServer(
+                            companyId,
+                            "inbox.message",
+                            {
+                                conversationId: payload.conversationId,
+                                conversation: result.conversation,
+                                message: result.message,
+                            },
+                        )
+                    } else {
+                        console.warn("Failed to send WhatsApp message, but inbox message was saved:", whatsappResult.error)
+                    }
+                }
+            } catch (error) {
+                // Log error but don't fail the action - the message is already saved in inbox
+                console.error("Error sending WhatsApp message:", error)
+            }
+        } else {
+            // Even if not sending via WhatsApp, notify WebSocket for real-time updates
+            try {
+                await notifyWebSocketServer(
+                    companyId,
+                    "inbox.message",
+                    {
+                        conversationId: payload.conversationId,
+                        conversation: result.conversation,
+                        message: result.message,
+                    },
+                )
+            } catch (error) {
+                console.error("Failed to notify WebSocket server:", error)
+            }
+        }
 
         return {
             success: true,
@@ -640,3 +827,285 @@ export const getSuggestedResponsesAction = async (
             data: suggestions,
         }
     })
+
+const getInboxWhatsappWsUrlSchema = z.object({
+    companyId: z.number().int().positive().optional(),
+})
+
+export const getInboxWhatsappWsUrlAction = async (
+    input?: z.infer<typeof getInboxWhatsappWsUrlSchema>,
+): Promise<
+    BaseActionResponse<{
+        wsUrl: string | null
+    }>
+> =>
+    handleAction(async () => {
+        const payload = getInboxWhatsappWsUrlSchema.parse(input ?? {})
+        const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
+
+        // Find the first connected WhatsApp number for this company
+        const whatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+            where: {
+                companyId,
+                isConnected: true,
+            },
+            select: {
+                wsUrl: true,
+            },
+            orderBy: {
+                lastSyncedAt: "desc",
+            },
+        })
+
+        return {
+            success: true,
+            data: {
+                wsUrl: whatsappNumber?.wsUrl ?? null,
+            },
+        }
+    })
+
+// WhatsApp Webhook Handling
+export interface WhatsAppWebhookPayload {
+    event: string
+    tenantId?: string
+    sessionId?: string
+    data?: {
+        from?: string
+        to?: string
+        message?: {
+            body?: string
+            type?: string
+        }
+        phoneNumber?: string
+        displayName?: string
+        status?: string
+    }
+}
+
+const processWhatsAppWebhookSchema = z.object({
+    event: z.string(),
+    tenantId: z.string().optional(),
+    sessionId: z.string().optional(),
+    data: z
+        .object({
+            from: z.string().optional(),
+            to: z.string().optional(),
+            message: z
+                .object({
+                    body: z.string().optional(),
+                    type: z.string().optional(),
+                })
+                .optional(),
+            phoneNumber: z.string().optional(),
+            displayName: z.string().optional(),
+            status: z.string().optional(),
+        })
+        .optional(),
+})
+
+export const processWhatsAppWebhookAction = async (
+    input: WhatsAppWebhookPayload,
+): Promise<
+    BaseActionResponse<{
+        conversationId?: string
+        messageId?: string
+        companyId?: number
+        conversation?: ConversationWithRelations
+        message?: InboxMessageEntity
+    }>
+> =>
+    handleAction(async () => {
+        const payload = processWhatsAppWebhookSchema.parse(input)
+
+        // Handle message events
+        if (payload.event === "message" && payload.data) {
+            const { from, to, message } = payload.data
+
+            if (!from || !to || !message?.body) {
+                return { success: false, error: "Missing required fields: from, to, or message.body" }
+            }
+
+            const tenantId = payload.tenantId
+            if (!tenantId) {
+                return { success: false, error: "Missing tenantId" }
+            }
+
+            // Extract company ID from tenant ID (format: "company-{id}")
+            if (!tenantId.startsWith("company-")) {
+                return { success: false, error: "Invalid tenantId format" }
+            }
+
+            const companyId = parseInt(tenantId.replace("company-", ""), 10)
+            if (isNaN(companyId)) {
+                return { success: false, error: "Invalid company ID in tenantId" }
+            }
+
+            // Find the WhatsApp number that received this message
+            const normalizedTo = normalizePhoneNumber(to)
+            const whatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+                where: {
+                    companyId,
+                    isConnected: true,
+                    OR: [{ phoneNumber: normalizedTo }, { phoneNumber: to }],
+                },
+            })
+
+            if (!whatsappNumber) {
+                return { success: false, error: "WhatsApp number not found for company" }
+            }
+
+            // Normalize the sender's phone number
+            const normalizedFromPhone = normalizePhoneNumber(from)
+
+            // Find or create customer
+            let customer = await prisma.inboxCustomer.findFirst({
+                where: {
+                    companyId,
+                    phone: normalizedFromPhone,
+                },
+            })
+
+            if (!customer) {
+                customer = await prisma.inboxCustomer.create({
+                    data: {
+                        companyId,
+                        name: from,
+                        phone: normalizedFromPhone,
+                    },
+                })
+            }
+
+            // Find or create conversation
+            let conversation = await prisma.inboxConversation.findFirst({
+                where: {
+                    companyId,
+                    customerId: customer.id,
+                    isArchived: false,
+                },
+                include: conversationInclude,
+                orderBy: { lastMessageSentAt: "desc" },
+            })
+
+            if (!conversation) {
+                conversation = await prisma.inboxConversation.create({
+                    data: {
+                        companyId,
+                        customerId: customer.id,
+                        priority: InboxConversationPriority.medium,
+                        tags: ["whatsapp"],
+                    },
+                    include: conversationInclude,
+                })
+            } else {
+                // Ensure conversation has whatsapp tag
+                if (!conversation.tags.includes("whatsapp")) {
+                    conversation = await prisma.inboxConversation.update({
+                        where: { id: conversation.id },
+                        data: {
+                            tags: [...conversation.tags, "whatsapp"],
+                        },
+                        include: conversationInclude,
+                    })
+                }
+            }
+
+            // Record the customer message
+            const messageResult = await recordCustomerMessageAction({
+                conversationId: conversation.id,
+                content: message.body,
+                status: InboxMessageStatus.delivered,
+            })
+
+            if (!messageResult.success || !messageResult.data) {
+                return { success: false, error: messageResult.error || "Failed to record message" }
+            }
+
+            // Increment message count for WhatsApp number
+            await prisma.companyWhatsappNumber.update({
+                where: { id: whatsappNumber.id },
+                data: {
+                    messagesThisMonth: { increment: 1 },
+                    lastSyncedAt: new Date(),
+                },
+            })
+
+            // Fetch updated conversation with relations
+            const updatedConversation = await prisma.inboxConversation.findUnique({
+                where: { id: conversation.id },
+                include: conversationInclude,
+            })
+
+            return {
+                success: true,
+                data: {
+                    conversationId: conversation.id,
+                    messageId: messageResult.data.message.id,
+                    companyId,
+                    conversation: updatedConversation || conversation,
+                    message: messageResult.data.message,
+                },
+            }
+        }
+
+        // Handle status events (message delivered, read, etc.)
+        if (payload.event === "message.status" && payload.data) {
+            // Optional: Update message status in inbox
+            // This can be implemented later if needed
+            return {
+                success: true,
+                data: {
+                    conversationId: undefined,
+                    messageId: undefined,
+                    companyId: undefined,
+                },
+            }
+        }
+
+        // Handle other events (connection status, etc.)
+        return {
+            success: true,
+            data: {
+                conversationId: undefined,
+                messageId: undefined,
+                companyId: undefined,
+            },
+        }
+    })
+
+// Helper function to notify WebSocket server about inbox events
+const notifyWebSocketServer = async (
+    companyId: number,
+    eventType: "inbox.message" | "inbox.conversation",
+    data: {
+        conversation?: ConversationWithRelations
+        message?: InboxMessageEntity
+        conversationId?: string
+    },
+): Promise<void> => {
+    try {
+        const wsBackendUrl = process.env.NEXT_PUBLIC_WS_BACKEND || process.env.WS_BACKEND
+        if (!wsBackendUrl) {
+            // WebSocket server URL not configured, skip notification
+            return
+        }
+
+        // Convert HTTP URL to WebSocket-compatible URL for HTTP API
+        const httpUrl = wsBackendUrl.replace(/^ws:\/\//, "http://").replace(/^wss:\/\//, "https://")
+        const apiUrl = `${httpUrl}/api/inbox/notify`
+
+        await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                companyId,
+                event: eventType,
+                channel: "inbox",
+                data,
+            }),
+        })
+    } catch (error) {
+        // Log but don't fail - WebSocket notification is optional
+        console.error("Failed to notify WebSocket server:", error)
+    }
+}

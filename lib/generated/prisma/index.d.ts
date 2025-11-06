@@ -25920,6 +25920,7 @@ export namespace Prisma {
     remoteAuthKey: string | null
     tenantId: string | null
     workerId: string | null
+    wsUrl: string | null
     status: string | null
   }
 
@@ -25937,6 +25938,7 @@ export namespace Prisma {
     remoteAuthKey: string | null
     tenantId: string | null
     workerId: string | null
+    wsUrl: string | null
     status: string | null
   }
 
@@ -25954,6 +25956,7 @@ export namespace Prisma {
     remoteAuthKey: number
     tenantId: number
     workerId: number
+    wsUrl: number
     status: number
     _all: number
   }
@@ -25983,6 +25986,7 @@ export namespace Prisma {
     remoteAuthKey?: true
     tenantId?: true
     workerId?: true
+    wsUrl?: true
     status?: true
   }
 
@@ -26000,6 +26004,7 @@ export namespace Prisma {
     remoteAuthKey?: true
     tenantId?: true
     workerId?: true
+    wsUrl?: true
     status?: true
   }
 
@@ -26017,6 +26022,7 @@ export namespace Prisma {
     remoteAuthKey?: true
     tenantId?: true
     workerId?: true
+    wsUrl?: true
     status?: true
     _all?: true
   }
@@ -26121,6 +26127,7 @@ export namespace Prisma {
     remoteAuthKey: string | null
     tenantId: string | null
     workerId: string | null
+    wsUrl: string | null
     status: string | null
     _count: CompanyWhatsappNumberCountAggregateOutputType | null
     _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
@@ -26157,6 +26164,7 @@ export namespace Prisma {
     remoteAuthKey?: boolean
     tenantId?: boolean
     workerId?: boolean
+    wsUrl?: boolean
     status?: boolean
     Company?: boolean | CompanyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["companyWhatsappNumber"]>
@@ -26175,6 +26183,7 @@ export namespace Prisma {
     remoteAuthKey?: boolean
     tenantId?: boolean
     workerId?: boolean
+    wsUrl?: boolean
     status?: boolean
     Company?: boolean | CompanyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["companyWhatsappNumber"]>
@@ -26193,6 +26202,7 @@ export namespace Prisma {
     remoteAuthKey?: boolean
     tenantId?: boolean
     workerId?: boolean
+    wsUrl?: boolean
     status?: boolean
     Company?: boolean | CompanyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["companyWhatsappNumber"]>
@@ -26211,10 +26221,11 @@ export namespace Prisma {
     remoteAuthKey?: boolean
     tenantId?: boolean
     workerId?: boolean
+    wsUrl?: boolean
     status?: boolean
   }
 
-  export type CompanyWhatsappNumberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "displayName" | "phoneNumber" | "isConnected" | "messagesThisMonth" | "lastSyncedAt" | "createdAt" | "updatedAt" | "remoteAuthNamespace" | "remoteAuthKey" | "tenantId" | "workerId" | "status", ExtArgs["result"]["companyWhatsappNumber"]>
+  export type CompanyWhatsappNumberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "displayName" | "phoneNumber" | "isConnected" | "messagesThisMonth" | "lastSyncedAt" | "createdAt" | "updatedAt" | "remoteAuthNamespace" | "remoteAuthKey" | "tenantId" | "workerId" | "wsUrl" | "status", ExtArgs["result"]["companyWhatsappNumber"]>
   export type CompanyWhatsappNumberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Company?: boolean | CompanyDefaultArgs<ExtArgs>
   }
@@ -26244,6 +26255,7 @@ export namespace Prisma {
       remoteAuthKey: string | null
       tenantId: string | null
       workerId: string | null
+      wsUrl: string | null
       status: string | null
     }, ExtArgs["result"]["companyWhatsappNumber"]>
     composites: {}
@@ -26682,6 +26694,7 @@ export namespace Prisma {
     readonly remoteAuthKey: FieldRef<"CompanyWhatsappNumber", 'String'>
     readonly tenantId: FieldRef<"CompanyWhatsappNumber", 'String'>
     readonly workerId: FieldRef<"CompanyWhatsappNumber", 'String'>
+    readonly wsUrl: FieldRef<"CompanyWhatsappNumber", 'String'>
     readonly status: FieldRef<"CompanyWhatsappNumber", 'String'>
   }
     
@@ -27423,6 +27436,7 @@ export namespace Prisma {
     remoteAuthKey: 'remoteAuthKey',
     tenantId: 'tenantId',
     workerId: 'workerId',
+    wsUrl: 'wsUrl',
     status: 'status'
   };
 
@@ -29412,6 +29426,7 @@ export namespace Prisma {
     remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    wsUrl?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     Company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
   }
@@ -29430,6 +29445,7 @@ export namespace Prisma {
     remoteAuthKey?: SortOrderInput | SortOrder
     tenantId?: SortOrderInput | SortOrder
     workerId?: SortOrderInput | SortOrder
+    wsUrl?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
     Company?: CompanyOrderByWithRelationInput
   }
@@ -29452,6 +29468,7 @@ export namespace Prisma {
     remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    wsUrl?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     Company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
   }, "id" | "companyId_phoneNumber">
@@ -29470,6 +29487,7 @@ export namespace Prisma {
     remoteAuthKey?: SortOrderInput | SortOrder
     tenantId?: SortOrderInput | SortOrder
     workerId?: SortOrderInput | SortOrder
+    wsUrl?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
     _count?: CompanyWhatsappNumberCountOrderByAggregateInput
     _avg?: CompanyWhatsappNumberAvgOrderByAggregateInput
@@ -29495,6 +29513,7 @@ export namespace Prisma {
     remoteAuthKey?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
     tenantId?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
     workerId?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
+    wsUrl?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
     status?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
   }
 
@@ -31268,6 +31287,7 @@ export namespace Prisma {
     remoteAuthKey?: string | null
     tenantId?: string | null
     workerId?: string | null
+    wsUrl?: string | null
     status?: string | null
     Company: CompanyCreateNestedOneWithoutWhatsappNumbersInput
   }
@@ -31286,6 +31306,7 @@ export namespace Prisma {
     remoteAuthKey?: string | null
     tenantId?: string | null
     workerId?: string | null
+    wsUrl?: string | null
     status?: string | null
   }
 
@@ -31302,6 +31323,7 @@ export namespace Prisma {
     remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     Company?: CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput
   }
@@ -31320,6 +31342,7 @@ export namespace Prisma {
     remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -31337,6 +31360,7 @@ export namespace Prisma {
     remoteAuthKey?: string | null
     tenantId?: string | null
     workerId?: string | null
+    wsUrl?: string | null
     status?: string | null
   }
 
@@ -31353,6 +31377,7 @@ export namespace Prisma {
     remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -31370,6 +31395,7 @@ export namespace Prisma {
     remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -33030,6 +33056,7 @@ export namespace Prisma {
     remoteAuthKey?: SortOrder
     tenantId?: SortOrder
     workerId?: SortOrder
+    wsUrl?: SortOrder
     status?: SortOrder
   }
 
@@ -33052,6 +33079,7 @@ export namespace Prisma {
     remoteAuthKey?: SortOrder
     tenantId?: SortOrder
     workerId?: SortOrder
+    wsUrl?: SortOrder
     status?: SortOrder
   }
 
@@ -33069,6 +33097,7 @@ export namespace Prisma {
     remoteAuthKey?: SortOrder
     tenantId?: SortOrder
     workerId?: SortOrder
+    wsUrl?: SortOrder
     status?: SortOrder
   }
 
@@ -37038,6 +37067,7 @@ export namespace Prisma {
     remoteAuthKey?: string | null
     tenantId?: string | null
     workerId?: string | null
+    wsUrl?: string | null
     status?: string | null
   }
 
@@ -37054,6 +37084,7 @@ export namespace Prisma {
     remoteAuthKey?: string | null
     tenantId?: string | null
     workerId?: string | null
+    wsUrl?: string | null
     status?: string | null
   }
 
@@ -37343,6 +37374,7 @@ export namespace Prisma {
     remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+    wsUrl?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
     status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
   }
 
@@ -40735,6 +40767,7 @@ export namespace Prisma {
     remoteAuthKey?: string | null
     tenantId?: string | null
     workerId?: string | null
+    wsUrl?: string | null
     status?: string | null
   }
 
@@ -41198,6 +41231,7 @@ export namespace Prisma {
     remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -41214,6 +41248,7 @@ export namespace Prisma {
     remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -41230,6 +41265,7 @@ export namespace Prisma {
     remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     workerId?: NullableStringFieldUpdateOperationsInput | string | null
+    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

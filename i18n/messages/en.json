@@ -650,10 +650,12 @@
     "Common": {
         "loading": "Loading...",
         "deleting": "Deleting...",
+        "delete": "Delete",
         "save": "Save",
         "saving": "Saving...",
         "cancel": "Cancel",
         "close": "Close",
+        "edit": "Edit",
         "search": "Search",
         "filter": "Filter",
         "sort": "Sort",
@@ -825,6 +827,7 @@
                     "connected": "Connected",
                     "disconnected": "Disconnected"
                 },
+                "disconnect": "Disconnect",
                 "messages": {
                     "messagesThisMonth": "{count} messages this month"
                 },
@@ -871,6 +874,7 @@
                         "idle": "Start pairing to generate a WhatsApp QR code."
                     },
                     "qrAlt": "WhatsApp pairing QR code",
+                    "displayNameHint": "Leave blank to use default: WhatsApp [last 4 digits]",
                     "latest": {
                         "title": "WhatsApp connected",
                         "description": "Latest linked number is ready to use.",
@@ -911,6 +915,9 @@
                     "phoneLabel": "Phone Number",
                     "phonePlaceholder": "+55 11 98765-4321",
                     "save": "Save Changes"
+                },
+                "delete": {
+                    "confirm": "Are you sure you want to disconnect this WhatsApp number?"
                 }
             }
         }
