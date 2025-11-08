@@ -13,6 +13,53 @@ const normalizePhoneNumber = (phone: string): string => {
     return phone.replace(/[^\d]/g, "")
 }
 
+type SessionAssignmentMetadata = {
+    remoteAuthKey: string | null
+    tenantId: string | null
+    wsUrl: string | null
+}
+
+const parseRemoteAuthData = (value: Prisma.JsonValue | null): SessionAssignmentMetadata => {
+    if (!value || typeof value !== "object") {
+        return {
+            remoteAuthKey: null,
+            tenantId: null,
+            wsUrl: null,
+        }
+    }
+
+    const record = value as Record<string, unknown>
+
+    return {
+        remoteAuthKey: typeof record.remoteAuthKey === "string" ? record.remoteAuthKey : null,
+        tenantId: typeof record.tenantId === "string" ? record.tenantId : null,
+        wsUrl: typeof record.wsUrl === "string" ? record.wsUrl : null,
+    }
+}
+
+const mapAssignmentToWhatsappNumber = (
+    assignment: {
+        id: string
+        phoneNumber: string | null
+        remoteAuthNamespace: string | null
+        remoteAuthData: Prisma.JsonValue | null
+        sessionId: string
+    } | null,
+): { id: string; phoneNumber: string; tenantId: string | null; sessionId: string | null } | null => {
+    if (!assignment) {
+        return null
+    }
+
+    const metadata = parseRemoteAuthData(assignment.remoteAuthData)
+
+    return {
+        id: assignment.id,
+        phoneNumber: assignment.phoneNumber ?? "",
+        tenantId: assignment.remoteAuthNamespace ?? metadata.tenantId,
+        sessionId: metadata.remoteAuthKey ?? assignment.sessionId ?? null,
+    }
+}
+
 // Find WhatsApp number for a conversation (by customer phone)
 const findWhatsAppNumberForConversation = async (
     companyId: number,
@@ -39,7 +86,7 @@ const findWhatsAppNumberForConversation = async (
     const normalizedCustomerPhone = normalizePhoneNumber(conversation.customer.phone)
 
     // Find WhatsApp number that matches the customer's phone or is connected
-    const whatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+    const whatsappNumber = await prisma.sessionAssignment.findFirst({
         where: {
             companyId,
             isConnected: true,
@@ -51,15 +98,16 @@ const findWhatsAppNumberForConversation = async (
         select: {
             id: true,
             phoneNumber: true,
-            tenantId: true,
-            remoteAuthKey: true,
+            remoteAuthNamespace: true,
+            remoteAuthData: true,
+            sessionId: true,
         },
     })
 
     if (!whatsappNumber) {
         // If no exact match, try to find any connected WhatsApp number for this company
         // This allows sending to any number if the company has a WhatsApp number configured
-        const fallbackWhatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+        const fallbackWhatsappNumber = await prisma.sessionAssignment.findFirst({
             where: {
                 companyId,
                 isConnected: true,
@@ -67,31 +115,20 @@ const findWhatsAppNumberForConversation = async (
             select: {
                 id: true,
                 phoneNumber: true,
-                tenantId: true,
-                remoteAuthKey: true,
+                remoteAuthNamespace: true,
+                remoteAuthData: true,
+                sessionId: true,
             },
         })
 
         return {
-            whatsappNumber: fallbackWhatsappNumber
-                ? {
-                    id: fallbackWhatsappNumber.id,
-                    phoneNumber: fallbackWhatsappNumber.phoneNumber,
-                    tenantId: fallbackWhatsappNumber.tenantId,
-                    sessionId: fallbackWhatsappNumber.remoteAuthKey,
-                }
-                : null,
+            whatsappNumber: mapAssignmentToWhatsappNumber(fallbackWhatsappNumber),
             customerPhone: conversation.customer.phone,
         }
     }
 
     return {
-        whatsappNumber: {
-            id: whatsappNumber.id,
-            phoneNumber: whatsappNumber.phoneNumber,
-            tenantId: whatsappNumber.tenantId,
-            sessionId: whatsappNumber.remoteAuthKey,
-        },
+        whatsappNumber: mapAssignmentToWhatsappNumber(whatsappNumber),
         customerPhone: conversation.customer.phone,
     }
 }
@@ -531,15 +568,6 @@ export const sendInboxMessageAction = async (
                     )
 
                     if (whatsappResult.success) {
-                        // Update message count for WhatsApp number
-                        await prisma.companyWhatsappNumber.update({
-                            where: { id: whatsappNumber.id },
-                            data: {
-                                messagesThisMonth: { increment: 1 },
-                                lastSyncedAt: new Date(),
-                            },
-                        })
-
                         // Notify WebSocket server about sent message
                         await notifyWebSocketServer(
                             companyId,
@@ -843,24 +871,26 @@ export const getInboxWhatsappWsUrlAction = async (
         const payload = getInboxWhatsappWsUrlSchema.parse(input ?? {})
         const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
 
-        // Find the first connected WhatsApp number for this company
-        const whatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+        const sessionAssignment = await prisma.sessionAssignment.findFirst({
             where: {
                 companyId,
                 isConnected: true,
             },
             select: {
-                wsUrl: true,
+                remoteAuthData: true,
+                updatedAt: true,
             },
             orderBy: {
-                lastSyncedAt: "desc",
+                updatedAt: "desc",
             },
         })
+
+        const metadata = sessionAssignment ? parseRemoteAuthData(sessionAssignment.remoteAuthData) : null
 
         return {
             success: true,
             data: {
-                wsUrl: whatsappNumber?.wsUrl ?? null,
+                wsUrl: metadata?.wsUrl ?? null,
             },
         }
     })
@@ -943,16 +973,29 @@ export const processWhatsAppWebhookAction = async (
 
             // Find the WhatsApp number that received this message
             const normalizedTo = normalizePhoneNumber(to)
-            const whatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+            const sessionAssignment = await prisma.sessionAssignment.findFirst({
                 where: {
                     companyId,
                     isConnected: true,
                     OR: [{ phoneNumber: normalizedTo }, { phoneNumber: to }],
                 },
+                select: {
+                    id: true,
+                    phoneNumber: true,
+                    remoteAuthNamespace: true,
+                    remoteAuthData: true,
+                    sessionId: true,
+                },
             })
 
-            if (!whatsappNumber) {
+            if (!sessionAssignment) {
                 return { success: false, error: "WhatsApp number not found for company" }
+            }
+
+            const whatsappNumber = mapAssignmentToWhatsappNumber(sessionAssignment)
+
+            if (!whatsappNumber || !whatsappNumber.sessionId || !whatsappNumber.tenantId) {
+                return { success: false, error: "Invalid WhatsApp session metadata" }
             }
 
             // Normalize the sender's phone number
@@ -1020,15 +1063,6 @@ export const processWhatsAppWebhookAction = async (
             if (!messageResult.success || !messageResult.data) {
                 return { success: false, error: messageResult.error || "Failed to record message" }
             }
-
-            // Increment message count for WhatsApp number
-            await prisma.companyWhatsappNumber.update({
-                where: { id: whatsappNumber.id },
-                data: {
-                    messagesThisMonth: { increment: 1 },
-                    lastSyncedAt: new Date(),
-                },
-            })
 
             // Fetch updated conversation with relations
             const updatedConversation = await prisma.inboxConversation.findUnique({

@@ -29,42 +29,39 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        // Find the WhatsApp number by phone number (search across all companies)
-        const whatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+        const sessionAssignment = await prisma.sessionAssignment.findFirst({
             where: {
                 phoneNumber: payload.phoneNumber,
             },
         })
 
-        if (!whatsappNumber) {
+        if (!sessionAssignment) {
             console.error(`WhatsApp number not found for phone ${payload.phoneNumber}`)
             return NextResponse.json({ error: "WhatsApp number not found" }, { status: 404 })
         }
 
         // Determine connection status based on status value
         const isConnected = payload.status === "connected"
-        const lastSyncedAt = isConnected ? new Date() : null
 
         // Update the WhatsApp number status
-        const updatedWhatsappNumber = await prisma.companyWhatsappNumber.update({
-            where: { id: whatsappNumber.id },
+        const updatedSessionAssignment = await prisma.sessionAssignment.update({
+            where: { id: sessionAssignment.id },
             data: {
                 isConnected,
                 status: payload.status,
-                lastSyncedAt,
                 ...(payload.displayName && { displayName: payload.displayName }),
             },
         })
 
         console.log(
-            `WhatsApp number ${payload.phoneNumber} status updated to ${payload.status} for company ${whatsappNumber.companyId}`,
+            `WhatsApp number ${payload.phoneNumber} status updated to ${payload.status} for company ${sessionAssignment.companyId}`,
         )
 
         return NextResponse.json({
             success: true,
-            whatsappNumberId: updatedWhatsappNumber.id,
-            status: updatedWhatsappNumber.status,
-            isConnected: updatedWhatsappNumber.isConnected,
+            whatsappNumberId: updatedSessionAssignment.id,
+            status: updatedSessionAssignment.status,
+            isConnected: updatedSessionAssignment.isConnected,
         })
     } catch (error) {
         console.error("Error processing WhatsApp connection status webhook:", error)

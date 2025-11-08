@@ -117,14 +117,14 @@ model VerificationToken {
 }
 
 model Company {
-  id                   Int                     @id @default(autoincrement())
+  id                   Int                    @id @default(autoincrement())
   name                 String
   description          String?
   tokenApi             String?
-  createdAt            DateTime                @default(now())
-  updatedAt            DateTime                @updatedAt
-  members              CompanyMember[]         @relation("CompanyMembers")
-  user                 User[]                  @relation("UserDefaultCompany")
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  members              CompanyMember[]        @relation("CompanyMembers")
+  user                 User[]                 @relation("UserDefaultCompany")
   CustomerSubscription CustomerSubscription[]
   UsageTracking        UsageTracking[]
   knowledgeItems       KnowledgeItem[]
@@ -134,7 +134,7 @@ model Company {
   inboxConversations   InboxConversation[]
   inboxMessages        InboxMessage[]
   settings             CompanySettings?
-  whatsappNumbers      CompanyWhatsappNumber[]
+  SessionAssignment    SessionAssignment[]
 
   @@index([createdAt])
   @@map("companies")
@@ -476,27 +476,37 @@ model KvBackup {
   updatedAt DateTime @updatedAt
 }
 
-model CompanyWhatsappNumber {
-  id                String    @id @default(cuid())
-  companyId         Int
-  displayName       String
-  phoneNumber       String
-  isConnected       Boolean   @default(false)
-  messagesThisMonth Int       @default(0)
-  lastSyncedAt      DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+model Worker {
+  id          String              @id @default(cuid())
+  maxCapacity Int
+  currentLoad Int                 @default(0)
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  sessions    SessionAssignment[]
 
+  @@index([isActive])
+  @@map("workers")
+}
+
+model SessionAssignment {
+  id                  String   @id @default(cuid())
+  sessionId           String   @unique
+  workerId            String
+  companyId           Int
   remoteAuthNamespace String?
-  remoteAuthKey       String? // equals sessionId
+  remoteAuthData      Json?
+  displayName         String?
+  phoneNumber         String?
+  isConnected         Boolean  @default(false)
+  status              String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  worker              Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  company             Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  tenantId String?
-  workerId String?
-  wsUrl    String?
-  status   String?
-  Company  Company @relation(fields: [companyId], references: [id])
-
-  @@unique([companyId, phoneNumber])
+  @@index([sessionId])
+  @@index([workerId])
   @@index([companyId])
-  @@map("company_whatsapp_numbers")
+  @@map("session_assignments")
 }

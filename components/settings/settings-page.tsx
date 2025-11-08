@@ -14,7 +14,6 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useUser } from "@/components/user-provider"
 import {
-    createWhatsappNumberFromSessionAction,
     createWhatsappSessionAction,
     deleteWhatsappNumberAction,
     getSettingsOverviewAction,
@@ -25,7 +24,7 @@ import { WhatsAppNumberList } from "./whatsapp-number-list"
 import { WhatsAppPairingDialog } from "./whatsapp-pairing-dialog"
 import { WhatsAppEditDialog } from "./whatsapp-edit-dialog"
 import { WhatsAppDeleteDialog } from "./whatsapp-delete-dialog"
-import type { SettingsState, WhatsAppNumber, PairingPhase } from "./types"
+import type { SettingsState, WhatsAppNumber, PairingPhase, RemoteAuthMetadata } from "./types"
 import { defaultSettings } from "./types"
 
 const LoadingNotificationSection = () => {
@@ -44,6 +43,44 @@ const LoadingNotificationSection = () => {
     )
 }
 
+type SessionAssignmentResponse = {
+    id: string
+    sessionId: string
+    displayName?: string | null
+    phoneNumber?: string | null
+    isConnected: boolean
+    messagesThisMonth?: number | null
+    createdAt: string | Date
+    updatedAt: string | Date
+    lastSyncedAt?: string | Date | null
+    wsUrl?: string | null
+    workerId: string | null
+    remoteAuthKey?: string | null
+    status?: string | null
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: RemoteAuthMetadata | Record<string, unknown> | null
+}
+
+const emptyRemoteAuthMetadata: RemoteAuthMetadata = {
+    wsUrl: null,
+    remoteAuthKey: null,
+    tenantId: null,
+}
+
+const extractRemoteAuthMetadata = (value: SessionAssignmentResponse["remoteAuthData"]): RemoteAuthMetadata => {
+    if (!value || typeof value !== "object") {
+        return emptyRemoteAuthMetadata
+    }
+
+    const record = value as Record<string, unknown>
+
+    return {
+        wsUrl: typeof record.wsUrl === "string" ? record.wsUrl : null,
+        remoteAuthKey: typeof record.remoteAuthKey === "string" ? record.remoteAuthKey : null,
+        tenantId: typeof record.tenantId === "string" ? record.tenantId : null,
+    }
+}
+
 const emptyEditForm = {
     id: "",
     displayName: "",
@@ -58,7 +95,7 @@ export default function SettingsPage() {
     const commonT = useTranslations("Common")
 
     const [settings, setSettings] = useState<SettingsState | null>(null)
-    const [whatsappNumbers, setWhatsappNumbers] = useState<WhatsAppNumber[]>([])
+    const [sessionAssignments, setSessionAssignments] = useState<WhatsAppNumber[]>([])
     const [loadError, setLoadError] = useState<string | null>(null)
     const [isLoadingOverview, setIsLoadingOverview] = useState(true)
 
@@ -75,6 +112,7 @@ export default function SettingsPage() {
     const pairingSocketRef = useRef<WebSocket | null>(null)
     const pairingPhaseRef = useRef<PairingPhase>("idle")
     const pairingSessionMetadataRef = useRef<{ sessionId: string; workerId: string; wsUrl: string } | null>(null)
+    const isMountedRef = useRef(true)
     const [pairingPhaseState, setPairingPhaseState] = useState<PairingPhase>("idle")
     const [pairingMessage, setPairingMessage] = useState<string>("")
     const [pairingError, setPairingError] = useState<string | null>(null)
@@ -95,6 +133,103 @@ export default function SettingsPage() {
         const lastFour = digitsOnly.slice(-4)
         return `WhatsApp ${lastFour}`
     }, [])
+
+    const normalizeSessionAssignment = useCallback(
+        (assignment: SessionAssignmentResponse): WhatsAppNumber => {
+            const remoteAuth = extractRemoteAuthMetadata(assignment.remoteAuthData)
+            const wsUrl = assignment.wsUrl ?? remoteAuth.wsUrl
+            const remoteAuthKey = assignment.remoteAuthKey ?? remoteAuth.remoteAuthKey
+            const tenantId = remoteAuth.tenantId ?? assignment.remoteAuthNamespace ?? null
+            const fallbackPhoneNumber = assignment.phoneNumber ?? ""
+            const hasDisplayName = assignment.displayName && assignment.displayName.trim().length > 0
+            const fallbackFromSession = `WhatsApp ${assignment.sessionId.slice(-4)}`
+            const displayName = hasDisplayName
+                ? assignment.displayName!
+                : fallbackPhoneNumber
+                    ? generateDefaultDisplayName(fallbackPhoneNumber)
+                    : fallbackFromSession
+            const createdAt =
+                typeof assignment.createdAt === "string"
+                    ? assignment.createdAt
+                    : assignment.createdAt.toISOString()
+            const updatedAt =
+                typeof assignment.updatedAt === "string"
+                    ? assignment.updatedAt
+                    : assignment.updatedAt.toISOString()
+            const rawLastSynced = assignment.lastSyncedAt ?? null
+            const lastSyncedAt =
+                rawLastSynced === null
+                    ? null
+                    : typeof rawLastSynced === "string"
+                        ? rawLastSynced
+                        : rawLastSynced.toISOString()
+
+            return {
+                id: assignment.id,
+                sessionId: assignment.sessionId,
+                displayName,
+                phoneNumber: fallbackPhoneNumber,
+                isConnected: assignment.isConnected,
+                messagesThisMonth: assignment.messagesThisMonth ?? 0,
+                status: assignment.status ?? null,
+                createdAt,
+                updatedAt,
+                lastSyncedAt,
+                wsUrl,
+                workerId: assignment.workerId,
+                remoteAuthKey,
+                remoteAuthNamespace: assignment.remoteAuthNamespace ?? tenantId,
+                remoteAuthData: {
+                    wsUrl,
+                    remoteAuthKey,
+                    tenantId,
+                },
+            }
+        },
+        [generateDefaultDisplayName],
+    )
+
+    const refreshSessionAssignments = useCallback(async () => {
+        setIsLoadingOverview(true)
+        setLoadError(null)
+
+        try {
+            const response = await getSettingsOverviewAction(companyId ? { companyId } : undefined)
+
+            if (!response.success || !response.data) {
+                if (!isMountedRef.current) {
+                    return
+                }
+                setLoadError(response.error ?? t("load.unable"))
+                setSettings(defaultSettings)
+                setSessionAssignments([])
+                return
+            }
+
+            const normalizedNumbers = response.data.sessionAssignments.map((entry) =>
+                normalizeSessionAssignment(entry),
+            )
+
+            if (!isMountedRef.current) {
+                return
+            }
+
+            setSettings(response.data.settings)
+            setSessionAssignments(normalizedNumbers)
+        } catch (error) {
+            console.error("Load settings error:", error)
+            if (!isMountedRef.current) {
+                return
+            }
+            setLoadError(t("load.unexpected"))
+            setSettings(defaultSettings)
+            setSessionAssignments([])
+        } finally {
+            if (isMountedRef.current) {
+                setIsLoadingOverview(false)
+            }
+        }
+    }, [companyId, normalizeSessionAssignment, t])
 
     const closePairingSocket = useCallback(() => {
         if (pairingSocketRef.current && pairingSocketRef.current.readyState === WebSocket.OPEN) {
@@ -122,50 +257,41 @@ export default function SettingsPage() {
                 return
             }
 
-            const result = await createWhatsappNumberFromSessionAction({
-                companyId: companyId!,
+            const optimisticAssignment: SessionAssignmentResponse = {
+                id: sessionMetadata.sessionId,
                 sessionId: sessionMetadata.sessionId,
-                workerId: sessionMetadata.workerId,
-                wsUrl: sessionMetadata.wsUrl,
-                phoneNumber,
                 displayName,
+                phoneNumber,
+                isConnected: true,
+                messagesThisMonth: 0,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                lastSyncedAt: new Date().toISOString(),
+                wsUrl: sessionMetadata.wsUrl,
+                workerId: sessionMetadata.workerId,
+                remoteAuthKey: sessionMetadata.sessionId,
                 status: "connected",
-            })
-
-            if (result.success && result.data) {
-                const whatsappNumber = result.data.whatsappNumber
-
-                const normalized: WhatsAppNumber = {
-                    id: whatsappNumber.id,
-                    displayName: whatsappNumber.displayName,
-                    phoneNumber: whatsappNumber.phoneNumber,
-                    isConnected: true,
-                    messagesThisMonth: 0,
-                    createdAt: whatsappNumber.createdAt.toISOString(),
-                    updatedAt: whatsappNumber.updatedAt.toISOString(),
-                    lastSyncedAt: new Date().toISOString(),
-                    wsUrl: whatsappNumber.wsUrl ?? null,
-                    workerId: whatsappNumber.workerId ?? null,
-                    remoteAuthKey: whatsappNumber.remoteAuthKey ?? null,
-                }
-
-                setLatestLinkedNumber(normalized)
-                setWhatsappNumbers((previous) => {
-                    const withoutCurrent = previous.filter((entry) => entry.id !== normalized.id)
-                    return [normalized, ...withoutCurrent]
-                })
-
-                setPairingPhase("completed")
-                setPairingMessage(t("whatsapp.pairing.messages.completed"))
-                setPairingError(null)
-                setIsPairingConnected(true)
-                setQrImageDataUrl("")
-                toast.success(t("toasts.whatsappLinked"))
-
-                closePairingSocket()
+                remoteAuthNamespace: null,
+                remoteAuthData: {
+                    wsUrl: sessionMetadata.wsUrl,
+                    remoteAuthKey: sessionMetadata.sessionId,
+                    tenantId: null,
+                },
             }
+
+            const normalized = normalizeSessionAssignment(optimisticAssignment)
+            setLatestLinkedNumber(normalized)
+            setIsPairingConnected(true)
+            setPairingPhase("completed")
+            setPairingMessage(t("whatsapp.pairing.messages.completed"))
+            setPairingError(null)
+            setQrImageDataUrl("")
+            toast.success(t("toasts.whatsappLinked"))
+
+            await refreshSessionAssignments()
+            closePairingSocket()
         },
-        [companyId, closePairingSocket, setPairingPhase, t],
+        [closePairingSocket, normalizeSessionAssignment, refreshSessionAssignments, setPairingPhase, t],
     )
 
     const handleStartPairing = useCallback(async () => {
@@ -398,68 +524,15 @@ export default function SettingsPage() {
     }, [resetPairingState, setPairingPhase, t])
 
     useEffect(() => {
-        let isMounted = true
-
-        const loadSettings = async () => {
-            setIsLoadingOverview(true)
-            setLoadError(null)
-
-            try {
-                const response = await getSettingsOverviewAction(companyId ? { companyId } : undefined)
-
-                if (!isMounted) {
-                    return
-                }
-
-                if (!response.success || !response.data) {
-                    setLoadError(response.error ?? t("load.unable"))
-                    setSettings(defaultSettings)
-                    setWhatsappNumbers([])
-                    setIsLoadingOverview(false)
-                    return
-                }
-
-                const normalizedNumbers: WhatsAppNumber[] = response.data.whatsappNumbers.map((entry) => ({
-                    id: entry.id,
-                    displayName: entry.displayName,
-                    phoneNumber: entry.phoneNumber,
-                    isConnected: entry.isConnected,
-                    messagesThisMonth: entry.messagesThisMonth,
-                    createdAt: typeof entry.createdAt === "string" ? entry.createdAt : entry.createdAt.toISOString(),
-                    updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : entry.updatedAt.toISOString(),
-                    lastSyncedAt:
-                        entry.lastSyncedAt === null
-                            ? null
-                            : typeof entry.lastSyncedAt === "string"
-                                ? entry.lastSyncedAt
-                                : entry.lastSyncedAt.toISOString(),
-                    wsUrl: entry.wsUrl,
-                    workerId: entry.workerId,
-                    remoteAuthKey: entry.remoteAuthKey,
-                }))
-
-                setSettings(response.data.settings)
-                setWhatsappNumbers(normalizedNumbers)
-            } catch (error) {
-                console.error("Load settings error:", error)
-                if (isMounted) {
-                    setLoadError(t("load.unexpected"))
-                    setSettings(defaultSettings)
-                    setWhatsappNumbers([])
-                }
-            } finally {
-                if (isMounted) {
-                    setIsLoadingOverview(false)
-                }
-            }
-        }
-
-        loadSettings()
-
+        isMountedRef.current = true
         return () => {
-            isMounted = false
+            isMountedRef.current = false
         }
-    }, [companyId, t])
+    }, [])
+
+    useEffect(() => {
+        refreshSessionAssignments()
+    }, [refreshSessionAssignments])
 
     useEffect(() => {
         return () => {
@@ -467,9 +540,11 @@ export default function SettingsPage() {
         }
     }, [resetPairingState])
 
-    const sortedWhatsappNumbers = useMemo(() => {
-        return [...whatsappNumbers].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    }, [whatsappNumbers])
+    const sortedSessionAssignments = useMemo(() => {
+        return [...sessionAssignments].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
+    }, [sessionAssignments])
 
     const handleSettingToggle = (key: keyof SettingsState, value: boolean) => {
         setSettings((previous) => {
@@ -545,14 +620,13 @@ export default function SettingsPage() {
 
     const handleUpdateWhatsappNumber = async () => {
         const displayName = editForm.displayName.trim()
-        const phoneNumber = editForm.phoneNumber.trim()
 
         if (!editForm.id) {
             toast.error(t("toasts.selectNumber"))
             return
         }
 
-        if (!displayName || !phoneNumber) {
+        if (!displayName) {
             toast.error(t("toasts.fillNameAndPhone"))
             return
         }
@@ -564,7 +638,6 @@ export default function SettingsPage() {
                 companyId,
                 id: editForm.id,
                 displayName,
-                phoneNumber,
             })
 
             if (!response.success || !response.data) {
@@ -572,37 +645,14 @@ export default function SettingsPage() {
                 return
             }
 
-            const updated = response.data.whatsappNumber
-            setWhatsappNumbers((previous) =>
-                previous.map((entry) =>
-                    entry.id === updated.id
-                        ? {
-                            id: updated.id,
-                            displayName: updated.displayName,
-                            phoneNumber: updated.phoneNumber,
-                            isConnected: updated.isConnected,
-                            messagesThisMonth: updated.messagesThisMonth,
-                            createdAt:
-                                typeof updated.createdAt === "string"
-                                    ? updated.createdAt
-                                    : updated.createdAt.toISOString(),
-                            updatedAt:
-                                typeof updated.updatedAt === "string"
-                                    ? updated.updatedAt
-                                    : updated.updatedAt.toISOString(),
-                            lastSyncedAt:
-                                updated.lastSyncedAt === null
-                                    ? null
-                                    : typeof updated.lastSyncedAt === "string"
-                                        ? updated.lastSyncedAt
-                                        : updated.lastSyncedAt.toISOString(),
-                            wsUrl: entry.wsUrl,
-                            workerId: entry.workerId,
-                            remoteAuthKey: entry.remoteAuthKey,
-                        }
-                        : entry,
-                ),
-            )
+            const updated = response.data.sessionAssignment as SessionAssignmentResponse
+            const normalized = normalizeSessionAssignment({
+                ...updated,
+                displayName,
+            })
+
+            setLatestLinkedNumber((previous) => (previous?.id === normalized.id ? normalized : previous))
+            await refreshSessionAssignments()
 
             toast.success(t("toasts.updateWhatsappSuccess"))
             resetEditDialog()
@@ -691,10 +741,8 @@ export default function SettingsPage() {
                 return
             }
 
-            // Remove the number from the list
-            setWhatsappNumbers((previous) => previous.filter((entry) => entry.id !== number.id))
+            await refreshSessionAssignments()
 
-            // Clear latestLinkedNumber if it matches
             if (latestLinkedNumber?.id === number.id) {
                 setLatestLinkedNumber(null)
             }
@@ -755,7 +803,7 @@ export default function SettingsPage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <WhatsAppNumberList
-                                numbers={sortedWhatsappNumbers}
+                                numbers={sortedSessionAssignments}
                                 isLoading={isLoadingOverview}
                                 loadError={loadError}
                                 isDeletingNumberId={isDeletingNumberId}
@@ -913,7 +961,7 @@ export default function SettingsPage() {
                     setIsAddDialogOpen(true)
                 }}
                 onDelete={() => {
-                    const number = whatsappNumbers.find((n) => n.id === editForm.id)
+                    const number = sessionAssignments.find((assignment) => assignment.id === editForm.id)
                     if (number) {
                         handleDeleteWhatsappNumber(number)
                     }

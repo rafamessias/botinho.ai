@@ -109,10 +109,15 @@ export type InboxMessage = $Result.DefaultSelection<Prisma.$InboxMessagePayload>
  */
 export type KvBackup = $Result.DefaultSelection<Prisma.$KvBackupPayload>
 /**
- * Model CompanyWhatsappNumber
+ * Model Worker
  * 
  */
-export type CompanyWhatsappNumber = $Result.DefaultSelection<Prisma.$CompanyWhatsappNumberPayload>
+export type Worker = $Result.DefaultSelection<Prisma.$WorkerPayload>
+/**
+ * Model SessionAssignment
+ * 
+ */
+export type SessionAssignment = $Result.DefaultSelection<Prisma.$SessionAssignmentPayload>
 
 /**
  * Enums
@@ -604,14 +609,24 @@ export class PrismaClient<
   get kvBackup(): Prisma.KvBackupDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.companyWhatsappNumber`: Exposes CRUD operations for the **CompanyWhatsappNumber** model.
+   * `prisma.worker`: Exposes CRUD operations for the **Worker** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more CompanyWhatsappNumbers
-    * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany()
+    * // Fetch zero or more Workers
+    * const workers = await prisma.worker.findMany()
     * ```
     */
-  get companyWhatsappNumber(): Prisma.CompanyWhatsappNumberDelegate<ExtArgs, ClientOptions>;
+  get worker(): Prisma.WorkerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sessionAssignment`: Exposes CRUD operations for the **SessionAssignment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SessionAssignments
+    * const sessionAssignments = await prisma.sessionAssignment.findMany()
+    * ```
+    */
+  get sessionAssignment(): Prisma.SessionAssignmentDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1072,7 +1087,8 @@ export namespace Prisma {
     InboxConversation: 'InboxConversation',
     InboxMessage: 'InboxMessage',
     KvBackup: 'KvBackup',
-    CompanyWhatsappNumber: 'CompanyWhatsappNumber'
+    Worker: 'Worker',
+    SessionAssignment: 'SessionAssignment'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1091,7 +1107,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "company" | "knowledgeItem" | "quickAnswer" | "aiTemplate" | "aiTemplateOption" | "companyMember" | "subscriptionPlan" | "customerSubscription" | "usageTracking" | "companySettings" | "inboxCustomer" | "inboxConversation" | "inboxMessage" | "kvBackup" | "companyWhatsappNumber"
+      modelProps: "user" | "file" | "account" | "session" | "verificationToken" | "company" | "knowledgeItem" | "quickAnswer" | "aiTemplate" | "aiTemplateOption" | "companyMember" | "subscriptionPlan" | "customerSubscription" | "usageTracking" | "companySettings" | "inboxCustomer" | "inboxConversation" | "inboxMessage" | "kvBackup" | "worker" | "sessionAssignment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2501,77 +2517,151 @@ export namespace Prisma {
           }
         }
       }
-      CompanyWhatsappNumber: {
-        payload: Prisma.$CompanyWhatsappNumberPayload<ExtArgs>
-        fields: Prisma.CompanyWhatsappNumberFieldRefs
+      Worker: {
+        payload: Prisma.$WorkerPayload<ExtArgs>
+        fields: Prisma.WorkerFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CompanyWhatsappNumberFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload> | null
+            args: Prisma.WorkerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+            args: Prisma.WorkerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
           }
           findFirst: {
-            args: Prisma.CompanyWhatsappNumberFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload> | null
+            args: Prisma.WorkerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+            args: Prisma.WorkerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
           }
           findMany: {
-            args: Prisma.CompanyWhatsappNumberFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+            args: Prisma.WorkerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
           }
           create: {
-            args: Prisma.CompanyWhatsappNumberCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+            args: Prisma.WorkerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
           }
           createMany: {
-            args: Prisma.CompanyWhatsappNumberCreateManyArgs<ExtArgs>
+            args: Prisma.WorkerCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+            args: Prisma.WorkerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
           }
           delete: {
-            args: Prisma.CompanyWhatsappNumberDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+            args: Prisma.WorkerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
           }
           update: {
-            args: Prisma.CompanyWhatsappNumberUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+            args: Prisma.WorkerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
           }
           deleteMany: {
-            args: Prisma.CompanyWhatsappNumberDeleteManyArgs<ExtArgs>
+            args: Prisma.WorkerDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CompanyWhatsappNumberUpdateManyArgs<ExtArgs>
+            args: Prisma.WorkerUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>[]
+            args: Prisma.WorkerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
           }
           upsert: {
-            args: Prisma.CompanyWhatsappNumberUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyWhatsappNumberPayload>
+            args: Prisma.WorkerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
           }
           aggregate: {
-            args: Prisma.CompanyWhatsappNumberAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCompanyWhatsappNumber>
+            args: Prisma.WorkerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorker>
           }
           groupBy: {
-            args: Prisma.CompanyWhatsappNumberGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CompanyWhatsappNumberGroupByOutputType>[]
+            args: Prisma.WorkerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkerGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CompanyWhatsappNumberCountArgs<ExtArgs>
-            result: $Utils.Optional<CompanyWhatsappNumberCountAggregateOutputType> | number
+            args: Prisma.WorkerCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkerCountAggregateOutputType> | number
+          }
+        }
+      }
+      SessionAssignment: {
+        payload: Prisma.$SessionAssignmentPayload<ExtArgs>
+        fields: Prisma.SessionAssignmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SessionAssignmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SessionAssignmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>
+          }
+          findFirst: {
+            args: Prisma.SessionAssignmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SessionAssignmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>
+          }
+          findMany: {
+            args: Prisma.SessionAssignmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>[]
+          }
+          create: {
+            args: Prisma.SessionAssignmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>
+          }
+          createMany: {
+            args: Prisma.SessionAssignmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SessionAssignmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>[]
+          }
+          delete: {
+            args: Prisma.SessionAssignmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>
+          }
+          update: {
+            args: Prisma.SessionAssignmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.SessionAssignmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SessionAssignmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SessionAssignmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.SessionAssignmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionAssignmentPayload>
+          }
+          aggregate: {
+            args: Prisma.SessionAssignmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSessionAssignment>
+          }
+          groupBy: {
+            args: Prisma.SessionAssignmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SessionAssignmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SessionAssignmentCountArgs<ExtArgs>
+            result: $Utils.Optional<SessionAssignmentCountAggregateOutputType> | number
           }
         }
       }
@@ -2690,7 +2780,8 @@ export namespace Prisma {
     inboxConversation?: InboxConversationOmit
     inboxMessage?: InboxMessageOmit
     kvBackup?: KvBackupOmit
-    companyWhatsappNumber?: CompanyWhatsappNumberOmit
+    worker?: WorkerOmit
+    sessionAssignment?: SessionAssignmentOmit
   }
 
   /* Types for Logging */
@@ -2915,7 +3006,7 @@ export namespace Prisma {
     inboxCustomers: number
     inboxConversations: number
     inboxMessages: number
-    whatsappNumbers: number
+    SessionAssignment: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2929,7 +3020,7 @@ export namespace Prisma {
     inboxCustomers?: boolean | CompanyCountOutputTypeCountInboxCustomersArgs
     inboxConversations?: boolean | CompanyCountOutputTypeCountInboxConversationsArgs
     inboxMessages?: boolean | CompanyCountOutputTypeCountInboxMessagesArgs
-    whatsappNumbers?: boolean | CompanyCountOutputTypeCountWhatsappNumbersArgs
+    SessionAssignment?: boolean | CompanyCountOutputTypeCountSessionAssignmentArgs
   }
 
   // Custom InputTypes
@@ -3016,8 +3107,8 @@ export namespace Prisma {
   /**
    * CompanyCountOutputType without action
    */
-  export type CompanyCountOutputTypeCountWhatsappNumbersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanyWhatsappNumberWhereInput
+  export type CompanyCountOutputTypeCountSessionAssignmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionAssignmentWhereInput
   }
 
 
@@ -3173,6 +3264,37 @@ export namespace Prisma {
    */
   export type InboxConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InboxMessageWhereInput
+  }
+
+
+  /**
+   * Count Type WorkerCountOutputType
+   */
+
+  export type WorkerCountOutputType = {
+    sessions: number
+  }
+
+  export type WorkerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sessions?: boolean | WorkerCountOutputTypeCountSessionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * WorkerCountOutputType without action
+   */
+  export type WorkerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCountOutputType
+     */
+    select?: WorkerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * WorkerCountOutputType without action
+   */
+  export type WorkerCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionAssignmentWhereInput
   }
 
 
@@ -9537,7 +9659,7 @@ export namespace Prisma {
     inboxConversations?: boolean | Company$inboxConversationsArgs<ExtArgs>
     inboxMessages?: boolean | Company$inboxMessagesArgs<ExtArgs>
     settings?: boolean | Company$settingsArgs<ExtArgs>
-    whatsappNumbers?: boolean | Company$whatsappNumbersArgs<ExtArgs>
+    SessionAssignment?: boolean | Company$SessionAssignmentArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -9581,7 +9703,7 @@ export namespace Prisma {
     inboxConversations?: boolean | Company$inboxConversationsArgs<ExtArgs>
     inboxMessages?: boolean | Company$inboxMessagesArgs<ExtArgs>
     settings?: boolean | Company$settingsArgs<ExtArgs>
-    whatsappNumbers?: boolean | Company$whatsappNumbersArgs<ExtArgs>
+    SessionAssignment?: boolean | Company$SessionAssignmentArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -9601,7 +9723,7 @@ export namespace Prisma {
       inboxConversations: Prisma.$InboxConversationPayload<ExtArgs>[]
       inboxMessages: Prisma.$InboxMessagePayload<ExtArgs>[]
       settings: Prisma.$CompanySettingsPayload<ExtArgs> | null
-      whatsappNumbers: Prisma.$CompanyWhatsappNumberPayload<ExtArgs>[]
+      SessionAssignment: Prisma.$SessionAssignmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -10015,7 +10137,7 @@ export namespace Prisma {
     inboxConversations<T extends Company$inboxConversationsArgs<ExtArgs> = {}>(args?: Subset<T, Company$inboxConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     inboxMessages<T extends Company$inboxMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Company$inboxMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InboxMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     settings<T extends Company$settingsArgs<ExtArgs> = {}>(args?: Subset<T, Company$settingsArgs<ExtArgs>>): Prisma__CompanySettingsClient<$Result.GetResult<Prisma.$CompanySettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    whatsappNumbers<T extends Company$whatsappNumbersArgs<ExtArgs> = {}>(args?: Subset<T, Company$whatsappNumbersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    SessionAssignment<T extends Company$SessionAssignmentArgs<ExtArgs> = {}>(args?: Subset<T, Company$SessionAssignmentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10698,27 +10820,27 @@ export namespace Prisma {
   }
 
   /**
-   * Company.whatsappNumbers
+   * Company.SessionAssignment
    */
-  export type Company$whatsappNumbersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Company$SessionAssignmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the SessionAssignment
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: SessionAssignmentSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the SessionAssignment
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: SessionAssignmentOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
-    where?: CompanyWhatsappNumberWhereInput
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    include?: SessionAssignmentInclude<ExtArgs> | null
+    where?: SessionAssignmentWhereInput
+    orderBy?: SessionAssignmentOrderByWithRelationInput | SessionAssignmentOrderByWithRelationInput[]
+    cursor?: SessionAssignmentWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+    distinct?: SessionAssignmentScalarFieldEnum | SessionAssignmentScalarFieldEnum[]
   }
 
   /**
@@ -25885,508 +26007,396 @@ export namespace Prisma {
 
 
   /**
-   * Model CompanyWhatsappNumber
+   * Model Worker
    */
 
-  export type AggregateCompanyWhatsappNumber = {
-    _count: CompanyWhatsappNumberCountAggregateOutputType | null
-    _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
-    _sum: CompanyWhatsappNumberSumAggregateOutputType | null
-    _min: CompanyWhatsappNumberMinAggregateOutputType | null
-    _max: CompanyWhatsappNumberMaxAggregateOutputType | null
+  export type AggregateWorker = {
+    _count: WorkerCountAggregateOutputType | null
+    _avg: WorkerAvgAggregateOutputType | null
+    _sum: WorkerSumAggregateOutputType | null
+    _min: WorkerMinAggregateOutputType | null
+    _max: WorkerMaxAggregateOutputType | null
   }
 
-  export type CompanyWhatsappNumberAvgAggregateOutputType = {
-    companyId: number | null
-    messagesThisMonth: number | null
+  export type WorkerAvgAggregateOutputType = {
+    maxCapacity: number | null
+    currentLoad: number | null
   }
 
-  export type CompanyWhatsappNumberSumAggregateOutputType = {
-    companyId: number | null
-    messagesThisMonth: number | null
+  export type WorkerSumAggregateOutputType = {
+    maxCapacity: number | null
+    currentLoad: number | null
   }
 
-  export type CompanyWhatsappNumberMinAggregateOutputType = {
+  export type WorkerMinAggregateOutputType = {
     id: string | null
-    companyId: number | null
-    displayName: string | null
-    phoneNumber: string | null
-    isConnected: boolean | null
-    messagesThisMonth: number | null
-    lastSyncedAt: Date | null
+    maxCapacity: number | null
+    currentLoad: number | null
+    isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
-    remoteAuthNamespace: string | null
-    remoteAuthKey: string | null
-    tenantId: string | null
-    workerId: string | null
-    wsUrl: string | null
-    status: string | null
   }
 
-  export type CompanyWhatsappNumberMaxAggregateOutputType = {
+  export type WorkerMaxAggregateOutputType = {
     id: string | null
-    companyId: number | null
-    displayName: string | null
-    phoneNumber: string | null
-    isConnected: boolean | null
-    messagesThisMonth: number | null
-    lastSyncedAt: Date | null
+    maxCapacity: number | null
+    currentLoad: number | null
+    isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
-    remoteAuthNamespace: string | null
-    remoteAuthKey: string | null
-    tenantId: string | null
-    workerId: string | null
-    wsUrl: string | null
-    status: string | null
   }
 
-  export type CompanyWhatsappNumberCountAggregateOutputType = {
+  export type WorkerCountAggregateOutputType = {
     id: number
-    companyId: number
-    displayName: number
-    phoneNumber: number
-    isConnected: number
-    messagesThisMonth: number
-    lastSyncedAt: number
+    maxCapacity: number
+    currentLoad: number
+    isActive: number
     createdAt: number
     updatedAt: number
-    remoteAuthNamespace: number
-    remoteAuthKey: number
-    tenantId: number
-    workerId: number
-    wsUrl: number
-    status: number
     _all: number
   }
 
 
-  export type CompanyWhatsappNumberAvgAggregateInputType = {
-    companyId?: true
-    messagesThisMonth?: true
+  export type WorkerAvgAggregateInputType = {
+    maxCapacity?: true
+    currentLoad?: true
   }
 
-  export type CompanyWhatsappNumberSumAggregateInputType = {
-    companyId?: true
-    messagesThisMonth?: true
+  export type WorkerSumAggregateInputType = {
+    maxCapacity?: true
+    currentLoad?: true
   }
 
-  export type CompanyWhatsappNumberMinAggregateInputType = {
+  export type WorkerMinAggregateInputType = {
     id?: true
-    companyId?: true
-    displayName?: true
-    phoneNumber?: true
-    isConnected?: true
-    messagesThisMonth?: true
-    lastSyncedAt?: true
+    maxCapacity?: true
+    currentLoad?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
-    remoteAuthNamespace?: true
-    remoteAuthKey?: true
-    tenantId?: true
-    workerId?: true
-    wsUrl?: true
-    status?: true
   }
 
-  export type CompanyWhatsappNumberMaxAggregateInputType = {
+  export type WorkerMaxAggregateInputType = {
     id?: true
-    companyId?: true
-    displayName?: true
-    phoneNumber?: true
-    isConnected?: true
-    messagesThisMonth?: true
-    lastSyncedAt?: true
+    maxCapacity?: true
+    currentLoad?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
-    remoteAuthNamespace?: true
-    remoteAuthKey?: true
-    tenantId?: true
-    workerId?: true
-    wsUrl?: true
-    status?: true
   }
 
-  export type CompanyWhatsappNumberCountAggregateInputType = {
+  export type WorkerCountAggregateInputType = {
     id?: true
-    companyId?: true
-    displayName?: true
-    phoneNumber?: true
-    isConnected?: true
-    messagesThisMonth?: true
-    lastSyncedAt?: true
+    maxCapacity?: true
+    currentLoad?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
-    remoteAuthNamespace?: true
-    remoteAuthKey?: true
-    tenantId?: true
-    workerId?: true
-    wsUrl?: true
-    status?: true
     _all?: true
   }
 
-  export type CompanyWhatsappNumberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which CompanyWhatsappNumber to aggregate.
+     * Filter which Worker to aggregate.
      */
-    where?: CompanyWhatsappNumberWhereInput
+    where?: WorkerWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CompanyWhatsappNumbers to fetch.
+     * Determine the order of Workers to fetch.
      */
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    cursor?: WorkerWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     * Take `±n` Workers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CompanyWhatsappNumbers.
+     * Skip the first `n` Workers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned CompanyWhatsappNumbers
+     * Count returned Workers
     **/
-    _count?: true | CompanyWhatsappNumberCountAggregateInputType
+    _count?: true | WorkerCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: CompanyWhatsappNumberAvgAggregateInputType
+    _avg?: WorkerAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: CompanyWhatsappNumberSumAggregateInputType
+    _sum?: WorkerSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: CompanyWhatsappNumberMinAggregateInputType
+    _min?: WorkerMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: CompanyWhatsappNumberMaxAggregateInputType
+    _max?: WorkerMaxAggregateInputType
   }
 
-  export type GetCompanyWhatsappNumberAggregateType<T extends CompanyWhatsappNumberAggregateArgs> = {
-        [P in keyof T & keyof AggregateCompanyWhatsappNumber]: P extends '_count' | 'count'
+  export type GetWorkerAggregateType<T extends WorkerAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorker]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateCompanyWhatsappNumber[P]>
-      : GetScalarType<T[P], AggregateCompanyWhatsappNumber[P]>
+        : GetScalarType<T[P], AggregateWorker[P]>
+      : GetScalarType<T[P], AggregateWorker[P]>
   }
 
 
 
 
-  export type CompanyWhatsappNumberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanyWhatsappNumberWhereInput
-    orderBy?: CompanyWhatsappNumberOrderByWithAggregationInput | CompanyWhatsappNumberOrderByWithAggregationInput[]
-    by: CompanyWhatsappNumberScalarFieldEnum[] | CompanyWhatsappNumberScalarFieldEnum
-    having?: CompanyWhatsappNumberScalarWhereWithAggregatesInput
+  export type WorkerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkerWhereInput
+    orderBy?: WorkerOrderByWithAggregationInput | WorkerOrderByWithAggregationInput[]
+    by: WorkerScalarFieldEnum[] | WorkerScalarFieldEnum
+    having?: WorkerScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: CompanyWhatsappNumberCountAggregateInputType | true
-    _avg?: CompanyWhatsappNumberAvgAggregateInputType
-    _sum?: CompanyWhatsappNumberSumAggregateInputType
-    _min?: CompanyWhatsappNumberMinAggregateInputType
-    _max?: CompanyWhatsappNumberMaxAggregateInputType
+    _count?: WorkerCountAggregateInputType | true
+    _avg?: WorkerAvgAggregateInputType
+    _sum?: WorkerSumAggregateInputType
+    _min?: WorkerMinAggregateInputType
+    _max?: WorkerMaxAggregateInputType
   }
 
-  export type CompanyWhatsappNumberGroupByOutputType = {
+  export type WorkerGroupByOutputType = {
     id: string
-    companyId: number
-    displayName: string
-    phoneNumber: string
-    isConnected: boolean
-    messagesThisMonth: number
-    lastSyncedAt: Date | null
+    maxCapacity: number
+    currentLoad: number
+    isActive: boolean
     createdAt: Date
     updatedAt: Date
-    remoteAuthNamespace: string | null
-    remoteAuthKey: string | null
-    tenantId: string | null
-    workerId: string | null
-    wsUrl: string | null
-    status: string | null
-    _count: CompanyWhatsappNumberCountAggregateOutputType | null
-    _avg: CompanyWhatsappNumberAvgAggregateOutputType | null
-    _sum: CompanyWhatsappNumberSumAggregateOutputType | null
-    _min: CompanyWhatsappNumberMinAggregateOutputType | null
-    _max: CompanyWhatsappNumberMaxAggregateOutputType | null
+    _count: WorkerCountAggregateOutputType | null
+    _avg: WorkerAvgAggregateOutputType | null
+    _sum: WorkerSumAggregateOutputType | null
+    _min: WorkerMinAggregateOutputType | null
+    _max: WorkerMaxAggregateOutputType | null
   }
 
-  type GetCompanyWhatsappNumberGroupByPayload<T extends CompanyWhatsappNumberGroupByArgs> = Prisma.PrismaPromise<
+  type GetWorkerGroupByPayload<T extends WorkerGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<CompanyWhatsappNumberGroupByOutputType, T['by']> &
+      PickEnumerable<WorkerGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof CompanyWhatsappNumberGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof WorkerGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], CompanyWhatsappNumberGroupByOutputType[P]>
-            : GetScalarType<T[P], CompanyWhatsappNumberGroupByOutputType[P]>
+              : GetScalarType<T[P], WorkerGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkerGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type CompanyWhatsappNumberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type WorkerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    companyId?: boolean
-    displayName?: boolean
-    phoneNumber?: boolean
-    isConnected?: boolean
-    messagesThisMonth?: boolean
-    lastSyncedAt?: boolean
+    maxCapacity?: boolean
+    currentLoad?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    remoteAuthNamespace?: boolean
-    remoteAuthKey?: boolean
-    tenantId?: boolean
-    workerId?: boolean
-    wsUrl?: boolean
-    status?: boolean
-    Company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyWhatsappNumber"]>
+    sessions?: boolean | Worker$sessionsArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["worker"]>
 
-  export type CompanyWhatsappNumberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type WorkerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    companyId?: boolean
-    displayName?: boolean
-    phoneNumber?: boolean
-    isConnected?: boolean
-    messagesThisMonth?: boolean
-    lastSyncedAt?: boolean
+    maxCapacity?: boolean
+    currentLoad?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    remoteAuthNamespace?: boolean
-    remoteAuthKey?: boolean
-    tenantId?: boolean
-    workerId?: boolean
-    wsUrl?: boolean
-    status?: boolean
-    Company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyWhatsappNumber"]>
+  }, ExtArgs["result"]["worker"]>
 
-  export type CompanyWhatsappNumberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type WorkerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    companyId?: boolean
-    displayName?: boolean
-    phoneNumber?: boolean
-    isConnected?: boolean
-    messagesThisMonth?: boolean
-    lastSyncedAt?: boolean
+    maxCapacity?: boolean
+    currentLoad?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    remoteAuthNamespace?: boolean
-    remoteAuthKey?: boolean
-    tenantId?: boolean
-    workerId?: boolean
-    wsUrl?: boolean
-    status?: boolean
-    Company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyWhatsappNumber"]>
+  }, ExtArgs["result"]["worker"]>
 
-  export type CompanyWhatsappNumberSelectScalar = {
+  export type WorkerSelectScalar = {
     id?: boolean
-    companyId?: boolean
-    displayName?: boolean
-    phoneNumber?: boolean
-    isConnected?: boolean
-    messagesThisMonth?: boolean
-    lastSyncedAt?: boolean
+    maxCapacity?: boolean
+    currentLoad?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    remoteAuthNamespace?: boolean
-    remoteAuthKey?: boolean
-    tenantId?: boolean
-    workerId?: boolean
-    wsUrl?: boolean
-    status?: boolean
   }
 
-  export type CompanyWhatsappNumberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "displayName" | "phoneNumber" | "isConnected" | "messagesThisMonth" | "lastSyncedAt" | "createdAt" | "updatedAt" | "remoteAuthNamespace" | "remoteAuthKey" | "tenantId" | "workerId" | "wsUrl" | "status", ExtArgs["result"]["companyWhatsappNumber"]>
-  export type CompanyWhatsappNumberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Company?: boolean | CompanyDefaultArgs<ExtArgs>
+  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "maxCapacity" | "currentLoad" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
+  export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sessions?: boolean | Worker$sessionsArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type CompanyWhatsappNumberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-  export type CompanyWhatsappNumberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
+  export type WorkerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type WorkerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
-  export type $CompanyWhatsappNumberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "CompanyWhatsappNumber"
+  export type $WorkerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Worker"
     objects: {
-      Company: Prisma.$CompanyPayload<ExtArgs>
+      sessions: Prisma.$SessionAssignmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      companyId: number
-      displayName: string
-      phoneNumber: string
-      isConnected: boolean
-      messagesThisMonth: number
-      lastSyncedAt: Date | null
+      maxCapacity: number
+      currentLoad: number
+      isActive: boolean
       createdAt: Date
       updatedAt: Date
-      remoteAuthNamespace: string | null
-      remoteAuthKey: string | null
-      tenantId: string | null
-      workerId: string | null
-      wsUrl: string | null
-      status: string | null
-    }, ExtArgs["result"]["companyWhatsappNumber"]>
+    }, ExtArgs["result"]["worker"]>
     composites: {}
   }
 
-  type CompanyWhatsappNumberGetPayload<S extends boolean | null | undefined | CompanyWhatsappNumberDefaultArgs> = $Result.GetResult<Prisma.$CompanyWhatsappNumberPayload, S>
+  type WorkerGetPayload<S extends boolean | null | undefined | WorkerDefaultArgs> = $Result.GetResult<Prisma.$WorkerPayload, S>
 
-  type CompanyWhatsappNumberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CompanyWhatsappNumberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CompanyWhatsappNumberCountAggregateInputType | true
+  type WorkerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkerCountAggregateInputType | true
     }
 
-  export interface CompanyWhatsappNumberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyWhatsappNumber'], meta: { name: 'CompanyWhatsappNumber' } }
+  export interface WorkerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Worker'], meta: { name: 'Worker' } }
     /**
-     * Find zero or one CompanyWhatsappNumber that matches the filter.
-     * @param {CompanyWhatsappNumberFindUniqueArgs} args - Arguments to find a CompanyWhatsappNumber
+     * Find zero or one Worker that matches the filter.
+     * @param {WorkerFindUniqueArgs} args - Arguments to find a Worker
      * @example
-     * // Get one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findUnique({
+     * // Get one Worker
+     * const worker = await prisma.worker.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends CompanyWhatsappNumberFindUniqueArgs>(args: SelectSubset<T, CompanyWhatsappNumberFindUniqueArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends WorkerFindUniqueArgs>(args: SelectSubset<T, WorkerFindUniqueArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one CompanyWhatsappNumber that matches the filter or throw an error with `error.code='P2025'`
+     * Find one Worker that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {CompanyWhatsappNumberFindUniqueOrThrowArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @param {WorkerFindUniqueOrThrowArgs} args - Arguments to find a Worker
      * @example
-     * // Get one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findUniqueOrThrow({
+     * // Get one Worker
+     * const worker = await prisma.worker.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends CompanyWhatsappNumberFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends WorkerFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first CompanyWhatsappNumber that matches the filter.
+     * Find the first Worker that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberFindFirstArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @param {WorkerFindFirstArgs} args - Arguments to find a Worker
      * @example
-     * // Get one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findFirst({
+     * // Get one Worker
+     * const worker = await prisma.worker.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends CompanyWhatsappNumberFindFirstArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindFirstArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends WorkerFindFirstArgs>(args?: SelectSubset<T, WorkerFindFirstArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first CompanyWhatsappNumber that matches the filter or
+     * Find the first Worker that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberFindFirstOrThrowArgs} args - Arguments to find a CompanyWhatsappNumber
+     * @param {WorkerFindFirstOrThrowArgs} args - Arguments to find a Worker
      * @example
-     * // Get one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.findFirstOrThrow({
+     * // Get one Worker
+     * const worker = await prisma.worker.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends CompanyWhatsappNumberFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends WorkerFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkerFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more CompanyWhatsappNumbers that matches the filter.
+     * Find zero or more Workers that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {WorkerFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all CompanyWhatsappNumbers
-     * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany()
+     * // Get all Workers
+     * const workers = await prisma.worker.findMany()
      * 
-     * // Get first 10 CompanyWhatsappNumbers
-     * const companyWhatsappNumbers = await prisma.companyWhatsappNumber.findMany({ take: 10 })
+     * // Get first 10 Workers
+     * const workers = await prisma.worker.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.findMany({ select: { id: true } })
+     * const workerWithIdOnly = await prisma.worker.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends CompanyWhatsappNumberFindManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends WorkerFindManyArgs>(args?: SelectSubset<T, WorkerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a CompanyWhatsappNumber.
-     * @param {CompanyWhatsappNumberCreateArgs} args - Arguments to create a CompanyWhatsappNumber.
+     * Create a Worker.
+     * @param {WorkerCreateArgs} args - Arguments to create a Worker.
      * @example
-     * // Create one CompanyWhatsappNumber
-     * const CompanyWhatsappNumber = await prisma.companyWhatsappNumber.create({
+     * // Create one Worker
+     * const Worker = await prisma.worker.create({
      *   data: {
-     *     // ... data to create a CompanyWhatsappNumber
+     *     // ... data to create a Worker
      *   }
      * })
      * 
      */
-    create<T extends CompanyWhatsappNumberCreateArgs>(args: SelectSubset<T, CompanyWhatsappNumberCreateArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends WorkerCreateArgs>(args: SelectSubset<T, WorkerCreateArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many CompanyWhatsappNumbers.
-     * @param {CompanyWhatsappNumberCreateManyArgs} args - Arguments to create many CompanyWhatsappNumbers.
+     * Create many Workers.
+     * @param {WorkerCreateManyArgs} args - Arguments to create many Workers.
      * @example
-     * // Create many CompanyWhatsappNumbers
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.createMany({
+     * // Create many Workers
+     * const worker = await prisma.worker.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends CompanyWhatsappNumberCreateManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends WorkerCreateManyArgs>(args?: SelectSubset<T, WorkerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many CompanyWhatsappNumbers and returns the data saved in the database.
-     * @param {CompanyWhatsappNumberCreateManyAndReturnArgs} args - Arguments to create many CompanyWhatsappNumbers.
+     * Create many Workers and returns the data saved in the database.
+     * @param {WorkerCreateManyAndReturnArgs} args - Arguments to create many Workers.
      * @example
-     * // Create many CompanyWhatsappNumbers
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.createManyAndReturn({
+     * // Create many Workers
+     * const worker = await prisma.worker.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many CompanyWhatsappNumbers and only return the `id`
-     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.createManyAndReturn({
+     * // Create many Workers and only return the `id`
+     * const workerWithIdOnly = await prisma.worker.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -26396,28 +26406,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends CompanyWhatsappNumberCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends WorkerCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a CompanyWhatsappNumber.
-     * @param {CompanyWhatsappNumberDeleteArgs} args - Arguments to delete one CompanyWhatsappNumber.
+     * Delete a Worker.
+     * @param {WorkerDeleteArgs} args - Arguments to delete one Worker.
      * @example
-     * // Delete one CompanyWhatsappNumber
-     * const CompanyWhatsappNumber = await prisma.companyWhatsappNumber.delete({
+     * // Delete one Worker
+     * const Worker = await prisma.worker.delete({
      *   where: {
-     *     // ... filter to delete one CompanyWhatsappNumber
+     *     // ... filter to delete one Worker
      *   }
      * })
      * 
      */
-    delete<T extends CompanyWhatsappNumberDeleteArgs>(args: SelectSubset<T, CompanyWhatsappNumberDeleteArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends WorkerDeleteArgs>(args: SelectSubset<T, WorkerDeleteArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one CompanyWhatsappNumber.
-     * @param {CompanyWhatsappNumberUpdateArgs} args - Arguments to update one CompanyWhatsappNumber.
+     * Update one Worker.
+     * @param {WorkerUpdateArgs} args - Arguments to update one Worker.
      * @example
-     * // Update one CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.update({
+     * // Update one Worker
+     * const worker = await prisma.worker.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -26427,30 +26437,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends CompanyWhatsappNumberUpdateArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends WorkerUpdateArgs>(args: SelectSubset<T, WorkerUpdateArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more CompanyWhatsappNumbers.
-     * @param {CompanyWhatsappNumberDeleteManyArgs} args - Arguments to filter CompanyWhatsappNumbers to delete.
+     * Delete zero or more Workers.
+     * @param {WorkerDeleteManyArgs} args - Arguments to filter Workers to delete.
      * @example
-     * // Delete a few CompanyWhatsappNumbers
-     * const { count } = await prisma.companyWhatsappNumber.deleteMany({
+     * // Delete a few Workers
+     * const { count } = await prisma.worker.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends CompanyWhatsappNumberDeleteManyArgs>(args?: SelectSubset<T, CompanyWhatsappNumberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends WorkerDeleteManyArgs>(args?: SelectSubset<T, WorkerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more CompanyWhatsappNumbers.
+     * Update zero or more Workers.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {WorkerUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many CompanyWhatsappNumbers
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.updateMany({
+     * // Update many Workers
+     * const worker = await prisma.worker.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -26460,14 +26470,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends CompanyWhatsappNumberUpdateManyArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends WorkerUpdateManyArgs>(args: SelectSubset<T, WorkerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more CompanyWhatsappNumbers and returns the data updated in the database.
-     * @param {CompanyWhatsappNumberUpdateManyAndReturnArgs} args - Arguments to update many CompanyWhatsappNumbers.
+     * Update zero or more Workers and returns the data updated in the database.
+     * @param {WorkerUpdateManyAndReturnArgs} args - Arguments to update many Workers.
      * @example
-     * // Update many CompanyWhatsappNumbers
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.updateManyAndReturn({
+     * // Update many Workers
+     * const worker = await prisma.worker.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -26476,8 +26486,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more CompanyWhatsappNumbers and only return the `id`
-     * const companyWhatsappNumberWithIdOnly = await prisma.companyWhatsappNumber.updateManyAndReturn({
+     * // Update zero or more Workers and only return the `id`
+     * const workerWithIdOnly = await prisma.worker.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -26490,56 +26500,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends CompanyWhatsappNumberUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends WorkerUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one CompanyWhatsappNumber.
-     * @param {CompanyWhatsappNumberUpsertArgs} args - Arguments to update or create a CompanyWhatsappNumber.
+     * Create or update one Worker.
+     * @param {WorkerUpsertArgs} args - Arguments to update or create a Worker.
      * @example
-     * // Update or create a CompanyWhatsappNumber
-     * const companyWhatsappNumber = await prisma.companyWhatsappNumber.upsert({
+     * // Update or create a Worker
+     * const worker = await prisma.worker.upsert({
      *   create: {
-     *     // ... data to create a CompanyWhatsappNumber
+     *     // ... data to create a Worker
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the CompanyWhatsappNumber we want to update
+     *     // ... the filter for the Worker we want to update
      *   }
      * })
      */
-    upsert<T extends CompanyWhatsappNumberUpsertArgs>(args: SelectSubset<T, CompanyWhatsappNumberUpsertArgs<ExtArgs>>): Prisma__CompanyWhatsappNumberClient<$Result.GetResult<Prisma.$CompanyWhatsappNumberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends WorkerUpsertArgs>(args: SelectSubset<T, WorkerUpsertArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of CompanyWhatsappNumbers.
+     * Count the number of Workers.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberCountArgs} args - Arguments to filter CompanyWhatsappNumbers to count.
+     * @param {WorkerCountArgs} args - Arguments to filter Workers to count.
      * @example
-     * // Count the number of CompanyWhatsappNumbers
-     * const count = await prisma.companyWhatsappNumber.count({
+     * // Count the number of Workers
+     * const count = await prisma.worker.count({
      *   where: {
-     *     // ... the filter for the CompanyWhatsappNumbers we want to count
+     *     // ... the filter for the Workers we want to count
      *   }
      * })
     **/
-    count<T extends CompanyWhatsappNumberCountArgs>(
-      args?: Subset<T, CompanyWhatsappNumberCountArgs>,
+    count<T extends WorkerCountArgs>(
+      args?: Subset<T, WorkerCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], CompanyWhatsappNumberCountAggregateOutputType>
+          : GetScalarType<T['select'], WorkerCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a CompanyWhatsappNumber.
+     * Allows you to perform aggregations operations on a Worker.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {WorkerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -26559,13 +26569,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends CompanyWhatsappNumberAggregateArgs>(args: Subset<T, CompanyWhatsappNumberAggregateArgs>): Prisma.PrismaPromise<GetCompanyWhatsappNumberAggregateType<T>>
+    aggregate<T extends WorkerAggregateArgs>(args: Subset<T, WorkerAggregateArgs>): Prisma.PrismaPromise<GetWorkerAggregateType<T>>
 
     /**
-     * Group by CompanyWhatsappNumber.
+     * Group by Worker.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyWhatsappNumberGroupByArgs} args - Group by arguments.
+     * @param {WorkerGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -26580,14 +26590,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends CompanyWhatsappNumberGroupByArgs,
+      T extends WorkerGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CompanyWhatsappNumberGroupByArgs['orderBy'] }
-        : { orderBy?: CompanyWhatsappNumberGroupByArgs['orderBy'] },
+        ? { orderBy: WorkerGroupByArgs['orderBy'] }
+        : { orderBy?: WorkerGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -26636,22 +26646,22 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, CompanyWhatsappNumberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyWhatsappNumberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, WorkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the CompanyWhatsappNumber model
+   * Fields of the Worker model
    */
-  readonly fields: CompanyWhatsappNumberFieldRefs;
+  readonly fields: WorkerFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for CompanyWhatsappNumber.
+   * The delegate class that acts as a "Promise-like" for Worker.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__CompanyWhatsappNumberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__WorkerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    Company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sessions<T extends Worker$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, Worker$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -26678,435 +26688,1629 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the CompanyWhatsappNumber model
+   * Fields of the Worker model
    */
-  interface CompanyWhatsappNumberFieldRefs {
-    readonly id: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly companyId: FieldRef<"CompanyWhatsappNumber", 'Int'>
-    readonly displayName: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly phoneNumber: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly isConnected: FieldRef<"CompanyWhatsappNumber", 'Boolean'>
-    readonly messagesThisMonth: FieldRef<"CompanyWhatsappNumber", 'Int'>
-    readonly lastSyncedAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
-    readonly createdAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
-    readonly updatedAt: FieldRef<"CompanyWhatsappNumber", 'DateTime'>
-    readonly remoteAuthNamespace: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly remoteAuthKey: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly tenantId: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly workerId: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly wsUrl: FieldRef<"CompanyWhatsappNumber", 'String'>
-    readonly status: FieldRef<"CompanyWhatsappNumber", 'String'>
+  interface WorkerFieldRefs {
+    readonly id: FieldRef<"Worker", 'String'>
+    readonly maxCapacity: FieldRef<"Worker", 'Int'>
+    readonly currentLoad: FieldRef<"Worker", 'Int'>
+    readonly isActive: FieldRef<"Worker", 'Boolean'>
+    readonly createdAt: FieldRef<"Worker", 'DateTime'>
+    readonly updatedAt: FieldRef<"Worker", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * CompanyWhatsappNumber findUnique
+   * Worker findUnique
    */
-  export type CompanyWhatsappNumberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the Worker
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the Worker
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: WorkerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyWhatsappNumber to fetch.
+     * Filter, which Worker to fetch.
      */
-    where: CompanyWhatsappNumberWhereUniqueInput
+    where: WorkerWhereUniqueInput
   }
 
   /**
-   * CompanyWhatsappNumber findUniqueOrThrow
+   * Worker findUniqueOrThrow
    */
-  export type CompanyWhatsappNumberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the Worker
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the Worker
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: WorkerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyWhatsappNumber to fetch.
+     * Filter, which Worker to fetch.
      */
-    where: CompanyWhatsappNumberWhereUniqueInput
+    where: WorkerWhereUniqueInput
   }
 
   /**
-   * CompanyWhatsappNumber findFirst
+   * Worker findFirst
    */
-  export type CompanyWhatsappNumberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the Worker
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the Worker
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: WorkerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyWhatsappNumber to fetch.
+     * Filter, which Worker to fetch.
      */
-    where?: CompanyWhatsappNumberWhereInput
+    where?: WorkerWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CompanyWhatsappNumbers to fetch.
+     * Determine the order of Workers to fetch.
      */
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for CompanyWhatsappNumbers.
+     * Sets the position for searching for Workers.
      */
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    cursor?: WorkerWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     * Take `±n` Workers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CompanyWhatsappNumbers.
+     * Skip the first `n` Workers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of CompanyWhatsappNumbers.
+     * Filter by unique combinations of Workers.
      */
-    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
   }
 
   /**
-   * CompanyWhatsappNumber findFirstOrThrow
+   * Worker findFirstOrThrow
    */
-  export type CompanyWhatsappNumberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the Worker
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the Worker
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: WorkerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyWhatsappNumber to fetch.
+     * Filter, which Worker to fetch.
      */
-    where?: CompanyWhatsappNumberWhereInput
+    where?: WorkerWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CompanyWhatsappNumbers to fetch.
+     * Determine the order of Workers to fetch.
      */
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for CompanyWhatsappNumbers.
+     * Sets the position for searching for Workers.
      */
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    cursor?: WorkerWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     * Take `±n` Workers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CompanyWhatsappNumbers.
+     * Skip the first `n` Workers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of CompanyWhatsappNumbers.
+     * Filter by unique combinations of Workers.
      */
-    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
   }
 
   /**
-   * CompanyWhatsappNumber findMany
+   * Worker findMany
    */
-  export type CompanyWhatsappNumberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the Worker
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the Worker
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: WorkerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyWhatsappNumbers to fetch.
+     * Filter, which Workers to fetch.
      */
-    where?: CompanyWhatsappNumberWhereInput
+    where?: WorkerWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CompanyWhatsappNumbers to fetch.
+     * Determine the order of Workers to fetch.
      */
-    orderBy?: CompanyWhatsappNumberOrderByWithRelationInput | CompanyWhatsappNumberOrderByWithRelationInput[]
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing CompanyWhatsappNumbers.
+     * Sets the position for listing Workers.
      */
-    cursor?: CompanyWhatsappNumberWhereUniqueInput
+    cursor?: WorkerWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CompanyWhatsappNumbers from the position of the cursor.
+     * Take `±n` Workers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CompanyWhatsappNumbers.
+     * Skip the first `n` Workers.
      */
     skip?: number
-    distinct?: CompanyWhatsappNumberScalarFieldEnum | CompanyWhatsappNumberScalarFieldEnum[]
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
   }
 
   /**
-   * CompanyWhatsappNumber create
+   * Worker create
    */
-  export type CompanyWhatsappNumberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the Worker
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: WorkerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the Worker
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: WorkerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: WorkerInclude<ExtArgs> | null
     /**
-     * The data needed to create a CompanyWhatsappNumber.
+     * The data needed to create a Worker.
      */
-    data: XOR<CompanyWhatsappNumberCreateInput, CompanyWhatsappNumberUncheckedCreateInput>
+    data: XOR<WorkerCreateInput, WorkerUncheckedCreateInput>
   }
 
   /**
-   * CompanyWhatsappNumber createMany
+   * Worker createMany
    */
-  export type CompanyWhatsappNumberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many CompanyWhatsappNumbers.
+     * The data used to create many Workers.
      */
-    data: CompanyWhatsappNumberCreateManyInput | CompanyWhatsappNumberCreateManyInput[]
+    data: WorkerCreateManyInput | WorkerCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * CompanyWhatsappNumber createManyAndReturn
+   * Worker createManyAndReturn
    */
-  export type CompanyWhatsappNumberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type WorkerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the Worker
      */
-    select?: CompanyWhatsappNumberSelectCreateManyAndReturn<ExtArgs> | null
+    select?: WorkerSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the Worker
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: WorkerOmit<ExtArgs> | null
     /**
-     * The data used to create many CompanyWhatsappNumbers.
+     * The data used to create many Workers.
      */
-    data: CompanyWhatsappNumberCreateManyInput | CompanyWhatsappNumberCreateManyInput[]
+    data: WorkerCreateManyInput | WorkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Worker update
+   */
+  export type WorkerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Worker.
+     */
+    data: XOR<WorkerUpdateInput, WorkerUncheckedUpdateInput>
+    /**
+     * Choose, which Worker to update.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker updateMany
+   */
+  export type WorkerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Workers.
+     */
+    data: XOR<WorkerUpdateManyMutationInput, WorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which Workers to update
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker updateManyAndReturn
+   */
+  export type WorkerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * The data used to update Workers.
+     */
+    data: XOR<WorkerUpdateManyMutationInput, WorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which Workers to update
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker upsert
+   */
+  export type WorkerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Worker to update in case it exists.
+     */
+    where: WorkerWhereUniqueInput
+    /**
+     * In case the Worker found by the `where` argument doesn't exist, create a new Worker with this data.
+     */
+    create: XOR<WorkerCreateInput, WorkerUncheckedCreateInput>
+    /**
+     * In case the Worker was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkerUpdateInput, WorkerUncheckedUpdateInput>
+  }
+
+  /**
+   * Worker delete
+   */
+  export type WorkerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter which Worker to delete.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker deleteMany
+   */
+  export type WorkerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Workers to delete
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker.sessions
+   */
+  export type Worker$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionAssignment
+     */
+    select?: SessionAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SessionAssignment
+     */
+    omit?: SessionAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionAssignmentInclude<ExtArgs> | null
+    where?: SessionAssignmentWhereInput
+    orderBy?: SessionAssignmentOrderByWithRelationInput | SessionAssignmentOrderByWithRelationInput[]
+    cursor?: SessionAssignmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionAssignmentScalarFieldEnum | SessionAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * Worker without action
+   */
+  export type WorkerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SessionAssignment
+   */
+
+  export type AggregateSessionAssignment = {
+    _count: SessionAssignmentCountAggregateOutputType | null
+    _avg: SessionAssignmentAvgAggregateOutputType | null
+    _sum: SessionAssignmentSumAggregateOutputType | null
+    _min: SessionAssignmentMinAggregateOutputType | null
+    _max: SessionAssignmentMaxAggregateOutputType | null
+  }
+
+  export type SessionAssignmentAvgAggregateOutputType = {
+    companyId: number | null
+  }
+
+  export type SessionAssignmentSumAggregateOutputType = {
+    companyId: number | null
+  }
+
+  export type SessionAssignmentMinAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    workerId: string | null
+    companyId: number | null
+    remoteAuthNamespace: string | null
+    displayName: string | null
+    phoneNumber: string | null
+    isConnected: boolean | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SessionAssignmentMaxAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    workerId: string | null
+    companyId: number | null
+    remoteAuthNamespace: string | null
+    displayName: string | null
+    phoneNumber: string | null
+    isConnected: boolean | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SessionAssignmentCountAggregateOutputType = {
+    id: number
+    sessionId: number
+    workerId: number
+    companyId: number
+    remoteAuthNamespace: number
+    remoteAuthData: number
+    displayName: number
+    phoneNumber: number
+    isConnected: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SessionAssignmentAvgAggregateInputType = {
+    companyId?: true
+  }
+
+  export type SessionAssignmentSumAggregateInputType = {
+    companyId?: true
+  }
+
+  export type SessionAssignmentMinAggregateInputType = {
+    id?: true
+    sessionId?: true
+    workerId?: true
+    companyId?: true
+    remoteAuthNamespace?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SessionAssignmentMaxAggregateInputType = {
+    id?: true
+    sessionId?: true
+    workerId?: true
+    companyId?: true
+    remoteAuthNamespace?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SessionAssignmentCountAggregateInputType = {
+    id?: true
+    sessionId?: true
+    workerId?: true
+    companyId?: true
+    remoteAuthNamespace?: true
+    remoteAuthData?: true
+    displayName?: true
+    phoneNumber?: true
+    isConnected?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SessionAssignmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SessionAssignment to aggregate.
+     */
+    where?: SessionAssignmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SessionAssignments to fetch.
+     */
+    orderBy?: SessionAssignmentOrderByWithRelationInput | SessionAssignmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SessionAssignmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SessionAssignments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SessionAssignments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SessionAssignments
+    **/
+    _count?: true | SessionAssignmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SessionAssignmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SessionAssignmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SessionAssignmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SessionAssignmentMaxAggregateInputType
+  }
+
+  export type GetSessionAssignmentAggregateType<T extends SessionAssignmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateSessionAssignment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSessionAssignment[P]>
+      : GetScalarType<T[P], AggregateSessionAssignment[P]>
+  }
+
+
+
+
+  export type SessionAssignmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionAssignmentWhereInput
+    orderBy?: SessionAssignmentOrderByWithAggregationInput | SessionAssignmentOrderByWithAggregationInput[]
+    by: SessionAssignmentScalarFieldEnum[] | SessionAssignmentScalarFieldEnum
+    having?: SessionAssignmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SessionAssignmentCountAggregateInputType | true
+    _avg?: SessionAssignmentAvgAggregateInputType
+    _sum?: SessionAssignmentSumAggregateInputType
+    _min?: SessionAssignmentMinAggregateInputType
+    _max?: SessionAssignmentMaxAggregateInputType
+  }
+
+  export type SessionAssignmentGroupByOutputType = {
+    id: string
+    sessionId: string
+    workerId: string
+    companyId: number
+    remoteAuthNamespace: string | null
+    remoteAuthData: JsonValue | null
+    displayName: string | null
+    phoneNumber: string | null
+    isConnected: boolean
+    status: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SessionAssignmentCountAggregateOutputType | null
+    _avg: SessionAssignmentAvgAggregateOutputType | null
+    _sum: SessionAssignmentSumAggregateOutputType | null
+    _min: SessionAssignmentMinAggregateOutputType | null
+    _max: SessionAssignmentMaxAggregateOutputType | null
+  }
+
+  type GetSessionAssignmentGroupByPayload<T extends SessionAssignmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SessionAssignmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SessionAssignmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SessionAssignmentGroupByOutputType[P]>
+            : GetScalarType<T[P], SessionAssignmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SessionAssignmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    workerId?: boolean
+    companyId?: boolean
+    remoteAuthNamespace?: boolean
+    remoteAuthData?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sessionAssignment"]>
+
+  export type SessionAssignmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    workerId?: boolean
+    companyId?: boolean
+    remoteAuthNamespace?: boolean
+    remoteAuthData?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sessionAssignment"]>
+
+  export type SessionAssignmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    workerId?: boolean
+    companyId?: boolean
+    remoteAuthNamespace?: boolean
+    remoteAuthData?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sessionAssignment"]>
+
+  export type SessionAssignmentSelectScalar = {
+    id?: boolean
+    sessionId?: boolean
+    workerId?: boolean
+    companyId?: boolean
+    remoteAuthNamespace?: boolean
+    remoteAuthData?: boolean
+    displayName?: boolean
+    phoneNumber?: boolean
+    isConnected?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SessionAssignmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "workerId" | "companyId" | "remoteAuthNamespace" | "remoteAuthData" | "displayName" | "phoneNumber" | "isConnected" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["sessionAssignment"]>
+  export type SessionAssignmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type SessionAssignmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type SessionAssignmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+
+  export type $SessionAssignmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SessionAssignment"
+    objects: {
+      worker: Prisma.$WorkerPayload<ExtArgs>
+      company: Prisma.$CompanyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sessionId: string
+      workerId: string
+      companyId: number
+      remoteAuthNamespace: string | null
+      remoteAuthData: Prisma.JsonValue | null
+      displayName: string | null
+      phoneNumber: string | null
+      isConnected: boolean
+      status: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["sessionAssignment"]>
+    composites: {}
+  }
+
+  type SessionAssignmentGetPayload<S extends boolean | null | undefined | SessionAssignmentDefaultArgs> = $Result.GetResult<Prisma.$SessionAssignmentPayload, S>
+
+  type SessionAssignmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SessionAssignmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SessionAssignmentCountAggregateInputType | true
+    }
+
+  export interface SessionAssignmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SessionAssignment'], meta: { name: 'SessionAssignment' } }
+    /**
+     * Find zero or one SessionAssignment that matches the filter.
+     * @param {SessionAssignmentFindUniqueArgs} args - Arguments to find a SessionAssignment
+     * @example
+     * // Get one SessionAssignment
+     * const sessionAssignment = await prisma.sessionAssignment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SessionAssignmentFindUniqueArgs>(args: SelectSubset<T, SessionAssignmentFindUniqueArgs<ExtArgs>>): Prisma__SessionAssignmentClient<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SessionAssignment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SessionAssignmentFindUniqueOrThrowArgs} args - Arguments to find a SessionAssignment
+     * @example
+     * // Get one SessionAssignment
+     * const sessionAssignment = await prisma.sessionAssignment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SessionAssignmentFindUniqueOrThrowArgs>(args: SelectSubset<T, SessionAssignmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SessionAssignmentClient<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SessionAssignment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAssignmentFindFirstArgs} args - Arguments to find a SessionAssignment
+     * @example
+     * // Get one SessionAssignment
+     * const sessionAssignment = await prisma.sessionAssignment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SessionAssignmentFindFirstArgs>(args?: SelectSubset<T, SessionAssignmentFindFirstArgs<ExtArgs>>): Prisma__SessionAssignmentClient<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SessionAssignment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAssignmentFindFirstOrThrowArgs} args - Arguments to find a SessionAssignment
+     * @example
+     * // Get one SessionAssignment
+     * const sessionAssignment = await prisma.sessionAssignment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SessionAssignmentFindFirstOrThrowArgs>(args?: SelectSubset<T, SessionAssignmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__SessionAssignmentClient<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SessionAssignments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAssignmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SessionAssignments
+     * const sessionAssignments = await prisma.sessionAssignment.findMany()
+     * 
+     * // Get first 10 SessionAssignments
+     * const sessionAssignments = await prisma.sessionAssignment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sessionAssignmentWithIdOnly = await prisma.sessionAssignment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SessionAssignmentFindManyArgs>(args?: SelectSubset<T, SessionAssignmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SessionAssignment.
+     * @param {SessionAssignmentCreateArgs} args - Arguments to create a SessionAssignment.
+     * @example
+     * // Create one SessionAssignment
+     * const SessionAssignment = await prisma.sessionAssignment.create({
+     *   data: {
+     *     // ... data to create a SessionAssignment
+     *   }
+     * })
+     * 
+     */
+    create<T extends SessionAssignmentCreateArgs>(args: SelectSubset<T, SessionAssignmentCreateArgs<ExtArgs>>): Prisma__SessionAssignmentClient<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SessionAssignments.
+     * @param {SessionAssignmentCreateManyArgs} args - Arguments to create many SessionAssignments.
+     * @example
+     * // Create many SessionAssignments
+     * const sessionAssignment = await prisma.sessionAssignment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SessionAssignmentCreateManyArgs>(args?: SelectSubset<T, SessionAssignmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SessionAssignments and returns the data saved in the database.
+     * @param {SessionAssignmentCreateManyAndReturnArgs} args - Arguments to create many SessionAssignments.
+     * @example
+     * // Create many SessionAssignments
+     * const sessionAssignment = await prisma.sessionAssignment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SessionAssignments and only return the `id`
+     * const sessionAssignmentWithIdOnly = await prisma.sessionAssignment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SessionAssignmentCreateManyAndReturnArgs>(args?: SelectSubset<T, SessionAssignmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SessionAssignment.
+     * @param {SessionAssignmentDeleteArgs} args - Arguments to delete one SessionAssignment.
+     * @example
+     * // Delete one SessionAssignment
+     * const SessionAssignment = await prisma.sessionAssignment.delete({
+     *   where: {
+     *     // ... filter to delete one SessionAssignment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SessionAssignmentDeleteArgs>(args: SelectSubset<T, SessionAssignmentDeleteArgs<ExtArgs>>): Prisma__SessionAssignmentClient<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SessionAssignment.
+     * @param {SessionAssignmentUpdateArgs} args - Arguments to update one SessionAssignment.
+     * @example
+     * // Update one SessionAssignment
+     * const sessionAssignment = await prisma.sessionAssignment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SessionAssignmentUpdateArgs>(args: SelectSubset<T, SessionAssignmentUpdateArgs<ExtArgs>>): Prisma__SessionAssignmentClient<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SessionAssignments.
+     * @param {SessionAssignmentDeleteManyArgs} args - Arguments to filter SessionAssignments to delete.
+     * @example
+     * // Delete a few SessionAssignments
+     * const { count } = await prisma.sessionAssignment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SessionAssignmentDeleteManyArgs>(args?: SelectSubset<T, SessionAssignmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SessionAssignments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAssignmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SessionAssignments
+     * const sessionAssignment = await prisma.sessionAssignment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SessionAssignmentUpdateManyArgs>(args: SelectSubset<T, SessionAssignmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SessionAssignments and returns the data updated in the database.
+     * @param {SessionAssignmentUpdateManyAndReturnArgs} args - Arguments to update many SessionAssignments.
+     * @example
+     * // Update many SessionAssignments
+     * const sessionAssignment = await prisma.sessionAssignment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SessionAssignments and only return the `id`
+     * const sessionAssignmentWithIdOnly = await prisma.sessionAssignment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SessionAssignmentUpdateManyAndReturnArgs>(args: SelectSubset<T, SessionAssignmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SessionAssignment.
+     * @param {SessionAssignmentUpsertArgs} args - Arguments to update or create a SessionAssignment.
+     * @example
+     * // Update or create a SessionAssignment
+     * const sessionAssignment = await prisma.sessionAssignment.upsert({
+     *   create: {
+     *     // ... data to create a SessionAssignment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SessionAssignment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SessionAssignmentUpsertArgs>(args: SelectSubset<T, SessionAssignmentUpsertArgs<ExtArgs>>): Prisma__SessionAssignmentClient<$Result.GetResult<Prisma.$SessionAssignmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SessionAssignments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAssignmentCountArgs} args - Arguments to filter SessionAssignments to count.
+     * @example
+     * // Count the number of SessionAssignments
+     * const count = await prisma.sessionAssignment.count({
+     *   where: {
+     *     // ... the filter for the SessionAssignments we want to count
+     *   }
+     * })
+    **/
+    count<T extends SessionAssignmentCountArgs>(
+      args?: Subset<T, SessionAssignmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SessionAssignmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SessionAssignment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAssignmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SessionAssignmentAggregateArgs>(args: Subset<T, SessionAssignmentAggregateArgs>): Prisma.PrismaPromise<GetSessionAssignmentAggregateType<T>>
+
+    /**
+     * Group by SessionAssignment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAssignmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SessionAssignmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SessionAssignmentGroupByArgs['orderBy'] }
+        : { orderBy?: SessionAssignmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SessionAssignmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSessionAssignmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SessionAssignment model
+   */
+  readonly fields: SessionAssignmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SessionAssignment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SessionAssignmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    worker<T extends WorkerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkerDefaultArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SessionAssignment model
+   */
+  interface SessionAssignmentFieldRefs {
+    readonly id: FieldRef<"SessionAssignment", 'String'>
+    readonly sessionId: FieldRef<"SessionAssignment", 'String'>
+    readonly workerId: FieldRef<"SessionAssignment", 'String'>
+    readonly companyId: FieldRef<"SessionAssignment", 'Int'>
+    readonly remoteAuthNamespace: FieldRef<"SessionAssignment", 'String'>
+    readonly remoteAuthData: FieldRef<"SessionAssignment", 'Json'>
+    readonly displayName: FieldRef<"SessionAssignment", 'String'>
+    readonly phoneNumber: FieldRef<"SessionAssignment", 'String'>
+    readonly isConnected: FieldRef<"SessionAssignment", 'Boolean'>
+    readonly status: FieldRef<"SessionAssignment", 'String'>
+    readonly createdAt: FieldRef<"SessionAssignment", 'DateTime'>
+    readonly updatedAt: FieldRef<"SessionAssignment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SessionAssignment findUnique
+   */
+  export type SessionAssignmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionAssignment
+     */
+    select?: SessionAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SessionAssignment
+     */
+    omit?: SessionAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SessionAssignment to fetch.
+     */
+    where: SessionAssignmentWhereUniqueInput
+  }
+
+  /**
+   * SessionAssignment findUniqueOrThrow
+   */
+  export type SessionAssignmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionAssignment
+     */
+    select?: SessionAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SessionAssignment
+     */
+    omit?: SessionAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SessionAssignment to fetch.
+     */
+    where: SessionAssignmentWhereUniqueInput
+  }
+
+  /**
+   * SessionAssignment findFirst
+   */
+  export type SessionAssignmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionAssignment
+     */
+    select?: SessionAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SessionAssignment
+     */
+    omit?: SessionAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SessionAssignment to fetch.
+     */
+    where?: SessionAssignmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SessionAssignments to fetch.
+     */
+    orderBy?: SessionAssignmentOrderByWithRelationInput | SessionAssignmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SessionAssignments.
+     */
+    cursor?: SessionAssignmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SessionAssignments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SessionAssignments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SessionAssignments.
+     */
+    distinct?: SessionAssignmentScalarFieldEnum | SessionAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * SessionAssignment findFirstOrThrow
+   */
+  export type SessionAssignmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionAssignment
+     */
+    select?: SessionAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SessionAssignment
+     */
+    omit?: SessionAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SessionAssignment to fetch.
+     */
+    where?: SessionAssignmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SessionAssignments to fetch.
+     */
+    orderBy?: SessionAssignmentOrderByWithRelationInput | SessionAssignmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SessionAssignments.
+     */
+    cursor?: SessionAssignmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SessionAssignments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SessionAssignments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SessionAssignments.
+     */
+    distinct?: SessionAssignmentScalarFieldEnum | SessionAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * SessionAssignment findMany
+   */
+  export type SessionAssignmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionAssignment
+     */
+    select?: SessionAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SessionAssignment
+     */
+    omit?: SessionAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionAssignmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SessionAssignments to fetch.
+     */
+    where?: SessionAssignmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SessionAssignments to fetch.
+     */
+    orderBy?: SessionAssignmentOrderByWithRelationInput | SessionAssignmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SessionAssignments.
+     */
+    cursor?: SessionAssignmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SessionAssignments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SessionAssignments.
+     */
+    skip?: number
+    distinct?: SessionAssignmentScalarFieldEnum | SessionAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * SessionAssignment create
+   */
+  export type SessionAssignmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionAssignment
+     */
+    select?: SessionAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SessionAssignment
+     */
+    omit?: SessionAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionAssignmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SessionAssignment.
+     */
+    data: XOR<SessionAssignmentCreateInput, SessionAssignmentUncheckedCreateInput>
+  }
+
+  /**
+   * SessionAssignment createMany
+   */
+  export type SessionAssignmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SessionAssignments.
+     */
+    data: SessionAssignmentCreateManyInput | SessionAssignmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SessionAssignment createManyAndReturn
+   */
+  export type SessionAssignmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionAssignment
+     */
+    select?: SessionAssignmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SessionAssignment
+     */
+    omit?: SessionAssignmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many SessionAssignments.
+     */
+    data: SessionAssignmentCreateManyInput | SessionAssignmentCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: SessionAssignmentIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * CompanyWhatsappNumber update
+   * SessionAssignment update
    */
-  export type CompanyWhatsappNumberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionAssignmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the SessionAssignment
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: SessionAssignmentSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the SessionAssignment
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: SessionAssignmentOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: SessionAssignmentInclude<ExtArgs> | null
     /**
-     * The data needed to update a CompanyWhatsappNumber.
+     * The data needed to update a SessionAssignment.
      */
-    data: XOR<CompanyWhatsappNumberUpdateInput, CompanyWhatsappNumberUncheckedUpdateInput>
+    data: XOR<SessionAssignmentUpdateInput, SessionAssignmentUncheckedUpdateInput>
     /**
-     * Choose, which CompanyWhatsappNumber to update.
+     * Choose, which SessionAssignment to update.
      */
-    where: CompanyWhatsappNumberWhereUniqueInput
+    where: SessionAssignmentWhereUniqueInput
   }
 
   /**
-   * CompanyWhatsappNumber updateMany
+   * SessionAssignment updateMany
    */
-  export type CompanyWhatsappNumberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionAssignmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update CompanyWhatsappNumbers.
+     * The data used to update SessionAssignments.
      */
-    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyInput>
+    data: XOR<SessionAssignmentUpdateManyMutationInput, SessionAssignmentUncheckedUpdateManyInput>
     /**
-     * Filter which CompanyWhatsappNumbers to update
+     * Filter which SessionAssignments to update
      */
-    where?: CompanyWhatsappNumberWhereInput
+    where?: SessionAssignmentWhereInput
     /**
-     * Limit how many CompanyWhatsappNumbers to update.
+     * Limit how many SessionAssignments to update.
      */
     limit?: number
   }
 
   /**
-   * CompanyWhatsappNumber updateManyAndReturn
+   * SessionAssignment updateManyAndReturn
    */
-  export type CompanyWhatsappNumberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionAssignmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the SessionAssignment
      */
-    select?: CompanyWhatsappNumberSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: SessionAssignmentSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the SessionAssignment
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: SessionAssignmentOmit<ExtArgs> | null
     /**
-     * The data used to update CompanyWhatsappNumbers.
+     * The data used to update SessionAssignments.
      */
-    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyInput>
+    data: XOR<SessionAssignmentUpdateManyMutationInput, SessionAssignmentUncheckedUpdateManyInput>
     /**
-     * Filter which CompanyWhatsappNumbers to update
+     * Filter which SessionAssignments to update
      */
-    where?: CompanyWhatsappNumberWhereInput
+    where?: SessionAssignmentWhereInput
     /**
-     * Limit how many CompanyWhatsappNumbers to update.
+     * Limit how many SessionAssignments to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: SessionAssignmentIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * CompanyWhatsappNumber upsert
+   * SessionAssignment upsert
    */
-  export type CompanyWhatsappNumberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionAssignmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the SessionAssignment
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: SessionAssignmentSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the SessionAssignment
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: SessionAssignmentOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: SessionAssignmentInclude<ExtArgs> | null
     /**
-     * The filter to search for the CompanyWhatsappNumber to update in case it exists.
+     * The filter to search for the SessionAssignment to update in case it exists.
      */
-    where: CompanyWhatsappNumberWhereUniqueInput
+    where: SessionAssignmentWhereUniqueInput
     /**
-     * In case the CompanyWhatsappNumber found by the `where` argument doesn't exist, create a new CompanyWhatsappNumber with this data.
+     * In case the SessionAssignment found by the `where` argument doesn't exist, create a new SessionAssignment with this data.
      */
-    create: XOR<CompanyWhatsappNumberCreateInput, CompanyWhatsappNumberUncheckedCreateInput>
+    create: XOR<SessionAssignmentCreateInput, SessionAssignmentUncheckedCreateInput>
     /**
-     * In case the CompanyWhatsappNumber was found with the provided `where` argument, update it with this data.
+     * In case the SessionAssignment was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<CompanyWhatsappNumberUpdateInput, CompanyWhatsappNumberUncheckedUpdateInput>
+    update: XOR<SessionAssignmentUpdateInput, SessionAssignmentUncheckedUpdateInput>
   }
 
   /**
-   * CompanyWhatsappNumber delete
+   * SessionAssignment delete
    */
-  export type CompanyWhatsappNumberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionAssignmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the SessionAssignment
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: SessionAssignmentSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the SessionAssignment
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: SessionAssignmentOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: SessionAssignmentInclude<ExtArgs> | null
     /**
-     * Filter which CompanyWhatsappNumber to delete.
+     * Filter which SessionAssignment to delete.
      */
-    where: CompanyWhatsappNumberWhereUniqueInput
+    where: SessionAssignmentWhereUniqueInput
   }
 
   /**
-   * CompanyWhatsappNumber deleteMany
+   * SessionAssignment deleteMany
    */
-  export type CompanyWhatsappNumberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionAssignmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which CompanyWhatsappNumbers to delete
+     * Filter which SessionAssignments to delete
      */
-    where?: CompanyWhatsappNumberWhereInput
+    where?: SessionAssignmentWhereInput
     /**
-     * Limit how many CompanyWhatsappNumbers to delete.
+     * Limit how many SessionAssignments to delete.
      */
     limit?: number
   }
 
   /**
-   * CompanyWhatsappNumber without action
+   * SessionAssignment without action
    */
-  export type CompanyWhatsappNumberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionAssignmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyWhatsappNumber
+     * Select specific fields to fetch from the SessionAssignment
      */
-    select?: CompanyWhatsappNumberSelect<ExtArgs> | null
+    select?: SessionAssignmentSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyWhatsappNumber
+     * Omit specific fields from the SessionAssignment
      */
-    omit?: CompanyWhatsappNumberOmit<ExtArgs> | null
+    omit?: SessionAssignmentOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyWhatsappNumberInclude<ExtArgs> | null
+    include?: SessionAssignmentInclude<ExtArgs> | null
   }
 
 
@@ -27422,25 +28626,34 @@ export namespace Prisma {
   export type KvBackupScalarFieldEnum = (typeof KvBackupScalarFieldEnum)[keyof typeof KvBackupScalarFieldEnum]
 
 
-  export const CompanyWhatsappNumberScalarFieldEnum: {
+  export const WorkerScalarFieldEnum: {
     id: 'id',
+    maxCapacity: 'maxCapacity',
+    currentLoad: 'currentLoad',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkerScalarFieldEnum = (typeof WorkerScalarFieldEnum)[keyof typeof WorkerScalarFieldEnum]
+
+
+  export const SessionAssignmentScalarFieldEnum: {
+    id: 'id',
+    sessionId: 'sessionId',
+    workerId: 'workerId',
     companyId: 'companyId',
+    remoteAuthNamespace: 'remoteAuthNamespace',
+    remoteAuthData: 'remoteAuthData',
     displayName: 'displayName',
     phoneNumber: 'phoneNumber',
     isConnected: 'isConnected',
-    messagesThisMonth: 'messagesThisMonth',
-    lastSyncedAt: 'lastSyncedAt',
+    status: 'status',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    remoteAuthNamespace: 'remoteAuthNamespace',
-    remoteAuthKey: 'remoteAuthKey',
-    tenantId: 'tenantId',
-    workerId: 'workerId',
-    wsUrl: 'wsUrl',
-    status: 'status'
+    updatedAt: 'updatedAt'
   };
 
-  export type CompanyWhatsappNumberScalarFieldEnum = (typeof CompanyWhatsappNumberScalarFieldEnum)[keyof typeof CompanyWhatsappNumberScalarFieldEnum]
+  export type SessionAssignmentScalarFieldEnum = (typeof SessionAssignmentScalarFieldEnum)[keyof typeof SessionAssignmentScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -28275,7 +29488,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationListRelationFilter
     inboxMessages?: InboxMessageListRelationFilter
     settings?: XOR<CompanySettingsNullableScalarRelationFilter, CompanySettingsWhereInput> | null
-    whatsappNumbers?: CompanyWhatsappNumberListRelationFilter
+    SessionAssignment?: SessionAssignmentListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -28296,7 +29509,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationOrderByRelationAggregateInput
     inboxMessages?: InboxMessageOrderByRelationAggregateInput
     settings?: CompanySettingsOrderByWithRelationInput
-    whatsappNumbers?: CompanyWhatsappNumberOrderByRelationAggregateInput
+    SessionAssignment?: SessionAssignmentOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -28320,7 +29533,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationListRelationFilter
     inboxMessages?: InboxMessageListRelationFilter
     settings?: XOR<CompanySettingsNullableScalarRelationFilter, CompanySettingsWhereInput> | null
-    whatsappNumbers?: CompanyWhatsappNumberListRelationFilter
+    SessionAssignment?: SessionAssignmentListRelationFilter
   }, "id">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -29409,112 +30622,161 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"KvBackup"> | Date | string
   }
 
-  export type CompanyWhatsappNumberWhereInput = {
-    AND?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
-    OR?: CompanyWhatsappNumberWhereInput[]
-    NOT?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
-    id?: StringFilter<"CompanyWhatsappNumber"> | string
-    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
-    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
-    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
-    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
-    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
-    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
-    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    remoteAuthNamespace?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    wsUrl?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    Company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  export type WorkerWhereInput = {
+    AND?: WorkerWhereInput | WorkerWhereInput[]
+    OR?: WorkerWhereInput[]
+    NOT?: WorkerWhereInput | WorkerWhereInput[]
+    id?: StringFilter<"Worker"> | string
+    maxCapacity?: IntFilter<"Worker"> | number
+    currentLoad?: IntFilter<"Worker"> | number
+    isActive?: BoolFilter<"Worker"> | boolean
+    createdAt?: DateTimeFilter<"Worker"> | Date | string
+    updatedAt?: DateTimeFilter<"Worker"> | Date | string
+    sessions?: SessionAssignmentListRelationFilter
   }
 
-  export type CompanyWhatsappNumberOrderByWithRelationInput = {
+  export type WorkerOrderByWithRelationInput = {
     id?: SortOrder
-    companyId?: SortOrder
-    displayName?: SortOrder
-    phoneNumber?: SortOrder
-    isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrderInput | SortOrder
+    maxCapacity?: SortOrder
+    currentLoad?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    remoteAuthNamespace?: SortOrderInput | SortOrder
-    remoteAuthKey?: SortOrderInput | SortOrder
-    tenantId?: SortOrderInput | SortOrder
-    workerId?: SortOrderInput | SortOrder
-    wsUrl?: SortOrderInput | SortOrder
-    status?: SortOrderInput | SortOrder
-    Company?: CompanyOrderByWithRelationInput
+    sessions?: SessionAssignmentOrderByRelationAggregateInput
   }
 
-  export type CompanyWhatsappNumberWhereUniqueInput = Prisma.AtLeast<{
+  export type WorkerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    companyId_phoneNumber?: CompanyWhatsappNumberCompanyIdPhoneNumberCompoundUniqueInput
-    AND?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
-    OR?: CompanyWhatsappNumberWhereInput[]
-    NOT?: CompanyWhatsappNumberWhereInput | CompanyWhatsappNumberWhereInput[]
-    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
-    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
-    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
-    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
-    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
-    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
-    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    remoteAuthNamespace?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    wsUrl?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    Company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
-  }, "id" | "companyId_phoneNumber">
+    AND?: WorkerWhereInput | WorkerWhereInput[]
+    OR?: WorkerWhereInput[]
+    NOT?: WorkerWhereInput | WorkerWhereInput[]
+    maxCapacity?: IntFilter<"Worker"> | number
+    currentLoad?: IntFilter<"Worker"> | number
+    isActive?: BoolFilter<"Worker"> | boolean
+    createdAt?: DateTimeFilter<"Worker"> | Date | string
+    updatedAt?: DateTimeFilter<"Worker"> | Date | string
+    sessions?: SessionAssignmentListRelationFilter
+  }, "id">
 
-  export type CompanyWhatsappNumberOrderByWithAggregationInput = {
+  export type WorkerOrderByWithAggregationInput = {
     id?: SortOrder
-    companyId?: SortOrder
-    displayName?: SortOrder
-    phoneNumber?: SortOrder
-    isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrderInput | SortOrder
+    maxCapacity?: SortOrder
+    currentLoad?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    remoteAuthNamespace?: SortOrderInput | SortOrder
-    remoteAuthKey?: SortOrderInput | SortOrder
-    tenantId?: SortOrderInput | SortOrder
-    workerId?: SortOrderInput | SortOrder
-    wsUrl?: SortOrderInput | SortOrder
-    status?: SortOrderInput | SortOrder
-    _count?: CompanyWhatsappNumberCountOrderByAggregateInput
-    _avg?: CompanyWhatsappNumberAvgOrderByAggregateInput
-    _max?: CompanyWhatsappNumberMaxOrderByAggregateInput
-    _min?: CompanyWhatsappNumberMinOrderByAggregateInput
-    _sum?: CompanyWhatsappNumberSumOrderByAggregateInput
+    _count?: WorkerCountOrderByAggregateInput
+    _avg?: WorkerAvgOrderByAggregateInput
+    _max?: WorkerMaxOrderByAggregateInput
+    _min?: WorkerMinOrderByAggregateInput
+    _sum?: WorkerSumOrderByAggregateInput
   }
 
-  export type CompanyWhatsappNumberScalarWhereWithAggregatesInput = {
-    AND?: CompanyWhatsappNumberScalarWhereWithAggregatesInput | CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
-    OR?: CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
-    NOT?: CompanyWhatsappNumberScalarWhereWithAggregatesInput | CompanyWhatsappNumberScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
-    companyId?: IntWithAggregatesFilter<"CompanyWhatsappNumber"> | number
-    displayName?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
-    phoneNumber?: StringWithAggregatesFilter<"CompanyWhatsappNumber"> | string
-    isConnected?: BoolWithAggregatesFilter<"CompanyWhatsappNumber"> | boolean
-    messagesThisMonth?: IntWithAggregatesFilter<"CompanyWhatsappNumber"> | number
-    lastSyncedAt?: DateTimeNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"CompanyWhatsappNumber"> | Date | string
-    remoteAuthNamespace?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
-    remoteAuthKey?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
-    tenantId?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
-    workerId?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
-    wsUrl?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
-    status?: StringNullableWithAggregatesFilter<"CompanyWhatsappNumber"> | string | null
+  export type WorkerScalarWhereWithAggregatesInput = {
+    AND?: WorkerScalarWhereWithAggregatesInput | WorkerScalarWhereWithAggregatesInput[]
+    OR?: WorkerScalarWhereWithAggregatesInput[]
+    NOT?: WorkerScalarWhereWithAggregatesInput | WorkerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Worker"> | string
+    maxCapacity?: IntWithAggregatesFilter<"Worker"> | number
+    currentLoad?: IntWithAggregatesFilter<"Worker"> | number
+    isActive?: BoolWithAggregatesFilter<"Worker"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
+  }
+
+  export type SessionAssignmentWhereInput = {
+    AND?: SessionAssignmentWhereInput | SessionAssignmentWhereInput[]
+    OR?: SessionAssignmentWhereInput[]
+    NOT?: SessionAssignmentWhereInput | SessionAssignmentWhereInput[]
+    id?: StringFilter<"SessionAssignment"> | string
+    sessionId?: StringFilter<"SessionAssignment"> | string
+    workerId?: StringFilter<"SessionAssignment"> | string
+    companyId?: IntFilter<"SessionAssignment"> | number
+    remoteAuthNamespace?: StringNullableFilter<"SessionAssignment"> | string | null
+    remoteAuthData?: JsonNullableFilter<"SessionAssignment">
+    displayName?: StringNullableFilter<"SessionAssignment"> | string | null
+    phoneNumber?: StringNullableFilter<"SessionAssignment"> | string | null
+    isConnected?: BoolFilter<"SessionAssignment"> | boolean
+    status?: StringNullableFilter<"SessionAssignment"> | string | null
+    createdAt?: DateTimeFilter<"SessionAssignment"> | Date | string
+    updatedAt?: DateTimeFilter<"SessionAssignment"> | Date | string
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }
+
+  export type SessionAssignmentOrderByWithRelationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    workerId?: SortOrder
+    companyId?: SortOrder
+    remoteAuthNamespace?: SortOrderInput | SortOrder
+    remoteAuthData?: SortOrderInput | SortOrder
+    displayName?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
+    isConnected?: SortOrder
+    status?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    worker?: WorkerOrderByWithRelationInput
+    company?: CompanyOrderByWithRelationInput
+  }
+
+  export type SessionAssignmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    sessionId?: string
+    AND?: SessionAssignmentWhereInput | SessionAssignmentWhereInput[]
+    OR?: SessionAssignmentWhereInput[]
+    NOT?: SessionAssignmentWhereInput | SessionAssignmentWhereInput[]
+    workerId?: StringFilter<"SessionAssignment"> | string
+    companyId?: IntFilter<"SessionAssignment"> | number
+    remoteAuthNamespace?: StringNullableFilter<"SessionAssignment"> | string | null
+    remoteAuthData?: JsonNullableFilter<"SessionAssignment">
+    displayName?: StringNullableFilter<"SessionAssignment"> | string | null
+    phoneNumber?: StringNullableFilter<"SessionAssignment"> | string | null
+    isConnected?: BoolFilter<"SessionAssignment"> | boolean
+    status?: StringNullableFilter<"SessionAssignment"> | string | null
+    createdAt?: DateTimeFilter<"SessionAssignment"> | Date | string
+    updatedAt?: DateTimeFilter<"SessionAssignment"> | Date | string
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }, "id" | "sessionId">
+
+  export type SessionAssignmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    workerId?: SortOrder
+    companyId?: SortOrder
+    remoteAuthNamespace?: SortOrderInput | SortOrder
+    remoteAuthData?: SortOrderInput | SortOrder
+    displayName?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
+    isConnected?: SortOrder
+    status?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SessionAssignmentCountOrderByAggregateInput
+    _avg?: SessionAssignmentAvgOrderByAggregateInput
+    _max?: SessionAssignmentMaxOrderByAggregateInput
+    _min?: SessionAssignmentMinOrderByAggregateInput
+    _sum?: SessionAssignmentSumOrderByAggregateInput
+  }
+
+  export type SessionAssignmentScalarWhereWithAggregatesInput = {
+    AND?: SessionAssignmentScalarWhereWithAggregatesInput | SessionAssignmentScalarWhereWithAggregatesInput[]
+    OR?: SessionAssignmentScalarWhereWithAggregatesInput[]
+    NOT?: SessionAssignmentScalarWhereWithAggregatesInput | SessionAssignmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SessionAssignment"> | string
+    sessionId?: StringWithAggregatesFilter<"SessionAssignment"> | string
+    workerId?: StringWithAggregatesFilter<"SessionAssignment"> | string
+    companyId?: IntWithAggregatesFilter<"SessionAssignment"> | number
+    remoteAuthNamespace?: StringNullableWithAggregatesFilter<"SessionAssignment"> | string | null
+    remoteAuthData?: JsonNullableWithAggregatesFilter<"SessionAssignment">
+    displayName?: StringNullableWithAggregatesFilter<"SessionAssignment"> | string | null
+    phoneNumber?: StringNullableWithAggregatesFilter<"SessionAssignment"> | string | null
+    isConnected?: BoolWithAggregatesFilter<"SessionAssignment"> | boolean
+    status?: StringNullableWithAggregatesFilter<"SessionAssignment"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SessionAssignment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SessionAssignment"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -30070,7 +31332,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -30091,7 +31353,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -30111,7 +31373,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -30132,7 +31394,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -31274,129 +32536,174 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyWhatsappNumberCreateInput = {
+  export type WorkerCreateInput = {
     id?: string
-    displayName: string
-    phoneNumber: string
-    isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
+    maxCapacity: number
+    currentLoad?: number
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    remoteAuthNamespace?: string | null
-    remoteAuthKey?: string | null
-    tenantId?: string | null
-    workerId?: string | null
-    wsUrl?: string | null
-    status?: string | null
-    Company: CompanyCreateNestedOneWithoutWhatsappNumbersInput
+    sessions?: SessionAssignmentCreateNestedManyWithoutWorkerInput
   }
 
-  export type CompanyWhatsappNumberUncheckedCreateInput = {
+  export type WorkerUncheckedCreateInput = {
     id?: string
+    maxCapacity: number
+    currentLoad?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionAssignmentUncheckedCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    currentLoad?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionAssignmentUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    currentLoad?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionAssignmentUncheckedUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerCreateManyInput = {
+    id?: string
+    maxCapacity: number
+    currentLoad?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    currentLoad?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    currentLoad?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionAssignmentCreateInput = {
+    id?: string
+    sessionId: string
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
+    isConnected?: boolean
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    worker: WorkerCreateNestedOneWithoutSessionsInput
+    company: CompanyCreateNestedOneWithoutSessionAssignmentInput
+  }
+
+  export type SessionAssignmentUncheckedCreateInput = {
+    id?: string
+    sessionId: string
+    workerId: string
     companyId: number
-    displayName: string
-    phoneNumber: string
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
     isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
+    status?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    remoteAuthNamespace?: string | null
-    remoteAuthKey?: string | null
-    tenantId?: string | null
-    workerId?: string | null
-    wsUrl?: string | null
-    status?: string | null
   }
 
-  export type CompanyWhatsappNumberUpdateInput = {
+  export type SessionAssignmentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
-    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
-    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
-    workerId?: NullableStringFieldUpdateOperationsInput | string | null
-    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
-    Company?: CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput
+    worker?: WorkerUpdateOneRequiredWithoutSessionsNestedInput
+    company?: CompanyUpdateOneRequiredWithoutSessionAssignmentNestedInput
   }
 
-  export type CompanyWhatsappNumberUncheckedUpdateInput = {
+  export type SessionAssignmentUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
     companyId?: IntFieldUpdateOperationsInput | number
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
-    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
-    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
-    workerId?: NullableStringFieldUpdateOperationsInput | string | null
-    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type CompanyWhatsappNumberCreateManyInput = {
+  export type SessionAssignmentCreateManyInput = {
     id?: string
+    sessionId: string
+    workerId: string
     companyId: number
-    displayName: string
-    phoneNumber: string
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
     isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
+    status?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    remoteAuthNamespace?: string | null
-    remoteAuthKey?: string | null
-    tenantId?: string | null
-    workerId?: string | null
-    wsUrl?: string | null
-    status?: string | null
   }
 
-  export type CompanyWhatsappNumberUpdateManyMutationInput = {
+  export type SessionAssignmentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
-    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
-    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
-    workerId?: NullableStringFieldUpdateOperationsInput | string | null
-    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type CompanyWhatsappNumberUncheckedUpdateManyInput = {
+  export type SessionAssignmentUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
     companyId?: IntFieldUpdateOperationsInput | number
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
-    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
-    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
-    workerId?: NullableStringFieldUpdateOperationsInput | string | null
-    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -32045,10 +33352,10 @@ export namespace Prisma {
     isNot?: CompanySettingsWhereInput | null
   }
 
-  export type CompanyWhatsappNumberListRelationFilter = {
-    every?: CompanyWhatsappNumberWhereInput
-    some?: CompanyWhatsappNumberWhereInput
-    none?: CompanyWhatsappNumberWhereInput
+  export type SessionAssignmentListRelationFilter = {
+    every?: SessionAssignmentWhereInput
+    some?: SessionAssignmentWhereInput
+    none?: SessionAssignmentWhereInput
   }
 
   export type CustomerSubscriptionOrderByRelationAggregateInput = {
@@ -32063,7 +33370,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type CompanyWhatsappNumberOrderByRelationAggregateInput = {
+  export type SessionAssignmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -33037,73 +34344,97 @@ export namespace Prisma {
     _max?: NestedBytesFilter<$PrismaModel>
   }
 
-  export type CompanyWhatsappNumberCompanyIdPhoneNumberCompoundUniqueInput = {
-    companyId: number
-    phoneNumber: string
+  export type WorkerCountOrderByAggregateInput = {
+    id?: SortOrder
+    maxCapacity?: SortOrder
+    currentLoad?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type CompanyWhatsappNumberCountOrderByAggregateInput = {
+  export type WorkerAvgOrderByAggregateInput = {
+    maxCapacity?: SortOrder
+    currentLoad?: SortOrder
+  }
+
+  export type WorkerMaxOrderByAggregateInput = {
     id?: SortOrder
+    maxCapacity?: SortOrder
+    currentLoad?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerMinOrderByAggregateInput = {
+    id?: SortOrder
+    maxCapacity?: SortOrder
+    currentLoad?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerSumOrderByAggregateInput = {
+    maxCapacity?: SortOrder
+    currentLoad?: SortOrder
+  }
+
+  export type WorkerScalarRelationFilter = {
+    is?: WorkerWhereInput
+    isNot?: WorkerWhereInput
+  }
+
+  export type SessionAssignmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    workerId?: SortOrder
     companyId?: SortOrder
+    remoteAuthNamespace?: SortOrder
+    remoteAuthData?: SortOrder
     displayName?: SortOrder
     phoneNumber?: SortOrder
     isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    remoteAuthNamespace?: SortOrder
-    remoteAuthKey?: SortOrder
-    tenantId?: SortOrder
-    workerId?: SortOrder
-    wsUrl?: SortOrder
-    status?: SortOrder
   }
 
-  export type CompanyWhatsappNumberAvgOrderByAggregateInput = {
+  export type SessionAssignmentAvgOrderByAggregateInput = {
     companyId?: SortOrder
-    messagesThisMonth?: SortOrder
   }
 
-  export type CompanyWhatsappNumberMaxOrderByAggregateInput = {
+  export type SessionAssignmentMaxOrderByAggregateInput = {
     id?: SortOrder
+    sessionId?: SortOrder
+    workerId?: SortOrder
     companyId?: SortOrder
+    remoteAuthNamespace?: SortOrder
     displayName?: SortOrder
     phoneNumber?: SortOrder
     isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    remoteAuthNamespace?: SortOrder
-    remoteAuthKey?: SortOrder
-    tenantId?: SortOrder
-    workerId?: SortOrder
-    wsUrl?: SortOrder
-    status?: SortOrder
   }
 
-  export type CompanyWhatsappNumberMinOrderByAggregateInput = {
+  export type SessionAssignmentMinOrderByAggregateInput = {
     id?: SortOrder
+    sessionId?: SortOrder
+    workerId?: SortOrder
     companyId?: SortOrder
+    remoteAuthNamespace?: SortOrder
     displayName?: SortOrder
     phoneNumber?: SortOrder
     isConnected?: SortOrder
-    messagesThisMonth?: SortOrder
-    lastSyncedAt?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    remoteAuthNamespace?: SortOrder
-    remoteAuthKey?: SortOrder
-    tenantId?: SortOrder
-    workerId?: SortOrder
-    wsUrl?: SortOrder
-    status?: SortOrder
   }
 
-  export type CompanyWhatsappNumberSumOrderByAggregateInput = {
+  export type SessionAssignmentSumOrderByAggregateInput = {
     companyId?: SortOrder
-    messagesThisMonth?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -33726,11 +35057,11 @@ export namespace Prisma {
     connect?: CompanySettingsWhereUniqueInput
   }
 
-  export type CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput = {
-    create?: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput> | CompanyWhatsappNumberCreateWithoutCompanyInput[] | CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput | CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput[]
-    createMany?: CompanyWhatsappNumberCreateManyCompanyInputEnvelope
-    connect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+  export type SessionAssignmentCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<SessionAssignmentCreateWithoutCompanyInput, SessionAssignmentUncheckedCreateWithoutCompanyInput> | SessionAssignmentCreateWithoutCompanyInput[] | SessionAssignmentUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: SessionAssignmentCreateOrConnectWithoutCompanyInput | SessionAssignmentCreateOrConnectWithoutCompanyInput[]
+    createMany?: SessionAssignmentCreateManyCompanyInputEnvelope
+    connect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
   }
 
   export type CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput = {
@@ -33809,11 +35140,11 @@ export namespace Prisma {
     connect?: CompanySettingsWhereUniqueInput
   }
 
-  export type CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput = {
-    create?: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput> | CompanyWhatsappNumberCreateWithoutCompanyInput[] | CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput | CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput[]
-    createMany?: CompanyWhatsappNumberCreateManyCompanyInputEnvelope
-    connect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
+  export type SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<SessionAssignmentCreateWithoutCompanyInput, SessionAssignmentUncheckedCreateWithoutCompanyInput> | SessionAssignmentCreateWithoutCompanyInput[] | SessionAssignmentUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: SessionAssignmentCreateOrConnectWithoutCompanyInput | SessionAssignmentCreateOrConnectWithoutCompanyInput[]
+    createMany?: SessionAssignmentCreateManyCompanyInputEnvelope
+    connect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
   }
 
   export type CompanyMemberUpdateManyWithoutCompanyNestedInput = {
@@ -33966,18 +35297,18 @@ export namespace Prisma {
     update?: XOR<XOR<CompanySettingsUpdateToOneWithWhereWithoutCompanyInput, CompanySettingsUpdateWithoutCompanyInput>, CompanySettingsUncheckedUpdateWithoutCompanyInput>
   }
 
-  export type CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput = {
-    create?: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput> | CompanyWhatsappNumberCreateWithoutCompanyInput[] | CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput | CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput[]
-    upsert?: CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput | CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput[]
-    createMany?: CompanyWhatsappNumberCreateManyCompanyInputEnvelope
-    set?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
-    disconnect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
-    delete?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
-    connect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
-    update?: CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput | CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput[]
-    updateMany?: CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput | CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput[]
-    deleteMany?: CompanyWhatsappNumberScalarWhereInput | CompanyWhatsappNumberScalarWhereInput[]
+  export type SessionAssignmentUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<SessionAssignmentCreateWithoutCompanyInput, SessionAssignmentUncheckedCreateWithoutCompanyInput> | SessionAssignmentCreateWithoutCompanyInput[] | SessionAssignmentUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: SessionAssignmentCreateOrConnectWithoutCompanyInput | SessionAssignmentCreateOrConnectWithoutCompanyInput[]
+    upsert?: SessionAssignmentUpsertWithWhereUniqueWithoutCompanyInput | SessionAssignmentUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: SessionAssignmentCreateManyCompanyInputEnvelope
+    set?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    disconnect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    delete?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    connect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    update?: SessionAssignmentUpdateWithWhereUniqueWithoutCompanyInput | SessionAssignmentUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: SessionAssignmentUpdateManyWithWhereWithoutCompanyInput | SessionAssignmentUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: SessionAssignmentScalarWhereInput | SessionAssignmentScalarWhereInput[]
   }
 
   export type CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput = {
@@ -34130,18 +35461,18 @@ export namespace Prisma {
     update?: XOR<XOR<CompanySettingsUpdateToOneWithWhereWithoutCompanyInput, CompanySettingsUpdateWithoutCompanyInput>, CompanySettingsUncheckedUpdateWithoutCompanyInput>
   }
 
-  export type CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput = {
-    create?: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput> | CompanyWhatsappNumberCreateWithoutCompanyInput[] | CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput | CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput[]
-    upsert?: CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput | CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput[]
-    createMany?: CompanyWhatsappNumberCreateManyCompanyInputEnvelope
-    set?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
-    disconnect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
-    delete?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
-    connect?: CompanyWhatsappNumberWhereUniqueInput | CompanyWhatsappNumberWhereUniqueInput[]
-    update?: CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput | CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput[]
-    updateMany?: CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput | CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput[]
-    deleteMany?: CompanyWhatsappNumberScalarWhereInput | CompanyWhatsappNumberScalarWhereInput[]
+  export type SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<SessionAssignmentCreateWithoutCompanyInput, SessionAssignmentUncheckedCreateWithoutCompanyInput> | SessionAssignmentCreateWithoutCompanyInput[] | SessionAssignmentUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: SessionAssignmentCreateOrConnectWithoutCompanyInput | SessionAssignmentCreateOrConnectWithoutCompanyInput[]
+    upsert?: SessionAssignmentUpsertWithWhereUniqueWithoutCompanyInput | SessionAssignmentUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: SessionAssignmentCreateManyCompanyInputEnvelope
+    set?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    disconnect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    delete?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    connect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    update?: SessionAssignmentUpdateWithWhereUniqueWithoutCompanyInput | SessionAssignmentUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: SessionAssignmentUpdateManyWithWhereWithoutCompanyInput | SessionAssignmentUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: SessionAssignmentScalarWhereInput | SessionAssignmentScalarWhereInput[]
   }
 
   export type CompanyCreateNestedOneWithoutKnowledgeItemsInput = {
@@ -34723,18 +36054,74 @@ export namespace Prisma {
     set?: Bytes
   }
 
-  export type CompanyCreateNestedOneWithoutWhatsappNumbersInput = {
-    create?: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutWhatsappNumbersInput
+  export type SessionAssignmentCreateNestedManyWithoutWorkerInput = {
+    create?: XOR<SessionAssignmentCreateWithoutWorkerInput, SessionAssignmentUncheckedCreateWithoutWorkerInput> | SessionAssignmentCreateWithoutWorkerInput[] | SessionAssignmentUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: SessionAssignmentCreateOrConnectWithoutWorkerInput | SessionAssignmentCreateOrConnectWithoutWorkerInput[]
+    createMany?: SessionAssignmentCreateManyWorkerInputEnvelope
+    connect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+  }
+
+  export type SessionAssignmentUncheckedCreateNestedManyWithoutWorkerInput = {
+    create?: XOR<SessionAssignmentCreateWithoutWorkerInput, SessionAssignmentUncheckedCreateWithoutWorkerInput> | SessionAssignmentCreateWithoutWorkerInput[] | SessionAssignmentUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: SessionAssignmentCreateOrConnectWithoutWorkerInput | SessionAssignmentCreateOrConnectWithoutWorkerInput[]
+    createMany?: SessionAssignmentCreateManyWorkerInputEnvelope
+    connect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+  }
+
+  export type SessionAssignmentUpdateManyWithoutWorkerNestedInput = {
+    create?: XOR<SessionAssignmentCreateWithoutWorkerInput, SessionAssignmentUncheckedCreateWithoutWorkerInput> | SessionAssignmentCreateWithoutWorkerInput[] | SessionAssignmentUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: SessionAssignmentCreateOrConnectWithoutWorkerInput | SessionAssignmentCreateOrConnectWithoutWorkerInput[]
+    upsert?: SessionAssignmentUpsertWithWhereUniqueWithoutWorkerInput | SessionAssignmentUpsertWithWhereUniqueWithoutWorkerInput[]
+    createMany?: SessionAssignmentCreateManyWorkerInputEnvelope
+    set?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    disconnect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    delete?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    connect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    update?: SessionAssignmentUpdateWithWhereUniqueWithoutWorkerInput | SessionAssignmentUpdateWithWhereUniqueWithoutWorkerInput[]
+    updateMany?: SessionAssignmentUpdateManyWithWhereWithoutWorkerInput | SessionAssignmentUpdateManyWithWhereWithoutWorkerInput[]
+    deleteMany?: SessionAssignmentScalarWhereInput | SessionAssignmentScalarWhereInput[]
+  }
+
+  export type SessionAssignmentUncheckedUpdateManyWithoutWorkerNestedInput = {
+    create?: XOR<SessionAssignmentCreateWithoutWorkerInput, SessionAssignmentUncheckedCreateWithoutWorkerInput> | SessionAssignmentCreateWithoutWorkerInput[] | SessionAssignmentUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: SessionAssignmentCreateOrConnectWithoutWorkerInput | SessionAssignmentCreateOrConnectWithoutWorkerInput[]
+    upsert?: SessionAssignmentUpsertWithWhereUniqueWithoutWorkerInput | SessionAssignmentUpsertWithWhereUniqueWithoutWorkerInput[]
+    createMany?: SessionAssignmentCreateManyWorkerInputEnvelope
+    set?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    disconnect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    delete?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    connect?: SessionAssignmentWhereUniqueInput | SessionAssignmentWhereUniqueInput[]
+    update?: SessionAssignmentUpdateWithWhereUniqueWithoutWorkerInput | SessionAssignmentUpdateWithWhereUniqueWithoutWorkerInput[]
+    updateMany?: SessionAssignmentUpdateManyWithWhereWithoutWorkerInput | SessionAssignmentUpdateManyWithWhereWithoutWorkerInput[]
+    deleteMany?: SessionAssignmentScalarWhereInput | SessionAssignmentScalarWhereInput[]
+  }
+
+  export type WorkerCreateNestedOneWithoutSessionsInput = {
+    create?: XOR<WorkerCreateWithoutSessionsInput, WorkerUncheckedCreateWithoutSessionsInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutSessionsInput
+    connect?: WorkerWhereUniqueInput
+  }
+
+  export type CompanyCreateNestedOneWithoutSessionAssignmentInput = {
+    create?: XOR<CompanyCreateWithoutSessionAssignmentInput, CompanyUncheckedCreateWithoutSessionAssignmentInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutSessionAssignmentInput
     connect?: CompanyWhereUniqueInput
   }
 
-  export type CompanyUpdateOneRequiredWithoutWhatsappNumbersNestedInput = {
-    create?: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutWhatsappNumbersInput
-    upsert?: CompanyUpsertWithoutWhatsappNumbersInput
+  export type WorkerUpdateOneRequiredWithoutSessionsNestedInput = {
+    create?: XOR<WorkerCreateWithoutSessionsInput, WorkerUncheckedCreateWithoutSessionsInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutSessionsInput
+    upsert?: WorkerUpsertWithoutSessionsInput
+    connect?: WorkerWhereUniqueInput
+    update?: XOR<XOR<WorkerUpdateToOneWithWhereWithoutSessionsInput, WorkerUpdateWithoutSessionsInput>, WorkerUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type CompanyUpdateOneRequiredWithoutSessionAssignmentNestedInput = {
+    create?: XOR<CompanyCreateWithoutSessionAssignmentInput, CompanyUncheckedCreateWithoutSessionAssignmentInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutSessionAssignmentInput
+    upsert?: CompanyUpsertWithoutSessionAssignmentInput
     connect?: CompanyWhereUniqueInput
-    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutWhatsappNumbersInput, CompanyUpdateWithoutWhatsappNumbersInput>, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutSessionAssignmentInput, CompanyUpdateWithoutSessionAssignmentInput>, CompanyUncheckedUpdateWithoutSessionAssignmentInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -35381,7 +36768,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutUserInput = {
@@ -35401,7 +36788,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutUserInput = {
@@ -35777,7 +37164,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutUserInput = {
@@ -35797,7 +37184,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type FileUpsertWithWhereUniqueWithoutUserInput = {
@@ -37054,47 +38441,41 @@ export namespace Prisma {
     create: XOR<CompanySettingsCreateWithoutCompanyInput, CompanySettingsUncheckedCreateWithoutCompanyInput>
   }
 
-  export type CompanyWhatsappNumberCreateWithoutCompanyInput = {
+  export type SessionAssignmentCreateWithoutCompanyInput = {
     id?: string
-    displayName: string
-    phoneNumber: string
+    sessionId: string
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
     isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
+    status?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    remoteAuthNamespace?: string | null
-    remoteAuthKey?: string | null
-    tenantId?: string | null
-    workerId?: string | null
-    wsUrl?: string | null
-    status?: string | null
+    worker: WorkerCreateNestedOneWithoutSessionsInput
   }
 
-  export type CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput = {
+  export type SessionAssignmentUncheckedCreateWithoutCompanyInput = {
     id?: string
-    displayName: string
-    phoneNumber: string
+    sessionId: string
+    workerId: string
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
     isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
+    status?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    remoteAuthNamespace?: string | null
-    remoteAuthKey?: string | null
-    tenantId?: string | null
-    workerId?: string | null
-    wsUrl?: string | null
-    status?: string | null
   }
 
-  export type CompanyWhatsappNumberCreateOrConnectWithoutCompanyInput = {
-    where: CompanyWhatsappNumberWhereUniqueInput
-    create: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput>
+  export type SessionAssignmentCreateOrConnectWithoutCompanyInput = {
+    where: SessionAssignmentWhereUniqueInput
+    create: XOR<SessionAssignmentCreateWithoutCompanyInput, SessionAssignmentUncheckedCreateWithoutCompanyInput>
   }
 
-  export type CompanyWhatsappNumberCreateManyCompanyInputEnvelope = {
-    data: CompanyWhatsappNumberCreateManyCompanyInput | CompanyWhatsappNumberCreateManyCompanyInput[]
+  export type SessionAssignmentCreateManyCompanyInputEnvelope = {
+    data: SessionAssignmentCreateManyCompanyInput | SessionAssignmentCreateManyCompanyInput[]
     skipDuplicates?: boolean
   }
 
@@ -37341,41 +38722,38 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyWhatsappNumberUpsertWithWhereUniqueWithoutCompanyInput = {
-    where: CompanyWhatsappNumberWhereUniqueInput
-    update: XOR<CompanyWhatsappNumberUpdateWithoutCompanyInput, CompanyWhatsappNumberUncheckedUpdateWithoutCompanyInput>
-    create: XOR<CompanyWhatsappNumberCreateWithoutCompanyInput, CompanyWhatsappNumberUncheckedCreateWithoutCompanyInput>
+  export type SessionAssignmentUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: SessionAssignmentWhereUniqueInput
+    update: XOR<SessionAssignmentUpdateWithoutCompanyInput, SessionAssignmentUncheckedUpdateWithoutCompanyInput>
+    create: XOR<SessionAssignmentCreateWithoutCompanyInput, SessionAssignmentUncheckedCreateWithoutCompanyInput>
   }
 
-  export type CompanyWhatsappNumberUpdateWithWhereUniqueWithoutCompanyInput = {
-    where: CompanyWhatsappNumberWhereUniqueInput
-    data: XOR<CompanyWhatsappNumberUpdateWithoutCompanyInput, CompanyWhatsappNumberUncheckedUpdateWithoutCompanyInput>
+  export type SessionAssignmentUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: SessionAssignmentWhereUniqueInput
+    data: XOR<SessionAssignmentUpdateWithoutCompanyInput, SessionAssignmentUncheckedUpdateWithoutCompanyInput>
   }
 
-  export type CompanyWhatsappNumberUpdateManyWithWhereWithoutCompanyInput = {
-    where: CompanyWhatsappNumberScalarWhereInput
-    data: XOR<CompanyWhatsappNumberUpdateManyMutationInput, CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyInput>
+  export type SessionAssignmentUpdateManyWithWhereWithoutCompanyInput = {
+    where: SessionAssignmentScalarWhereInput
+    data: XOR<SessionAssignmentUpdateManyMutationInput, SessionAssignmentUncheckedUpdateManyWithoutCompanyInput>
   }
 
-  export type CompanyWhatsappNumberScalarWhereInput = {
-    AND?: CompanyWhatsappNumberScalarWhereInput | CompanyWhatsappNumberScalarWhereInput[]
-    OR?: CompanyWhatsappNumberScalarWhereInput[]
-    NOT?: CompanyWhatsappNumberScalarWhereInput | CompanyWhatsappNumberScalarWhereInput[]
-    id?: StringFilter<"CompanyWhatsappNumber"> | string
-    companyId?: IntFilter<"CompanyWhatsappNumber"> | number
-    displayName?: StringFilter<"CompanyWhatsappNumber"> | string
-    phoneNumber?: StringFilter<"CompanyWhatsappNumber"> | string
-    isConnected?: BoolFilter<"CompanyWhatsappNumber"> | boolean
-    messagesThisMonth?: IntFilter<"CompanyWhatsappNumber"> | number
-    lastSyncedAt?: DateTimeNullableFilter<"CompanyWhatsappNumber"> | Date | string | null
-    createdAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    updatedAt?: DateTimeFilter<"CompanyWhatsappNumber"> | Date | string
-    remoteAuthNamespace?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    remoteAuthKey?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    tenantId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    workerId?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    wsUrl?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
-    status?: StringNullableFilter<"CompanyWhatsappNumber"> | string | null
+  export type SessionAssignmentScalarWhereInput = {
+    AND?: SessionAssignmentScalarWhereInput | SessionAssignmentScalarWhereInput[]
+    OR?: SessionAssignmentScalarWhereInput[]
+    NOT?: SessionAssignmentScalarWhereInput | SessionAssignmentScalarWhereInput[]
+    id?: StringFilter<"SessionAssignment"> | string
+    sessionId?: StringFilter<"SessionAssignment"> | string
+    workerId?: StringFilter<"SessionAssignment"> | string
+    companyId?: IntFilter<"SessionAssignment"> | number
+    remoteAuthNamespace?: StringNullableFilter<"SessionAssignment"> | string | null
+    remoteAuthData?: JsonNullableFilter<"SessionAssignment">
+    displayName?: StringNullableFilter<"SessionAssignment"> | string | null
+    phoneNumber?: StringNullableFilter<"SessionAssignment"> | string | null
+    isConnected?: BoolFilter<"SessionAssignment"> | boolean
+    status?: StringNullableFilter<"SessionAssignment"> | string | null
+    createdAt?: DateTimeFilter<"SessionAssignment"> | Date | string
+    updatedAt?: DateTimeFilter<"SessionAssignment"> | Date | string
   }
 
   export type CompanyCreateWithoutKnowledgeItemsInput = {
@@ -37394,7 +38772,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutKnowledgeItemsInput = {
@@ -37414,7 +38792,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutKnowledgeItemsInput = {
@@ -37529,7 +38907,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutKnowledgeItemsInput = {
@@ -37549,7 +38927,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutKnowledgeItemsInput = {
@@ -37654,7 +39032,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutQuickAnswersInput = {
@@ -37674,7 +39052,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutQuickAnswersInput = {
@@ -37789,7 +39167,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutQuickAnswersInput = {
@@ -37809,7 +39187,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutQuickAnswersInput = {
@@ -37914,7 +39292,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutAiTemplatesInput = {
@@ -37934,7 +39312,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutAiTemplatesInput = {
@@ -38073,7 +39451,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutAiTemplatesInput = {
@@ -38093,7 +39471,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutAiTemplatesInput = {
@@ -38285,7 +39663,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutMembersInput = {
@@ -38305,7 +39683,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutMembersInput = {
@@ -38420,7 +39798,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutMembersInput = {
@@ -38440,7 +39818,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutCompanyMembersInput = {
@@ -38607,7 +39985,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutCustomerSubscriptionInput = {
@@ -38627,7 +40005,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutCustomerSubscriptionInput = {
@@ -38731,7 +40109,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutCustomerSubscriptionInput = {
@@ -38751,7 +40129,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type SubscriptionPlanUpsertWithoutSubscriptionsInput = {
@@ -38825,7 +40203,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutUsageTrackingInput = {
@@ -38845,7 +40223,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutUsageTrackingInput = {
@@ -38921,7 +40299,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutUsageTrackingInput = {
@@ -38941,7 +40319,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CustomerSubscriptionUpsertWithoutUsageTrackingInput = {
@@ -39007,7 +40385,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutSettingsInput = {
@@ -39027,7 +40405,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutSettingsInput = {
@@ -39062,7 +40440,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutSettingsInput = {
@@ -39082,7 +40460,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateWithoutInboxCustomersInput = {
@@ -39101,7 +40479,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutInboxCustomersInput = {
@@ -39121,7 +40499,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutInboxCustomersInput = {
@@ -39202,7 +40580,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutInboxCustomersInput = {
@@ -39222,7 +40600,7 @@ export namespace Prisma {
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type InboxConversationUpsertWithWhereUniqueWithoutCustomerInput = {
@@ -39257,7 +40635,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutInboxConversationsInput = {
@@ -39277,7 +40655,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
     inboxMessages?: InboxMessageUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutInboxConversationsInput = {
@@ -39457,7 +40835,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutInboxConversationsInput = {
@@ -39477,7 +40855,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
     inboxMessages?: InboxMessageUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type InboxCustomerUpsertWithoutConversationsInput = {
@@ -39633,7 +41011,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerCreateNestedManyWithoutCompanyInput
     inboxConversations?: InboxConversationCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutInboxMessagesInput = {
@@ -39653,7 +41031,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUncheckedCreateNestedManyWithoutCompanyInput
     inboxConversations?: InboxConversationUncheckedCreateNestedManyWithoutCompanyInput
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedCreateNestedManyWithoutCompanyInput
+    SessionAssignment?: SessionAssignmentUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutInboxMessagesInput = {
@@ -39809,7 +41187,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUpdateManyWithoutCompanyNestedInput
     inboxConversations?: InboxConversationUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutInboxMessagesInput = {
@@ -39829,7 +41207,7 @@ export namespace Prisma {
     inboxCustomers?: InboxCustomerUncheckedUpdateManyWithoutCompanyNestedInput
     inboxConversations?: InboxConversationUncheckedUpdateManyWithoutCompanyNestedInput
     settings?: CompanySettingsUncheckedUpdateOneWithoutCompanyNestedInput
-    whatsappNumbers?: CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyNestedInput
+    SessionAssignment?: SessionAssignmentUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type InboxConversationUpsertWithoutMessagesInput = {
@@ -39965,7 +41343,84 @@ export namespace Prisma {
     assignedInboxConversations?: InboxConversationUncheckedUpdateManyWithoutAssignedToNestedInput
   }
 
-  export type CompanyCreateWithoutWhatsappNumbersInput = {
+  export type SessionAssignmentCreateWithoutWorkerInput = {
+    id?: string
+    sessionId: string
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
+    isConnected?: boolean
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutSessionAssignmentInput
+  }
+
+  export type SessionAssignmentUncheckedCreateWithoutWorkerInput = {
+    id?: string
+    sessionId: string
+    companyId: number
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
+    isConnected?: boolean
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SessionAssignmentCreateOrConnectWithoutWorkerInput = {
+    where: SessionAssignmentWhereUniqueInput
+    create: XOR<SessionAssignmentCreateWithoutWorkerInput, SessionAssignmentUncheckedCreateWithoutWorkerInput>
+  }
+
+  export type SessionAssignmentCreateManyWorkerInputEnvelope = {
+    data: SessionAssignmentCreateManyWorkerInput | SessionAssignmentCreateManyWorkerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SessionAssignmentUpsertWithWhereUniqueWithoutWorkerInput = {
+    where: SessionAssignmentWhereUniqueInput
+    update: XOR<SessionAssignmentUpdateWithoutWorkerInput, SessionAssignmentUncheckedUpdateWithoutWorkerInput>
+    create: XOR<SessionAssignmentCreateWithoutWorkerInput, SessionAssignmentUncheckedCreateWithoutWorkerInput>
+  }
+
+  export type SessionAssignmentUpdateWithWhereUniqueWithoutWorkerInput = {
+    where: SessionAssignmentWhereUniqueInput
+    data: XOR<SessionAssignmentUpdateWithoutWorkerInput, SessionAssignmentUncheckedUpdateWithoutWorkerInput>
+  }
+
+  export type SessionAssignmentUpdateManyWithWhereWithoutWorkerInput = {
+    where: SessionAssignmentScalarWhereInput
+    data: XOR<SessionAssignmentUpdateManyMutationInput, SessionAssignmentUncheckedUpdateManyWithoutWorkerInput>
+  }
+
+  export type WorkerCreateWithoutSessionsInput = {
+    id?: string
+    maxCapacity: number
+    currentLoad?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerUncheckedCreateWithoutSessionsInput = {
+    id?: string
+    maxCapacity: number
+    currentLoad?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCreateOrConnectWithoutSessionsInput = {
+    where: WorkerWhereUniqueInput
+    create: XOR<WorkerCreateWithoutSessionsInput, WorkerUncheckedCreateWithoutSessionsInput>
+  }
+
+  export type CompanyCreateWithoutSessionAssignmentInput = {
     name: string
     description?: string | null
     tokenApi?: string | null
@@ -39984,7 +41439,7 @@ export namespace Prisma {
     settings?: CompanySettingsCreateNestedOneWithoutCompanyInput
   }
 
-  export type CompanyUncheckedCreateWithoutWhatsappNumbersInput = {
+  export type CompanyUncheckedCreateWithoutSessionAssignmentInput = {
     id?: number
     name: string
     description?: string | null
@@ -40004,23 +41459,52 @@ export namespace Prisma {
     settings?: CompanySettingsUncheckedCreateNestedOneWithoutCompanyInput
   }
 
-  export type CompanyCreateOrConnectWithoutWhatsappNumbersInput = {
+  export type CompanyCreateOrConnectWithoutSessionAssignmentInput = {
     where: CompanyWhereUniqueInput
-    create: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+    create: XOR<CompanyCreateWithoutSessionAssignmentInput, CompanyUncheckedCreateWithoutSessionAssignmentInput>
   }
 
-  export type CompanyUpsertWithoutWhatsappNumbersInput = {
-    update: XOR<CompanyUpdateWithoutWhatsappNumbersInput, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
-    create: XOR<CompanyCreateWithoutWhatsappNumbersInput, CompanyUncheckedCreateWithoutWhatsappNumbersInput>
+  export type WorkerUpsertWithoutSessionsInput = {
+    update: XOR<WorkerUpdateWithoutSessionsInput, WorkerUncheckedUpdateWithoutSessionsInput>
+    create: XOR<WorkerCreateWithoutSessionsInput, WorkerUncheckedCreateWithoutSessionsInput>
+    where?: WorkerWhereInput
+  }
+
+  export type WorkerUpdateToOneWithWhereWithoutSessionsInput = {
+    where?: WorkerWhereInput
+    data: XOR<WorkerUpdateWithoutSessionsInput, WorkerUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type WorkerUpdateWithoutSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    currentLoad?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerUncheckedUpdateWithoutSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    maxCapacity?: IntFieldUpdateOperationsInput | number
+    currentLoad?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyUpsertWithoutSessionAssignmentInput = {
+    update: XOR<CompanyUpdateWithoutSessionAssignmentInput, CompanyUncheckedUpdateWithoutSessionAssignmentInput>
+    create: XOR<CompanyCreateWithoutSessionAssignmentInput, CompanyUncheckedCreateWithoutSessionAssignmentInput>
     where?: CompanyWhereInput
   }
 
-  export type CompanyUpdateToOneWithWhereWithoutWhatsappNumbersInput = {
+  export type CompanyUpdateToOneWithWhereWithoutSessionAssignmentInput = {
     where?: CompanyWhereInput
-    data: XOR<CompanyUpdateWithoutWhatsappNumbersInput, CompanyUncheckedUpdateWithoutWhatsappNumbersInput>
+    data: XOR<CompanyUpdateWithoutSessionAssignmentInput, CompanyUncheckedUpdateWithoutSessionAssignmentInput>
   }
 
-  export type CompanyUpdateWithoutWhatsappNumbersInput = {
+  export type CompanyUpdateWithoutSessionAssignmentInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     tokenApi?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40039,7 +41523,7 @@ export namespace Prisma {
     settings?: CompanySettingsUpdateOneWithoutCompanyNestedInput
   }
 
-  export type CompanyUncheckedUpdateWithoutWhatsappNumbersInput = {
+  export type CompanyUncheckedUpdateWithoutSessionAssignmentInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40754,21 +42238,18 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type CompanyWhatsappNumberCreateManyCompanyInput = {
+  export type SessionAssignmentCreateManyCompanyInput = {
     id?: string
-    displayName: string
-    phoneNumber: string
+    sessionId: string
+    workerId: string
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
     isConnected?: boolean
-    messagesThisMonth?: number
-    lastSyncedAt?: Date | string | null
+    status?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    remoteAuthNamespace?: string | null
-    remoteAuthKey?: string | null
-    tenantId?: string | null
-    workerId?: string | null
-    wsUrl?: string | null
-    status?: string | null
   }
 
   export type CompanyMemberUpdateWithoutCompanyInput = {
@@ -41218,55 +42699,46 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyWhatsappNumberUpdateWithoutCompanyInput = {
+  export type SessionAssignmentUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
-    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
-    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
-    workerId?: NullableStringFieldUpdateOperationsInput | string | null
-    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
+    worker?: WorkerUpdateOneRequiredWithoutSessionsNestedInput
   }
 
-  export type CompanyWhatsappNumberUncheckedUpdateWithoutCompanyInput = {
+  export type SessionAssignmentUncheckedUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
-    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
-    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
-    workerId?: NullableStringFieldUpdateOperationsInput | string | null
-    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type CompanyWhatsappNumberUncheckedUpdateManyWithoutCompanyInput = {
+  export type SessionAssignmentUncheckedUpdateManyWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    displayName?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isConnected?: BoolFieldUpdateOperationsInput | boolean
-    messagesThisMonth?: IntFieldUpdateOperationsInput | number
-    lastSyncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
-    remoteAuthKey?: NullableStringFieldUpdateOperationsInput | string | null
-    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
-    workerId?: NullableStringFieldUpdateOperationsInput | string | null
-    wsUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AiTemplateOptionCreateManyTemplateInput = {
@@ -41537,6 +43009,62 @@ export namespace Prisma {
     attachments?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumInboxMessageStatusFieldUpdateOperationsInput | $Enums.InboxMessageStatus
     sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionAssignmentCreateManyWorkerInput = {
+    id?: string
+    sessionId: string
+    companyId: number
+    remoteAuthNamespace?: string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: string | null
+    phoneNumber?: string | null
+    isConnected?: boolean
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SessionAssignmentUpdateWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutSessionAssignmentNestedInput
+  }
+
+  export type SessionAssignmentUncheckedUpdateWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionAssignmentUncheckedUpdateManyWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    companyId?: IntFieldUpdateOperationsInput | number
+    remoteAuthNamespace?: NullableStringFieldUpdateOperationsInput | string | null
+    remoteAuthData?: NullableJsonNullValueInput | InputJsonValue
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isConnected?: BoolFieldUpdateOperationsInput | boolean
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

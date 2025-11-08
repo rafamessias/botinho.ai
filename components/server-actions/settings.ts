@@ -11,23 +11,14 @@ const companyScopeSchema = z.object({
     companyId: z.number().int().positive().optional(),
 })
 
-const whatsappNumberBaseSchema = z.object({
-    displayName: z.string().trim().min(1, "Name is required"),
-    phoneNumber: z.string().trim().min(3, "Phone number is required"),
-    isConnected: z.boolean().optional(),
-})
-
-const whatsappNumberCreateSchema = companyScopeSchema.merge(whatsappNumberBaseSchema)
-
-const whatsappNumberUpdateSchema = companyScopeSchema.merge(
-    whatsappNumberBaseSchema.extend({
+const sessionAssignmentUpdateSchema = companyScopeSchema.merge(
+    z.object({
         id: z.string().cuid(),
-        isConnected: z.boolean().optional(),
-        messagesThisMonth: z.number().int().min(0).optional(),
+        displayName: z.string().trim().min(1, "Name is required"),
     }),
 )
 
-const whatsappNumberDeleteSchema = companyScopeSchema.merge(
+const sessionAssignmentDeleteSchema = companyScopeSchema.merge(
     z.object({
         id: z.string().cuid(),
     }),
@@ -44,6 +35,12 @@ const companySettingsUpdateSchema = companyScopeSchema.merge(
 
 const getSettingsOverviewSchema = companyScopeSchema
 
+type RemoteAuthMetadata = {
+    wsUrl: string | null
+    remoteAuthKey: string | null
+    tenantId: string | null
+}
+
 type SettingsOverview = {
     settings: {
         emailNotifications: boolean
@@ -51,8 +48,9 @@ type SettingsOverview = {
         dailyReports: boolean
         autoReply: boolean
     }
-    whatsappNumbers: Array<{
+    sessionAssignments: Array<{
         id: string
+        sessionId: string
         displayName: string
         phoneNumber: string
         isConnected: boolean
@@ -63,7 +61,28 @@ type SettingsOverview = {
         wsUrl: string | null
         workerId: string | null
         remoteAuthKey: string | null
+        status: string | null
+        remoteAuthNamespace: string | null
+        remoteAuthData: RemoteAuthMetadata
     }>
+}
+
+const parseRemoteAuthData = (value: unknown): RemoteAuthMetadata => {
+    if (!value || typeof value !== "object") {
+        return {
+            wsUrl: null,
+            remoteAuthKey: null,
+            tenantId: null,
+        }
+    }
+
+    const data = value as Record<string, unknown>
+
+    return {
+        wsUrl: typeof data.wsUrl === "string" ? data.wsUrl : null,
+        remoteAuthKey: typeof data.remoteAuthKey === "string" ? data.remoteAuthKey : null,
+        tenantId: typeof data.tenantId === "string" ? data.tenantId : null,
+    }
 }
 
 export const getSettingsOverviewAction = async (input?: z.input<typeof getSettingsOverviewSchema>): Promise<BaseActionResponse<SettingsOverview>> =>
@@ -71,7 +90,7 @@ export const getSettingsOverviewAction = async (input?: z.input<typeof getSettin
         const parsed = getSettingsOverviewSchema.parse(input ?? {})
         const { companyId } = await resolveCompanyContext({ companyId: parsed.companyId })
 
-        const [settingsRecord, whatsappNumbers] = await prisma.$transaction([
+        const [settingsRecord, sessionAssignments] = await prisma.$transaction([
             prisma.companySettings.upsert({
                 where: { companyId },
                 create: {
@@ -79,7 +98,7 @@ export const getSettingsOverviewAction = async (input?: z.input<typeof getSettin
                 },
                 update: {},
             }),
-            prisma.companyWhatsappNumber.findMany({
+            prisma.sessionAssignment.findMany({
                 where: { companyId },
                 orderBy: { createdAt: "desc" },
             }),
@@ -94,50 +113,42 @@ export const getSettingsOverviewAction = async (input?: z.input<typeof getSettin
                     dailyReports: settingsRecord.dailyReports,
                     autoReply: settingsRecord.autoReply,
                 },
-                whatsappNumbers,
+                sessionAssignments: sessionAssignments.map((assignment) => {
+                    const remoteAuth = parseRemoteAuthData(assignment.remoteAuthData)
+                    return {
+                        id: assignment.id,
+                        sessionId: assignment.sessionId,
+                        displayName: assignment.displayName ?? assignment.phoneNumber ?? assignment.sessionId,
+                        phoneNumber: assignment.phoneNumber ?? "",
+                        isConnected: assignment.isConnected,
+                        messagesThisMonth: 0,
+                        lastSyncedAt: assignment.isConnected ? assignment.updatedAt : null,
+                        createdAt: assignment.createdAt,
+                        updatedAt: assignment.updatedAt,
+                        wsUrl: remoteAuth.wsUrl,
+                        workerId: assignment.workerId,
+                        remoteAuthKey: remoteAuth.remoteAuthKey ?? assignment.sessionId,
+                        status: assignment.status ?? null,
+                        remoteAuthNamespace: assignment.remoteAuthNamespace ?? null,
+                        remoteAuthData: remoteAuth,
+                    }
+                }),
             },
-        }
-    })
-
-export const createWhatsappNumberAction = async (
-    input: z.input<typeof whatsappNumberCreateSchema>,
-): Promise<
-    BaseActionResponse<{
-        whatsappNumber: Awaited<ReturnType<typeof prisma.companyWhatsappNumber.create>>
-    }>
-> =>
-    handleAction(async () => {
-        const payload = whatsappNumberCreateSchema.parse(input)
-        const { companyId } = await resolveCompanyContext({ companyId: payload.companyId, requireAdmin: true })
-
-        const whatsappNumber = await prisma.companyWhatsappNumber.create({
-            data: {
-                companyId,
-                displayName: payload.displayName,
-                phoneNumber: payload.phoneNumber,
-                ...(payload.isConnected ? { isConnected: true, lastSyncedAt: new Date() } : {}),
-            },
-        })
-
-        return {
-            success: true,
-            data: { whatsappNumber },
-            message: "WhatsApp number created",
         }
     })
 
 export const updateWhatsappNumberAction = async (
-    input: z.input<typeof whatsappNumberUpdateSchema>,
+    input: z.input<typeof sessionAssignmentUpdateSchema>,
 ): Promise<
     BaseActionResponse<{
-        whatsappNumber: Awaited<ReturnType<typeof prisma.companyWhatsappNumber.update>>
+        sessionAssignment: Awaited<ReturnType<typeof prisma.sessionAssignment.update>>
     }>
 > =>
     handleAction(async () => {
-        const payload = whatsappNumberUpdateSchema.parse(input)
+        const payload = sessionAssignmentUpdateSchema.parse(input)
         const { companyId } = await resolveCompanyContext({ companyId: payload.companyId, requireAdmin: true })
 
-        const existing = await prisma.companyWhatsappNumber.findUnique({
+        const existing = await prisma.sessionAssignment.findUnique({
             where: { id: payload.id },
             select: { companyId: true },
         })
@@ -146,37 +157,32 @@ export const updateWhatsappNumberAction = async (
             return { success: false, error: "WhatsApp number not found" }
         }
 
-        const whatsappNumber = await prisma.companyWhatsappNumber.update({
+        const sessionAssignment = await prisma.sessionAssignment.update({
             where: { id: payload.id },
             data: {
                 displayName: payload.displayName,
-                phoneNumber: payload.phoneNumber,
-                ...(payload.isConnected !== undefined && { isConnected: payload.isConnected }),
-                ...(payload.messagesThisMonth !== undefined && { messagesThisMonth: payload.messagesThisMonth }),
-                ...(payload.isConnected === true ? { lastSyncedAt: new Date() } : {}),
-                ...(payload.isConnected === false ? { lastSyncedAt: null } : {}),
             },
         })
 
         return {
             success: true,
-            data: { whatsappNumber },
-            message: "WhatsApp number updated",
+            data: { sessionAssignment },
+            message: "Session assignment updated",
         }
     })
 
 export const deleteWhatsappNumberAction = async (
-    input: z.input<typeof whatsappNumberDeleteSchema>,
+    input: z.input<typeof sessionAssignmentDeleteSchema>,
 ): Promise<
     BaseActionResponse<{
-        whatsappNumber: Awaited<ReturnType<typeof prisma.companyWhatsappNumber.delete>>
+        sessionAssignment: Awaited<ReturnType<typeof prisma.sessionAssignment.delete>>
     }>
 > =>
     handleAction(async () => {
-        const payload = whatsappNumberDeleteSchema.parse(input)
+        const payload = sessionAssignmentDeleteSchema.parse(input)
         const { companyId } = await resolveCompanyContext({ companyId: payload.companyId, requireAdmin: true })
 
-        const existing = await prisma.companyWhatsappNumber.findUnique({
+        const existing = await prisma.sessionAssignment.findUnique({
             where: { id: payload.id },
             select: { companyId: true },
         })
@@ -185,15 +191,14 @@ export const deleteWhatsappNumberAction = async (
             return { success: false, error: "WhatsApp number not found" }
         }
 
-        // Delete the WhatsApp number record
-        const whatsappNumber = await prisma.companyWhatsappNumber.delete({
+        const sessionAssignment = await prisma.sessionAssignment.delete({
             where: { id: payload.id },
         })
 
         return {
             success: true,
-            data: { whatsappNumber },
-            message: "WhatsApp number deleted",
+            data: { sessionAssignment },
+            message: "Session assignment deleted",
         }
     })
 
@@ -249,14 +254,14 @@ export const createWhatsappSessionAction = async (
         const { companyId } = await resolveCompanyContext({ companyId: payload.companyId, requireAdmin: true })
 
         // Create tenant ID from company ID
-        const tenantId = `company-${companyId}`
+        const tenantId = companyId
 
         console.log("Creating WhatsApp session for tenant:", tenantId, "Controller URL:", WHATSAPP_CONTROLLER_URL)
 
         // Call Controller API to create session
         const controllerResponse = await fetch(`${WHATSAPP_CONTROLLER_URL}/sessions`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${process.env.CONTROLLER_TOKEN}` },
             body: JSON.stringify({ tenantId }),
         })
 
@@ -303,61 +308,8 @@ const createWhatsappNumberFromSessionSchema = companyScopeSchema.extend({
     status: z.enum(["need_scan", "authenticated", "connected", "disconnected", "auth_failure"]),
 })
 
-export const createWhatsappNumberFromSessionAction = async (
-    input: z.input<typeof createWhatsappNumberFromSessionSchema>,
-): Promise<
-    BaseActionResponse<{
-        whatsappNumber: Awaited<ReturnType<typeof prisma.companyWhatsappNumber.upsert>>
-    }>
-> =>
-    handleAction(async () => {
-        const payload = createWhatsappNumberFromSessionSchema.parse(input)
-        const { companyId } = await resolveCompanyContext({ companyId: payload.companyId, requireAdmin: true })
-
-        // Create tenant ID from company ID
-        const tenantId = `company-${companyId}`
-
-        // Use upsert to create or update the WhatsApp number record
-        const whatsappNumber = await prisma.companyWhatsappNumber.upsert({
-            where: {
-                companyId_phoneNumber: {
-                    companyId,
-                    phoneNumber: payload.phoneNumber,
-                },
-            },
-            create: {
-                companyId,
-                displayName: payload.displayName,
-                phoneNumber: payload.phoneNumber,
-                isConnected: payload.status === "connected",
-                lastSyncedAt: payload.status === "connected" ? new Date() : null,
-                remoteAuthKey: payload.sessionId,
-                tenantId,
-                workerId: payload.workerId,
-                wsUrl: payload.wsUrl,
-                status: payload.status,
-            },
-            update: {
-                displayName: payload.displayName,
-                isConnected: payload.status === "connected",
-                lastSyncedAt: payload.status === "connected" ? new Date() : null,
-                remoteAuthKey: payload.sessionId,
-                tenantId,
-                workerId: payload.workerId,
-                wsUrl: payload.wsUrl,
-                status: payload.status,
-            },
-        })
-
-        return {
-            success: true,
-            data: { whatsappNumber },
-            message: "WhatsApp number created",
-        }
-    })
-
 const updateWhatsappSessionStatusSchema = companyScopeSchema.extend({
-    whatsappNumberId: z.string().cuid(),
+    sessionAssignmentId: z.string().cuid(),
     status: z.enum(["need_scan", "authenticated", "connected", "disconnected", "auth_failure"]),
     displayName: z.string().optional(),
     phoneNumber: z.string().optional(),
@@ -367,43 +319,37 @@ export const updateWhatsappSessionStatusAction = async (
     input: z.input<typeof updateWhatsappSessionStatusSchema>,
 ): Promise<
     BaseActionResponse<{
-        whatsappNumber: Awaited<ReturnType<typeof prisma.companyWhatsappNumber.update>>
+        sessionAssignment: Awaited<ReturnType<typeof prisma.sessionAssignment.update>>
     }>
 > =>
     handleAction(async () => {
         const payload = updateWhatsappSessionStatusSchema.parse(input)
         const { companyId } = await resolveCompanyContext({ companyId: payload.companyId, requireAdmin: true })
 
-        // Verify the WhatsApp number belongs to the company
-        const existing = await prisma.companyWhatsappNumber.findUnique({
-            where: { id: payload.whatsappNumberId },
-            select: { companyId: true },
+        const existing = await prisma.sessionAssignment.findUnique({
+            where: { id: payload.sessionAssignmentId },
+            select: { companyId: true, remoteAuthData: true },
         })
 
         if (!existing || existing.companyId !== companyId) {
             return { success: false, error: "WhatsApp number not found" }
         }
 
-        // Determine connection status based on status value
-        const isConnected = payload.status === "connected"
-        const lastSyncedAt = isConnected ? new Date() : null
-
-        // Update the WhatsApp number
-        const whatsappNumber = await prisma.companyWhatsappNumber.update({
-            where: { id: payload.whatsappNumberId },
+        const sessionAssignment = await prisma.sessionAssignment.update({
+            where: { id: payload.sessionAssignmentId },
             data: {
-                isConnected,
-                lastSyncedAt,
+                isConnected: payload.status === "connected",
                 status: payload.status,
                 ...(payload.displayName && { displayName: payload.displayName }),
                 ...(payload.phoneNumber && { phoneNumber: payload.phoneNumber }),
+                remoteAuthData: existing.remoteAuthData ?? undefined,
             },
         })
 
         return {
             success: true,
-            data: { whatsappNumber },
-            message: "WhatsApp session status updated",
+            data: { sessionAssignment },
+            message: "Session assignment status updated",
         }
     })
 
