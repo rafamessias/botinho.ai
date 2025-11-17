@@ -907,8 +907,7 @@ export default function SettingsPage() {
                                     </div>
 
                                     <Button
-                                        type="button"
-                                        onClick={() => handlePersistSettings("toasts.updateSuccessNotifications")}
+                                        type="button" latestLinkedNumber
                                         className="bg-primary text-primary-foreground hover:bg-primary/90"
                                         disabled={settings === null || isSavingSettings}
                                     >

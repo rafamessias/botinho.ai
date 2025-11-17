@@ -26,10 +26,10 @@
         },
         "hero": {
             "badge": "IA para WhatsApp, reinventada",
-            "title": "Transforme cada conversa no WhatsApp em um momento de fidelização",
-            "description": "A botinho automatiza suporte, vendas e follow-ups com um assistente de IA amigável que conhece seu negócio de cabo a rabo, aciona seu time sem atritos e nunca perde uma mensagem.",
-            "primaryCta": "Comece grátis em 5 minutos",
-            "primaryCtaAria": "Inicie seu teste gratuito na botinho",
+            "title": "Automatize Seu Atendimento no WhatsApp com IA",
+            "description": "Nunca perca uma mensagem. Responda clientes instantaneamente 24 horas por dia com um assistente de IA treinado no seu negócio.",
+            "primaryCta": "Entre na fila",
+            "primaryCtaAria": "Entre na fila da botinho",
             "secondaryCta": "Fale com nosso time",
             "secondaryCtaAria": "Falar com o time da botinho",
             "rating": "Nota 4,9/5 de 200+ equipes",
@@ -47,79 +47,98 @@
         },
         "about": {
             "badge": "O que é a botinho",
-            "title": "Seu co-piloto de WhatsApp para marcas de hospitalidade, varejo e serviços",
-            "description": "A botinho centraliza cada mensagem, automatiza respostas com uma IA treinada no DNA do seu negócio e mantém humanos no loop para conversas delicadas. Sem código, sem estresse, só clientes encantados.",
+            "title": "Seu Assistente de WhatsApp Que Funciona Como uma Pessoa Real",
+            "description": "A botinho responde seus clientes no WhatsApp automaticamente, exatamente como você faria. Ela aprende sobre seu negócio e pode responder perguntas, anotar pedidos e agendar compromissos. Quando precisa de ajuda, ela passa a conversa para você. Sem necessidade de conhecimentos técnicos.",
             "cards": {
                 "humanFriendly": {
-                    "title": "IA com jeito de gente",
-                    "description": "Treine a botinho uma vez e ela segue aprendendo com cada conversa resolvida, deixando cada resposta mais pessoal."
+                    "title": "Responde Como Você Responderia",
+                    "description": "Conte para a botinho sobre seu negócio uma vez - seu cardápio, preços, horários e políticas. Ela lembra de tudo e responde clientes naturalmente, exatamente como você faria."
                 },
                 "builtForTeams": {
-                    "title": "Feita para equipes",
-                    "description": "Colabore em tempo real, deixe notas internas e distribua chats enquanto a IA cuida das tarefas repetitivas."
+                    "title": "Sua Equipe Pode Ajudar a Qualquer Hora",
+                    "description": "Você e sua equipe podem ver todas as conversas, adicionar anotações e entrar quando precisar. A botinho cuida das perguntas simples para você focar no que importa."
                 }
             },
             "reasons": {
-                "title": "Por que as marcas escolhem a botinho",
+                "title": "Por que donos de negócios escolhem a botinho",
                 "items": [
-                    "Respostas instantâneas 24/7 treinadas com a sua base de conhecimento.",
-                    "Handoff humano sem atritos com todo o histórico da conversa.",
-                    "Automatizações inteligentes para pedidos, reservas e follow-ups.",
-                    "Analytics completos para entender sentimento, conversões e performance do time."
+                    "Responda clientes instantaneamente, mesmo às 2 da manhã. Sem mais esperar horas por uma resposta.",
+                    "Nunca perca um cliente. Se a botinho não conseguir ajudar, ela envia a conversa para você com todos os detalhes.",
+                    "Anote pedidos e agende compromissos automaticamente. Clientes podem pedir ou agendar sem esperar.",
+                    "Veja quantos clientes você está ajudando e o quão satisfeitos eles estão. Relatórios simples que fazem sentido."
                 ]
             }
         },
         "sessions": {
             "badge": "Como funciona",
-            "title": "Quatro sessões para lançar sua IA",
-            "description": "Guiamos cada etapa para que seu time automatize conversas com confiança sem perder o toque humano.",
+            "title": "Comece em 4 Passos Simples",
+            "description": "Vamos te ajudar a configurar tudo. Não precisa de conhecimento técnico - só seguir os passos simples.",
             "steps": {
                 "connect": {
-                    "title": "Conecte o WhatsApp",
-                    "description": "Integre seu número comercial do WhatsApp em minutos com um passo a passo guiado."
+                    "title": "Conecte Seu WhatsApp",
+                    "description": "Vincule seu número comercial do WhatsApp. Leva apenas alguns minutos e vamos te guiar passo a passo."
                 },
                 "train": {
-                    "title": "Treine sua IA",
-                    "description": "Envie FAQs, cardápios, promoções e documentos para a botinho falar exatamente como a sua marca."
+                    "title": "Conte Para a botinho Sobre Seu Negócio",
+                    "description": "Compartilhe seu cardápio, preços, horários e perguntas comuns. Você pode digitar ou enviar documentos - o que for mais fácil."
                 },
                 "automate": {
-                    "title": "Automatize conversas",
-                    "description": "Deixe a botinho responder na hora, qualificar leads, agendar horários e escalar quando necessário."
+                    "title": "Comece a Responder Clientes",
+                    "description": "A botinho começa a responder clientes imediatamente. Ela pode anotar pedidos, responder perguntas e agendar compromissos automaticamente."
                 },
                 "measure": {
-                    "title": "Meça e evolua",
-                    "description": "Acompanhe satisfação, tempo de resposta e impacto nas vendas em um dashboard intuitivo."
+                    "title": "Veja Como Está Funcionando",
+                    "description": "Veja quantos clientes você está ajudando e sobre o que eles estão perguntando. Relatórios simples que mostram o que está funcionando."
                 }
             }
         },
+        "perfectFor": {
+            "badge": "Perfeito Para",
+            "title": "Feito para Restaurantes, Lojas e Empresas de Serviços",
+            "description": "Seja você um restaurante, loja de varejo ou empresa de serviços, a botinho.ai ajuda você a responder clientes automaticamente e nunca perder uma mensagem.",
+            "useCases": [
+                {
+                    "title": "Para Restaurantes",
+                    "description": "Automatize reservas, responda perguntas sobre o cardápio e anote pedidos para viagem 24 horas por dia. Nunca mais perca uma pergunta de cliente."
+                },
+                {
+                    "title": "Para Lojas de Varejo",
+                    "description": "Forneça informações instantâneas sobre produtos, verifique se tem em estoque e ajude clientes com suas compras."
+                },
+                {
+                    "title": "Para Empresas de Serviços",
+                    "description": "Agende compromissos, responda perguntas comuns e ajude clientes automaticamente. Foque no que mais importa."
+                }
+            ]
+        },
         "features": {
-            "badge": "Recursos",
-            "title": "Tudo que você precisa para automatizar conversas no WhatsApp",
-            "description": "Combine IA, automação e analytics em uma ferramenta que o seu time adora usar.",
+            "badge": "O Que a botinho Pode Fazer",
+            "title": "Tudo Que Você Precisa Para Responder Clientes Automaticamente",
+            "description": "A botinho cuida das perguntas comuns para você focar em administrar seu negócio.",
             "cards": {
                 "humanFriendly": {
-                    "title": "IA com jeito de gente",
-                    "description": "Fluxos conversacionais que lembram contexto, ajustam o tom e mantêm sua voz em qualquer idioma."
+                    "title": "Responde Como uma Pessoa Real",
+                    "description": "A botinho lembra o que os clientes perguntaram antes e fala naturalmente, exatamente como você faria. Ela entende o contexto e mantém a conversa amigável."
                 },
                 "secure": {
-                    "title": "Segurança desde a origem",
-                    "description": "Criptografia de nível empresarial, permissões por função e infraestrutura pensada para compliance."
+                    "title": "Seus Dados Estão Seguros",
+                    "description": "Todas as suas conversas com clientes e informações do negócio estão protegidas. Só você e sua equipe podem vê-las."
                 },
                 "collaboration": {
-                    "title": "Colaboração em equipe",
-                    "description": "Atribua conversas, deixe notas internas e intervenha na hora certa quando um toque humano é necessário."
+                    "title": "Sua Equipe Pode Ajudar",
+                    "description": "Você e sua equipe podem ver todas as conversas, adicionar anotações uns para os outros e assumir quando um cliente precisar de ajuda extra."
                 },
                 "appointments": {
-                    "title": "Agendamentos e lembretes",
-                    "description": "Confirme reservas, envie lembretes e sincronize agendas automaticamente sem trabalho manual."
+                    "title": "Agende Compromissos Automaticamente",
+                    "description": "Clientes podem agendar compromissos ou fazer reservas pelo WhatsApp. A botinho confirma tudo e envia lembretes para ninguém esquecer."
                 },
                 "integrations": {
-                    "title": "Integrações inteligentes",
-                    "description": "Conecte CRM, delivery ou e-commerce para disparar fluxos em segundos."
+                    "title": "Funciona Com Suas Ferramentas",
+                    "description": "Conecte a botinho aos seus apps de delivery, loja online ou sistema de agendamento. Quando um cliente faz um pedido, tudo é atualizado automaticamente."
                 },
                 "playbooks": {
-                    "title": "Playbooks guiados",
-                    "description": "Use modelos prontos para vendas, suporte, reservas e follow-ups e lance mais rápido."
+                    "title": "Modelos Prontos",
+                    "description": "Use modelos simples para situações comuns como anotar pedidos, responder perguntas ou agendar compromissos. Configure uma vez e funciona."
                 }
             },
             "banner": {
@@ -213,39 +232,39 @@
         },
         "faq": {
             "badge": "FAQ",
-            "title": "Respostas para as principais dúvidas",
-            "description": "Tudo o que você precisa saber sobre onboarding, segurança e planos. Ficou curioso? É só chamar no direct.",
+            "title": "Perguntas Frequentes",
+            "description": "Tudo o que você precisa saber para começar. Ainda tem dúvidas? Entre em contato a qualquer momento.",
             "items": [
                 {
                     "question": "Quanto tempo leva para começar?",
-                    "answer": "A maioria dos clientes conecta o número do WhatsApp e publica os primeiros fluxos de IA em menos de 15 minutos. Nosso onboarding guiado mostra cada passo."
+                    "answer": "A maioria dos donos de negócios conecta o WhatsApp e começa a responder clientes em cerca de 15 minutos. Vamos te guiar em cada passo - é muito simples."
                 },
                 {
-                    "question": "Quais integrações estão disponíveis?",
-                    "answer": "A botinho conecta com CRMs, plataformas de e-commerce, delivery e muito mais. Use integrações nativas ou webhooks para plugar no seu stack."
+                    "question": "Preciso saber programar?",
+                    "answer": "Não! Você não precisa de nenhum conhecimento técnico. Só conte para a botinho sobre seu negócio - seu cardápio, preços, horários e perguntas comuns. É só isso."
                 },
                 {
-                    "question": "Posso escalar conversas para humanos?",
-                    "answer": "Sim. Defina regras inteligentes de roteamento, atribua agentes e retome a IA assim que o atendimento humano terminar. Seu time segue no controle."
+                    "question": "E se a botinho não souber responder uma pergunta?",
+                    "answer": "Se a botinho não souber a resposta, ela automaticamente envia a conversa para você ou sua equipe. Você verá tudo que o cliente perguntou, para poder ajudá-lo na hora."
                 },
                 {
-                    "question": "Meus dados de clientes ficam seguros?",
-                    "answer": "Usamos armazenamento criptografado, controles rígidos de acesso e infraestrutura compatível com GDPR. Você define por quanto tempo os dados ficam no sistema."
+                    "question": "As informações dos meus clientes estão seguras?",
+                    "answer": "Sim, com certeza. Todas as suas conversas com clientes e informações do negócio estão protegidas e seguras. Só você e sua equipe podem vê-las."
                 },
                 {
-                    "question": "Vocês oferecem suporte em português e espanhol?",
-                    "answer": "Com certeza. A botinho entende e responde em vários idiomas, e nosso time de suporte também é multilíngue."
+                    "question": "A botinho funciona em português?",
+                    "answer": "Sim! A botinho entende e responde em português, inglês e espanhol. Ela funciona no idioma que seus clientes usarem."
                 },
                 {
-                    "question": "O que acontece se eu ultrapassar os limites do plano?",
-                    "answer": "Avisamos antes de você chegar ao limite para fazer upgrade com tranquilidade ou comprar pacotes extras sem interrupções."
+                    "question": "E se eu precisar de ajuda para configurar?",
+                    "answer": "Estamos aqui para ajudar! Nossa equipe vai te guiar na configuração e responder qualquer dúvida que você tiver. É só entrar em contato."
                 }
             ]
         },
         "contact": {
-            "badge": "Contato",
-            "title": "Estamos aqui para ajudar você a automatizar",
-            "description": "Quer um tour guiado ou ajuda para mapear o uso? Fale com a gente e respondemos em minutos durante o horário comercial.",
+            "badge": "Começar",
+            "title": "Pronto Para Começar a Responder Clientes Automaticamente?",
+            "description": "Preencha o formulário abaixo e salvaremos seu contato. Avisaremos quando lançarmos para que você possa se registrar e ganhar um desconto especial.",
             "specialist": {
                 "title": "Fale com um especialista",
                 "description": "Disponível de segunda a sexta, 8h às 20h (BRT). Montamos um plano sob medida para o seu volume e operações.",
@@ -259,6 +278,24 @@
                 "cta": "Agendar demo"
             }
         },
+        "leadForm": {
+            "namePlaceholder": "Seu nome",
+            "emailPlaceholder": "seu@email.com",
+            "button": "Começar",
+            "submitting": "Enviando...",
+            "success": {
+                "title": "Obrigado!",
+                "message": "Recebemos suas informações e entraremos em contato em breve."
+            },
+            "errors": {
+                "requiredFields": "Por favor, preencha todos os campos obrigatórios",
+                "invalidEmail": "Por favor, insira um endereço de e-mail válido",
+                "verificationRequired": "Por favor, complete a verificação",
+                "verificationFailed": "Verificação falhou. Por favor, tente novamente.",
+                "submitFailed": "Falha ao enviar. Por favor, tente novamente.",
+                "unexpectedError": "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde."
+            }
+        },
         "cta": {
             "title": "Pronto para encantar seus clientes no WhatsApp?",
             "description": "Junte-se a centenas de equipes ágeis automatizando conversas com a botinho. Não precisa de cartão para começar.",
@@ -266,7 +303,7 @@
             "secondaryCta": "Comparar planos"
         },
         "footer": {
-            "description": "Automatize conversas, encante clientes e evolua com cada interação no WhatsApp.",
+            "description": "Responda clientes automaticamente no WhatsApp. Nunca perca uma mensagem, nunca perca um cliente.",
             "exploreTitle": "Explore",
             "contactTitle": "Fale com a gente",
             "whatsappLabel": "Fale no WhatsApp",

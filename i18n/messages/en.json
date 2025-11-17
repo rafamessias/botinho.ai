@@ -26,10 +26,10 @@
         },
         "hero": {
             "badge": "WhatsApp AI, reimagined",
-            "title": "Turn every WhatsApp conversation into a loyal customer moment",
-            "description": "botinho automates support, sales, and follow-ups with a friendly AI assistant that knows your business by heart, hands off seamlessly to your team, and never misses a message.",
-            "primaryCta": "Start free in 5 minutes",
-            "primaryCtaAria": "Start your free botinho trial",
+            "title": "Automate Your WhatsApp Customer Service with AI",
+            "description": "Never miss a message. Answer customers instantly 24/7 with an AI assistant trained on your business.",
+            "primaryCta": "Join the waitlist",
+            "primaryCtaAria": "Join the botinho waitlist",
             "secondaryCta": "Talk to our team",
             "secondaryCtaAria": "Talk to the botinho team",
             "rating": "4.9/5 from 200+ teams",
@@ -47,79 +47,98 @@
         },
         "about": {
             "badge": "What is botinho",
-            "title": "Your WhatsApp co-pilot for hospitality, retail, and service brands",
-            "description": "botinho centralizes every message, automates responses with an AI trained on your business DNA, and keeps humans in the loop for delicate conversations. No code, no stress, just delighted customers.",
+            "title": "Your WhatsApp Assistant That Works Like a Real Person",
+            "description": "botinho answers your customers on WhatsApp automatically, just like you would. It learns about your business and can answer questions, take orders, and book appointments. When it needs help, it passes the conversation to you. No technical skills needed.",
             "cards": {
                 "humanFriendly": {
-                    "title": "Human-friendly AI",
-                    "description": "Train botinho once and it keeps learning from every resolved conversation, so each reply feels personal."
+                    "title": "Answers Like You Would",
+                    "description": "Tell botinho about your business once - your menu, prices, hours, and policies. It remembers everything and answers customers naturally, just like you would."
                 },
                 "builtForTeams": {
-                    "title": "Built for teams",
-                    "description": "Collaborate in real-time, leave internal notes, and assign chats while the AI covers the repetitive tasks."
+                    "title": "Your Team Can Help Anytime",
+                    "description": "You and your staff can see all conversations, add notes, and jump in whenever needed. botinho handles the simple questions so you can focus on what matters."
                 }
             },
             "reasons": {
-                "title": "Why brands choose botinho",
+                "title": "Why business owners choose botinho",
                 "items": [
-                    "24/7 instant replies trained on your own knowledge base.",
-                    "Seamless human handoff with full conversation history.",
-                    "Smart automations for orders, reservations, and follow-ups.",
-                    "Rich analytics to understand sentiment, conversions, and team performance."
+                    "Answer customers instantly, even at 2 AM. No more waiting hours for a reply.",
+                    "Never lose a customer. If botinho can't help, it sends the conversation to you with all the details.",
+                    "Take orders and book appointments automatically. Customers can order or schedule without waiting.",
+                    "See how many customers you're helping and how happy they are. Simple reports that make sense."
                 ]
             }
         },
         "sessions": {
             "badge": "How it works",
-            "title": "Four simple sessions to launch your AI",
-            "description": "We guide you through every stage so your team feels confident automating conversations without losing the human touch.",
+            "title": "Get Started in 4 Simple Steps",
+            "description": "We'll help you set everything up. No technical knowledge needed - just follow the simple steps.",
             "steps": {
                 "connect": {
-                    "title": "Connect WhatsApp",
-                    "description": "Link your WhatsApp Business number in minutes with a guided setup that anyone can follow."
+                    "title": "Connect Your WhatsApp",
+                    "description": "Link your business WhatsApp number. Takes just a few minutes and we'll guide you through it."
                 },
                 "train": {
-                    "title": "Train Your AI",
-                    "description": "Upload FAQs, menus, promotions, and documents so botinho speaks exactly like your brand."
+                    "title": "Tell botinho About Your Business",
+                    "description": "Share your menu, prices, hours, and common questions. You can type it in or upload documents - whatever's easier."
                 },
                 "automate": {
-                    "title": "Automate Conversations",
-                    "description": "Let botinho answer instantly, qualify leads, schedule appointments, and escalate when needed."
+                    "title": "Start Answering Customers",
+                    "description": "botinho starts answering customers right away. It can take orders, answer questions, and book appointments automatically."
                 },
                 "measure": {
-                    "title": "Measure & Improve",
-                    "description": "Track satisfaction, response times, and sales impact inside an intuitive analytics dashboard."
+                    "title": "See How It's Working",
+                    "description": "Check how many customers you're helping and what they're asking about. Simple reports that show you what's working."
                 }
             }
         },
+        "perfectFor": {
+            "badge": "Perfect For",
+            "title": "Built for Restaurants, Stores & Service Businesses",
+            "description": "Whether you run a restaurant, retail store, or service business, botinho.ai helps you automate customer communication and never miss a message.",
+            "useCases": [
+                {
+                    "title": "For Restaurants",
+                    "description": "Automate reservations, answer menu questions, and handle takeout orders 24/7. Never miss a customer inquiry again."
+                },
+                {
+                    "title": "For Retail Stores",
+                    "description": "Provide instant product information, check inventory availability, and assist customers with their shopping needs."
+                },
+                {
+                    "title": "For Service Businesses",
+                    "description": "Schedule appointments, answer FAQs, and provide customer support automatically. Focus on what matters most."
+                }
+            ]
+        },
         "features": {
-            "badge": "Capabilities",
-            "title": "Everything you need to automate WhatsApp conversations",
-            "description": "Combine AI, automation, and analytics in one tool that your team enjoys using.",
+            "badge": "What botinho Can Do",
+            "title": "Everything You Need to Answer Customers Automatically",
+            "description": "botinho handles the common questions so you can focus on running your business.",
             "cards": {
                 "humanFriendly": {
-                    "title": "Human-friendly AI",
-                    "description": "Conversational flows that remember context, adapt tone, and stay on brand in every language."
+                    "title": "Answers Like a Real Person",
+                    "description": "botinho remembers what customers asked before and talks naturally, just like you would. It understands context and keeps the conversation friendly."
                 },
                 "secure": {
-                    "title": "Secure by Design",
-                    "description": "Enterprise-grade encryption, role-based permissions, and compliance-first infrastructure."
+                    "title": "Your Data is Safe",
+                    "description": "All your customer conversations and business information are protected. Only you and your team can see them."
                 },
                 "collaboration": {
-                    "title": "Team Collaboration",
-                    "description": "Assign conversations, leave internal notes, and jump in the moment a human touch is required."
+                    "title": "Your Team Can Help",
+                    "description": "You and your staff can see all conversations, add notes for each other, and take over whenever a customer needs extra help."
                 },
                 "appointments": {
-                    "title": "Appointments & Reminders",
-                    "description": "Confirm bookings, send reminders, and sync calendars automatically without any manual work."
+                    "title": "Book Appointments Automatically",
+                    "description": "Customers can book appointments or make reservations through WhatsApp. botinho confirms everything and sends reminders so no one forgets."
                 },
                 "integrations": {
-                    "title": "Smart Integrations",
-                    "description": "Connect your CRM, delivery platform, or e-commerce tools to trigger workflows instantly."
+                    "title": "Works With Your Tools",
+                    "description": "Connect botinho to your delivery apps, online store, or booking system. When a customer orders, it updates everything automatically."
                 },
                 "playbooks": {
-                    "title": "Guided Playbooks",
-                    "description": "Use pre-built templates for sales, support, reservations, and follow-ups to launch faster."
+                    "title": "Ready-Made Templates",
+                    "description": "Use simple templates for common situations like taking orders, answering questions, or booking appointments. Set it up once and it works."
                 }
             },
             "banner": {
@@ -213,39 +232,39 @@
         },
         "faq": {
             "badge": "FAQ",
-            "title": "Answers to popular questions",
-            "description": "Everything you need to know about onboarding, security, and pricing. Still curious? We are a DM away.",
+            "title": "Common Questions",
+            "description": "Everything you need to know about getting started. Still have questions? Contact us anytime.",
             "items": [
                 {
                     "question": "How long does it take to get started?",
-                    "answer": "Most customers connect their WhatsApp number and publish their first AI flows in under 15 minutes. Our guided onboarding walks you through every step."
+                    "answer": "Most business owners connect their WhatsApp and start answering customers in about 15 minutes. We'll guide you through every step - it's very simple."
                 },
                 {
-                    "question": "What integrations are available?",
-                    "answer": "botinho connects with CRMs, e-commerce platforms, delivery services, and more. Use native integrations or webhooks to plug into your stack."
+                    "question": "Do I need to know how to code?",
+                    "answer": "No! You don't need any technical skills. Just tell botinho about your business - your menu, prices, hours, and common questions. That's it."
                 },
                 {
-                    "question": "Can I escalate conversations to humans?",
-                    "answer": "Yes. You can set smart routing rules, assign agents, and resume the AI once humans finish. Your team stays in full control."
+                    "question": "What if botinho can't answer a question?",
+                    "answer": "If botinho doesn't know the answer, it automatically sends the conversation to you or your team. You'll see everything the customer asked, so you can help them right away."
                 },
                 {
-                    "question": "Is my customer data secure?",
-                    "answer": "We use encrypted storage, strict access controls, and GDPR-compliant infrastructure. You decide how long data stays in the system."
+                    "question": "Is my customer information safe?",
+                    "answer": "Yes, absolutely. All your customer conversations and business information are protected and secure. Only you and your team can see them."
                 },
                 {
-                    "question": "Do you offer support in Portuguese and Spanish?",
-                    "answer": "Absolutely. botinho understands and responds in multiple languages, and our support team is multilingual as well."
+                    "question": "Can botinho work in Portuguese?",
+                    "answer": "Yes! botinho understands and responds in Portuguese, English, and Spanish. It works in whatever language your customers use."
                 },
                 {
-                    "question": "What happens if I exceed my plan limits?",
-                    "answer": "We will notify you before you reach your limits so you can upgrade seamlessly or purchase usage add-ons without interruptions."
+                    "question": "What if I need help setting it up?",
+                    "answer": "We're here to help! Our team will guide you through the setup and answer any questions you have. Just reach out to us."
                 }
             ]
         },
         "contact": {
-            "badge": "Contact",
-            "title": "We are here to help you automate",
-            "description": "Want a guided tour or help scoping your use case? Reach out and we will respond within minutes during business hours.",
+            "badge": "Get Started",
+            "title": "Ready to Start Answering Customers Automatically?",
+            "description": "Fill out the form below and we'll save your contact. We'll notify you when we launch so you can register and get a special discount.",
             "specialist": {
                 "title": "Talk to a specialist",
                 "description": "Available Monday to Friday, 8am-8pm (BRT). We will tailor a plan for your volume and workflows.",
@@ -259,6 +278,24 @@
                 "cta": "Schedule a demo"
             }
         },
+        "leadForm": {
+            "namePlaceholder": "Your name",
+            "emailPlaceholder": "your@email.com",
+            "button": "Get Started",
+            "submitting": "Submitting...",
+            "success": {
+                "title": "Thank you!",
+                "message": "We've received your information and will contact you soon."
+            },
+            "errors": {
+                "requiredFields": "Please fill in all required fields",
+                "invalidEmail": "Please enter a valid email address",
+                "verificationRequired": "Please complete the verification",
+                "verificationFailed": "Verification failed. Please try again.",
+                "submitFailed": "Failed to submit. Please try again.",
+                "unexpectedError": "An unexpected error occurred. Please try again later."
+            }
+        },
         "cta": {
             "title": "Ready to delight your customers on WhatsApp?",
             "description": "Join hundreds of fast-moving teams automating their conversations with botinho. No credit card required to get started.",
@@ -266,7 +303,7 @@
             "secondaryCta": "Compare plans"
         },
         "footer": {
-            "description": "Automate conversations, delight customers, and grow smarter with every WhatsApp interaction.",
+            "description": "Answer customers automatically on WhatsApp. Never miss a message, never lose a customer.",
             "exploreTitle": "Explore",
             "contactTitle": "Get in touch",
             "whatsappLabel": "WhatsApp us",
