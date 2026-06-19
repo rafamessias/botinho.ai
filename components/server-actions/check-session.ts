@@ -1,8 +1,8 @@
-import { auth } from "@/app/auth"
+import { getServerAuthSession } from "@/lib/auth/server-session"
 
 export const checkSession = async (): Promise<string> => {
-    const session = await auth()
-    if (!session?.user?.email) throw new Error("not-authenticated")
+    const session = await getServerAuthSession()
+    if (!session?.email) throw new Error("not-authenticated")
 
-    return session?.user?.email
+    return session.email
 }

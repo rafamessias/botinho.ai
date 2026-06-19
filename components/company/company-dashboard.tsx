@@ -22,18 +22,18 @@ import {
 //import { deleteCompanyAction } from "@/components/server-actions/company"
 
 interface Company {
-    id: number
+    id: string
     name: string
     description?: string | null
     members: Array<{
-        id: number
+        id: string
         isAdmin: boolean
         canPost: boolean
         canApprove: boolean
         isOwner: boolean
         companyMemberStatus: string
         user: {
-            id: number
+            id: string
             firstName: string
             lastName: string
             email: string
@@ -44,7 +44,7 @@ interface Company {
 
 interface CompanyDashboardProps {
     initialCompanies: Company[]
-    currentUserId: number
+    currentUserId: string
 }
 
 export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDashboardProps) => {
@@ -56,11 +56,11 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
     const selectedCompany = companies.length > 0 ? companies[0] : null
 
     // Use current user ID from user context if available, fallback to prop
-    const currentUserIdFromContext = user?.id || currentUserId
+    const currentUserIdFromContext = String(user?.id || currentUserId)
     const [showCreateForm, setShowCreateForm] = useState(false)
     const [showEditForm, setShowEditForm] = useState(false)
     const [showInviteForm, setShowInviteForm] = useState(false)
-    const [pendingNewCompanyId, setPendingNewCompanyId] = useState<number | null>(null)
+    const [pendingNewCompanyId, setPendingNewCompanyId] = useState<string | null>(null)
 
     // Ref to store the addMember function from CompanyMembers
     const addMemberRef = useRef<((member: any) => void) | null>(null)
@@ -88,7 +88,7 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
     }
 
 
-    const handleCompanyUpdate = async (newCompanyId?: number) => {
+    const handleCompanyUpdate = async (newCompanyId?: string) => {
         try {
             // If a new company was created, set it as pending
             if (newCompanyId) {
@@ -107,20 +107,20 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
 
     const isCurrentUserAdmin = (company: Company) => {
         const isAdmin = company.members.some(m =>
-            m.user.id === currentUserIdFromContext && m.isAdmin
+            m.user?.id === currentUserIdFromContext && m.isAdmin
         )
         return isAdmin
     }
 
     const isCurrentUserOwner = (company: Company) => {
         const isOwner = company.members.some(m =>
-            m.user.id === currentUserIdFromContext && m.isOwner
+            m.user?.id === currentUserIdFromContext && m.isOwner
         )
         return isOwner
     }
 
     /*
-    const handleDeleteCompany = async (companyId: number) => {
+    const handleDeleteCompany = async (companyId: string) => {
         try {
             setIsDeletingCompany(true)
             const result = await deleteCompanyAction({ companyId })

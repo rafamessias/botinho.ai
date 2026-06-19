@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslations } from "next-intl"
 import { Link, useRouter } from "@/i18n/navigation"
+import { PRIVACY_URL, TERMS_URL } from "@/lib/constants/support"
 import { googleSignInAction, signInAction } from "@/components/server-actions/auth"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -31,11 +32,11 @@ export function SignInForm({
 }: React.ComponentProps<"div">) {
     const t = useTranslations("SignInForm")
     const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+    const [isRedirecting, setIsRedirecting] = useState(false)
     const router = useRouter()
     const searchParams = useSearchParams()
     const { update } = useSession()
 
-    // Form validation schema with translations
     const signInSchema = z.object({
         email: z.string().email(t("validation.emailRequired")),
         password: z.string().min(6, t("validation.passwordMinLength")),
@@ -52,8 +53,16 @@ export function SignInForm({
         resolver: zodResolver(signInSchema),
     })
 
-    // Watch email field to pass to reset password link
     const emailValue = watch("email")
+
+    const navigateAfterAuth = (path: string) => {
+        const redirectParam = searchParams.get("redirect")
+        if (redirectParam?.startsWith("/") && !redirectParam.startsWith("//")) {
+            router.push(`/auth/post-login?redirect=${encodeURIComponent(redirectParam)}`)
+            return
+        }
+        router.push(path)
+    }
 
     const onSubmit = async (data: SignInFormData) => {
         try {
@@ -61,33 +70,26 @@ export function SignInForm({
 
             if (result?.success === false) {
                 toast.error(result.error)
-                if (result.errorCode === "email-not-confirmed") {
-                    router.push("/sign-up/otp?email=" + data.email)
-                    //router.push("/sign-up/check-email?email=" + data.email)
+                if ("errorCode" in result && result.errorCode === "account-blocked") {
+                    router.push(`/sign-up/otp?email=${encodeURIComponent(data.email)}`)
                 }
-            } else if (result?.success === true) {
-                await update()
-                // Check if we need to redirect to checkout
-                if (result.needsCheckout && result.checkoutUrl) {
-                    // Redirect to Stripe checkout
-                    router.push(result.checkoutUrl)
-                } else {
-                    // No checkout needed, handle normal redirect
-                    const redirectParam = searchParams.get("redirect")
-                    if (redirectParam) {
-                        // If there's a redirect parameter, navigate to it
-                        // The middleware will handle locale conversion
-                        router.push(redirectParam)
-                    } else {
-                        // No redirect, just reload to trigger middleware locale check
-                        router.push('/');
-                    }
-                }
+                return
             }
+
+            if (result?.needsCheckout && result.checkoutUrl) {
+                window.location.assign(result.checkoutUrl)
+                return
+            }
+
+            setIsRedirecting(true)
+            await Promise.race([
+                update(),
+                new Promise((resolve) => setTimeout(resolve, 5_000)),
+            ])
+            navigateAfterAuth("/auth/post-login")
         } catch (error) {
-            // NextAuth throws NEXT_REDIRECT for successful sign-in redirects - this is expected
+            setIsRedirecting(false)
             if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-                // Don't show error for redirects - this is normal sign-in flow
                 return
             }
             console.error("Sign in error:", error)
@@ -98,19 +100,15 @@ export function SignInForm({
     const handleGoogleSignIn = async () => {
         try {
             setIsGoogleLoading(true)
-            // Get redirect parameter from URL
             const redirectParam = searchParams.get("redirect")
             await googleSignInAction(redirectParam || undefined)
             await update()
-            // NextAuth will handle the redirect after successful Google sign-in
         } catch (error) {
-            // NextAuth throws NEXT_REDIRECT for OAuth redirects - this is expected
             if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-                // Don't show error for redirects - this is normal OAuth flow
                 return
             }
             console.error("Google sign in error:", error)
-            toast.error("Failed to sign in with Google")
+            toast.error(t("googleSignInFailed"))
             setIsGoogleLoading(false)
         }
     }
@@ -129,14 +127,14 @@ export function SignInForm({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-
                     <div className="grid gap-6 mb-6">
                         <div className="flex flex-col gap-4">
                             <Button
+                                type="button"
                                 variant="outline"
                                 className="w-full cursor-pointer"
                                 onClick={handleGoogleSignIn}
-                                disabled={isGoogleLoading || isSubmitting}
+                                disabled={isGoogleLoading || isSubmitting || isRedirecting}
                             >
                                 <IconBrandGoogleFilled
                                     className="mr-2 size-5"
@@ -171,7 +169,7 @@ export function SignInForm({
                                     <div className="flex items-center">
                                         <Label htmlFor="password">{t("password")}</Label>
                                         <Link
-                                            href={`/reset-password${emailValue ? `?email=${encodeURIComponent(emailValue)}` : ''}`}
+                                            href={`/reset-password${emailValue ? `?email=${encodeURIComponent(emailValue)}` : ""}`}
                                             className="ml-auto text-sm underline-offset-4 hover:underline"
                                         >
                                             {t("forgotPassword")}
@@ -186,8 +184,8 @@ export function SignInForm({
                                         <p className="text-sm text-red-500">{errors.password.message}</p>
                                     )}
                                 </div>
-                                <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting || isGoogleLoading}>
-                                    {isSubmitting ? t("signingIn") : t("loginButton")}
+                                <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting || isGoogleLoading || isRedirecting}>
+                                    {isSubmitting || isRedirecting ? t("signingIn") : t("loginButton")}
                                 </Button>
                             </div>
                             <div className="text-center text-sm">
@@ -201,8 +199,8 @@ export function SignInForm({
                 </CardContent>
             </Card>
             <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-                {t("termsText")} <Link target="_blank" href="https://opineeo.com/terms-of-service">{t("termsOfService")}</Link>{" "}
-                {t("and")} <Link target="_blank" href="https://opineeo.com/privacy-policy">{t("privacyPolicy")}</Link>.
+                {t("termsText")} <Link target="_blank" href={TERMS_URL}>{t("termsOfService")}</Link>{" "}
+                {t("and")} <Link target="_blank" href={PRIVACY_URL}>{t("privacyPolicy")}</Link>.
             </div>
         </div>
     )

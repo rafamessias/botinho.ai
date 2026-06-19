@@ -17,12 +17,13 @@ import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useLocale, useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
+import { useTranslations } from "next-intl"
+import { Link, useRouter } from "@/i18n/navigation"
+import { PRIVACY_URL, TERMS_URL } from "@/lib/constants/support"
 import { googleSignInAction, signUpAction } from "@/components/server-actions/auth"
 import { useState } from "react"
 import { toast } from "sonner"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
 
@@ -37,7 +38,6 @@ export function SignUpForm({
     const [isGoogleLoading, setIsGoogleLoading] = useState(false)
     const [phoneValue, setPhoneValue] = useState("") // This will store the international number
     const [selectedCountry, setSelectedCountry] = useState<Country | null>(null)
-    const locale = useLocale()
 
     // Form validation schema with translations
     const signUpSchema = z.object({
@@ -81,10 +81,10 @@ export function SignUpForm({
                         email: data.email,
                         phone: data.phone || ""
                     })
-                    router.push(`/${locale}/sign-up/otp?${params.toString()}`)
+                    router.push(`/sign-up/otp?${params.toString()}`)
                 } else {
                     // Redirect to check email page with email parameter (existing flow)
-                    router.push(`/${locale}/sign-up/check-email?email=${encodeURIComponent(data.email)}`)
+                    router.push(`/sign-up/check-email?email=${encodeURIComponent(data.email)}`)
                 }
             }
         } catch (error) {
@@ -96,29 +96,14 @@ export function SignUpForm({
     const handleGoogleSignUp = async () => {
         try {
             setIsGoogleLoading(true)
-            // Get redirect parameter and plan/interval parameters from URL
             const redirectParam = searchParams.get("redirect")
-            const planParam = searchParams.get("plan")
-            const intervalParam = searchParams.get("interval")
-
-            // Store plan and interval parameters in cookies for Google OAuth flow
-            if (planParam) {
-                document.cookie = `signup_plan=${planParam}; path=/; max-age=300` // 5 minutes
-            }
-            if (intervalParam) {
-                document.cookie = `signup_interval=${intervalParam}; path=/; max-age=300` // 5 minutes
-            }
-
             await googleSignInAction(redirectParam || undefined)
-            // NextAuth will handle the redirect after successful Google sign-up
         } catch (error) {
-            // NextAuth throws NEXT_REDIRECT for OAuth redirects - this is expected
             if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-                // Don't show error for redirects - this is normal OAuth flow
                 return
             }
             console.error("Google sign up error:", error)
-            toast.error("Failed to sign up with Google")
+            toast.error(t("googleSignUpFailed"))
             setIsGoogleLoading(false)
         }
     }
@@ -140,6 +125,7 @@ export function SignUpForm({
                     <div className="grid gap-6 mb-6">
                         <div className="flex flex-col gap-4">
                             <Button
+                                type="button"
                                 variant="outline"
                                 className="w-full cursor-pointer"
                                 onClick={handleGoogleSignUp}
@@ -242,8 +228,8 @@ export function SignUpForm({
                 </CardContent>
             </Card>
             <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-                {t("termsText")} <Link target="_blank" href="https://opineeo.com/terms-of-service">{t("termsOfService")}</Link>{" "}
-                {t("and")} <Link target="_blank" href="https://opineeo.com/privacy-policy">{t("privacyPolicy")}</Link>.
+                {t("termsText")} <Link target="_blank" href={TERMS_URL}>{t("termsOfService")}</Link>{" "}
+                {t("and")} <Link target="_blank" href={PRIVACY_URL}>{t("privacyPolicy")}</Link>.
             </div>
         </div>
     )

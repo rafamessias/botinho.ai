@@ -22,11 +22,11 @@ type CompanyFormData = z.infer<typeof companySchema>
 
 interface CompanyFormProps {
     company?: {
-        id: number
+        id: string
         name: string
         description?: string | null
     }
-    onSuccess?: (newCompanyId?: number) => void
+    onSuccess?: (newCompanyId?: string) => void
     onCancel?: () => void
 }
 

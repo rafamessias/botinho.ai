@@ -1,9 +1,6 @@
 "use client"
 
-import * as React from "react"
-import { useTranslations } from "next-intl"
-import { useParams, usePathname, useSearchParams, useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
+import { useTranslations, useLocale } from "next-intl"
 import { Globe } from "lucide-react"
 import { toast } from "sonner"
 
@@ -15,6 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { updateUserLanguageAction } from "@/components/server-actions/user"
+import { useRouter, usePathname } from "@/i18n/navigation"
 
 const languages = [
     {
@@ -31,22 +29,18 @@ const languages = [
 
 interface LanguageSelectorProps {
     variant?: "default" | "compact"
-    currentPath?: string
 }
 
-export function LanguageSelector({ variant = "default", currentPath }: LanguageSelectorProps) {
+export function LanguageSelector({ variant = "default" }: LanguageSelectorProps) {
     const t = useTranslations("Settings")
-    const params = useParams()
-    const searchParams = useSearchParams()
-    const currentLocale = params.locale as string
-    const currentLanguage = languages.find(lang => lang.code === currentLocale)
     const pathname = usePathname()
     const router = useRouter()
-    const { update } = useSession()
 
-    const handleLanguageChange = async (newLanguage: string, targetPath: string) => {
+    const currentLocale = useLocale()
+    const currentLanguage = languages.find(lang => lang.code === currentLocale)
+
+    const handleLanguageChange = async (newLanguage: string) => {
         try {
-            // Update user language preference in database
             const result = await updateUserLanguageAction(newLanguage as "en" | "pt-BR")
 
             if (!result?.success) {
@@ -55,57 +49,12 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
             }
 
             const updatedLocale = result.locale ?? newLanguage
-
-            // Update the session with new language
-            await update({
-                language: updatedLocale
-            })
-
-            // Navigate to the new language
-            const newPath = `/${updatedLocale}${targetPath || "/"}`
-            router.push(newPath)
+            router.replace(pathname, { locale: updatedLocale })
         } catch (error) {
-            // Avoid returning error to the client
             console.error("Language update error:", error)
             toast.error("Unexpected error while changing language")
         }
     }
-
-    // Remove current locale from pathname if present (for proper locale switching)
-    const pathnameWithoutLocale = React.useMemo(() => {
-        if (currentPath) return currentPath
-
-        // If pathname starts with locale, remove it
-        if (pathname && currentLocale && pathname.startsWith(`/${currentLocale}`)) {
-            return pathname.slice(`/${currentLocale}`.length) || "/"
-        }
-        return pathname || "/"
-    }, [pathname, currentLocale, currentPath])
-
-    // Handle search parameters and update redirect parameter locale if needed
-    const updatedSearchParams = React.useMemo(() => {
-        const params = new URLSearchParams(searchParams.toString())
-
-        // If there's a redirect parameter, update its locale
-        const redirect = params.get('redirect')
-        if (redirect && currentLocale) {
-            // Remove locale from redirect URL and let the Link component handle the new locale
-            let updatedRedirect = redirect
-            if (redirect.startsWith(`/${currentLocale}`)) {
-                updatedRedirect = redirect.slice(`/${currentLocale}`.length) || "/"
-            }
-            // Ensure the redirect path starts with a slash
-            if (!updatedRedirect.startsWith('/')) {
-                updatedRedirect = '/' + updatedRedirect
-            }
-            params.set('redirect', updatedRedirect)
-        }
-
-        return params
-    }, [searchParams, currentLocale])
-
-    const search = updatedSearchParams.toString() ? `?${updatedSearchParams.toString()}` : ""
-    const targetPath = pathnameWithoutLocale + search
 
     // Compact variant - icon only
     if (variant === "compact") {
@@ -125,7 +74,7 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
                     {languages.map((language) => (
                         <DropdownMenuItem
                             key={language.code}
-                            onClick={() => handleLanguageChange(language.code, targetPath)}
+                            onClick={() => handleLanguageChange(language.code)}
                             className="cursor-pointer"
                         >
                             <span className="mr-2">{language.flag}</span>
@@ -154,7 +103,7 @@ export function LanguageSelector({ variant = "default", currentPath }: LanguageS
                     {languages.map((language) => (
                         <DropdownMenuItem
                             key={language.code}
-                            onClick={() => handleLanguageChange(language.code, targetPath)}
+                            onClick={() => handleLanguageChange(language.code)}
                             className="cursor-pointer"
                         >
                             <span className="mr-2">{language.flag}</span>

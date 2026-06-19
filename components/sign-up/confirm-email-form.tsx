@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
+import { SUPPORT_EMAIL } from "@/lib/constants/support"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -26,7 +27,8 @@ export function ConfirmEmailForm({
     const searchParams = useSearchParams()
     const router = useRouter()
     const token = searchParams.get("token") || ""
-    const teamId = searchParams.get("teamId") || ""
+    const companyId = searchParams.get("companyId") || searchParams.get("teamId") || ""
+    const uid = searchParams.get("uid") || ""
 
     const [status, setStatus] = useState<ConfirmationStatus>("loading")
     const [errorMessage, setErrorMessage] = useState("")
@@ -47,7 +49,11 @@ export function ConfirmEmailForm({
             confirmationAttempted.current = true
 
             try {
-                const result = await confirmEmailAction(token, parseInt(teamId))
+                const result = await confirmEmailAction(
+                    token,
+                    companyId || undefined,
+                    uid || undefined,
+                )
 
                 if (result?.success === false) {
                     setStatus("error")
@@ -136,7 +142,11 @@ export function ConfirmEmailForm({
         setErrorMessage("")
 
         try {
-            const result = await confirmEmailAction(token, parseInt(teamId))
+            const result = await confirmEmailAction(
+                token,
+                companyId || undefined,
+                uid || undefined,
+            )
 
             if (result?.success === false) {
                 setStatus("error")
@@ -252,7 +262,7 @@ export function ConfirmEmailForm({
             <div className="text-center text-xs text-muted-foreground space-y-2">
                 <p>
                     {t("help.needHelp")} {" "}
-                    <a href="mailto:contact@opineeo.com" className="underline underline-offset-4 hover:text-foreground">
+                    <a href={`mailto:${SUPPORT_EMAIL}`} className="underline underline-offset-4 hover:text-foreground">
                         {t("help.contactSupport")}
                     </a>
                 </p>

@@ -1,4 +1,4 @@
-import { SubscriptionStatus } from '@/lib/generated/prisma';
+import { SubscriptionStatus } from "@/lib/types/enums"
 
 /**
  * Interface for subscription validation result
@@ -22,50 +22,8 @@ export interface SubscriptionValidationResult {
     error?: {
         code: string;
         message: string;
-        details?: any;
+        details?: unknown;
     };
-}
-
-/**
- * Interface for subscription data with related information
- */
-export interface SubscriptionData {
-    id: string;
-    status: SubscriptionStatus;
-    teamId: number;
-    planId: string;
-    billingInterval: string;
-    currentPeriodStart: Date | null;
-    currentPeriodEnd: Date | null;
-    createdAt: Date;
-    plan: {
-        planType: string;
-        maxResponses: number;
-        maxCompletedResponses: number;
-        maxActiveSurveys: number;
-        removeBranding: boolean;
-        allowApiAccess: boolean;
-        allowExport: boolean;
-        allowPublicPages: boolean;
-    };
-    usageTracking: Array<{
-        id: string;
-        currentUsage: number;
-        limitValue: number;
-        periodStart: Date;
-        periodEnd: Date;
-    }>;
-}
-
-/**
- * Interface for usage tracking update
- */
-export interface UsageTrackingUpdate {
-    teamId: number;
-    subscriptionId: string;
-    metricType: string;
-    increment?: number;
-    newValue?: number;
 }
 
 /**

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
+import { SUPPORT_EMAIL } from "@/lib/constants/support"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -171,7 +172,7 @@ export function CheckEmailForm({
                 <p>{t("help.checkSpam")}</p>
                 <p>
                     {t("help.needHelp")} {" "}
-                    <a href="mailto:contact@opineeo.com" className="underline underline-offset-4 hover:text-foreground">
+                    <a href={`mailto:${SUPPORT_EMAIL}`} className="underline underline-offset-4 hover:text-foreground">
                         {t("help.contactSupport")}
                     </a>
                 </p>

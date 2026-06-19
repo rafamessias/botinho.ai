@@ -4,27 +4,28 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { useSession } from "next-auth/react"
 import { getCurrentUserAction } from "@/components/server-actions/auth"
 import { useTheme } from "next-themes"
-import { BillingInterval, PlanType, SubscriptionStatus, Theme } from "@/lib/generated/prisma"
+import { BillingInterval, PlanType, SubscriptionStatus, UserTheme } from "@/lib/types/enums"
 import { getUserCompaniesLightAction } from "./server-actions/company"
 import LoadingComp from "./loading-comp"
 import { useRouter } from "next/navigation"
 import { createCheckoutSessionAction } from '@/components/server-actions/auth'
 
 export interface UserCompany {
-    id: number
+    id: string | number
+    slug?: string
     name: string
     members?: Array<{
-        id: number
+        id: string | number
         isAdmin: boolean
         canPost: boolean
         canApprove: boolean
-        isOwner: boolean,
+        isOwner: boolean
     }>
 }
 
-// User type definition
 export interface User {
-    id: number
+    id: string | number
+    uid?: string
     email: string
     firstName: string
     lastName: string | null
@@ -32,9 +33,9 @@ export interface User {
     phone: string | null
     avatarUrl: string | null
     language: string
-    theme: Theme
+    theme: UserTheme
     companies: UserCompany[] | null
-    defaultCompanyId: number | null
+    defaultCompanyId: string | number | null
     usagePercentage: number
     position?: string | null
     companyName?: string | null
@@ -45,7 +46,6 @@ export interface User {
     githubUrl?: string | null
 }
 
-// Context type definition
 interface UserContextType {
     user: User | null
     setUser: (user: User | null) => void
@@ -57,10 +57,8 @@ interface UserContextType {
     usagePercentage: number
 }
 
-// Create context
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
-// Provider component
 interface UserProviderProps {
     children: ReactNode
 }
@@ -69,12 +67,10 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const { data: session, status } = useSession()
     const router = useRouter()
     const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const { theme, setTheme } = useTheme()
 
-
-    // Function to fetch user data
     const fetchUser = async (companiesUpdate: boolean = true) => {
         if (!session?.user?.email) {
             setUser(null)
@@ -89,38 +85,32 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
             if (result.success && result.user) {
                 if (companiesUpdate) {
-                    const resultCompanies = await getUserCompaniesLightAction(result.user.id, result.user.defaultCompanyId || 0)
+                    const resultCompanies = await getUserCompaniesLightAction(result.user.id, result.user.defaultCompanyId || "")
                     if (resultCompanies && resultCompanies?.success && resultCompanies?.companies) {
                         setUser({ ...result.user, companies: resultCompanies.companies as UserCompany[] })
                     } else {
                         setUser({ ...result.user, companies: null })
                     }
 
-
-                    // Check if user exists and has a pending subscription
                     if (resultCompanies?.customerSubscription && resultCompanies.customerSubscription.status === SubscriptionStatus.pending) {
                         const subscription = resultCompanies.customerSubscription
                         const checkoutResult = await createCheckoutSessionAction(
                             subscription.plan?.planType || PlanType.FREE,
                             subscription.billingInterval || BillingInterval.monthly,
-                            session?.user?.email,
-                            result.user.defaultCompanyId || 0,
+                            session.user.email,
+                            result.user.defaultCompanyId || "",
                             subscription.id
                         )
 
                         if (checkoutResult?.success && checkoutResult.checkoutUrl) {
-                            // Redirect browser to the Stripe checkout
                             router.push(checkoutResult.checkoutUrl as string)
                         }
-
                     }
-
                 } else {
                     setUser({ ...result.user, companies: user?.companies || null })
                 }
 
                 if (theme !== result.user?.theme) setTheme(result.user?.theme)
-
             } else {
                 setError(result.error || "Failed to load user data")
                 setUser(null)
@@ -134,50 +124,43 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         }
     }
 
-    // Refresh user function (can be called manually)
     const refreshUser = async (companiesUpdate: boolean = true) => {
         await fetchUser(companiesUpdate)
     }
 
-    // Fetch user data when session changes - simplified approach
     useEffect(() => {
-
         if (status === "loading") {
-            return // Still loading session
+            return
         }
 
-        if (status === "unauthenticated") {
+        if (status !== "authenticated" || !session?.user?.email) {
             setUser(null)
             setLoading(false)
             setError(null)
             return
         }
 
-        // Session is authenticated, fetch user data
-        // Check if session email changed to handle user switching
-        if (status === "authenticated") {
-            fetchUser()
-        }
-    }, [status, session?.user?.email]) // Depend on status AND email changes
+        fetchUser()
+    }, [status, session?.user?.email, session?.user?.id])
 
-    // Access control helpers
-    const isAuthenticated = !!session && !!user
+    const isAuthenticated = status === "authenticated" && !!user
 
-    // Permission system (can be extended)
     const hasPermission = (): { isAdmin: boolean, canPost: boolean, canApprove: boolean } => {
         if (!user) return { isAdmin: false, canPost: false, canApprove: false }
 
-        // Assuming user.companies is an array of company objects with members
-        const company = user.companies?.find((c: any) => c.id === user.defaultCompanyId)
-        if (!company || !company.members || !Array.isArray(company.members)) return { isAdmin: false, canPost: false, canApprove: false }
+        const company = user.companies?.find((c) => c.id === user.defaultCompanyId)
+        if (!company || !company.members || !Array.isArray(company.members)) {
+            return { isAdmin: false, canPost: false, canApprove: false }
+        }
 
-        // Return true if the user has any member records in their default company
         const userCompanyMember = company.members[0]
-
-        return { isAdmin: userCompanyMember?.isAdmin || false, canPost: userCompanyMember?.canPost || false, canApprove: userCompanyMember?.canApprove || false }
-
+        return {
+            isAdmin: userCompanyMember?.isAdmin || false,
+            canPost: userCompanyMember?.canPost || false,
+            canApprove: userCompanyMember?.canApprove || false,
+        }
     }
-    // Context value
+
     const contextValue: UserContextType = {
         user,
         setUser,
@@ -186,24 +169,21 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         refreshUser,
         isAuthenticated,
         hasPermission,
-        usagePercentage: user?.usagePercentage || 0
+        usagePercentage: user?.usagePercentage || 0,
     }
 
     return (
         <UserContext.Provider value={contextValue}>
-            {loading ? <LoadingComp isLoadingProp={loading} /> : children}
+            {children}
+            <LoadingComp isLoadingProp={loading} />
         </UserContext.Provider>
     )
 }
 
-// Custom hook to use the user context
 export const useUser = (): UserContextType => {
     const context = useContext(UserContext)
-
     if (context === undefined) {
         throw new Error("useUser must be used within a UserProvider")
     }
-
     return context
 }
-

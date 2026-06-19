@@ -1,432 +1,250 @@
 import NextAuth from "next-auth"
-import { prisma } from "@/prisma/lib/prisma"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import bcrypt from "bcryptjs"
 import { CredentialsSignin } from "next-auth"
-import WelcomeEmail from "@/emails/WelcomeEmail"
-import resend from "@/lib/resend"
-import { createCustomerSubscription } from "@/lib/customer-subscription"
-import { BillingInterval, PlanType, SubscriptionStatus } from "@/lib/generated/prisma"
 import { cookies } from "next/headers"
+import { adminAuth } from "@/lib/firebase/admin"
+import { getUserProfile } from "@/lib/firebase/services/user-service"
+import { ensureGoogleUserProvisioned } from "@/lib/firebase/auth/signup-flow"
 
-// Add type declarations at the top of the file
 declare module "next-auth" {
-    interface Session {
-        user?: User | null,
-        error?: string | null
-    }
-}
+  interface Session {
+    user?: {
+      id: string
+      email: string
+      name?: string | null
+      avatarUrl?: string | null
+      language?: string | null
+      defaultCompanyId?: string | null
+    } | null
+    error?: string | null
+  }
 
-interface User {
-    id: string
-    email: string
-    password?: string | null
-    name?: string | null
-    company?: string | null
-    language?: string | null
+  interface User {
     avatarUrl?: string | null
-    defaultCompanyId?: number | null
+    language?: string | null
+    defaultCompanyId?: string | null
+  }
 }
 
-const locale = async () => {
-    const cookies = require('next/headers').cookies;
-    const cookieStore = await cookies();
-    return cookieStore.get('NEXT_LOCALE')?.value || 'en';
-}
+type AppLocale = "en" | "pt-BR"
 
-
-// Create custom error classes for specific error types
 class InvalidCredentialsError extends CredentialsSignin {
-    code = "invalid-credentials"
-}
-
-class EmailNotConfirmedError extends CredentialsSignin {
-    code = "email-not-confirmed"
+  code = "invalid-credentials"
 }
 
 class AccountBlockedError extends CredentialsSignin {
-    code = "account-blocked"
+  code = "account-blocked"
 }
 
+const normalizeLocale = (value: string | null | undefined): AppLocale =>
+  value === "pt_BR" || value === "pt-BR" ? "pt-BR" : "en"
+
+const getRequestLocale = async (): Promise<AppLocale> => {
+  const cookieStore = await cookies()
+  const userLang = cookieStore.get("user-language")?.value
+  if (userLang) return normalizeLocale(userLang)
+  return normalizeLocale(cookieStore.get("NEXT_LOCALE")?.value)
+}
+
+const signInWithFirebasePassword = async (email: string, password: string) => {
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY
+  if (!apiKey) {
+    throw new Error("Missing NEXT_PUBLIC_FIREBASE_API_KEY")
+  }
+
+  const response = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, returnSecureToken: true }),
+    },
+  )
+
+  const data = (await response.json()) as {
+    localId?: string
+    email?: string
+    error?: { message?: string }
+  }
+
+  if (!response.ok || !data.localId) {
+    const message = data.error?.message ?? "INVALID_LOGIN_CREDENTIALS"
+    if (message === "USER_DISABLED") throw new AccountBlockedError()
+    throw new InvalidCredentialsError()
+  }
+
+  return { uid: data.localId, email: data.email ?? email }
+}
+
+const mapProfileToAuthUser = (profile: NonNullable<Awaited<ReturnType<typeof getUserProfile>>>) => ({
+  id: profile.uid,
+  email: profile.email,
+  name: [profile.firstName, profile.lastName].filter(Boolean).join(" "),
+  language: profile.language === "pt_BR" ? "pt-BR" : "en",
+  avatarUrl: profile.avatarUrl,
+  defaultCompanyId: profile.defaultCompanyId ?? null,
+})
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-    // Remove the PrismaAdapter since we're handling user creation manually
-    // adapter: PrismaAdapter(prisma),
-    secret: process.env.AUTH_SECRET,
-    session: {
-        strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60, // 30 days
+  secret: process.env.AUTH_SECRET,
+  trustHost: true,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
+  },
+  pages: {
+    signIn: "/sign-in",
+    error: "/auth/error",
+  },
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
     },
-    pages: {
-        signIn: "/sign-in",
-    },
-    cookies: {
-        sessionToken: {
-            name: `next-auth.session-token`,
-            options: {
-                httpOnly: true,
-                sameSite: 'lax',
-                path: '/',
-                secure: process.env.NODE_ENV === 'production'
+  },
+  providers: [
+    GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_ID ?? "",
+      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
+    }),
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null
+
+        const { uid } = await signInWithFirebasePassword(
+          String(credentials.email).toLowerCase(),
+          String(credentials.password),
+        )
+
+        const authUser = await adminAuth.getUser(uid)
+        if (authUser.disabled) throw new AccountBlockedError()
+
+        const profile = await getUserProfile(uid)
+        if (!profile) throw new InvalidCredentialsError()
+
+        return mapProfileToAuthUser(profile)
+      },
+    }),
+    CredentialsProvider({
+      id: "otp-session",
+      name: "OTP Session",
+      credentials: {
+        uid: { label: "UID", type: "text" },
+        email: { label: "Email", type: "email" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.uid || !credentials?.email) return null
+
+        const uid = String(credentials.uid)
+        const email = String(credentials.email).toLowerCase()
+
+        const authUser = await adminAuth.getUser(uid)
+        if (authUser.disabled || authUser.email?.toLowerCase() !== email) return null
+
+        const profile = await getUserProfile(uid)
+        if (!profile) return null
+
+        return mapProfileToAuthUser(profile)
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.uid = user.id
+        token.email = user.email
+        token.name = user.name
+        token.language = (user as { language?: string }).language
+        token.avatarUrl = (user as { avatarUrl?: string | null }).avatarUrl
+        token.defaultCompanyId = (user as { defaultCompanyId?: string | null }).defaultCompanyId
+      }
+
+      if (account?.provider === "google" && token.email) {
+        try {
+          const locale = await getRequestLocale()
+          const language = locale === "pt-BR" ? "pt_BR" : "en"
+          const displayParts = (token.name ?? "").split(" ")
+
+          let authUser = await adminAuth.getUserByEmail(token.email).catch(() => null)
+
+          if (!authUser) {
+            authUser = await adminAuth.createUser({
+              email: token.email,
+              displayName: token.name ?? undefined,
+              photoURL: (token.picture as string | undefined) ?? undefined,
+              emailVerified: true,
+            })
+
+            await ensureGoogleUserProvisioned({
+              uid: authUser.uid,
+              email: token.email,
+              firstName: displayParts[0] || "User",
+              lastName: displayParts.slice(1).join(" ") || undefined,
+              avatarUrl: (token.picture as string | undefined) ?? undefined,
+              language,
+            })
+          } else {
+            const profile = await getUserProfile(authUser.uid)
+            if (!profile) {
+              await ensureGoogleUserProvisioned({
+                uid: authUser.uid,
+                email: token.email,
+                firstName: displayParts[0] || "User",
+                lastName: displayParts.slice(1).join(" ") || undefined,
+                avatarUrl: (token.picture as string | undefined) ?? undefined,
+                language,
+              })
             }
+          }
+
+          const profile = await getUserProfile(authUser.uid)
+          if (profile) {
+            token.uid = profile.uid
+            token.language = profile.language === "pt_BR" ? "pt-BR" : "en"
+            token.avatarUrl = profile.avatarUrl
+            token.name = [profile.firstName, profile.lastName].filter(Boolean).join(" ")
+            token.defaultCompanyId = profile.defaultCompanyId ?? null
+          }
+
+          const cookieStore = await cookies()
+          cookieStore.set("user-language", locale, {
+            path: "/",
+            maxAge: 30 * 24 * 60 * 60,
+            sameSite: "lax",
+          })
+        } catch (error) {
+          console.error("Google OAuth user sync failed:", error)
         }
+      }
+
+      return token
     },
-    providers: [
-        GoogleProvider({
-            clientId: process.env.AUTH_GOOGLE_ID!,
-            clientSecret: process.env.AUTH_GOOGLE_SECRET!,
-        }),
-        CredentialsProvider({
-            name: "credentials",
-            credentials: {
-                email: { label: "Email", type: "email" },
-                password: { label: "Password", type: "password" }
-            },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
-                    return null
-                }
+    async session({ session, token }) {
+      if (!token.uid || !token.email) {
+        return session
+      }
 
-                try {
-                    const user = await prisma.user.findUnique({
-                        where: { email: credentials.email as string },
-                        include: { avatar: true }
-                    })
+      session.user = {
+        id: token.uid as string,
+        email: token.email as string,
+        name: (token.name as string | undefined) ?? null,
+        avatarUrl: (token.avatarUrl as string | null | undefined) ?? null,
+        language: (token.language as string | undefined) ?? null,
+        defaultCompanyId: (token.defaultCompanyId as string | null | undefined) ?? null,
+      } as NonNullable<typeof session.user>
 
-                    if (!user || !user.password) {
-                        throw new InvalidCredentialsError()
-                    }
-                    if (!user.confirmed) {
-                        throw new EmailNotConfirmedError()
-                    }
-                    if (user.blocked) {
-                        throw new AccountBlockedError()
-                    }
-
-                    const isPasswordValid = await bcrypt.compare(
-                        credentials.password as string,
-                        user.password
-                    )
-
-                    if (!isPasswordValid) {
-                        throw new InvalidCredentialsError()
-                    }
-
-                    return {
-                        id: user.id.toString(),
-                        email: user.email,
-                        name: `${user.firstName} ${user.lastName}`,
-                        language: user.language === "pt_BR" ? "pt-BR" : "en",
-                        avatarUrl: user?.avatarUrl || user.avatar?.url || null,
-                        defaultCompanyId: user.defaultCompanyId
-                    }
-                } catch (error) {
-                    console.error("Auth error:", error)
-                    if (error instanceof CredentialsSignin) {
-                        throw error
-                    }
-                    throw new InvalidCredentialsError()
-                }
-            }
-        }),
-        CredentialsProvider({
-            id: "otp",
-            name: "OTP Verification",
-            credentials: {
-                email: { label: "Email", type: "email" },
-                phone: { label: "Phone", type: "text" },
-                otp: { label: "OTP Code", type: "text" }
-            },
-            async authorize(credentials) {
-                if (!credentials?.otp || (!credentials?.email && !credentials?.phone)) {
-                    return null
-                }
-
-                try {
-                    // Find user with the OTP token
-                    const user = await prisma.user.findFirst({
-                        where: {
-                            confirmationToken: credentials.otp as string,
-                            confirmed: false,
-                            blocked: false,
-                            ...(credentials.email ? { email: credentials.email as string } : {}),
-                            ...(credentials.phone ? { phone: credentials.phone as string } : {})
-                        }
-                    })
-
-                    if (!user) {
-                        return null
-                    }
-
-                    // Update user to confirmed and clear OTP token
-                    await prisma.user.update({
-                        where: { id: user.id },
-                        data: {
-                            confirmed: true,
-                            confirmationToken: null,
-                        }
-                    })
-
-                    return {
-                        id: user.id.toString(),
-                        email: user.email,
-                        name: `${user.firstName} ${user.lastName}`,
-                        language: user.language === "pt_BR" ? "pt-BR" : "en",
-                        avatarUrl: user?.avatarUrl || null,
-                        defaultCompanyId: user.defaultCompanyId
-                    }
-                } catch (error) {
-                    console.error("OTP provider error:", error)
-                    return null
-                }
-            }
-        })
-    ],
-    callbacks: {
-        async jwt({ token, user, account, trigger }) {
-            if (user) {
-                token.id = user.id
-                token.email = user.email
-                token.name = user.name
-                token.language = (user as any)?.language
-                token.avatarUrl = (user as any)?.avatarUrl
-                token.defaultCompanyId = (user as any)?.defaultCompanyId
-
-                // ✅ Store language in separate cookie for middleware access
-                const cookieStore = await cookies();
-                cookieStore.set('user-language', token.language as string, {
-                    httpOnly: false,  // Middleware can read it
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'lax',
-                    maxAge: 30 * 24 * 60 * 60 // 30 days
-                });
-            }
-
-            // Handle Google OAuth user creation/update in JWT callback
-            if (account?.provider === "google" && user) {
-                try {
-                    const existingUser = await prisma.user.findUnique({
-                        where: { email: token.email! },
-                    });
-
-                    if (!existingUser) {
-                        // Get locale from cookies
-                        const currentLocale = await locale();
-
-                        // Create new user from Google OAuth
-                        const newUser = await prisma.user.create({
-                            data: {
-                                email: token.email!,
-                                firstName: token.name?.split(' ')[0] || '',
-                                lastName: token.name?.split(' ').slice(1).join(' ') || '',
-                                provider: 'google',
-                                language: currentLocale === 'pt-BR' ? 'pt_BR' : 'en',
-                                phone: '',
-                                blocked: false,
-                                avatarUrl: token.picture as string | null,
-                                idProvider: token.id as string | null,
-                                confirmed: true,
-                            },
-                        })
-
-                        // Create a new company for the user and assign ownership
-                        const newCompany = await prisma.company.create({
-                            data: {
-                                name: `${newUser.firstName || "New"}'s Company`,
-                                members: {
-                                    create: [
-                                        {
-                                            userId: newUser.id,
-                                            isOwner: true,
-                                            isAdmin: true,
-                                            canPost: true,
-                                            canApprove: true,
-                                            companyMemberStatus: 'accepted',
-                                        }
-                                    ]
-                                }
-                            }
-                        });
-
-                        // Update user's default company
-                        await prisma.user.update({
-                            where: { id: newUser.id },
-                            data: { defaultCompanyId: newCompany.id }
-                        });
-
-                        // Create subscription for Google OAuth users
-                        try {
-                            // Read signup plan and interval from cookies
-                            const { cookies } = require('next/headers');
-                            const cookieStore = await cookies();
-
-                            const signupPlan = cookieStore.get('signup_plan')?.value || null;
-                            const interval = cookieStore.get('signup_interval')?.value || null;
-
-                            let validSignupPlan: PlanType | null = null;
-                            let validInterval: BillingInterval | null = null;
-
-                            // Fetch allowed planTypes and intervals from the DB for validation
-                            const allowedPlanTypes = new Set(Object.values(PlanType));
-                            const allowedIntervals = new Set(
-                                Object.values(BillingInterval)
-                            );
-
-                            if (signupPlan && allowedPlanTypes.has(signupPlan.toUpperCase() as PlanType)) {
-                                validSignupPlan = signupPlan.toUpperCase() as PlanType;
-                            }
-
-                            if (interval && allowedIntervals.has(interval as BillingInterval)) {
-                                validInterval = interval as BillingInterval;
-                            }
-
-                            if (validSignupPlan && validSignupPlan !== PlanType.FREE) {
-                                // Find the subscription plan by planType
-                                const subscriptionPlan = await prisma.subscriptionPlan.findFirst({
-                                    where: {
-                                        planType: validSignupPlan as PlanType,
-                                        isActive: true
-                                    }
-                                })
-
-                                if (subscriptionPlan) {
-                                    // Create customer subscription with pending status for paid plans
-                                    const subscriptionResult = await createCustomerSubscription({
-                                        companyId: newCompany.id,
-                                        planId: subscriptionPlan.id,
-                                        status: SubscriptionStatus.pending,
-                                        cancelAtPeriodEnd: false,
-                                        billingInterval: validInterval as BillingInterval
-                                    })
-
-                                    if (!subscriptionResult.success) {
-                                        console.error("Failed to create customer subscription for Google OAuth:", subscriptionResult.error)
-                                    }
-                                }
-                            } else {
-                                // Create free subscription with active status
-                                const freePlan = await prisma.subscriptionPlan.findFirst({
-                                    where: {
-                                        planType: PlanType.FREE,
-                                        isActive: true
-                                    }
-                                })
-
-                                if (freePlan) {
-                                    const subscriptionResult = await createCustomerSubscription({
-                                        companyId: newCompany.id,
-                                        planId: freePlan.id,
-                                        status: SubscriptionStatus.active,
-                                        cancelAtPeriodEnd: false
-                                    })
-
-                                    if (!subscriptionResult.success) {
-                                        console.error("Failed to create free subscription for Google OAuth:", subscriptionResult.error)
-                                    }
-                                }
-                            }
-                        } catch (subscriptionError) {
-                            console.error("Error creating subscription for Google OAuth user:", subscriptionError)
-                            // Don't fail the OAuth flow if subscription creation fails
-                        }
-
-                        token.id = newUser.id.toString()
-                        token.email = newUser.email
-                        token.language = newUser.language
-                        token.avatarUrl = newUser.avatarUrl
-                        token.name = `${newUser.firstName} ${newUser.lastName}`
-                        token.defaultCompanyId = newCompany.id
-
-                        const baseUrl = process.env.HOST;
-                        const fromEmail = process.env.FROM_EMAIL || "Opineeo <contact@opineeo.com>";
-
-                        // send welcome email
-                        const { data, error } = await resend.emails.send({
-                            from: fromEmail,
-                            to: [token.email!],
-                            subject: currentLocale === 'pt-BR' ? 'Bem-vindo à Opineeo' : 'Welcome to Opineeo',
-                            react: WelcomeEmail({
-                                userName: token.name || "",
-                                confirmationUrl: `${baseUrl}/sign-up/success`,
-                                lang: currentLocale,
-                                baseUrl: baseUrl
-                            }),
-                        });
-
-                    } else {
-                        token.id = existingUser.id?.toString()
-                        token.email = existingUser.email
-                        token.language = existingUser.language === "pt_BR" ? "pt-BR" : "en"
-                        token.avatarUrl = existingUser.avatarUrl
-                        token.name = `${existingUser.firstName} ${existingUser.lastName}`
-                        token.defaultCompanyId = existingUser.defaultCompanyId
-                    }
-                } catch (error) {
-                    console.error('Error handling Google OAuth user:', error);
-                }
-            }
-
-            // Handle session updates when trigger is 'update'
-            if (trigger === 'update') {
-                try {
-                    // Check if we're in a server environment and not in middleware
-                    if (typeof window === 'undefined' &&
-                        process.env.NODE_ENV &&
-                        !process.env.NEXT_RUNTIME?.includes('edge')) {
-
-                        const updatedUser = await prisma.user.findUnique({
-                            where: { email: token.email! },
-                            select: {
-                                language: true,
-                                firstName: true,
-                                lastName: true,
-                                avatarUrl: true,
-                                defaultCompanyId: true
-                            }
-                        });
-
-                        if (updatedUser) {
-                            // Update token with fresh data from database
-                            token.language = updatedUser.language === "pt_BR" ? "pt-BR" : "en";
-                            token.name = `${updatedUser.firstName} ${updatedUser.lastName || ''}`.trim();
-                            token.avatarUrl = updatedUser.avatarUrl;
-                            token.defaultCompanyId = updatedUser.defaultCompanyId;
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error updating JWT token:', error);
-                }
-            }
-
-            return token
-        },
-        async session({ session, token }) {
-            if (token) {
-                // Ensure session.user exists and has all required properties
-                session.user = {
-                    ...session.user,
-                    id: token.id as string,
-                    email: token.email as string,
-                    name: token.name as string,
-                    avatarUrl: token.avatarUrl as string,
-                    language: token.language as string,
-                    defaultCompanyId: token.defaultCompanyId as number
-                }
-            }
-
-            return session
-        },
-        async signIn({ user, account, profile }) {
-            // Allow all sign-ins
-            return true
-        }
+      return session
     },
-    events: {
-        async signIn({ user, account, profile }) {
-            console.log("User signed in:", user.email)
-        },
-        async signOut() {
-            console.log("User signed out")
-        }
-    }
+  },
 })

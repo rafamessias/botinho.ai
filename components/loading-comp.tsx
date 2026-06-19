@@ -13,7 +13,7 @@ export default function LoadingComp({ isLoadingProp: isLoadingProp }: { isLoadin
 
     return (
 
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center">
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
             <div className="flex flex-col items-center space-y-3">
                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>

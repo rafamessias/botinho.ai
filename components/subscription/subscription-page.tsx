@@ -12,7 +12,7 @@ import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTri
 import { createPortalSession, getAvailablePlans } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { PlanType } from "@/lib/generated/prisma";
+import { PlanType } from "@/lib/types/enums"
 import { UpgradeModalPlans } from "./upgrade-modal-plans";
 import { useUser } from "@/components/user-provider";
 
@@ -244,23 +244,24 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         });
     };
 
+    const formatPlanLimit = (value: number | undefined | null) => {
+        if (value == null) return null;
+        return value === -1 ? t("page.unlimited") : value.toLocaleString();
+    };
+
     const getMetricIcon = (metricType: string) => {
         switch (metricType) {
-            case 'ACTIVE_SURVEYS':
-                return <FileCheck className="h-4 w-4" />;
-            case 'TOTAL_COMPLETED_RESPONSES':
+            case 'AI_RESPONSES':
                 return <MessageSquare className="h-4 w-4" />;
             default:
-                return <Users className="h-4 w-4" />;
+                return <BarChart3 className="h-4 w-4" />;
         }
     };
 
     const getMetricLabel = (metricType: string) => {
         switch (metricType) {
-            case 'ACTIVE_SURVEYS':
-                return t("page.activeSurveys");
-            case 'TOTAL_COMPLETED_RESPONSES':
-                return t("page.totalResponses");
+            case 'AI_RESPONSES':
+                return t("page.aiResponses");
             default:
                 return metricType;
         }
@@ -543,13 +544,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 <div className="flex items-center gap-2">
                                     <CheckCircle className="h-4 w-4 text-green-600" />
                                     <span className="text-sm">
-                                        {t("page.maxActiveSurveys")}: {subscription.plan.maxActiveSurveys === -1 ? t("page.unlimited") : subscription.plan.maxActiveSurveys.toLocaleString()}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-600" />
-                                    <span className="text-sm">
-                                        {t("page.maxResponses")}: {subscription.plan.maxResponses === -1 ? t("page.unlimited") : subscription.plan.maxResponses.toLocaleString()}
+                                        {t("page.maxAiResponses")}: {formatPlanLimit(subscription.plan.maxAiResponses)}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -588,17 +583,6 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                     )}
                                     <span className="text-sm">
                                         {t("page.apis")}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.allowPublicPages ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.publicPageSurvey")}
-                                        <span className="text-xs text-muted-foreground ml-1">{t("page.comingSoon")}</span>
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">

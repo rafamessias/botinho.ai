@@ -16,12 +16,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
-import { confirmPasswordResetAction } from "@/components/server-actions/auth"
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
 import { useSearchParams, useRouter } from "next/navigation"
+import { confirmPasswordReset } from "firebase/auth"
+import { FirebaseError } from "firebase/app"
+import { firebaseAuth } from "@/lib/firebase/client"
 
 export function ResetPasswordConfirmForm({
     className,
@@ -32,9 +34,8 @@ export function ResetPasswordConfirmForm({
     const router = useRouter()
     const [isSuccess, setIsSuccess] = useState(false)
     const [isError, setIsError] = useState(false)
-    const [token, setToken] = useState<string | null>(null)
+    const [oobCode, setOobCode] = useState<string | null>(null)
 
-    // Form validation schema with translations
     const resetPasswordConfirmSchema = z.object({
         password: z.string().min(6, t("validation.passwordRequired")),
         confirmPassword: z.string().min(6, t("validation.passwordRequired")),
@@ -53,17 +54,15 @@ export function ResetPasswordConfirmForm({
         resolver: zodResolver(resetPasswordConfirmSchema),
     })
 
-    // Get token from URL params and validate
     useEffect(() => {
-        const tokenParam = searchParams.get("token")
-        if (!tokenParam) {
+        const code = searchParams.get("oobCode") || searchParams.get("token")
+        if (!code) {
             setIsError(true)
         } else {
-            setToken(tokenParam)
+            setOobCode(code)
         }
     }, [searchParams])
 
-    // Auto redirect after successful password reset
     useEffect(() => {
         if (isSuccess) {
             const timer = setTimeout(() => {
@@ -74,25 +73,23 @@ export function ResetPasswordConfirmForm({
     }, [isSuccess, router])
 
     const onSubmit = async (data: ResetPasswordConfirmFormData) => {
-        if (!token) {
+        if (!oobCode) {
             toast.error(t("messages.invalidToken"))
             setIsError(true)
             return
         }
 
         try {
-            const result = await confirmPasswordResetAction(token, data.password)
-
-            if (result?.success === false) {
-                toast.error(result.error)
-                setIsError(true)
-            } else if (result?.success === true) {
-                setIsSuccess(true)
-                toast.success(t("messages.passwordResetSuccess"))
-            }
+            await confirmPasswordReset(firebaseAuth, oobCode, data.password)
+            setIsSuccess(true)
+            toast.success(t("messages.passwordResetSuccess"))
         } catch (error) {
             console.error("Password reset confirmation error:", error)
-            toast.error(t("messages.unexpectedError"))
+            if (error instanceof FirebaseError && error.code === "auth/invalid-action-code") {
+                toast.error(t("messages.invalidToken"))
+            } else {
+                toast.error(t("messages.unexpectedError"))
+            }
             setIsError(true)
         }
     }
