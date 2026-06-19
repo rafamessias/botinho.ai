@@ -1,16 +1,12 @@
 import { routing } from './routing';
 
 /**
- * Strip a locale prefix from a pathname (handles as-needed: unprefixed paths are default locale).
+ * Strip a locale prefix from a pathname (localePrefix: 'always' — all locales use a prefix).
  */
 export function stripLocalePrefix(pathname: string): { locale: string; pathname: string } {
     const normalized = pathname.startsWith('/') ? pathname : `/${pathname}`;
 
     for (const locale of routing.locales) {
-        if (locale === routing.defaultLocale) {
-            continue;
-        }
-
         if (normalized === `/${locale}`) {
             return { locale, pathname: '/' };
         }
@@ -20,29 +16,15 @@ export function stripLocalePrefix(pathname: string): { locale: string; pathname:
         }
     }
 
-    const defaultLocale = routing.defaultLocale;
-
-    if (normalized === `/${defaultLocale}`) {
-        return { locale: defaultLocale, pathname: '/' };
-    }
-
-    if (normalized.startsWith(`/${defaultLocale}/`)) {
-        return { locale: defaultLocale, pathname: normalized.slice(defaultLocale.length + 1) || '/' };
-    }
-
-    return { locale: defaultLocale, pathname: normalized };
+    return { locale: routing.defaultLocale, pathname: normalized };
 }
 
 /**
- * Build a localized pathname respecting localePrefix: 'as-needed' (no prefix for default locale).
+ * Build a localized pathname respecting localePrefix: 'always'.
  */
 export function localizePathname(pathname: string, locale: string): string {
     const normalized = pathname.startsWith('/') ? pathname : `/${pathname}`;
     const { pathname: basePath } = stripLocalePrefix(normalized);
-
-    if (locale === routing.defaultLocale) {
-        return basePath;
-    }
 
     if (basePath === '/') {
         return `/${locale}`;
