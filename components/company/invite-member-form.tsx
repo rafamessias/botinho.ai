@@ -27,7 +27,7 @@ const inviteMemberSchema = z.object({
 type InviteMemberFormData = z.infer<typeof inviteMemberSchema>
 
 interface InviteMemberFormProps {
-    companyId: number
+    companyId: string
     onSuccess?: (newMember?: any) => void
     onCancel?: () => void
 }
@@ -180,7 +180,7 @@ export const InviteMemberForm = ({ companyId, onSuccess, onCancel }: InviteMembe
                 members: excelData,
             })
 
-            if (result?.success) {
+            if (result?.success && "successCount" in result) {
                 const successCount = result.successCount || 0
                 const errorCount = result.errorCount || 0
 
@@ -220,17 +220,7 @@ export const InviteMemberForm = ({ companyId, onSuccess, onCancel }: InviteMembe
 
             if (result?.success) {
                 toast.success(result.message)
-                // Transform the member data to match the expected structure
-                const formattedMember = result.member ? {
-                    id: result.member.id,
-                    isAdmin: result.member.isAdmin,
-                    canPost: result.member.canPost,
-                    canApprove: result.member.canApprove,
-                    isOwner: result.member.isOwner,
-                    companyMemberStatus: result.member.companyMemberStatus,
-                    user: result.member.user
-                } : undefined
-                onSuccess?.(formattedMember)
+                onSuccess?.()
             } else {
                 toast.error(result?.error || "Failed to invite member")
             }

@@ -1,4 +1,4 @@
-import { AiTemplateCategory } from "@/lib/generated/prisma"
+import { AiTemplateCategory } from "@/lib/types/enums"
 export type TranslationFn = (...args: any[]) => string
 
 export interface KnowledgeItemView {

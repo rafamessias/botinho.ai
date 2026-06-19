@@ -5,15 +5,15 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslations, useLocale } from "next-intl"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "@/i18n/navigation"
 import { toast } from "sonner"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { confirmOTPAction, resendOTPAction } from "@/components/server-actions/auth"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LanguageSelector } from "@/components/language-selector"
-import { useSession } from "next-auth/react"
 
 type OTPFormData = {
     otp: string
@@ -36,7 +36,6 @@ export function OTPForm() {
     const email = searchParams.get("email")
     const phone = searchParams.get("phone")
     const urlOtp = searchParams.get("otp")
-    const { update } = useSession()
 
     const {
         handleSubmit,
@@ -94,12 +93,9 @@ export function OTPForm() {
                 toast.success(result.message || t("accountConfirmed"))
 
                 if (result.needsCheckout && result.checkoutUrl) {
-                    // User needs subscription, redirect to Stripe checkout
                     window.location.href = result.checkoutUrl
                 } else {
-                    // No checkout needed, redirect to main dashboard
-                    await update()
-                    router.push(`/${locale}`)
+                    router.push("/auth/post-login")
                 }
             }
         } catch (error) {

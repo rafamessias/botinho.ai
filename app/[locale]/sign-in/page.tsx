@@ -11,7 +11,7 @@ export default function SignInPage() {
                     <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-sm">
                         <BarChart3 className="h-5 w-5" />
                     </div>
-                    Opineeo
+                    botinho.ai
                 </Link>
                 <SignInForm />
             </div>

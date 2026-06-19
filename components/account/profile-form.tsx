@@ -17,7 +17,6 @@ import { AlertTriangle } from "lucide-react"
 import { updateUserProfileAction, updateUserAvatarAction, deleteUserAccountAction } from "@/components/server-actions/user"
 import { useUser } from "@/components/user-provider"
 import { logoutAction } from "../server-actions/auth"
-import { useSession } from "next-auth/react"
 
 export function ProfileForm() {
     const t = useTranslations("Profile")
@@ -28,7 +27,6 @@ export function ProfileForm() {
     const [isDeleting, setIsDeleting] = useState(false)
     const [deleteEmail, setDeleteEmail] = useState("")
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-    const { update } = useSession()
 
     // Profile form validation schema
     const profileFormSchema = React.useMemo(() => z.object({
@@ -153,9 +151,7 @@ export function ProfileForm() {
 
             if (result.success) {
                 toast.success(t("messages.accountDeleted"))
-                await update()
-                // Redirect to sign out or home page
-                logoutAction(`/sign-in`)
+                await logoutAction(`/sign-in`)
             } else {
                 toast.error(result.error || t("messages.deleteFailed"))
             }

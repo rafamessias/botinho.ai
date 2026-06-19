@@ -24,7 +24,7 @@ import {
     updateKnowledgeItemAction,
     updateQuickAnswerAction,
 } from "@/components/server-actions/ai-training"
-import { AiTemplateCategory, KnowledgeItemType } from "@/lib/generated/prisma"
+import { AiTemplateCategory, KnowledgeItemType } from "@/lib/types/enums"
 import type {
     KnowledgeItemView,
     MainTab,

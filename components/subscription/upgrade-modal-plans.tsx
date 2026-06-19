@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Loader2, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { createCheckoutSession } from "@/components/server-actions/subscription";
-import { PlanType } from "@/lib/generated/prisma";
+import { PlanType } from "@/lib/types/enums"
 import { useRouter } from "next/navigation";
 
 interface Plan {
@@ -24,12 +24,10 @@ interface Plan {
     priceMonthly: number;
     priceYearly: number;
     currency: string;
-    maxActiveSurveys: number;
-    maxResponses: number;
+    maxAiResponses: number;
     removeBranding: boolean;
     allowApiAccess: boolean;
     allowExport: boolean;
-    allowPublicPages: boolean;
 }
 
 interface UpgradeModalProps {
@@ -73,21 +71,10 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
     };
 
     const getPlanFeatures = (plan: Plan): string[] => {
-        const features = [];
-
-        if (plan.maxActiveSurveys === -1) {
-            features.push(t("features.unlimitedSurveys"));
-        } else {
-            features.push(t("features.activeSurveys", { count: plan.maxActiveSurveys }));
-        }
-
-        if (plan.maxResponses === -1) {
-            features.push(t("features.unlimitedResponses"));
-        } else {
-            features.push(t("features.responses", { count: plan.maxResponses }));
-        }
-
-        features.push(t("features.analytics"));
+        const features = [
+            t("features.aiResponses", { count: plan.maxAiResponses.toLocaleString() }),
+            t("features.analytics"),
+        ];
 
         if (plan.removeBranding) {
             features.push(t("features.removeBranding"));
@@ -99,10 +86,6 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
 
         if (plan.allowApiAccess) {
             features.push(t("features.apiAccess"));
-        }
-
-        if (plan.allowPublicPages) {
-            features.push(t("features.publicPages"));
         }
 
         if (plan.planType === PlanType.PRO || plan.planType === PlanType.BUSINESS || plan.planType === PlanType.ENTERPRISE) {
@@ -129,7 +112,6 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
         }).format(price);
     };
 
-    //Function to separate decimal from the price to format differently on the screen
     const formatPriceDecimal = (price: number, decimal: true | false): string => {
         const priceParts = (price / 12).toFixed(2).toString().split('.');
         const integerPart = priceParts[0];
@@ -155,7 +137,6 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
                         </DialogDescription>
                     </DialogHeader>
 
-                    {/* Billing Toggle */}
                     <div className=" relative flex justify-center mb-3 sm:mb-4 px-4">
                         <div className="inline-flex items-center gap-1 sm:gap-2 p-1 bg-muted rounded-lg">
                             <Button
@@ -180,7 +161,6 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
                         </Badge>
                     </div>
 
-                    {/* Plans Grid - Scrollable */}
                     <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4 pt-2">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 pt-2">
                             {plans.map((plan) => {
@@ -257,7 +237,6 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
                             })}
                         </div>
 
-                        {/* Footer Note */}
                         <p className="text-[10px] sm:text-xs text-center text-muted-foreground mt-3 sm:mt-4 pb-2">
                             {t("footer")}
                         </p>
@@ -267,4 +246,3 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
         </Dialog>
     );
 };
-

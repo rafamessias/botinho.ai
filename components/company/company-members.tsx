@@ -34,25 +34,26 @@ import {
 } from "@/components/ui/tooltip"
 
 interface CompanyMember {
-    id: number
+    id: string
     isAdmin: boolean
     canPost: boolean
     canApprove: boolean
     isOwner: boolean
     companyMemberStatus: "invited" | "accepted" | "rejected"
+    status?: "invited" | "accepted" | "rejected"
     user: {
-        id: number
+        id: string
         firstName: string
         lastName: string
         email: string
         avatarUrl?: string | null
-    }
+    } | null
 }
 
 interface CompanyMembersProps {
-    companyId: number
+    companyId: string
     members: CompanyMember[]
-    currentUserId: number
+    currentUserId: string
     isCurrentUserAdmin: boolean
     onMemberUpdate: () => void
     onInviteMember: () => void
@@ -70,7 +71,7 @@ export const CompanyMembers = ({
 }: CompanyMembersProps) => {
     const t = useTranslations("Company")
     const [members, setMembers] = useState<CompanyMember[]>(initialMembers)
-    const [updatingMember, setUpdatingMember] = useState<number | null>(null)
+    const [updatingMember, setUpdatingMember] = useState<string | null>(null)
     const [editingMember, setEditingMember] = useState<CompanyMember | null>(null)
     const [removingMember, setRemovingMember] = useState<CompanyMember | null>(null)
     const [editForm, setEditForm] = useState({
@@ -112,7 +113,7 @@ export const CompanyMembers = ({
 
             const result = await updateMemberAction({
                 companyId,
-                userId: editingMember.user.id,
+                userId: editingMember.user!.id,
                 isAdmin: editForm.isAdmin,
                 canPost: editForm.canPost,
                 canApprove: editForm.canApprove,
@@ -139,7 +140,7 @@ export const CompanyMembers = ({
         try {
             const result = await removeMemberAction({
                 companyId,
-                userId: removingMember.user.id,
+                userId: removingMember.user!.id,
             })
 
             if (result?.success) {
@@ -207,21 +208,21 @@ export const CompanyMembers = ({
                                     <TableCell>
                                         <div className="flex items-center space-x-3">
                                             <Avatar className="h-8 w-8">
-                                                <AvatarImage src={member.user.avatarUrl || undefined} />
+                                                <AvatarImage src={member.user?.avatarUrl || undefined} />
                                                 <AvatarFallback>
                                                     <IconUser className="h-4 w-4" />
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="min-w-0">
                                                 <div className="font-medium truncate">
-                                                    {member.user.firstName} {member.user.lastName}
+                                                    {member.user?.firstName} {member.user?.lastName}
                                                 </div>
                                             </div>
                                         </div>
                                     </TableCell>
                                     <TableCell>
                                         <div className="text-sm text-muted-foreground truncate max-w-[200px]">
-                                            {member.user.email}
+                                            {member.user?.email}
                                         </div>
                                     </TableCell>
                                     <TableCell>
@@ -311,8 +312,8 @@ export const CompanyMembers = ({
                         <DialogTitle>{t("modals.editMember.title")}</DialogTitle>
                         <DialogDescription>
                             {t("modals.editMember.description", {
-                                firstName: editingMember?.user.firstName || "",
-                                lastName: editingMember?.user.lastName || ""
+                                firstName: editingMember?.user?.firstName || "",
+                                lastName: editingMember?.user?.lastName || ""
                             })}
                         </DialogDescription>
                     </DialogHeader>
@@ -322,17 +323,17 @@ export const CompanyMembers = ({
                             {/* Member Info */}
                             <div className="flex items-center space-x-4 p-4 bg-muted/50 rounded-lg">
                                 <Avatar>
-                                    <AvatarImage src={editingMember.user.avatarUrl || undefined} />
+                                    <AvatarImage src={editingMember.user?.avatarUrl || undefined} />
                                     <AvatarFallback>
                                         <IconUser className="h-4 w-4" />
                                     </AvatarFallback>
                                 </Avatar>
                                 <div>
                                     <div className="font-medium">
-                                        {editingMember.user.firstName} {editingMember.user.lastName}
+                                        {editingMember.user?.firstName} {editingMember.user?.lastName}
                                     </div>
                                     <div className="text-sm text-muted-foreground">
-                                        {editingMember.user.email}
+                                        {editingMember.user?.email}
                                     </div>
                                 </div>
                             </div>
@@ -422,17 +423,17 @@ export const CompanyMembers = ({
                             {/* Member Info */}
                             <div className="flex items-center space-x-4 p-4 bg-muted/50 rounded-lg">
                                 <Avatar>
-                                    <AvatarImage src={removingMember.user.avatarUrl || undefined} />
+                                    <AvatarImage src={removingMember.user?.avatarUrl || undefined} />
                                     <AvatarFallback>
                                         <IconUser className="h-4 w-4" />
                                     </AvatarFallback>
                                 </Avatar>
                                 <div>
                                     <div className="font-medium">
-                                        {removingMember.user.firstName} {removingMember.user.lastName}
+                                        {removingMember.user?.firstName} {removingMember.user?.lastName}
                                     </div>
                                     <div className="text-sm text-muted-foreground">
-                                        {removingMember.user.email}
+                                        {removingMember.user?.email}
                                     </div>
                                 </div>
                             </div>

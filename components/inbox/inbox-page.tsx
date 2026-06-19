@@ -40,10 +40,10 @@ import {
     getInboxConversationsAction,
     getInboxConversationDetailAction,
     getSuggestedResponsesAction,
-    getInboxWhatsappWsUrlAction,
     markInboxConversationReadAction,
     sendInboxMessageAction,
 } from "../server-actions/inbox"
+import { useInboxRealtime } from "@/hooks/use-inbox-realtime"
 
 type InboxConversationPriority = "low" | "medium" | "high"
 type InboxMessageSenderType = "customer" | "agent" | "bot" | "system"
@@ -212,21 +212,33 @@ export default function InboxPage() {
     const [isLoadingConversations, setIsLoadingConversations] = useState(true)
     const [isLoadingMessages, setIsLoadingMessages] = useState(false)
     const [isSendingMessage, setIsSendingMessage] = useState(false)
-    const [wsUrl, setWsUrl] = useState<string | null>(null)
     const messageInputRef = useRef<HTMLTextAreaElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const initialLoadRef = useRef(false)
-    const socketRef = useRef<WebSocket | null>(null)
-    const reconnectTimeoutRef = useRef<number | null>(null)
-    const reconnectAttemptsRef = useRef(0)
-    const shouldReconnectRef = useRef(true)
+    const selectedConversationIdRef = useRef<string | null>(null)
+    const searchQueryRef = useRef("")
+    const loadConversationsRef = useRef<
+        (page?: number, searchValue?: string, options?: { silent?: boolean }) => Promise<void>
+    >(async () => {})
+    const fetchConversationDetailRef = useRef<
+        (conversationId: string, options?: { silent?: boolean }) => Promise<void>
+    >(async () => {})
+    const previousCompanyIdRef = useRef<string | null>(null)
+    const isFirstSearchEffectRef = useRef(true)
+    const conversationsRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const messagesRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const isFetchingConversationsRef = useRef(false)
+    const isFetchingConversationDetailRef = useRef(false)
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
     const { setOpen } = useSidebar()
     const t = useTranslations("Inbox")
     const { user } = useUser()
 
-    const companyId = user?.defaultCompanyId ?? null
+    const companyId = user?.defaultCompanyId != null ? String(user.defaultCompanyId) : null
+
+    selectedConversationIdRef.current = selectedConversationId
+    searchQueryRef.current = searchQuery
 
     const selectedConversation = useMemo(
         () => conversations.find((conversation) => conversation.id === selectedConversationId) ?? null,
@@ -234,10 +246,13 @@ export default function InboxPage() {
     )
 
     const hasClosedSidebarRef = useRef(false)
+    const tRef = useRef(t)
+    tRef.current = t
 
     const buildConversationSummary = useCallback(
-        (conversation: ConversationEntity) => mapConversationSummary(conversation, t("labels.customerFallback")),
-        [t],
+        (conversation: ConversationEntity) =>
+            mapConversationSummary(conversation, tRef.current("labels.customerFallback")),
+        [],
     )
 
     const getPriorityLabel = useCallback(
@@ -306,8 +321,15 @@ export default function InboxPage() {
     }, [])
 
     const fetchConversationDetail = useCallback(
-        async (conversationId: string) => {
-            setIsLoadingMessages(true)
+        async (conversationId: string, options?: { silent?: boolean }) => {
+            if (isFetchingConversationDetailRef.current) {
+                return
+            }
+
+            isFetchingConversationDetailRef.current = true
+            if (!options?.silent) {
+                setIsLoadingMessages(true)
+            }
             try {
                 const result = await getInboxConversationDetailAction({ conversationId })
                 if (!result.success || !result.data) {
@@ -336,15 +358,25 @@ export default function InboxPage() {
                 setMessages([])
                 setSuggestedResponses([])
             } finally {
-                setIsLoadingMessages(false)
+                isFetchingConversationDetailRef.current = false
+                if (!options?.silent) {
+                    setIsLoadingMessages(false)
+                }
             }
         },
         [buildConversationSummary, loadSuggestedResponses],
     )
 
     const loadConversations = useCallback(
-        async (page = 1, searchValue = "") => {
-            setIsLoadingConversations(true)
+        async (page = 1, searchValue = "", options?: { silent?: boolean }) => {
+            if (isFetchingConversationsRef.current) {
+                return
+            }
+
+            isFetchingConversationsRef.current = true
+            if (!options?.silent) {
+                setIsLoadingConversations(true)
+            }
             try {
                 const result = await getInboxConversationsAction({
                     page,
@@ -369,309 +401,144 @@ export default function InboxPage() {
                     return
                 }
 
-                const hasSelected = selectedConversationId
-                    ? mapped.some((conversation) => conversation.id === selectedConversationId)
+                const currentSelectedId = selectedConversationIdRef.current
+                const hasSelected = currentSelectedId
+                    ? mapped.some((conversation) => conversation.id === currentSelectedId)
                     : false
 
                 if (!hasSelected) {
                     const nextConversationId = mapped[0].id
+                    const nextConversation = mapped[0]
+                    selectedConversationIdRef.current = nextConversationId
                     setSelectedConversationId(nextConversationId)
-                    await fetchConversationDetail(nextConversationId)
-                    markInboxConversationReadAction({ conversationId: nextConversationId }).catch((error) => {
-                        console.error("Failed to mark conversation as read", error)
-                    })
+                    await fetchConversationDetail(nextConversationId, options)
+                    if (nextConversation.unreadCount > 0) {
+                        markInboxConversationReadAction({ conversationId: nextConversationId }).catch((error) => {
+                            console.error("Failed to mark conversation as read", error)
+                        })
+                    }
                 }
             } catch (error) {
                 console.error("Failed to load conversations", error)
                 setConversations([])
                 setMessages([])
                 setSuggestedResponses([])
+                selectedConversationIdRef.current = null
                 setSelectedConversationId(null)
             } finally {
-                setIsLoadingConversations(false)
+                isFetchingConversationsRef.current = false
+                if (!options?.silent) {
+                    setIsLoadingConversations(false)
+                }
             }
         },
-        [buildConversationSummary, fetchConversationDetail, selectedConversationId],
+        [buildConversationSummary, fetchConversationDetail],
     )
 
-    const loadWhatsappWsUrl = useCallback(async () => {
-        if (!companyId) {
-            setWsUrl(null)
-            return
-        }
-
-        try {
-            const result = await getInboxWhatsappWsUrlAction({ companyId })
-            console.log("WhatsApp WebSocket URL result:", result)
-            if (result.success && result.data) {
-                setWsUrl(result.data.wsUrl)
-            } else {
-                setWsUrl(null)
-            }
-        } catch (error) {
-            console.error("Failed to load WhatsApp WebSocket URL", error)
-            setWsUrl(null)
-        }
-    }, [companyId])
-
-    useEffect(() => {
-        if (!companyId || initialLoadRef.current) {
-            return
-        }
-
-        initialLoadRef.current = true
-        void loadWhatsappWsUrl()
-        void loadConversations(1, "")
-    }, [companyId, loadConversations, loadWhatsappWsUrl])
+    loadConversationsRef.current = loadConversations
+    fetchConversationDetailRef.current = fetchConversationDetail
 
     useEffect(() => {
         if (!companyId) {
             initialLoadRef.current = false
+            previousCompanyIdRef.current = null
+            isFirstSearchEffectRef.current = true
             setConversations([])
             setMessages([])
             setSuggestedResponses([])
+            selectedConversationIdRef.current = null
             setSelectedConversationId(null)
             setSearchQuery("")
             setMessageInput("")
-            setWsUrl(null)
             return
         }
 
-        initialLoadRef.current = false
-        setConversations([])
-        setMessages([])
-        setSuggestedResponses([])
-        setSelectedConversationId(null)
-        setSearchQuery("")
-        setMessageInput("")
-        void loadWhatsappWsUrl()
-    }, [companyId, loadWhatsappWsUrl])
+        const companyChanged = previousCompanyIdRef.current !== companyId
+        previousCompanyIdRef.current = companyId
+
+        if (companyChanged) {
+            initialLoadRef.current = false
+            isFirstSearchEffectRef.current = true
+            setConversations([])
+            setMessages([])
+            setSuggestedResponses([])
+            selectedConversationIdRef.current = null
+            setSelectedConversationId(null)
+            setSearchQuery("")
+            setMessageInput("")
+        }
+
+        if (initialLoadRef.current) {
+            return
+        }
+
+        initialLoadRef.current = true
+        void loadConversationsRef.current(1, "")
+    }, [companyId])
 
     useEffect(() => {
-        if (!initialLoadRef.current) {
+        if (!initialLoadRef.current || isFirstSearchEffectRef.current) {
+            isFirstSearchEffectRef.current = false
             return
         }
 
         const handler = setTimeout(() => {
-            void loadConversations(1, searchQuery)
+            void loadConversationsRef.current(1, searchQuery)
         }, 400)
 
         return () => clearTimeout(handler)
-    }, [loadConversations, searchQuery])
-
-    const handleRealtimeEvent = useCallback(
-        (raw: unknown) => {
-            if (!raw || typeof raw !== "object") {
-                return
-            }
-
-            const payload = raw as {
-                type?: string
-                event?: string
-                channel?: string
-                data?: Record<string, unknown>
-            }
-
-            const typeCandidate = payload.type ?? payload.event
-            const normalizedType = typeof typeCandidate === "string" ? typeCandidate.toLowerCase() : ""
-            const normalizedChannel = typeof payload.channel === "string" ? payload.channel.toLowerCase() : ""
-
-            if (!normalizedType.includes("inbox") && normalizedChannel !== "inbox") {
-                return
-            }
-
-            const data = (payload.data ?? {}) as Record<string, unknown>
-            const conversation = data.conversation as ConversationEntity | undefined
-            const message = data.message as MessageEntity | undefined
-            const fallbackConversationId = typeof data.id === "string" ? data.id : undefined
-            const conversationId =
-                (data.conversationId as string | undefined) ??
-                conversation?.id ??
-                (message as { conversationId?: string })?.conversationId ??
-                fallbackConversationId
-
-            if (conversationId && normalizedType.includes("conversation") && normalizedType.includes("deleted")) {
-                setConversations((previous) => previous.filter((item) => item.id !== conversationId))
-                if (selectedConversationId === conversationId) {
-                    setSelectedConversationId(null)
-                    setMessages([])
-                    setSuggestedResponses([])
-                }
-                return
-            }
-
-            if (conversation) {
-                const summary = buildConversationSummary(conversation)
-                setConversations((previous) => {
-                    const index = previous.findIndex((item) => item.id === summary.id)
-                    if (index === -1) {
-                        return sortConversations([summary, ...previous])
-                    }
-
-                    const updated = [...previous]
-                    updated[index] = summary
-                    return sortConversations(updated)
-                })
-            } else if (normalizedType.includes("conversation") && conversationId) {
-                void loadConversations(1, searchQuery)
-            }
-
-            if (message && conversationId) {
-                const mappedMessage = mapMessage(message)
-
-                if (selectedConversationId === conversationId) {
-                    setMessages((previous) => {
-                        if (previous.some((entry) => entry.id === mappedMessage.id)) {
-                            return previous
-                        }
-
-                        const next = [...previous, mappedMessage]
-                        return next.sort((a, b) => {
-                            const aTime = new Date(a.sentAt).getTime()
-                            const bTime = new Date(b.sentAt).getTime()
-                            return aTime - bTime
-                        })
-                    })
-
-                    requestAnimationFrame(() => {
-                        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-                    })
-                } else {
-                    setConversations((previous) => {
-                        const index = previous.findIndex((item) => item.id === conversationId)
-
-                        if (index === -1) {
-                            if (conversation) {
-                                const summary = buildConversationSummary(conversation)
-                                return sortConversations([summary, ...previous])
-                            }
-
-                            return previous
-                        }
-
-                        const updated = [...previous]
-                        const existing = updated[index]
-                        updated[index] = {
-                            ...existing,
-                            lastMessage: mappedMessage.content,
-                            lastMessageAt: mappedMessage.sentAt,
-                            timestampLabel: formatRelativeTimestamp(mappedMessage.sentAt),
-                            unreadCount: existing.unreadCount + 1,
-                        }
-
-                        return sortConversations(updated)
-                    })
-                }
-
-                return
-            }
-
-            if (conversationId && normalizedType.includes("message")) {
-                if (selectedConversationId === conversationId) {
-                    void fetchConversationDetail(conversationId)
-                } else {
-                    void loadConversations(1, searchQuery)
-                }
-            }
-        },
-        [
-            buildConversationSummary,
-            fetchConversationDetail,
-            loadConversations,
-            searchQuery,
-            selectedConversationId,
-        ],
-    )
+    }, [searchQuery])
 
     useEffect(() => {
-        if (!companyId || !wsUrl) {
-            if (socketRef.current) {
-                socketRef.current.close()
-                socketRef.current = null
+        return () => {
+            if (conversationsRefreshTimeoutRef.current) {
+                clearTimeout(conversationsRefreshTimeoutRef.current)
             }
+            if (messagesRefreshTimeoutRef.current) {
+                clearTimeout(messagesRefreshTimeoutRef.current)
+            }
+        }
+    }, [])
+
+    const scheduleRealtimeConversationsRefresh = useCallback(() => {
+        if (conversationsRefreshTimeoutRef.current) {
+            clearTimeout(conversationsRefreshTimeoutRef.current)
+        }
+
+        conversationsRefreshTimeoutRef.current = setTimeout(() => {
+            void loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
+        }, 300)
+    }, [])
+
+    const scheduleRealtimeMessagesRefresh = useCallback(() => {
+        const conversationId = selectedConversationIdRef.current
+        if (!conversationId) {
             return
         }
 
-        shouldReconnectRef.current = true
-
-        const connect = () => {
-            if (!shouldReconnectRef.current) {
-                return
-            }
-
-            let socket: WebSocket
-
-            try {
-                socket = new WebSocket(wsUrl)
-            } catch (error) {
-                console.error("Inbox realtime socket initialization failed", error)
-                const attempt = reconnectAttemptsRef.current
-                const delay = Math.min(1000 * 2 ** attempt, 15000)
-                reconnectAttemptsRef.current = attempt + 1
-                reconnectTimeoutRef.current = window.setTimeout(connect, delay)
-                return
-            }
-
-            socketRef.current = socket
-
-            socket.onopen = () => {
-                reconnectAttemptsRef.current = 0
-
-                try {
-                    socket.send(
-                        JSON.stringify({
-                            type: "inbox.subscribe",
-                            companyId,
-                        }),
-                    )
-                } catch (error) {
-                    console.error("Inbox realtime subscription failed", error)
-                }
-            }
-
-            socket.onmessage = (event) => {
-                try {
-                    const payload = typeof event.data === "string" ? JSON.parse(event.data) : null
-                    handleRealtimeEvent(payload)
-                } catch (error) {
-                    console.error("Inbox realtime message parse error", error)
-                }
-            }
-
-            socket.onerror = (error) => {
-                console.error("Inbox realtime socket error", error)
-            }
-
-            socket.onclose = () => {
-                socketRef.current = null
-
-                if (!shouldReconnectRef.current) {
-                    return
-                }
-
-                const attempt = reconnectAttemptsRef.current
-                const delay = Math.min(1000 * 2 ** attempt, 15000)
-                reconnectAttemptsRef.current = attempt + 1
-                reconnectTimeoutRef.current = window.setTimeout(connect, delay)
-            }
+        if (messagesRefreshTimeoutRef.current) {
+            clearTimeout(messagesRefreshTimeoutRef.current)
         }
 
-        connect()
+        messagesRefreshTimeoutRef.current = setTimeout(() => {
+            void fetchConversationDetailRef.current(conversationId, { silent: true })
+        }, 300)
+    }, [])
 
-        return () => {
-            shouldReconnectRef.current = false
+    const handleRealtimeConversationsChange = useCallback(() => {
+        scheduleRealtimeConversationsRefresh()
+    }, [scheduleRealtimeConversationsRefresh])
 
-            if (reconnectTimeoutRef.current) {
-                clearTimeout(reconnectTimeoutRef.current)
-                reconnectTimeoutRef.current = null
-            }
+    const handleRealtimeMessagesChange = useCallback(() => {
+        scheduleRealtimeMessagesRefresh()
+    }, [scheduleRealtimeMessagesRefresh])
 
-            if (socketRef.current) {
-                socketRef.current.close()
-                socketRef.current = null
-            }
-        }
-    }, [companyId, wsUrl, handleRealtimeEvent])
+    useInboxRealtime({
+        companyId,
+        conversationId: selectedConversationId,
+        onConversationsChange: handleRealtimeConversationsChange,
+        onMessagesChange: handleRealtimeMessagesChange,
+    })
 
     const handleSelectConversation = useCallback(
         async (conversationId: string) => {
@@ -681,6 +548,7 @@ export default function InboxPage() {
             }
 
             setSelectedConversationId(conversationId)
+            selectedConversationIdRef.current = conversationId
             setShowConversationsList(false)
             setMessages([])
             setSuggestedResponses([])
@@ -693,13 +561,16 @@ export default function InboxPage() {
                 ),
             )
 
-            void markInboxConversationReadAction({ conversationId }).catch((error) => {
-                console.error("Failed to mark conversation as read", error)
-            })
+            const selectedConversationItem = conversations.find((conversation) => conversation.id === conversationId)
+            if (selectedConversationItem && selectedConversationItem.unreadCount > 0) {
+                void markInboxConversationReadAction({ conversationId }).catch((error) => {
+                    console.error("Failed to mark conversation as read", error)
+                })
+            }
 
             await fetchConversationDetail(conversationId)
         },
-        [fetchConversationDetail, selectedConversationId],
+        [conversations, fetchConversationDetail, selectedConversationId],
     )
 
     const handleSendMessage = useCallback(async () => {

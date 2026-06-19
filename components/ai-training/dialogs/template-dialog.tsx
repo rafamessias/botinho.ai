@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { AiTemplateCategory } from "@/lib/generated/prisma"
+import { AiTemplateCategory } from "@/lib/types/enums"
 import { MousePointerClick, Plus, Save, X } from "lucide-react"
 import type { TemplateOptionView, TemplateView, TranslationFn } from "../types"
 

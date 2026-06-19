@@ -28,20 +28,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { useLocale, useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
+import { useRouter } from "@/i18n/navigation"
 import { logoutAction } from "@/components/server-actions/auth"
 import { useState } from "react"
 import { useUser } from "@/components/user-provider"
-import { useSession } from "next-auth/react"
 
 export function NavUser() {
-  const locale = useLocale()
   const t = useTranslations("NavUser")
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const { user, loading, setUser } = useUser()
-  const { update } = useSession()
 
   // Show loading state if user data is still loading
   if (loading || !user) {
@@ -64,12 +61,12 @@ export function NavUser() {
     {
       label: t("account"),
       icon: IconUserCircle,
-      href: `/${locale}/account`,
+      href: "/account",
     },
     {
       label: t("subscription"),
       icon: IconCreditCard,
-      href: `/${locale}/subscription`,
+      href: "/subscription",
     }
   ]
 
@@ -85,13 +82,10 @@ export function NavUser() {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true)
-      await logoutAction(`/${locale}/sign-in`)
-      await update()
-      // NextAuth will handle the redirect after logout
+      setUser(null)
+      await logoutAction("/sign-in")
     } catch (error) {
-      // NextAuth throws NEXT_REDIRECT for logout redirects - this is expected
       if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-        // Don't show error for redirects - this is normal logout flow
         return
       }
       console.error("Logout error:", error)
