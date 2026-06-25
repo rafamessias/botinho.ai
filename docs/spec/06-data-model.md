@@ -101,7 +101,11 @@ Message subcollection: `companies/{companyId}/conversations/{conversationId}/mes
 | canPost | boolean | |
 | canApprove | boolean | |
 | status | `invited` \| `accepted` \| `rejected` | |
+| email | string? | Invite placeholder users |
+| inviteToken | string? | Cleared on accept |
 | createdAt, updatedAt | Timestamp | |
+
+See [19-company-and-members.md](19-company-and-members.md) for invite rules and single-company policy.
 
 ### CompanySettings (`companies/{id}/settings/default`)
 

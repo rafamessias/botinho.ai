@@ -52,8 +52,10 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
     const tCommon = useTranslations("Common")
     const { user, refreshUser } = useUser()
     const [companies, setCompanies] = useState<Company[]>(initialCompanies)
-    // Since each user only has one company, use the first (and only) company
-    const selectedCompany = companies.length > 0 ? companies[0] : null
+    const selectedCompany =
+        companies.find((company) => String(company.id) === String(user?.defaultCompanyId)) ??
+        companies[0] ??
+        null
 
     // Use current user ID from user context if available, fallback to prop
     const currentUserIdFromContext = String(user?.id || currentUserId)

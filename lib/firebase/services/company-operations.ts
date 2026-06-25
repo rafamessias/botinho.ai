@@ -1,8 +1,14 @@
 import { FieldValue } from "firebase-admin/firestore"
 import { adminAuth, adminDb } from "@/lib/firebase/admin"
 import { collections, companySubcollections } from "@/lib/firebase/collections"
-import { getUserProfile, updateUserProfile } from "@/lib/firebase/services/user-service"
-import { getUserCompaniesLight } from "@/lib/firebase/services/company-service"
+import { getUserProfile } from "@/lib/firebase/services/user-service"
+import {
+  assertNoMembershipOutsideCompany,
+  SingleCompanyMembershipError,
+} from "@/lib/company-membership-guards"
+import { userHasActiveCompanyMembership } from "@/lib/company-membership-guards-server"
+import { loadActiveMemberships } from "@/lib/user-workspace"
+import { syncUserWorkspace } from "@/lib/sync-user-workspace"
 import type { FirestoreCompanyMember, MemberStatus, UserLanguage } from "@/lib/firebase/types"
 
 const companyRef = (companyId: string) => adminDb.collection(collections.companies).doc(companyId)
@@ -67,7 +73,7 @@ export const getMemberProfile = async (uid: string) => {
 export const assertCompanyAdmin = async (companyId: string, uid: string) => {
   const memberSnap = await companyRef(companyId).collection(companySubcollections.members).doc(uid).get()
   const member = memberSnap.data() as FirestoreCompanyMember | undefined
-  if (!member || member.status !== "accepted" || !member.isAdmin) {
+  if (!member || member.status !== "accepted" || !(member.isAdmin || member.isOwner)) {
     throw new Error("Not authorized")
   }
   return member
@@ -164,7 +170,7 @@ export const updateMemberPermissions = async (
       {
         isAdmin: permissions.isAdmin,
         canPost: permissions.isAdmin ? true : permissions.canPost,
-        canApprove: true,
+        canApprove: permissions.isAdmin ? true : permissions.canApprove,
         updatedAt: FieldValue.serverTimestamp(),
       },
       { merge: true },
@@ -179,14 +185,7 @@ export const removeMember = async (companyId: string, memberUid: string) => {
   }
 
   await memberSnap.ref.delete()
-
-  const profile = await getUserProfile(memberUid)
-  if (profile?.defaultCompanyId === companyId) {
-    const remaining = await getUserCompaniesLight(memberUid)
-    await updateUserProfile(memberUid, {
-      defaultCompanyId: remaining[0]?.id,
-    })
-  }
+  await syncUserWorkspace(memberUid)
 }
 
 export const inviteMemberByEmail = async (params: {
@@ -241,13 +240,16 @@ export const inviteMemberByEmail = async (params: {
     throw new Error("User is already a member of this company")
   }
 
+  const activeMemberships = await loadActiveMemberships(uid)
+  assertNoMembershipOutsideCompany(activeMemberships, params.companyId)
+
   await memberRef.set({
     uid,
     email: normalizedEmail,
     isOwner: false,
     isAdmin: params.isAdmin,
     canPost: params.isAdmin ? true : params.canPost,
-    canApprove: true,
+    canApprove: params.isAdmin ? true : params.canApprove,
     status: "invited" as MemberStatus,
     inviteToken: params.confirmationToken,
     createdAt: FieldValue.serverTimestamp(),
@@ -268,16 +270,71 @@ export const acceptCompanyInvite = async (companyId: string, token: string) => {
     return { success: false as const, error: "Invalid invitation token" }
   }
 
+  const uid = memberDoc.id
+  const activeMemberships = await loadActiveMemberships(uid)
+  try {
+    assertNoMembershipOutsideCompany(activeMemberships, companyId)
+  } catch (error) {
+    if (error instanceof SingleCompanyMembershipError) {
+      return { success: false as const, error: "INVITE_COMPANY_CONFLICT" }
+    }
+    throw error
+  }
+
   await memberDoc.ref.update({
     status: "accepted",
     inviteToken: FieldValue.delete(),
     updatedAt: FieldValue.serverTimestamp(),
   })
 
-  const uid = memberDoc.id
-  await updateUserProfile(uid, { defaultCompanyId: companyId })
+  await syncUserWorkspace(uid)
 
   return { success: true as const, uid }
+}
+
+export const resendMemberInvite = async (params: {
+  companyId: string
+  memberUid: string
+  confirmationToken: string
+}) => {
+  const memberSnap = await companyRef(params.companyId)
+    .collection(companySubcollections.members)
+    .doc(params.memberUid)
+    .get()
+
+  const member = memberSnap.data() as FirestoreCompanyMember | undefined
+  if (!member) {
+    throw new Error("Member not found")
+  }
+  if (member.status !== "invited") {
+    throw new Error("Only invited members can receive a new invitation")
+  }
+
+  const company = await getCompanyById(params.companyId)
+  if (!company) {
+    throw new Error("Company not found")
+  }
+
+  const profile = await getMemberProfile(params.memberUid)
+  const email = member.email ?? profile?.email
+  if (!email) {
+    throw new Error("Member email not found")
+  }
+
+  await memberSnap.ref.update({
+    inviteToken: params.confirmationToken,
+    updatedAt: FieldValue.serverTimestamp(),
+  })
+
+  return {
+    email,
+    companyName: String(company.name ?? "Company"),
+    firstName: profile?.firstName ?? email.split("@")[0],
+  }
+}
+
+export const userCanCreateCompany = async (uid: string): Promise<boolean> => {
+  return !(await userHasActiveCompanyMembership(uid))
 }
 
 export const updateCompanyToken = async (companyId: string, token: string) => {

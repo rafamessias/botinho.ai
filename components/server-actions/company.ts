@@ -13,10 +13,13 @@ import {
   getUserCompanies,
   inviteMemberByEmail,
   removeMember,
+  resendMemberInvite,
   updateCompany,
   updateCompanyToken,
   updateMemberPermissions,
+  userCanCreateCompany,
 } from "@/lib/firebase/services/company-operations"
+import { SingleCompanyMembershipError } from "@/lib/company-membership-guards"
 import { getCompanySubscription } from "@/lib/firebase/services/subscription-service"
 import { generateConfirmationToken, getCurrentLocale } from "./auth"
 import { sendTransactionalEmail } from "@/lib/email/send-transactional-email"
@@ -86,6 +89,11 @@ export const createCompanyAction = async (formData: z.infer<typeof createCompany
   const t = await getTranslations("Company")
   try {
     const session = await requireSession()
+    const canCreate = await userCanCreateCompany(session.uid)
+    if (!canCreate) {
+      return { success: false, error: t("messages.alreadyHasCompany") }
+    }
+
     const validatedData = createCompanySchema.parse(formData)
     const { companyId } = await createCompanyForUser({
       uid: session.uid,
@@ -99,6 +107,9 @@ export const createCompanyAction = async (formData: z.infer<typeof createCompany
     console.error("Create company error:", error)
     if (error instanceof z.ZodError) {
       return { success: false, error: error.errors[0].message }
+    }
+    if (error instanceof Error && error.message === "ALREADY_HAS_COMPANY") {
+      return { success: false, error: t("messages.alreadyHasCompany") }
     }
     return { success: false, error: t("messages.createFailed") }
   }
@@ -168,6 +179,9 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
     if (error instanceof z.ZodError) {
       return { success: false, error: error.errors[0].message }
     }
+    if (error instanceof SingleCompanyMembershipError) {
+      return { success: false, error: t("messages.inviteCompanyUserConflict") }
+    }
     return { success: false, error: error instanceof Error ? error.message : t("messages.inviteFailed") }
   }
 }
@@ -187,6 +201,52 @@ export const updateMemberAction = async (formData: z.infer<typeof updateMemberSc
   } catch (error) {
     console.error("Update member error:", error)
     return { success: false, error: t("messages.memberUpdateFailed") }
+  }
+}
+
+const resendInviteSchema = z.object({
+  companyId: z.string().min(1),
+  userId: z.string().min(1),
+})
+
+export const resendMemberInviteAction = async (formData: z.infer<typeof resendInviteSchema>) => {
+  const t = await getTranslations("Company")
+  try {
+    const session = await requireSession()
+    const validatedData = resendInviteSchema.parse(formData)
+    await assertCompanyAdmin(validatedData.companyId, session.uid)
+
+    const currentLocale = await getCurrentLocale()
+    const confirmationToken = await generateConfirmationToken()
+    const invite = await resendMemberInvite({
+      companyId: validatedData.companyId,
+      memberUid: validatedData.userId,
+      confirmationToken,
+    })
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+    const invitationUrl = `${baseUrl}/${currentLocale}/sign-up/confirm?token=${confirmationToken}&companyId=${validatedData.companyId}`
+    const inviteEmail = buildCompanyInviteEmail({
+      firstName: invite.firstName,
+      companyName: invite.companyName,
+      inviterEmail: session.email!,
+      invitationUrl,
+      locale: currentLocale === "pt-BR" ? "pt-BR" : "en",
+    })
+
+    await sendTransactionalEmail({
+      to: invite.email,
+      subject: inviteEmail.subject,
+      text: inviteEmail.text,
+    })
+
+    return { success: true, message: t("messages.inviteResent") }
+  } catch (error) {
+    console.error("Resend member invite error:", error)
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.errors[0].message }
+    }
+    return { success: false, error: t("messages.inviteResendFailed") }
   }
 }
 
@@ -244,7 +304,13 @@ export const bulkInviteMembersAction = async (formData: z.infer<typeof bulkInvit
         results.successCount += 1
       } catch (error) {
         results.errorCount += 1
-        results.errors.push(`${memberData.email}: ${error instanceof Error ? error.message : "Unknown error"}`)
+        const message =
+          error instanceof SingleCompanyMembershipError
+            ? t("messages.inviteCompanyUserConflict")
+            : error instanceof Error
+              ? error.message
+              : "Unknown error"
+        results.errors.push(`${memberData.email}: ${message}`)
       }
     }
 

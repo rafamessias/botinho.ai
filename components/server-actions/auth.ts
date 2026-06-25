@@ -327,6 +327,9 @@ export const confirmEmailAction = async (token: string, companyId?: string, uid?
     if (companyId) {
       const result = await acceptCompanyInvite(companyId, token)
       if (!result.success) {
+        if (result.error === "INVITE_COMPANY_CONFLICT") {
+          return { success: false, error: t("inviteCompanyConflict") }
+        }
         return { success: false, error: result.error || t("invalidToken") }
       }
       return { success: true, message: "Invitation accepted successfully. You can now sign in." }
@@ -392,6 +395,42 @@ export const getCurrentUserAction = async () => {
   } catch (error) {
     console.error("Get current user error:", error)
     return { success: false, error: "Failed to get user", user: null }
+  }
+}
+
+export const getSessionBootstrapAction = async () => {
+  try {
+    const { getServerAuthSession } = await import("@/lib/auth/server-session")
+    const session = await getServerAuthSession()
+    if (!session?.uid) {
+      return { success: false, error: "Not authenticated", user: null, companyContext: null }
+    }
+
+    const { getUserProfile, mapUserToClient } = await import("@/lib/firebase/services/user-service")
+    const { buildSessionCompanyContext } = await import("@/lib/session-company-context")
+    const [user, companyContext] = await Promise.all([
+      getUserProfile(session.uid),
+      buildSessionCompanyContext(session.uid),
+    ])
+
+    if (!user) {
+      return { success: false, error: "User not found", user: null, companyContext: null }
+    }
+
+    const clientUser = {
+      ...mapUserToClient(user),
+      defaultCompanyId: companyContext.defaultCompanyId,
+      companies: companyContext.companies,
+    }
+
+    return {
+      success: true,
+      user: clientUser,
+      companyContext,
+    }
+  } catch (error) {
+    console.error("Session bootstrap error:", error)
+    return { success: false, error: "Failed to load session", user: null, companyContext: null }
   }
 }
 

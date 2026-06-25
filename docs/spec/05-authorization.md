@@ -10,9 +10,10 @@ Document access control for company-scoped resources, role permissions, and webh
 
 ## Source of truth
 
-- [components/server-actions/utils.ts](../../components/server-actions/utils.ts)
+- [lib/botinho-auth.ts](../../lib/botinho-auth.ts) — `getBotinhoSession`, `resolveCompanyContext`
+- [lib/user-workspace.ts](../../lib/user-workspace.ts) — validated `defaultCompanyId` resolution
 - [lib/firebase/types.ts](../../lib/firebase/types.ts) — `FirestoreCompanyMember`
-- Webhook routes under [app/api/](../../app/api/)
+- [19-company-and-members.md](19-company-and-members.md) — business rules G1–G6
 
 ## Company membership model
 
@@ -30,7 +31,7 @@ Only members with `status: accepted` can access company data.
 
 ## resolveCompanyContext
 
-File: [`components/server-actions/utils.ts`](../../components/server-actions/utils.ts)
+Implemented in [lib/botinho-auth.ts](../../lib/botinho-auth.ts) and re-exported from [components/server-actions/utils.ts](../../components/server-actions/utils.ts).
 
 Central guard used by most server actions.
 
@@ -45,8 +46,9 @@ resolveCompanyContext({
 ### Resolution order for companyId
 
 1. Explicit `companyId` argument
-2. `users/{uid}.defaultCompanyId` from Firestore
-3. First accepted membership via collection group query on `members`
+2. Validated active company from [lib/user-workspace.ts](../../lib/user-workspace.ts) (`defaultCompanyId` → owned company → first accepted membership)
+
+See [19-company-and-members.md](19-company-and-members.md) for membership policy.
 
 ### Errors thrown
 

@@ -2,13 +2,11 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react"
 import { useSession } from "next-auth/react"
-import { getCurrentUserAction } from "@/components/server-actions/auth"
+import { getSessionBootstrapAction, createCheckoutSessionAction } from "@/components/server-actions/auth"
 import { useTheme } from "next-themes"
 import { BillingInterval, PlanType, SubscriptionStatus, UserTheme } from "@/lib/types/enums"
-import { getUserCompaniesLightAction } from "./server-actions/company"
 import LoadingComp from "./loading-comp"
 import { useRouter } from "next/navigation"
-import { createCheckoutSessionAction } from '@/components/server-actions/auth'
 
 export interface UserCompany {
     id: string | number
@@ -20,6 +18,7 @@ export interface UserCompany {
         canPost: boolean
         canApprove: boolean
         isOwner: boolean
+        status?: "invited" | "accepted" | "rejected"
     }>
 }
 
@@ -81,33 +80,33 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         try {
             setLoading(true)
             setError(null)
-            const result = await getCurrentUserAction()
+
+            if (!companiesUpdate && user) {
+                setUser(user)
+                return
+            }
+
+            const result = await getSessionBootstrapAction()
 
             if (result.success && result.user) {
-                if (companiesUpdate) {
-                    const resultCompanies = await getUserCompaniesLightAction(result.user.id, result.user.defaultCompanyId || "")
-                    if (resultCompanies && resultCompanies?.success && resultCompanies?.companies) {
-                        setUser({ ...result.user, companies: resultCompanies.companies as UserCompany[] })
-                    } else {
-                        setUser({ ...result.user, companies: null })
-                    }
+                setUser({
+                    ...result.user,
+                    companies: result.user.companies as UserCompany[],
+                })
 
-                    if (resultCompanies?.customerSubscription && resultCompanies.customerSubscription.status === SubscriptionStatus.pending) {
-                        const subscription = resultCompanies.customerSubscription
-                        const checkoutResult = await createCheckoutSessionAction(
-                            subscription.plan?.planType || PlanType.FREE,
-                            subscription.billingInterval || BillingInterval.monthly,
-                            session.user.email,
-                            result.user.defaultCompanyId || "",
-                            subscription.id
-                        )
+                const subscription = result.companyContext?.customerSubscription
+                if (subscription && subscription.status === SubscriptionStatus.pending) {
+                    const checkoutResult = await createCheckoutSessionAction(
+                        (subscription.plan?.planType as PlanType) || PlanType.FREE,
+                        (subscription.billingInterval as BillingInterval) || BillingInterval.monthly,
+                        session.user.email,
+                        result.user.defaultCompanyId || "",
+                        subscription.id,
+                    )
 
-                        if (checkoutResult?.success && checkoutResult.checkoutUrl) {
-                            router.push(checkoutResult.checkoutUrl as string)
-                        }
+                    if (checkoutResult?.success && checkoutResult.checkoutUrl) {
+                        router.push(checkoutResult.checkoutUrl as string)
                     }
-                } else {
-                    setUser({ ...result.user, companies: user?.companies || null })
                 }
 
                 if (theme !== result.user?.theme) setTheme(result.user?.theme)
@@ -148,14 +147,16 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const hasPermission = (): { isAdmin: boolean, canPost: boolean, canApprove: boolean } => {
         if (!user) return { isAdmin: false, canPost: false, canApprove: false }
 
-        const company = user.companies?.find((c) => c.id === user.defaultCompanyId)
+        const company = user.companies?.find((c) => String(c.id) === String(user.defaultCompanyId))
         if (!company || !company.members || !Array.isArray(company.members)) {
             return { isAdmin: false, canPost: false, canApprove: false }
         }
 
-        const userCompanyMember = company.members[0]
+        const userCompanyMember = company.members.find(
+            (member) => String(member.id) === String(user.id),
+        )
         return {
-            isAdmin: userCompanyMember?.isAdmin || false,
+            isAdmin: userCompanyMember?.isAdmin || userCompanyMember?.isOwner || false,
             canPost: userCompanyMember?.canPost || false,
             canApprove: userCompanyMember?.canApprove || false,
         }

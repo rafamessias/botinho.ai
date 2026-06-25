@@ -2,6 +2,8 @@ import { FieldValue, Timestamp } from "firebase-admin/firestore"
 import { adminDb } from "@/lib/firebase/admin"
 import { collections, companySubcollections, settingsDocIds } from "@/lib/firebase/collections"
 import { slugifyCompanyName, withSlugSuffix } from "@/lib/firebase/slug"
+import { userHasActiveCompanyMembership } from "@/lib/company-membership-guards-server"
+import { syncUserWorkspace } from "@/lib/sync-user-workspace"
 import type { FirestoreCompanyMember, FirestoreCompanySettings } from "@/lib/firebase/types"
 
 const defaultSettings = (): Omit<FirestoreCompanySettings, "updatedAt"> => ({
@@ -39,6 +41,10 @@ export const createCompanyForUser = async (params: {
   companyName?: string
   companyDescription?: string
 }) => {
+  if (await userHasActiveCompanyMembership(params.uid)) {
+    throw new Error("ALREADY_HAS_COMPANY")
+  }
+
   const name = params.companyName ?? `${params.firstName}'s Company`
   const slug = await reserveUniqueSlug(name)
   const now = FieldValue.serverTimestamp()
@@ -83,6 +89,8 @@ export const createCompanyForUser = async (params: {
   } catch (error) {
     console.error(`Failed to create free subscription for company ${companyRef.id}:`, error)
   }
+
+  await syncUserWorkspace(params.uid)
 
   return { companyId: companyRef.id, slug }
 }

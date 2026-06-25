@@ -1,15 +1,14 @@
-import { getServerAuthSession } from "@/lib/auth/server-session"
-import { getUserProfile } from "@/lib/firebase/services/user-service"
+import { resolveActiveCompanyId } from "@/lib/user-workspace"
 
 export const getCurrentCompanyId = async (): Promise<string | null> => {
   try {
+    const { getServerAuthSession } = await import("@/lib/auth/server-session")
     const session = await getServerAuthSession()
     if (!session?.uid) {
       return null
     }
 
-    const user = await getUserProfile(session.uid)
-    return user?.defaultCompanyId ?? null
+    return resolveActiveCompanyId(session.uid)
   } catch (error) {
     console.error("Failed to get company ID:", error)
     return null
