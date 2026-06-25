@@ -11,6 +11,10 @@ const getSessionToken = (request: NextRequest) =>
 
 const isPasswordResetRoute = (pathname: string) => pathname.includes('/reset-password');
 
+const isServerActionRequest = (request: NextRequest) =>
+    request.method === 'POST' &&
+    (request.headers.has('Next-Action') || request.headers.has('next-action'));
+
 export default async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
@@ -35,6 +39,11 @@ export default async function middleware(request: NextRequest) {
     }
 
     const intlResponse = intlMiddleware(request);
+
+    // Server actions must receive RSC payloads, not HTML redirects from auth/locale middleware.
+    if (isServerActionRequest(request)) {
+        return intlResponse;
+    }
 
     if (pathname.includes('/sign-up/confirm')) {
         return intlResponse;

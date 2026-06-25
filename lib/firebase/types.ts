@@ -29,6 +29,8 @@ export type FirestoreCompany = {
 
 export type FirestoreCompanyMember = {
   uid: string
+  email?: string
+  inviteToken?: string
   isOwner: boolean
   isAdmin: boolean
   canPost: boolean

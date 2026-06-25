@@ -27,7 +27,7 @@ const LoadingNotificationSection = () => (
 )
 
 export default function SettingsPage() {
-    const { user } = useUser()
+    const { user, loading: isUserLoading } = useUser()
     const companyId = user?.defaultCompanyId ? String(user.defaultCompanyId) : undefined
     const t = useTranslations("Settings.page")
 
@@ -37,8 +37,13 @@ export default function SettingsPage() {
     const [isSavingSettings, setIsSavingSettings] = useState(false)
 
     const loadSettings = useCallback(async () => {
+        if (isUserLoading) {
+            return
+        }
+
         if (!companyId) {
             setSettings(null)
+            setLoadError(null)
             setIsLoadingOverview(false)
             return
         }
@@ -54,12 +59,12 @@ export default function SettingsPage() {
             setSettings(response.data.settings)
         } catch (error) {
             console.error("Failed to load settings", error)
-            setLoadError(t("errors.loadFailed"))
+            setLoadError(t("load.unable"))
             setSettings(null)
         } finally {
             setIsLoadingOverview(false)
         }
-    }, [companyId, t])
+    }, [companyId, isUserLoading, t])
 
     useEffect(() => {
         void loadSettings()

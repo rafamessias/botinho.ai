@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from "sonner"
-import { updateMemberAction, removeMemberAction } from "@/components/server-actions/company"
-import { IconTrash, IconUser, IconEdit, IconX, IconPencilPlus, IconEye } from "@tabler/icons-react"
+import { updateMemberAction, removeMemberAction, resendMemberInviteAction } from "@/components/server-actions/company"
+import { IconTrash, IconUser, IconEdit, IconX, IconPencilPlus, IconEye, IconMail } from "@tabler/icons-react"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
@@ -74,6 +74,7 @@ export const CompanyMembers = ({
     const [updatingMember, setUpdatingMember] = useState<string | null>(null)
     const [editingMember, setEditingMember] = useState<CompanyMember | null>(null)
     const [removingMember, setRemovingMember] = useState<CompanyMember | null>(null)
+    const [resendingMemberId, setResendingMemberId] = useState<string | null>(null)
     const [editForm, setEditForm] = useState({
         isAdmin: false,
         canPost: false,
@@ -153,6 +154,29 @@ export const CompanyMembers = ({
         } catch (error) {
             console.error("Remove member error:", error)
             toast.error("An unexpected error occurred")
+        }
+    }
+
+    const handleResendInvite = async (member: CompanyMember) => {
+        if (!member.user?.id) return
+
+        try {
+            setResendingMemberId(member.id)
+            const result = await resendMemberInviteAction({
+                companyId,
+                userId: member.user.id,
+            })
+
+            if (result?.success) {
+                toast.success(result.message ?? t("messages.inviteResent"))
+            } else {
+                toast.error(result?.error ?? t("messages.inviteResendFailed"))
+            }
+        } catch (error) {
+            console.error("Resend invite error:", error)
+            toast.error(t("messages.inviteResendFailed"))
+        } finally {
+            setResendingMemberId(null)
         }
     }
 
@@ -280,6 +304,17 @@ export const CompanyMembers = ({
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
+                                                        {(member.companyMemberStatus === "invited" || member.status === "invited") && (
+                                                            <DropdownMenuItem
+                                                                onClick={() => handleResendInvite(member)}
+                                                                disabled={resendingMemberId === member.id}
+                                                            >
+                                                                <IconMail className="h-4 w-4 mr-2" />
+                                                                {resendingMemberId === member.id
+                                                                    ? t("members.resendingInvite")
+                                                                    : t("members.resendInvite")}
+                                                            </DropdownMenuItem>
+                                                        )}
                                                         <DropdownMenuItem onClick={() => handleEditMember(member)}>
                                                             <IconEdit className="h-4 w-4 mr-2" />
                                                             {t("form.update")}

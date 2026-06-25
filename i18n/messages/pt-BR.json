@@ -1044,7 +1044,8 @@
         "emailOrPhoneRequired": "Email ou telefone é obrigatório",
         "otpSent": "OTP enviado com sucesso",
         "otpSentSignup": "Conta criada com sucesso. Por favor, verifique seu telefone/email para o código de verificação.",
-        "emailSent": "Conta criada com sucesso. Por favor, verifique seu email para confirmar sua conta."
+        "emailSent": "Conta criada com sucesso. Por favor, verifique seu email para confirmar sua conta.",
+        "inviteCompanyConflict": "Esta conta já pertence a outra empresa e não pode aceitar este convite."
     },
     "Company": {
         "title": "Gestão de Empresa",
@@ -1127,6 +1128,8 @@
             "updateFailed": "Falha ao atualizar permissões do membro",
             "actions": "Ações",
             "openMenu": "Abrir menu",
+            "resendInvite": "Reenviar convite",
+            "resendingInvite": "Reenviando...",
             "excel": {
                 "singleInvite": "Convite Individual",
                 "bulkImport": "Importação em Massa",
@@ -1171,6 +1174,10 @@
             "onlyCompanyOwnerCanDeleteCompany": "Apenas o proprietário da empresa pode excluir a empresa",
             "inviteSuccess": "Membro convidado com sucesso",
             "inviteFailed": "Falha ao convidar membro",
+            "inviteCompanyUserConflict": "Este email já pertence a outra empresa.",
+            "inviteResent": "Convite reenviado com sucesso",
+            "inviteResendFailed": "Falha ao reenviar convite",
+            "alreadyHasCompany": "Você já pertence a uma empresa e não pode criar outra.",
             "memberUpdateSuccess": "Permissões do membro atualizadas com sucesso",
             "memberUpdateFailed": "Falha ao atualizar permissões do membro",
             "memberRemoveSuccess": "Membro removido com sucesso",
@@ -1393,6 +1400,10 @@
             "onlyTeamOwnerCanDeleteTeam": "Apenas o proprietário da equipe pode excluir a equipe",
             "inviteSuccess": "Membro convidado com sucesso",
             "inviteFailed": "Falha ao convidar membro",
+            "inviteCompanyUserConflict": "Este email já pertence a outra empresa.",
+            "inviteResent": "Convite reenviado com sucesso",
+            "inviteResendFailed": "Falha ao reenviar convite",
+            "alreadyHasCompany": "Você já pertence a uma empresa e não pode criar outra.",
             "memberUpdateSuccess": "Permissões do membro atualizadas com sucesso",
             "memberUpdateFailed": "Falha ao atualizar permissões do membro",
             "memberRemoveSuccess": "Membro removido com sucesso",

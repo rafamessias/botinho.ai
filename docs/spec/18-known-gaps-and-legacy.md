@@ -51,7 +51,8 @@ No Prisma schema or survey models remain in the codebase.
 | Customer CRM | `stub` | [customer-page.tsx](../../components/customer/customer-page.tsx) uses mock local state |
 | Dashboard analytics | `partial` | UI exists; not all KPIs from live data |
 | Inbound message webhook | `stub` | `recordInboundMessage` exists but no HTTP route |
-| Firestore security rules | `partial` | Client SDK used for inbox listeners; rules not documented in repo |
+| Firestore security rules | `implemented` | Deny-all with inbox read exception for accepted members |
+| Company membership guards | `implemented` | Single-company policy — [19-company-and-members.md](19-company-and-members.md) |
 
 ---
 
@@ -75,7 +76,7 @@ No Prisma schema or survey models remain in the codebase.
 | `/register` route | Landing page links (possible) | May not exist |
 | ESLint config | npm run lint | No config file |
 | tailwind.config.js | — | Tailwind v4 uses postcss only |
-| Firestore indexes file | Collection group queries | May need `firestore.indexes.json` |
+| Firestore indexes file | Collection group queries | `firestore.indexes.json` added for `members` collection group |
 
 ---
 
