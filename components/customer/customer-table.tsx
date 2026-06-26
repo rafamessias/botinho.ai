@@ -2,7 +2,7 @@
 
 import { memo, useMemo } from "react"
 import { useTranslations } from "next-intl"
-import { MoreHorizontal, Pencil, Mail, Phone, Building } from "lucide-react"
+import { MoreHorizontal, MessageSquarePlus, Pencil, Mail, Phone, Building } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,7 @@ import type { Customer } from "@/lib/types/customer"
 type CustomerTableProps = {
     customers: Customer[]
     onEdit: (customer: Customer) => void
+    onStartConversation?: (customer: Customer) => void
 }
 
 const statusToneClasses: Record<Customer["status"], string> = {
@@ -39,7 +40,7 @@ const formatDate = (value: string) => {
     }).format(date)
 }
 
-const CustomerTableComponent = ({ customers, onEdit }: CustomerTableProps) => {
+const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: CustomerTableProps) => {
     const t = useTranslations("Customer")
 
     const statusLabels = useMemo(
@@ -72,13 +73,13 @@ const CustomerTableComponent = ({ customers, onEdit }: CustomerTableProps) => {
                             <div className="space-y-1">
                                 <h3 className="text-base font-semibold text-foreground">{customer.name}</h3>
                                 <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Mail className="size-4" aria-hidden="true" />
-                                    <span>{customer.email}</span>
+                                    <Phone className="size-4" aria-hidden="true" />
+                                    <span>{customer.phone}</span>
                                 </p>
-                                {customer.phone && (
+                                {customer.email && (
                                     <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <Phone className="size-4" aria-hidden="true" />
-                                        <span>{customer.phone}</span>
+                                        <Mail className="size-4" aria-hidden="true" />
+                                        <span>{customer.email}</span>
                                     </p>
                                 )}
                                 {customer.company && (
@@ -94,16 +95,30 @@ const CustomerTableComponent = ({ customers, onEdit }: CustomerTableProps) => {
                         </div>
                         <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
                             <span>{formatDate(customer.createdAt)}</span>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                                onClick={() => onEdit(customer)}
-                                aria-label={t("table.actions.edit")}
-                            >
-                                <Pencil className="mr-2 size-4" aria-hidden="true" />
-                                {t("table.actions.edit")}
-                            </Button>
+                            <div className="flex items-center gap-1">
+                                {onStartConversation && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-8 px-2"
+                                        onClick={() => onStartConversation(customer)}
+                                        aria-label={t("table.actions.startConversation")}
+                                    >
+                                        <MessageSquarePlus className="mr-2 size-4" aria-hidden="true" />
+                                        {t("table.actions.startConversation")}
+                                    </Button>
+                                )}
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 px-2"
+                                    onClick={() => onEdit(customer)}
+                                    aria-label={t("table.actions.edit")}
+                                >
+                                    <Pencil className="mr-2 size-4" aria-hidden="true" />
+                                    {t("table.actions.edit")}
+                                </Button>
+                            </div>
                         </div>
                     </article>
                 ))}
@@ -128,8 +143,8 @@ const CustomerTableComponent = ({ customers, onEdit }: CustomerTableProps) => {
                         {customers.map((customer) => (
                             <TableRow key={customer.id} className="hover:bg-muted/30">
                                 <TableCell className="font-medium">{customer.name}</TableCell>
-                                <TableCell>{customer.email}</TableCell>
-                                <TableCell>{customer.phone ?? "—"}</TableCell>
+                                <TableCell>{customer.email ?? "—"}</TableCell>
+                                <TableCell>{customer.phone}</TableCell>
                                 <TableCell>{customer.company ?? "—"}</TableCell>
                                 <TableCell>
                                     <Badge className={`px-2 py-1 text-xs font-medium ${statusToneClasses[customer.status]}`}>
@@ -152,6 +167,12 @@ const CustomerTableComponent = ({ customers, onEdit }: CustomerTableProps) => {
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
+                                            {onStartConversation && (
+                                                <DropdownMenuItem onSelect={() => onStartConversation(customer)}>
+                                                    <MessageSquarePlus className="mr-2 size-4" aria-hidden="true" />
+                                                    {t("table.actions.startConversation")}
+                                                </DropdownMenuItem>
+                                            )}
                                             <DropdownMenuItem onSelect={() => onEdit(customer)}>
                                                 <Pencil className="mr-2 size-4" aria-hidden="true" />
                                                 {t("table.actions.edit")}

@@ -1,0 +1,30 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  worker:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.worker
+    ports:
+      - "8081:8081"
+    env_file:
+      - ../../.env
+    environment:
+      PORT: "8081"
+      WORKER_ID: worker-1
+      WORKER_URL: http://localhost:8081
+      REDIS_URL: redis://redis:6379
+      WORKER_INTERNAL_TOKEN: dev-worker-token
+      MAX_SESSIONS_PER_WORKER: "25"
+      FIRESTORE_PROJECT_ID: ${FIRESTORE_PROJECT_ID:-}
+    depends_on:
+      redis:
+        condition: service_healthy

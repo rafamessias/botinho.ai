@@ -65,6 +65,7 @@ export type FirestoreInboxCustomer = {
 
 export type FirestoreInboxConversation = {
   customerId: string
+  sessionId?: string | null
   subject?: string
   lastMessagePreview?: string
   lastMessageSentAt?: Timestamp

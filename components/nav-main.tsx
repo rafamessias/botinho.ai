@@ -1,8 +1,7 @@
 "use client"
 
-import { IconStar, type TablerIcon } from "@tabler/icons-react"
+import { type TablerIcon } from "@tabler/icons-react"
 import { usePathname, Link } from "@/i18n/navigation"
-import { useTranslations } from "next-intl"
 
 import {
   SidebarGroup,
@@ -23,9 +22,6 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname()
-  const t = useTranslations("NavMain")
-
-
 
   return (
     <SidebarGroup>
@@ -64,13 +60,6 @@ export function NavMain({
               </SidebarMenuItem>
             )
           })}
-          {/* Feedback Survey Item */}
-          <SidebarMenuItem>
-            <SidebarMenuButton className="group h-11 cursor-pointer rounded-xl px-3 text-sm font-semibold text-muted-foreground transition-all hover:bg-muted/60 hover:text-foreground">
-              <IconStar className="h-4 w-4 text-yellow-400 transition-transform group-hover:-rotate-12" />
-              <span className="tracking-tight">Rate our service</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

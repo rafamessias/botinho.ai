@@ -60,7 +60,7 @@ const removeMemberSchema = z.object({
 
 const tokenSchema = z.object({
   companyId: z.string().min(1),
-  tokenType: z.enum(["survey", "api"]).default("api"),
+  tokenType: z.literal("api").default("api"),
 })
 
 const bulkInviteMembersSchema = z.object({

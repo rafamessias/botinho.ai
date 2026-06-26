@@ -24,8 +24,9 @@ import {
 } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
+import { HeroInboxDemo } from "@/components/landing/hero-inbox-demo"
+import { LandingThemeToggle } from "@/components/landing/landing-theme-toggle"
 import {
-  ArrowRight,
   Bot,
   CalendarCheck,
   CheckCircle2,
@@ -59,12 +60,23 @@ export default async function LandingPage() {
 
   const navItems = [
     { href: "#about", label: t("header.nav.about") },
-    { href: "#sessions", label: t("header.nav.sessions") },
     { href: "#features", label: t("header.nav.features") },
     { href: "#pricing", label: t("header.nav.pricing") },
     { href: "#faq", label: t("header.nav.faq") },
+  ]
+
+  const footerNavItems = [
+    ...navItems,
+    { href: "#sessions", label: t("header.nav.sessions") },
     { href: "#contact", label: t("header.nav.contact") },
   ]
+
+  const themeLabels = {
+    light: t("header.theme.light"),
+    dark: t("header.theme.dark"),
+    system: t("header.theme.system"),
+    toggleAria: t("header.theme.toggleAria"),
+  }
 
   const onboardingSteps = [
     {
@@ -196,10 +208,10 @@ export default async function LandingPage() {
   return (
     <main className="relative min-h-screen bg-gradient-to-b from-background via-background/60 to-muted/40">
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-2 md:px-6">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-2 md:px-6">
           <Link
             href="/"
-            className="flex items-center gap-3 rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+            className="flex shrink-0 items-center gap-3 rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
             aria-label={t("header.logoAria")}
             tabIndex={0}
           >
@@ -209,14 +221,15 @@ export default async function LandingPage() {
               width={120}
               height={40}
               priority
+              className="h-8 w-auto"
             />
           </Link>
-          <nav className="hidden items-center gap-6 lg:flex">
+          <nav className="hidden items-center gap-5 lg:flex" aria-label="Main navigation">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 tabIndex={0}
                 aria-label={item.label}
               >
@@ -224,76 +237,80 @@ export default async function LandingPage() {
               </Link>
             ))}
           </nav>
-          <div className="hidden items-center gap-3 lg:flex">
-            <Button asChild variant="ghost" className="rounded-full px-5">
-              <Link href="/sign-in" aria-label={t("header.auth.login")}
-                tabIndex={0}
-              >
+          <div className="hidden items-center gap-2 lg:flex">
+            <LandingThemeToggle labels={themeLabels} />
+            <Button asChild variant="ghost" size="sm" className="rounded-full px-4">
+              <Link href="/sign-in" aria-label={t("header.auth.login")} tabIndex={0}>
                 {t("header.auth.login")}
               </Link>
             </Button>
-            <Button asChild className="rounded-full bg-primary px-6 text-sm font-semibold">
+            <Button asChild size="sm" className="rounded-full bg-primary px-5 text-sm font-semibold">
               <Link href="/register" aria-label={t("header.auth.start")} tabIndex={0}>
                 {t("header.auth.start")}
               </Link>
             </Button>
           </div>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="lg:hidden"
-                aria-label={t("header.mobileMenu.open")}
-                tabIndex={0}
-              >
-                <ChevronRight className="size-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-full max-w-xs border-l bg-background/95">
-              <div className="flex items-center gap-3 px-4 pt-2">
-                <Image src="/logo-green.png" alt={sharedLogoAlt} width={100} height={40} />
-              </div>
-              <Separator />
-              <nav className="flex flex-col gap-4 px-2">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-lg px-3 py-2 text-base font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
-                    tabIndex={0}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-              <div className="mt-8 flex flex-col gap-3 px-2">
-                <Button asChild variant="outline" className="rounded-full">
-                  <Link href="/sign-in" tabIndex={0}>
-                    {t("header.auth.login")}
-                  </Link>
+          <div className="flex items-center gap-1 lg:hidden">
+            <LandingThemeToggle labels={themeLabels} />
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-9"
+                  aria-label={t("header.mobileMenu.open")}
+                  tabIndex={0}
+                >
+                  <ChevronRight className="size-5" />
                 </Button>
-                <Button asChild className="rounded-full">
-                  <Link href="/register" tabIndex={0}>
-                    {t("header.auth.start")}
-                  </Link>
-                </Button>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full max-w-xs border-l bg-background/95">
+                <div className="flex items-center gap-3 px-4 pt-2">
+                  <Image src="/logo-green.png" alt={sharedLogoAlt} width={100} height={40} />
+                </div>
+                <Separator />
+                <nav className="flex flex-col gap-1 px-2">
+                  {footerNavItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="rounded-lg px-3 py-2 text-base font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                      tabIndex={0}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </nav>
+                <div className="mt-8 flex flex-col gap-3 px-2">
+                  <Button asChild variant="outline" className="rounded-full">
+                    <Link href="/sign-in" tabIndex={0}>
+                      {t("header.auth.login")}
+                    </Link>
+                  </Button>
+                  <Button asChild className="rounded-full">
+                    <Link href="/register" tabIndex={0}>
+                      {t("header.auth.start")}
+                    </Link>
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
 
       <section className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-4 pb-16 pt-12 md:px-6 lg:flex-row lg:items-center lg:gap-16 lg:pb-20 lg:pt-16">
-        <div className="flex flex-1 flex-col gap-6 text-center lg:text-left">
-          <Badge className="mx-auto flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1 text-primary lg:mx-0">
+        <div className="flex flex-1 flex-col gap-6 text-center lg:max-w-xl lg:text-left">
+          <Badge className="mx-auto flex w-fit items-center gap-2 rounded-full bg-primary/10 px-4 py-1 text-primary lg:mx-0">
             <Sparkles className="size-4" />
             {t("hero.badge")}
           </Badge>
-          <h1 className="text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             {t("hero.title")}
           </h1>
-          <p className="text-pretty text-lg text-muted-foreground sm:text-xl">{t("hero.description")}</p>
+          <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-foreground/75 sm:text-xl lg:mx-0">
+            {t("hero.description")}
+          </p>
           <div className="flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
             <Button asChild className="w-full rounded-full px-8 py-6 text-base font-semibold sm:w-auto">
               <Link href="/register" aria-label={t("hero.primaryCtaAria")} tabIndex={0}>
@@ -310,7 +327,7 @@ export default async function LandingPage() {
               </Link>
             </Button>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground lg:justify-start">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-foreground/70 lg:justify-start">
             <div className="flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm">
               <Star className="size-4 text-amber-500" />
               <span>{t("hero.rating")}</span>
@@ -321,51 +338,17 @@ export default async function LandingPage() {
             </div>
           </div>
         </div>
-        <Card className="flex-1 rounded-3xl border border-primary/10 bg-background/80 p-0 shadow-xl">
-          <div className="flex flex-col gap-6 p-6">
-            <div className="flex items-center gap-3">
-              <Image src="/bot-green.svg" alt={sharedLogoAlt} width={120} height={120} className="h-9 w-9" />
-              <span className="text-lg font-semibold">{t("hero.inbox.title")}</span>
-            </div>
-            <div className="space-y-4 rounded-2xl bg-muted/60 p-4">
-              <div className="flex items-start gap-3">
-                <span className="flex size-8 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary">
-                  JA
-                </span>
-                <div className="flex-1 rounded-2xl bg-background/80 p-3 shadow-sm max-w-[250px]">
-                  <p className="text-sm font-semibold">{t("hero.inbox.customerName")}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{t("hero.inbox.customerQuestion")}</p>
-                </div>
-              </div>
-              <div className="flex items-start justify-end gap-3">
-                <span className="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                  AI
-                </span>
-                <div className="flex-1 rounded-2xl bg-primary/10 p-3 shadow-sm max-w-[250px]">
-                  <p className="text-sm text-primary">{t("hero.inbox.aiReply")}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="flex size-8 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary">
-                  JA
-                </span>
-                <div className="flex-1 rounded-2xl bg-background/80 p-3 shadow-sm max-w-[250px]">
-                  <p className="text-sm font-semibold">{t("hero.inbox.customerName")}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{t("hero.inbox.customerConfirmation")}</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-between rounded-2xl bg-card px-4 py-3 shadow-sm">
-              <div>
-                <p className="text-sm font-semibold">{t("hero.inbox.followUpsTitle")}</p>
-                <p className="text-xs text-muted-foreground">{t("hero.inbox.followUpsDescription")}</p>
-              </div>
-              <Button size="icon" variant="ghost" className="rounded-full" aria-label={t("hero.inbox.followUpsAria")}>
-                <ArrowRight className="size-5" />
-              </Button>
-            </div>
-          </div>
-        </Card>
+        <HeroInboxDemo
+          logoAlt={sharedLogoAlt}
+          title={t("hero.inbox.title")}
+          customerName={t("hero.inbox.customerName")}
+          customerQuestion={t("hero.inbox.customerQuestion")}
+          aiReply={t("hero.inbox.aiReply")}
+          customerConfirmation={t("hero.inbox.customerConfirmation")}
+          followUpsTitle={t("hero.inbox.followUpsTitle")}
+          followUpsDescription={t("hero.inbox.followUpsDescription")}
+          followUpsAria={t("hero.inbox.followUpsAria")}
+        />
       </section>
 
       <section id="about" className="bg-card/40">
@@ -373,7 +356,7 @@ export default async function LandingPage() {
           <div className="flex-1 space-y-6">
             <Badge className="rounded-full bg-primary/10 px-4 py-1 text-primary">{t("about.badge")}</Badge>
             <h2 className="text-balance text-3xl font-semibold sm:text-4xl lg:text-5xl">{t("about.title")}</h2>
-            <p className="text-pretty text-lg text-muted-foreground">{t("about.description")}</p>
+            <p className="text-pretty text-lg leading-relaxed text-foreground/75">{t("about.description")}</p>
             <div className="grid gap-4 sm:grid-cols-2">
               <Card className="rounded-2xl border-primary/15 bg-background/90 shadow-sm">
                 <CardHeader className="gap-3">
@@ -382,7 +365,7 @@ export default async function LandingPage() {
                   </span>
                   <CardTitle className="text-lg">{t("about.cards.humanFriendly.title")}</CardTitle>
                 </CardHeader>
-                <CardContent className="pb-6 text-sm text-muted-foreground">
+                <CardContent className="pb-6 text-sm leading-relaxed text-foreground/70">
                   {t("about.cards.humanFriendly.description")}
                 </CardContent>
               </Card>
@@ -393,7 +376,7 @@ export default async function LandingPage() {
                   </span>
                   <CardTitle className="text-lg">{t("about.cards.builtForTeams.title")}</CardTitle>
                 </CardHeader>
-                <CardContent className="pb-6 text-sm text-muted-foreground">
+                <CardContent className="pb-6 text-sm leading-relaxed text-foreground/70">
                   {t("about.cards.builtForTeams.description")}
                 </CardContent>
               </Card>
@@ -401,7 +384,7 @@ export default async function LandingPage() {
           </div>
           <div className="flex-1 space-y-6 rounded-3xl border border-primary/10 bg-background/70 p-8 shadow-xl">
             <h3 className="text-xl font-semibold">{t("about.reasons.title")}</h3>
-            <ul className="grid gap-4 text-sm text-muted-foreground">
+            <ul className="grid gap-4 text-sm leading-relaxed text-foreground/70">
               {reasons.map((reason, index) => (
                 <li key={reason} className="flex items-start gap-3">
                   <span className="mt-1 flex size-6 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
@@ -419,7 +402,7 @@ export default async function LandingPage() {
         <div className="flex flex-col gap-6 text-center">
           <Badge className="mx-auto rounded-full bg-primary/10 px-4 py-1 text-primary">{t("sessions.badge")}</Badge>
           <h2 className="text-balance text-3xl font-semibold sm:text-4xl">{t("sessions.title")}</h2>
-          <p className="mx-auto max-w-3xl text-pretty text-lg text-muted-foreground">{t("sessions.description")}</p>
+          <p className="mx-auto max-w-3xl text-pretty text-lg leading-relaxed text-foreground/75">{t("sessions.description")}</p>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {onboardingSteps.map((step) => (
@@ -430,7 +413,7 @@ export default async function LandingPage() {
                 </span>
                 <CardTitle className="text-lg">{step.title}</CardTitle>
               </CardHeader>
-              <CardContent className="pb-6 text-sm text-muted-foreground">{step.description}</CardContent>
+              <CardContent className="pb-6 text-sm leading-relaxed text-foreground/70">{step.description}</CardContent>
             </Card>
           ))}
         </div>
@@ -441,7 +424,7 @@ export default async function LandingPage() {
           <div className="flex flex-col gap-6 text-center">
             <Badge className="mx-auto rounded-full bg-primary/10 px-4 py-1 text-primary">{t("features.badge")}</Badge>
             <h2 className="text-balance text-3xl font-semibold sm:text-4xl">{t("features.title")}</h2>
-            <p className="mx-auto max-w-3xl text-pretty text-lg text-muted-foreground">{t("features.description")}</p>
+            <p className="mx-auto max-w-3xl text-pretty text-lg leading-relaxed text-foreground/75">{t("features.description")}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {featureHighlights.map((feature) => (
@@ -476,7 +459,7 @@ export default async function LandingPage() {
         <div className="flex flex-col gap-6 text-center">
           <Badge className="mx-auto rounded-full bg-primary/10 px-4 py-1 text-primary">{t("testimonials.badge")}</Badge>
           <h2 className="text-balance text-3xl font-semibold sm:text-4xl">{t("testimonials.title")}</h2>
-          <p className="mx-auto max-w-3xl text-pretty text-lg text-muted-foreground">{t("testimonials.description")}</p>
+          <p className="mx-auto max-w-3xl text-pretty text-lg leading-relaxed text-foreground/75">{t("testimonials.description")}</p>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {testimonials.map((testimonial) => (
@@ -489,7 +472,7 @@ export default async function LandingPage() {
                 </div>
                 <CardDescription className="text-left text-base text-foreground">“{testimonial.quote}”</CardDescription>
               </CardHeader>
-              <CardContent className="pb-6 text-left text-sm text-muted-foreground">
+              <CardContent className="pb-6 text-left text-sm leading-relaxed text-foreground/70">
                 <p className="font-semibold text-foreground">{testimonial.name}</p>
                 <p>{testimonial.role}</p>
               </CardContent>
@@ -503,8 +486,8 @@ export default async function LandingPage() {
           <div className="flex flex-col gap-6 text-center">
             <Badge className="mx-auto rounded-full bg-primary/10 px-4 py-1 text-primary">{t("pricing.badge")}</Badge>
             <h2 className="text-balance text-3xl font-semibold sm:text-4xl">{t("pricing.title")}</h2>
-            <p className="mx-auto max-w-3xl text-pretty text-lg text-muted-foreground">{t("pricing.description")}</p>
-            <p className="text-sm text-muted-foreground">{t("pricing.savingsNote")}</p>
+            <p className="mx-auto max-w-3xl text-pretty text-lg leading-relaxed text-foreground/75">{t("pricing.description")}</p>
+            <p className="text-sm leading-relaxed text-foreground/65">{t("pricing.savingsNote")}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {pricingPlans.map((plan) => (
@@ -529,7 +512,7 @@ export default async function LandingPage() {
                   <CardDescription>{plan.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-6 pb-8">
-                  <ul className="space-y-3 text-sm text-muted-foreground">
+                  <ul className="space-y-3 text-sm leading-relaxed text-foreground/70">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-2">
                         <span className="mt-1 flex size-5 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
@@ -562,13 +545,13 @@ export default async function LandingPage() {
         <div className="flex flex-col gap-6 text-center">
           <Badge className="mx-auto rounded-full bg-primary/10 px-4 py-1 text-primary">{t("faq.badge")}</Badge>
           <h2 className="text-balance text-3xl font-semibold sm:text-4xl">{t("faq.title")}</h2>
-          <p className="mx-auto max-w-3xl text-pretty text-lg text-muted-foreground">{t("faq.description")}</p>
+          <p className="mx-auto max-w-3xl text-pretty text-lg leading-relaxed text-foreground/75">{t("faq.description")}</p>
         </div>
         <Accordion type="single" collapsible className="mt-12 rounded-2xl border border-primary/15 bg-background/80 p-6">
           {faqs.map((faq) => (
             <AccordionItem key={faq.question} value={faq.question}>
               <AccordionTrigger className="text-left text-base font-semibold">{faq.question}</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground">{faq.answer}</AccordionContent>
+              <AccordionContent className="text-sm leading-relaxed text-foreground/70">{faq.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
@@ -579,7 +562,7 @@ export default async function LandingPage() {
           <div className="flex flex-col gap-4 text-center">
             <Badge className="mx-auto rounded-full bg-primary/10 px-4 py-1 text-primary">{t("contact.badge")}</Badge>
             <h2 className="text-balance text-3xl font-semibold sm:text-4xl">{t("contact.title")}</h2>
-            <p className="text-pretty text-lg text-muted-foreground">{t("contact.description")}</p>
+            <p className="text-pretty text-lg leading-relaxed text-foreground/75">{t("contact.description")}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
             <Card className="rounded-2xl border border-primary/10 bg-background/90 shadow-sm">
@@ -587,7 +570,7 @@ export default async function LandingPage() {
                 <CardTitle className="text-lg">{contactSpecialist.title}</CardTitle>
                 <CardDescription>{contactSpecialist.description}</CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col gap-4 pb-8 text-sm text-muted-foreground">
+              <CardContent className="flex flex-col gap-4 pb-8 text-sm leading-relaxed text-foreground/70">
                 <Button asChild className="rounded-full">
                   <Link href="mailto:oi@botinho.ai" tabIndex={0}>
                     {contactSpecialist.emailCta}
@@ -620,7 +603,7 @@ export default async function LandingPage() {
 
       <section className="mx-auto my-16 w-full max-w-5xl rounded-3xl border border-primary/20 bg-primary/10 px-6 py-10 text-center md:px-12">
         <h2 className="text-balance text-3xl font-semibold text-primary sm:text-4xl">{t("cta.title")}</h2>
-        <p className="mt-4 text-pretty text-base text-primary/80 md:text-lg">{t("cta.description")}</p>
+        <p className="mt-4 text-pretty text-base leading-relaxed text-primary/85 md:text-lg">{t("cta.description")}</p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button asChild className="w-full rounded-full bg-primary px-8 py-5 text-sm font-semibold text-primary-foreground sm:w-auto">
             <Link href="/register" tabIndex={0}>
@@ -646,12 +629,12 @@ export default async function LandingPage() {
               >
                 <Image src="/logo-green.png" alt={sharedLogoAlt} width={100} height={40} />
               </Link>
-              <p className="max-w-md text-sm text-muted-foreground">{t("footer.description")}</p>
+              <p className="max-w-md text-sm leading-relaxed text-foreground/70">{t("footer.description")}</p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                 <span className="text-sm font-semibold text-foreground">{t("footer.exploreTitle")}</span>
-                {navItems.map((item) => (
+                {footerNavItems.map((item) => (
                   <Link key={item.href} href={item.href} className="transition hover:text-foreground" tabIndex={0}>
                     {item.label}
                   </Link>

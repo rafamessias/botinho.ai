@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: botinho-whatsapp-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: botinho-whatsapp-worker
+  template:
+    metadata:
+      labels:
+        app: botinho-whatsapp-worker
+    spec:
+      containers:
+        - name: worker
+          image: REGION-docker.pkg.dev/PROJECT/botinho/whatsapp-worker:latest
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - secretRef:
+                name: botinho-whatsapp-worker-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: botinho-whatsapp-worker
+spec:
+  selector:
+    app: botinho-whatsapp-worker
+  ports:
+    - port: 8081
+      targetPort: 8081
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: botinho-whatsapp-worker
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: botinho-whatsapp-worker
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

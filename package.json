@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:infra": "docker compose -f docker-compose.dev.yml up --build",
+    "dev:infra:down": "docker compose -f docker-compose.dev.yml down",
+    "dev:worker": "cd services/whatsapp-worker && make run-worker",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -84,6 +87,7 @@
     "react-style-editor": "^0.4.0",
     "react-syntax-highlighter": "^15.6.6",
     "recharts": "2.15.4",
+    "redis": "^4.7.1",
     "sonner": "^1.7.4",
     "stripe": "^18.5.0",
     "tailwind-merge": "^2.5.5",

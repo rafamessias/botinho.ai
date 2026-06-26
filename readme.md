@@ -35,9 +35,10 @@
 | Database | Cloud Firestore |
 | AI | Gemini via Firebase AI Logic |
 | Billing | Stripe |
+| WhatsApp | whatsmeow worker in `services/whatsapp-worker/` + orchestration in `lib/whatsapp/` |
 | i18n | next-intl (English, Brazilian Portuguese) |
 
-**Not yet connected:** WhatsApp messaging provider, production transactional email (dev console stub).
+**Partial:** Production transactional email (dev console stub).
 
 ## Documentation
 
@@ -73,8 +74,14 @@ Configure `.env.local` — see `.env.example` for required variables:
 - `AUTH_SECRET`, Google OAuth credentials
 - Stripe keys (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_SECRET_KEY`, etc.)
 - `NEXT_PUBLIC_APP_URL`
+- WhatsApp: `REDIS_URL`, `WORKER_INTERNAL_TOKEN`, `WHATSAPP_WEBHOOK_SECRET`
+
+### Run the app
 
 ```bash
+# Optional — Redis + WhatsApp worker (required for Settings → WhatsApp pairing)
+npm run dev:infra
+
 npm run dev
 ```
 
@@ -84,6 +91,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```bash
 npm run dev          # Development (Turbopack)
+npm run dev:infra    # Docker: Redis + WhatsApp worker
+npm run dev:worker   # Run Go worker on host (needs Redis)
 npm run build        # Production build
 npm run start        # Production server
 npm run lint         # ESLint
@@ -95,12 +104,15 @@ npm run check        # Lint + type-check
 
 ```
 botinho.ai/
-├── app/                 # Next.js App Router (pages, API routes)
-├── components/          # React components + server actions
-├── lib/                 # Firebase, Stripe, auth, utilities
-├── i18n/messages/       # Translations (en, pt-BR)
-├── docs/spec/           # Product specification
-└── public/              # Static assets
+├── app/                        # Next.js App Router (pages, API routes)
+├── components/                 # React components + server actions
+├── lib/
+│   ├── whatsapp/               # Session orchestrator (replaces Go Manager)
+│   └── firebase/               # Firestore, auth, AI
+├── services/whatsapp-worker/   # Go whatsmeow worker
+├── i18n/messages/              # Translations (en, pt-BR)
+├── docs/spec/                  # Product specification
+└── public/                     # Static assets
 ```
 
 ## Deployment

@@ -6,13 +6,19 @@
         "header": {
             "logoAria": "Go to botinho home",
             "nav": {
-                "about": "What is botinho",
-                "sessions": "Sessions",
+                "about": "About",
+                "sessions": "How it works",
                 "features": "Features",
                 "pricing": "Pricing",
                 "faq": "FAQ",
                 "contact": "Contact",
                 "itemAria": "Navigate to {section}"
+            },
+            "theme": {
+                "light": "Light",
+                "dark": "Dark",
+                "system": "System",
+                "toggleAria": "Toggle color theme"
             },
             "auth": {
                 "login": "Login",
@@ -343,7 +349,57 @@
             "hideConversations": "Collapse conversations",
             "showContext": "Show context",
             "hideContext": "Hide context",
-            "send": "Send message"
+            "send": "Send message",
+            "newConversation": "New conversation"
+        },
+        "toolbar": {
+            "connectionLabel": "Connection",
+            "connectionPlaceholder": "Select a connection",
+            "allConnections": "All connections"
+        },
+        "newConversation": {
+            "title": "Start a conversation",
+            "description": "Choose an existing customer or add a new contact to begin messaging.",
+            "connectionLabel": "Send from",
+            "connectionPlaceholder": "Select a phone number",
+            "tabs": {
+                "existing": "Existing customers",
+                "adhoc": "New contact"
+            },
+            "searchCustomersPlaceholder": "Search customers...",
+            "loadingCustomers": "Loading customers...",
+            "emptyCustomers": "No customers found. Add a new contact instead.",
+            "adhocHint": "Create a one-off contact without saving them to your customer list first.",
+            "fields": {
+                "name": "Name",
+                "namePlaceholder": "Customer name",
+                "phone": "Phone",
+                "phonePlaceholder": "+55 11 99999-0000",
+                "email": "Email",
+                "emailPlaceholder": "email@example.com"
+            },
+            "columns": {
+                "name": "Name",
+                "phone": "Phone",
+                "email": "Email"
+            },
+            "actions": {
+                "cancel": "Cancel",
+                "start": "Start conversation",
+                "creating": "Starting..."
+            },
+            "messages": {
+                "created": "Conversation started",
+                "existingConversation": "Opened existing conversation"
+            },
+            "errors": {
+                "loadCustomers": "Could not load customers",
+                "customerRequired": "Select a customer to continue",
+                "nameRequired": "Name is required",
+                "phoneRequired": "Phone is required to start a WhatsApp conversation",
+                "connectionRequired": "Select a connection to send messages",
+                "createFailed": "Could not start the conversation"
+            }
         },
         "priority": {
             "low": "Low",
@@ -497,17 +553,6 @@
         },
         "documents": {
             "dataLibrary": "Data Library"
-        }
-    },
-    "NavMain": {
-        "quickCreate": "Create Survey",
-        "addCompany": "Add Company",
-        "selectCompany": "Select company...",
-        "searchCompanies": "Search companies...",
-        "noCompaniesFound": "No companies found.",
-        "messages": {
-            "companiesUpdated": "Companies updated successfully",
-            "failedToUpdateDefaultCompany": "Failed to update default company"
         }
     },
     "SiteHeader": {
@@ -716,76 +761,6 @@
             "upgradeRequired": "Removing branding is not available in your current plan",
             "updateFailed": "Failed to update branding settings"
         },
-        "api": {
-            "title": "API Configuration",
-            "description": "Manage API tokens for programmatic access",
-            "surveyToken": "Integration Token",
-            "apiToken": "API Token",
-            "noTokenGenerated": "No token generated",
-            "generateToken": "Generate Token",
-            "regenerateToken": "Regenerate Token",
-            "generating": "Generating...",
-            "regenerating": "Regenerating...",
-            "apiEndpoint": "API Endpoint",
-            "documentation": "API Documentation",
-            "documentationDescription": "View code examples and API reference",
-            "showDocs": "Show Docs",
-            "hideDocs": "Hide Docs",
-            "requestBody": "Request Body",
-            "successResponse": "Success Response",
-            "tokenCopied": "Token copied",
-            "tokenCopiedDescription": "API token has been copied to clipboard",
-            "codeCopied": "Code copied",
-            "codeCopiedDescription": "Code example copied to clipboard",
-            "endpointCopied": "Endpoint copied",
-            "endpointCopiedDescription": "API endpoint URL copied to clipboard",
-            "noCompany": "No company available. Please create or join a company first.",
-            "confirmRegenerateTitle": "Regenerate Token",
-            "confirmRegenerateDescription": "Are you sure you want to regenerate this token? This action cannot be undone and will invalidate the current token.",
-            "confirmRegenerate": "Regenerate Token",
-            "cancel": "Cancel",
-            "tabs": {
-                "surveyToken": "Survey Token",
-                "apiToken": "API Token"
-            },
-            "codeSnippets": {
-                "surveyWidget": {
-                    "title": "Survey Widget Integration",
-                    "description": "Use this token to embed surveys directly on your website",
-                    "example": "Survey Widget Example",
-                    "copyCode": "Copy Code"
-                },
-                "apiIntegration": {
-                    "title": "API Integration",
-                    "description": "Use this token to submit survey responses via API",
-                    "example": "API Integration Example",
-                    "copyCode": "Copy Code"
-                }
-            },
-            "widget": {
-                "title": "Survey Widget Integration",
-                "description": "Embed surveys directly on your website with our JavaScript widget",
-                "show": "Show Guide",
-                "hide": "Hide Guide",
-                "codeCopied": "Code copied to clipboard",
-                "htmlSetup": "HTML Setup",
-                "fullExample": "Complete Implementation",
-                "questionFormats": "Question Types Reference",
-                "quickStart": "Quick Start Guide",
-                "tabs": {
-                    "setup": "Setup",
-                    "implementation": "Implementation",
-                    "formats": "Question Types"
-                },
-                "steps": {
-                    "includeScript": "Include the widget script in your HTML",
-                    "createContainer": "Add a container div element",
-                    "configureQuestions": "Configure your survey questions",
-                    "addToken": "Add your company token for submissions",
-                    "mount": "Mount the widget to your container"
-                }
-            }
-        },
         "page": {
             "tabs": {
                 "whatsapp": "WhatsApp",
@@ -828,6 +803,13 @@
                     "disconnected": "Disconnected"
                 },
                 "disconnect": "Disconnect",
+                "label": {
+                    "placeholder": "Connection label",
+                    "editAria": "Edit connection label",
+                    "save": "Save label",
+                    "cancel": "Cancel editing",
+                    "required": "Enter a label for this connection"
+                },
                 "messages": {
                     "messagesThisMonth": "{count} messages this month"
                 },
@@ -874,6 +856,8 @@
                         "idle": "Start pairing to generate a WhatsApp QR code."
                     },
                     "qrAlt": "WhatsApp pairing QR code",
+                    "nameLabel": "Session name",
+                    "nameHint": "Optional — auto-generated from phone number if left blank",
                     "displayNameHint": "Leave blank to use default: WhatsApp [last 4 digits]",
                     "latest": {
                         "title": "WhatsApp connected",
@@ -1185,240 +1169,6 @@
     "Company": {
         "title": "Company Management",
         "description": "Manage your companies and company members",
-        "createCompany": "Create Company",
-        "createCompanyDescription": "Create a new company to get started.",
-        "editCompany": "Edit Company",
-        "editCompanyDescription": "Update your company information.",
-        "selectCompany": "Select Company",
-        "companyDetails": "Company information and settings",
-        "noCompanies": "No companies found",
-        "noCompaniesDescription": "You haven't created any companies yet. Create your first company to get started.",
-        "createFirstCompany": "Create Your First Company",
-        "form": {
-            "name": "Company Name",
-            "namePlaceholder": "Enter company name",
-            "documentType": "Document Type",
-            "selectDocumentType": "Document type",
-            "document": "Document Number",
-            "documentPlaceholder": "Enter document number",
-            "zipCode": "ZIP Code",
-            "zipCodePlaceholder": "Enter ZIP code",
-            "state": "State",
-            "statePlaceholder": "Enter state",
-            "city": "City",
-            "cityPlaceholder": "Enter city",
-            "address": "Address",
-            "addressPlaceholder": "Enter full address",
-            "cancel": "Cancel",
-            "create": "Create Company",
-            "creating": "Creating...",
-            "update": "Update Company",
-            "updating": "Updating..."
-        },
-        "documentTypes": {
-            "cpf": "CPF",
-            "cnpj": "CNPJ"
-        },
-        "members": {
-            "title": "Team Members",
-            "description": "Manage your company team members and their permissions",
-            "inviteMember": "Invite Member",
-            "inviteDescription": "Send an invitation to a new team member.",
-            "email": "Email Address",
-            "emailPlaceholder": "member@example.com",
-            "permissions": "Permissions",
-            "isAdmin": "Administrator - Can manage company and members",
-            "canPost": "Can Create - Can create surveys",
-            "canApprove": "Can Read - Can read surveys and results",
-            "sendInvite": "Send Invitation",
-            "inviting": "Sending...",
-            "name": "Name",
-            "role": "Role",
-            "statusLabel": "Status",
-            "owner": "Owner",
-            "admin": "Admin",
-            "member": "Member",
-            "makeAdmin": "Make Admin",
-            "removeAdmin": "Remove Admin",
-            "removeMember": "Remove Member",
-            "noMembers": "No company members",
-            "noMembersDescription": "Your company doesn't have any members yet.",
-            "inviteFirstMember": "Invite Your First Member",
-            "status": {
-                "invited": "Invited",
-                "accepted": "Active",
-                "rejected": "Rejected"
-            },
-            "inviteSuccess": "Member invited successfully",
-            "inviteFailed": "Failed to invite member",
-            "inviteCompanyUserConflict": "This email already belongs to another company.",
-            "inviteResent": "Invitation resent successfully",
-            "inviteResendFailed": "Failed to resend invitation",
-            "alreadyHasCompany": "You already belong to a company and cannot create another one.",
-            "removeSuccess": "Member removed successfully",
-            "removeFailed": "Failed to remove member",
-            "updateSuccess": "Member permissions updated successfully",
-            "updateFailed": "Failed to update member permissions",
-            "actions": "Actions",
-            "openMenu": "Open menu",
-            "resendInvite": "Resend invitation",
-            "resendingInvite": "Resending...",
-            "excel": {
-                "singleInvite": "Single Invite",
-                "bulkImport": "Bulk Import",
-                "uploadLabel": "Upload Excel File",
-                "uploadDescription": "Upload an Excel or CSV file with member information to invite multiple members at once.",
-                "dropHere": "Drop the file here",
-                "clickOrDrag": "Click to upload or drag and drop",
-                "supportedFormats": "Supports .xlsx, .xls, and .csv files",
-                "formatInfo": "Required columns: email (required). Optional columns: firstName, lastName, isAdmin, canPost, canApprove. Column names are case-insensitive.",
-                "parseError": "Failed to parse Excel file",
-                "readError": "Failed to read file",
-                "invalidFileType": "Invalid file type. Please upload .xlsx, .xls, or .csv files.",
-                "parsedSuccess": "Successfully parsed {count} member(s)",
-                "parsedWithErrors": "Parsed with {count} error(s)",
-                "errorsFound": "{count} error(s) found",
-                "noData": "No valid member data found in file",
-                "email": "Email",
-                "firstName": "First Name",
-                "lastName": "Last Name",
-                "admin": "Admin",
-                "canPost": "Can Post",
-                "canApprove": "Can Approve",
-                "preview": "Preview ({count} members)",
-                "clear": "Clear",
-                "inviting": "Inviting...",
-                "inviteAll": "Invite All ({count})",
-                "bulkSuccess": "Successfully invited {count} member(s)",
-                "bulkErrors": "Failed to invite {count} member(s)",
-                "bulkFailed": "Bulk invite failed"
-            }
-        },
-        "messages": {
-            "createSuccess": "Company created successfully",
-            "updateSuccess": "Company updated successfully",
-            "operationFailed": "Operation failed",
-            "unexpectedError": "An unexpected error occurred",
-            "bulkInviteSuccess": "Successfully invited {count} member(s)",
-            "bulkInviteFailed": "Failed to invite members"
-        }
-    },
-    "Profile": {
-        "title": "Profile",
-        "description": "Manage your account information and preferences",
-        "avatar": {
-            "title": "Profile Picture",
-            "description": "Update your profile picture",
-            "change": "Change photo",
-            "instructions": "Click the camera icon to upload a new profile picture. Supported formats: JPG, PNG, GIF.",
-            "updating": "Updating avatar..."
-        },
-        "profile": {
-            "title": "Personal Information",
-            "description": "Update your personal information",
-            "firstName": "First Name",
-            "firstNamePlaceholder": "Enter your first name",
-            "lastName": "Last Name",
-            "lastNamePlaceholder": "Enter your last name",
-            "phone": "Phone Number",
-            "phonePlaceholder": "+1 (555) 123-4567",
-            "position": "Position",
-            "positionPlaceholder": "Enter your position",
-            "companyName": "Company Name",
-            "companyNamePlaceholder": "Enter your company name",
-            "country": "Country",
-            "countryPlaceholder": "Enter your country",
-            "socialLinks": "Social Links",
-            "linkedinUrl": "LinkedIn URL",
-            "twitterUrl": "X URL",
-            "websiteUrl": "Website URL",
-            "githubUrl": "GitHub URL",
-            "email": "Email Address",
-            "emailNote": "Email address cannot be changed"
-        },
-        "messages": {
-            "profileUpdated": "Profile updated successfully",
-            "avatarUpdated": "Profile picture updated successfully",
-            "updateFailed": "Failed to update profile",
-            "avatarUpdateFailed": "Failed to update profile picture",
-            "unexpectedError": "An unexpected error occurred",
-            "accountDeleted": "Account deleted successfully",
-            "deleteFailed": "Failed to delete account"
-        },
-        "validation": {
-            "firstNameRequired": "First name is required",
-            "firstNameTooLong": "First name is too long",
-            "lastNameTooLong": "Last name is too long",
-            "phoneMinLength": "Phone number must be at least 10 characters",
-            "phoneInvalid": "Invalid phone number format",
-            "urlInvalid": "Please enter a valid URL"
-        },
-        "deleteAccount": {
-            "title": "Delete Account",
-            "description": "Permanently delete your account and all associated data",
-            "warning": "This action cannot be undone. All your data, surveys, and company memberships will be permanently deleted.",
-            "button": "Delete Account",
-            "modal": {
-                "title": "Delete Account",
-                "description": "This action cannot be undone. This will permanently delete your account and remove all data from our servers.",
-                "emailLabel": "Type your email to confirm",
-                "emailNote": "You must type your exact email address to confirm deletion",
-                "confirm": "Yes, delete my account",
-                "consequences": {
-                    "title": "What happens when you delete your account:",
-                    "account": "Your account will be permanently deleted",
-                    "teams": "If you own any teams, all members will be removed and teams will be deactivated",
-                    "companies": "If you own any companies, all members will be removed and companies will be deactivated",
-                    "data": "All your surveys, responses, and data will be permanently deleted",
-                    "irreversible": "This action is irreversible and cannot be undone"
-                }
-            }
-        }
-    },
-    "CompanyInvitation": {
-        "pageTitle": "Company Invitation",
-        "title": "You've been invited!",
-        "description": "You have received an invitation to join a company.",
-        "companyInvitation": "Company invitation",
-        "acceptInvitation": "Accept Invitation",
-        "rejectInvitation": "Decline Invitation",
-        "accepting": "Accepting...",
-        "rejecting": "Declining...",
-        "status": {
-            "accepted": {
-                "title": "Invitation Accepted!",
-                "description": "You have successfully joined the company.",
-                "descriptionWithCompany": "You have successfully joined {companyName}.",
-                "redirecting": "Redirecting you to the company page...",
-                "goToCompany": "Go to Company"
-            },
-            "rejected": {
-                "title": "Invitation Declined",
-                "description": "You have declined the company invitation.",
-                "goHome": "Go to Home"
-            },
-            "error": {
-                "title": "Invalid Invitation",
-                "description": "This invitation link is invalid or has expired.",
-                "instructions": "The invitation may have already been used or canceled.",
-                "goToCompanies": "Go to Companies",
-                "goHome": "Go to Home"
-            }
-        },
-        "messages": {
-            "invitationAccepted": "Company invitation accepted successfully",
-            "invitationRejected": "Company invitation declined"
-        },
-        "errors": {
-            "invalidInvitation": "Invalid invitation link",
-            "acceptFailed": "Failed to accept invitation",
-            "rejectFailed": "Failed to decline invitation",
-            "unexpectedError": "An unexpected error occurred"
-        }
-    },
-    "Company": {
-        "title": "Company Management",
-        "description": "Manage your companies and company members",
         "companies": "Companies",
         "createCompany": "Create Company",
         "createCompanyDescription": "Create a new company to collaborate with others.",
@@ -1450,8 +1200,8 @@
             "emailPlaceholder": "member@example.com",
             "permissions": "Permissions",
             "isAdmin": "Administrator - Can manage company and members",
-            "canPost": "Can Create - Can create surveys",
-            "canApprove": "Can Read - Can read surveys and results",
+            "canPost": "Can Create - Can send messages and manage content",
+            "canApprove": "Can Read - Can view conversations and reports",
             "sendInvite": "Send Invitation",
             "inviting": "Sending...",
             "name": "Name",
@@ -1548,8 +1298,8 @@
                 "description": "Update permissions for {firstName} {lastName}",
                 "permissions": "Permissions",
                 "companyAdministrator": "Company Administrator",
-                "canPostContent": "Can Create Surveys",
-                "canApproveContent": "Can Read Surveys and Results",
+                "canPostContent": "Can send messages and manage content",
+                "canApproveContent": "Can view conversations and reports",
                 "cancel": "Cancel",
                 "saveChanges": "Save Changes",
                 "saving": "Saving..."
@@ -1562,6 +1312,119 @@
                 "removeMember": "Remove Member"
             },
             "noCompanySelected": "Select a company to view details"
+        }
+    },
+    "Profile": {
+        "title": "Profile",
+        "description": "Manage your account information and preferences",
+        "avatar": {
+            "title": "Profile Picture",
+            "description": "Update your profile picture",
+            "change": "Change photo",
+            "instructions": "Click the camera icon to upload a new profile picture. Supported formats: JPG, PNG, GIF.",
+            "updating": "Updating avatar..."
+        },
+        "profile": {
+            "title": "Personal Information",
+            "description": "Update your personal information",
+            "firstName": "First Name",
+            "firstNamePlaceholder": "Enter your first name",
+            "lastName": "Last Name",
+            "lastNamePlaceholder": "Enter your last name",
+            "phone": "Phone Number",
+            "phonePlaceholder": "+1 (555) 123-4567",
+            "position": "Position",
+            "positionPlaceholder": "Enter your position",
+            "companyName": "Company Name",
+            "companyNamePlaceholder": "Enter your company name",
+            "country": "Country",
+            "countryPlaceholder": "Enter your country",
+            "socialLinks": "Social Links",
+            "linkedinUrl": "LinkedIn URL",
+            "twitterUrl": "X URL",
+            "websiteUrl": "Website URL",
+            "githubUrl": "GitHub URL",
+            "email": "Email Address",
+            "emailNote": "Email address cannot be changed"
+        },
+        "messages": {
+            "profileUpdated": "Profile updated successfully",
+            "avatarUpdated": "Profile picture updated successfully",
+            "updateFailed": "Failed to update profile",
+            "avatarUpdateFailed": "Failed to update profile picture",
+            "unexpectedError": "An unexpected error occurred",
+            "accountDeleted": "Account deleted successfully",
+            "deleteFailed": "Failed to delete account"
+        },
+        "validation": {
+            "firstNameRequired": "First name is required",
+            "firstNameTooLong": "First name is too long",
+            "lastNameTooLong": "Last name is too long",
+            "phoneMinLength": "Phone number must be at least 10 characters",
+            "phoneInvalid": "Invalid phone number format",
+            "urlInvalid": "Please enter a valid URL"
+        },
+        "deleteAccount": {
+            "title": "Delete Account",
+            "description": "Permanently delete your account and all associated data",
+            "warning": "This action cannot be undone. All your data, conversations, and company memberships will be permanently deleted.",
+            "button": "Delete Account",
+            "modal": {
+                "title": "Delete Account",
+                "description": "This action cannot be undone. This will permanently delete your account and remove all data from our servers.",
+                "emailLabel": "Type your email to confirm",
+                "emailNote": "You must type your exact email address to confirm deletion",
+                "confirm": "Yes, delete my account",
+                "consequences": {
+                    "title": "What happens when you delete your account:",
+                    "account": "Your account will be permanently deleted",
+                    "teams": "If you own any teams, all members will be removed and teams will be deactivated",
+                    "companies": "If you own any companies, all members will be removed and companies will be deactivated",
+                    "data": "All your conversations, customer data, and settings will be permanently deleted",
+                    "irreversible": "This action is irreversible and cannot be undone"
+                }
+            }
+        }
+    },
+    "CompanyInvitation": {
+        "pageTitle": "Company Invitation",
+        "title": "You've been invited!",
+        "description": "You have received an invitation to join a company.",
+        "companyInvitation": "Company invitation",
+        "acceptInvitation": "Accept Invitation",
+        "rejectInvitation": "Decline Invitation",
+        "accepting": "Accepting...",
+        "rejecting": "Declining...",
+        "status": {
+            "accepted": {
+                "title": "Invitation Accepted!",
+                "description": "You have successfully joined the company.",
+                "descriptionWithCompany": "You have successfully joined {companyName}.",
+                "redirecting": "Redirecting you to the company page...",
+                "goToCompany": "Go to Company"
+            },
+            "rejected": {
+                "title": "Invitation Declined",
+                "description": "You have declined the company invitation.",
+                "goHome": "Go to Home"
+            },
+            "error": {
+                "title": "Invalid Invitation",
+                "description": "This invitation link is invalid or has expired.",
+                "instructions": "The invitation may have already been used or canceled.",
+                "goToCompanies": "Go to Companies",
+                "goHome": "Go to Home"
+            }
+        },
+        "messages": {
+            "invitationAccepted": "Company invitation accepted successfully",
+            "invitationRejected": "Company invitation declined"
+        },
+        "errors": {
+            "invalidInvitation": "Invalid invitation link",
+            "acceptFailed": "Failed to accept invitation",
+            "rejectFailed": "Failed to decline invitation",
+            "unexpectedError": "An unexpected error occurred"
         }
     },
     "Subscription": {
@@ -1764,409 +1627,6 @@
             }
         }
     },
-    "Survey": {
-        "title": "Surveys",
-        "description": "Manage your surveys and collect responses",
-        "stats": {
-            "totalSurveys": {
-                "title": "Total Surveys",
-                "description": "All surveys created",
-                "subtitle": "Includes drafts and completed"
-            },
-            "activeSurveys": {
-                "title": "Active Surveys",
-                "description": "Currently collecting responses",
-                "subtitle": "Live and accepting responses"
-            },
-            "totalResponses": {
-                "title": "Total Responses",
-                "description": "All responses collected",
-                "subtitle": "Across all surveys"
-            },
-            "responseRate": {
-                "title": "Response Rate",
-                "description": "Average completion rate",
-                "subtitle": "Response quality indicator"
-            }
-        },
-        "table": {
-            "title": "All Surveys",
-            "totalSurveys": "surveys",
-            "columns": {
-                "title": "Survey Title",
-                "type": "Type",
-                "status": "Status",
-                "responses": "Responses",
-                "responseRate": "Rate",
-                "totalOpenSurveys": "Open",
-                "createdAt": "Created",
-                "updatedAt": "Updated"
-            },
-            "status": {
-                "active": "Active",
-                "draft": "Draft",
-                "published": "Published",
-                "archived": "Archived"
-            },
-            "actions": {
-                "view": "View",
-                "edit": "Edit",
-                "duplicate": "Duplicate",
-                "delete": "Delete",
-                "openMenu": "Open menu",
-                "publish": "Publish",
-                "archive": "Archive",
-                "copySurveyId": "Copy Survey ID"
-            },
-            "buttons": {
-                "createSurvey": "Create Survey",
-                "customizeColumns": "Customize Columns",
-                "columns": "Columns"
-            },
-            "search": {
-                "placeholder": "Search surveys..."
-            },
-            "filters": {
-                "status": "Filter by status",
-                "allStatuses": "All Statuses",
-                "active": "Active",
-                "draft": "Draft",
-                "completed": "Completed"
-            },
-            "pagination": {
-                "rowsPerPage": "Rows per page",
-                "page": "Page",
-                "of": "of",
-                "rowsSelected": "row(s) selected",
-                "goToFirstPage": "Go to first page",
-                "goToPreviousPage": "Go to previous page",
-                "goToNextPage": "Go to next page",
-                "goToLastPage": "Go to last page"
-            },
-            "messages": {
-                "noResults": "No surveys found.",
-                "loadingSurveys": "Loading surveys...",
-                "noType": "No Type",
-                "surveyDeletedSuccess": "Survey deleted successfully",
-                "surveyDuplicatedSuccess": "Survey duplicated successfully",
-                "surveyUpdatedSuccess": "Survey updated successfully",
-                "fetchSurveysError": "Failed to fetch surveys",
-                "deleteSurveyError": "Failed to delete survey",
-                "duplicateSurveyError": "Failed to duplicate survey",
-                "updateSurveyError": "Failed to update survey status",
-                "unexpectedError": "An unexpected error occurred",
-                "surveyIdCopied": "Survey ID copied to clipboard",
-                "copyError": "Failed to copy survey ID"
-            },
-            "deleteDialog": {
-                "title": "Delete Survey",
-                "description": "Are you sure you want to delete \"{surveyName}\"? This action cannot be undone.",
-                "cancel": "Cancel",
-                "delete": "Delete",
-                "deleting": "Deleting..."
-            }
-        },
-        "emptyState": {
-            "title": "No Company Found",
-            "description": "You need to create or join a company to start creating surveys.",
-            "createCompanyButton": "Go to Companies",
-            "noSurveys": {
-                "title": "Start Creating Your First Survey",
-                "subtitle": "Create engaging surveys to collect valuable feedback",
-                "description": "Surveys help you understand your audience better and make data-driven decisions.",
-                "button": "Create Your First Survey",
-                "previewLabel": "Preview of what your surveys will look like"
-            }
-        }
-    },
-    "UpgradeModal": {
-        "limitReached": {
-            "surveys": {
-                "title": "Active Survey Limit Reached",
-                "description": "You've reached your plan's limit for active surveys. Upgrade to create more surveys.",
-                "descriptionWithLimit": "You've reached your plan's limit of {limit} active surveys. Upgrade to create more surveys."
-            },
-            "responses": {
-                "title": "Response Limit Reached",
-                "description": "You've reached your plan's limit for survey responses. Upgrade to collect more responses.",
-                "descriptionWithLimit": "You've reached your plan's limit of {limit} responses. Upgrade to collect more responses."
-            },
-            "remove_branding": {
-                "title": "Remove Branding",
-                "description": "This feature is not available in your current plan. Upgrade to remove branding from your surveys.",
-                "descriptionWithLimit": "Branding removal is not available in your current plan. Upgrade to customize your surveys."
-            },
-            "exports": {
-                "title": "Export Feature Unavailable",
-                "description": "Data export is not available in your current plan. Upgrade to export your survey data.",
-                "descriptionWithLimit": "Data export is not available in your current plan. Upgrade to unlock unlimited exports."
-            },
-            "apis": {
-                "title": "API Access Unavailable",
-                "description": "API access is not available in your current plan. Upgrade to integrate with your applications.",
-                "descriptionWithLimit": "API access is not available in your current plan. Upgrade to unlock API features."
-            },
-            "public_pages": {
-                "title": "Public Pages Unavailable",
-                "description": "Public survey pages are not available in your current plan. Upgrade to create public survey pages.",
-                "descriptionWithLimit": "Public survey pages are not available in your current plan. Upgrade to unlock this feature."
-            },
-            "custom": {
-                "title": "Upgrade Required",
-                "description": "You've reached a limit of your current plan. Upgrade to continue.",
-                "descriptionWithLimit": "You've reached a limit of your current plan. Upgrade to continue."
-            }
-        },
-        "benefits": {
-            "title": "Upgrade to unlock:",
-            "unlimited": "Higher limits",
-            "advanced": "Advanced features"
-        },
-        "actions": {
-            "upgrade": "View Plans & Upgrade",
-            "cancel": "Maybe Later"
-        }
-    },
-    "PublicSurvey": {
-        "thankYou": "Thank You!",
-        "responseSubmitted": "Your response has been submitted successfully.",
-        "submitAnother": "Submit Another Response",
-        "toggleTheme": "Toggle theme",
-        "error": {
-            "title": "Survey Error",
-            "description": "Please check that you have the correct survey link and token.",
-            "goHome": "Go Home"
-        }
-    },
-    "CreateSurvey": {
-        "title": "Create Survey",
-        "description": "Create a new survey to collect responses from your audience",
-        "actions": {
-            "saveDraft": "Save",
-            "publish": "Publish",
-            "saving": "Saving...",
-            "publishing": "Publishing...",
-            "copySurveyId": "Copy Survey ID"
-        },
-        "messages": {
-            "saveSuccess": "Survey saved successfully!",
-            "saveError": "Failed to save survey",
-            "publishSuccess": "Survey published successfully!",
-            "publishError": "Failed to publish survey",
-            "unexpectedError": "An unexpected error occurred",
-            "surveyIdCopied": "Survey ID copied to clipboard",
-            "readonlyMode": "You don't have permission to edit this survey",
-            "activeSurveysLimitReached": "You have reached your active surveys limit ({limit})."
-        },
-        "aiGenerator": {
-            "title": "AI Survey Generator",
-            "description": "Let AI create your complete survey including name, description, and questions based on your context",
-            "createWithAI": "Create with AI",
-            "placeholder": "Describe your survey context...\n\nExample: \"Create a customer satisfaction survey for an e-commerce platform focusing on delivery experience, product quality, and customer service.\"",
-            "hint": "Be specific about your survey goals, target audience, and the type of feedback you want to collect.",
-            "generate": "Generate Survey",
-            "generating": "Generating...",
-            "steps": {
-                "analyzing": "Analyzing your context...",
-                "thinking": "Thinking and planning survey...",
-                "creating": "Creating your survey...",
-                "done": "Survey created successfully!"
-            },
-            "preview": "Generated {count} questions:",
-            "success": "Successfully generated survey with {count} questions!",
-            "errors": {
-                "emptyPrompt": "Please describe your survey context",
-                "failed": "Failed to generate survey. Please try again."
-            }
-        },
-        "defaultQuestion": {
-            "yesLabel": "Yes",
-            "noLabel": "No"
-        },
-        "details": {
-            "title": "Survey Details",
-            "name": {
-                "label": "Name",
-                "placeholder": "Enter survey name"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Enter survey description (optional)"
-            },
-            "type": {
-                "label": "Survey Type",
-                "placeholder": "Select survey type",
-                "manageTypes": "Manage Types"
-            },
-            "status": {
-                "label": "Status",
-                "placeholder": "Select survey status",
-                "draft": "Draft",
-                "published": "Published",
-                "archived": "Archived"
-            },
-            "multipleResponses": {
-                "label": "Allow multiple responses per person",
-                "description": "Let the same person respond multiple times"
-            }
-        },
-        "questions": {
-            "title": "Questions",
-            "addQuestion": "Add Question",
-            "collapseAll": "Collapse All",
-            "expandAll": "Expand All",
-            "question": "question",
-            "questions": "questions",
-            "questionTitle": {
-                "label": "Title",
-                "placeholder": "Enter question title"
-            },
-            "description": {
-                "label": "Description (Optional)",
-                "placeholder": "Enter question description"
-            },
-            "format": {
-                "label": "Format",
-                "placeholder": "Select question format"
-            },
-            "required": {
-                "label": "Required",
-                "description": "Make this question mandatory"
-            },
-            "options": {
-                "label": "Options",
-                "addOption": "Add Option",
-                "optionPlaceholder": "Enter option text",
-                "removeOption": "Remove option",
-                "includeOther": "Include 'Other' option",
-                "otherOptionText": "Other"
-            },
-            "yesNoLabels": {
-                "label": "Custom Labels",
-                "yesLabel": "Yes Label",
-                "noLabel": "No Label",
-                "yesPlaceholder": "Enter yes label",
-                "noPlaceholder": "Enter no label"
-            },
-            "buttonLabel": {
-                "label": "Button Label",
-                "buttonLabel": "Button Text",
-                "buttonPlaceholder": "Continue"
-            },
-            "formats": {
-                "yesNo": "Yes/No",
-                "starRating": "5 Star Rating",
-                "longText": "Long Text",
-                "statement": "Statement",
-                "singleChoice": "Single Choice",
-                "multipleChoice": "Multiple Choice"
-            }
-        },
-        "targets": {
-            "title": "Targets",
-            "description": "Survey targets allow you to add surveys to the pages of your website or product without having to change any code.",
-            "addTarget": "Add Target",
-            "noTargets": "No targets configured yet"
-        },
-        "style": {
-            "title": "Style",
-            "collapse": "Collapse",
-            "expand": "Expand",
-            "backgroundColor": {
-                "label": "Background Colour"
-            },
-            "textColor": {
-                "label": "Text Colour"
-            },
-            "buttonBackgroundColor": {
-                "label": "Button Background Colour"
-            },
-            "buttonTextColor": {
-                "label": "Button Text Colour"
-            },
-            "margin": {
-                "label": "Margin"
-            },
-            "padding": {
-                "label": "Padding"
-            },
-            "border": {
-                "label": "Border"
-            },
-            "borderRadius": {
-                "label": "Border Radius"
-            },
-            "titleFontSize": {
-                "label": "Title Font Size"
-            },
-            "bodyFontSize": {
-                "label": "Body Font Size"
-            },
-            "fontFamily": {
-                "label": "Font Family",
-                "placeholder": "Select font family"
-            },
-            "styleMode": {
-                "label": "Style Mode",
-                "placeholder": "Select style mode",
-                "basic": "Basic",
-                "advanced": "Advanced"
-            },
-            "advancedCSS": {
-                "label": "Advanced CSS",
-                "placeholder": "Enter your custom CSS here...",
-                "description": "Write custom CSS to style your survey. Use classes like .sv, .qt, .qd, .btn, etc."
-            },
-            "preview": {
-                "label": "Preview",
-                "title": "Sample Question",
-                "description": "This is how your survey will look to respondents",
-                "button": "Submit Response"
-            }
-        },
-        "preview": {
-            "title": "Preview"
-        },
-        "surveyTypes": {
-            "modal": {
-                "title": "Manage Survey Types",
-                "description": "Create, edit, or delete survey types",
-                "createNew": "Create New Type",
-                "editType": "Edit Type",
-                "deleteType": "Delete Type",
-                "typeName": "Type Name",
-                "typeNamePlaceholder": "Enter type name",
-                "save": "Save",
-                "cancel": "Cancel",
-                "delete": "Delete",
-                "saving": "Saving...",
-                "deleting": "Deleting..."
-            },
-            "actions": {
-                "edit": "Edit",
-                "delete": "Delete",
-                "openMenu": "Open menu"
-            },
-            "messages": {
-                "createSuccess": "Survey type created successfully",
-                "updateSuccess": "Survey type updated successfully",
-                "deleteSuccess": "Survey type deleted successfully",
-                "createFailed": "Failed to create survey type",
-                "updateFailed": "Failed to update survey type",
-                "deleteFailed": "Failed to delete survey type",
-                "nameRequired": "Type name is required",
-                "nameTooLong": "Type name is too long"
-            },
-            "defaultTypes": {
-                "customerFeedback": "Customer Feedback",
-                "internal": "Internal",
-                "marketResearch": "Market Research",
-                "employeeSatisfaction": "Employee Satisfaction",
-                "productFeedback": "Product Feedback",
-                "eventFeedback": "Event Feedback"
-            }
-        }
-    },
     "Customer": {
         "title": "Customers",
         "description": "Manage your customer directory and keep their details up to date.",
@@ -2188,7 +1648,8 @@
                 "description": "Start by adding your first customer."
             },
             "actions": {
-                "edit": "Edit"
+                "edit": "Edit",
+                "startConversation": "Message"
             },
             "badges": {
                 "active": "Active",
@@ -2234,7 +1695,8 @@
             },
             "validation": {
                 "nameRequired": "Full name is required",
-                "emailRequired": "Please enter a valid email address"
+                "invalidEmail": "Please enter a valid email address",
+                "phoneRequired": "Phone number is required"
             }
         },
         "messages": {
@@ -2252,7 +1714,7 @@
             "dropHere": "Drop the file here",
             "clickOrDrag": "Click to upload or drag and drop",
             "supportedFormats": "Supports .xlsx, .xls, and .csv files",
-            "formatInfo": "Required columns: name, email. Optional columns: phone, company, status. Column names are case-insensitive.",
+            "formatInfo": "Required columns: name, phone. Optional columns: email, company, status. Column names are case-insensitive.",
             "parseError": "Failed to parse Excel file",
             "readError": "Failed to read file",
             "invalidFileType": "Invalid file type. Please upload .xlsx, .xls, or .csv files.",

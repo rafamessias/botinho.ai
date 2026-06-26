@@ -87,6 +87,7 @@ export const mapConversation = async (
     id: conversationId,
     companyId,
     customerId: data.customerId,
+    sessionId: data.sessionId ?? null,
     subject: data.subject ?? null,
     lastMessagePreview: data.lastMessagePreview ?? null,
     lastMessageSentAt: toIso(data.lastMessageSentAt),
@@ -115,9 +116,56 @@ export const mapMessage = (id: string, data: FirestoreInboxMessage) => ({
   updatedAt: toIso(data.updatedAt) ?? new Date(),
 })
 
+export const listInboxCustomers = async (params: {
+  companyId: string
+  search?: string
+  page?: number
+  pageSize?: number
+}) => {
+  const page = params.page ?? 1
+  const pageSize = params.pageSize ?? 50
+  const searchTerm = params.search?.trim().toLowerCase() ?? ""
+
+  const snapshot = await customersRef(params.companyId).get()
+
+  let customers = snapshot.docs.map((doc) => {
+    const data = doc.data() as FirestoreInboxCustomer
+    return {
+      id: doc.id,
+      name: data.name,
+      phone: data.phone ?? null,
+      email: data.email ?? null,
+      address: data.address ?? null,
+      updatedAt: toIso(data.updatedAt) ?? new Date(),
+    }
+  })
+
+  if (searchTerm) {
+    customers = customers.filter((customer) => {
+      return (
+        customer.name?.toLowerCase().includes(searchTerm) ||
+        customer.email?.toLowerCase().includes(searchTerm) ||
+        customer.phone?.includes(searchTerm)
+      )
+    })
+  }
+
+  customers.sort((a, b) => a.name.localeCompare(b.name))
+
+  const total = customers.length
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
+  const start = (page - 1) * pageSize
+
+  return {
+    customers: customers.slice(start, start + pageSize),
+    pagination: { page, pageSize, total, totalPages },
+  }
+}
+
 export const listInboxConversations = async (params: {
   companyId: string
   search?: string
+  sessionId?: string
   page?: number
   pageSize?: number
   includeArchived?: boolean
@@ -138,6 +186,10 @@ export const listInboxConversations = async (params: {
 
   if (!params.includeArchived) {
     conversations = conversations.filter((conversation) => !conversation.isArchived)
+  }
+
+  if (params.sessionId) {
+    conversations = conversations.filter((conversation) => conversation.sessionId === params.sessionId)
   }
 
   if (searchTerm) {
@@ -236,15 +288,38 @@ export const upsertCustomerByPhone = async (params: {
 export const findOpenConversationForCustomer = async (params: {
   companyId: string
   customerId: string
+  sessionId?: string | null
 }) => {
   const snap = await conversationsRef(params.companyId)
     .where("customerId", "==", params.customerId)
-    .where("isArchived", "==", false)
-    .orderBy("updatedAt", "desc")
-    .limit(1)
+    .limit(20)
     .get()
 
-  return snap.empty ? null : snap.docs[0]!
+  const openConversations = snap.docs
+    .filter((doc) => doc.data().isArchived !== true)
+    .sort((a, b) => {
+      const getMillis = (value: unknown) => {
+        if (!value) return 0
+        if (typeof value === "object" && value !== null && "toMillis" in value) {
+          return (value as { toMillis: () => number }).toMillis()
+        }
+        if (value instanceof Date) return value.getTime()
+        return 0
+      }
+
+      return getMillis(b.data().updatedAt) - getMillis(a.data().updatedAt)
+    })
+
+  if (openConversations.length === 0) {
+    return null
+  }
+
+  if (params.sessionId) {
+    const matched = openConversations.find((doc) => doc.data().sessionId === params.sessionId)
+    return matched ?? null
+  }
+
+  return openConversations[0]!
 }
 
 export const createInboxMessage = async (params: {
@@ -299,6 +374,7 @@ export const createInboxConversation = async (params: {
     address?: string
     notes?: string
   }
+  sessionId?: string | null
   priority?: InboxConversationPriority
   tags?: string[]
   satisfactionScore?: number
@@ -313,12 +389,11 @@ export const createInboxConversation = async (params: {
   const now = FieldValue.serverTimestamp()
   const normalizedTags = sanitizeTags(params.tags)
 
-  let customerId: string
+  let existingCustomerId: string | null = null
   const identifierFilters: Array<{ field: "email" | "phone"; value: string }> = []
   if (params.customer.email) identifierFilters.push({ field: "email", value: params.customer.email })
   if (params.customer.phone) identifierFilters.push({ field: "phone", value: params.customer.phone })
 
-  let existingCustomerId: string | null = null
   for (const filter of identifierFilters) {
     const snap = await customersRef(params.companyId)
       .where(filter.field, "==", filter.value)
@@ -333,6 +408,37 @@ export const createInboxConversation = async (params: {
   const customerRef = existingCustomerId
     ? customersRef(params.companyId).doc(existingCustomerId)
     : customersRef(params.companyId).doc()
+
+  const resolvedCustomerId = customerRef.id
+  const existingConversation = existingCustomerId
+    ? await findOpenConversationForCustomer({
+        companyId: params.companyId,
+        customerId: resolvedCustomerId,
+        sessionId: params.sessionId,
+      })
+    : null
+
+  if (existingConversation) {
+    if (params.initialMessage) {
+      await createInboxMessage({
+        companyId: params.companyId,
+        conversationId: existingConversation.id,
+        content: params.initialMessage.content,
+        senderType: params.initialMessage.senderType,
+        senderUserId: params.initialMessage.senderUserId,
+        status: params.initialMessage.status,
+        incrementUnread: params.initialMessage.senderType === "customer",
+      })
+    }
+
+    const conversation = await mapConversation(
+      params.companyId,
+      existingConversation.id,
+      existingConversation.data() as FirestoreInboxConversation,
+    )
+
+    return { conversation, existing: true as const }
+  }
 
   const conversationRef = conversationsRef(params.companyId).doc()
 
@@ -352,6 +458,7 @@ export const createInboxConversation = async (params: {
 
     tx.set(conversationRef, {
       customerId: customerRef.id,
+      sessionId: params.sessionId ?? null,
       subject: params.subject ?? null,
       priority: params.priority ?? "medium",
       tags: normalizedTags,
@@ -388,7 +495,7 @@ export const createInboxConversation = async (params: {
     (await conversationRef.get()).data() as FirestoreInboxConversation,
   )
 
-  return { conversation }
+  return { conversation, existing: false as const }
 }
 
 export const markConversationRead = async (params: {
@@ -458,6 +565,7 @@ export const recordInboundMessage = async (params: {
   from: string
   text: string
   contactName?: string
+  sessionId?: string
 }) => {
   const { customerId } = await upsertCustomerByPhone({
     companyId: params.companyId,
@@ -469,6 +577,7 @@ export const recordInboundMessage = async (params: {
   const existingConversation = await findOpenConversationForCustomer({
     companyId: params.companyId,
     customerId,
+    sessionId: params.sessionId,
   })
 
   if (existingConversation) {
@@ -478,6 +587,7 @@ export const recordInboundMessage = async (params: {
     const now = FieldValue.serverTimestamp()
     await conversationRef.set({
       customerId,
+      sessionId: params.sessionId ?? null,
       priority: "medium",
       tags: [],
       unreadCount: 0,

@@ -6,13 +6,19 @@
         "header": {
             "logoAria": "Ir para a página inicial da botinho",
             "nav": {
-                "about": "O que é a botinho",
-                "sessions": "Sessões",
+                "about": "Sobre",
+                "sessions": "Como funciona",
                 "features": "Recursos",
                 "pricing": "Planos",
                 "faq": "FAQ",
                 "contact": "Contato",
                 "itemAria": "Navegar para {section}"
+            },
+            "theme": {
+                "light": "Claro",
+                "dark": "Escuro",
+                "system": "Sistema",
+                "toggleAria": "Alternar tema de cores"
             },
             "auth": {
                 "login": "Entrar",
@@ -343,7 +349,57 @@
             "hideConversations": "Recolher conversas",
             "showContext": "Mostrar contexto",
             "hideContext": "Ocultar contexto",
-            "send": "Enviar mensagem"
+            "send": "Enviar mensagem",
+            "newConversation": "Nova conversa"
+        },
+        "toolbar": {
+            "connectionLabel": "Conexão",
+            "connectionPlaceholder": "Selecione uma conexão",
+            "allConnections": "Todas as conexões"
+        },
+        "newConversation": {
+            "title": "Iniciar conversa",
+            "description": "Escolha um cliente existente ou adicione um novo contato para começar a conversar.",
+            "connectionLabel": "Enviar de",
+            "connectionPlaceholder": "Selecione um número",
+            "tabs": {
+                "existing": "Clientes existentes",
+                "adhoc": "Novo contato"
+            },
+            "searchCustomersPlaceholder": "Pesquisar clientes...",
+            "loadingCustomers": "Carregando clientes...",
+            "emptyCustomers": "Nenhum cliente encontrado. Adicione um novo contato.",
+            "adhocHint": "Crie um contato avulso sem precisar salvá-lo na lista de clientes primeiro.",
+            "fields": {
+                "name": "Nome",
+                "namePlaceholder": "Nome do cliente",
+                "phone": "Telefone",
+                "phonePlaceholder": "+55 11 99999-0000",
+                "email": "E-mail",
+                "emailPlaceholder": "email@exemplo.com"
+            },
+            "columns": {
+                "name": "Nome",
+                "phone": "Telefone",
+                "email": "E-mail"
+            },
+            "actions": {
+                "cancel": "Cancelar",
+                "start": "Iniciar conversa",
+                "creating": "Iniciando..."
+            },
+            "messages": {
+                "created": "Conversa iniciada",
+                "existingConversation": "Conversa existente aberta"
+            },
+            "errors": {
+                "loadCustomers": "Não foi possível carregar os clientes",
+                "customerRequired": "Selecione um cliente para continuar",
+                "nameRequired": "Nome é obrigatório",
+                "phoneRequired": "Telefone é obrigatório para iniciar uma conversa no WhatsApp",
+                "connectionRequired": "Selecione uma conexão para enviar mensagens",
+                "createFailed": "Não foi possível iniciar a conversa"
+            }
         },
         "priority": {
             "low": "Baixa",
@@ -497,17 +553,6 @@
         },
         "documents": {
             "dataLibrary": "Biblioteca de Dados"
-        }
-    },
-    "NavMain": {
-        "quickCreate": "Criar Pesquisa",
-        "addCompany": "Adicionar Empresa",
-        "selectCompany": "Selecionar empresa...",
-        "searchCompanies": "Pesquisar empresas...",
-        "noCompaniesFound": "Nenhuma empresa encontrada.",
-        "messages": {
-            "companiesUpdated": "Empresas atualizadas com sucesso",
-            "failedToUpdateDefaultCompany": "Falha ao atualizar empresa padrão"
         }
     },
     "SiteHeader": {
@@ -716,73 +761,147 @@
             "upgradeRequired": "A remoção da marca não está disponível em seu plano atual",
             "updateFailed": "Falha ao atualizar as configurações de marca"
         },
-        "api": {
-            "title": "Configuração da API",
-            "description": "Gerencie tokens da API para acesso programático",
-            "surveyToken": "Token de Integração",
-            "apiToken": "Token da API",
-            "noTokenGenerated": "Nenhum token gerado",
-            "generateToken": "Gerar Token",
-            "regenerateToken": "Regenerar Token",
-            "generating": "Gerando...",
-            "regenerating": "Regenerando...",
-            "apiEndpoint": "Endpoint da API",
-            "documentation": "Documentação da API",
-            "documentationDescription": "Visualize exemplos de código e referência da API",
-            "showDocs": "Mostrar Docs",
-            "hideDocs": "Ocultar Docs",
-            "requestBody": "Corpo da Requisição",
-            "successResponse": "Resposta de Sucesso",
-            "tokenCopied": "Token copiado",
-            "tokenCopiedDescription": "Token da API foi copiado para a área de transferência",
-            "codeCopied": "Código copiado",
-            "codeCopiedDescription": "Exemplo de código copiado para a área de transferência",
-            "endpointCopied": "Endpoint copiado",
-            "endpointCopiedDescription": "URL do endpoint da API copiada para a área de transferência",
-            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
-            "confirmRegenerateTitle": "Regenerar Token",
-            "confirmRegenerateDescription": "Tem certeza de que deseja regenerar este token? Esta ação não pode ser desfeita e invalidará o token atual.",
-            "confirmRegenerate": "Regenerar Token",
-            "cancel": "Cancelar",
+        "page": {
             "tabs": {
-                "surveyToken": "Token de Pesquisa",
-                "apiToken": "Token da API"
+                "whatsapp": "WhatsApp",
+                "notifications": "Notificações"
             },
-            "codeSnippets": {
-                "surveyWidget": {
-                    "title": "Integração do Widget de Pesquisa",
-                    "description": "Use este token para incorporar pesquisas diretamente no seu site",
-                    "example": "Exemplo do Widget de Pesquisa",
-                    "copyCode": "Copiar Código"
+            "load": {
+                "unable": "Não foi possível carregar as configurações",
+                "unexpected": "Erro inesperado ao carregar as configurações"
+            },
+            "toasts": {
+                "selectCompany": "Selecione uma empresa antes de parear um número",
+                "browserOnly": "O pareamento por QR está disponível apenas no navegador",
+                "whatsappLinked": "Número do WhatsApp conectado",
+                "settingsNotReady": "As configurações ainda não estão prontas",
+                "updateFailed": "Falha ao atualizar as configurações",
+                "updateSuccessWhatsapp": "Configurações do WhatsApp atualizadas",
+                "unableToUpdate": "Não foi possível atualizar as configurações",
+                "updateSuccessNotifications": "Preferências de notificações salvas",
+                "selectNumber": "Selecione um número para atualizar",
+                "fillNameAndPhone": "Preencha o nome e o número de telefone",
+                "updateWhatsappFailed": "Falha ao atualizar o número do WhatsApp",
+                "updateWhatsappSuccess": "Número do WhatsApp atualizado",
+                "unexpectedUpdateWhatsapp": "Erro inesperado ao atualizar o número",
+                "removeWhatsappFailed": "Falha ao remover o número do WhatsApp",
+                "removeWhatsappSuccess": "Número do WhatsApp removido",
+                "unexpectedRemoveWhatsapp": "Erro inesperado ao remover o número"
+            },
+            "whatsapp": {
+                "card": {
+                    "title": "Números de WhatsApp",
+                    "description": "Gerencie os números do WhatsApp Business conectados à sua empresa",
+                    "addButton": "Adicionar Número"
                 },
-                "apiIntegration": {
-                    "title": "Integração da API",
-                    "description": "Use este token para enviar respostas de pesquisa via API",
-                    "example": "Exemplo de Integração da API",
-                    "copyCode": "Copiar Código"
+                "empty": {
+                    "title": "Nenhum número de WhatsApp conectado ainda.",
+                    "description": "Clique no botão acima para conectar o seu primeiro número."
+                },
+                "status": {
+                    "connected": "Conectado",
+                    "disconnected": "Desconectado"
+                },
+                "disconnect": "Desconectar",
+                "label": {
+                    "placeholder": "Identificador da conexão",
+                    "editAria": "Editar identificador da conexão",
+                    "save": "Salvar identificador",
+                    "cancel": "Cancelar edição",
+                    "required": "Informe um identificador para esta conexão"
+                },
+                "messages": {
+                    "messagesThisMonth": "{count} mensagens neste mês"
+                },
+                "actions": {
+                    "editAria": "Editar número do WhatsApp {name}",
+                    "removeAria": "Remover número do WhatsApp {name}",
+                    "connect": "Conectar Número"
+                },
+                "autoReply": {
+                    "label": "Resposta Automática",
+                    "description": "Responda automaticamente às mensagens dos clientes",
+                    "aria": "Alternar resposta automática",
+                    "save": "Salvar Alterações"
+                },
+                "dialog": {
+                    "title": "Adicionar Número de WhatsApp",
+                    "description": "Conecte um novo número do WhatsApp Business à sua empresa"
+                },
+                "pairing": {
+                    "title": "Vincular telefone via QR code",
+                    "description": "Escaneie um QR code seguro no telefone que usará este número de WhatsApp.",
+                    "actions": {
+                        "startAria": "Iniciar pareamento do WhatsApp",
+                        "cancelAria": "Cancelar pareamento do WhatsApp"
+                    },
+                    "button": {
+                        "start": "Iniciar pareamento",
+                        "preparing": "Preparando…",
+                        "waiting": "Aguardando o telefone",
+                        "restart": "Reiniciar pareamento",
+                        "retry": "Tentar novamente"
+                    },
+                    "messages": {
+                        "connecting": "Conectando ao WhatsApp…",
+                        "requesting": "Solicitando QR code do WhatsApp…",
+                        "scan": "Escaneie este QR code com o WhatsApp no seu telefone.",
+                        "scanned": "Autenticação concluída. Finalizando configuração…",
+                        "completed": "Número do WhatsApp conectado com sucesso.",
+                        "failed": "Pareamento falhou",
+                        "unexpected": "Resposta de pareamento inesperada",
+                        "connectionFailed": "Falha na conexão de pareamento",
+                        "sessionClosed": "Sessão de pareamento encerrada",
+                        "cancelled": "Pareamento cancelado",
+                        "idle": "Inicie o pareamento para gerar um QR code do WhatsApp."
+                    },
+                    "qrAlt": "QR code de pareamento do WhatsApp",
+                    "nameLabel": "Nome da sessão",
+                    "nameHint": "Opcional — gerado automaticamente a partir do número se deixado em branco",
+                    "displayNameHint": "Deixe em branco para usar o padrão: WhatsApp [últimos 4 dígitos]",
+                    "latest": {
+                        "title": "WhatsApp conectado",
+                        "description": "O último número vinculado já está pronto para uso.",
+                        "label": "Identificador",
+                        "number": "Número",
+                        "pending": "O pareamento precisa ser concluído para o número aparecer aqui."
+                    }
                 }
             },
-            "widget": {
-                "title": "Integração do Widget de Pesquisa",
-                "description": "Incorpore pesquisas diretamente no seu site com nosso widget JavaScript",
-                "show": "Mostrar Guia",
-                "hide": "Ocultar Guia",
-                "codeCopied": "Código copiado para a área de transferência",
-                "htmlSetup": "Configuração HTML",
-                "fullExample": "Implementação Completa",
-                "questionFormats": "Referência de Tipos de Pergunta",
-                "quickStart": "Guia de Início Rápido",
-                "tabs": {
-                    "setup": "Configuração",
-                    "implementation": "Implementação",
-                    "formats": "Tipos de Pergunta"
+            "notifications": {
+                "card": {
+                    "title": "Preferências de Notificações",
+                    "description": "Escolha como deseja ser notificado"
                 },
-                "steps": {
-                    "includeScript": "Inclua o script do widget no seu HTML",
-                    "createContainer": "Adicione um elemento div container",
-                    "configureQuestions": "Configure as perguntas da sua pesquisa",
-                    "addToken": "Adicione seu token da equipe para envios",
-                    "mount": "Monte o widget no seu container"
+                "email": {
+                    "label": "Notificações por E-mail",
+                    "description": "Receba notificações por e-mail",
+                    "aria": "Alternar notificações por e-mail"
+                },
+                "newMessage": {
+                    "label": "Alertas de Novas Mensagens",
+                    "description": "Seja notificado quando os clientes enviarem mensagens",
+                    "aria": "Alternar alertas de novas mensagens"
+                },
+                "dailyReports": {
+                    "label": "Relatórios Diários",
+                    "description": "Receba resumos diários da atividade do seu bot",
+                    "aria": "Alternar relatórios diários"
+                },
+                "save": "Salvar Preferências"
+            },
+            "dialogs": {
+                "edit": {
+                    "title": "Editar Número de WhatsApp",
+                    "description": "Atualize o nome ou telefone deste número conectado",
+                    "displayNameLabel": "Nome do Número",
+                    "displayNamePlaceholder": "ex.: Suporte Principal",
+                    "phoneLabel": "Número de Telefone",
+                    "phonePlaceholder": "+55 11 98765-4321",
+                    "save": "Salvar Alterações"
+                },
+                "delete": {
+                    "confirm": "Tem certeza que deseja desconectar este número do WhatsApp?"
                 }
             }
         }
@@ -1099,8 +1218,8 @@
             "emailPlaceholder": "membro@exemplo.com",
             "permissions": "Permissões",
             "isAdmin": "Administrador - Pode gerenciar empresa e membros",
-            "canPost": "Pode Criar - Pode criar pesquisas",
-            "canApprove": "Pode Ler - Pode ler pesquisas e resultados",
+            "canPost": "Pode Criar - Pode enviar mensagens e gerenciar conteúdo",
+            "canApprove": "Pode Ler - Pode visualizar conversas e relatórios",
             "sendInvite": "Enviar Convite",
             "inviting": "Enviando...",
             "name": "Nome",
@@ -1197,8 +1316,8 @@
                 "description": "Atualizar permissões para {firstName} {lastName}",
                 "permissions": "Permissões",
                 "companyAdministrator": "Administrador da Empresa",
-                "canPostContent": "Pode Criar Pesquisas",
-                "canApproveContent": "Pode Ler Pesquisas e Resultados",
+                "canPostContent": "Pode enviar mensagens e gerenciar conteúdo",
+                "canApproveContent": "Pode visualizar conversas e relatórios",
                 "cancel": "Cancelar",
                 "saveChanges": "Salvar Alterações",
                 "saving": "Salvando..."
@@ -1266,7 +1385,7 @@
         "deleteAccount": {
             "title": "Excluir Conta",
             "description": "Excluir permanentemente sua conta e todos os dados associados",
-            "warning": "Esta ação não pode ser desfeita. Todos os seus dados, pesquisas e associações de equipe serão permanentemente excluídos.",
+            "warning": "Esta ação não pode ser desfeita. Todos os seus dados, conversas e associações de empresa serão permanentemente excluídos.",
             "button": "Excluir Conta",
             "modal": {
                 "title": "Excluir Conta",
@@ -1278,7 +1397,7 @@
                     "title": "O que acontece quando você exclui sua conta:",
                     "account": "Sua conta será permanentemente excluída",
                     "teams": "Se você possuir alguma equipe, todos os membros serão removidos e as equipes serão desativadas",
-                    "data": "Todas as suas pesquisas, respostas e dados serão permanentemente excluídos",
+                    "data": "Todas as suas conversas, dados de clientes e configurações serão permanentemente excluídos",
                     "irreversible": "Esta ação é irreversível e não pode ser desfeita"
                 }
             }
@@ -1323,116 +1442,6 @@
             "acceptFailed": "Falha ao aceitar convite",
             "rejectFailed": "Falha ao recusar convite",
             "unexpectedError": "Ocorreu um erro inesperado"
-        }
-    },
-    "Team": {
-        "title": "Gerenciamento de Equipe",
-        "description": "Gerencie suas equipes e membros",
-        "teams": "Equipes",
-        "createTeam": "Criar Equipe",
-        "createTeamDescription": "Crie uma nova equipe para colaborar com outros.",
-        "editTeam": "Editar Equipe",
-        "editTeamDescription": "Atualize as informações da sua equipe.",
-        "deleteTeam": "Excluir Equipe",
-        "deleteTeamConfirmation": "Tem certeza de que deseja excluir a equipe \"{teamName}\"? Esta ação não pode ser desfeita e removerá todos os membros da equipe e dados associados.",
-        "delete": "Excluir",
-        "noTeams": "Nenhuma equipe encontrada",
-        "noTeamsDescription": "Você ainda não criou nenhuma equipe. Crie sua primeira equipe para começar.",
-        "createFirstTeam": "Criar Sua Primeira Equipe",
-        "form": {
-            "name": "Nome da Equipe",
-            "namePlaceholder": "Digite o nome da equipe",
-            "description": "Descrição",
-            "descriptionPlaceholder": "Digite a descrição da equipe (opcional)",
-            "cancel": "Cancelar",
-            "create": "Criar Equipe",
-            "creating": "Criando...",
-            "update": "Atualizar Equipe",
-            "updating": "Atualizando..."
-        },
-        "members": {
-            "title": "Membros da Equipe",
-            "description": "Gerencie os membros da sua equipe e suas permissões",
-            "inviteMember": "Convidar Membro",
-            "inviteDescription": "Envie um convite para um novo membro da equipe.",
-            "email": "Endereço de Email",
-            "emailPlaceholder": "membro@exemplo.com",
-            "permissions": "Permissões",
-            "isAdmin": "Administrador - Pode gerenciar equipe e membros",
-            "canPost": "Pode Criar - Pode criar pesquisas",
-            "canApprove": "Pode Ler - Pode ler pesquisas e resultados",
-            "sendInvite": "Enviar Convite",
-            "inviting": "Enviando...",
-            "name": "Nome",
-            "role": "Função",
-            "statusLabel": "Status",
-            "owner": "Proprietário",
-            "admin": "Admin",
-            "member": "Membro",
-            "makeAdmin": "Tornar Admin",
-            "removeAdmin": "Remover Admin",
-            "removeMember": "Remover Membro",
-            "noMembers": "Nenhum membro da equipe",
-            "noMembersDescription": "Sua equipe ainda não tem membros.",
-            "inviteFirstMember": "Convidar Seu Primeiro Membro",
-            "status": {
-                "invited": "Convidado",
-                "accepted": "Ativo",
-                "rejected": "Recusado"
-            },
-            "inviteSuccess": "Membro convidado com sucesso",
-            "inviteFailed": "Falha ao convidar membro",
-            "removeSuccess": "Membro removido com sucesso",
-            "removeFailed": "Falha ao remover membro",
-            "updateSuccess": "Permissões do membro atualizadas com sucesso",
-            "updateFailed": "Falha ao atualizar permissões do membro"
-        },
-        "messages": {
-            "teamsUpdated": "Equipes atualizadas com sucesso",
-            "failedToRefreshTeams": "Falha ao atualizar equipes",
-            "createSuccess": "Equipe criada com sucesso",
-            "createFailed": "Falha ao criar equipe",
-            "updateSuccess": "Equipe atualizada com sucesso",
-            "updateFailed": "Falha ao atualizar equipe",
-            "deleteSuccess": "Equipe excluída com sucesso",
-            "deleteFailed": "Falha ao excluir equipe",
-            "cannotDeleteOnlyTeam": "Não é possível excluir a única equipe. Você deve ter pelo menos uma equipe.",
-            "onlyTeamOwnerCanDeleteTeam": "Apenas o proprietário da equipe pode excluir a equipe",
-            "inviteSuccess": "Membro convidado com sucesso",
-            "inviteFailed": "Falha ao convidar membro",
-            "inviteCompanyUserConflict": "Este email já pertence a outra empresa.",
-            "inviteResent": "Convite reenviado com sucesso",
-            "inviteResendFailed": "Falha ao reenviar convite",
-            "alreadyHasCompany": "Você já pertence a uma empresa e não pode criar outra.",
-            "memberUpdateSuccess": "Permissões do membro atualizadas com sucesso",
-            "memberUpdateFailed": "Falha ao atualizar permissões do membro",
-            "memberRemoveSuccess": "Membro removido com sucesso",
-            "memberRemoveFailed": "Falha ao remover membro",
-            "tokenGenerated": "Token da equipe gerado com sucesso",
-            "tokenGenerationFailed": "Falha ao gerar token da equipe",
-            "tokenRegenerated": "Token da equipe regenerado com sucesso",
-            "tokenRegenerationFailed": "Falha ao regenerar token da equipe"
-        },
-        "modals": {
-            "editMember": {
-                "title": "Editar Membro da Equipe",
-                "description": "Atualizar permissões para {firstName} {lastName}",
-                "permissions": "Permissões",
-                "teamAdministrator": "Administrador da Equipe",
-                "canPostContent": "Pode Criar Pesquisas",
-                "canApproveContent": "Pode Ler Pesquisas e Resultados",
-                "cancel": "Cancelar",
-                "saveChanges": "Salvar Alterações",
-                "saving": "Salvando..."
-            },
-            "removeMember": {
-                "title": "Remover Membro da Equipe",
-                "description": "Tem certeza de que deseja remover este membro da equipe?",
-                "warning": "Esta ação não pode ser desfeita. O membro perderá acesso à equipe e todo o conteúdo associado.",
-                "cancel": "Cancelar",
-                "removeMember": "Remover Membro"
-            },
-            "noTeamSelected": "Selecione uma equipe para ver detalhes"
         }
     },
     "Subscription": {
@@ -1635,410 +1644,6 @@
             }
         }
     },
-    "Survey": {
-        "title": "Pesquisas",
-        "description": "Gerencie suas pesquisas e colete respostas",
-        "stats": {
-            "totalSurveys": {
-                "title": "Total de Pesquisas",
-                "description": "Todas as pesquisas criadas",
-                "subtitle": "Inclui rascunhos e concluídas"
-            },
-            "activeSurveys": {
-                "title": "Pesquisas Ativas",
-                "description": "Coletando respostas atualmente",
-                "subtitle": "Ativas e aceitando respostas"
-            },
-            "totalResponses": {
-                "title": "Total de Respostas",
-                "description": "Todas as respostas coletadas",
-                "subtitle": "Em todas as pesquisas"
-            },
-            "responseRate": {
-                "title": "Taxa de Resposta",
-                "description": "Taxa média de conclusão",
-                "subtitle": "Indicador de qualidade das respostas"
-            }
-        },
-        "table": {
-            "title": "Todas as Pesquisas",
-            "totalSurveys": "pesquisas",
-            "columns": {
-                "title": "Título da Pesquisa",
-                "type": "Tipo",
-                "status": "Status",
-                "responses": "Respostas",
-                "responseRate": "Taxa",
-                "totalOpenSurveys": "Abertas",
-                "createdAt": "Criada",
-                "updatedAt": "Atualizada"
-            },
-            "status": {
-                "active": "Ativa",
-                "draft": "Rascunho",
-                "completed": "Concluída",
-                "published": "Publicada",
-                "archived": "Arquivada"
-            },
-            "actions": {
-                "view": "Visualizar",
-                "edit": "Editar",
-                "duplicate": "Duplicar",
-                "delete": "Excluir",
-                "openMenu": "Abrir menu",
-                "publish": "Publicar",
-                "archive": "Arquivar",
-                "copySurveyId": "Copiar Survey ID"
-            },
-            "buttons": {
-                "createSurvey": "Criar Pesquisa",
-                "customizeColumns": "Personalizar Colunas",
-                "columns": "Colunas"
-            },
-            "search": {
-                "placeholder": "Buscar pesquisas..."
-            },
-            "filters": {
-                "status": "Filtrar por status",
-                "allStatuses": "Todos os Status",
-                "active": "Ativa",
-                "draft": "Rascunho",
-                "completed": "Concluída"
-            },
-            "pagination": {
-                "rowsPerPage": "Linhas por página",
-                "page": "Página",
-                "of": "de",
-                "rowsSelected": "linha(s) selecionada(s)",
-                "goToFirstPage": "Ir para primeira página",
-                "goToPreviousPage": "Ir para página anterior",
-                "goToNextPage": "Ir para próxima página",
-                "goToLastPage": "Ir para última página"
-            },
-            "messages": {
-                "noResults": "Nenhuma pesquisa encontrada.",
-                "loadingSurveys": "Carregando pesquisas...",
-                "noType": "Sem Tipo",
-                "surveyDeletedSuccess": "Pesquisa excluída com sucesso",
-                "surveyDuplicatedSuccess": "Pesquisa duplicada com sucesso",
-                "surveyUpdatedSuccess": "Pesquisa atualizada com sucesso",
-                "fetchSurveysError": "Falha ao carregar pesquisas",
-                "deleteSurveyError": "Falha ao excluir pesquisa",
-                "duplicateSurveyError": "Falha ao duplicar pesquisa",
-                "updateSurveyError": "Falha ao atualizar status da pesquisa",
-                "unexpectedError": "Ocorreu um erro inesperado",
-                "surveyIdCopied": "ID da pesquisa copiado para a área de transferência",
-                "copyError": "Falha ao copiar ID da pesquisa"
-            },
-            "deleteDialog": {
-                "title": "Excluir Pesquisa",
-                "description": "Tem certeza de que deseja excluir \"{surveyName}\"? Esta ação não pode ser desfeita.",
-                "cancel": "Cancelar",
-                "delete": "Excluir",
-                "deleting": "Excluindo..."
-            }
-        },
-        "emptyState": {
-            "title": "Nenhuma Equipe Encontrada",
-            "description": "Você precisa criar ou entrar em uma equipe para começar a criar pesquisas.",
-            "createTeamButton": "Ir para Equipes",
-            "noSurveys": {
-                "title": "Comece Criando Sua Primeira Pesquisa",
-                "subtitle": "Crie pesquisas envolventes para coletar feedback valioso",
-                "description": "Pesquisas ajudam você a entender melhor seu público e tomar decisões baseadas em dados.",
-                "button": "Criar Sua Primeira Pesquisa",
-                "previewLabel": "Prévia de como suas pesquisas ficarão"
-            }
-        }
-    },
-    "UpgradeModal": {
-        "limitReached": {
-            "surveys": {
-                "title": "Limite de Pesquisas Atingido",
-                "description": "Você atingiu o limite de pesquisas ativas do seu plano. Faça upgrade para criar mais pesquisas.",
-                "descriptionWithLimit": "Você atingiu o limite de {limit} pesquisas ativas do seu plano. Faça upgrade para criar mais pesquisas."
-            },
-            "responses": {
-                "title": "Limite de Respostas Atingido",
-                "description": "Você atingiu o limite de respostas do seu plano. Faça upgrade para coletar mais respostas.",
-                "descriptionWithLimit": "Você atingiu o limite de {limit} respostas do seu plano. Faça upgrade para coletar mais respostas."
-            },
-            "remove_branding": {
-                "title": "Remover Marca",
-                "description": "Este recurso não está disponível no seu plano atual. Faça upgrade para remover a marca das suas pesquisas.",
-                "descriptionWithLimit": "Remoção de marca não está disponível no seu plano atual. Faça upgrade para personalizar suas pesquisas."
-            },
-            "exports": {
-                "title": "Recurso de Exportação Indisponível",
-                "description": "Exportação de dados não está disponível no seu plano atual. Faça upgrade para exportar os dados das suas pesquisas.",
-                "descriptionWithLimit": "Exportação de dados não está disponível no seu plano atual. Faça upgrade para exportações ilimitadas."
-            },
-            "apis": {
-                "title": "Acesso à API Indisponível",
-                "description": "Acesso à API não está disponível no seu plano atual. Faça upgrade para integrar com suas aplicações.",
-                "descriptionWithLimit": "Acesso à API não está disponível no seu plano atual. Faça upgrade para desbloquear recursos de API."
-            },
-            "public_pages": {
-                "title": "Páginas Públicas Indisponíveis",
-                "description": "Páginas públicas de pesquisa não estão disponíveis no seu plano atual. Faça upgrade para criar páginas públicas de pesquisa.",
-                "descriptionWithLimit": "Páginas públicas de pesquisa não estão disponíveis no seu plano atual. Faça upgrade para desbloquear este recurso."
-            },
-            "custom": {
-                "title": "Upgrade Necessário",
-                "description": "Você atingiu um limite do seu plano atual. Faça upgrade para continuar.",
-                "descriptionWithLimit": "Você atingiu um limite do seu plano atual. Faça upgrade para continuar."
-            }
-        },
-        "benefits": {
-            "title": "Faça upgrade para desbloquear:",
-            "unlimited": "Limites maiores",
-            "advanced": "Recursos avançados"
-        },
-        "actions": {
-            "upgrade": "Ver Planos e Fazer Upgrade",
-            "cancel": "Talvez Depois"
-        }
-    },
-    "PublicSurvey": {
-        "thankYou": "Obrigado!",
-        "responseSubmitted": "Sua resposta foi enviada com sucesso.",
-        "submitAnother": "Enviar Outra Resposta",
-        "toggleTheme": "Alternar tema",
-        "error": {
-            "title": "Erro na Pesquisa",
-            "description": "Por favor, verifique se você tem o link e token corretos da pesquisa.",
-            "goHome": "Ir para Início"
-        }
-    },
-    "CreateSurvey": {
-        "title": "Criar Pesquisa",
-        "description": "Crie uma nova pesquisa para coletar respostas do seu público",
-        "actions": {
-            "saveDraft": "Salvar",
-            "publish": "Publicar",
-            "saving": "Salvando...",
-            "publishing": "Publicando...",
-            "copySurveyId": "Copiar ID da Pesquisa"
-        },
-        "messages": {
-            "saveSuccess": "Pesquisa salva com sucesso!",
-            "saveError": "Falha ao salvar pesquisa",
-            "publishSuccess": "Pesquisa publicada com sucesso!",
-            "publishError": "Falha ao publicar pesquisa",
-            "unexpectedError": "Ocorreu um erro inesperado",
-            "surveyIdCopied": "ID da pesquisa copiado para a área de transferência",
-            "readonlyMode": "Você não tem permissão para editar esta pesquisa",
-            "activeSurveysLimitReached": "Você atingiu o limite de pesquisas ativas ({limit})."
-        },
-        "aiGenerator": {
-            "title": "Gerador de Pesquisa com IA",
-            "description": "Deixe a IA criar sua pesquisa completa incluindo nome, descrição e perguntas baseadas no seu contexto",
-            "createWithAI": "Criar com IA",
-            "placeholder": "Descreva o contexto da sua pesquisa...\n\nExemplo: \"Criar uma pesquisa de satisfação do cliente para uma plataforma de e-commerce focando na experiência de entrega, qualidade do produto e atendimento ao cliente.\"",
-            "hint": "Seja específico sobre os objetivos da sua pesquisa, público-alvo e o tipo de feedback que deseja coletar.",
-            "generate": "Gerar Pesquisa",
-            "generating": "Gerando...",
-            "steps": {
-                "analyzing": "Analisando seu contexto...",
-                "thinking": "Pensando e planejando pesquisa...",
-                "creating": "Criando sua pesquisa...",
-                "done": "Pesquisa criada com sucesso!"
-            },
-            "preview": "{count} perguntas geradas:",
-            "success": "Pesquisa gerada com sucesso com {count} perguntas!",
-            "errors": {
-                "emptyPrompt": "Por favor, descreva o contexto da sua pesquisa",
-                "failed": "Falha ao gerar pesquisa. Por favor, tente novamente."
-            }
-        },
-        "defaultQuestion": {
-            "yesLabel": "Sim",
-            "noLabel": "Não"
-        },
-        "details": {
-            "title": "Detalhes da Pesquisa",
-            "name": {
-                "label": "Nome",
-                "placeholder": "Digite o nome da pesquisa"
-            },
-            "description": {
-                "label": "Descrição",
-                "placeholder": "Digite a descrição da pesquisa (opcional)"
-            },
-            "type": {
-                "label": "Tipo de Pesquisa",
-                "placeholder": "Selecione o tipo de pesquisa",
-                "manageTypes": "Gerenciar Tipos"
-            },
-            "status": {
-                "label": "Status",
-                "placeholder": "Selecione o status da pesquisa",
-                "draft": "Rascunho",
-                "published": "Publicada",
-                "archived": "Arquivada"
-            },
-            "multipleResponses": {
-                "label": "Permitir múltiplas respostas por pessoa",
-                "description": "Permitir que a mesma pessoa responda várias vezes"
-            }
-        },
-        "questions": {
-            "title": "Perguntas",
-            "addQuestion": "Adicionar Pergunta",
-            "collapseAll": "Recolher Todas",
-            "expandAll": "Expandir Todas",
-            "question": "pergunta",
-            "questions": "perguntas",
-            "questionTitle": {
-                "label": "Título",
-                "placeholder": "Digite o título da pergunta"
-            },
-            "description": {
-                "label": "Descrição (Opcional)",
-                "placeholder": "Digite a descrição da pergunta"
-            },
-            "format": {
-                "label": "Formato",
-                "placeholder": "Selecione o formato da pergunta"
-            },
-            "required": {
-                "label": "Obrigatória",
-                "description": "Tornar esta pergunta obrigatória"
-            },
-            "options": {
-                "label": "Opções",
-                "addOption": "Adicionar Opção",
-                "optionPlaceholder": "Digite o texto da opção",
-                "removeOption": "Remover opção",
-                "includeOther": "Incluir opção 'Outro'",
-                "otherOptionText": "Outro"
-            },
-            "yesNoLabels": {
-                "label": "Rótulos Personalizados",
-                "yesLabel": "Rótulo Sim",
-                "noLabel": "Rótulo Não",
-                "yesPlaceholder": "Digite o rótulo para sim",
-                "noPlaceholder": "Digite o rótulo para não"
-            },
-            "buttonLabel": {
-                "label": "Rótulo do Botão",
-                "buttonLabel": "Texto do Botão",
-                "buttonPlaceholder": "Continuar"
-            },
-            "formats": {
-                "yesNo": "Sim/Não",
-                "starRating": "5 Estrelas",
-                "longText": "Texto Longo",
-                "statement": "Declaração",
-                "singleChoice": "Escolha Única",
-                "multipleChoice": "Múltipla Escolha"
-            }
-        },
-        "targets": {
-            "title": "Alvos",
-            "description": "Os alvos da pesquisa permitem adicionar pesquisas às páginas do seu site ou produto sem precisar alterar nenhum código.",
-            "addTarget": "Adicionar Alvo",
-            "noTargets": "Nenhum alvo configurado ainda"
-        },
-        "style": {
-            "title": "Estilo",
-            "collapse": "Recolher",
-            "expand": "Expandir",
-            "backgroundColor": {
-                "label": "Cor de Fundo"
-            },
-            "textColor": {
-                "label": "Cor do Texto"
-            },
-            "buttonBackgroundColor": {
-                "label": "Cor de Fundo do Botão"
-            },
-            "buttonTextColor": {
-                "label": "Cor do Texto do Botão"
-            },
-            "margin": {
-                "label": "Margem"
-            },
-            "padding": {
-                "label": "Preenchimento"
-            },
-            "border": {
-                "label": "Borda"
-            },
-            "borderRadius": {
-                "label": "Raio da Borda"
-            },
-            "titleFontSize": {
-                "label": "Tamanho da Fonte do Título"
-            },
-            "bodyFontSize": {
-                "label": "Tamanho da Fonte do Corpo"
-            },
-            "fontFamily": {
-                "label": "Fonte",
-                "placeholder": "Selecione a fonte"
-            },
-            "styleMode": {
-                "label": "Modo de Estilo",
-                "placeholder": "Selecione o modo de estilo",
-                "basic": "Básico",
-                "advanced": "Avançado"
-            },
-            "advancedCSS": {
-                "label": "CSS Avançado",
-                "placeholder": "Digite seu CSS personalizado aqui...",
-                "description": "Escreva CSS personalizado para estilizar sua pesquisa. Use classes como .sv, .qt, .qd, .btn, etc."
-            },
-            "preview": {
-                "label": "Visualização",
-                "title": "Pergunta de Exemplo",
-                "description": "É assim que sua pesquisa aparecerá para os respondentes",
-                "button": "Enviar Resposta"
-            }
-        },
-        "preview": {
-            "title": "Visualização"
-        },
-        "surveyTypes": {
-            "modal": {
-                "title": "Gerenciar Tipos de Pesquisa",
-                "description": "Criar, editar ou excluir tipos de pesquisa",
-                "createNew": "Criar Novo Tipo",
-                "editType": "Editar Tipo",
-                "deleteType": "Excluir Tipo",
-                "typeName": "Nome do Tipo",
-                "typeNamePlaceholder": "Digite o nome do tipo",
-                "save": "Salvar",
-                "cancel": "Cancelar",
-                "delete": "Excluir",
-                "saving": "Salvando...",
-                "deleting": "Excluindo..."
-            },
-            "actions": {
-                "edit": "Editar",
-                "delete": "Excluir",
-                "openMenu": "Abrir menu"
-            },
-            "messages": {
-                "createSuccess": "Tipo de pesquisa criado com sucesso",
-                "updateSuccess": "Tipo de pesquisa atualizado com sucesso",
-                "deleteSuccess": "Tipo de pesquisa excluído com sucesso",
-                "createFailed": "Falha ao criar tipo de pesquisa",
-                "updateFailed": "Falha ao atualizar tipo de pesquisa",
-                "deleteFailed": "Falha ao excluir tipo de pesquisa",
-                "nameRequired": "Nome do tipo é obrigatório",
-                "nameTooLong": "Nome do tipo é muito longo"
-            },
-            "defaultTypes": {
-                "customerFeedback": "Feedback do Cliente",
-                "internal": "Interno",
-                "marketResearch": "Pesquisa de Mercado",
-                "employeeSatisfaction": "Satisfação do Funcionário",
-                "productFeedback": "Feedback do Produto",
-                "eventFeedback": "Feedback do Evento"
-            }
-        }
-    },
     "Customer": {
         "title": "Clientes",
         "description": "Gerencie sua base de clientes e mantenha os dados sempre atualizados.",
@@ -2060,7 +1665,8 @@
                 "description": "Comece adicionando o seu primeiro cliente."
             },
             "actions": {
-                "edit": "Editar"
+                "edit": "Editar",
+                "startConversation": "Mensagem"
             },
             "badges": {
                 "active": "Ativo",
@@ -2106,7 +1712,8 @@
             },
             "validation": {
                 "nameRequired": "O nome é obrigatório",
-                "emailRequired": "Informe um e-mail válido"
+                "invalidEmail": "Informe um e-mail válido",
+                "phoneRequired": "O telefone é obrigatório"
             }
         },
         "messages": {
@@ -2124,7 +1731,7 @@
             "dropHere": "Solte o arquivo aqui",
             "clickOrDrag": "Clique para enviar ou arraste e solte",
             "supportedFormats": "Suporta arquivos .xlsx, .xls e .csv",
-            "formatInfo": "Colunas obrigatórias: name, email. Colunas opcionais: phone, company, status. Os nomes das colunas não diferenciam maiúsculas de minúsculas.",
+            "formatInfo": "Colunas obrigatórias: name, phone. Colunas opcionais: email, company, status. Os nomes das colunas não diferenciam maiúsculas de minúsculas.",
             "parseError": "Falha ao analisar arquivo Excel",
             "readError": "Falha ao ler arquivo",
             "invalidFileType": "Tipo de arquivo inválido. Por favor, envie arquivos .xlsx, .xls ou .csv.",
@@ -2248,241 +1855,6 @@
             "title": "Pronto para treinar sua IA?",
             "description": "Adicione conhecimento para tornar seu bot ainda mais inteligente",
             "startTraining": "Começar Treinamento"
-        }
-    },
-    "Settings": {
-        "title": "Configurações",
-        "description": "Gerencie as configurações e preferências da sua conta",
-        "appearance": {
-            "title": "Aparência",
-            "description": "Personalize como o aplicativo se parece e se sente"
-        },
-        "language": {
-            "title": "Idioma",
-            "description": "Escolha seu idioma preferido para o aplicativo"
-        },
-        "theme": {
-            "light": "Claro",
-            "dark": "Escuro",
-            "system": "Sistema",
-            "description": "Selecione seu tema preferido para o aplicativo"
-        },
-        "branding": {
-            "title": "Marca",
-            "description": "Controle a exibição da marca botinho.ai nas mensagens automáticas",
-            "switchLabel": "Remover Marca",
-            "switchDescription": "Ocultar 'Powered by botinho.ai' das respostas automáticas",
-            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
-            "notAuthorized": "Você deve ser um administrador para alterar as configurações de marca",
-            "brandingEnabled": "A marca foi ativada",
-            "brandingDisabled": "A marca foi removida",
-            "upgradeRequired": "A remoção da marca não está disponível em seu plano atual",
-            "updateFailed": "Falha ao atualizar as configurações de marca"
-        },
-        "api": {
-            "title": "Configuração da API",
-            "description": "Gerencie tokens da API para acesso programático",
-            "surveyToken": "Token de Integração",
-            "apiToken": "Token da API",
-            "noTokenGenerated": "Nenhum token gerado",
-            "generateToken": "Gerar Token",
-            "regenerateToken": "Regenerar Token",
-            "generating": "Gerando...",
-            "regenerating": "Regenerando...",
-            "apiEndpoint": "Endpoint da API",
-            "documentation": "Documentação da API",
-            "documentationDescription": "Visualize exemplos de código e referência da API",
-            "showDocs": "Mostrar Docs",
-            "hideDocs": "Ocultar Docs",
-            "requestBody": "Corpo da Requisição",
-            "successResponse": "Resposta de Sucesso",
-            "tokenCopied": "Token copiado",
-            "tokenCopiedDescription": "Token da API foi copiado para a área de transferência",
-            "codeCopied": "Código copiado",
-            "codeCopiedDescription": "Exemplo de código copiado para a área de transferência",
-            "endpointCopied": "Endpoint copiado",
-            "endpointCopiedDescription": "URL do endpoint da API copiada para a área de transferência",
-            "noTeam": "Nenhuma equipe disponível. Crie ou participe de uma equipe primeiro.",
-            "confirmRegenerateTitle": "Regenerar Token",
-            "confirmRegenerateDescription": "Tem certeza de que deseja regenerar este token? Esta ação não pode ser desfeita e invalidará o token atual.",
-            "confirmRegenerate": "Regenerar Token",
-            "cancel": "Cancelar",
-            "tabs": {
-                "surveyToken": "Token de Pesquisa",
-                "apiToken": "Token da API"
-            },
-            "codeSnippets": {
-                "surveyWidget": {
-                    "title": "Integração do Widget de Pesquisa",
-                    "description": "Use este token para incorporar pesquisas diretamente no seu site",
-                    "example": "Exemplo do Widget de Pesquisa",
-                    "copyCode": "Copiar Código"
-                },
-                "apiIntegration": {
-                    "title": "Integração da API",
-                    "description": "Use este token para enviar respostas de pesquisa via API",
-                    "example": "Exemplo de Integração da API",
-                    "copyCode": "Copiar Código"
-                }
-            },
-            "widget": {
-                "title": "Integração do Widget de Pesquisa",
-                "description": "Incorpore pesquisas diretamente no seu site com nosso widget JavaScript",
-                "show": "Mostrar Guia",
-                "hide": "Ocultar Guia",
-                "codeCopied": "Código copiado para a área de transferência",
-                "htmlSetup": "Configuração HTML",
-                "fullExample": "Implementação Completa",
-                "questionFormats": "Referência de Tipos de Pergunta",
-                "quickStart": "Guia de Início Rápido",
-                "tabs": {
-                    "setup": "Configuração",
-                    "implementation": "Implementação",
-                    "formats": "Tipos de Pergunta"
-                },
-                "steps": {
-                    "includeScript": "Inclua o script do widget no seu HTML",
-                    "createContainer": "Adicione um elemento div container",
-                    "configureQuestions": "Configure as perguntas da sua pesquisa",
-                    "addToken": "Adicione seu token da equipe para envios",
-                    "mount": "Monte o widget no seu container"
-                }
-            }
-        },
-        "page": {
-            "tabs": {
-                "whatsapp": "WhatsApp",
-                "notifications": "Notificações"
-            },
-            "load": {
-                "unable": "Não foi possível carregar as configurações",
-                "unexpected": "Erro inesperado ao carregar as configurações"
-            },
-            "toasts": {
-                "selectCompany": "Selecione uma empresa antes de parear um número",
-                "browserOnly": "O pareamento por QR está disponível apenas no navegador",
-                "whatsappLinked": "Número do WhatsApp conectado",
-                "settingsNotReady": "As configurações ainda não estão prontas",
-                "updateFailed": "Falha ao atualizar as configurações",
-                "updateSuccessWhatsapp": "Configurações do WhatsApp atualizadas",
-                "unableToUpdate": "Não foi possível atualizar as configurações",
-                "updateSuccessNotifications": "Preferências de notificações salvas",
-                "selectNumber": "Selecione um número para atualizar",
-                "fillNameAndPhone": "Preencha o nome e o número de telefone",
-                "updateWhatsappFailed": "Falha ao atualizar o número do WhatsApp",
-                "updateWhatsappSuccess": "Número do WhatsApp atualizado",
-                "unexpectedUpdateWhatsapp": "Erro inesperado ao atualizar o número",
-                "removeWhatsappFailed": "Falha ao remover o número do WhatsApp",
-                "removeWhatsappSuccess": "Número do WhatsApp removido",
-                "unexpectedRemoveWhatsapp": "Erro inesperado ao remover o número"
-            },
-            "whatsapp": {
-                "card": {
-                    "title": "Números de WhatsApp",
-                    "description": "Gerencie os números do WhatsApp Business conectados à sua empresa",
-                    "addButton": "Adicionar Número"
-                },
-                "empty": {
-                    "title": "Nenhum número de WhatsApp conectado ainda.",
-                    "description": "Clique no botão acima para conectar o seu primeiro número."
-                },
-                "status": {
-                    "connected": "Conectado",
-                    "disconnected": "Desconectado"
-                },
-                "disconnect": "Desconectar",
-                "messages": {
-                    "messagesThisMonth": "{count} mensagens neste mês"
-                },
-                "actions": {
-                    "editAria": "Editar número do WhatsApp {name}",
-                    "removeAria": "Remover número do WhatsApp {name}",
-                    "connect": "Conectar Número"
-                },
-                "autoReply": {
-                    "label": "Resposta Automática",
-                    "description": "Responda automaticamente às mensagens dos clientes",
-                    "aria": "Alternar resposta automática",
-                    "save": "Salvar Alterações"
-                },
-                "dialog": {
-                    "title": "Adicionar Número de WhatsApp",
-                    "description": "Conecte um novo número do WhatsApp Business à sua empresa"
-                },
-                "pairing": {
-                    "title": "Vincular telefone via QR code",
-                    "description": "Escaneie um QR code seguro no telefone que usará este número de WhatsApp.",
-                    "actions": {
-                        "startAria": "Iniciar pareamento do WhatsApp",
-                        "cancelAria": "Cancelar pareamento do WhatsApp"
-                    },
-                    "button": {
-                        "start": "Iniciar pareamento",
-                        "preparing": "Preparando…",
-                        "waiting": "Aguardando o telefone",
-                        "restart": "Reiniciar pareamento",
-                        "retry": "Tentar novamente"
-                    },
-                    "messages": {
-                        "connecting": "Conectando ao WhatsApp…",
-                        "requesting": "Solicitando QR code do WhatsApp…",
-                        "scan": "Escaneie este QR code com o WhatsApp no seu telefone.",
-                        "scanned": "Autenticação concluída. Finalizando configuração…",
-                        "completed": "Número do WhatsApp conectado com sucesso.",
-                        "failed": "Pareamento falhou",
-                        "unexpected": "Resposta de pareamento inesperada",
-                        "connectionFailed": "Falha na conexão de pareamento",
-                        "sessionClosed": "Sessão de pareamento encerrada",
-                        "cancelled": "Pareamento cancelado",
-                        "idle": "Inicie o pareamento para gerar um QR code do WhatsApp."
-                    },
-                    "qrAlt": "QR code de pareamento do WhatsApp",
-                    "displayNameHint": "Deixe em branco para usar o padrão: WhatsApp [últimos 4 dígitos]",
-                    "latest": {
-                        "title": "WhatsApp conectado",
-                        "description": "O último número vinculado já está pronto para uso.",
-                        "label": "Identificador",
-                        "number": "Número",
-                        "pending": "O pareamento precisa ser concluído para o número aparecer aqui."
-                    }
-                }
-            },
-            "notifications": {
-                "card": {
-                    "title": "Preferências de Notificações",
-                    "description": "Escolha como deseja ser notificado"
-                },
-                "email": {
-                    "label": "Notificações por E-mail",
-                    "description": "Receba notificações por e-mail",
-                    "aria": "Alternar notificações por e-mail"
-                },
-                "newMessage": {
-                    "label": "Alertas de Novas Mensagens",
-                    "description": "Seja notificado quando os clientes enviarem mensagens",
-                    "aria": "Alternar alertas de novas mensagens"
-                },
-                "dailyReports": {
-                    "label": "Relatórios Diários",
-                    "description": "Receba resumos diários da atividade do seu bot",
-                    "aria": "Alternar relatórios diários"
-                },
-                "save": "Salvar Preferências"
-            },
-            "dialogs": {
-                "edit": {
-                    "title": "Editar Número de WhatsApp",
-                    "description": "Atualize o nome ou telefone deste número conectado",
-                    "displayNameLabel": "Nome do Número",
-                    "displayNamePlaceholder": "ex.: Suporte Principal",
-                    "phoneLabel": "Número de Telefone",
-                    "phonePlaceholder": "+55 11 98765-4321",
-                    "save": "Salvar Alterações"
-                },
-                "delete": {
-                    "confirm": "Tem certeza que deseja desconectar este número do WhatsApp?"
-                }
-            }
         }
     }
 }

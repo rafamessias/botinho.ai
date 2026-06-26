@@ -8,11 +8,14 @@ import {
   getInboxConversationDetail,
   getLastCustomerMessage,
   listInboxConversations,
+  listInboxCustomers,
   markConversationRead,
   sanitizeTags,
   updateConversationMetadata,
 } from "@/lib/firebase/services/inbox-service"
 import { generateSuggestedResponses } from "@/lib/firebase/ai/generate"
+import { isWhatsAppConfigured, getWhatsAppOrchestrator } from "@/lib/whatsapp"
+import { WhatsAppSessionRepository } from "@/lib/whatsapp/session-repository"
 import type {
   InboxConversationPriority,
   InboxMessageSenderType,
@@ -25,6 +28,7 @@ const companyIdSchema = z.object({
 
 const getInboxConversationsSchema = companyIdSchema.extend({
   search: z.string().optional(),
+  sessionId: z.string().min(1).optional(),
   page: z.number().int().positive().optional(),
   pageSize: z.number().int().min(1).max(100).optional(),
   includeCounts: z.boolean().optional(),
@@ -46,6 +50,7 @@ export const getInboxConversationsAction = async (
     const result = await listInboxConversations({
       companyId,
       search: payload.search,
+      sessionId: payload.sessionId,
       page: payload.page,
       pageSize: payload.pageSize,
       includeArchived: payload.includeArchived,
@@ -86,14 +91,20 @@ export const getInboxConversationDetailAction = async (
 
 const baseCustomerSchema = z.object({
   name: z.string().trim().min(1),
-  phone: z.string().trim().min(8).max(20).optional(),
-  email: z.string().trim().email().optional(),
+  phone: z.string().trim().min(8).max(32).optional(),
+  email: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => (value ? value : undefined))
+    .pipe(z.string().email().optional()),
   address: z.string().trim().max(255).optional(),
   notes: z.string().trim().max(1000).optional(),
 })
 
 const createInboxConversationSchema = companyIdSchema.extend({
   customer: baseCustomerSchema,
+  sessionId: z.string().min(1).optional(),
   priority: z.enum(["low", "medium", "high"]).optional(),
   tags: z.array(z.string()).max(15).optional(),
   satisfactionScore: z.number().int().min(1).max(5).optional(),
@@ -112,6 +123,7 @@ export const createInboxConversationAction = async (
 ): Promise<
   BaseActionResponse<{
     conversation: Awaited<ReturnType<typeof createInboxConversation>>["conversation"]
+    existing?: boolean
     initialMessage?: Awaited<ReturnType<typeof createInboxMessage>>
   }>
 > =>
@@ -125,6 +137,7 @@ export const createInboxConversationAction = async (
     const result = await createInboxConversation({
       companyId,
       customer: payload.customer,
+      sessionId: payload.sessionId,
       priority: payload.priority as InboxConversationPriority | undefined,
       tags: payload.tags,
       satisfactionScore: payload.satisfactionScore,
@@ -141,6 +154,85 @@ export const createInboxConversationAction = async (
     })
 
     return { success: true, data: result }
+  })
+
+const listInboxCustomersSchema = companyIdSchema.extend({
+  search: z.string().optional(),
+  page: z.number().int().positive().optional(),
+  pageSize: z.number().int().min(1).max(100).optional(),
+})
+
+export const listInboxCustomersAction = async (
+  input?: z.infer<typeof listInboxCustomersSchema>,
+): Promise<
+  BaseActionResponse<{
+    customers: Awaited<ReturnType<typeof listInboxCustomers>>["customers"]
+    pagination: Awaited<ReturnType<typeof listInboxCustomers>>["pagination"]
+  }>
+> =>
+  handleAction(async () => {
+    const payload = listInboxCustomersSchema.parse(input ?? {})
+    const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
+    const result = await listInboxCustomers({
+      companyId,
+      search: payload.search,
+      page: payload.page,
+      pageSize: payload.pageSize,
+    })
+
+    return {
+      success: true,
+      data: {
+        customers: result.customers,
+        pagination: result.pagination,
+      },
+    }
+  })
+
+export type InboxConnectionView = {
+  sessionId: string
+  label: string | null
+  phoneNumber: string | null
+  connected: boolean
+}
+
+export const getInboxConnectionsAction = async (
+  input?: z.infer<typeof companyIdSchema>,
+): Promise<
+  BaseActionResponse<{
+    configured: boolean
+    connections: InboxConnectionView[]
+  }>
+> =>
+  handleAction<{
+    configured: boolean
+    connections: InboxConnectionView[]
+  }>(async () => {
+    if (!isWhatsAppConfigured()) {
+      return { success: true, data: { configured: false, connections: [] } }
+    }
+
+    const payload = companyIdSchema.parse(input ?? {})
+    const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
+
+    const repository = new WhatsAppSessionRepository()
+    const sessions = await repository.listSessionsByCompany(companyId)
+    const connections = sessions
+      .filter((session) => session.status === "connected")
+      .map((session) => ({
+        sessionId: session.sessionId,
+        label: session.label ?? null,
+        phoneNumber: session.phoneNumber ?? null,
+        connected: true,
+      }))
+
+    return {
+      success: true,
+      data: {
+        configured: true,
+        connections,
+      },
+    }
   })
 
 const sendInboxMessageSchema = z.object({
@@ -180,6 +272,31 @@ export const sendInboxMessageAction = async (
       status: payload.status as InboxMessageStatus | undefined,
       incrementUnread: payload.senderType === "customer",
     })
+
+    if (payload.senderType === "agent" && isWhatsAppConfigured()) {
+      const customerPhone = conversationDetail.customer?.phone
+      if (customerPhone) {
+        try {
+          const repository = new WhatsAppSessionRepository()
+          const sessionId = conversationDetail.sessionId
+          const session = sessionId
+            ? await repository.getSession(sessionId)
+            : await repository.getConnectedSessionForCompany(companyId)
+
+          if (session && session.status === "connected") {
+            const orchestrator = await getWhatsAppOrchestrator()
+            await orchestrator.sendMessage({
+              companyId,
+              sessionId: session.sessionId,
+              to: customerPhone,
+              text: payload.content,
+            })
+          }
+        } catch (error) {
+          console.error("[inbox] WhatsApp delivery failed:", error)
+        }
+      }
+    }
 
     const conversation = await getInboxConversationDetail({
       companyId,

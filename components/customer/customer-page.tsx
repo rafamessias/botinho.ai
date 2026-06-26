@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState, type ChangeEvent } from "react"
 import { useTranslations } from "next-intl"
 import { Plus, Search } from "lucide-react"
 import { toast } from "sonner"
+import { useRouter } from "@/i18n/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -38,6 +39,7 @@ const initialCustomers: Customer[] = [
         id: "cust-003",
         name: "Ana Costa",
         email: "ana.costa@example.com",
+        phone: "+55 (31) 97777-5678",
         company: "Costa Consulting",
         status: "inactive",
         createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 30).toISOString(),
@@ -52,6 +54,7 @@ const generateCustomerId = () =>
 
 export const CustomerPage = () => {
     const t = useTranslations("Customer")
+    const router = useRouter()
 
     const [customers, setCustomers] = useState<Customer[]>(initialCustomers)
     const [searchTerm, setSearchTerm] = useState("")
@@ -81,6 +84,26 @@ export const CustomerPage = () => {
         setSelectedCustomer(customer)
         setIsModalOpen(true)
     }, [])
+
+    const handleStartConversation = useCallback(
+        (customer: Customer) => {
+            const params = new URLSearchParams({
+                startConversation: "1",
+                name: customer.name,
+            })
+
+            if (customer.phone) {
+                params.set("phone", customer.phone)
+            }
+
+            if (customer.email) {
+                params.set("email", customer.email)
+            }
+
+            router.push(`/inbox?${params.toString()}`)
+        },
+        [router],
+    )
 
     const handleSubmitCustomer = useCallback(
         async (values: CustomerFormValues) => {
@@ -161,18 +184,19 @@ export const CustomerPage = () => {
         }
 
         return customers.filter((customer) => {
-            if (
-                customer.name.toLowerCase().includes(query) ||
-                customer.email.toLowerCase().includes(query)
-            ) {
+            if (customer.name.toLowerCase().includes(query)) {
                 return true
             }
 
-            if (customer.phone && customer.phone.toLowerCase().includes(query)) {
+            if (customer.email?.toLowerCase().includes(query)) {
                 return true
             }
 
-            if (customer.company && customer.company.toLowerCase().includes(query)) {
+            if (customer.phone.toLowerCase().includes(query)) {
+                return true
+            }
+
+            if (customer.company?.toLowerCase().includes(query)) {
                 return true
             }
 
@@ -204,7 +228,11 @@ export const CustomerPage = () => {
                 </Button>
             </div>
 
-            <CustomerTable customers={filteredCustomers} onEdit={handleEditCustomer} />
+            <CustomerTable
+                customers={filteredCustomers}
+                onEdit={handleEditCustomer}
+                onStartConversation={handleStartConversation}
+            />
 
             <CustomerModal
                 isOpen={isModalOpen}

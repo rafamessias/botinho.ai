@@ -1,4 +1,5 @@
 import * as React from "react"
+import { Suspense } from "react"
 import { useTranslations } from "next-intl"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
@@ -24,7 +25,9 @@ export default function InboxPage() {
             <SidebarInset className="!pb-0 flex flex-col overflow-hidden">
                 <SiteHeader title={t("title")} />
                 <div className="flex-1 overflow-hidden">
-                    <Inbox />
+                    <Suspense fallback={null}>
+                        <Inbox />
+                    </Suspense>
                 </div>
             </SidebarInset>
         </SidebarProvider>

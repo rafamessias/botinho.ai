@@ -42,7 +42,8 @@ const statusOptions = ["active", "inactive", "prospect"] as const satisfies Cust
 
 const useCustomerSchema = (messages: {
     nameRequired: string
-    emailRequired: string
+    invalidEmail: string
+    phoneRequired: string
 }) =>
     z.object({
         name: z
@@ -50,14 +51,16 @@ const useCustomerSchema = (messages: {
             .trim()
             .min(1, messages.nameRequired),
         email: z
-            .string({ required_error: messages.emailRequired })
-            .trim()
-            .min(1, messages.emailRequired)
-            .email(messages.emailRequired),
-        phone: z
             .string()
             .trim()
-            .optional(),
+            .refine((value) => value === "" || z.string().email().safeParse(value).success, {
+                message: messages.invalidEmail,
+            })
+            .transform((value) => (value === "" ? undefined : value)),
+        phone: z
+            .string({ required_error: messages.phoneRequired })
+            .trim()
+            .min(1, messages.phoneRequired),
         company: z
             .string()
             .trim()
@@ -70,8 +73,8 @@ export type CustomerFormValues = z.infer<CustomerSchema>
 
 type ExcelCustomerRow = {
     name: string
-    email: string
-    phone?: string
+    email?: string
+    phone: string
     company?: string
     status: CustomerStatus
 }
@@ -103,7 +106,8 @@ export const CustomerModal = ({
 
     const schema = useCustomerSchema({
         nameRequired: t("form.validation.nameRequired"),
-        emailRequired: t("form.validation.emailRequired"),
+        invalidEmail: t("form.validation.invalidEmail"),
+        phoneRequired: t("form.validation.phoneRequired"),
     })
 
     const form = useForm<CustomerFormValues>({
@@ -162,18 +166,22 @@ export const CustomerModal = ({
                     const rowNum = index + 2 // +2 because Excel is 1-indexed and we skip header
                     const name = row.name || row.Name || row.NAME
                     const email = row.email || row.Email || row.EMAIL
+                    const phone = row.phone || row.Phone || row.PHONE
 
                     if (!name) {
                         errors.push(`Row ${rowNum}: Missing name`)
                         return
                     }
 
-                    if (!email) {
-                        errors.push(`Row ${rowNum}: Missing email address`)
+                    if (!phone) {
+                        errors.push(`Row ${rowNum}: Missing phone number`)
                         return
                     }
 
-                    if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    if (
+                        email &&
+                        (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                    ) {
                         errors.push(`Row ${rowNum}: Invalid email format: ${email}`)
                         return
                     }
@@ -188,8 +196,8 @@ export const CustomerModal = ({
 
                     customers.push({
                         name: String(name).trim(),
-                        email: String(email).trim(),
-                        phone: row.phone || row.Phone || row.PHONE ? String(row.phone || row.Phone || row.PHONE).trim() : undefined,
+                        email: email ? String(email).trim() : undefined,
+                        phone: String(phone).trim(),
                         company: row.company || row.Company || row.COMPANY ? String(row.company || row.Company || row.COMPANY).trim() : undefined,
                         status: statusValue as CustomerStatus,
                     })
@@ -292,8 +300,8 @@ export const CustomerModal = ({
         const normalizedValues: CustomerFormValues = {
             ...values,
             name: values.name.trim(),
-            email: values.email.trim(),
-            phone: values.phone?.trim() ? values.phone.trim() : undefined,
+            email: values.email?.trim() ? values.email.trim() : undefined,
+            phone: values.phone.trim(),
             company: values.company?.trim() ? values.company.trim() : undefined,
         }
 

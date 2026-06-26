@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { format, formatDistanceToNow } from "date-fns"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,6 +11,13 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import {
     Search,
     Send,
@@ -37,12 +45,15 @@ import { cn } from "@/lib/utils"
 import { useUser } from "@/components/user-provider"
 import { useSidebar } from "../ui/sidebar"
 import {
+    getInboxConnectionsAction,
     getInboxConversationsAction,
     getInboxConversationDetailAction,
     getSuggestedResponsesAction,
     markInboxConversationReadAction,
     sendInboxMessageAction,
+    type InboxConnectionView,
 } from "../server-actions/inbox"
+import { NewConversationDialog } from "@/components/inbox/new-conversation-dialog"
 import { useInboxRealtime } from "@/hooks/use-inbox-realtime"
 
 type InboxConversationPriority = "low" | "medium" | "high"
@@ -199,9 +210,19 @@ const sortConversations = (items: InboxConversationSummary[]) => {
     return [...items].sort((a, b) => getTimeValue(b.lastMessageAt) - getTimeValue(a.lastMessageAt))
 }
 
+const ALL_CONNECTIONS_VALUE = "all"
+
 export default function InboxPage() {
     const [conversations, setConversations] = useState<InboxConversationSummary[]>([])
     const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
+    const [connections, setConnections] = useState<InboxConnectionView[]>([])
+    const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null)
+    const [showNewConversationDialog, setShowNewConversationDialog] = useState(false)
+    const [prefilledCustomer, setPrefilledCustomer] = useState<{
+        name?: string
+        phone?: string
+        email?: string
+    } | null>(null)
     const [messages, setMessages] = useState<InboxMessage[]>([])
     const [suggestedResponses, setSuggestedResponses] = useState<SuggestedResponse[]>([])
     const [searchQuery, setSearchQuery] = useState("")
@@ -217,6 +238,7 @@ export default function InboxPage() {
     const initialLoadRef = useRef(false)
     const selectedConversationIdRef = useRef<string | null>(null)
     const searchQueryRef = useRef("")
+    const selectedConnectionIdRef = useRef<string | null>(null)
     const loadConversationsRef = useRef<
         (page?: number, searchValue?: string, options?: { silent?: boolean }) => Promise<void>
     >(async () => {})
@@ -234,11 +256,13 @@ export default function InboxPage() {
     const { setOpen } = useSidebar()
     const t = useTranslations("Inbox")
     const { user } = useUser()
+    const searchParams = useSearchParams()
 
     const companyId = user?.defaultCompanyId != null ? String(user.defaultCompanyId) : null
 
     selectedConversationIdRef.current = selectedConversationId
     searchQueryRef.current = searchQuery
+    selectedConnectionIdRef.current = selectedConnectionId
 
     const selectedConversation = useMemo(
         () => conversations.find((conversation) => conversation.id === selectedConversationId) ?? null,
@@ -381,6 +405,7 @@ export default function InboxPage() {
                 const result = await getInboxConversationsAction({
                     page,
                     search: searchValue.trim() ? searchValue.trim() : undefined,
+                    sessionId: selectedConnectionIdRef.current ?? undefined,
                     includeCounts: true,
                 })
 
@@ -464,6 +489,9 @@ export default function InboxPage() {
             setSuggestedResponses([])
             selectedConversationIdRef.current = null
             setSelectedConversationId(null)
+            setSelectedConnectionId(null)
+            selectedConnectionIdRef.current = null
+            setConnections([])
             setSearchQuery("")
             setMessageInput("")
         }
@@ -475,6 +503,61 @@ export default function InboxPage() {
         initialLoadRef.current = true
         void loadConversationsRef.current(1, "")
     }, [companyId])
+
+    useEffect(() => {
+        if (!companyId) {
+            return
+        }
+
+        let isMounted = true
+
+        const loadConnections = async () => {
+            try {
+                const result = await getInboxConnectionsAction()
+                if (!isMounted) {
+                    return
+                }
+
+                if (result.success && result.data?.configured) {
+                    setConnections(result.data.connections)
+                } else {
+                    setConnections([])
+                }
+            } catch (error) {
+                console.error("Failed to load inbox connections", error)
+                if (isMounted) {
+                    setConnections([])
+                }
+            }
+        }
+
+        void loadConnections()
+
+        return () => {
+            isMounted = false
+        }
+    }, [companyId])
+
+    useEffect(() => {
+        if (!initialLoadRef.current) {
+            return
+        }
+
+        void loadConversationsRef.current(1, searchQueryRef.current)
+    }, [selectedConnectionId])
+
+    useEffect(() => {
+        if (searchParams.get("startConversation") !== "1") {
+            return
+        }
+
+        setPrefilledCustomer({
+            name: searchParams.get("name") ?? undefined,
+            phone: searchParams.get("phone") ?? undefined,
+            email: searchParams.get("email") ?? undefined,
+        })
+        setShowNewConversationDialog(true)
+    }, [searchParams])
 
     useEffect(() => {
         if (!initialLoadRef.current || isFirstSearchEffectRef.current) {
@@ -621,6 +704,33 @@ export default function InboxPage() {
     const handleUseSuggestedResponse = useCallback((text: string) => {
         setMessageInput(text)
         messageInputRef.current?.focus()
+    }, [])
+
+    const getConnectionLabel = useCallback(
+        (connection: InboxConnectionView) =>
+            connection.label ?? connection.phoneNumber ?? connection.sessionId,
+        [],
+    )
+
+    const handleConversationCreated = useCallback(
+        async (conversationId: string) => {
+            selectedConversationIdRef.current = conversationId
+            setSelectedConversationId(conversationId)
+            setShowConversationsList(false)
+            await loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
+            await fetchConversationDetailRef.current(conversationId)
+        },
+        [],
+    )
+
+    const handleConnectionChange = useCallback((value: string) => {
+        const nextConnectionId = value === ALL_CONNECTIONS_VALUE ? null : value
+        selectedConnectionIdRef.current = nextConnectionId
+        setSelectedConnectionId(nextConnectionId)
+        selectedConversationIdRef.current = null
+        setSelectedConversationId(null)
+        setMessages([])
+        setSuggestedResponses([])
     }, [])
 
     const getPriorityColor = (priority?: InboxConversationPriority | null) => {
@@ -911,6 +1021,43 @@ export default function InboxPage() {
 
     return (
         <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden bg-background">
+            <div className="flex h-14 flex-shrink-0 items-center justify-between gap-3 border-b border-border/60 px-4">
+                <div className="flex min-w-0 items-center gap-3">
+                    {connections.length > 0 && (
+                        <Select
+                            value={selectedConnectionId ?? ALL_CONNECTIONS_VALUE}
+                            onValueChange={handleConnectionChange}
+                        >
+                            <SelectTrigger
+                                className="w-full min-w-[180px] max-w-[260px] bg-background"
+                                aria-label={t("toolbar.connectionLabel")}
+                            >
+                                <SelectValue placeholder={t("toolbar.connectionPlaceholder")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL_CONNECTIONS_VALUE}>{t("toolbar.allConnections")}</SelectItem>
+                                {connections.map((connection) => (
+                                    <SelectItem key={connection.sessionId} value={connection.sessionId}>
+                                        {getConnectionLabel(connection)}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                </div>
+                <Button
+                    onClick={() => {
+                        setPrefilledCustomer(null)
+                        setShowNewConversationDialog(true)
+                    }}
+                    size="sm"
+                    className="shrink-0"
+                >
+                    <MessageSquarePlus className="mr-2 size-4" aria-hidden="true" />
+                    {t("actions.newConversation")}
+                </Button>
+            </div>
+
             <div className="flex-1 min-h-0 flex overflow-hidden bg-background">
                 {showDesktopConversations && (
                     <div className="hidden md:flex w-64 border-r border-border/60 flex-col bg-background flex-shrink-0 overflow-hidden">
@@ -1111,6 +1258,15 @@ export default function InboxPage() {
                     </SheetContent>
                 </Sheet>
             </div>
+
+            <NewConversationDialog
+                open={showNewConversationDialog}
+                onOpenChange={setShowNewConversationDialog}
+                connections={connections}
+                selectedConnectionId={selectedConnectionId}
+                prefilledCustomer={prefilledCustomer}
+                onConversationCreated={handleConversationCreated}
+            />
         </div>
     )
 }
