@@ -52,7 +52,9 @@ import {
     type InboxConnectionView,
 } from "../server-actions/inbox"
 import { getAiTrainingDataAction } from "@/components/server-actions/ai-training"
+import { listActiveSurveysAction, sendSurveyAction, type SurveyView } from "@/components/server-actions/surveys"
 import type { QuickAnswerView, TemplateView } from "@/components/ai-training/types"
+import { ContextPanel } from "@/components/inbox/context-panel"
 import { NewConversationDialog } from "@/components/inbox/new-conversation-dialog"
 import { InboxReplyListModal } from "@/components/inbox/inbox-reply-list-modal"
 import { ReplyPreviewHoverCard } from "@/components/inbox/reply-preview-hover-card"
@@ -160,6 +162,10 @@ export default function InboxPage({
     const [suggestedResponses, setSuggestedResponses] = useState<SuggestedResponse[]>([])
     const [quickAnswers, setQuickAnswers] = useState<QuickAnswerView[]>(initialData?.quickAnswers ?? [])
     const [templates, setTemplates] = useState<TemplateView[]>(initialData?.templates ?? [])
+    const [surveys, setSurveys] = useState<SurveyView[]>([])
+    const [assignedTo, setAssignedTo] = useState<{ id: string; name: string } | null>(null)
+    const [activeSurveyResponseId, setActiveSurveyResponseId] = useState<string | null>(null)
+    const [isSendingSurvey, setIsSendingSurvey] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const [conversationFilter, setConversationFilter] = useState<ConversationFilter>("all")
     const [unreadTotal, setUnreadTotal] = useState(initialData?.unreadTotal ?? 0)
@@ -361,6 +367,16 @@ export default function InboxPage({
     }, [])
 
     useEffect(() => {
+        if (!hasCompanyAccess) return
+        void (async () => {
+            const result = await listActiveSurveysAction()
+            if (result.success && result.data) {
+                setSurveys(result.data.surveys)
+            }
+        })()
+    }, [hasCompanyAccess])
+
+    useEffect(() => {
         if (!initialHydrationRef.current || !initialData || initialData.loadError) {
             return
         }
@@ -434,6 +450,13 @@ export default function InboxPage({
                 if (!result.success || !result.data) {
                     throw new Error(result.error || "Unable to load conversation")
                 }
+
+                const detail = result.data as ConversationEntity & {
+                    assignedTo?: { id: string; name: string } | null
+                    activeSurveyResponseId?: string | null
+                }
+                setAssignedTo(detail.assignedTo ?? null)
+                setActiveSurveyResponseId(detail.activeSurveyResponseId ?? null)
 
                 const summaryBase = buildConversationSummary(result.data as ConversationEntity)
                 const summary = { ...summaryBase, unreadCount: 0 }
@@ -1182,263 +1205,85 @@ export default function InboxPage({
         getConnectionLabel,
     }
 
-    const ContextPanelContent = () => {
-        if (!selectedConversation) {
-            return (
-                <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-                        <Contact className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
-                    </div>
-                    <div className="space-y-1">
-                        <h3 className="text-sm font-semibold text-foreground">{t("context.empty.title")}</h3>
-                        <p className="text-xs text-muted-foreground">{t("context.empty.description")}</p>
-                    </div>
-                </div>
-            )
+    const handleAssignToMe = useCallback(async () => {
+        if (!selectedConversationId || !user?.uid) return
+        const result = await updateInboxConversationMetadataAction({
+            conversationId: selectedConversationId,
+            assignedToId: user.uid,
+        })
+        if (result.success && result.data) {
+            const detail = result.data.conversation as ConversationEntity & {
+                assignedTo?: { id: string; name: string } | null
+            }
+            setAssignedTo(detail.assignedTo ?? { id: user.uid, name: user.firstName || user.email || "You" })
+            toast.success(t("context.assignment.takenOver"))
+        } else {
+            toast.error(result.error || t("context.assignment.failed"))
         }
+    }, [selectedConversationId, t, user])
 
-        return (
-            <div className="h-full overflow-y-auto">
-                <div className="p-4 space-y-3 pb-6">
-                    <Card className="shadow-none gap-3 py-3">
-                        <CardHeader className="px-4 pb-0">
-                            <CardTitle className="text-sm font-medium">{t("context.customer.title")}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2 px-4 text-xs text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                                <User className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                                <span className="truncate font-medium text-foreground">
-                                    {selectedConversation.customerName}
-                                </span>
-                            </div>
-                            {selectedConversation.customerCompany && (
-                                <div className="flex items-center gap-2">
-                                    <Building2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                                    <span className="truncate">{selectedConversation.customerCompany}</span>
-                                </div>
-                            )}
-                            {selectedConversation.customerPhone && (
-                                <div className="flex items-center gap-2">
-                                    <Phone className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                                    <span>{maskPhoneForDisplay(selectedConversation.customerPhone)}</span>
-                                </div>
-                            )}
-                            {selectedConversation.customerEmail && (
-                                <div className="flex items-center gap-2">
-                                    <Mail className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                                    <span className="truncate">{selectedConversation.customerEmail}</span>
-                                </div>
-                            )}
-                            {selectedConversation.customerAddress && (
-                                <div className="flex items-start gap-2">
-                                    <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" aria-hidden="true" />
-                                    <span>{selectedConversation.customerAddress}</span>
-                                </div>
-                            )}
-                            {selectedConversation.satisfactionScore != null && (
-                                <div className="flex items-center gap-2">
-                                    <Info className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                                    <span>
-                                        {t("context.customer.satisfaction", {
-                                            score: selectedConversation.satisfactionScore,
-                                        })}
-                                    </span>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+    const handleReleaseAssignment = useCallback(async () => {
+        if (!selectedConversationId) return
+        const result = await updateInboxConversationMetadataAction({
+            conversationId: selectedConversationId,
+            assignedToId: null,
+        })
+        if (result.success) {
+            setAssignedTo(null)
+            toast.success(t("context.assignment.released"))
+        } else {
+            toast.error(result.error || t("context.assignment.failed"))
+        }
+    }, [selectedConversationId, t])
 
-                    <Card className="shadow-none gap-2 py-3">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 pb-1">
-                            <CardTitle className="text-sm font-medium">{t("context.quickReplies.title")}</CardTitle>
-                            <Link
-                                href="/quick-answers"
-                                className="text-[11px] font-medium text-primary hover:underline"
-                            >
-                                {t("context.quickReplies.manage")}
-                            </Link>
-                        </CardHeader>
-                        <CardContent className="space-y-1 px-4">
-                            {quickAnswers.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/60 bg-muted/40 px-3 py-4 text-center">
-                                    <Zap className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                                    <div className="space-y-1">
-                                        <p className="text-xs font-medium text-foreground">
-                                            {t("context.quickReplies.empty.title")}
-                                        </p>
-                                        <p className="text-[11px] text-muted-foreground">
-                                            {t("context.quickReplies.empty.description")}
-                                        </p>
-                                    </div>
-                                    <Button variant="outline" size="sm" className="mt-1 h-7 text-xs" asChild>
-                                        <Link href="/quick-answers">{t("context.quickReplies.empty.action")}</Link>
-                                    </Button>
-                                </div>
-                            ) : (
-                                <>
-                                    {visibleQuickAnswers.map((quickAnswer) => (
-                                        <ReplyPreviewHoverCard
-                                            key={quickAnswer.id}
-                                            preview={
-                                                <p className="whitespace-pre-wrap text-foreground">
-                                                    {quickAnswer.content}
-                                                </p>
-                                            }
-                                        >
-                                            <Button
-                                                variant="ghost"
-                                                className="w-full justify-start text-left text-[11px] leading-snug h-auto py-1.5 px-2 font-normal text-foreground hover:bg-muted hover:text-foreground dark:hover:bg-muted/50"
-                                                onClick={() => {
-                                                    handleUseSuggestedResponse(quickAnswer.content)
-                                                }}
-                                            >
-                                                <span className="line-clamp-2">{quickAnswer.content}</span>
-                                            </Button>
-                                        </ReplyPreviewHoverCard>
-                                    ))}
-                                    {quickAnswers.length > visibleQuickAnswers.length ? (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="mt-0.5 h-7 w-full text-[11px] font-medium text-primary hover:bg-muted hover:text-primary dark:hover:bg-muted/50"
-                                            onClick={() => setShowQuickRepliesModal(true)}
-                                        >
-                                            {t("context.seeAll", { count: quickAnswers.length })}
-                                        </Button>
-                                    ) : null}
-                                </>
-                            )}
-                        </CardContent>
-                    </Card>
+    const handleSendSurvey = useCallback(
+        async (surveyId: string, deliveryMode?: "inline" | "hosted") => {
+            if (!selectedConversationId) return
+            setIsSendingSurvey(true)
+            try {
+                const result = await sendSurveyAction({
+                    surveyId,
+                    conversationId: selectedConversationId,
+                    deliveryMode,
+                    locale: user?.language === "pt_BR" ? "pt-BR" : "en",
+                })
+                if (!result.success) {
+                    toast.error(result.error || t("context.surveys.sendFailed"))
+                    return
+                }
+                toast.success(t("context.surveys.sent"))
+                if (deliveryMode === "inline") {
+                    setActiveSurveyResponseId(result.data?.responseId ?? null)
+                }
+                void fetchConversationDetail(selectedConversationId, { silent: true, force: true })
+            } finally {
+                setIsSendingSurvey(false)
+            }
+        },
+        [fetchConversationDetail, selectedConversationId, t, user?.language],
+    )
 
-                    <Card className="shadow-none gap-2 py-3">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 pb-1">
-                            <CardTitle className="text-sm font-medium">{t("context.templates.title")}</CardTitle>
-                            <Link
-                                href="/templates"
-                                className="text-[11px] font-medium text-primary hover:underline"
-                            >
-                                {t("context.templates.manage")}
-                            </Link>
-                        </CardHeader>
-                        <CardContent className="space-y-1 px-4">
-                            {templates.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/60 bg-muted/40 px-3 py-4 text-center">
-                                    <MessageSquare className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                                    <div className="space-y-1">
-                                        <p className="text-xs font-medium text-foreground">
-                                            {t("context.templates.empty.title")}
-                                        </p>
-                                        <p className="text-[11px] text-muted-foreground">
-                                            {t("context.templates.empty.description")}
-                                        </p>
-                                    </div>
-                                    <Button variant="outline" size="sm" className="mt-1 h-7 text-xs" asChild>
-                                        <Link href="/templates">{t("context.templates.empty.action")}</Link>
-                                    </Button>
-                                </div>
-                            ) : (
-                                <>
-                                    {visibleTemplates.map((template) => (
-                                        <div key={template.id} className="space-y-1">
-                                            <ReplyPreviewHoverCard
-                                                preview={
-                                                    <div className="space-y-1.5">
-                                                        <p className="text-xs font-medium text-foreground">
-                                                            {template.name}
-                                                        </p>
-                                                        <p className="whitespace-pre-wrap text-muted-foreground">
-                                                            {template.content}
-                                                        </p>
-                                                    </div>
-                                                }
-                                            >
-                                                <Button
-                                                    variant="ghost"
-                                                    className="w-full h-auto flex-col items-start gap-0.5 py-1.5 px-2 text-left text-foreground hover:bg-muted hover:text-foreground dark:hover:bg-muted/50"
-                                                    onClick={() => {
-                                                        handleUseSuggestedResponse(template.content)
-                                                    }}
-                                                >
-                                                    <span className="text-xs font-medium text-foreground">
-                                                        {template.name}
-                                                    </span>
-                                                    <span className="text-[11px] text-muted-foreground line-clamp-1 w-full font-normal">
-                                                        {template.content}
-                                                    </span>
-                                                </Button>
-                                            </ReplyPreviewHoverCard>
-                                            {template.options && template.options.length > 0 ? (
-                                                <div className="flex flex-wrap gap-1 px-2 pb-0.5">
-                                                    {template.options.map((option) => (
-                                                        <Button
-                                                            key={option.id}
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="h-5 px-1.5 text-[10px] font-normal"
-                                                            onClick={() => {
-                                                                handleUseSuggestedResponse(option.value || option.label)
-                                                            }}
-                                                        >
-                                                            {option.label}
-                                                        </Button>
-                                                    ))}
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    ))}
-                                    {templates.length > visibleTemplates.length ? (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="mt-0.5 h-7 w-full text-[11px] font-medium text-primary hover:bg-muted hover:text-primary dark:hover:bg-muted/50"
-                                            onClick={() => setShowTemplatesModal(true)}
-                                        >
-                                            {t("context.seeAll", { count: templates.length })}
-                                        </Button>
-                                    ) : null}
-                                </>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    <Card className="shadow-none">
-                        <CardHeader>
-                            <CardTitle className="text-sm font-medium">{t("context.aiSuggestions.title")}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                            {suggestedResponses.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/60 bg-muted/40 px-4 py-6 text-center">
-                                    <Sparkles className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                                    <div className="space-y-1">
-                                        <p className="text-xs font-medium text-foreground">
-                                            {t("context.aiSuggestions.empty.title")}
-                                        </p>
-                                        <p className="text-[11px] text-muted-foreground">
-                                            {t("context.aiSuggestions.empty.description")}
-                                        </p>
-                                    </div>
-                                </div>
-                            ) : (
-                                suggestedResponses.map((suggestion) => (
-                                    <Button
-                                        key={suggestion.id}
-                                        variant="outline"
-                                        className="w-full justify-start items-start text-left text-xs h-auto py-2 px-3 whitespace-normal break-words"
-                                        onClick={() => {
-                                            handleUseSuggestedResponse(suggestion.text)
-                                        }}
-                                    >
-                                        {suggestion.text}
-                                    </Button>
-                                ))
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
-        )
-    }
+    const contextPanelElement = (
+        <ContextPanel
+            conversation={selectedConversation}
+            quickAnswers={quickAnswers}
+            templates={templates}
+            surveys={surveys}
+            suggestedResponses={suggestedResponses}
+            assignedTo={assignedTo}
+            activeSurveyResponseId={activeSurveyResponseId}
+            currentUserId={user?.uid ?? ""}
+            visibleQuickAnswers={visibleQuickAnswers}
+            visibleTemplates={visibleTemplates}
+            onUseReply={handleUseSuggestedResponse}
+            onAssignToMe={() => void handleAssignToMe()}
+            onRelease={() => void handleReleaseAssignment()}
+            onSendSurvey={(surveyId, mode) => void handleSendSurvey(surveyId, mode)}
+            onShowQuickRepliesModal={() => setShowQuickRepliesModal(true)}
+            onShowTemplatesModal={() => setShowTemplatesModal(true)}
+            isSendingSurvey={isSendingSurvey}
+        />
+    )
 
     const renderMessages = () => {
         if (!selectedConversationId) {
@@ -1746,7 +1591,7 @@ export default function InboxPage({
                             </Button>
                         </div>
                         <div className="flex-1 min-h-0">
-                            <ContextPanelContent />
+                            {contextPanelElement}
                         </div>
                     </div>
                 )}
@@ -1760,7 +1605,7 @@ export default function InboxPage({
                             </SheetTitle>
                         </SheetHeader>
                         <div className="flex-1 min-h-0">
-                            <ContextPanelContent />
+                            {contextPanelElement}
                         </div>
                     </SheetContent>
                 </Sheet>

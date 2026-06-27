@@ -57,6 +57,10 @@ Path prefix: `companies/{companyId}/`
 | `knowledge` | Auto | AI knowledge items |
 | `quickAnswers` | Auto | Canned Q/A pairs |
 | `templates` | Auto | Message templates (options embedded) |
+| `surveys` | Auto | Customer surveys |
+| `surveyResponses` | Auto | Survey response records |
+| `campaigns` | Auto | Outbound message campaigns |
+| `campaignDeliveries` | Auto | Per-recipient campaign send tracking |
 | `customers` | Auto | Inbox CRM customers |
 | `conversations` | Auto | Inbox threads |
 | `subscription` | `current` | Active Stripe subscription |
@@ -156,6 +160,7 @@ Unique by phone per company (enforced in service layer).
 | satisfactionScore | number? |
 | tags | string[] |
 | assignedToId | string? |
+| activeSurveyResponseId | string? | Inline survey state |
 | isArchived | boolean |
 | archivedAt | Timestamp? |
 

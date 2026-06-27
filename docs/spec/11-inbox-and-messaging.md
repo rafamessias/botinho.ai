@@ -33,6 +33,7 @@ All records scoped under `companies/{companyId}/`.
 | Mark read | `markInboxConversationReadAction` |
 | Update metadata | `updateInboxConversationMetadataAction` |
 | AI suggestions | `getSuggestedResponsesAction` (Gemini) |
+| Live agent panel | [context-panel.tsx](../../components/inbox/context-panel.tsx) — assignment, surveys |
 | Real-time updates | Firestore `onSnapshot` via `useInboxRealtime` |
 
 ## Conversation fields
@@ -47,6 +48,7 @@ All records scoped under `companies/{companyId}/`.
 | satisfactionScore | Optional 1–5 |
 | tags | String array |
 | assignedToId | Agent user id |
+| activeSurveyResponseId | Inline survey in progress |
 | isArchived | Archive flag |
 
 ## Message fields

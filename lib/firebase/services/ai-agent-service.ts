@@ -3,6 +3,7 @@ import { adminDb } from "@/lib/firebase/admin"
 import { aiAgentSubcollections, collections, companySubcollections } from "@/lib/firebase/collections"
 import { AiTemplateCategory, KnowledgeItemType } from "@/lib/types/enums"
 import { listAiTrainingData } from "@/lib/firebase/services/ai-training-service"
+import { DEFAULT_SURVEY_TRIGGERS, type SurveyTriggers } from "@/lib/types/survey"
 
 const companyRef = (companyId: string) => adminDb.collection(collections.companies).doc(companyId)
 const toDate = (value: Timestamp) => value.toDate()
@@ -26,6 +27,8 @@ export type AiAgentRecord = {
   systemPrompt: string
   sessionIds: string[]
   autoReply: boolean
+  surveyIds: string[]
+  surveyTriggers: SurveyTriggers
   createdAt: Date
   updatedAt: Date
 }
@@ -46,6 +49,13 @@ const mapAgent = (id: string, data: FirebaseFirestore.DocumentData): AiAgentReco
   systemPrompt: (data.systemPrompt as string) ?? "",
   sessionIds: normalizeSessionIds(data),
   autoReply: data.autoReply !== false,
+  surveyIds: Array.isArray(data.surveyIds)
+    ? data.surveyIds.filter((sid): sid is string => typeof sid === "string")
+    : [],
+  surveyTriggers: {
+    ...DEFAULT_SURVEY_TRIGGERS,
+    ...(typeof data.surveyTriggers === "object" && data.surveyTriggers ? data.surveyTriggers : {}),
+  },
   createdAt: toDate(data.createdAt as Timestamp),
   updatedAt: toDate(data.updatedAt as Timestamp),
 })
@@ -178,6 +188,8 @@ export const createAiAgent = async (
     systemPrompt: input.systemPrompt ?? "",
     sessionIds,
     autoReply: input.autoReply !== false,
+    surveyIds: [],
+    surveyTriggers: DEFAULT_SURVEY_TRIGGERS,
     createdById: userId,
     createdAt: now,
     updatedAt: now,
@@ -195,11 +207,13 @@ export const updateAiAgent = async (
     systemPrompt?: string
     sessionIds?: string[]
     autoReply?: boolean
+    surveyIds?: string[]
+    surveyTriggers?: SurveyTriggers
   },
 ) => {
   const ref = agentRef(companyId, agentId)
   if (!(await ref.get()).exists) {
-    throw new Error("AI agent not found")
+    throw new Error("Botinho not found")
   }
 
   if (input.sessionIds !== undefined && input.sessionIds.length > 0) {
@@ -214,6 +228,8 @@ export const updateAiAgent = async (
     update.sessionId = FieldValue.delete()
   }
   if (input.autoReply !== undefined) update.autoReply = input.autoReply
+  if (input.surveyIds !== undefined) update.surveyIds = input.surveyIds
+  if (input.surveyTriggers !== undefined) update.surveyTriggers = input.surveyTriggers
 
   await ref.update(update)
   const data = (await ref.get()).data()!
@@ -223,12 +239,12 @@ export const updateAiAgent = async (
 export const deleteAiAgent = async (companyId: string, agentId: string) => {
   const ref = agentRef(companyId, agentId)
   if (!(await ref.get()).exists) {
-    throw new Error("AI agent not found")
+    throw new Error("Botinho not found")
   }
 
   const agentsCount = (await agentsRef(companyId).count().get()).data().count
   if (agentsCount <= 1) {
-    throw new Error("Cannot delete the last AI agent")
+    throw new Error("Cannot delete the last Botinho")
   }
 
   const [knowledgeSnap, quickSnap, templateSnap] = await Promise.all([

@@ -13,6 +13,8 @@ import {
   IconCreditCard,
   IconMessage,
   IconTemplate,
+  IconClipboardList,
+  IconSpeakerphone,
 } from "@tabler/icons-react"
 
 import { BrandLogo, BrandLogoIcon } from "@/components/brand-logo"
@@ -26,6 +28,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { UsageBanner } from "@/components/ui/usage-banner"
 import { Link } from "@/i18n/navigation"
@@ -35,6 +38,8 @@ import { useUser } from "@/components/user-provider"
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations("AppSidebar")
   const { usagePercentage } = useUser()
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
 
   const navGroups = [
     {
@@ -58,7 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       ],
     },
     {
-      label: t("sections.aiInteraction"),
+      label: t("sections.customerInteraction"),
       items: [
         {
           title: t("navigation.aiAgents"),
@@ -74,6 +79,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           title: t("navigation.templates"),
           url: "/templates",
           icon: IconTemplate,
+        },
+        {
+          title: t("navigation.surveys"),
+          url: "/surveys",
+          icon: IconClipboardList,
+        },
+        {
+          title: t("navigation.campaigns"),
+          url: "/campaigns",
+          icon: IconSpeakerphone,
         },
       ],
     },
@@ -109,8 +124,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       collapsible="icon"
       {...props}
     >
-      <SidebarHeader className="h-(--header-height) shrink-0 gap-0 px-1 py-0">
-        <div className="flex h-full w-full items-center p-2">
+      <SidebarHeader className="mb-3 h-(--header-height) shrink-0 gap-0 px-1 py-0">
+        <div className="flex h-full w-full items-center p-2 group-data-[collapsible=icon]:py-0">
           <SidebarMenu className="w-full">
             <SidebarMenuItem>
               <SidebarMenuButton
@@ -118,15 +133,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 tooltip="botinho.ai"
                 className="rounded-xl group-data-[collapsible=icon]:justify-center hover:bg-transparent hover:text-inherit active:bg-transparent active:text-inherit"
               >
-                <Link href="/" aria-label="botinho.ai home" tabIndex={0}>
-                  <BrandLogo
-                    className="h-8 w-auto max-w-[135px] object-contain object-left group-data-[collapsible=icon]:hidden"
-                    priority
-                  />
-                  <BrandLogoIcon
-                    priority
-                    className="hidden size-8 shrink-0 group-data-[collapsible=icon]:block"
-                  />
+                <Link
+                  href="/"
+                  aria-label="botinho.ai home"
+                  tabIndex={0}
+                  className="flex w-full items-center group-data-[collapsible=icon]:justify-center"
+                >
+                  {isCollapsed ? (
+                    <BrandLogoIcon priority className="size-8" />
+                  ) : (
+                    <BrandLogo
+                      className="h-8 w-auto max-w-[135px] object-contain object-left"
+                      priority
+                    />
+                  )}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

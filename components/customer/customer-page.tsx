@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Loader2, Plus, Users } from "lucide-react"
 import { toast } from "sonner"
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import type { Customer } from "@/lib/types/customer"
 import { CustomerModal, type CustomerFormValues } from "@/components/customer/customer-modal"
 import { CustomerTable } from "@/components/customer/customer-table"
+import { collectCustomerTags } from "@/components/customer/customer-tag-utils"
 import { ErrorState } from "@/components/ai-training/components/error-state"
 import {
     bulkImportCustomersAction,
@@ -39,6 +40,8 @@ export const CustomerPage = ({
     const [modalMode, setModalMode] = useState<"create" | "edit">("create")
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
     const [isSaving, setIsSaving] = useState(false)
+
+    const availableTags = useMemo(() => collectCustomerTags(customers), [customers])
 
     const loadCustomers = useCallback(async () => {
         if (!hasCompanyAccess) {
@@ -115,6 +118,7 @@ export const CustomerPage = ({
                         email: values.email,
                         company: values.company,
                         description: values.description,
+                        tags: values.tags,
                         status: values.status,
                     })
 
@@ -133,6 +137,7 @@ export const CustomerPage = ({
                         email: values.email,
                         company: values.company,
                         description: values.description,
+                        tags: values.tags,
                         status: values.status,
                     })
 
@@ -168,6 +173,7 @@ export const CustomerPage = ({
                         phone: customer.phone,
                         email: customer.email,
                         company: customer.company,
+                        tags: customer.tags,
                         status: customer.status,
                     })),
                 })
@@ -225,6 +231,7 @@ export const CustomerPage = ({
             ) : (
                 <CustomerTable
                     customers={customers}
+                    availableTags={availableTags}
                     onEdit={handleEditCustomer}
                     onStartConversation={handleStartConversation}
                 />
@@ -238,6 +245,7 @@ export const CustomerPage = ({
                 initialCustomer={selectedCustomer}
                 isSubmitting={isSaving}
                 onBulkImport={handleBulkImport}
+                tagSuggestions={availableTags}
             />
         </div>
     )

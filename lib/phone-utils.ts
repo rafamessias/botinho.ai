@@ -197,11 +197,34 @@ export const parseInternationalNumber = (internationalNumber: string): { country
 }
 
 /**
- * Builds a complete international phone number from country and local number
- * @param countryCode - The country code
- * @param localNumber - The local phone number (digits only)
- * @returns Complete international number with + prefix
+ * Parses a phone number from storage (digits-only) or international (+prefix) format.
  */
+export const parseStoredPhoneNumber = (value: string): { countryCode: CountryCode; localNumber: string } | null => {
+    if (!value?.trim()) return null
+
+    const trimmed = value.trim()
+
+    if (trimmed.startsWith("+")) {
+        return parseInternationalNumber(trimmed)
+    }
+
+    const digits = normalizeStoredPhone(trimmed)
+    if (!digits) return null
+
+    for (const country of countries) {
+        const dialCodeDigits = country.dialCode.slice(1)
+
+        if (digits.startsWith(dialCodeDigits)) {
+            const localNumber = digits.slice(dialCodeDigits.length)
+            if (localNumber.length > 0) {
+                return { countryCode: country.code, localNumber }
+            }
+        }
+    }
+
+    return null
+}
+
 export const buildInternationalNumber = (countryCode: CountryCode, localNumber: string): string => {
     const country = countries.find(c => c.code === countryCode)
     if (!country) return localNumber

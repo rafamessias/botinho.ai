@@ -79,6 +79,7 @@ export type FirestoreInboxCustomer = {
   address?: string
   notes?: string
   company?: string
+  tags?: string[]
   status?: "active" | "inactive" | "prospect"
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -95,6 +96,9 @@ export type FirestoreInboxConversation = {
   satisfactionScore?: number
   tags: string[]
   assignedToId?: string | null
+  activeSurveyResponseId?: string | null
+  activeCampaignId?: string | null
+  activeCampaignDeliveryId?: string | null
   isArchived: boolean
   isBookmarked?: boolean
   archivedAt?: Timestamp | null

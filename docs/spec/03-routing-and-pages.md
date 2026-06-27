@@ -62,6 +62,18 @@ Root layout providers: [`app/layout.tsx`](../../app/layout.tsx)
 | `/[locale]/account` | `app/[locale]/account/page.tsx` | `components/account/profile-form.tsx` |
 | `/[locale]/subscription` | `app/[locale]/subscription/page.tsx` | `components/subscription/subscription-page.tsx` |
 | `/[locale]/support` | `app/[locale]/support/page.tsx` | `components/support/contact-section.tsx` |
+| `/[locale]/surveys` | `app/[locale]/surveys/page.tsx` | `components/customer-interaction/surveys-page.tsx` |
+| `/[locale]/ai-agents` | `app/[locale]/ai-agents/page.tsx` | AI agents list |
+| `/[locale]/quick-answers` | `app/[locale]/quick-answers/page.tsx` | Company quick answers |
+| `/[locale]/templates` | `app/[locale]/templates/page.tsx` | Company templates |
+
+### Public routes (no auth required) — surveys
+
+| Path | Page file | Description |
+|------|-----------|-------------|
+| `/[locale]/s/[token]` | `app/[locale]/s/[token]/page.tsx` | Hosted survey response form |
+
+See [20-customer-interaction-surveys-and-live-agents.md](20-customer-interaction-surveys-and-live-agents.md).
 
 ### Special routes
 

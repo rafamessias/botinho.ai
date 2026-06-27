@@ -28,7 +28,8 @@ Describe system layers, major components, and how data flows between the Next.js
 | Payments | Stripe |
 | Email | Stub in `lib/email/` — provider TBD |
 | i18n | next-intl |
-| Deployment | Firebase App Hosting (or self-hosted Node) |
+| Deployment | Firebase App Hosting on Google Cloud (or self-hosted Node) |
+| Background jobs | Google Cloud Scheduler → `/api/cron/*` (see [22-scheduled-jobs.md](22-scheduled-jobs.md)) |
 
 ## Layer diagram
 
@@ -83,7 +84,7 @@ flowchart TB
 
 ### Server actions as primary API
 
-Most mutations and queries go through **server actions** in `components/server-actions/`. Only three HTTP routes exist under `app/api/`.
+Most mutations and queries go through **server actions** in `components/server-actions/`. HTTP routes under `app/api/` cover auth, Stripe webhooks, WhatsApp inbound, and cron jobs (see [08-api-routes.md](08-api-routes.md)).
 
 **Rationale:** Colocation with UI, type-safe calls from client components, Next.js-native pattern.
 

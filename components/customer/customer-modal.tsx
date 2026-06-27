@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslations } from "next-intl"
 import { useDropzone } from "react-dropzone"
 import * as XLSX from "xlsx"
-import { Upload, X } from "lucide-react"
+import { Upload, X, Download } from "lucide-react"
 import { toast } from "sonner"
 
 import {
@@ -18,25 +18,11 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { Form } from "@/components/ui/form"
 import { cn } from "@/lib/utils"
+import { CustomerFormFields } from "@/components/customer/customer-form-fields"
+import { downloadCustomerImportTemplate } from "@/lib/customer/customer-import-template"
 import type { Customer, CustomerStatus } from "@/lib/types/customer"
 
 const statusOptions = ["active", "inactive", "prospect"] as const satisfies CustomerStatus[]
@@ -71,6 +57,7 @@ const useCustomerSchema = (messages: {
             .trim()
             .max(1000)
             .optional(),
+        tags: z.array(z.string()).max(20).default([]),
         status: z.enum(statusOptions),
     })
 
@@ -93,6 +80,7 @@ type CustomerModalProps = {
     initialCustomer?: Customer | null
     isSubmitting?: boolean
     onBulkImport?: (customers: Omit<Customer, "id" | "createdAt" | "updatedAt">[]) => Promise<void> | void
+    tagSuggestions?: string[]
 }
 
 export const CustomerModal = ({
@@ -103,6 +91,7 @@ export const CustomerModal = ({
     initialCustomer,
     isSubmitting = false,
     onBulkImport,
+    tagSuggestions = [],
 }: CustomerModalProps) => {
     const t = useTranslations("Customer")
     const [activeTab, setActiveTab] = useState<"single" | "bulk">("single")
@@ -124,6 +113,7 @@ export const CustomerModal = ({
             phone: initialCustomer?.phone ?? "",
             company: initialCustomer?.company ?? "",
             description: initialCustomer?.description ?? "",
+            tags: initialCustomer?.tags ?? [],
             status: initialCustomer?.status ?? "active",
         },
     })
@@ -143,6 +133,7 @@ export const CustomerModal = ({
             phone: initialCustomer?.phone ?? "",
             company: initialCustomer?.company ?? "",
             description: initialCustomer?.description ?? "",
+            tags: initialCustomer?.tags ?? [],
             status: initialCustomer?.status ?? "active",
         })
     }, [form, initialCustomer, isOpen, mode])
@@ -276,6 +267,7 @@ export const CustomerModal = ({
                 email: row.email,
                 phone: row.phone,
                 company: row.company,
+                tags: [],
                 status: row.status,
             }))
 
@@ -312,6 +304,7 @@ export const CustomerModal = ({
             phone: values.phone.trim(),
             company: values.company?.trim() ? values.company.trim() : undefined,
             description: values.description?.trim() ? values.description.trim() : undefined,
+            tags: values.tags,
         }
 
         await onSubmit(normalizedValues)
@@ -353,6 +346,18 @@ export const CustomerModal = ({
                                 </div>
 
                                 <p className="text-center text-xs text-muted-foreground">{t("import.formatInfo")}</p>
+                                <div className="flex justify-center">
+                                    <Button
+                                        type="button"
+                                        variant="link"
+                                        size="sm"
+                                        className="h-auto p-0 text-xs"
+                                        onClick={downloadCustomerImportTemplate}
+                                    >
+                                        <Download className="mr-1 size-3.5" />
+                                        {t("import.downloadTemplate")}
+                                    </Button>
+                                </div>
                             </div>
 
                             {excelData.length > 0 && (
@@ -412,135 +417,11 @@ export const CustomerModal = ({
                                     className="grid gap-5"
                                     onSubmit={form.handleSubmit(handleSubmit)}
                                 >
-                                    <FormField
-                                        control={form.control}
-                                        name="name"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.name.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.name.placeholder")}
-                                                        autoComplete="name"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="email"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.email.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.email.placeholder")}
-                                                        type="email"
-                                                        autoComplete="email"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="phone"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.phone.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.phone.placeholder")}
-                                                        type="tel"
-                                                        autoComplete="tel"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="company"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.company.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.company.placeholder")}
-                                                        autoComplete="organization"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="description"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.description.label")}</FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        {...field}
-                                                        value={field.value ?? ""}
-                                                        onChange={(event) => field.onChange(event.target.value)}
-                                                        placeholder={t("form.fields.description.placeholder")}
-                                                        rows={3}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="status"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t("form.fields.status.label")}</FormLabel>
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    value={field.value}
-                                                    defaultValue={field.value}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger aria-label={t("form.fields.status.label")}>
-                                                            <SelectValue placeholder={t("form.fields.status.placeholder")} />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {statusOptions.map((option) => (
-                                                            <SelectItem key={option} value={option}>
-                                                                {t(`table.badges.${option}`)}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
+                                    <CustomerFormFields
+                                        form={form}
+                                        t={t}
+                                        tagSuggestions={tagSuggestions}
+                                        disabled={isSubmitting}
                                     />
 
                                     <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -573,135 +454,11 @@ export const CustomerModal = ({
                             className="grid gap-5"
                             onSubmit={form.handleSubmit(handleSubmit)}
                         >
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.name.label")}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.name.placeholder")}
-                                                autoComplete="name"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.email.label")}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.email.placeholder")}
-                                                type="email"
-                                                autoComplete="email"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="phone"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.phone.label")}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.phone.placeholder")}
-                                                type="tel"
-                                                autoComplete="tel"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="company"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.company.label")}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.company.placeholder")}
-                                                autoComplete="organization"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="description"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.description.label")}</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                {...field}
-                                                value={field.value ?? ""}
-                                                onChange={(event) => field.onChange(event.target.value)}
-                                                placeholder={t("form.fields.description.placeholder")}
-                                                rows={3}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="status"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t("form.fields.status.label")}</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            value={field.value}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger aria-label={t("form.fields.status.label")}>
-                                                    <SelectValue placeholder={t("form.fields.status.placeholder")} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {statusOptions.map((option) => (
-                                                    <SelectItem key={option} value={option}>
-                                                        {t(`table.badges.${option}`)}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                            <CustomerFormFields
+                                form={form}
+                                t={t}
+                                tagSuggestions={tagSuggestions}
+                                disabled={isSubmitting}
                             />
 
                             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">

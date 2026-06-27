@@ -118,7 +118,9 @@ botinho.ai/
 
 ## Deployment
 
-Deploy the Next.js app with Firebase App Hosting or any Node.js host (`npm run build` → `npm run start`). Configure environment variables from [`.env.example`](.env.example).
+Deploy the Next.js app with **Firebase App Hosting** on Google Cloud (`npm run build` → `npm run start`). Configure environment variables from [`.env.example`](.env.example).
+
+**Background jobs:** Use [Google Cloud Scheduler](docs/spec/22-scheduled-jobs.md) to call `/api/cron/*` routes with `Authorization: Bearer <CRON_SECRET>`. This app is **not** deployed on Vercel.
 
 ## Support
 

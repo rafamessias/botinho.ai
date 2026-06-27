@@ -1,6 +1,6 @@
 # botinho.ai Specification Index
 
-**Last updated:** 2026-06-19 — reflects current Firebase + Gemini stack  
+**Last updated:** 2026-06-27 — Firebase App Hosting + Google Cloud Scheduler; Vercel removed  
 **Scope:** Document current behavior only (including gaps and legacy code)
 
 > **Remaining roadmap:** Messaging provider and production email → [future/00-roadmap.md](future/00-roadmap.md)
@@ -47,6 +47,9 @@
 | 17 | [Deployment and ops](17-deployment-and-ops.md) | `partial` | No CI/tests |
 | 18 | [Known gaps and legacy](18-known-gaps-and-legacy.md) | — | Technical debt inventory |
 | 19 | [Company and members](19-company-and-members.md) | `implemented` | Single-company policy, invites, workspace sync |
+| 20 | [Customer interaction, surveys & live agents](20-customer-interaction-surveys-and-live-agents.md) | `partial` | Surveys, agent config, live-agent context panel |
+| 21 | [Campaigns](21-campaigns.md) | `implemented` | Outbound campaigns, tag audience, throttled delivery, metrics |
+| 22 | [Scheduled jobs](22-scheduled-jobs.md) | `implemented` | Cloud Scheduler cron routes (messaging retries, campaigns) |
 
 ## Roadmap specs (not yet implemented)
 
@@ -85,17 +88,21 @@ flowchart TB
   subgraph api [HTTP API]
     AuthRoute["/api/auth"]
     StripeWH["/api/stripe/webhook"]
+    CronRoutes["/api/cron/*"]
+    WhatsAppWH["/api/webhooks/whatsapp"]
   end
 
   subgraph firebase [Firebase / Google Cloud]
     FirebaseAuth[Firebase Authentication]
     Firestore[(Cloud Firestore)]
     Gemini[Firebase AI Logic - Gemini]
+    AppHosting[Firebase App Hosting]
+    Scheduler[Cloud Scheduler]
   end
 
   subgraph external [External Services]
     Stripe[Stripe]
-    Messaging[Messaging provider TBD]
+    WhatsAppWorker[WhatsApp worker]
   end
 
   Pages --> SA
@@ -105,8 +112,11 @@ flowchart TB
   SA --> FirebaseAuth
   SA --> Gemini
   SA --> Stripe
-  SA -.->|stub| Messaging
+  SA --> WhatsAppWorker
   api --> Firestore
   api --> Stripe
+  api --> WhatsAppWorker
+  Scheduler --> CronRoutes
+  CronRoutes --> AppHosting
   FirebaseAuth --> SA
 ```

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server"
 
+/** Validates scheduled HTTP jobs (Google Cloud Scheduler → App Hosting). */
 export const verifyCronRequest = (request: NextRequest): boolean => {
   const secret = process.env.CRON_SECRET?.trim()
   if (!secret) {

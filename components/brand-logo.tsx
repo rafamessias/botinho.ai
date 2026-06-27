@@ -35,7 +35,7 @@ export const BrandLogoIcon = ({
   className,
   priority = false,
 }: BrandLogoProps) => (
-  <span className={cn("relative inline-flex size-full", className)}>
+  <span className={cn("relative inline-flex size-8 shrink-0 items-center justify-center", className)}>
     <Image
       src="/bot-icon-green.png"
       alt="botinho.ai"

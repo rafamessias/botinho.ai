@@ -364,9 +364,35 @@
             },
             "aiSuggestions": {
                 "title": "Sugestões da IA",
+                "assistiveTitle": "Assistência IA",
                 "empty": {
                     "title": "Nenhuma sugestão ainda",
                     "description": "Mantenha a conversa fluindo—respostas da IA aparecerão assim que os clientes enviarem mensagens."
+                }
+            },
+            "assignment": {
+                "title": "Atendente",
+                "unassigned": "Nenhum atendente — o bot pode responder automaticamente",
+                "assignedToYou": "Você está atendendo esta conversa",
+                "assignedTo": "Atendido por {name}",
+                "takeOver": "Assumir",
+                "release": "Liberar",
+                "takenOver": "Você assumiu esta conversa",
+                "released": "Conversa liberada para o bot",
+                "failed": "Não foi possível atualizar a atribuição"
+            },
+            "surveys": {
+                "title": "Pesquisas",
+                "manage": "Gerenciar",
+                "empty": "Nenhuma pesquisa ativa",
+                "send": "Enviar",
+                "sent": "Pesquisa enviada",
+                "sendFailed": "Não foi possível enviar a pesquisa",
+                "inProgress": "Pesquisa em andamento",
+                "mode": {
+                    "inline": "Chat WhatsApp",
+                    "hosted": "Link",
+                    "both": "Chat ou link"
                 }
             }
         },
@@ -686,28 +712,28 @@
         }
     },
     "AiAgents": {
-        "title": "Agentes IA",
-        "description": "Crie e gerencie agentes de IA com prompts personalizados, conhecimento e números atribuídos",
-        "subtitle": "Configure agentes que respondem nos seus números de WhatsApp",
+        "title": "Botinho",
+        "description": "Crie e gerencie Botinhos com prompts personalizados, conhecimento e números atribuídos",
+        "subtitle": "Configure Botinhos que respondem nos seus números de WhatsApp",
         "buttons": {
             "addKnowledge": "Adicionar Conhecimento",
             "addQuickAnswer": "Adicionar Resposta Rápida",
             "createTemplate": "Criar Modelo",
-            "createAgent": "Criar Agente",
+            "createAgent": "Criar Botinho",
             "manageAgent": "Gerenciar",
-            "saveAgent": "Salvar Agente",
+            "saveAgent": "Salvar Botinho",
             "saving": "Salvando...",
             "creating": "Criando...",
-            "backToAgents": "Voltar aos agentes",
+            "backToAgents": "Voltar aos Botinhos",
             "cancel": "Cancelar",
             "update": "Atualizar",
             "addOption": "Adicionar Opção"
         },
         "list": {
-            "title": "Seus agentes IA",
-            "description": "Cada agente pode ter seu próprio prompt, base de conhecimento e número de WhatsApp.",
-            "loading": "Carregando agentes...",
-            "count": "{count, plural, one {# agente} other {# agentes}}",
+            "title": "Seus Botinhos",
+            "description": "Cada Botinho pode ter seu próprio prompt, base de conhecimento e número de WhatsApp.",
+            "loading": "Carregando Botinhos...",
+            "count": "{count, plural, one {# Botinho} other {# Botinhos}}",
             "statusReady": "Pronto",
             "statusSetup": "Configuração pendente",
             "noPrompt": "Nenhum prompt personalizado ainda",
@@ -717,30 +743,30 @@
             "numbersAssigned": "{count} números WhatsApp atribuídos",
             "noNumber": "Nenhum número atribuído",
             "empty": {
-                "title": "Nenhum agente ainda",
-                "description": "Crie seu primeiro agente usando o formulário acima."
+                "title": "Nenhum Botinho ainda",
+                "description": "Crie seu primeiro Botinho usando o formulário acima."
             },
             "delete": {
-                "title": "Excluir agente",
-                "description": "Esta ação não pode ser desfeita. O agente e sua base de conhecimento serão removidos permanentemente.",
-                "nameLabel": "Digite o nome do agente para confirmar",
-                "nameNote": "Você deve digitar o nome exato do agente para confirmar a exclusão",
-                "warning": "Todo o conhecimento, configurações e números atribuídos a este agente serão excluídos permanentemente.",
-                "confirm": "Excluir agente"
+                "title": "Excluir Botinho",
+                "description": "Esta ação não pode ser desfeita. O Botinho e sua base de conhecimento serão removidos permanentemente.",
+                "nameLabel": "Digite o nome do Botinho para confirmar",
+                "nameNote": "Você deve digitar o nome exato do Botinho para confirmar a exclusão",
+                "warning": "Todo o conhecimento, configurações e números atribuídos a este Botinho serão excluídos permanentemente.",
+                "confirm": "Excluir Botinho"
             }
         },
         "setup": {
-            "badge": "Interação IA",
-            "title": "Configure seu agente IA em minutos",
-            "description": "Crie um agente, defina o comportamento, adicione conhecimento e conecte um número de WhatsApp.",
+            "badge": "Botinho",
+            "title": "Configure seu Botinho em minutos",
+            "description": "Crie um Botinho, defina o comportamento, adicione conhecimento e conecte um número de WhatsApp.",
             "steps": {
-                "1": "Crie um agente e dê um nome",
+                "1": "Crie um Botinho e dê um nome",
                 "2": "Escolha um modelo de prompt e atribua um número WhatsApp",
-                "3": "Adicione conhecimento que o agente deve usar nas respostas",
+                "3": "Adicione conhecimento que o Botinho deve usar nas respostas",
                 "4": "Ative a auto-resposta para entrar no ar"
             },
             "create": {
-                "title": "Novo agente",
+                "title": "Novo Botinho",
                 "description": "Comece com um nome — você configura o resto na próxima tela.",
                 "button": "Criar e configurar"
             },
@@ -754,33 +780,57 @@
             "links": {
                 "quickAnswers": "Respostas Rápidas",
                 "templates": "Modelos de Mensagem",
-                "hint": "Compartilhados entre todos os agentes"
+                "hint": "Compartilhados entre todos os Botinhos"
             }
         },
         "detail": {
-            "loading": "Carregando agente...",
-            "subtitle": "Complete cada etapa para deixar seu agente pronto.",
+            "loading": "Carregando Botinho...",
+            "subtitle": "Complete cada etapa para deixar seu Botinho pronto.",
             "steps": {
                 "settings": "Comportamento e número",
-                "knowledge": "Base de conhecimento"
+                "knowledge": "Base de conhecimento",
+                "surveys": "Pesquisas"
             },
             "nextStep": "Próximo: Base de conhecimento",
             "previousStep": "Voltar às configurações",
-            "finishSetup": "Concluir — voltar aos agentes",
+            "finishSetup": "Concluir — voltar aos Botinhos",
             "sharedResources": {
                 "title": "Recursos compartilhados",
-                "description": "Respostas rápidas e modelos se aplicam a todos os agentes.",
+                "description": "Respostas rápidas, modelos e pesquisas se aplicam aos Botinhos e à caixa de entrada.",
                 "quickAnswers": "Gerenciar respostas rápidas →",
-                "templates": "Gerenciar modelos →"
+                "templates": "Gerenciar modelos →",
+                "surveys": "Gerenciar pesquisas →"
+            }
+        },
+        "surveys": {
+            "title": "Configuração de pesquisas",
+            "description": "Escolha quais pesquisas este Botinho pode oferecer e quando.",
+            "enabledSurveys": "Pesquisas habilitadas",
+            "selectSurveys": "Selecionar pesquisas...",
+            "loading": "Carregando pesquisas...",
+            "noSurveys": "Nenhuma pesquisa ativa ainda.",
+            "createSurvey": "Criar uma pesquisa",
+            "save": "Salvar pesquisas",
+            "triggers": {
+                "title": "Quando oferecer pesquisas",
+                "proactiveOffer": "Sugerir na conversa (com consentimento)",
+                "onConversationClose": "Após resolver o problema",
+                "onEscalation": "Ao escalar para humano"
+            },
+            "messages": {
+                "saved": "Configurações de pesquisa salvas"
+            },
+            "errors": {
+                "saveFailed": "Não foi possível salvar as configurações"
             }
         },
         "settings": {
-            "title": "Configurações do agente",
-            "description": "Nomeie seu agente, defina seu comportamento e atribua números de WhatsApp."
+            "title": "Configurações do Botinho",
+            "description": "Nomeie seu Botinho, defina seu comportamento e atribua números de WhatsApp."
         },
         "noCompany": {
             "title": "Conecte uma empresa para continuar",
-            "description": "Crie ou selecione uma empresa para desbloquear as ferramentas de agentes IA."
+            "description": "Crie ou selecione uma empresa para desbloquear as ferramentas do Botinho."
         },
         "tabs": {
             "knowledgeBase": "Base de Conhecimento",
@@ -791,10 +841,10 @@
             "pdfFile": "Arquivo PDF"
         },
         "form": {
-            "agentName": "Nome do agente",
-            "agentNamePlaceholder": "ex., Bot de Vendas, Agente de Suporte",
+            "agentName": "Nome do Botinho",
+            "agentNamePlaceholder": "ex., Botinho de Vendas, Botinho de Suporte",
             "systemPrompt": "Prompt do sistema",
-            "systemPromptPlaceholder": "Descreva como este agente deve se comportar, tom e regras...",
+            "systemPromptPlaceholder": "Descreva como este Botinho deve se comportar, tom e regras...",
             "systemPromptDescription": "Este prompt é adicionado junto com a base de conhecimento ao gerar respostas.",
             "assignedNumbers": "Números WhatsApp atribuídos",
             "selectNumbers": "Selecione números conectados",
@@ -803,7 +853,7 @@
             "noNumberAssigned": "Nenhum número atribuído",
             "noConnectedNumbers": "Conecte um número WhatsApp em Configurações para atribuí-lo aqui.",
             "autoReply": "Auto-resposta",
-            "autoReplyDescription": "Quando ativada, este agente responde automaticamente às mensagens recebidas nos números atribuídos.",
+            "autoReplyDescription": "Quando ativada, este Botinho responde automaticamente às mensagens recebidas nos números atribuídos.",
             "title": "Título",
             "content": "Conteúdo",
             "templateName": "Nome do Modelo",
@@ -877,16 +927,16 @@
             "knowledgeItems": "Itens de Conhecimento",
             "templates": "Modelos",
             "quickAnswers": "Respostas Rápidas",
-            "trainingStatus": "Status do Agente",
+            "trainingStatus": "Status do Botinho",
             "active": "Ativo",
             "knowledgeItemsDescription": "Total de itens na base de conhecimento",
             "templatesDescription": "Modelos de mensagem prontos para uso",
             "quickAnswersDescription": "Respostas salvas para respostas rápidas",
-            "trainingStatusDescription": "Agente configurado e pronto"
+            "trainingStatusDescription": "Botinho configurado e pronto"
         },
         "knowledge": {
             "title": "Base de Conhecimento",
-            "description": "Todas as informações que este agente usa para responder aos clientes",
+            "description": "Todas as informações que este Botinho usa para responder aos clientes",
             "type": {
                 "text": "Texto",
                 "url": "URL",
@@ -895,13 +945,13 @@
             "added": "Adicionado",
             "empty": {
                 "title": "Nenhum conhecimento ainda",
-                "description": "Comece adicionando informações para este agente",
+                "description": "Comece adicionando informações para este Botinho",
                 "button": "Adicionar Primeiro Item"
             }
         },
         "quickAnswers": {
             "title": "Respostas Rápidas",
-            "description": "Respostas curtas que este agente pode reutilizar nas conversas",
+            "description": "Respostas curtas que este Botinho pode reutilizar nas conversas",
             "label": "Resposta Rápida",
             "added": "Adicionado",
             "empty": {
@@ -922,11 +972,11 @@
             }
         },
         "dialog": {
-            "createAgent": "Criar Agente IA",
-            "createAgentDescription": "Dê um nome ao seu agente e um prompt opcional. Você pode adicionar conhecimento e atribuir um número após a criação.",
+            "createAgent": "Criar Botinho",
+            "createAgentDescription": "Dê um nome ao seu Botinho e um prompt opcional. Você pode adicionar conhecimento e atribuir um número após a criação.",
             "addKnowledge": "Adicionar Novo Conhecimento",
             "editKnowledge": "Editar Conhecimento",
-            "addKnowledgeDescription": "Adicione informações para treinar este agente",
+            "addKnowledgeDescription": "Adicione informações para treinar este Botinho",
             "editKnowledgeDescription": "Atualize as informações abaixo",
             "createTemplate": "Criar Novo Modelo",
             "editTemplate": "Editar Modelo",
@@ -940,28 +990,28 @@
         "errors": {
             "fillAllFields": "Erro",
             "fillAllFieldsDescription": "Por favor, preencha todos os campos",
-            "agentNameRequired": "Nome do agente obrigatório",
-            "agentNameRequiredDescription": "Por favor, insira um nome para seu agente.",
+            "agentNameRequired": "Nome do Botinho obrigatório",
+            "agentNameRequiredDescription": "Por favor, insira um nome para seu Botinho.",
             "setupIncomplete": "Preencha os campos obrigatórios",
             "setupIncompleteDescription": "Adicione um nome, prompt do sistema e pelo menos um número do WhatsApp antes de continuar.",
-            "loadFailed": "Não foi possível carregar os agentes",
-            "createFailed": "Não foi possível criar o agente",
-            "deleteFailed": "Não foi possível excluir o agente",
-            "saveFailed": "Não foi possível salvar o agente",
+            "loadFailed": "Não foi possível carregar os Botinhos",
+            "createFailed": "Não foi possível criar o Botinho",
+            "deleteFailed": "Não foi possível excluir o Botinho",
+            "saveFailed": "Não foi possível salvar o Botinho",
             "saveKnowledgeFailed": "Não foi possível salvar o conhecimento",
             "deleteKnowledgeFailed": "Não foi possível excluir o conhecimento",
-            "agentNotFound": "Agente não encontrado",
+            "agentNotFound": "Botinho não encontrado",
             "tryAgain": "Por favor, tente novamente."
         },
         "success": {
-            "agentCreated": "Agente criado!",
-            "agentCreatedDescription": "Seu novo agente está pronto para configurar.",
-            "agentUpdated": "Agente salvo",
-            "agentUpdatedDescription": "As configurações do agente foram atualizadas.",
-            "agentDeleted": "Agente excluído",
-            "agentDeletedDescription": "O agente foi removido.",
+            "agentCreated": "Botinho criado!",
+            "agentCreatedDescription": "Seu novo Botinho está pronto para configurar.",
+            "agentUpdated": "Botinho salvo",
+            "agentUpdatedDescription": "As configurações do Botinho foram atualizadas.",
+            "agentDeleted": "Botinho excluído",
+            "agentDeletedDescription": "O Botinho foi removido.",
             "knowledgeAdded": "Conhecimento adicionado!",
-            "knowledgeAddedDescription": "Seu agente foi atualizado com novas informações",
+            "knowledgeAddedDescription": "Seu Botinho foi atualizado com novas informações",
             "knowledgeUpdated": "Item de conhecimento foi atualizado",
             "knowledgeDeleted": "Item de conhecimento removido",
             "templateCreated": "Modelo criado!",
@@ -980,7 +1030,7 @@
     },
     "QuickAnswers": {
         "title": "Respostas Rápidas",
-        "description": "Respostas curtas compartilhadas entre todos os agentes IA.",
+        "description": "Respostas curtas compartilhadas entre todos os Botinhos.",
         "noCompany": {
             "title": "Conecte uma empresa para continuar",
             "description": "Crie ou selecione uma empresa para gerenciar respostas rápidas."
@@ -992,7 +1042,7 @@
         },
         "quickAnswers": {
             "title": "Respostas Rápidas",
-            "description": "Respostas reutilizáveis que seus agentes podem usar nas conversas",
+            "description": "Respostas reutilizáveis que seus Botinhos podem usar nas conversas",
             "label": "Resposta Rápida",
             "added": "Adicionado",
             "empty": {
@@ -1061,7 +1111,7 @@
     },
     "Templates": {
         "title": "Modelos",
-        "description": "Modelos de mensagem compartilhados entre todos os agentes IA.",
+        "description": "Modelos de mensagem compartilhados entre todos os Botinhos.",
         "noCompany": {
             "title": "Conecte uma empresa para continuar",
             "description": "Crie ou selecione uma empresa para gerenciar modelos."
@@ -1178,15 +1228,18 @@
         "sections": {
             "workspace": "Principal",
             "aiInteraction": "Interação IA",
+            "customerInteraction": "Interação com Cliente",
             "management": "Gerenciamento"
         },
         "navigation": {
             "dashboard": "Dashboard",
             "customer": "Clientes",
             "inbox": "Caixa de Entrada",
-            "aiAgents": "Agentes IA",
+            "aiAgents": "Botinho",
             "quickAnswers": "Respostas Rápidas",
             "templates": "Modelos",
+            "surveys": "Pesquisas",
+            "campaigns": "Campanhas",
             "company": "Empresa",
             "settings": "Configurações",
             "connectWhatsApp": "Conectar WhatsApp",
@@ -1199,6 +1252,301 @@
     },
     "SiteHeader": {
         "title": "Painel Principal"
+    },
+    "Surveys": {
+        "title": "Pesquisas",
+        "description": "Crie pesquisas personalizadas para medir satisfação, NPS e feedback dos clientes.",
+        "loading": "Carregando pesquisas...",
+        "tabs": {
+            "builder": "Editor",
+            "metrics": "Métricas"
+        },
+        "list": {
+            "title": "Suas pesquisas",
+            "description": "Crie pesquisas e acompanhe o feedback dos clientes pela caixa de entrada.",
+            "new": "Nova pesquisa",
+            "empty": "Nenhuma pesquisa ainda",
+            "emptyHint": "Crie sua primeira pesquisa para coletar CSAT, NPS ou feedback personalizado.",
+            "createFirst": "Criar primeira pesquisa",
+            "responses": "respostas"
+        },
+        "toolbar": {
+            "searchPlaceholder": "Buscar pesquisas...",
+            "addSurvey": "Nova pesquisa",
+            "statusFilter": "Filtrar por status",
+            "statusAll": "Todos os status",
+            "retry": "Tentar novamente"
+        },
+        "table": {
+            "name": "Nome",
+            "status": "Status",
+            "delivery": "Entrega",
+            "questions": "Perguntas",
+            "responses": "Respostas",
+            "actions": "Ações",
+            "moreActions": "Mais ações",
+            "empty": {
+                "title": "Nenhuma pesquisa ainda",
+                "description": "Crie sua primeira pesquisa para coletar CSAT, NPS ou feedback personalizado."
+            },
+            "messages": {
+                "noResults": "Nenhuma pesquisa encontrada"
+            }
+        },
+        "status": {
+            "draft": "Rascunho",
+            "active": "Ativa",
+            "archived": "Arquivada"
+        },
+        "view": {
+            "backToList": "Voltar às pesquisas",
+            "editSurvey": "Editar pesquisa",
+            "newSurvey": "Nova pesquisa",
+            "metricsFor": "Métricas — {name}"
+        },
+        "editor": {
+            "selectOrCreate": "Selecione uma pesquisa ou crie uma nova",
+            "newTitle": "Nova pesquisa",
+            "editTitle": "Editar pesquisa",
+            "description": "Adicione perguntas e escolha como os clientes receberão a pesquisa.",
+            "advanced": "Opções avançadas",
+            "noQuestions": "Adicione pelo menos uma pergunta."
+        },
+        "fields": {
+            "name": "Nome da pesquisa",
+            "namePlaceholder": "ex.: CSAT pós-atendimento",
+            "description": "Descrição interna",
+            "deliveryMode": "Modo de entrega",
+            "introMessage": "Mensagem introdutória",
+            "thankYouMessage": "Mensagem de agradecimento",
+            "active": "Ativa (disponível para envio)",
+            "questions": "Perguntas",
+            "question": "Pergunta {number}",
+            "questionPrompt": "Texto da pergunta",
+            "optionsPlaceholder": "Opções separadas por vírgula"
+        },
+        "deliveryMode": {
+            "inline": "Chat WhatsApp",
+            "hosted": "Link hospedado",
+            "both": "Ambos"
+        },
+        "questionTypes": {
+            "rating": "Avaliação (1–5)",
+            "nps": "NPS (0–10)",
+            "single_choice": "Escolha única",
+            "multi_choice": "Múltipla escolha",
+            "text": "Texto livre",
+            "scale": "Escala personalizada"
+        },
+        "actions": {
+            "save": "Salvar",
+            "edit": "Editar",
+            "viewMetrics": "Ver métricas",
+            "duplicate": "Duplicar",
+            "archive": "Arquivar",
+            "addQuestion": "Adicionar pergunta",
+            "remove": "Remover"
+        },
+        "messages": {
+            "saved": "Pesquisa salva",
+            "duplicated": "Pesquisa duplicada"
+        },
+        "defaults": {
+            "thankYou": "Obrigado pelo seu feedback!"
+        },
+        "errors": {
+            "loadFailed": "Não foi possível carregar as pesquisas",
+            "saveFailed": "Não foi possível salvar a pesquisa",
+            "archiveFailed": "Não foi possível arquivar a pesquisa",
+            "duplicateFailed": "Não foi possível duplicar a pesquisa",
+            "nameRequired": "O nome da pesquisa é obrigatório"
+        },
+        "noCompany": {
+            "title": "Conecte uma empresa para continuar",
+            "description": "Crie ou selecione uma empresa para gerenciar pesquisas."
+        },
+        "metrics": {
+            "loading": "Carregando métricas...",
+            "empty": "Nenhuma resposta ainda",
+            "sent": "Enviadas",
+            "completed": "Concluídas",
+            "responseRate": "Taxa de resposta",
+            "averageRating": "Média",
+            "nps": "Score NPS",
+            "distribution": "Distribuição de respostas"
+        }
+    },
+    "Campaigns": {
+        "title": "Campanhas",
+        "description": "Envie mensagens personalizadas no WhatsApp por tag, acompanhe entregas e direcione respostas para um Botinho dedicado.",
+        "loading": "Carregando campanhas...",
+        "list": {
+            "title": "Suas campanhas",
+            "description": "Crie campanhas outbound com mensagens variáveis e envio controlado.",
+            "empty": "Nenhuma campanha ainda",
+            "emptyHint": "Lance sua primeira campanha para alcançar clientes com tags selecionadas e telefone válido.",
+            "createFirst": "Criar primeira campanha",
+            "delivered": "entregues"
+        },
+        "toolbar": {
+            "addCampaign": "Nova campanha",
+            "retry": "Tentar novamente",
+            "searchPlaceholder": "Buscar campanhas...",
+            "statusFilter": "Filtrar por status",
+            "statusAll": "Todos os status"
+        },
+        "table": {
+            "name": "Nome",
+            "status": "Status",
+            "progress": "Progresso",
+            "contacts": "Contatos",
+            "tags": "Tags",
+            "actions": "Ações",
+            "moreActions": "Mais ações",
+            "empty": {
+                "title": "Nenhuma campanha ainda",
+                "description": "Lance sua primeira campanha para alcançar clientes com tags selecionadas e telefone válido."
+            },
+            "messages": {
+                "noResults": "Nenhuma campanha encontrada"
+            }
+        },
+        "status": {
+            "draft": "Rascunho",
+            "scheduled": "Agendada",
+            "running": "Em execução",
+            "paused": "Pausada",
+            "completed": "Concluída",
+            "cancelled": "Cancelada"
+        },
+        "view": {
+            "backToList": "Voltar às campanhas",
+            "newCampaign": "Nova campanha",
+            "editCampaign": "Editar campanha",
+            "metricsFor": "Métricas de {name}"
+        },
+        "editor": {
+            "description": "Configure mensagem, público, taxa de envio e Botinho de resposta.",
+            "name": "Nome da campanha",
+            "descriptionField": "Descrição",
+            "message": "Modelo de mensagem",
+            "templateApplied": "Modelo aplicado",
+            "preview": "Pré-visualização",
+            "starterTemplates": {
+                "title": "Modelos prontos",
+                "description": "Clique em um modelo para preencher a mensagem. Você pode editar antes de enviar.",
+                "items": {
+                    "welcome": {
+                        "name": "Mensagem de boas-vindas",
+                        "description": "Recepcione clientes novos ou que retornam.",
+                        "message": "Olá {{customer.firstName}}, bem-vindo(a) à {{company.name}}! Ficamos felizes em ter você conosco. Responda quando precisar de ajuda."
+                    },
+                    "promotion": {
+                        "name": "Oferta especial",
+                        "description": "Divulgue uma promoção ou oferta por tempo limitado.",
+                        "message": "Olá {{customer.firstName}}! A {{company.name}} tem uma oferta especial para você. Responda esta mensagem e enviamos os detalhes."
+                    },
+                    "appointmentReminder": {
+                        "name": "Lembrete de agendamento",
+                        "description": "Lembre o cliente sobre uma visita ou reserva.",
+                        "message": "Olá {{customer.firstName}}, aqui é a {{company.name}} lembrando do seu agendamento. Responda para confirmar ou reagendar."
+                    },
+                    "feedback": {
+                        "name": "Pedido de feedback",
+                        "description": "Peça uma avaliação ou opinião rápida.",
+                        "message": "Olá {{customer.firstName}}, adoraríamos saber sua opinião sobre a {{company.name}}. Como foi sua experiência recente? Basta responder esta mensagem."
+                    },
+                    "winBack": {
+                        "name": "Reativação",
+                        "description": "Reengaje clientes que não falam há algum tempo.",
+                        "message": "Olá {{customer.firstName}}, sentimos sua falta na {{company.name}}! Responda para conhecer uma oferta exclusiva preparada para você."
+                    }
+                }
+            },
+            "tags": "Tags alvo",
+            "tagsPlaceholder": "Selecione ou adicione tags...",
+            "tagsHint": "Clientes que correspondem a qualquer tag selecionada (OU) com telefone válido serão incluídos.",
+            "previewAudience": "Pré-visualizar público",
+            "audiencePreviewTitle": "Pré-visualização do público",
+            "audienceCounts": "{matched} por tags · {eligible} elegíveis",
+            "audienceEmpty": "Nenhum cliente elegível encontrado. Verifique tags, filtro de status e telefones.",
+            "audienceSample": "Amostra de destinatários",
+            "messagesPerInterval": "Mensagens por lote",
+            "intervalMinutes": "Minutos entre lotes",
+            "agent": "Botinho de resposta",
+            "agentPlaceholder": "Selecionar Botinho",
+            "noAgent": "Sem Botinho",
+            "session": "Sessão WhatsApp",
+            "customerStatus": "Status do cliente",
+            "statusActive": "Ativo",
+            "statusProspect": "Prospect",
+            "statusInactive": "Inativo",
+            "save": "Salvar rascunho",
+            "launch": "Iniciar campanha"
+        },
+        "actions": {
+            "edit": "Editar",
+            "start": "Iniciar campanha",
+            "metrics": "Métricas",
+            "pause": "Pausar",
+            "resume": "Retomar",
+            "cancel": "Cancelar",
+            "duplicate": "Duplicar"
+        },
+        "messages": {
+            "saved": "Campanha salva",
+            "launched": "Campanha iniciada",
+            "pause": "Campanha pausada",
+            "resume": "Campanha retomada",
+            "cancel": "Campanha cancelada",
+            "duplicate": "Campanha duplicada"
+        },
+        "errors": {
+            "loadFailed": "Não foi possível carregar as campanhas",
+            "saveFailed": "Não foi possível salvar a campanha",
+            "launchFailed": "Não foi possível iniciar a campanha",
+            "previewFailed": "Não foi possível pré-visualizar o público",
+            "actionFailed": "Ação falhou",
+            "nameRequired": "O nome da campanha é obrigatório",
+            "messageRequired": "O modelo de mensagem é obrigatório",
+            "tagsRequired": "Selecione pelo menos uma tag"
+        },
+        "noCompany": {
+            "title": "Conecte uma empresa para continuar",
+            "description": "Crie ou selecione uma empresa para gerenciar campanhas."
+        },
+        "metrics": {
+            "loading": "Carregando métricas...",
+            "empty": "Sem dados de entrega ainda",
+            "targeted": "Alvo",
+            "delivered": "Entregues",
+            "failed": "Falhas",
+            "skipped": "Ignoradas",
+            "responses": "Respostas",
+            "responseRate": "Taxa de resposta",
+            "botReplies": "Respostas do bot",
+            "progress": "Progresso",
+            "deliveries": "Entregas",
+            "customer": "Cliente",
+            "status": "Status",
+            "sentAt": "Enviado em",
+            "failureReason": "Motivo da falha",
+            "responded": "Respondeu",
+            "yes": "Sim",
+            "no": "Não"
+        }
+    },
+    "PublicSurvey": {
+        "subtitle": "Seu feedback nos ajuda a melhorar",
+        "submit": "Enviar pesquisa",
+        "completed": {
+            "title": "Obrigado!",
+            "defaultMessage": "Sua resposta foi registrada."
+        },
+        "errors": {
+            "notFound": "Pesquisa não encontrada ou expirada",
+            "submitFailed": "Não foi possível enviar a pesquisa"
+        }
     },
     "SectionCards": {
         "totalRevenue": {
@@ -2345,7 +2693,13 @@
             "searchPlaceholder": "Buscar clientes...",
             "addCustomer": "Novo cliente",
             "statusFilter": "Filtrar por status",
-            "statusAll": "Todos os status"
+            "statusAll": "Todos os status",
+            "tagsFilter": "Filtrar por tags",
+            "tagsAll": "Todas as tags",
+            "tagsSelected": "{count} tag(s)",
+            "tagsSearchPlaceholder": "Buscar tags...",
+            "tagsEmpty": "Nenhuma tag encontrada.",
+            "tagsClear": "Limpar tags"
         },
         "table": {
             "columns": {
@@ -2353,6 +2707,7 @@
                 "email": "E-mail",
                 "phone": "Telefone",
                 "company": "Empresa",
+                "tags": "Tags",
                 "status": "Status",
                 "createdAt": "Criado em",
                 "actions": "Ações"
@@ -2408,6 +2763,13 @@
                 "description": {
                     "label": "Descrição",
                     "placeholder": "Adicione informações sobre este cliente para sua equipe e assistente de IA"
+                },
+                "tags": {
+                    "label": "Tags",
+                    "placeholder": "Adicione tags para segmentar este cliente",
+                    "searchPlaceholder": "Buscar ou criar tag...",
+                    "empty": "Nenhuma tag encontrada.",
+                    "create": "Criar \"{tag}\""
                 }
             },
             "buttons": {
@@ -2439,6 +2801,7 @@
             "clickOrDrag": "Clique para enviar ou arraste e solte",
             "supportedFormats": "Suporta arquivos .xlsx, .xls e .csv",
             "formatInfo": "Colunas obrigatórias: name, phone. Colunas opcionais: email, company, status. Os nomes das colunas não diferenciam maiúsculas de minúsculas.",
+            "downloadTemplate": "Baixar modelo (.xls)",
             "parseError": "Falha ao analisar arquivo Excel",
             "readError": "Falha ao ler arquivo",
             "invalidFileType": "Tipo de arquivo inválido. Por favor, envie arquivos .xlsx, .xls ou .csv.",
@@ -2559,9 +2922,9 @@
             }
         },
         "quickActions": {
-            "title": "Pronto para treinar sua IA?",
-            "description": "Adicione conhecimento para tornar seu bot ainda mais inteligente",
-            "startTraining": "Começar Treinamento"
+            "title": "Pronto para configurar o Botinho?",
+            "description": "Adicione conhecimento para tornar o Botinho ainda mais inteligente",
+            "startTraining": "Abrir Botinho"
         }
     }
 }

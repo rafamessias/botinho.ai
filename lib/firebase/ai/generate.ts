@@ -105,12 +105,14 @@ export const generateAutoReplyText = async (params: {
   conversationId: string
   customerMessage: string
   sessionId?: string | null
+  agentId?: string | null
 }) => {
   const context = await loadCompanyAiContext({
     companyId: params.companyId,
     conversationId: params.conversationId,
     customerMessage: params.customerMessage,
     sessionId: params.sessionId,
+    agentId: params.agentId,
   })
 
   if (!isAiConfigured()) {

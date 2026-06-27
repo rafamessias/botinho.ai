@@ -7,6 +7,7 @@ import {
   bulkCreateInboxCustomers,
   createInboxCustomer,
   listInboxCustomers,
+  sanitizeTags,
   updateInboxCustomer,
   type InboxCustomerRecord,
 } from "@/lib/firebase/services/inbox-service"
@@ -20,6 +21,7 @@ const mapCustomerRecord = (record: InboxCustomerRecord): Customer => ({
   email: record.email ?? undefined,
   company: record.company ?? undefined,
   description: record.notes ?? undefined,
+  tags: record.tags,
   status: record.status as CustomerStatus,
   createdAt: record.createdAt.toISOString(),
   updatedAt: record.updatedAt.toISOString(),
@@ -36,6 +38,7 @@ const customerInputSchema = z.object({
     .pipe(z.string().email().optional()),
   company: z.string().trim().optional(),
   description: z.string().trim().max(1000).optional(),
+  tags: z.array(z.string()).max(20).optional(),
   status: customerStatusSchema.default("active"),
 })
 
@@ -89,6 +92,7 @@ export const createCustomerAction = async (
       email: payload.email,
       company: payload.company,
       notes: payload.description,
+      tags: payload.tags ? sanitizeTags(payload.tags) : [],
       status: payload.status,
     })
 
@@ -117,6 +121,7 @@ export const updateCustomerAction = async (
       email: payload.email,
       company: payload.company,
       notes: payload.description,
+      tags: payload.tags ? sanitizeTags(payload.tags) : [],
       status: payload.status,
     })
 

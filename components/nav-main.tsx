@@ -40,7 +40,7 @@ function NavMenuItems({ items }: { items: NavItem[] }) {
               asChild
               tooltip={item.title}
               className={cn(
-                "group cursor-pointer rounded-xl transition-all group-data-[collapsible=icon]:justify-center",
+                "cursor-pointer rounded-xl transition-all group-data-[collapsible=icon]:justify-center",
                 isSelected
                   ? "bg-primary/15 text-primary shadow-sm hover:bg-primary/20"
                   : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
@@ -52,7 +52,12 @@ function NavMenuItems({ items }: { items: NavItem[] }) {
                 aria-label={item.title}
               >
                 {item.icon && (
-                  <item.icon className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+                  <item.icon
+                    className={cn(
+                      "h-4 w-4 shrink-0 transition-colors group-hover/menu-item:text-primary",
+                      isSelected ? "text-primary" : "text-muted-foreground"
+                    )}
+                  />
                 )}
                 <span className="text-sm font-medium tracking-tight group-data-[collapsible=icon]:hidden">
                   {item.title}

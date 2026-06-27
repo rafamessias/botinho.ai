@@ -11,13 +11,15 @@ import { useUser } from "@/components/user-provider"
 import { getAiAgentAction } from "@/components/server-actions/ai-agents"
 import { AgentSettingsCard, type AgentSettingsCardHandle, type AgentSettingsView } from "./agent-settings-card"
 import { AgentKnowledgeEditor } from "./agent-knowledge-editor"
+import { AgentSurveysCard, type AgentSurveysCardHandle, type AgentSurveysView } from "./agent-surveys-card"
+import { DEFAULT_SURVEY_TRIGGERS } from "@/lib/types/survey"
 import { cn } from "@/lib/utils"
 
 type AiAgentDetailPageProps = {
   agentId: string
 }
 
-type SetupStep = "settings" | "knowledge"
+type SetupStep = "settings" | "knowledge" | "surveys"
 
 export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
   const t = useTranslations("AiAgents")
@@ -25,11 +27,13 @@ export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
   const { user } = useUser()
 
   const [agent, setAgent] = useState<AgentSettingsView | null>(null)
+  const [agentSurveys, setAgentSurveys] = useState<AgentSurveysView | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [activeStep, setActiveStep] = useState<SetupStep>("settings")
   const [isAdvancingStep, setIsAdvancingStep] = useState(false)
   const settingsCardRef = useRef<AgentSettingsCardHandle>(null)
+  const surveysCardRef = useRef<AgentSurveysCardHandle>(null)
 
   const hasCompanyAccess = Boolean(user?.defaultCompanyId)
 
@@ -57,6 +61,11 @@ export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
         systemPrompt: loaded.systemPrompt,
         sessionIds: loaded.sessionIds,
         autoReply: loaded.autoReply,
+      })
+      setAgentSurveys({
+        id: loaded.id,
+        surveyIds: loaded.surveyIds ?? [],
+        surveyTriggers: loaded.surveyTriggers ?? DEFAULT_SURVEY_TRIGGERS,
       })
     } catch (error) {
       console.error("Load agent error", error)
@@ -99,6 +108,7 @@ export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
   const steps: Array<{ id: SetupStep; label: string; done: boolean }> = [
     { id: "settings", label: t("detail.steps.settings"), done: settingsComplete },
     { id: "knowledge", label: t("detail.steps.knowledge"), done: false },
+    { id: "surveys", label: t("detail.steps.surveys"), done: false },
   ]
 
   if (!hasCompanyAccess) {
@@ -190,6 +200,9 @@ export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
               <Link href="/templates" className="text-primary hover:underline">
                 {t("detail.sharedResources.templates")}
               </Link>
+              <Link href="/surveys" className="text-primary hover:underline">
+                {t("detail.sharedResources.surveys")}
+              </Link>
             </div>
           </div>
         </nav>
@@ -211,6 +224,22 @@ export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
               <AgentKnowledgeEditor agentId={agentId} />
               <div className="flex justify-between">
                 <Button variant="outline" onClick={() => setActiveStep("settings")}>
+                  {t("detail.previousStep")}
+                </Button>
+                <Button onClick={() => setActiveStep("surveys")}>{t("detail.nextStep")}</Button>
+              </div>
+            </>
+          )}
+
+          {activeStep === "surveys" && agentSurveys && (
+            <>
+              <AgentSurveysCard
+                ref={surveysCardRef}
+                agent={agentSurveys}
+                onUpdated={setAgentSurveys}
+              />
+              <div className="flex justify-between">
+                <Button variant="outline" onClick={() => setActiveStep("knowledge")}>
                   {t("detail.previousStep")}
                 </Button>
                 <Button asChild>

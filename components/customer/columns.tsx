@@ -84,6 +84,31 @@ export const useCustomerColumns = ({ onEdit, onStartConversation }: CustomerColu
                     (rowA.original.company ?? "").localeCompare(rowB.original.company ?? ""),
             },
             {
+                accessorKey: "tags",
+                header: ({ column }) => (
+                    <DataTableColumnHeader column={column} title={t("table.columns.tags")} />
+                ),
+                cell: ({ row }) => {
+                    const tags = row.original.tags ?? []
+
+                    if (tags.length === 0) {
+                        return <span className="text-muted-foreground">—</span>
+                    }
+
+                    return (
+                        <div className="flex flex-wrap gap-1">
+                            {tags.map((tag) => (
+                                <Badge key={tag} variant="outline" className="text-xs">
+                                    {tag}
+                                </Badge>
+                            ))}
+                        </div>
+                    )
+                },
+                sortingFn: (rowA, rowB) =>
+                    (rowA.original.tags?.[0] ?? "").localeCompare(rowB.original.tags?.[0] ?? ""),
+            },
+            {
                 accessorKey: "status",
                 header: ({ column }) => (
                     <DataTableColumnHeader column={column} title={t("table.columns.status")} />
@@ -173,6 +198,7 @@ export const useCustomerColumnLabels = () => {
             name: t("table.columns.name"),
             phone: t("table.columns.phone"),
             company: t("table.columns.company"),
+            tags: t("table.columns.tags"),
             status: t("table.columns.status"),
             createdAt: t("table.columns.createdAt"),
         }),

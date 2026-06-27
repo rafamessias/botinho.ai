@@ -7,6 +7,7 @@ export type Customer = {
     phone: string
     company?: string
     description?: string
+    tags: string[]
     status: CustomerStatus
     createdAt: string
     updatedAt: string

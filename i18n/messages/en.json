@@ -364,9 +364,35 @@
             },
             "aiSuggestions": {
                 "title": "AI suggestions",
+                "assistiveTitle": "AI assist",
                 "empty": {
                     "title": "No suggestions yet",
                     "description": "Keep the conversation going—AI replies will show up once customers message you."
+                }
+            },
+            "assignment": {
+                "title": "Live agent",
+                "unassigned": "No agent assigned — bot may auto-reply",
+                "assignedToYou": "You are handling this conversation",
+                "assignedTo": "Handled by {name}",
+                "takeOver": "Take over",
+                "release": "Release",
+                "takenOver": "You took over this conversation",
+                "released": "Conversation released to bot",
+                "failed": "Could not update assignment"
+            },
+            "surveys": {
+                "title": "Surveys",
+                "manage": "Manage",
+                "empty": "No active surveys",
+                "send": "Send",
+                "sent": "Survey sent",
+                "sendFailed": "Could not send survey",
+                "inProgress": "Survey in progress",
+                "mode": {
+                    "inline": "WhatsApp chat",
+                    "hosted": "Link",
+                    "both": "Chat or link"
                 }
             }
         },
@@ -686,28 +712,28 @@
         }
     },
     "AiAgents": {
-        "title": "AI Agents",
-        "description": "Create and manage AI agents with custom prompts, knowledge, and phone assignments",
-        "subtitle": "Configure agents that reply on your WhatsApp numbers",
+        "title": "Botinho",
+        "description": "Create and manage Botinhos with custom prompts, knowledge, and phone assignments",
+        "subtitle": "Configure Botinhos that reply on your WhatsApp numbers",
         "buttons": {
             "addKnowledge": "Add Knowledge",
             "addQuickAnswer": "Add Quick Answer",
             "createTemplate": "Create Template",
-            "createAgent": "Create Agent",
+            "createAgent": "Create Botinho",
             "manageAgent": "Manage",
-            "saveAgent": "Save Agent",
+            "saveAgent": "Save Botinho",
             "saving": "Saving...",
             "creating": "Creating...",
-            "backToAgents": "Back to agents",
+            "backToAgents": "Back to Botinhos",
             "cancel": "Cancel",
             "update": "Update",
             "addOption": "Add Option"
         },
         "list": {
-            "title": "Your AI agents",
-            "description": "Each agent can have its own prompt, knowledge base, and assigned WhatsApp number.",
-            "loading": "Loading agents...",
-            "count": "{count, plural, one {# agent} other {# agents}}",
+            "title": "Your Botinhos",
+            "description": "Each Botinho can have its own prompt, knowledge base, and assigned WhatsApp number.",
+            "loading": "Loading Botinhos...",
+            "count": "{count, plural, one {# Botinho} other {# Botinhos}}",
             "statusReady": "Ready",
             "statusSetup": "Setup needed",
             "noPrompt": "No custom prompt yet",
@@ -717,30 +743,30 @@
             "numbersAssigned": "{count} WhatsApp numbers assigned",
             "noNumber": "No number assigned",
             "empty": {
-                "title": "No agents yet",
-                "description": "Create your first AI agent using the form above."
+                "title": "No Botinhos yet",
+                "description": "Create your first Botinho using the form above."
             },
             "delete": {
-                "title": "Delete agent",
-                "description": "This action cannot be undone. The agent and its knowledge base will be permanently removed.",
-                "nameLabel": "Type the agent name to confirm",
-                "nameNote": "You must type the exact agent name to confirm deletion",
-                "warning": "All knowledge, settings, and phone assignments for this agent will be permanently deleted.",
-                "confirm": "Delete agent"
+                "title": "Delete Botinho",
+                "description": "This action cannot be undone. The Botinho and its knowledge base will be permanently removed.",
+                "nameLabel": "Type the Botinho name to confirm",
+                "nameNote": "You must type the exact Botinho name to confirm deletion",
+                "warning": "All knowledge, settings, and phone assignments for this Botinho will be permanently deleted.",
+                "confirm": "Delete Botinho"
             }
         },
         "setup": {
-            "badge": "AI Interaction",
-            "title": "Set up your AI agent in minutes",
-            "description": "Create an agent, define how it should behave, add knowledge, and connect a WhatsApp number.",
+            "badge": "Botinho",
+            "title": "Set up Botinho in minutes",
+            "description": "Create a Botinho, define how it should behave, add knowledge, and connect a WhatsApp number.",
             "steps": {
-                "1": "Create an agent and give it a name",
+                "1": "Create a Botinho and give it a name",
                 "2": "Pick a prompt template and assign a WhatsApp number",
-                "3": "Add knowledge your agent should use when replying",
+                "3": "Add knowledge your Botinho should use when replying",
                 "4": "Enable auto-reply to go live"
             },
             "create": {
-                "title": "New agent",
+                "title": "New Botinho",
                 "description": "Start with a name — you'll configure the rest on the next screen.",
                 "button": "Create & configure"
             },
@@ -754,33 +780,57 @@
             "links": {
                 "quickAnswers": "Quick Answers",
                 "templates": "Message Templates",
-                "hint": "Shared across all agents"
+                "hint": "Shared across all Botinhos"
             }
         },
         "detail": {
-            "loading": "Loading agent...",
-            "subtitle": "Complete each step to get your agent ready.",
+            "loading": "Loading Botinho...",
+            "subtitle": "Complete each step to get your Botinho ready.",
             "steps": {
                 "settings": "Behavior & number",
-                "knowledge": "Knowledge base"
+                "knowledge": "Knowledge base",
+                "surveys": "Surveys"
             },
             "nextStep": "Next: Knowledge base",
             "previousStep": "Back to settings",
-            "finishSetup": "Done — back to agents",
+            "finishSetup": "Done — back to Botinhos",
             "sharedResources": {
                 "title": "Shared resources",
-                "description": "Quick answers and templates apply to all agents.",
+                "description": "Quick answers, templates, and surveys apply across Botinhos and inbox.",
                 "quickAnswers": "Manage quick answers →",
-                "templates": "Manage templates →"
+                "templates": "Manage templates →",
+                "surveys": "Manage surveys →"
+            }
+        },
+        "surveys": {
+            "title": "Survey configuration",
+            "description": "Choose which surveys this Botinho can offer and when.",
+            "enabledSurveys": "Enabled surveys",
+            "selectSurveys": "Select surveys...",
+            "loading": "Loading surveys...",
+            "noSurveys": "No active surveys yet.",
+            "createSurvey": "Create a survey",
+            "save": "Save surveys",
+            "triggers": {
+                "title": "When to offer surveys",
+                "proactiveOffer": "Suggest in conversation (with consent)",
+                "onConversationClose": "After issue resolved",
+                "onEscalation": "When escalating to human"
+            },
+            "messages": {
+                "saved": "Survey settings saved"
+            },
+            "errors": {
+                "saveFailed": "Could not save survey settings"
             }
         },
         "settings": {
-            "title": "Agent settings",
-            "description": "Name your agent, define its behavior, and assign WhatsApp numbers."
+            "title": "Botinho settings",
+            "description": "Name your Botinho, define its behavior, and assign WhatsApp numbers."
         },
         "noCompany": {
             "title": "Connect a company to continue",
-            "description": "Create or select a company to unlock AI agent tools tied to your team."
+            "description": "Create or select a company to unlock Botinho tools tied to your team."
         },
         "tabs": {
             "knowledgeBase": "Knowledge Base",
@@ -791,10 +841,10 @@
             "pdfFile": "PDF File"
         },
         "form": {
-            "agentName": "Agent name",
-            "agentNamePlaceholder": "e.g., Sales Bot, Support Agent",
+            "agentName": "Botinho name",
+            "agentNamePlaceholder": "e.g., Sales Botinho, Support Botinho",
             "systemPrompt": "System prompt",
-            "systemPromptPlaceholder": "Describe how this agent should behave, tone, and rules...",
+            "systemPromptPlaceholder": "Describe how this Botinho should behave, tone, and rules...",
             "systemPromptDescription": "This prompt is added on top of the knowledge base when generating replies.",
             "assignedNumbers": "Assigned WhatsApp numbers",
             "selectNumbers": "Select connected numbers",
@@ -803,7 +853,7 @@
             "noNumberAssigned": "No numbers assigned",
             "noConnectedNumbers": "Connect a WhatsApp number in Settings to assign it here.",
             "autoReply": "Auto-reply",
-            "autoReplyDescription": "When enabled, this agent automatically replies to incoming messages on its assigned numbers.",
+            "autoReplyDescription": "When enabled, this Botinho automatically replies to incoming messages on its assigned numbers.",
             "title": "Title",
             "content": "Content",
             "templateName": "Template Name",
@@ -877,16 +927,16 @@
             "knowledgeItems": "Knowledge Items",
             "templates": "Templates",
             "quickAnswers": "Quick Answers",
-            "trainingStatus": "Agent Status",
+            "trainingStatus": "Botinho Status",
             "active": "Active",
             "knowledgeItemsDescription": "Total items in knowledge base",
             "templatesDescription": "Ready-to-use message templates",
             "quickAnswersDescription": "Saved replies for rapid responses",
-            "trainingStatusDescription": "Agent is configured and ready"
+            "trainingStatusDescription": "Botinho is configured and ready"
         },
         "knowledge": {
             "title": "Knowledge Base",
-            "description": "All information this agent uses to respond to customers",
+            "description": "All information this Botinho uses to respond to customers",
             "type": {
                 "text": "Text",
                 "url": "URL",
@@ -895,13 +945,13 @@
             "added": "Added",
             "empty": {
                 "title": "No knowledge yet",
-                "description": "Start by adding information for this agent",
+                "description": "Start by adding information for this Botinho",
                 "button": "Add First Item"
             }
         },
         "quickAnswers": {
             "title": "Quick Answers",
-            "description": "Short responses this agent can reuse in conversations",
+            "description": "Short responses this Botinho can reuse in conversations",
             "label": "Quick Answer",
             "added": "Added",
             "empty": {
@@ -922,11 +972,11 @@
             }
         },
         "dialog": {
-            "createAgent": "Create AI Agent",
-            "createAgentDescription": "Give your agent a name and optional behavior prompt. You can add knowledge and assign a number after creation.",
+            "createAgent": "Create Botinho",
+            "createAgentDescription": "Give your Botinho a name and optional behavior prompt. You can add knowledge and assign a number after creation.",
             "addKnowledge": "Add New Knowledge",
             "editKnowledge": "Edit Knowledge",
-            "addKnowledgeDescription": "Add information to train this agent",
+            "addKnowledgeDescription": "Add information to train this Botinho",
             "editKnowledgeDescription": "Update the information below",
             "createTemplate": "Create New Template",
             "editTemplate": "Edit Template",
@@ -940,28 +990,28 @@
         "errors": {
             "fillAllFields": "Error",
             "fillAllFieldsDescription": "Please fill in all fields",
-            "agentNameRequired": "Agent name required",
-            "agentNameRequiredDescription": "Please enter a name for your agent.",
+            "agentNameRequired": "Botinho name required",
+            "agentNameRequiredDescription": "Please enter a name for your Botinho.",
             "setupIncomplete": "Complete required fields",
             "setupIncompleteDescription": "Add a name, system prompt, and at least one WhatsApp number before continuing.",
-            "loadFailed": "Unable to load agents",
-            "createFailed": "Unable to create agent",
-            "deleteFailed": "Unable to delete agent",
-            "saveFailed": "Unable to save agent",
+            "loadFailed": "Unable to load Botinhos",
+            "createFailed": "Unable to create Botinho",
+            "deleteFailed": "Unable to delete Botinho",
+            "saveFailed": "Unable to save Botinho",
             "saveKnowledgeFailed": "Unable to save knowledge",
             "deleteKnowledgeFailed": "Unable to delete knowledge",
-            "agentNotFound": "Agent not found",
+            "agentNotFound": "Botinho not found",
             "tryAgain": "Please try again."
         },
         "success": {
-            "agentCreated": "Agent created!",
-            "agentCreatedDescription": "Your new agent is ready to configure.",
-            "agentUpdated": "Agent saved",
-            "agentUpdatedDescription": "Agent settings have been updated.",
-            "agentDeleted": "Agent deleted",
-            "agentDeletedDescription": "The agent has been removed.",
+            "agentCreated": "Botinho created!",
+            "agentCreatedDescription": "Your new Botinho is ready to configure.",
+            "agentUpdated": "Botinho saved",
+            "agentUpdatedDescription": "Botinho settings have been updated.",
+            "agentDeleted": "Botinho deleted",
+            "agentDeletedDescription": "The Botinho has been removed.",
             "knowledgeAdded": "Knowledge added!",
-            "knowledgeAddedDescription": "Your agent has been updated with new information",
+            "knowledgeAddedDescription": "Your Botinho has been updated with new information",
             "knowledgeUpdated": "Knowledge item has been updated",
             "knowledgeDeleted": "Knowledge item removed",
             "templateCreated": "Template created!",
@@ -980,7 +1030,7 @@
     },
     "QuickAnswers": {
         "title": "Quick Answers",
-        "description": "Short canned responses shared across all AI agents.",
+        "description": "Short canned responses shared across all Botinhos.",
         "noCompany": {
             "title": "Connect a company to continue",
             "description": "Create or select a company to manage quick answers."
@@ -992,7 +1042,7 @@
         },
         "quickAnswers": {
             "title": "Quick Answers",
-            "description": "Reusable replies your agents can draw from during conversations",
+            "description": "Reusable replies your Botinhos can draw from during conversations",
             "label": "Quick Answer",
             "added": "Added",
             "empty": {
@@ -1061,7 +1111,7 @@
     },
     "Templates": {
         "title": "Templates",
-        "description": "Message templates shared across all AI agents.",
+        "description": "Message templates shared across all Botinhos.",
         "noCompany": {
             "title": "Connect a company to continue",
             "description": "Create or select a company to manage templates."
@@ -1177,16 +1227,18 @@
     "AppSidebar": {
         "sections": {
             "workspace": "Workspace",
-            "aiInteraction": "AI Interaction",
+            "customerInteraction": "Customer Interaction",
             "management": "Management"
         },
         "navigation": {
             "dashboard": "Dashboard",
             "customer": "Customers",
             "inbox": "Inbox",
-            "aiAgents": "AI Agents",
+            "aiAgents": "Botinho",
             "quickAnswers": "Quick Answers",
             "templates": "Templates",
+            "surveys": "Surveys",
+            "campaigns": "Campaigns",
             "company": "Company",
             "settings": "Settings",
             "connectWhatsApp": "Connect WhatsApp",
@@ -1199,6 +1251,301 @@
     },
     "SiteHeader": {
         "title": "Main Dashboard"
+    },
+    "Surveys": {
+        "title": "Surveys",
+        "description": "Create custom surveys to measure customer satisfaction, NPS, and feedback.",
+        "loading": "Loading surveys...",
+        "tabs": {
+            "builder": "Builder",
+            "metrics": "Metrics"
+        },
+        "list": {
+            "title": "Your surveys",
+            "description": "Create surveys and track customer feedback from the inbox.",
+            "new": "New survey",
+            "empty": "No surveys yet",
+            "emptyHint": "Create your first survey to collect CSAT, NPS, or custom feedback.",
+            "createFirst": "Create your first survey",
+            "responses": "responses"
+        },
+        "toolbar": {
+            "searchPlaceholder": "Search surveys...",
+            "addSurvey": "New survey",
+            "statusFilter": "Filter by status",
+            "statusAll": "All statuses",
+            "retry": "Retry"
+        },
+        "table": {
+            "name": "Name",
+            "status": "Status",
+            "delivery": "Delivery",
+            "questions": "Questions",
+            "responses": "Responses",
+            "actions": "Actions",
+            "moreActions": "More actions",
+            "empty": {
+                "title": "No surveys yet",
+                "description": "Create your first survey to collect CSAT, NPS, or custom feedback."
+            },
+            "messages": {
+                "noResults": "No surveys found"
+            }
+        },
+        "status": {
+            "draft": "Draft",
+            "active": "Active",
+            "archived": "Archived"
+        },
+        "view": {
+            "backToList": "Back to surveys",
+            "editSurvey": "Edit survey",
+            "newSurvey": "New survey",
+            "metricsFor": "Metrics — {name}"
+        },
+        "editor": {
+            "selectOrCreate": "Select a survey or create a new one",
+            "newTitle": "New survey",
+            "editTitle": "Edit survey",
+            "description": "Add questions and choose how customers receive the survey.",
+            "advanced": "Advanced options",
+            "noQuestions": "Add at least one question."
+        },
+        "fields": {
+            "name": "Survey name",
+            "namePlaceholder": "e.g. Post-support CSAT",
+            "description": "Internal description",
+            "deliveryMode": "Delivery mode",
+            "introMessage": "Intro message",
+            "thankYouMessage": "Thank you message",
+            "active": "Active (available to send)",
+            "questions": "Questions",
+            "question": "Question {number}",
+            "questionPrompt": "Question text",
+            "optionsPlaceholder": "Options separated by commas"
+        },
+        "deliveryMode": {
+            "inline": "WhatsApp chat",
+            "hosted": "Hosted link",
+            "both": "Both"
+        },
+        "questionTypes": {
+            "rating": "Rating (1–5)",
+            "nps": "NPS (0–10)",
+            "single_choice": "Single choice",
+            "multi_choice": "Multiple choice",
+            "text": "Free text",
+            "scale": "Custom scale"
+        },
+        "actions": {
+            "save": "Save",
+            "edit": "Edit",
+            "viewMetrics": "View metrics",
+            "duplicate": "Duplicate",
+            "archive": "Archive",
+            "addQuestion": "Add question",
+            "remove": "Remove"
+        },
+        "messages": {
+            "saved": "Survey saved",
+            "duplicated": "Survey duplicated"
+        },
+        "defaults": {
+            "thankYou": "Thank you for your feedback!"
+        },
+        "errors": {
+            "loadFailed": "Could not load surveys",
+            "saveFailed": "Could not save survey",
+            "archiveFailed": "Could not archive survey",
+            "duplicateFailed": "Could not duplicate survey",
+            "nameRequired": "Survey name is required"
+        },
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to manage surveys."
+        },
+        "metrics": {
+            "loading": "Loading metrics...",
+            "empty": "No responses yet",
+            "sent": "Sent",
+            "completed": "Completed",
+            "responseRate": "Response rate",
+            "averageRating": "Avg rating",
+            "nps": "NPS score",
+            "distribution": "Answer distribution"
+        }
+    },
+    "Campaigns": {
+        "title": "Campaigns",
+        "description": "Send personalized WhatsApp messages to customers by tag, track delivery, and route replies to a dedicated Botinho.",
+        "loading": "Loading campaigns...",
+        "list": {
+            "title": "Your campaigns",
+            "description": "Create outbound campaigns with variable messages and throttled delivery.",
+            "empty": "No campaigns yet",
+            "emptyHint": "Launch your first campaign to reach tagged customers with valid phone numbers.",
+            "createFirst": "Create your first campaign",
+            "delivered": "delivered"
+        },
+        "toolbar": {
+            "addCampaign": "New campaign",
+            "retry": "Retry",
+            "searchPlaceholder": "Search campaigns...",
+            "statusFilter": "Filter by status",
+            "statusAll": "All statuses"
+        },
+        "table": {
+            "name": "Name",
+            "status": "Status",
+            "progress": "Progress",
+            "contacts": "Contacts",
+            "tags": "Tags",
+            "actions": "Actions",
+            "moreActions": "More actions",
+            "empty": {
+                "title": "No campaigns yet",
+                "description": "Launch your first campaign to reach tagged customers with valid phone numbers."
+            },
+            "messages": {
+                "noResults": "No campaigns found"
+            }
+        },
+        "status": {
+            "draft": "Draft",
+            "scheduled": "Scheduled",
+            "running": "Running",
+            "paused": "Paused",
+            "completed": "Completed",
+            "cancelled": "Cancelled"
+        },
+        "view": {
+            "backToList": "Back to campaigns",
+            "newCampaign": "New campaign",
+            "editCampaign": "Edit campaign",
+            "metricsFor": "Metrics for {name}"
+        },
+        "editor": {
+            "description": "Configure message, audience, send rate, and reply Botinho.",
+            "name": "Campaign name",
+            "descriptionField": "Description",
+            "message": "Message template",
+            "templateApplied": "Template applied",
+            "preview": "Preview",
+            "starterTemplates": {
+                "title": "Starter templates",
+                "description": "Click a template to fill in your message. You can edit it before sending.",
+                "items": {
+                    "welcome": {
+                        "name": "Welcome message",
+                        "description": "Greet new or returning customers warmly.",
+                        "message": "Hi {{customer.firstName}}, welcome to {{company.name}}! We're happy to have you. Reply anytime if you need help."
+                    },
+                    "promotion": {
+                        "name": "Special offer",
+                        "description": "Share a promotion or limited-time deal.",
+                        "message": "Hi {{customer.firstName}}! {{company.name}} has a special offer for you. Reply to this message and we'll share the details."
+                    },
+                    "appointmentReminder": {
+                        "name": "Appointment reminder",
+                        "description": "Remind customers about an upcoming visit or booking.",
+                        "message": "Hi {{customer.firstName}}, this is {{company.name}} reminding you about your upcoming appointment. Reply to confirm or reschedule."
+                    },
+                    "feedback": {
+                        "name": "Feedback request",
+                        "description": "Ask for a quick review or satisfaction check.",
+                        "message": "Hi {{customer.firstName}}, we'd love your feedback about {{company.name}}. How was your recent experience? Just reply to this message."
+                    },
+                    "winBack": {
+                        "name": "Win-back",
+                        "description": "Re-engage customers who haven't been in touch lately.",
+                        "message": "Hi {{customer.firstName}}, we miss you at {{company.name}}! Reply to hear about an exclusive offer we picked for you."
+                    }
+                }
+            },
+            "tags": "Target tags",
+            "tagsPlaceholder": "Select or add tags...",
+            "tagsHint": "Customers matching any selected tag (OR) with a valid phone number will be included.",
+            "previewAudience": "Preview audience",
+            "audiencePreviewTitle": "Audience preview",
+            "audienceCounts": "{matched} matched by tags · {eligible} eligible",
+            "audienceEmpty": "No eligible customers found. Check tags, customer status filter, and phone numbers.",
+            "audienceSample": "Sample recipients",
+            "messagesPerInterval": "Messages per batch",
+            "intervalMinutes": "Minutes between batches",
+            "agent": "Reply Botinho",
+            "agentPlaceholder": "Select Botinho",
+            "noAgent": "No Botinho",
+            "session": "WhatsApp session",
+            "customerStatus": "Customer status",
+            "statusActive": "Active",
+            "statusProspect": "Prospect",
+            "statusInactive": "Inactive",
+            "save": "Save draft",
+            "launch": "Start campaign"
+        },
+        "actions": {
+            "edit": "Edit",
+            "start": "Start campaign",
+            "metrics": "Metrics",
+            "pause": "Pause",
+            "resume": "Resume",
+            "cancel": "Cancel",
+            "duplicate": "Duplicate"
+        },
+        "messages": {
+            "saved": "Campaign saved",
+            "launched": "Campaign launched",
+            "pause": "Campaign paused",
+            "resume": "Campaign resumed",
+            "cancel": "Campaign cancelled",
+            "duplicate": "Campaign duplicated"
+        },
+        "errors": {
+            "loadFailed": "Could not load campaigns",
+            "saveFailed": "Could not save campaign",
+            "launchFailed": "Could not launch campaign",
+            "previewFailed": "Could not preview audience",
+            "actionFailed": "Action failed",
+            "nameRequired": "Campaign name is required",
+            "messageRequired": "Message template is required",
+            "tagsRequired": "At least one tag is required"
+        },
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to manage campaigns."
+        },
+        "metrics": {
+            "loading": "Loading metrics...",
+            "empty": "No delivery data yet",
+            "targeted": "Targeted",
+            "delivered": "Delivered",
+            "failed": "Failed",
+            "skipped": "Skipped",
+            "responses": "Responses",
+            "responseRate": "Response rate",
+            "botReplies": "Bot replies",
+            "progress": "Progress",
+            "deliveries": "Deliveries",
+            "customer": "Customer",
+            "status": "Status",
+            "sentAt": "Sent at",
+            "failureReason": "Failure reason",
+            "responded": "Responded",
+            "yes": "Yes",
+            "no": "No"
+        }
+    },
+    "PublicSurvey": {
+        "subtitle": "Your feedback helps us improve",
+        "submit": "Submit survey",
+        "completed": {
+            "title": "Thank you!",
+            "defaultMessage": "Your response has been recorded."
+        },
+        "errors": {
+            "notFound": "Survey not found or expired",
+            "submitFailed": "Could not submit survey"
+        }
     },
     "SectionCards": {
         "totalRevenue": {
@@ -2344,7 +2691,13 @@
             "searchPlaceholder": "Search customers...",
             "addCustomer": "Add Customer",
             "statusFilter": "Filter by status",
-            "statusAll": "All statuses"
+            "statusAll": "All statuses",
+            "tagsFilter": "Filter by tags",
+            "tagsAll": "All tags",
+            "tagsSelected": "{count} tag(s)",
+            "tagsSearchPlaceholder": "Search tags...",
+            "tagsEmpty": "No tags found.",
+            "tagsClear": "Clear tags"
         },
         "table": {
             "columns": {
@@ -2352,6 +2705,7 @@
                 "email": "Email",
                 "phone": "Phone",
                 "company": "Company",
+                "tags": "Tags",
                 "status": "Status",
                 "createdAt": "Created",
                 "actions": "Actions"
@@ -2407,6 +2761,13 @@
                 "description": {
                     "label": "Description",
                     "placeholder": "Add notes about this customer for your team and AI assistant"
+                },
+                "tags": {
+                    "label": "Tags",
+                    "placeholder": "Add tags to segment this customer",
+                    "searchPlaceholder": "Search or create tag...",
+                    "empty": "No tags found.",
+                    "create": "Create \"{tag}\""
                 }
             },
             "buttons": {
@@ -2438,6 +2799,7 @@
             "clickOrDrag": "Click to upload or drag and drop",
             "supportedFormats": "Supports .xlsx, .xls, and .csv files",
             "formatInfo": "Required columns: name, phone. Optional columns: email, company, status. Column names are case-insensitive.",
+            "downloadTemplate": "Download template (.xls)",
             "parseError": "Failed to parse Excel file",
             "readError": "Failed to read file",
             "invalidFileType": "Invalid file type. Please upload .xlsx, .xls, or .csv files.",
@@ -2558,9 +2920,9 @@
             }
         },
         "quickActions": {
-            "title": "Ready to train your AI?",
-            "description": "Add knowledge to make your bot even smarter",
-            "startTraining": "Start Training"
+            "title": "Ready to set up Botinho?",
+            "description": "Add knowledge to make Botinho even smarter",
+            "startTraining": "Open Botinho"
         }
     }
 }

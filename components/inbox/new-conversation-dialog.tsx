@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { PhoneInput } from "@/components/ui/phone-input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -421,13 +422,13 @@ export const NewConversationDialog = ({
 
                             <div className="space-y-2">
                                 <Label htmlFor="adhoc-phone">{t("fields.phone")}</Label>
-                                <Input
+                                <PhoneInput
                                     id="adhoc-phone"
                                     value={adhocCustomer.phone}
-                                    onChange={(event) =>
+                                    onChange={(phone) =>
                                         setAdhocCustomer((previous) => ({
                                             ...previous,
-                                            phone: event.target.value,
+                                            phone,
                                         }))
                                     }
                                     placeholder={t("fields.phonePlaceholder")}

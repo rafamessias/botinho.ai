@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/popover"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { formatPhoneNumber, extractPhoneDigits, countries, CountryCode, Country, parseInternationalNumber, buildInternationalNumber } from "@/lib/phone-utils"
+import { formatPhoneNumber, extractPhoneDigits, countries, CountryCode, Country, parseStoredPhoneNumber, buildInternationalNumber } from "@/lib/phone-utils"
 import { useLocale } from "next-intl"
 
 interface PhoneInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
@@ -58,7 +58,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
         useEffect(() => {
             if (value !== undefined) {
                 // Check if value is an international number
-                const parsed = parseInternationalNumber(value)
+                const parsed = parseStoredPhoneNumber(value)
 
                 if (parsed) {
                     // It's an international number, set country and local number

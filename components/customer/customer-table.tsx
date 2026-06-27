@@ -18,6 +18,8 @@ import {
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 import { useCustomerColumnLabels, useCustomerColumns } from "@/components/customer/columns"
+import { CustomerTagFilter } from "@/components/customer/customer-tag-filter"
+import { customerMatchesTagFilter } from "@/components/customer/customer-tag-utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -36,6 +38,7 @@ export type CustomerStatusFilter = CustomerStatus | "all"
 
 type CustomerTableProps = {
     customers: Customer[]
+    availableTags: string[]
     onEdit: (customer: Customer) => void
     onStartConversation?: (customer: Customer) => void
 }
@@ -59,7 +62,12 @@ const formatDate = (value: string) => {
     }).format(date)
 }
 
-const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: CustomerTableProps) => {
+const CustomerTableComponent = ({
+    customers,
+    availableTags,
+    onEdit,
+    onStartConversation,
+}: CustomerTableProps) => {
     const t = useTranslations("Customer")
     const columns = useCustomerColumns({ onEdit, onStartConversation })
     const columnLabels = useCustomerColumnLabels()
@@ -68,7 +76,13 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [globalFilter, setGlobalFilter] = useState("")
     const [statusFilter, setStatusFilter] = useState<CustomerStatusFilter>("all")
+    const [selectedTags, setSelectedTags] = useState<string[]>([])
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 })
+
+    const filteredCustomers = useMemo(
+        () => customers.filter((customer) => customerMatchesTagFilter(customer, selectedTags)),
+        [customers, selectedTags],
+    )
 
     const columnFilters = useMemo<ColumnFiltersState>(
         () => (statusFilter === "all" ? [] : [{ id: "status", value: statusFilter }]),
@@ -85,7 +99,7 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
     )
 
     const table = useReactTable({
-        data: customers,
+        data: filteredCustomers,
         columns,
         state: {
             sorting,
@@ -110,7 +124,13 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
             }
 
             const customer = row.original
-            const values = [customer.name, customer.email, customer.phone, customer.company]
+            const values = [
+                customer.name,
+                customer.email,
+                customer.phone,
+                customer.company,
+                ...(customer.tags ?? []),
+            ]
 
             return values.some((value) => value?.toLowerCase().includes(query))
         },
@@ -118,7 +138,7 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
 
     useEffect(() => {
         setPagination((previous) => ({ ...previous, pageIndex: 0 }))
-    }, [globalFilter, statusFilter])
+    }, [globalFilter, statusFilter, selectedTags])
 
     const rows = table.getRowModel().rows
     const hasCustomers = customers.length > 0
@@ -164,6 +184,13 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
                         <SelectItem value="inactive">{t("table.badges.inactive")}</SelectItem>
                     </SelectContent>
                 </Select>
+                {availableTags.length > 0 ? (
+                    <CustomerTagFilter
+                        availableTags={availableTags}
+                        selectedTags={selectedTags}
+                        onChange={setSelectedTags}
+                    />
+                ) : null}
                 <DataTableViewOptions table={table} columnLabels={columnLabels} />
             </div>
 
@@ -218,6 +245,15 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
                                                         <Building className="size-4 shrink-0" aria-hidden="true" />
                                                         <span>{customer.company}</span>
                                                     </p>
+                                                )}
+                                                {customer.tags.length > 0 && (
+                                                    <div className="flex flex-wrap gap-1 pt-1">
+                                                        {customer.tags.map((tag) => (
+                                                            <Badge key={tag} variant="outline" className="text-xs">
+                                                                {tag}
+                                                            </Badge>
+                                                        ))}
+                                                    </div>
                                                 )}
                                             </div>
                                             <Badge variant={statusBadgeVariant[customer.status]}>

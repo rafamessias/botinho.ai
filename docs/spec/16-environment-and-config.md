@@ -63,6 +63,27 @@ Document all environment variables, config files, and discrepancies between `.en
 | `STRIPE_PUBLISHABLE_KEY` | **No** | Legacy name in .env.example — use `NEXT_PUBLIC_` prefix |
 | `STRIPE_PRODUCT_*`, `STRIPE_PRICE_*` | Optional | Plan price IDs — see STRIPE_SETUP.md |
 
+### Scheduled jobs (Google Cloud Scheduler)
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `CRON_SECRET` | Prod | Bearer token for `/api/cron/*` — see [22-scheduled-jobs.md](22-scheduled-jobs.md) |
+
+In development, cron routes allow unauthenticated access when `CRON_SECRET` is unset.
+
+### WhatsApp worker
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `REDIS_URL` | Yes | Session orchestration queue |
+| `WORKER_INTERNAL_TOKEN` | Yes | Worker ↔ app auth |
+| `WHATSAPP_WEBHOOK_SECRET` | Yes | Inbound webhook verification |
+| `WEBHOOK_APP_URL` | Local Docker | URL worker uses to POST inbound events |
+| `MAX_SESSIONS_PER_WORKER` | No | Session capacity per worker |
+| `SCALER_MODE` | No | `local` or cloud scaler mode |
+| `WORKER_BASE_URL` | No | Worker HTTP base URL |
+| `FIRESTORE_PROJECT_ID` | Prod | Worker Firestore project (optional locally) |
+
 ### Removed variables (no longer used)
 
 | Variable | Was used for |
@@ -121,4 +142,5 @@ Removed scripts: `email`, `ws:dev`, `seed:subscription-plans`.
 
 ## Open questions
 
-- Messaging provider env vars TBD — see [future/03-messaging-and-email.md](future/03-messaging-and-email.md).
+- Email provider env vars TBD — see [future/03-messaging-and-email.md](future/03-messaging-and-email.md).
+- Cloud Scheduler job IDs and regions per Firebase App Hosting backend.

@@ -21,6 +21,10 @@ export const companySubcollections = {
   inboundEvents: "inboundEvents",
   channelUsage: "channelUsage",
   messageDedupe: "messageDedupe",
+  surveys: "surveys",
+  surveyResponses: "surveyResponses",
+  campaigns: "campaigns",
+  campaignDeliveries: "campaignDeliveries",
 } as const
 
 export const conversationSubcollections = {

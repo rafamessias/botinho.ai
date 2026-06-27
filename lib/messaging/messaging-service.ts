@@ -2,7 +2,7 @@ import { FieldValue } from "firebase-admin/firestore"
 import { adminDb } from "@/lib/firebase/admin"
 import { collections, companySubcollections } from "@/lib/firebase/collections"
 import { generateAutoReplyText } from "@/lib/firebase/ai/generate"
-import { isAgentAutoReplyEnabled } from "@/lib/firebase/services/ai-agent-service"
+import { getAiAgent, isAgentAutoReplyEnabled } from "@/lib/firebase/services/ai-agent-service"
 import {
   createInboxMessage,
   findOpenConversationForCustomer,
@@ -45,6 +45,11 @@ const conversationsRef = (companyId: string) =>
   adminDb.collection(collections.companies).doc(companyId).collection(companySubcollections.conversations)
 
 const nextRetryAt = (attempts: number) => new Date(Date.now() + RETRY_DELAY_MS * Math.max(1, attempts))
+
+const trackCampaignInbound = async (companyId: string, conversationId: string) => {
+  const { trackCampaignResponseIfApplicable } = await import("@/lib/campaign/campaign-delivery")
+  return trackCampaignResponseIfApplicable({ companyId, conversationId })
+}
 
 export const processInboundEvent = async (
   companyId: string,
@@ -173,17 +178,33 @@ export const processInboundEvent = async (
       metricsReceivedCounted,
     })
 
-    void maybeAutoReply({
+    const { processInlineSurveyReply } = await import("@/lib/survey/survey-delivery")
+    const surveyResult = await processInlineSurveyReply({
       companyId,
-      eventId,
       conversationId,
-      customerPhone: event.from,
       customerMessage: event.body,
-      sessionId: event.sessionId,
-      channelPhoneNumber,
     }).catch((error) => {
-      console.error("[messaging] async auto-reply failed:", error)
+      console.error("[messaging] inline survey reply failed:", error)
+      return { handled: false }
     })
+
+    if (!surveyResult.handled) {
+      const campaign = await trackCampaignInbound(companyId, conversationId)
+
+      void maybeAutoReply({
+        companyId,
+        eventId,
+        conversationId,
+        customerPhone: event.from,
+        customerMessage: event.body,
+        sessionId: event.sessionId,
+        channelPhoneNumber,
+        campaignAgentId: campaign?.agentId ?? null,
+        campaignId: campaign?.id ?? null,
+      }).catch((error) => {
+        console.error("[messaging] async auto-reply failed:", error)
+      })
+    }
 
     return {
       skipped: false,
@@ -235,11 +256,21 @@ export const maybeAutoReply = async (params: {
   customerMessage: string
   sessionId: string
   channelPhoneNumber?: string
+  campaignAgentId?: string | null
+  campaignId?: string | null
 }) => {
-  const autoReplyEnabled = await isAgentAutoReplyEnabled({
+  let autoReplyEnabled = await isAgentAutoReplyEnabled({
     companyId: params.companyId,
     sessionId: params.sessionId,
   })
+
+  if (params.campaignAgentId) {
+    const campaignAgent = await getAiAgent(params.companyId, params.campaignAgentId)
+    if (campaignAgent) {
+      autoReplyEnabled = campaignAgent.autoReply
+    }
+  }
+
   if (!autoReplyEnabled) {
     await updateInboundEventAutoReply(params.companyId, params.eventId, {
       autoReplyStatus: "skipped",
@@ -269,6 +300,14 @@ export const maybeAutoReply = async (params: {
     return
   }
 
+  if (conversation.activeSurveyResponseId) {
+    await updateInboundEventAutoReply(params.companyId, params.eventId, {
+      autoReplyStatus: "skipped",
+      autoReplyReason: "survey_in_progress",
+    })
+    return
+  }
+
   if (!isWhatsAppConfigured()) {
     await updateInboundEventAutoReply(params.companyId, params.eventId, {
       autoReplyStatus: "skipped",
@@ -283,6 +322,7 @@ export const maybeAutoReply = async (params: {
       conversationId: params.conversationId,
       customerMessage: params.customerMessage,
       sessionId: params.sessionId,
+      agentId: params.campaignAgentId ?? null,
     })
 
     if (!replyText?.trim()) {
@@ -307,6 +347,13 @@ export const maybeAutoReply = async (params: {
     })
 
     if (result.delivered) {
+      if (params.campaignId) {
+        const { incrementCampaignMetrics } = await import("@/lib/firebase/services/campaign-service")
+        await incrementCampaignMetrics(params.companyId, params.campaignId, {
+          botReplies: 1,
+        })
+      }
+
       await updateInboundEventAutoReply(params.companyId, params.eventId, {
         autoReplyStatus: "sent",
         autoReplyReason: null,

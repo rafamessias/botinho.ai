@@ -15,6 +15,9 @@ export type ConversationEntity = {
   satisfactionScore?: number | null
   isBookmarked?: boolean | null
   tags?: string[] | null
+  assignedToId?: string | null
+  activeSurveyResponseId?: string | null
+  assignedTo?: { id: string; name: string } | null
   createdAt: string | Date
   updatedAt: string | Date
   customer?: {

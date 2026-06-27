@@ -52,6 +52,7 @@ No Prisma schema or survey models remain in the codebase.
 | Inbound message webhook | `stub` | `recordInboundMessage` exists but no HTTP route |
 | Firestore security rules | `implemented` | Deny-all with inbox read exception for accepted members |
 | Company membership guards | `implemented` | Single-company policy — [19-company-and-members.md](19-company-and-members.md) |
+| Surveys & live agent panel | `partial` | [20-customer-interaction-surveys-and-live-agents.md](20-customer-interaction-surveys-and-live-agents.md) |
 
 ---
 
@@ -61,8 +62,9 @@ No Prisma schema or survey models remain in the codebase.
 |-------|-------------|--------|
 | Prisma + PostgreSQL | Cloud Firestore | Removed |
 | Resend + React Email | Email stub (provider TBD) | Removed |
-| Custom WhatsApp controller + WebSocket | Provider TBD | Removed |
-| Zavu SDK | Provider TBD | Removed |
+| Custom WhatsApp controller + WebSocket | Go whatsmeow worker + Redis orchestrator | Removed |
+| Zavu SDK | WhatsApp worker | Removed |
+| Vercel Cron (`vercel.json`) | Google Cloud Scheduler → `/api/cron/*` | Removed — see [22-scheduled-jobs.md](22-scheduled-jobs.md) |
 | Rule-based inbox suggestions | Gemini | Removed |
 | Opineeo survey product remnants | botinho.ai branding + AI usage billing | Removed |
 
@@ -116,6 +118,7 @@ No Prisma schema or survey models remain in the codebase.
 |-----|-------|
 | future/01, future/02 | Marked completed; as-is specs now authoritative |
 | future/03-zavu-messaging.md | Deleted — replaced by messaging TBD spec |
+| `vercel.json` | Removed — cron documented in [22-scheduled-jobs.md](22-scheduled-jobs.md) |
 
 ---
 

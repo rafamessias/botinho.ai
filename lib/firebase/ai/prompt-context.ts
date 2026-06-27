@@ -6,6 +6,7 @@ import {
   listAgentTrainingData,
 } from "@/lib/firebase/services/ai-agent-service"
 import { listAiTrainingData } from "@/lib/firebase/services/ai-training-service"
+import { listActiveSurveys } from "@/lib/firebase/services/survey-service"
 import { getRecentConversationMessages } from "@/lib/firebase/services/inbox-service"
 import { KnowledgeItemType } from "@/lib/types/enums"
 
@@ -20,6 +21,7 @@ export type CompanyAiContext = {
   knowledgeText: string
   quickAnswersText: string
   templatesText: string
+  surveysText: string
   recentMessages: Array<{ role: "customer" | "agent" | "bot"; content: string }>
 }
 
@@ -60,6 +62,25 @@ const formatTemplatesText = (items: Awaited<ReturnType<typeof listAiTrainingData
   return lines.join("\n") || "(none)"
 }
 
+const formatSurveysText = (
+  surveys: Awaited<ReturnType<typeof listActiveSurveys>>,
+  surveyIds: string[],
+  triggers: import("@/lib/types/survey").SurveyTriggers,
+) => {
+  const enabled = surveys.filter((s) => surveyIds.includes(s.id))
+  if (enabled.length === 0) return "(none)"
+
+  const triggerLines: string[] = []
+  if (triggers.proactiveOffer) triggerLines.push("- You may suggest a survey when appropriate (ask consent first)")
+  if (triggers.onConversationClose)
+    triggerLines.push(`- After resolution (keywords: ${triggers.closeKeywords.join(", ")}), you may offer a survey`)
+  if (triggers.onEscalation) triggerLines.push("- When escalating to a human, you may offer a survey")
+
+  const surveyLines = enabled.map((s) => `- ${s.name}: ${s.description ?? s.introMessage ?? "customer feedback survey"}`)
+
+  return [...surveyLines, ...triggerLines].join("\n") || "(none)"
+}
+
 export const loadCompanyAiContext = async (params: {
   companyId: string
   conversationId?: string
@@ -75,6 +96,7 @@ export const loadCompanyAiContext = async (params: {
   let knowledgeText: string
   let quickAnswersText: string
   let templatesText: string
+  let surveysText = "(none)"
 
   const companyTraining = await listAiTrainingData(params.companyId)
   quickAnswersText = formatQuickAnswersText(companyTraining.quickAnswers)
@@ -92,6 +114,11 @@ export const loadCompanyAiContext = async (params: {
     customSystemPrompt = agent.systemPrompt || undefined
     const agentTraining = await listAgentTrainingData(params.companyId, agent.id)
     knowledgeText = formatKnowledgeText(agentTraining.knowledgeBase)
+
+    if (agent.surveyIds.length > 0) {
+      const activeSurveys = await listActiveSurveys(params.companyId)
+      surveysText = formatSurveysText(activeSurveys, agent.surveyIds, agent.surveyTriggers)
+    }
   } else {
     knowledgeText = formatKnowledgeText(companyTraining.knowledgeBase)
   }
@@ -150,6 +177,7 @@ export const loadCompanyAiContext = async (params: {
     knowledgeText,
     quickAnswersText,
     templatesText,
+    surveysText,
     recentMessages,
   }
 }
@@ -179,6 +207,10 @@ export const buildSystemPrompt = (context: CompanyAiContext): string => {
     "",
     "## Response templates",
     context.templatesText,
+    "",
+    "## Customer surveys",
+    context.surveysText,
+    "Do not send surveys without customer consent unless auto-trigger rules apply.",
   ]
     .filter(Boolean)
     .join("\n")

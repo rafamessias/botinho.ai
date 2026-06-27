@@ -21,6 +21,7 @@ import {
   updateAiAgent,
 } from "@/lib/firebase/services/ai-agent-service"
 import { summarizeUrlContent } from "@/lib/firebase/ai/generate"
+import { DEFAULT_SURVEY_TRIGGERS } from "@/lib/types/survey"
 import {
   knowledgeItemInputSchema,
   resolveKnowledgeItemInput,
@@ -47,7 +48,7 @@ export const getAiAgentAction = async (
     const { companyId } = await resolveCompanyContext()
     const agent = await getAiAgent(companyId, agentId)
     if (!agent) {
-      throw new Error("AI agent not found")
+      throw new Error("Botinho not found")
     }
     return { success: true, data: { agent } }
   })
@@ -66,7 +67,7 @@ export const createAiAgentAction = async (
     const payload = createAgentSchema.parse(input)
     const { companyId, userId } = await resolveCompanyContext({ requireCanPost: true })
     const agent = await createAiAgent(companyId, userId, payload)
-    return { success: true, data: { agent }, message: "AI agent created" }
+    return { success: true, data: { agent }, message: "Botinho created" }
   })
 
 const updateAgentSchema = agentIdSchema.merge(
@@ -75,6 +76,15 @@ const updateAgentSchema = agentIdSchema.merge(
     systemPrompt: z.string().trim().max(4000).optional(),
     sessionIds: z.array(z.string().min(1)).optional(),
     autoReply: z.boolean().optional(),
+    surveyIds: z.array(z.string()).optional(),
+    surveyTriggers: z
+      .object({
+        onConversationClose: z.boolean().optional(),
+        onEscalation: z.boolean().optional(),
+        proactiveOffer: z.boolean().optional(),
+        closeKeywords: z.array(z.string()).optional(),
+      })
+      .optional(),
   }),
 )
 
@@ -85,8 +95,13 @@ export const updateAiAgentAction = async (
     const payload = updateAgentSchema.parse(input)
     const { companyId } = await resolveCompanyContext({ requireCanPost: true })
     const { agentId, ...updates } = payload
-    const agent = await updateAiAgent(companyId, agentId, updates)
-    return { success: true, data: { agent }, message: "AI agent updated" }
+    const agent = await updateAiAgent(companyId, agentId, {
+      ...updates,
+      surveyTriggers: updates.surveyTriggers
+        ? { ...DEFAULT_SURVEY_TRIGGERS, ...updates.surveyTriggers }
+        : undefined,
+    })
+    return { success: true, data: { agent }, message: "Botinho updated" }
   })
 
 export const deleteAiAgentAction = async (
@@ -96,7 +111,7 @@ export const deleteAiAgentAction = async (
     const { agentId } = agentIdSchema.parse(input)
     const { companyId } = await resolveCompanyContext({ requireCanPost: true })
     await deleteAiAgent(companyId, agentId)
-    return { success: true, message: "AI agent deleted" }
+    return { success: true, message: "Botinho deleted" }
   })
 
 export const getAgentTrainingDataAction = async (

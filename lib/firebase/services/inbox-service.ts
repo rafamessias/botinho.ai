@@ -84,6 +84,7 @@ export type InboxCustomerRecord = {
   phone: string
   email: string | null
   company: string | null
+  tags: string[]
   status: "active" | "inactive" | "prospect"
   address: string | null
   notes: string | null
@@ -97,6 +98,7 @@ export const mapInboxCustomerRecord = (id: string, data: FirestoreInboxCustomer)
   phone: data.phone ? normalizeStoredPhone(data.phone) || data.phone : "",
   email: data.email ?? null,
   company: data.company ?? null,
+  tags: data.tags ?? [],
   status: data.status ?? "active",
   address: data.address ?? null,
   notes: data.notes ?? null,
@@ -208,6 +210,7 @@ export const createInboxCustomer = async (params: {
   phone: string
   email?: string
   company?: string
+  tags?: string[]
   status?: "active" | "inactive" | "prospect"
   address?: string
   notes?: string
@@ -242,6 +245,7 @@ export const createInboxCustomer = async (params: {
   const customerRef = customersRef(params.companyId).doc()
 
   const trimmedName = params.name.trim()
+  const normalizedTags = sanitizeTags(params.tags)
 
   await customerRef.set({
     name: trimmedName,
@@ -254,6 +258,7 @@ export const createInboxCustomer = async (params: {
     phone,
     email: email ?? null,
     company: params.company?.trim() ?? null,
+    tags: normalizedTags,
     status: params.status ?? "active",
     address: params.address?.trim() ?? null,
     notes: params.notes?.trim() ?? null,
@@ -272,6 +277,7 @@ export const updateInboxCustomer = async (params: {
   phone: string
   email?: string
   company?: string
+  tags?: string[]
   status?: "active" | "inactive" | "prospect"
   address?: string
   notes?: string
@@ -312,6 +318,7 @@ export const updateInboxCustomer = async (params: {
   }
 
   const trimmedName = params.name.trim()
+  const normalizedTags = sanitizeTags(params.tags)
 
   await customerRef.update({
     name: trimmedName,
@@ -324,6 +331,7 @@ export const updateInboxCustomer = async (params: {
     phone,
     email: email ?? null,
     company: params.company?.trim() ?? null,
+    tags: normalizedTags,
     status: params.status ?? "active",
     address: params.address?.trim() ?? null,
     notes: params.notes?.trim() ?? null,
@@ -341,6 +349,7 @@ export const bulkCreateInboxCustomers = async (params: {
     phone: string
     email?: string
     company?: string
+    tags?: string[]
     status?: "active" | "inactive" | "prospect"
   }>
 }) => {
@@ -397,6 +406,9 @@ export const mapConversation = async (
     satisfactionScore: data.satisfactionScore ?? null,
     tags: data.tags ?? [],
     assignedToId: data.assignedToId ?? null,
+    activeSurveyResponseId: data.activeSurveyResponseId ?? null,
+    activeCampaignId: data.activeCampaignId ?? null,
+    activeCampaignDeliveryId: data.activeCampaignDeliveryId ?? null,
     isArchived: data.isArchived ?? false,
     isBookmarked: data.isBookmarked ?? false,
     archivedAt: toIso(data.archivedAt ?? null),

@@ -59,6 +59,22 @@ service cloud.firestore {
         allow read, write: if false;
       }
 
+      match /surveys/{docId} {
+        allow read, write: if false;
+      }
+
+      match /surveyResponses/{docId} {
+        allow read, write: if false;
+      }
+
+      match /campaigns/{docId} {
+        allow read, write: if false;
+      }
+
+      match /campaignDeliveries/{docId} {
+        allow read, write: if false;
+      }
+
       match /customers/{docId} {
         allow read, write: if false;
       }
