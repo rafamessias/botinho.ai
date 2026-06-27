@@ -39,6 +39,56 @@ WhatsApp-inspired green palette defined in [app/globals.css](../../app/globals.c
 - Provider: [components/theme-provider.tsx](../../components/theme-provider.tsx) (next-themes)
 - Selector: [components/theme-selector.tsx](../../components/theme-selector.tsx)
 - User preference synced from profile via `UserProvider`
+- Interaction patterns: [lib/theme.ts](../../lib/theme.ts)
+
+### Semantic color tokens
+
+All feature UI must use these tokens — never hardcode Tailwind palette colors (`green-500`, `amber-600`, etc.).
+
+| Token | Use |
+|-------|-----|
+| `primary` / `primary-foreground` | Brand actions, bot messages, links |
+| `destructive` / `destructive-foreground` | Errors, delete actions, limit exceeded |
+| `success` / `success-foreground` | Success states, active badges, checkmarks |
+| `warning` / `warning-foreground` | Warnings, usage alerts (80–99%), offline banners |
+| `info` / `info-foreground` | Informational alerts, trial badges, loading states |
+| `critical` / `critical-foreground` | Critical usage alerts (100%+) |
+| `agent` / `agent-foreground` | Human agent message bubbles in inbox |
+| `rating` | Star ratings on landing page |
+| `muted` / `muted-foreground` | Secondary surfaces and text |
+| `background` / `foreground` / `card` / `border` | Layout surfaces |
+
+Opacity modifiers (`/10`, `/15`, `/25`) are allowed on semantic tokens for tinted backgrounds.
+
+### Component variants
+
+| Component | Variants | File |
+|-----------|----------|------|
+| Alert | `default`, `destructive`, `success`, `warning`, `info` | [alert.tsx](../../components/ui/alert.tsx) |
+| Badge | `default`, `secondary`, `destructive`, `outline`, `success`, `warning`, `info` | [badge.tsx](../../components/ui/badge.tsx) |
+| StatusCallout | `warning`, `info`, `success`, `destructive` | [status-callout.tsx](../../components/ui/status-callout.tsx) |
+| UsageBanner | auto level from `usagePercentage` | [usage-banner.tsx](../../components/ui/usage-banner.tsx) |
+
+### Hover and interaction rules
+
+Use helpers from `lib/theme.ts` instead of ad-hoc classes:
+
+| Pattern | Class constant | When |
+|---------|----------------|------|
+| Muted row hover | `themeInteraction.mutedHover` | List items, inbox sidebar buttons |
+| Ghost icon hover | `themeInteraction.ghostIconHover` | Icon buttons that should not fill |
+| Destructive action hover | `themeInteraction.destructiveHover` | Delete buttons in menus |
+| Form errors | `themeInteraction.formError` | Validation messages (`text-destructive`) |
+| Form error border | `themeInteraction.formErrorBorder` | Invalid inputs (`border-destructive`) |
+
+Button hover states are defined in [button.tsx](../../components/ui/button.tsx) variants — do not override with raw colors.
+
+### Dark mode
+
+- Toggle applies `.dark` class on `<html>` via next-themes
+- All semantic tokens have light (`:root`) and dark (`.dark`) values in globals.css
+- Do not add manual `dark:` overrides for colors already covered by semantic tokens
+- Exception: `dark:hover:bg-muted/50` is the standard muted-hover dark variant (see `themeInteraction.mutedHover`)
 
 ## App shell (authenticated)
 

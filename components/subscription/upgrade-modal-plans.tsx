@@ -129,7 +129,7 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
                 <div className="flex flex-col max-h-[95vh] sm:max-h-[90vh]">
                     <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-2 sm:pb-4">
                         <DialogTitle className="text-xl sm:text-2xl flex items-center gap-2">
-                            <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
+                            <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-rating" />
                             {t("title")}
                         </DialogTitle>
                         <DialogDescription className="text-sm">
@@ -156,7 +156,7 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
                                 {t("billing.yearly")}
                             </Button>
                         </div>
-                        <Badge className={`absolute ml-[240px] top-1/2 -translate-y-1/2 text-[10px] sm:text-xs px-1 py-0 ${billingCycle === "yearly" ? 'bg-green-500' : 'bg-muted'}`}>
+                        <Badge className={`absolute ml-[240px] top-1/2 -translate-y-1/2 text-[10px] sm:text-xs px-1 py-0 ${billingCycle === "yearly" ? 'bg-success text-success-foreground' : 'bg-muted'}`}>
                             {t("billing.save")}
                         </Badge>
                     </div>
@@ -207,7 +207,7 @@ export const UpgradeModalPlans = ({ open, onOpenChange, plans, showUpgradeButton
                                             <div className="space-y-1.5 sm:space-y-2">
                                                 {getPlanFeatures(plan).map((feature, index) => (
                                                     <div key={index} className="flex items-start gap-2">
-                                                        <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                                                        <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success mt-0.5 flex-shrink-0" />
                                                         <span className="text-xs sm:text-sm">{feature}</span>
                                                     </div>
                                                 ))}

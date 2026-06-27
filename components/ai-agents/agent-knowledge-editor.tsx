@@ -12,17 +12,13 @@ import {
   updateAgentKnowledgeItemAction,
 } from "@/components/server-actions/ai-agents"
 import { KnowledgeItemType } from "@/lib/types/enums"
-import type { KnowledgeItemView } from "@/components/ai-training/types"
+import { buildKnowledgeItemPayload, isKnowledgeFormValid } from "@/lib/knowledge/build-knowledge-payload"
+import { knowledgeTypeToView } from "@/lib/knowledge/knowledge-type"
+import type { KnowledgeItemView, KnowledgeTab } from "@/components/ai-training/types"
 
 type AgentKnowledgeEditorProps = {
   agentId: string
 }
-
-const knowledgeTypeToView = (type: KnowledgeItemType): "text" | "url" =>
-  type === KnowledgeItemType.TEXT ? "text" : "url"
-
-const knowledgeTypeFromView = (value: "text" | "url"): KnowledgeItemType =>
-  value === "text" ? KnowledgeItemType.TEXT : KnowledgeItemType.URL
 
 const formatDateValue = (value: Date | string) => {
   const date = new Date(value)
@@ -43,7 +39,9 @@ export const AgentKnowledgeEditor = ({ agentId }: AgentKnowledgeEditorProps) => 
   const [editingItem, setEditingItem] = useState<KnowledgeItemView | null>(null)
   const [newTitle, setNewTitle] = useState("")
   const [newContent, setNewContent] = useState("")
-  const [activeTab, setActiveTab] = useState<"text" | "url">("text")
+  const [activeTab, setActiveTab] = useState<KnowledgeTab>("text")
+  const [pdfFile, setPdfFile] = useState<File | null>(null)
+  const [pdfError, setPdfError] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const hasCompanyAccess = Boolean(user?.defaultCompanyId)
@@ -100,10 +98,12 @@ export const AgentKnowledgeEditor = ({ agentId }: AgentKnowledgeEditorProps) => 
     setNewTitle("")
     setNewContent("")
     setActiveTab("text")
+    setPdfFile(null)
+    setPdfError(null)
   }
 
   const handleSubmit = async () => {
-    if (!newTitle.trim() || !newContent.trim()) {
+    if (!isKnowledgeFormValid({ title: newTitle, content: newContent, activeTab, pdfFile, editingItem })) {
       toast({
         title: t("errors.fillAllFields"),
         description: t("errors.fillAllFieldsDescription"),
@@ -114,16 +114,17 @@ export const AgentKnowledgeEditor = ({ agentId }: AgentKnowledgeEditorProps) => 
 
     setIsSubmitting(true)
     try {
-      const payload = {
-        agentId,
-        title: newTitle.trim(),
-        content: newContent.trim(),
-        type: knowledgeTypeFromView(activeTab),
-      }
+      const payload = await buildKnowledgeItemPayload({
+        title: newTitle,
+        content: newContent,
+        activeTab,
+        pdfFile,
+        editingItem,
+      })
 
       const result = editingItem
-        ? await updateAgentKnowledgeItemAction({ ...payload, id: editingItem.id })
-        : await createAgentKnowledgeItemAction(payload)
+        ? await updateAgentKnowledgeItemAction({ ...payload, id: editingItem.id, agentId })
+        : await createAgentKnowledgeItemAction({ ...payload, agentId })
 
       if (!result.success || !result.data) {
         toast({
@@ -151,7 +152,7 @@ export const AgentKnowledgeEditor = ({ agentId }: AgentKnowledgeEditorProps) => 
       console.error("Save knowledge error", error)
       toast({
         title: t("errors.saveKnowledgeFailed"),
-        description: t("errors.tryAgain"),
+        description: error instanceof Error ? error.message : t("errors.tryAgain"),
         variant: "destructive",
       })
     } finally {
@@ -195,6 +196,8 @@ export const AgentKnowledgeEditor = ({ agentId }: AgentKnowledgeEditorProps) => 
         setNewTitle(item.title)
         setNewContent(item.content)
         setActiveTab(item.type)
+        setPdfFile(null)
+        setPdfError(null)
         setIsDialogOpen(true)
       }}
       onDelete={(id) => void handleDelete(id)}
@@ -216,6 +219,10 @@ export const AgentKnowledgeEditor = ({ agentId }: AgentKnowledgeEditorProps) => 
         onTitleChange: setNewTitle,
         newContent,
         onContentChange: setNewContent,
+        pdfFile,
+        onPdfFileChange: setPdfFile,
+        pdfError,
+        onPdfErrorChange: setPdfError,
         isSubmitting,
         onCancel: () => {
           setIsDialogOpen(false)

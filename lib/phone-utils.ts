@@ -111,6 +111,47 @@ export const formatStoredPhoneForDisplay = (value: string): string => {
     return `+${digits}`
 }
 
+const PHONE_MASK_CHAR = "•"
+
+/**
+ * Returns true when a display string is mostly a phone number (e.g. stored digits-only name).
+ */
+export const isPhoneLikeString = (value: string): boolean => {
+    const trimmed = value.trim()
+    if (!trimmed) return false
+
+    const digits = extractPhoneDigits(trimmed)
+    const compact = trimmed.replace(/\s/g, "")
+
+    return digits.length >= 8 && digits.length / compact.length >= 0.8
+}
+
+/**
+ * Mask a phone number for display, revealing only the last 4 digits.
+ * e.g. 5511971826688 → +55 (11) •••••-6688
+ */
+export const maskPhoneForDisplay = (value: string): string => {
+    const digits = normalizeStoredPhone(value)
+    if (!digits) return value
+    if (digits.length <= 4) return digits
+
+    const lastFour = digits.slice(-4)
+
+    if (digits.startsWith("55") && digits.length >= 12) {
+        const local = digits.slice(2)
+        const areaCode = local.slice(0, 2)
+        return `+55 (${areaCode}) ${PHONE_MASK_CHAR.repeat(5)}-${lastFour}`
+    }
+
+    if (digits.startsWith("1") && digits.length === 11) {
+        const local = digits.slice(1)
+        const areaCode = local.slice(0, 3)
+        return `+1 (${areaCode}) ${PHONE_MASK_CHAR.repeat(3)}-${lastFour}`
+    }
+
+    return `${PHONE_MASK_CHAR.repeat(digits.length - 4)}${lastFour}`
+}
+
 /**
  * Validates if a phone number has the minimum required digits
  * @param value - The phone number string to validate

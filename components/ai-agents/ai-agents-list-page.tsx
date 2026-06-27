@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import {
@@ -28,20 +28,19 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import { useUser } from "@/components/user-provider"
+import { ErrorState } from "@/components/ai-training/components/error-state"
 import {
   createAiAgentAction,
   deleteAiAgentAction,
   listAiAgentsAction,
 } from "@/components/server-actions/ai-agents"
+import { mapAiAgentsToView, type AgentListItem } from "@/components/ai-agents/map-agent-views"
 import { cn } from "@/lib/utils"
 
-type AgentListItem = {
-  id: string
-  name: string
-  systemPrompt: string
-  sessionIds: string[]
-  autoReply: boolean
+type AiAgentsListPageProps = {
+  initialAgents: AgentListItem[]
+  initialLoadError?: string | null
+  hasCompanyAccess: boolean
 }
 
 const getSetupSteps = (agent: AgentListItem) => [
@@ -51,22 +50,24 @@ const getSetupSteps = (agent: AgentListItem) => [
   { id: "live", done: agent.sessionIds.length > 0 && agent.autoReply },
 ]
 
-export default function AiAgentsListPage() {
+export default function AiAgentsListPage({
+  initialAgents,
+  initialLoadError = null,
+  hasCompanyAccess,
+}: AiAgentsListPageProps) {
   const t = useTranslations("AiAgents")
   const commonT = useTranslations("Common")
   const router = useRouter()
   const { toast } = useToast()
-  const { user } = useUser()
 
-  const [agents, setAgents] = useState<AgentListItem[]>([])
+  const [agents, setAgents] = useState<AgentListItem[]>(initialAgents)
   const [isLoading, setIsLoading] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(initialLoadError)
   const [newAgentName, setNewAgentName] = useState("")
   const [isCreating, setIsCreating] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [agentToDelete, setAgentToDelete] = useState<AgentListItem | null>(null)
   const [deleteConfirmName, setDeleteConfirmName] = useState("")
-
-  const hasCompanyAccess = Boolean(user?.defaultCompanyId)
 
   const loadAgents = useCallback(async () => {
     if (!hasCompanyAccess) {
@@ -75,32 +76,22 @@ export default function AiAgentsListPage() {
     }
 
     setIsLoading(true)
+    setLoadError(null)
+
     try {
       const result = await listAiAgentsAction()
       if (!result.success || !result.data) {
-        toast({
-          title: t("errors.loadFailed"),
-          description: result.error || t("errors.tryAgain"),
-          variant: "destructive",
-        })
+        setLoadError(result.error || t("errors.loadFailed"))
         return
       }
-      setAgents(result.data.agents)
+      setAgents(mapAiAgentsToView(result.data.agents))
     } catch (error) {
       console.error("Load agents error", error)
-      toast({
-        title: t("errors.loadFailed"),
-        description: t("errors.tryAgain"),
-        variant: "destructive",
-      })
+      setLoadError(t("errors.loadFailed"))
     } finally {
       setIsLoading(false)
     }
-  }, [hasCompanyAccess, t, toast])
-
-  useEffect(() => {
-    void loadAgents()
-  }, [loadAgents])
+  }, [hasCompanyAccess, t])
 
   const handleCreateAgent = async () => {
     if (!newAgentName.trim()) {
@@ -251,6 +242,14 @@ export default function AiAgentsListPage() {
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             {t("list.loading")}
           </div>
+        ) : loadError ? (
+          <ErrorState
+            icon={Bot}
+            title={t("errors.loadFailed")}
+            description={loadError}
+            retryLabel="Retry"
+            onRetry={() => void loadAgents()}
+          />
         ) : agents.length === 0 ? (
           <Card className="elegant-card border-dashed">
             <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">

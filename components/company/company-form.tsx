@@ -97,7 +97,7 @@ export const CompanyForm = ({ company, onSuccess, onCancel }: CompanyFormProps) 
                             {...register("name")}
                         />
                         {errors.name && (
-                            <p className="text-sm text-red-500">{errors.name.message}</p>
+                            <p className="text-sm text-destructive">{errors.name.message}</p>
                         )}
                     </div>
 
@@ -109,7 +109,7 @@ export const CompanyForm = ({ company, onSuccess, onCancel }: CompanyFormProps) 
                             {...register("description")}
                         />
                         {errors.description && (
-                            <p className="text-sm text-red-500">{errors.description.message}</p>
+                            <p className="text-sm text-destructive">{errors.description.message}</p>
                         )}
                     </div>
 

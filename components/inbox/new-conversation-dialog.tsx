@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react"
 import { useTranslations } from "next-intl"
-import { Loader2, MessageSquarePlus, Search, UserPlus } from "lucide-react"
+import { Loader2, MessageSquarePlus, Search, UserPlus, X } from "lucide-react"
 import { toast } from "sonner"
 
 import {
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { maskPhoneForDisplay } from "@/lib/phone-utils"
 import {
     createInboxConversationAction,
     listInboxCustomersAction,
@@ -60,6 +61,10 @@ const emptyAdHocCustomer: AdHocCustomer = {
     email: "",
 }
 
+const RECENT_CUSTOMERS_LIMIT = 5
+const SEARCH_CUSTOMERS_LIMIT = 20
+const SEARCH_DEBOUNCE_MS = 300
+
 export const NewConversationDialog = ({
     open,
     onOpenChange,
@@ -69,12 +74,13 @@ export const NewConversationDialog = ({
     onConversationCreated,
 }: NewConversationDialogProps) => {
     const t = useTranslations("Inbox.newConversation")
+    const tInbox = useTranslations("Inbox")
 
     const [activeTab, setActiveTab] = useState<"existing" | "adhoc">("existing")
     const [customerSearch, setCustomerSearch] = useState("")
     const [customers, setCustomers] = useState<InboxCustomer[]>([])
     const [isLoadingCustomers, setIsLoadingCustomers] = useState(false)
-    const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null)
+    const [startingCustomerId, setStartingCustomerId] = useState<string | null>(null)
     const [adhocCustomer, setAdhocCustomer] = useState<AdHocCustomer>(emptyAdHocCustomer)
     const [dialogConnectionId, setDialogConnectionId] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -92,16 +98,11 @@ export const NewConversationDialog = ({
     const effectiveConnectionId =
         selectedConnectionIds.length === 1 ? selectedConnectionIds[0]! : dialogConnectionId
 
-    const selectedCustomer = useMemo(
-        () => customers.find((customer) => customer.id === selectedCustomerId) ?? null,
-        [customers, selectedCustomerId],
-    )
-
     const resetForm = useCallback(() => {
         setActiveTab("existing")
         setCustomerSearch("")
         setCustomers([])
-        setSelectedCustomerId(null)
+        setStartingCustomerId(null)
         setAdhocCustomer(emptyAdHocCustomer)
         setDialogConnectionId(null)
         setIsSubmitting(false)
@@ -110,9 +111,11 @@ export const NewConversationDialog = ({
     const loadCustomers = useCallback(async (searchValue: string) => {
         setIsLoadingCustomers(true)
         try {
+            const trimmedSearch = searchValue.trim()
             const result = await listInboxCustomersAction({
-                search: searchValue.trim() ? searchValue.trim() : undefined,
-                pageSize: 50,
+                search: trimmedSearch || undefined,
+                pageSize: trimmedSearch ? SEARCH_CUSTOMERS_LIMIT : RECENT_CUSTOMERS_LIMIT,
+                orderBy: trimmedSearch ? undefined : "createdAt",
             })
 
             if (!result.success || !result.data) {
@@ -147,86 +150,116 @@ export const NewConversationDialog = ({
         if (availableConnections.length === 1) {
             setDialogConnectionId(availableConnections[0]!.sessionId)
         }
-
-        void loadCustomers("")
-    }, [availableConnections, loadCustomers, open, prefilledCustomer, resetForm])
+    }, [availableConnections, open, prefilledCustomer, resetForm])
 
     useEffect(() => {
         if (!open || activeTab !== "existing") {
             return
         }
 
+        if (!customerSearch.trim()) {
+            void loadCustomers("")
+            return
+        }
+
         const handler = setTimeout(() => {
             void loadCustomers(customerSearch)
-        }, 300)
+        }, SEARCH_DEBOUNCE_MS)
 
         return () => clearTimeout(handler)
     }, [activeTab, customerSearch, loadCustomers, open])
 
+    const startConversation = useCallback(
+        async (
+            customerPayload: { name: string; phone?: string; email?: string },
+            customerId?: string,
+        ) => {
+            if (requiresConnectionSelection && !effectiveConnectionId) {
+                toast.error(t("errors.connectionRequired"))
+                return
+            }
+
+            if (customerId) {
+                setStartingCustomerId(customerId)
+            } else {
+                setIsSubmitting(true)
+            }
+
+            try {
+                const result = await createInboxConversationAction({
+                    customer: customerPayload,
+                    ...(effectiveConnectionId ? { sessionId: effectiveConnectionId } : {}),
+                })
+
+                if (!result.success || !result.data) {
+                    throw new Error(result.error || "Unable to create conversation")
+                }
+
+                toast.success(result.data.existing ? t("messages.existingConversation") : t("messages.created"))
+                onConversationCreated(result.data.conversation.id, result.data.existing)
+                onOpenChange(false)
+            } catch (error) {
+                console.error("Failed to create conversation", error)
+                const message = error instanceof Error ? error.message : t("errors.createFailed")
+                toast.error(message || t("errors.createFailed"))
+            } finally {
+                setStartingCustomerId(null)
+                setIsSubmitting(false)
+            }
+        },
+        [
+            effectiveConnectionId,
+            onConversationCreated,
+            onOpenChange,
+            requiresConnectionSelection,
+            t,
+        ],
+    )
+
+    const handleCustomerRowClick = useCallback(
+        (customer: InboxCustomer) => {
+            if (startingCustomerId || isSubmitting) {
+                return
+            }
+
+            void startConversation(
+                {
+                    name: customer.name,
+                    phone: customer.phone ?? undefined,
+                    email: customer.email ?? undefined,
+                },
+                customer.id,
+            )
+        },
+        [isSubmitting, startConversation, startingCustomerId],
+    )
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
-        if (requiresConnectionSelection && !effectiveConnectionId) {
-            toast.error(t("errors.connectionRequired"))
+        if (activeTab === "existing") {
             return
         }
 
-        let customerPayload: { name: string; phone?: string; email?: string }
+        const name = adhocCustomer.name.trim()
+        const phone = adhocCustomer.phone.trim()
+        const email = adhocCustomer.email.trim()
 
-        if (activeTab === "existing") {
-            if (!selectedCustomer) {
-                toast.error(t("errors.customerRequired"))
-                return
-            }
-
-            customerPayload = {
-                name: selectedCustomer.name,
-                phone: selectedCustomer.phone ?? undefined,
-                email: selectedCustomer.email ?? undefined,
-            }
-        } else {
-            const name = adhocCustomer.name.trim()
-            const phone = adhocCustomer.phone.trim()
-            const email = adhocCustomer.email.trim()
-
-            if (!name) {
-                toast.error(t("errors.nameRequired"))
-                return
-            }
-
-            if (!phone) {
-                toast.error(t("errors.phoneRequired"))
-                return
-            }
-
-            customerPayload = {
-                name,
-                phone,
-                ...(email ? { email } : {}),
-            }
+        if (!name) {
+            toast.error(t("errors.nameRequired"))
+            return
         }
 
-        setIsSubmitting(true)
-        try {
-            const result = await createInboxConversationAction({
-                customer: customerPayload,
-                ...(effectiveConnectionId ? { sessionId: effectiveConnectionId } : {}),
-            })
-
-            if (!result.success || !result.data) {
-                throw new Error(result.error || "Unable to create conversation")
-            }
-
-            toast.success(result.data.existing ? t("messages.existingConversation") : t("messages.created"))
-            onConversationCreated(result.data.conversation.id, result.data.existing)
-            onOpenChange(false)
-        } catch (error) {
-            console.error("Failed to create conversation", error)
-            const message = error instanceof Error ? error.message : t("errors.createFailed")
-            toast.error(message || t("errors.createFailed"))
-        } finally {
-            setIsSubmitting(false)
+        if (!phone) {
+            toast.error(t("errors.phoneRequired"))
+            return
         }
+
+        await startConversation({
+            name,
+            phone,
+            ...(email ? { email } : {}),
+        })
     }
 
     const getConnectionLabel = (connection: InboxConnectionView) =>
@@ -285,9 +318,21 @@ export const NewConversationDialog = ({
                                     value={customerSearch}
                                     onChange={(event) => setCustomerSearch(event.target.value)}
                                     placeholder={t("searchCustomersPlaceholder")}
-                                    className="pl-9"
+                                    className="pl-9 pr-10"
                                     aria-label={t("searchCustomersPlaceholder")}
                                 />
+                                {customerSearch && (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        className="absolute right-1 top-1/2 size-7 -translate-y-1/2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                        onClick={() => setCustomerSearch("")}
+                                        aria-label={tInbox("clearSearch")}
+                                    >
+                                        <X className="size-4" aria-hidden="true" />
+                                    </Button>
+                                )}
                             </div>
 
                             <div className="max-h-72 overflow-auto rounded-lg border">
@@ -311,20 +356,37 @@ export const NewConversationDialog = ({
                                         </TableHeader>
                                         <TableBody>
                                             {customers.map((customer) => {
-                                                const isSelected = selectedCustomerId === customer.id
+                                                const isStarting = startingCustomerId === customer.id
 
                                                 return (
                                                     <TableRow
                                                         key={customer.id}
                                                         className={cn(
                                                             "cursor-pointer",
-                                                            isSelected && "bg-primary/10",
+                                                            isStarting && "bg-primary/10",
+                                                            (startingCustomerId !== null || isSubmitting) &&
+                                                                !isStarting &&
+                                                                "pointer-events-none opacity-50",
                                                         )}
-                                                        onClick={() => setSelectedCustomerId(customer.id)}
-                                                        aria-selected={isSelected}
+                                                        onClick={() => handleCustomerRowClick(customer)}
+                                                        aria-busy={isStarting}
                                                     >
-                                                        <TableCell className="font-medium">{customer.name}</TableCell>
-                                                        <TableCell>{customer.phone ?? "—"}</TableCell>
+                                                        <TableCell className="font-medium">
+                                                            <span className="flex items-center gap-2">
+                                                                {isStarting ? (
+                                                                    <Loader2
+                                                                        className="size-4 shrink-0 animate-spin"
+                                                                        aria-hidden="true"
+                                                                    />
+                                                                ) : null}
+                                                                {customer.name}
+                                                            </span>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {customer.phone
+                                                                ? maskPhoneForDisplay(customer.phone)
+                                                                : "—"}
+                                                        </TableCell>
                                                         <TableCell>{customer.email ?? "—"}</TableCell>
                                                     </TableRow>
                                                 )
@@ -392,19 +454,26 @@ export const NewConversationDialog = ({
                     </Tabs>
 
                     <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => onOpenChange(false)}
+                            disabled={isSubmitting || startingCustomerId !== null}
+                        >
                             {t("actions.cancel")}
                         </Button>
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="mr-2 size-4 animate-spin" aria-hidden="true" />
-                                    {t("actions.creating")}
-                                </>
-                            ) : (
-                                t("actions.start")
-                            )}
-                        </Button>
+                        {activeTab === "adhoc" ? (
+                            <Button type="submit" disabled={isSubmitting || startingCustomerId !== null}>
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 size-4 animate-spin" aria-hidden="true" />
+                                        {t("actions.creating")}
+                                    </>
+                                ) : (
+                                    t("actions.start")
+                                )}
+                            </Button>
+                        ) : null}
                     </DialogFooter>
                 </form>
             </DialogContent>

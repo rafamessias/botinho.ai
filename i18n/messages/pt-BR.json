@@ -336,9 +336,16 @@
                 "title": "Cliente",
                 "satisfaction": "Pontuação de satisfação: {score}"
             },
+            "seeAll": "Ver todos ({count})",
+            "pin": "Fixar na barra lateral",
+            "unpin": "Remover da barra lateral",
+            "pinHint": "Arraste para reordenar. Fixe até 3 itens para exibir na barra lateral.",
+            "dragToReorder": "Arrastar para reordenar",
+            "pinLimit": "Você pode fixar até 3 itens.",
             "quickReplies": {
                 "title": "Respostas rápidas",
                 "manage": "Gerenciar",
+                "modalDescription": "Escolha uma resposta para inserir ou fixe até 3 favoritos na barra lateral.",
                 "empty": {
                     "title": "Nenhuma resposta rápida ainda",
                     "description": "Adicione respostas salvas que sua equipe pode usar nas conversas.",
@@ -348,6 +355,7 @@
             "templates": {
                 "title": "Modelos",
                 "manage": "Gerenciar",
+                "modalDescription": "Escolha um modelo para inserir ou fixe até 3 favoritos na barra lateral.",
                 "empty": {
                     "title": "Nenhum modelo ainda",
                     "description": "Crie modelos de mensagem para interações comuns com clientes.",
@@ -374,6 +382,10 @@
             "inputPlaceholderNoSelection": "Selecione uma conversa para responder",
             "sendFailed": "Não foi possível enviar a mensagem",
             "whatsappDeliveryFailed": "Mensagem salva, mas o envio pelo WhatsApp falhou. Verifique a conexão em Configurações."
+        },
+        "whatsappOffline": {
+            "message": "WhatsApp offline — envio de mensagens pausado.",
+            "settingsLink": "Configurações"
         },
         "actions": {
             "openConversations": "Abrir lista de conversas",
@@ -472,7 +484,8 @@
             "quickAnswers": "Respostas Rápidas",
             "templates": "Modelos",
             "textContent": "Conteúdo de Texto",
-            "websiteUrl": "URL do Site"
+            "websiteUrl": "URL do Site",
+            "pdfFile": "Arquivo PDF"
         },
         "form": {
             "title": "Título",
@@ -488,6 +501,16 @@
             "urlTitlePlaceholder": "ex., Catálogo de Produtos, Página de FAQ",
             "urlPlaceholder": "https://exemplo.com/pagina",
             "urlDescription": "Extrairemos e aprenderemos com o conteúdo desta página",
+            "pdfTitlePlaceholder": "ex., Catálogo de Produtos, Documento de Política",
+            "pdfUploadLabel": "Documento PDF",
+            "pdfUploadDescription": "Envie um PDF de até {maxMb} MB. Extrairemos o texto para sua IA aprender.",
+            "pdfClickOrDrag": "Clique para enviar ou arraste e solte",
+            "pdfDropHere": "Solte o PDF aqui",
+            "pdfSupportedFormats": "Somente arquivos PDF",
+            "pdfRemoveFile": "Remover PDF",
+            "pdfReplaceHint": "Envie um novo PDF para substituir o conteúdo extraído, ou atualize apenas o título.",
+            "pdfInvalidFileType": "Tipo de arquivo inválido. Envie um arquivo PDF.",
+            "pdfFileTooLarge": "Arquivo muito grande. O tamanho máximo é {maxMb} MB.",
             "templateNamePlaceholder": "ex., Mensagem de Boas-vindas, Confirmação de Pedido",
             "selectCategory": "Selecione uma categoria",
             "messageContentPlaceholder": "Digite sua mensagem modelo... Use [NOME_DA_VARIAVEL] para conteúdo dinâmico",
@@ -593,7 +616,8 @@
             "description": "Todas as informações que sua IA usa para responder aos clientes",
             "type": {
                 "text": "Texto",
-                "url": "URL"
+                "url": "URL",
+                "pdf": "PDF"
             },
             "added": "Adicionado",
             "empty": {
@@ -763,7 +787,8 @@
             "quickAnswers": "Respostas Rápidas",
             "templates": "Modelos",
             "textContent": "Conteúdo de Texto",
-            "websiteUrl": "URL do Site"
+            "websiteUrl": "URL do Site",
+            "pdfFile": "Arquivo PDF"
         },
         "form": {
             "agentName": "Nome do agente",
@@ -792,6 +817,16 @@
             "urlTitlePlaceholder": "ex., Catálogo de Produtos, Página de FAQ",
             "urlPlaceholder": "https://exemplo.com/pagina",
             "urlDescription": "Extrairemos e aprenderemos com o conteúdo desta página",
+            "pdfTitlePlaceholder": "ex., Catálogo de Produtos, Documento de Política",
+            "pdfUploadLabel": "Documento PDF",
+            "pdfUploadDescription": "Envie um PDF de até {maxMb} MB. Extrairemos o texto para sua IA aprender.",
+            "pdfClickOrDrag": "Clique para enviar ou arraste e solte",
+            "pdfDropHere": "Solte o PDF aqui",
+            "pdfSupportedFormats": "Somente arquivos PDF",
+            "pdfRemoveFile": "Remover PDF",
+            "pdfReplaceHint": "Envie um novo PDF para substituir o conteúdo extraído, ou atualize apenas o título.",
+            "pdfInvalidFileType": "Tipo de arquivo inválido. Envie um arquivo PDF.",
+            "pdfFileTooLarge": "Arquivo muito grande. O tamanho máximo é {maxMb} MB.",
             "templateNamePlaceholder": "ex., Mensagem de Boas-vindas, Confirmação de Pedido",
             "selectCategory": "Selecione uma categoria",
             "messageContentPlaceholder": "Digite sua mensagem modelo... Use [NOME_DA_VARIAVEL] para conteúdo dinâmico",
@@ -854,7 +889,8 @@
             "description": "Todas as informações que este agente usa para responder aos clientes",
             "type": {
                 "text": "Texto",
-                "url": "URL"
+                "url": "URL",
+                "pdf": "PDF"
             },
             "added": "Adicionado",
             "empty": {
@@ -1415,9 +1451,11 @@
                     "title": "Nenhum número de WhatsApp conectado ainda.",
                     "description": "Clique no botão acima para conectar o seu primeiro número."
                 },
+                "offlineBanner": "WhatsApp offline. Seus números aparecem abaixo, mas o envio de mensagens está pausado.",
                 "status": {
                     "connected": "Conectado",
-                    "disconnected": "Desconectado"
+                    "disconnected": "Desconectado",
+                    "offline": "Offline"
                 },
                 "disconnect": "Desconectar",
                 "label": {

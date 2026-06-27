@@ -1,9 +1,8 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useTranslations } from "next-intl"
 import { useToast } from "@/hooks/use-toast"
-import { useUser } from "@/components/user-provider"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TemplatesSection } from "@/components/ai-training/sections/templates-section"
 import {
@@ -12,33 +11,35 @@ import {
   getAiTrainingDataAction,
   updateAiTemplateAction,
 } from "@/components/server-actions/ai-training"
+import { mapTemplateToView, mapTemplatesToView } from "@/components/ai-training/map-template-views"
 import { AiTemplateCategory } from "@/lib/types/enums"
 import type { TemplateView } from "@/components/ai-training/types"
 import { copyToClipboard } from "@/lib/copy-to-clipboard"
 
-const formatDateValue = (value: Date | string) => {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ""
-  return date.toISOString().split("T")[0]
+type CompanyTemplatesPageProps = {
+  initialItems: TemplateView[]
+  initialLoadError?: string | null
+  hasCompanyAccess: boolean
 }
 
-export default function CompanyTemplatesPage() {
+export default function CompanyTemplatesPage({
+  initialItems,
+  initialLoadError = null,
+  hasCompanyAccess,
+}: CompanyTemplatesPageProps) {
   const t = useTranslations("Templates")
   const { toast } = useToast()
-  const { user } = useUser()
 
-  const [items, setItems] = useState<TemplateView[]>([])
+  const [items, setItems] = useState<TemplateView[]>(initialItems)
   const [isFetching, setIsFetching] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [loadError, setLoadError] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(initialLoadError)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<TemplateView | null>(null)
   const [name, setName] = useState("")
   const [content, setContent] = useState("")
   const [category, setCategory] = useState<AiTemplateCategory>(AiTemplateCategory.greeting)
   const [deletingId, setDeletingId] = useState<string | null>(null)
-
-  const hasCompanyAccess = Boolean(user?.defaultCompanyId)
 
   const loadItems = useCallback(async () => {
     if (!hasCompanyAccess) {
@@ -55,21 +56,7 @@ export default function CompanyTemplatesPage() {
         setLoadError(result.error || t("errors.loadFailed"))
         return
       }
-      setItems(
-        result.data.templates.map((item) => ({
-          id: item.id,
-          name: item.name,
-          content: item.content,
-          category: item.category,
-          createdAt: formatDateValue(item.createdAt),
-          updatedAt: formatDateValue(item.updatedAt),
-          options: item.options?.map((option) => ({
-            id: option.id,
-            label: option.label,
-            value: option.value,
-          })),
-        })),
-      )
+      setItems(mapTemplatesToView(result.data.templates))
     } catch (error) {
       console.error("Load templates error", error)
       setLoadError(t("errors.loadFailed"))
@@ -77,10 +64,6 @@ export default function CompanyTemplatesPage() {
       setIsFetching(false)
     }
   }, [hasCompanyAccess, t])
-
-  useEffect(() => {
-    void loadItems()
-  }, [loadItems])
 
   const resetForm = () => {
     setEditingItem(null)
@@ -131,20 +114,7 @@ export default function CompanyTemplatesPage() {
         return
       }
 
-      const saved = result.data.template
-      const mapped: TemplateView = {
-        id: saved.id,
-        name: saved.name,
-        content: saved.content,
-        category: saved.category,
-        createdAt: formatDateValue(saved.createdAt),
-        updatedAt: formatDateValue(saved.updatedAt),
-        options: saved.options?.map((option) => ({
-          id: option.id,
-          label: option.label,
-          value: option.value,
-        })),
-      }
+      const mapped = mapTemplateToView(result.data.template)
 
       setItems((prev) =>
         editingItem ? prev.map((item) => (item.id === mapped.id ? mapped : item)) : [mapped, ...prev],

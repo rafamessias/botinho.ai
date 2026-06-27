@@ -193,7 +193,7 @@ export function ResetPasswordConfirmForm({
                                     {...register("password")}
                                 />
                                 {errors.password && (
-                                    <p className="text-sm text-red-500">{errors.password.message}</p>
+                                    <p className="text-sm text-destructive">{errors.password.message}</p>
                                 )}
                             </div>
                             <div className="grid gap-3">
@@ -205,7 +205,7 @@ export function ResetPasswordConfirmForm({
                                     {...register("confirmPassword")}
                                 />
                                 {errors.confirmPassword && (
-                                    <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+                                    <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
                                 )}
                             </div>
                             <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting}>

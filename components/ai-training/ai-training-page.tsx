@@ -25,9 +25,12 @@ import {
     updateQuickAnswerAction,
 } from "@/components/server-actions/ai-training"
 import { AiTemplateCategory, KnowledgeItemType } from "@/lib/types/enums"
+import { buildKnowledgeItemPayload, isKnowledgeFormValid } from "@/lib/knowledge/build-knowledge-payload"
+import { knowledgeTypeToView } from "@/lib/knowledge/knowledge-type"
 import { copyToClipboard } from "@/lib/copy-to-clipboard"
 import type {
     KnowledgeItemView,
+    KnowledgeTab,
     MainTab,
     QuickAnswerView,
     TemplateView,
@@ -41,12 +44,6 @@ type TemplateRecord = {
     updatedAt: Date | string
     options?: Array<{ id: string; label: string; value: string }>
 }
-
-const knowledgeTypeToView = (type: KnowledgeItemType): "text" | "url" =>
-    type === KnowledgeItemType.TEXT ? "text" : "url"
-
-const knowledgeTypeFromView = (value: "text" | "url"): KnowledgeItemType =>
-    value === "text" ? KnowledgeItemType.TEXT : KnowledgeItemType.URL
 
 const formatDateValue = (value: Date | string) => {
     const date = new Date(value)
@@ -213,7 +210,9 @@ export default function AITrainingPage() {
     const [editingItem, setEditingItem] = useState<KnowledgeItemView | null>(null)
     const [newTitle, setNewTitle] = useState("")
     const [newContent, setNewContent] = useState("")
-    const [activeTab, setActiveTab] = useState<"text" | "url">("text")
+    const [activeTab, setActiveTab] = useState<KnowledgeTab>("text")
+    const [pdfFile, setPdfFile] = useState<File | null>(null)
+    const [pdfError, setPdfError] = useState<string | null>(null)
 
     const [isQuickAnswerDialogOpen, setIsQuickAnswerDialogOpen] = useState(false)
     const [editingQuickAnswer, setEditingQuickAnswer] = useState<QuickAnswerView | null>(null)
@@ -247,6 +246,8 @@ export default function AITrainingPage() {
         setNewTitle("")
         setNewContent("")
         setActiveTab("text")
+        setPdfFile(null)
+        setPdfError(null)
     }
 
     const handleOpenKnowledgeDialog = () => {
@@ -255,7 +256,7 @@ export default function AITrainingPage() {
     }
 
     const handleAddKnowledge = async () => {
-        if (!newTitle.trim() || !newContent.trim()) {
+        if (!isKnowledgeFormValid({ title: newTitle, content: newContent, activeTab, pdfFile, editingItem })) {
             toast({
                 title: t("errors.fillAllFields"),
                 description: t("errors.fillAllFieldsDescription"),
@@ -270,11 +271,14 @@ export default function AITrainingPage() {
 
         try {
             setIsKnowledgeSubmitting(true)
-            const result = await createKnowledgeItemAction({
-                title: newTitle.trim(),
-                content: newContent.trim(),
-                type: knowledgeTypeFromView(activeTab),
+            const payload = await buildKnowledgeItemPayload({
+                title: newTitle,
+                content: newContent,
+                activeTab,
+                pdfFile,
+                editingItem,
             })
+            const result = await createKnowledgeItemAction(payload)
 
             if (!result.success || !result.data) {
                 toast({
@@ -306,7 +310,7 @@ export default function AITrainingPage() {
             console.error("Create knowledge item error", error)
             toast({
                 title: "Unable to save knowledge",
-                description: "Please try again.",
+                description: error instanceof Error ? error.message : "Please try again.",
                 variant: "destructive",
             })
         } finally {
@@ -319,11 +323,13 @@ export default function AITrainingPage() {
         setNewTitle(item.title)
         setNewContent(item.content)
         setActiveTab(item.type)
+        setPdfFile(null)
+        setPdfError(null)
         setIsDialogOpen(true)
     }
 
     const handleUpdateItem = async () => {
-        if (!editingItem || !newTitle.trim() || !newContent.trim()) {
+        if (!editingItem || !isKnowledgeFormValid({ title: newTitle, content: newContent, activeTab, pdfFile, editingItem })) {
             toast({
                 title: t("errors.fillAllFields"),
                 description: t("errors.fillAllFieldsDescription"),
@@ -338,11 +344,16 @@ export default function AITrainingPage() {
 
         try {
             setIsKnowledgeSubmitting(true)
+            const payload = await buildKnowledgeItemPayload({
+                title: newTitle,
+                content: newContent,
+                activeTab,
+                pdfFile,
+                editingItem,
+            })
             const result = await updateKnowledgeItemAction({
                 id: editingItem.id,
-                title: newTitle.trim(),
-                content: newContent.trim(),
-                type: knowledgeTypeFromView(activeTab),
+                ...payload,
             })
 
             if (!result.success || !result.data) {
@@ -375,7 +386,7 @@ export default function AITrainingPage() {
             console.error("Update knowledge item error", error)
             toast({
                 title: "Unable to update knowledge",
-                description: "Please try again.",
+                description: error instanceof Error ? error.message : "Please try again.",
                 variant: "destructive",
             })
         } finally {
@@ -871,6 +882,10 @@ export default function AITrainingPage() {
                             onTitleChange: (value) => setNewTitle(value),
                             newContent,
                             onContentChange: (value) => setNewContent(value),
+                            pdfFile,
+                            onPdfFileChange: setPdfFile,
+                            pdfError,
+                            onPdfErrorChange: setPdfError,
                             isSubmitting: isKnowledgeSubmitting,
                             onCancel: () => {
                                 setIsDialogOpen(false)

@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 type WhatsAppSessionRowProps = {
   session: WhatsAppSessionView
   companyId?: string
+  serviceAvailable?: boolean
   isDisconnecting: boolean
   statusBadgeVariant: (status: WhatsAppSessionView["status"]) => "default" | "secondary" | "outline"
   onUpdated: () => void
@@ -24,6 +25,7 @@ type WhatsAppSessionRowProps = {
 export const WhatsAppSessionRow = ({
   session,
   companyId,
+  serviceAvailable = true,
   isDisconnecting,
   statusBadgeVariant,
   onUpdated,
@@ -112,6 +114,14 @@ export const WhatsAppSessionRow = ({
     }
   }
 
+  const statusLabel = !serviceAvailable
+    ? t("whatsapp.status.offline")
+    : session.status === "connected"
+      ? t("whatsapp.status.connected")
+      : t("whatsapp.status.disconnected")
+
+  const badgeVariant = !serviceAvailable ? "outline" : statusBadgeVariant(session.status)
+
   return (
     <div className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0 space-y-1">
@@ -157,6 +167,7 @@ export const WhatsAppSessionRow = ({
               variant="ghost"
               className="h-8 w-8 shrink-0"
               onClick={handleStartEdit}
+              disabled={!serviceAvailable || isSaving}
               aria-label={t("whatsapp.actions.editAria", { name: displayLabel })}
             >
               <Pencil className="h-3.5 w-3.5" />
@@ -167,13 +178,13 @@ export const WhatsAppSessionRow = ({
         <p className="text-sm text-muted-foreground">
           {session.phoneNumber ?? t("whatsapp.pairing.latest.pending")}
         </p>
-        <Badge variant={statusBadgeVariant(session.status)}>{session.status}</Badge>
+        <Badge variant={badgeVariant}>{statusLabel}</Badge>
       </div>
 
       <Button
         type="button"
         variant="outline"
-        disabled={isDisconnecting || isSaving}
+        disabled={!serviceAvailable || isDisconnecting || isSaving}
         onClick={() => onDisconnect(session.sessionId)}
       >
         {t("whatsapp.disconnect")}

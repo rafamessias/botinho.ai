@@ -29,4 +29,28 @@ function Checkbox({
   )
 }
 
-export { Checkbox }
+/** Non-interactive checkbox appearance for list rows where a parent handles selection. */
+function CheckboxVisual({
+  checked,
+  className,
+}: {
+  checked: boolean
+  className?: string
+}) {
+  return (
+    <div
+      aria-hidden="true"
+      data-slot="checkbox-visual"
+      className={cn(
+        "flex size-4 shrink-0 items-center justify-center rounded-[4px] border-2 border-border bg-background dark:bg-input dark:border-border transition-shadow",
+        checked &&
+          "border-primary bg-primary text-primary-foreground dark:border-primary dark:bg-primary",
+        className
+      )}
+    >
+      {checked ? <CheckIcon className="size-3.5" /> : null}
+    </div>
+  )
+}
+
+export { Checkbox, CheckboxVisual }

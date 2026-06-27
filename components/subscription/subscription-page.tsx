@@ -280,9 +280,9 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
     const getStatusBadge = (status: string) => {
         switch (status.toLowerCase()) {
             case 'active':
-                return <Badge variant="default" className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />{t("page.active")}</Badge>;
+                return <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" />{t("page.active")}</Badge>;
             case 'trialing':
-                return <Badge variant="secondary" className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />{t("page.trial")}</Badge>;
+                return <Badge variant="info"><Clock className="h-3 w-3 mr-1" />{t("page.trial")}</Badge>;
             case 'canceled':
                 return <Badge variant="destructive"><AlertTriangle className="h-3 w-3 mr-1" />{t("page.canceled")}</Badge>;
             default:
@@ -329,12 +329,12 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         <div className="space-y-6">
             {/* Upgrade Success Alert */}
             {showSuccessAlert && (
-                <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
-                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                    <AlertTitle className="text-green-900 dark:text-green-100">
+                <Alert variant="success">
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertTitle>
                         {t("page.upgradeSuccess.title")}
                     </AlertTitle>
-                    <AlertDescription className="text-green-800 dark:text-green-200">
+                    <AlertDescription>
                         {t("page.upgradeSuccess.description")}
                     </AlertDescription>
                 </Alert>
@@ -342,12 +342,12 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
 
             {/* Checkout Canceled Alert */}
             {showCheckoutCanceledAlert && (
-                <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
-                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    <AlertTitle className="text-blue-900 dark:text-blue-100">
+                <Alert variant="info">
+                    <Info className="h-4 w-4" />
+                    <AlertTitle>
                         {t("page.checkoutCanceled.title")}
                     </AlertTitle>
-                    <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <AlertDescription>
                         {t("page.checkoutCanceled.description")}
                     </AlertDescription>
                 </Alert>
@@ -396,7 +396,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 <Button
                                     onClick={handleUpgradeClick}
                                     disabled={loadingPlans}
-                                    className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                                    className="bg-warning hover:bg-warning/90 text-warning-foreground"
                                 >
                                     {loadingPlans ? (
                                         <>
@@ -471,7 +471,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                             {subscription.cancelAtPeriodEnd && (
                                 <div>
                                     <p className="text-sm font-medium text-muted-foreground">{t("page.cancellation")}</p>
-                                    <p className="text-sm text-orange-600">
+                                    <p className="text-sm text-warning">
                                         {t("page.willCancelAtPeriodEnd")}
                                     </p>
                                 </div>
@@ -519,14 +519,14 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                     <div className="space-y-2">
                                         <Progress
                                             value={metric.percentageUsed}
-                                            className={`h-2 ${metric.isOverLimit ? '[&>div]:bg-red-500' : ''}`}
+                                            className={`h-2 ${metric.isOverLimit ? '[&>div]:bg-destructive' : ''}`}
                                         />
                                         <div className="flex justify-between text-xs text-muted-foreground">
                                             <span>
                                                 {metric.remaining > 0 ? `${metric.remaining.toLocaleString()} ${t("page.remaining")}` : t("page.limitReached")}
                                             </span>
                                             {metric.isOverLimit && (
-                                                <span className="text-red-600 font-medium">
+                                                <span className="text-destructive font-medium">
                                                     {t("page.overLimit")}
                                                 </span>
                                             )}
@@ -596,22 +596,22 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                    <CheckCircle className="h-4 w-4 text-success" />
                                     <span className="text-sm">
                                         {t("page.maxAiResponses")}: {formatPlanLimit(subscription.plan.maxAiResponses)}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                    <CheckCircle className="h-4 w-4 text-success" />
                                     <span className="text-sm">
                                         {t("page.analytics")}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {subscription.plan.removeBranding ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
+                                        <CheckCircle className="h-4 w-4 text-success" />
                                     ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
+                                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
                                     )}
                                     <span className="text-sm">
                                         {t("page.removeBranding")}
@@ -621,9 +621,9 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2">
                                     {subscription.plan.allowExport ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
+                                        <CheckCircle className="h-4 w-4 text-success" />
                                     ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
+                                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
                                     )}
                                     <span className="text-sm">
                                         {t("page.exports")}
@@ -631,9 +631,9 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {subscription.plan.allowApiAccess ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
+                                        <CheckCircle className="h-4 w-4 text-success" />
                                     ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
+                                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
                                     )}
                                     <span className="text-sm">
                                         {t("page.apis")}
@@ -641,9 +641,9 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {subscription.plan.planType === PlanType.BUSINESS || subscription.plan.planType === PlanType.ENTERPRISE || subscription.plan.planType === PlanType.PRO ? (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
+                                        <CheckCircle className="h-4 w-4 text-success" />
                                     ) : (
-                                        <AlertTriangle className="h-4 w-4 text-gray-400" />
+                                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
                                     )}
                                     <span className="text-sm">
                                         {t("page.prioritySupport")}

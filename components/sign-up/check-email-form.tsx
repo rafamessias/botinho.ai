@@ -78,8 +78,8 @@ export function CheckEmailForm({
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
                 <CardHeader className="text-center">
-                    <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-                        <IconMail className="h-10 w-10 text-green-600 dark:text-green-400" />
+                    <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-success/15">
+                        <IconMail className="h-10 w-10 text-success" />
                     </div>
                     <CardTitle className="text-xl">{t("title")}</CardTitle>
                     <CardDescription className="text-center">
@@ -97,8 +97,8 @@ export function CheckEmailForm({
                     {/* Instructions */}
                     <div className="space-y-4">
                         <div className="flex items-start gap-3">
-                            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-                                <span className="text-sm font-medium text-blue-600 dark:text-blue-400">1</span>
+                            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-info/15">
+                                <span className="text-sm font-medium text-info">1</span>
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm text-muted-foreground">
@@ -107,8 +107,8 @@ export function CheckEmailForm({
                             </div>
                         </div>
                         <div className="flex items-start gap-3">
-                            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-                                <span className="text-sm font-medium text-blue-600 dark:text-blue-400">2</span>
+                            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-info/15">
+                                <span className="text-sm font-medium text-info">2</span>
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm text-muted-foreground">
@@ -117,8 +117,8 @@ export function CheckEmailForm({
                             </div>
                         </div>
                         <div className="flex items-start gap-3">
-                            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-                                <span className="text-sm font-medium text-blue-600 dark:text-blue-400">3</span>
+                            <div className="mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-info/15">
+                                <span className="text-sm font-medium text-info">3</span>
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm text-muted-foreground">

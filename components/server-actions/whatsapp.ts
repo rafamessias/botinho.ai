@@ -2,7 +2,8 @@
 
 import { z } from "zod"
 import { BaseActionResponse, handleAction, resolveCompanyContext } from "./utils"
-import { getWhatsAppOrchestrator, isWhatsAppConfigured } from "@/lib/whatsapp"
+import { getWhatsAppOrchestrator, isWhatsAppConfigured, checkWhatsAppAvailability } from "@/lib/whatsapp"
+import { WhatsAppSessionRepository } from "@/lib/whatsapp/session-repository"
 import type { WhatsAppSession } from "@/lib/whatsapp/types"
 
 export type WhatsAppSessionView = {
@@ -39,6 +40,7 @@ const updateSessionLabelSchema = sessionIdSchema.extend({
 
 type WhatsAppSessionsOverview = {
   configured: boolean
+  available: boolean
   sessions: WhatsAppSessionView[]
 }
 
@@ -46,20 +48,21 @@ export const getWhatsAppSessionsAction = async (
   input?: z.input<typeof companyScopeSchema>,
 ): Promise<BaseActionResponse<WhatsAppSessionsOverview>> =>
   handleAction<WhatsAppSessionsOverview>(async () => {
-    if (!isWhatsAppConfigured()) {
-      return { success: true, data: { configured: false, sessions: [] } }
-    }
-
     const parsed = companyScopeSchema.parse(input ?? {})
     const { companyId } = await resolveCompanyContext({ companyId: parsed.companyId, requireAdmin: true })
 
-    const orchestrator = await getWhatsAppOrchestrator()
-    const sessions = await orchestrator.listSessions(companyId)
+    const repository = new WhatsAppSessionRepository()
+    const sessions = await repository.listSessionsByCompany(companyId)
+    const configured = isWhatsAppConfigured()
+    const { available } = configured
+      ? await checkWhatsAppAvailability()
+      : { available: false }
 
     return {
       success: true,
       data: {
-        configured: true,
+        configured,
+        available,
         sessions: sessions.map(toSessionView),
       },
     }

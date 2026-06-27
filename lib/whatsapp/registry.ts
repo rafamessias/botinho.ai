@@ -6,9 +6,19 @@ const WORKER_SET_KEY = "workers:active"
 const SESSION_KEY_PREFIX = "session:"
 const PHONE_KEY_PREFIX = "phone:"
 const HEARTBEAT_TTL_SECONDS = 60
+const REDIS_CONNECT_TIMEOUT_MS = 3_000
 
 type GlobalRedis = typeof globalThis & {
   __whatsappRedis?: RedisClientType
+}
+
+export const clearWhatsAppRedisClient = (): void => {
+  const globalStore = globalThis as GlobalRedis
+  const client = globalStore.__whatsappRedis
+  if (client?.isOpen) {
+    void client.disconnect().catch(() => undefined)
+  }
+  globalStore.__whatsappRedis = undefined
 }
 
 const getRedisClient = async (redisUrl: string): Promise<RedisClientType> => {
@@ -18,13 +28,26 @@ const getRedisClient = async (redisUrl: string): Promise<RedisClientType> => {
     return globalStore.__whatsappRedis
   }
 
-  const client = createClient({ url: redisUrl }) as RedisClientType
+  const client = createClient({
+    url: redisUrl,
+    socket: {
+      connectTimeout: REDIS_CONNECT_TIMEOUT_MS,
+      reconnectStrategy: (retries) => (retries >= 3 ? false : Math.min(retries * 200, 1_000)),
+    },
+  }) as RedisClientType
+
   client.on("error", (error) => {
     console.error("[whatsapp] redis error:", error)
   })
-  await client.connect()
-  globalStore.__whatsappRedis = client
-  return client
+
+  try {
+    await client.connect()
+    globalStore.__whatsappRedis = client
+    return client
+  } catch (error) {
+    void client.disconnect().catch(() => undefined)
+    throw error
+  }
 }
 
 const parseWorkerRecord = (raw: string): WorkerRecord => JSON.parse(raw) as WorkerRecord

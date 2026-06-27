@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Plus, Smartphone } from "lucide-react"
+import { StatusCallout } from "@/components/ui/status-callout"
 import { toast } from "sonner"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -29,7 +30,7 @@ export default function SettingsPage() {
   const companyId = user?.defaultCompanyId ? String(user.defaultCompanyId) : undefined
   const t = useTranslations("Settings.page")
 
-  const [whatsappConfigured, setWhatsappConfigured] = useState(false)
+  const [whatsappAvailable, setWhatsappAvailable] = useState(true)
   const [whatsappSessions, setWhatsappSessions] = useState<WhatsAppSessionView[]>([])
   const [isLoadingWhatsapp, setIsLoadingWhatsapp] = useState(true)
   const [isPairingOpen, setIsPairingOpen] = useState(false)
@@ -38,7 +39,7 @@ export default function SettingsPage() {
   const loadWhatsappSessions = useCallback(async (options?: { silent?: boolean }) => {
     if (isUserLoading || !companyId) {
       setWhatsappSessions([])
-      setWhatsappConfigured(false)
+      setWhatsappAvailable(true)
       setIsLoadingWhatsapp(false)
       return
     }
@@ -51,11 +52,11 @@ export default function SettingsPage() {
       if (!response.success || !response.data) {
         throw new Error(response.error ?? "Failed to load WhatsApp sessions")
       }
-      setWhatsappConfigured(response.data.configured)
+      setWhatsappAvailable(response.data.available)
       setWhatsappSessions(response.data.sessions)
     } catch (error) {
       console.error("Failed to load WhatsApp sessions", error)
-      setWhatsappConfigured(false)
+      setWhatsappAvailable(false)
       setWhatsappSessions([])
     } finally {
       if (!options?.silent) {
@@ -113,19 +114,15 @@ export default function SettingsPage() {
           <Button
             type="button"
             onClick={() => setIsPairingOpen(true)}
-            disabled={!companyId || !whatsappConfigured || isLoadingWhatsapp}
+            disabled={!companyId || !whatsappAvailable || isLoadingWhatsapp}
           >
             <Plus className="mr-2 h-4 w-4" />
             {t("whatsapp.card.addButton")}
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
-          {!whatsappConfigured && !isLoadingWhatsapp && (
-            <p className="text-sm text-muted-foreground">
-              WhatsApp workers are not configured yet. Set REDIS_URL and WORKER_INTERNAL_TOKEN, then start
-              the worker with <code className="text-xs">npm run dev:infra</code> or{" "}
-              <code className="text-xs">npm run dev:worker</code>.
-            </p>
+          {!whatsappAvailable && !isLoadingWhatsapp && (
+            <StatusCallout variant="warning" message={t("whatsapp.offlineBanner")} />
           )}
 
           {isLoadingWhatsapp ? (
@@ -142,6 +139,7 @@ export default function SettingsPage() {
                   key={session.sessionId}
                   session={session}
                   companyId={companyId}
+                  serviceAvailable={whatsappAvailable}
                   isDisconnecting={disconnectingSessionId === session.sessionId}
                   statusBadgeVariant={statusBadgeVariant}
                   onUpdated={() => {

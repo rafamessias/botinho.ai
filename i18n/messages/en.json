@@ -336,9 +336,16 @@
                 "title": "Customer",
                 "satisfaction": "Satisfaction score: {score}"
             },
+            "seeAll": "See all ({count})",
+            "pin": "Pin to sidebar",
+            "unpin": "Unpin from sidebar",
+            "pinHint": "Drag to reorder. Pin up to 3 items to show in the sidebar.",
+            "dragToReorder": "Drag to reorder",
+            "pinLimit": "You can pin up to 3 items.",
             "quickReplies": {
                 "title": "Quick replies",
                 "manage": "Manage",
+                "modalDescription": "Choose a reply to insert, or pin up to 3 favorites for the sidebar.",
                 "empty": {
                     "title": "No quick replies yet",
                     "description": "Add saved replies your team can insert into conversations.",
@@ -348,6 +355,7 @@
             "templates": {
                 "title": "Templates",
                 "manage": "Manage",
+                "modalDescription": "Choose a template to insert, or pin up to 3 favorites for the sidebar.",
                 "empty": {
                     "title": "No templates yet",
                     "description": "Create message templates for common customer interactions.",
@@ -374,6 +382,10 @@
             "inputPlaceholderNoSelection": "Select a conversation to reply",
             "sendFailed": "Could not send message",
             "whatsappDeliveryFailed": "Message saved, but WhatsApp delivery failed. Check your connection in Settings."
+        },
+        "whatsappOffline": {
+            "message": "WhatsApp offline — outbound messages are paused.",
+            "settingsLink": "Settings"
         },
         "actions": {
             "openConversations": "Open conversations list",
@@ -472,7 +484,8 @@
             "quickAnswers": "Quick Answers",
             "templates": "Templates",
             "textContent": "Text Content",
-            "websiteUrl": "Website URL"
+            "websiteUrl": "Website URL",
+            "pdfFile": "PDF File"
         },
         "form": {
             "title": "Title",
@@ -488,6 +501,16 @@
             "urlTitlePlaceholder": "e.g., Product Catalog, FAQ Page",
             "urlPlaceholder": "https://example.com/page",
             "urlDescription": "We'll extract and learn from this page's content",
+            "pdfTitlePlaceholder": "e.g., Product Catalog, Policy Document",
+            "pdfUploadLabel": "PDF document",
+            "pdfUploadDescription": "Upload a PDF up to {maxMb} MB. We'll extract the text for your AI to learn from.",
+            "pdfClickOrDrag": "Click to upload or drag and drop",
+            "pdfDropHere": "Drop the PDF here",
+            "pdfSupportedFormats": "PDF files only",
+            "pdfRemoveFile": "Remove PDF",
+            "pdfReplaceHint": "Upload a new PDF to replace the extracted content, or update the title only.",
+            "pdfInvalidFileType": "Invalid file type. Please upload a PDF file.",
+            "pdfFileTooLarge": "File is too large. Maximum size is {maxMb} MB.",
             "templateNamePlaceholder": "e.g., Welcome Message, Order Confirmation",
             "selectCategory": "Select a category",
             "messageContentPlaceholder": "Enter your template message... Use [VARIABLE_NAME] for dynamic content",
@@ -593,7 +616,8 @@
             "description": "All information your AI uses to respond to customers",
             "type": {
                 "text": "Text",
-                "url": "URL"
+                "url": "URL",
+                "pdf": "PDF"
             },
             "added": "Added",
             "empty": {
@@ -763,7 +787,8 @@
             "quickAnswers": "Quick Answers",
             "templates": "Templates",
             "textContent": "Text Content",
-            "websiteUrl": "Website URL"
+            "websiteUrl": "Website URL",
+            "pdfFile": "PDF File"
         },
         "form": {
             "agentName": "Agent name",
@@ -792,6 +817,16 @@
             "urlTitlePlaceholder": "e.g., Product Catalog, FAQ Page",
             "urlPlaceholder": "https://example.com/page",
             "urlDescription": "We'll extract and learn from this page's content",
+            "pdfTitlePlaceholder": "e.g., Product Catalog, Policy Document",
+            "pdfUploadLabel": "PDF document",
+            "pdfUploadDescription": "Upload a PDF up to {maxMb} MB. We'll extract the text for your AI to learn from.",
+            "pdfClickOrDrag": "Click to upload or drag and drop",
+            "pdfDropHere": "Drop the PDF here",
+            "pdfSupportedFormats": "PDF files only",
+            "pdfRemoveFile": "Remove PDF",
+            "pdfReplaceHint": "Upload a new PDF to replace the extracted content, or update the title only.",
+            "pdfInvalidFileType": "Invalid file type. Please upload a PDF file.",
+            "pdfFileTooLarge": "File is too large. Maximum size is {maxMb} MB.",
             "templateNamePlaceholder": "e.g., Welcome Message, Order Confirmation",
             "selectCategory": "Select a category",
             "messageContentPlaceholder": "Enter your template message... Use [VARIABLE_NAME] for dynamic content",
@@ -854,7 +889,8 @@
             "description": "All information this agent uses to respond to customers",
             "type": {
                 "text": "Text",
-                "url": "URL"
+                "url": "URL",
+                "pdf": "PDF"
             },
             "added": "Added",
             "empty": {
@@ -1415,9 +1451,11 @@
                     "title": "No WhatsApp numbers connected yet.",
                     "description": "Click the button above to connect your first number."
                 },
+                "offlineBanner": "WhatsApp is offline. Your numbers are listed below, but messaging is paused.",
                 "status": {
                     "connected": "Connected",
-                    "disconnected": "Disconnected"
+                    "disconnected": "Disconnected",
+                    "offline": "Offline"
                 },
                 "disconnect": "Disconnect",
                 "label": {

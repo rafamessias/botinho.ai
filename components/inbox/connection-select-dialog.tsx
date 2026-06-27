@@ -13,7 +13,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { CheckboxVisual } from "@/components/ui/checkbox"
 import {
     Command,
     CommandEmpty,
@@ -116,7 +116,7 @@ export const ConnectionSelectDialog = ({
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-8 px-2 text-xs"
+                            className="h-8 px-2 text-xs hover:bg-muted hover:text-foreground dark:hover:bg-muted/50"
                             onClick={handleSelectAll}
                             disabled={allSelected}
                         >
@@ -126,7 +126,7 @@ export const ConnectionSelectDialog = ({
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-8 px-2 text-xs"
+                            className="h-8 px-2 text-xs hover:bg-muted hover:text-foreground dark:hover:bg-muted/50"
                             onClick={handleClearSelection}
                             disabled={noneSelected}
                         >
@@ -135,7 +135,7 @@ export const ConnectionSelectDialog = ({
                     </div>
                 </div>
 
-                <Command className="min-h-0 flex-1">
+                <Command className="min-h-0 flex-1 bg-background">
                     <CommandInput placeholder={t("searchConnectionsPlaceholder")} className="h-11" />
                     <CommandList className="max-h-[min(320px,45vh)]">
                         <CommandEmpty>{t("noConnectionsFound")}</CommandEmpty>
@@ -150,13 +150,11 @@ export const ConnectionSelectDialog = ({
                                         key={connection.sessionId}
                                         value={searchValue}
                                         onSelect={() => toggleConnection(connection.sessionId)}
-                                        className="flex items-start gap-3 px-4 py-3"
+                                        className="group flex items-start gap-3 rounded-md px-4 py-3 data-[selected=true]:bg-muted data-[selected=true]:text-foreground dark:data-[selected=true]:bg-muted/50"
                                     >
-                                        <Checkbox
+                                        <CheckboxVisual
                                             checked={isSelected}
-                                            className="mt-0.5"
-                                            aria-hidden="true"
-                                            tabIndex={-1}
+                                            className="mt-0.5 bg-transparent shadow-none dark:bg-transparent group-data-[selected=true]:border-border"
                                         />
                                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                             <span className="truncate text-sm font-medium">{label}</span>

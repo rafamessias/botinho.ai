@@ -1,5 +1,6 @@
 'use client'
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Mail, Send, CheckCircle, AlertCircle } from "lucide-react"
@@ -119,17 +120,15 @@ export default function ContactSection() {
                             {status === 'success' ? (
                                 /* Success Feedback - Hide Form */
                                 <div className="text-center py-8">
-                                    <div className="flex items-center justify-center bg-green-50 border border-green-200 rounded-lg mb-4">
-                                        <CheckCircle className="h-8 w-8 text-green-500 mr-3" />
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-green-800 mb-1">
-                                                {t('contact.form.success')}
-                                            </h3>
-                                            <p className="text-green-700 text-sm">
-                                                {t('contact.form.successDescription')}
-                                            </p>
-                                        </div>
-                                    </div>
+                                    <Alert variant="success" className="mb-4">
+                                        <CheckCircle className="h-8 w-8" />
+                                        <AlertTitle className="text-lg">
+                                            {t('contact.form.success')}
+                                        </AlertTitle>
+                                        <AlertDescription>
+                                            {t('contact.form.successDescription')}
+                                        </AlertDescription>
+                                    </Alert>
                                     <Button
                                         onClick={() => {
                                             setStatus('idle')
@@ -160,11 +159,11 @@ export default function ContactSection() {
                                             value={formData.name}
                                             readOnly
                                             placeholder={t('contact.form.namePlaceholder')}
-                                            className={`w-full px-3 py-2 border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${errors.name ? 'border-red-500' : 'border-input'
+                                            className={`w-full px-3 py-2 border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${errors.name ? 'border-destructive' : 'border-input'
                                                 }`}
                                         />
                                         {errors.name && (
-                                            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                                            <p className="text-destructive text-sm mt-1">{errors.name}</p>
                                         )}
                                     </div>
 
@@ -179,11 +178,11 @@ export default function ContactSection() {
                                             value={formData.email}
                                             readOnly
                                             placeholder={t('contact.form.emailPlaceholder')}
-                                            className={`w-full px-3 py-2 border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${errors.email ? 'border-red-500' : 'border-input'
+                                            className={`w-full px-3 py-2 border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${errors.email ? 'border-destructive' : 'border-input'
                                                 }`}
                                         />
                                         {errors.email && (
-                                            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                                            <p className="text-destructive text-sm mt-1">{errors.email}</p>
                                         )}
                                     </div>
 
@@ -199,11 +198,11 @@ export default function ContactSection() {
                                             onChange={(e) => handleInputChange('message', e.target.value)}
                                             placeholder={t('contact.form.messagePlaceholder')}
                                             rows={4}
-                                            className={`w-full px-3 py-2 border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-vertical ${errors.message ? 'border-red-500' : 'border-input'
+                                            className={`w-full px-3 py-2 border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-vertical ${errors.message ? 'border-destructive' : 'border-input'
                                                 }`}
                                         />
                                         {errors.message && (
-                                            <p className="text-red-500 text-sm mt-1">{errors.message}</p>
+                                            <p className="text-destructive text-sm mt-1">{errors.message}</p>
                                         )}
                                     </div>
 
@@ -215,7 +214,7 @@ export default function ContactSection() {
                                     >
                                         {status === 'sending' ? (
                                             <>
-                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2"></div>
                                                 {t('contact.form.sending')}
                                             </>
                                         ) : (
@@ -228,10 +227,10 @@ export default function ContactSection() {
 
                                     {/* Error Message */}
                                     {status === 'error' && (
-                                        <div className="flex items-center justify-center p-4 bg-red-50 border border-red-200 rounded-md">
-                                            <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-                                            <span className="text-red-700">{t('contact.form.error')}</span>
-                                        </div>
+                                        <Alert variant="destructive">
+                                            <AlertCircle className="h-5 w-5" />
+                                            <AlertDescription>{t('contact.form.error')}</AlertDescription>
+                                        </Alert>
                                     )}
                                 </form>
                             )}

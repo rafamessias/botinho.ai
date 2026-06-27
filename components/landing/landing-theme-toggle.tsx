@@ -47,7 +47,7 @@ export const LandingThemeToggle = ({ labels }: LandingThemeToggleProps) => {
         <Button
           variant="ghost"
           size="icon"
-          className="size-8 shrink-0 hover:bg-muted"
+          className="size-8 shrink-0 hover:bg-muted hover:text-foreground"
           aria-label={labels.toggleAria}
         >
           <Sun className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

@@ -16,6 +16,10 @@ import {
   updateQuickAnswer,
 } from "@/lib/firebase/services/ai-training-service"
 import { summarizeUrlContent } from "@/lib/firebase/ai/generate"
+import {
+  knowledgeItemInputSchema,
+  resolveKnowledgeItemInput,
+} from "@/lib/knowledge/resolve-knowledge-input"
 
 export const getAiTrainingDataAction = async (): Promise<
   BaseActionResponse<Awaited<ReturnType<typeof listAiTrainingData>>>
@@ -26,29 +30,25 @@ export const getAiTrainingDataAction = async (): Promise<
     return { success: true, data }
   })
 
-const knowledgeItemBaseSchema = z.object({
-  title: z.string().trim().min(1),
-  content: z.string().trim().min(1),
-  type: z.nativeEnum(KnowledgeItemType),
-})
+const updateKnowledgeItemSchema = knowledgeItemInputSchema.and(z.object({ id: z.string().min(1) }))
 
 export const createKnowledgeItemAction = async (
-  input: z.infer<typeof knowledgeItemBaseSchema>,
+  input: z.infer<typeof knowledgeItemInputSchema>,
 ): Promise<BaseActionResponse<{ knowledgeItem: Awaited<ReturnType<typeof createKnowledgeItem>> }>> =>
   handleAction(async () => {
-    const payload = knowledgeItemBaseSchema.parse(input)
+    const payload = knowledgeItemInputSchema.parse(input)
     const { companyId, userId } = await resolveCompanyContext({ requireCanPost: true })
 
+    const resolved = await resolveKnowledgeItemInput(payload)
+
     let urlSummary: string | undefined
-    if (payload.type === KnowledgeItemType.URL) {
-      urlSummary = await summarizeUrlContent({ url: payload.content, title: payload.title })
+    if (resolved.type === KnowledgeItemType.URL) {
+      urlSummary = await summarizeUrlContent({ url: resolved.content, title: resolved.title })
     }
 
-    const knowledgeItem = await createKnowledgeItem(companyId, userId, { ...payload, urlSummary })
+    const knowledgeItem = await createKnowledgeItem(companyId, userId, { ...resolved, urlSummary })
     return { success: true, data: { knowledgeItem }, message: "Knowledge item created" }
   })
-
-const updateKnowledgeItemSchema = knowledgeItemBaseSchema.extend({ id: z.string().min(1) })
 
 export const updateKnowledgeItemAction = async (
   input: z.infer<typeof updateKnowledgeItemSchema>,
@@ -57,12 +57,15 @@ export const updateKnowledgeItemAction = async (
     const payload = updateKnowledgeItemSchema.parse(input)
     const { companyId } = await resolveCompanyContext({ requireCanPost: true })
 
+    const { id, ...itemInput } = payload
+    const resolved = await resolveKnowledgeItemInput(itemInput)
+
     let urlSummary: string | undefined
-    if (payload.type === KnowledgeItemType.URL) {
-      urlSummary = await summarizeUrlContent({ url: payload.content, title: payload.title })
+    if (resolved.type === KnowledgeItemType.URL) {
+      urlSummary = await summarizeUrlContent({ url: resolved.content, title: resolved.title })
     }
 
-    const knowledgeItem = await updateKnowledgeItem(companyId, payload.id, { ...payload, urlSummary })
+    const knowledgeItem = await updateKnowledgeItem(companyId, id, { ...resolved, urlSummary })
     return { success: true, data: { knowledgeItem }, message: "Knowledge item updated" }
   })
 

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { CheckboxVisual } from "@/components/ui/checkbox"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
@@ -252,12 +252,7 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
                           onClick={() => toggleSession(session.sessionId)}
                           className="flex w-full cursor-pointer items-start gap-3 rounded-sm px-2 py-2 text-left hover:bg-muted"
                         >
-                          <Checkbox
-                            checked={isSelected}
-                            className="mt-0.5 pointer-events-none"
-                            aria-hidden="true"
-                            tabIndex={-1}
-                          />
+                          <CheckboxVisual checked={isSelected} className="mt-0.5" />
                           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                             <span className="flex items-center gap-2 truncate text-sm font-medium">
                               <Phone className="h-3.5 w-3.5 shrink-0" />

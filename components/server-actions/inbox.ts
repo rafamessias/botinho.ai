@@ -16,7 +16,8 @@ import {
 } from "@/lib/firebase/services/inbox-service"
 import { generateSuggestedResponses } from "@/lib/firebase/ai/generate"
 import { sendOutbound } from "@/lib/messaging/messaging-service"
-import { isWhatsAppConfigured, getWhatsAppOrchestrator } from "@/lib/whatsapp"
+import { isWhatsAppConfigured, checkWhatsAppAvailability } from "@/lib/whatsapp"
+import { WhatsAppSessionRepository } from "@/lib/whatsapp/session-repository"
 import type {
   InboxConversationPriority,
   InboxMessageSenderType,
@@ -213,6 +214,7 @@ const listInboxCustomersSchema = companyIdSchema.extend({
   search: z.string().optional(),
   page: z.number().int().positive().optional(),
   pageSize: z.number().int().min(1).max(100).optional(),
+  orderBy: z.enum(["name", "createdAt"]).optional(),
 })
 
 export const listInboxCustomersAction = async (
@@ -231,6 +233,7 @@ export const listInboxCustomersAction = async (
       search: payload.search,
       page: payload.page,
       pageSize: payload.pageSize,
+      orderBy: payload.orderBy,
     })
 
     return {
@@ -254,22 +257,24 @@ export const getInboxConnectionsAction = async (
 ): Promise<
   BaseActionResponse<{
     configured: boolean
+    available: boolean
     connections: InboxConnectionView[]
   }>
 > =>
   handleAction<{
     configured: boolean
+    available: boolean
     connections: InboxConnectionView[]
   }>(async () => {
     if (!isWhatsAppConfigured()) {
-      return { success: true, data: { configured: false, connections: [] } }
+      return { success: true, data: { configured: false, available: false, connections: [] } }
     }
 
     const payload = companyIdSchema.parse(input ?? {})
     const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
 
-    const orchestrator = await getWhatsAppOrchestrator()
-    const sessions = await orchestrator.listSessions(companyId)
+    const repository = new WhatsAppSessionRepository()
+    const sessions = await repository.listSessionsByCompany(companyId)
     const connections = sessions
       .filter((session) => session.status === "connected")
       .map((session) => ({
@@ -279,10 +284,13 @@ export const getInboxConnectionsAction = async (
         connected: true,
       }))
 
+    const { available } = await checkWhatsAppAvailability()
+
     return {
       success: true,
       data: {
         configured: true,
+        available,
         connections,
       },
     }

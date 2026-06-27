@@ -1,9 +1,8 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import { useToast } from "@/hooks/use-toast"
-import { useUser } from "@/components/user-provider"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { QuickAnswersSection } from "@/components/ai-training/sections/quick-answers-section"
 import {
@@ -12,29 +11,31 @@ import {
   getAiTrainingDataAction,
   updateQuickAnswerAction,
 } from "@/components/server-actions/ai-training"
+import { mapQuickAnswerToView, mapQuickAnswersToView } from "@/components/ai-training/map-quick-answer-views"
 import type { QuickAnswerView } from "@/components/ai-training/types"
 
-const formatDateValue = (value: Date | string) => {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ""
-  return date.toISOString().split("T")[0]
+type CompanyQuickAnswersPageProps = {
+  initialItems: QuickAnswerView[]
+  initialLoadError?: string | null
+  hasCompanyAccess: boolean
 }
 
-export default function CompanyQuickAnswersPage() {
+export default function CompanyQuickAnswersPage({
+  initialItems,
+  initialLoadError = null,
+  hasCompanyAccess,
+}: CompanyQuickAnswersPageProps) {
   const t = useTranslations("QuickAnswers")
   const { toast } = useToast()
-  const { user } = useUser()
 
-  const [items, setItems] = useState<QuickAnswerView[]>([])
+  const [items, setItems] = useState<QuickAnswerView[]>(initialItems)
   const [isFetching, setIsFetching] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [loadError, setLoadError] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(initialLoadError)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<QuickAnswerView | null>(null)
   const [content, setContent] = useState("")
   const [deletingId, setDeletingId] = useState<string | null>(null)
-
-  const hasCompanyAccess = Boolean(user?.defaultCompanyId)
 
   const displayedItems = useMemo(
     () => items.filter((item) => item.content.trim().length > 0),
@@ -56,14 +57,7 @@ export default function CompanyQuickAnswersPage() {
         setLoadError(result.error || t("errors.loadFailed"))
         return
       }
-      setItems(
-        result.data.quickAnswers.map((item) => ({
-          id: item.id,
-          content: item.content,
-          createdAt: formatDateValue(item.createdAt),
-          updatedAt: formatDateValue(item.updatedAt),
-        })),
-      )
+      setItems(mapQuickAnswersToView(result.data.quickAnswers))
     } catch (error) {
       console.error("Load quick answers error", error)
       setLoadError(t("errors.loadFailed"))
@@ -71,10 +65,6 @@ export default function CompanyQuickAnswersPage() {
       setIsFetching(false)
     }
   }, [hasCompanyAccess, t])
-
-  useEffect(() => {
-    void loadItems()
-  }, [loadItems])
 
   const resetForm = () => {
     setEditingItem(null)
@@ -106,12 +96,7 @@ export default function CompanyQuickAnswersPage() {
         return
       }
 
-      const saved = {
-        id: result.data.quickAnswer.id,
-        content: result.data.quickAnswer.content,
-        createdAt: formatDateValue(result.data.quickAnswer.createdAt),
-        updatedAt: formatDateValue(result.data.quickAnswer.updatedAt),
-      }
+      const saved = mapQuickAnswerToView(result.data.quickAnswer)
 
       setItems((prev) =>
         editingItem ? prev.map((item) => (item.id === saved.id ? saved : item)) : [saved, ...prev],

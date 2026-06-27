@@ -71,8 +71,11 @@ export type AutoReplyStatus = "skipped" | "pending" | "sent" | "failed"
 
 export type FirestoreInboxCustomer = {
   name: string
+  nameLower?: string
   phone?: string
   email?: string
+  emailLower?: string | null
+  searchKeywords?: string[]
   address?: string
   notes?: string
   company?: string

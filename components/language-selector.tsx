@@ -64,7 +64,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 hover:bg-muted transition-colors"
+                        className="h-8 w-8 hover:bg-muted hover:text-foreground transition-colors"
                     >
                         <Globe className="h-4 w-4 text-foreground" />
                         <span className="sr-only">Select language</span>

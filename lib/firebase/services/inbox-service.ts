@@ -75,6 +75,7 @@ const mapCustomer = (id: string, data: FirestoreInboxCustomer) => ({
   phone: data.phone ? normalizeStoredPhone(data.phone) || data.phone : null,
   email: data.email ?? null,
   address: data.address ?? null,
+  company: data.company ?? null,
 })
 
 export type InboxCustomerRecord = {
@@ -102,6 +103,81 @@ export const mapInboxCustomerRecord = (id: string, data: FirestoreInboxCustomer)
   createdAt: toIso(data.createdAt) ?? new Date(),
   updatedAt: toIso(data.updatedAt) ?? new Date(),
 })
+
+const capitalizeSearchTerm = (value: string) =>
+  value ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase() : value
+
+const buildSearchKeywords = (params: {
+  name: string
+  email?: string | null
+  phone?: string | null
+  company?: string | null
+}) => {
+  const keywords = new Set<string>()
+
+  const addToken = (token: string) => {
+    const normalized = token.trim().toLowerCase()
+    if (normalized.length >= 2) {
+      keywords.add(normalized)
+    }
+  }
+
+  const nameLower = params.name.trim().toLowerCase()
+  addToken(nameLower)
+  for (const word of nameLower.split(/\s+/)) {
+    addToken(word)
+  }
+
+  if (params.email) {
+    const localPart = params.email.split("@")[0]
+    if (localPart) {
+      addToken(localPart)
+    }
+  }
+
+  const digits = params.phone?.replace(/\D/g, "") ?? ""
+  if (digits.length >= 3) {
+    keywords.add(digits)
+  }
+
+  if (params.company) {
+    const companyLower = params.company.trim().toLowerCase()
+    addToken(companyLower)
+    for (const word of companyLower.split(/\s+/)) {
+      addToken(word)
+    }
+  }
+
+  return Array.from(keywords).slice(0, 30)
+}
+
+const buildCustomerSearchFields = (params: {
+  name: string
+  email?: string | null
+  phone?: string | null
+  company?: string | null
+}) => {
+  const nameLower = params.name.trim().toLowerCase()
+  const emailLower = params.email?.trim().toLowerCase() ?? null
+
+  return {
+    nameLower,
+    emailLower,
+    searchKeywords: buildSearchKeywords(params),
+  }
+}
+
+const matchesCustomerSearch = (customer: InboxCustomerRecord, term: string) => {
+  const query = term.toLowerCase()
+  const digitsOnly = term.replace(/\D/g, "")
+
+  return (
+    customer.name.toLowerCase().includes(query) ||
+    customer.email?.toLowerCase().includes(query) ||
+    (digitsOnly.length >= 3 && customer.phone.includes(digitsOnly)) ||
+    customer.company?.toLowerCase().includes(query)
+  )
+}
 
 const findCustomerByField = async (params: {
   companyId: string
@@ -165,8 +241,16 @@ export const createInboxCustomer = async (params: {
   const now = FieldValue.serverTimestamp()
   const customerRef = customersRef(params.companyId).doc()
 
+  const trimmedName = params.name.trim()
+
   await customerRef.set({
-    name: params.name.trim(),
+    name: trimmedName,
+    ...buildCustomerSearchFields({
+      name: trimmedName,
+      email,
+      phone,
+      company: params.company?.trim() ?? null,
+    }),
     phone,
     email: email ?? null,
     company: params.company?.trim() ?? null,
@@ -227,8 +311,16 @@ export const updateInboxCustomer = async (params: {
     }
   }
 
+  const trimmedName = params.name.trim()
+
   await customerRef.update({
-    name: params.name.trim(),
+    name: trimmedName,
+    ...buildCustomerSearchFields({
+      name: trimmedName,
+      email,
+      phone,
+      company: params.company?.trim() ?? null,
+    }),
     phone,
     email: email ?? null,
     company: params.company?.trim() ?? null,
@@ -332,29 +424,126 @@ export const listInboxCustomers = async (params: {
   search?: string
   page?: number
   pageSize?: number
+  orderBy?: "name" | "createdAt"
 }) => {
   const page = params.page ?? 1
   const pageSize = params.pageSize ?? 50
-  const searchTerm = params.search?.trim().toLowerCase() ?? ""
+  const searchTerm = params.search?.trim() ?? ""
+  const orderByField = params.orderBy ?? "name"
 
-  const snapshot = await customersRef(params.companyId).get()
+  if (!searchTerm) {
+    const query =
+      orderByField === "createdAt"
+        ? customersRef(params.companyId).orderBy("createdAt", "desc")
+        : customersRef(params.companyId).orderBy("name")
 
-  let customers = snapshot.docs.map((doc) =>
-    mapInboxCustomerRecord(doc.id, doc.data() as FirestoreInboxCustomer),
-  )
+    const snapshot = await query.limit(pageSize).get()
+    const customers = snapshot.docs.map((doc) =>
+      mapInboxCustomerRecord(doc.id, doc.data() as FirestoreInboxCustomer),
+    )
 
-  if (searchTerm) {
-    customers = customers.filter((customer) => {
-      return (
-        customer.name?.toLowerCase().includes(searchTerm) ||
-        customer.email?.toLowerCase().includes(searchTerm) ||
-        customer.phone?.includes(searchTerm) ||
-        customer.company?.toLowerCase().includes(searchTerm)
-      )
-    })
+    return {
+      customers,
+      pagination: { page: 1, pageSize, total: customers.length, totalPages: 1 },
+    }
   }
 
-  customers.sort((a, b) => a.name.localeCompare(b.name))
+  const term = searchTerm.toLowerCase()
+  const capitalizedTerm = capitalizeSearchTerm(term)
+  const digitsOnly = searchTerm.replace(/\D/g, "")
+  const normalizedPhone = normalizeStoredPhone(searchTerm)
+  const seen = new Map<string, InboxCustomerRecord>()
+
+  const addDocs = (docs: FirebaseFirestore.QueryDocumentSnapshot[]) => {
+    for (const doc of docs) {
+      if (!seen.has(doc.id)) {
+        seen.set(doc.id, mapInboxCustomerRecord(doc.id, doc.data() as FirestoreInboxCustomer))
+      }
+    }
+  }
+
+  const queries: Array<Promise<FirebaseFirestore.QuerySnapshot>> = [
+    customersRef(params.companyId)
+      .orderBy("nameLower")
+      .startAt(term)
+      .endAt(`${term}\uf8ff`)
+      .limit(pageSize)
+      .get(),
+    customersRef(params.companyId)
+      .orderBy("name")
+      .startAt(capitalizedTerm)
+      .endAt(`${capitalizedTerm}\uf8ff`)
+      .limit(pageSize)
+      .get(),
+  ]
+
+  if (term.length >= 2) {
+    queries.push(
+      customersRef(params.companyId)
+        .where("searchKeywords", "array-contains", term)
+        .limit(pageSize)
+        .get(),
+    )
+  }
+
+  if (term.includes("@")) {
+    queries.push(
+      customersRef(params.companyId)
+        .orderBy("emailLower")
+        .startAt(term)
+        .endAt(`${term}\uf8ff`)
+        .limit(pageSize)
+        .get(),
+      customersRef(params.companyId)
+        .orderBy("email")
+        .startAt(searchTerm)
+        .endAt(`${searchTerm}\uf8ff`)
+        .limit(pageSize)
+        .get(),
+    )
+  }
+
+  if (digitsOnly.length >= 3) {
+    queries.push(
+      customersRef(params.companyId)
+        .orderBy("phone")
+        .startAt(digitsOnly)
+        .endAt(`${digitsOnly}\uf8ff`)
+        .limit(pageSize)
+        .get(),
+    )
+  }
+
+  if (normalizedPhone) {
+    queries.push(
+      customersRef(params.companyId).where("phone", "==", normalizedPhone).limit(1).get(),
+    )
+  }
+
+  const snapshots = await Promise.allSettled(queries)
+  for (const result of snapshots) {
+    if (result.status === "fulfilled") {
+      addDocs(result.value.docs)
+    }
+  }
+
+  if (seen.size === 0) {
+    const recentSnapshot = await customersRef(params.companyId)
+      .orderBy("createdAt", "desc")
+      .limit(100)
+      .get()
+
+    for (const doc of recentSnapshot.docs) {
+      const customer = mapInboxCustomerRecord(doc.id, doc.data() as FirestoreInboxCustomer)
+      if (matchesCustomerSearch(customer, term)) {
+        seen.set(doc.id, customer)
+      }
+    }
+  }
+
+  const customers = Array.from(seen.values()).sort(
+    (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+  )
 
   const total = customers.length
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
@@ -600,9 +789,19 @@ export const upsertCustomerByPhone = async (params: {
 
   if (!existingSnap.empty) {
     const doc = existingSnap.docs[0]!
+    const existingData = doc.data() as FirestoreInboxCustomer
+    const resolvedName = params.name ?? existingData.name ?? phone
+    const resolvedEmail = params.email ?? existingData.email ?? null
+
     await doc.ref.set(
       {
-        name: params.name ?? doc.data()?.name ?? phone,
+        name: resolvedName,
+        ...buildCustomerSearchFields({
+          name: resolvedName,
+          email: resolvedEmail,
+          phone,
+          company: existingData.company ?? null,
+        }),
         ...(params.email ? { email: params.email } : {}),
         updatedAt: now,
       },
@@ -612,8 +811,16 @@ export const upsertCustomerByPhone = async (params: {
   }
 
   const customerRef = customersRef(params.companyId).doc()
+  const resolvedName = params.name ?? phone
+  const resolvedEmail = params.email ?? null
+
   await customerRef.set({
-    name: params.name ?? phone,
+    name: resolvedName,
+    ...buildCustomerSearchFields({
+      name: resolvedName,
+      email: resolvedEmail,
+      phone,
+    }),
     phone,
     ...(params.email ? { email: params.email } : {}),
     createdAt: now,
@@ -793,12 +1000,20 @@ export const createInboxConversation = async (params: {
   const conversationRef = conversationsRef(params.companyId).doc()
 
   await adminDb.runTransaction(async (tx) => {
+    const trimmedName = params.customer.name.trim()
+    const trimmedEmail = params.customer.email?.trim() ?? null
+
     tx.set(
       customerRef,
       {
-        name: params.customer.name.trim(),
+        name: trimmedName,
+        ...buildCustomerSearchFields({
+          name: trimmedName,
+          email: trimmedEmail,
+          phone: normalizedPhone ?? null,
+        }),
         phone: normalizedPhone ?? null,
-        email: params.customer.email?.trim() ?? null,
+        email: trimmedEmail,
         address: params.customer.address ?? null,
         notes: params.customer.notes ?? null,
         ...(existingCustomerId ? { updatedAt: now } : { createdAt: now, updatedAt: now }),

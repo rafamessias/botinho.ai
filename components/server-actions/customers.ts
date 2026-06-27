@@ -44,6 +44,7 @@ const listCustomersSchema = z.object({
   search: z.string().optional(),
   page: z.number().int().positive().optional(),
   pageSize: z.number().int().min(1).max(200).optional(),
+  orderBy: z.enum(["name", "createdAt"]).optional(),
 })
 
 export const listCustomersAction = async (
@@ -62,6 +63,7 @@ export const listCustomersAction = async (
       search: payload.search,
       page: payload.page,
       pageSize: payload.pageSize ?? 200,
+      orderBy: payload.orderBy,
     })
 
     return {

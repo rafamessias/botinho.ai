@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ConnectionSelectDialog } from "@/components/inbox/connection-select-dialog"
 import { IconBrandWhatsapp } from "@tabler/icons-react"
-import { Inbox, Bookmark, MessageSquarePlus, Search, X } from "lucide-react"
+import { Inbox, Bookmark, MessageSquarePlus, Search, User, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { InboxConnectionView } from "@/components/server-actions/inbox"
 
@@ -17,6 +17,7 @@ export type ConversationFilter = "all" | "unread" | "favorites"
 export type ConversationListItem = {
     id: string
     customerName: string
+    hasCustomerName?: boolean
     lastMessage: string
     lastMessageAt?: string | Date
     unreadCount: number
@@ -185,7 +186,11 @@ export const ConversationListPanel = ({
                 >
                     <Avatar className="size-[49px] shrink-0 border border-border/50">
                         <AvatarFallback className="bg-muted text-sm font-medium text-muted-foreground">
-                            {getInitials(conversation.customerName)}
+                            {conversation.hasCustomerName ? (
+                                getInitials(conversation.customerName)
+                            ) : (
+                                <User className="size-5" aria-hidden="true" />
+                            )}
                         </AvatarFallback>
                     </Avatar>
 
@@ -244,7 +249,7 @@ export const ConversationListPanel = ({
                         variant="ghost"
                         size="icon"
                         onClick={onNewConversation}
-                        className="size-10 text-muted-foreground hover:text-foreground"
+                        className="size-10 text-muted-foreground hover:bg-muted hover:text-foreground"
                         title={t("actions.newConversation")}
                         aria-label={t("actions.newConversation")}
                     >
@@ -256,7 +261,7 @@ export const ConversationListPanel = ({
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setIsConnectionDialogOpen(true)}
-                                className="size-10 text-muted-foreground hover:text-foreground"
+                                className="size-10 text-muted-foreground hover:bg-muted hover:text-foreground"
                                 title={t("toolbar.connectionButtonTitle", {
                                     connection: selectedConnectionLabel,
                                 })}
@@ -297,7 +302,7 @@ export const ConversationListPanel = ({
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="absolute right-1 top-1/2 size-7 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                            className="absolute right-1 top-1/2 size-7 -translate-y-1/2 text-muted-foreground hover:bg-muted hover:text-foreground"
                             onClick={() => onSearchChange("")}
                             aria-label={t("clearSearch")}
                         >

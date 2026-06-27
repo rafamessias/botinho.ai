@@ -21,6 +21,10 @@ import {
   updateAiAgent,
 } from "@/lib/firebase/services/ai-agent-service"
 import { summarizeUrlContent } from "@/lib/firebase/ai/generate"
+import {
+  knowledgeItemInputSchema,
+  resolveKnowledgeItemInput,
+} from "@/lib/knowledge/resolve-knowledge-input"
 import { getWhatsAppOrchestrator, isWhatsAppConfigured } from "@/lib/whatsapp"
 import type { WhatsAppSession } from "@/lib/whatsapp/types"
 
@@ -105,37 +109,33 @@ export const getAgentTrainingDataAction = async (
     return { success: true, data }
   })
 
-const knowledgeItemBaseSchema = agentIdSchema.merge(
-  z.object({
-    title: z.string().trim().min(1),
-    content: z.string().trim().min(1),
-    type: z.nativeEnum(KnowledgeItemType),
-  }),
-)
+const updateKnowledgeItemSchema = knowledgeItemInputSchema
+  .and(agentIdSchema)
+  .and(z.object({ id: z.string().min(1) }))
 
 export const createAgentKnowledgeItemAction = async (
-  input: z.infer<typeof knowledgeItemBaseSchema>,
+  input: z.infer<typeof knowledgeItemInputSchema> & z.infer<typeof agentIdSchema>,
 ): Promise<
   BaseActionResponse<{ knowledgeItem: Awaited<ReturnType<typeof createAgentKnowledgeItem>> }>
 > =>
   handleAction(async () => {
-    const payload = knowledgeItemBaseSchema.parse(input)
+    const payload = knowledgeItemInputSchema.and(agentIdSchema).parse(input)
     const { companyId, userId } = await resolveCompanyContext({ requireCanPost: true })
 
+    const { agentId, ...itemInput } = payload
+    const resolved = await resolveKnowledgeItemInput(itemInput)
+
     let urlSummary: string | undefined
-    if (payload.type === KnowledgeItemType.URL) {
-      urlSummary = await summarizeUrlContent({ url: payload.content, title: payload.title })
+    if (resolved.type === KnowledgeItemType.URL) {
+      urlSummary = await summarizeUrlContent({ url: resolved.content, title: resolved.title })
     }
 
-    const { agentId, ...itemInput } = payload
     const knowledgeItem = await createAgentKnowledgeItem(companyId, agentId, userId, {
-      ...itemInput,
+      ...resolved,
       urlSummary,
     })
     return { success: true, data: { knowledgeItem }, message: "Knowledge item created" }
   })
-
-const updateKnowledgeItemSchema = knowledgeItemBaseSchema.extend({ id: z.string().min(1) })
 
 export const updateAgentKnowledgeItemAction = async (
   input: z.infer<typeof updateKnowledgeItemSchema>,
@@ -146,14 +146,16 @@ export const updateAgentKnowledgeItemAction = async (
     const payload = updateKnowledgeItemSchema.parse(input)
     const { companyId } = await resolveCompanyContext({ requireCanPost: true })
 
+    const { agentId, id, ...itemInput } = payload
+    const resolved = await resolveKnowledgeItemInput(itemInput)
+
     let urlSummary: string | undefined
-    if (payload.type === KnowledgeItemType.URL) {
-      urlSummary = await summarizeUrlContent({ url: payload.content, title: payload.title })
+    if (resolved.type === KnowledgeItemType.URL) {
+      urlSummary = await summarizeUrlContent({ url: resolved.content, title: resolved.title })
     }
 
-    const { agentId, id, ...itemInput } = payload
     const knowledgeItem = await updateAgentKnowledgeItem(companyId, agentId, id, {
-      ...itemInput,
+      ...resolved,
       urlSummary,
     })
     return { success: true, data: { knowledgeItem }, message: "Knowledge item updated" }

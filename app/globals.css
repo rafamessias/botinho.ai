@@ -54,6 +54,18 @@
   --sidebar-accent-foreground: oklch(0.22 0.008 120);
   --sidebar-border: oklch(0.92 0.005 120);
   --sidebar-ring: oklch(0.52 0.12 140);
+  /* Semantic status colors */
+  --success: oklch(0.52 0.14 145);
+  --success-foreground: oklch(0.98 0.003 120);
+  --warning: oklch(0.62 0.16 75);
+  --warning-foreground: oklch(0.22 0.04 75);
+  --info: oklch(0.52 0.12 230);
+  --info-foreground: oklch(0.98 0.003 120);
+  --critical: oklch(0.55 0.18 15);
+  --critical-foreground: oklch(0.98 0.003 120);
+  --agent: oklch(0.52 0.12 250);
+  --agent-foreground: oklch(0.98 0.003 120);
+  --rating: oklch(0.72 0.16 75);
 }
 
 .dark {
@@ -106,6 +118,18 @@
   --sidebar-accent-foreground: oklch(0.92 0.003 120);
   --sidebar-border: oklch(0.18 0.008 120);
   --sidebar-ring: oklch(0.62 0.12 140);
+  /* Semantic status colors */
+  --success: oklch(0.65 0.14 145);
+  --success-foreground: oklch(0.12 0.02 145);
+  --warning: oklch(0.72 0.14 75);
+  --warning-foreground: oklch(0.18 0.04 75);
+  --info: oklch(0.65 0.12 230);
+  --info-foreground: oklch(0.12 0.02 230);
+  --critical: oklch(0.62 0.16 15);
+  --critical-foreground: oklch(0.12 0.02 15);
+  --agent: oklch(0.65 0.12 250);
+  --agent-foreground: oklch(0.12 0.02 250);
+  --rating: oklch(0.78 0.14 75);
 }
 
 @theme inline {
@@ -147,6 +171,17 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-critical: var(--critical);
+  --color-critical-foreground: var(--critical-foreground);
+  --color-agent: var(--agent);
+  --color-agent-foreground: var(--agent-foreground);
+  --color-rating: var(--rating);
 }
 
 @layer base {

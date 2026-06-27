@@ -1,8 +1,8 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useTranslations } from "next-intl"
-import { Loader2, Plus } from "lucide-react"
+import { Loader2, Plus, Users } from "lucide-react"
 import { toast } from "sonner"
 import { useRouter } from "@/i18n/navigation"
 
@@ -10,56 +10,61 @@ import { Button } from "@/components/ui/button"
 import type { Customer } from "@/lib/types/customer"
 import { CustomerModal, type CustomerFormValues } from "@/components/customer/customer-modal"
 import { CustomerTable } from "@/components/customer/customer-table"
+import { ErrorState } from "@/components/ai-training/components/error-state"
 import {
     bulkImportCustomersAction,
     createCustomerAction,
     listCustomersAction,
     updateCustomerAction,
 } from "@/components/server-actions/customers"
-import { useUser } from "@/components/user-provider"
 
-export const CustomerPage = () => {
+type CustomerPageProps = {
+    initialCustomers: Customer[]
+    initialLoadError?: string | null
+    hasCompanyAccess: boolean
+}
+
+export const CustomerPage = ({
+    initialCustomers,
+    initialLoadError = null,
+    hasCompanyAccess,
+}: CustomerPageProps) => {
     const t = useTranslations("Customer")
     const router = useRouter()
-    const { user } = useUser()
 
-    const [customers, setCustomers] = useState<Customer[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [customers, setCustomers] = useState<Customer[]>(initialCustomers)
+    const [isLoading, setIsLoading] = useState(false)
+    const [loadError, setLoadError] = useState<string | null>(initialLoadError)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalMode, setModalMode] = useState<"create" | "edit">("create")
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
     const [isSaving, setIsSaving] = useState(false)
 
-    const companyId = user?.defaultCompanyId != null ? String(user.defaultCompanyId) : null
-
     const loadCustomers = useCallback(async () => {
-        if (!companyId) {
+        if (!hasCompanyAccess) {
             setCustomers([])
-            setIsLoading(false)
             return
         }
 
         setIsLoading(true)
+        setLoadError(null)
+
         try {
             const result = await listCustomersAction({ pageSize: 200 })
 
             if (!result.success || !result.data) {
-                throw new Error(result.error || "Unable to load customers")
+                setLoadError(result.error || t("messages.loadFailed"))
+                return
             }
 
             setCustomers(result.data.customers)
         } catch (error) {
             console.error("Failed to load customers", error)
-            toast.error(t("messages.loadFailed"))
-            setCustomers([])
+            setLoadError(t("messages.loadFailed"))
         } finally {
             setIsLoading(false)
         }
-    }, [companyId, t])
-
-    useEffect(() => {
-        void loadCustomers()
-    }, [loadCustomers])
+    }, [hasCompanyAccess, t])
 
     const handleCloseModal = useCallback(() => {
         setIsModalOpen(false)
@@ -191,15 +196,6 @@ export const CustomerPage = () => {
         [handleCloseModal, t],
     )
 
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
-                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                {t("messages.loading")}
-            </div>
-        )
-    }
-
     return (
         <div className="section-spacing space-y-6">
             <div className="flex justify-end">
@@ -213,11 +209,26 @@ export const CustomerPage = () => {
                 </Button>
             </div>
 
-            <CustomerTable
-                customers={customers}
-                onEdit={handleEditCustomer}
-                onStartConversation={handleStartConversation}
-            />
+            {isLoading ? (
+                <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+                    <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                    {t("messages.loading")}
+                </div>
+            ) : loadError ? (
+                <ErrorState
+                    icon={Users}
+                    title={t("messages.loadFailed")}
+                    description={loadError}
+                    retryLabel="Retry"
+                    onRetry={() => void loadCustomers()}
+                />
+            ) : (
+                <CustomerTable
+                    customers={customers}
+                    onEdit={handleEditCustomer}
+                    onStartConversation={handleStartConversation}
+                />
+            )}
 
             <CustomerModal
                 isOpen={isModalOpen}

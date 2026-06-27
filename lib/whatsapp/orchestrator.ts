@@ -46,7 +46,7 @@ export class WhatsAppOrchestrator {
 
   async connectSession(sessionId: string, companyId: string): Promise<WhatsAppSession> {
     const session = await this.requireCompanySession(sessionId, companyId)
-    const workerUrl = await this.workerUrlForSession(sessionId)
+    const workerUrl = await this.resolveWorkerUrlForSession(sessionId, session)
 
     await this.workerClient.connectSession(workerUrl, sessionId)
 
@@ -77,7 +77,7 @@ export class WhatsAppOrchestrator {
 
   async deleteSession(sessionId: string, companyId: string): Promise<void> {
     const session = await this.requireCompanySession(sessionId, companyId)
-    const workerUrl = await this.workerUrlForSession(sessionId).catch(() => null)
+    const workerUrl = await this.resolveWorkerUrlForSession(sessionId, session).catch(() => null)
 
     if (workerUrl) {
       await this.workerClient.stopSession(workerUrl, sessionId).catch(() => undefined)
@@ -120,7 +120,8 @@ export class WhatsAppOrchestrator {
     }
 
     const sessionId = await this.resolveSessionId(params.sessionId, params.phoneNumber, params.companyId)
-    const workerUrl = await this.workerUrlForSession(sessionId)
+    const session = await this.repository.getSession(sessionId)
+    const workerUrl = await this.resolveWorkerUrlForSession(sessionId, session)
     await this.ensureSessionOnWorker(sessionId, workerUrl)
     const message = await this.workerClient.sendMessage(workerUrl, sessionId, {
       to: normalizedTo,
@@ -153,7 +154,7 @@ export class WhatsAppOrchestrator {
   }
 
   private async enrichAndPersist(session: WhatsAppSession): Promise<WhatsAppSession> {
-    const workerUrl = await this.workerUrlForSession(session.sessionId).catch(() => null)
+    const workerUrl = await this.resolveWorkerUrlForSession(session.sessionId, session).catch(() => null)
     if (!workerUrl) return session
 
     let live = await this.workerClient.sessionStatus(workerUrl, session.sessionId).catch(() => null)
@@ -235,6 +236,42 @@ export class WhatsAppOrchestrator {
       throw new Error("session not found")
     }
     return session
+  }
+
+  private async resolveWorkerUrlForSession(
+    sessionId: string,
+    sessionHint?: WhatsAppSession | null,
+  ): Promise<string> {
+    const existingUrl = await this.workerUrlForSession(sessionId).catch(() => null)
+    if (existingUrl) {
+      return existingUrl
+    }
+
+    const session = sessionHint ?? (await this.repository.getSession(sessionId))
+
+    if (session?.workerId) {
+      const worker = await this.registry.getWorker(session.workerId)
+      if (worker) {
+        await this.registry.assignSession(sessionId, worker.workerId)
+        return worker.url
+      }
+    }
+
+    const available = await this.registry.getAvailableWorker()
+    if (!available) {
+      throw new Error("No WhatsApp worker is available")
+    }
+
+    await this.registry.assignSession(sessionId, available.workerId)
+    if (session) {
+      await this.repository.updateSession({
+        ...session,
+        workerId: available.workerId,
+        updatedAt: new Date().toISOString(),
+      })
+    }
+
+    return available.url
   }
 
   private async workerUrlForSession(sessionId: string): Promise<string> {

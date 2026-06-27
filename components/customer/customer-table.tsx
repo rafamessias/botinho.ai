@@ -168,7 +168,7 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
             </div>
 
             {!hasResults ? (
-                <div className="overflow-hidden rounded-md border">
+                <div className="overflow-hidden rounded-md border bg-card">
                     <Table>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
@@ -256,7 +256,7 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
                     </div>
 
                     <div className="hidden md:block">
-                        <div className="overflow-hidden rounded-md border">
+                        <div className="overflow-hidden rounded-md border bg-card">
                             <Table>
                                 <TableHeader>
                                     {table.getHeaderGroups().map((headerGroup) => (

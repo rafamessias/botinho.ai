@@ -291,7 +291,7 @@ export const WhatsAppPairingDialog = ({
                 width={220}
                 height={220}
                 unoptimized
-                className="rounded-lg border bg-white p-2"
+                className="rounded-lg border bg-card p-2"
               />
               <p className="text-xs text-muted-foreground">{t("whatsapp.pairing.button.waiting")}</p>
             </div>

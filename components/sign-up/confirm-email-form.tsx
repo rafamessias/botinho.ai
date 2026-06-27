@@ -80,28 +80,28 @@ export function ConfirmEmailForm({
     const getStatusIcon = () => {
         switch (status) {
             case "loading":
-                return <IconLoader2 className="h-10 w-10 text-blue-600 dark:text-blue-400 animate-spin" />
+                return <IconLoader2 className="h-10 w-10 text-info animate-spin" />
             case "success":
-                return <IconCheck className="h-10 w-10 text-green-600 dark:text-green-400" />
+                return <IconCheck className="h-10 w-10 text-success" />
             case "error":
             case "invalid":
-                return <IconX className="h-10 w-10 text-red-600 dark:text-red-400" />
+                return <IconX className="h-10 w-10 text-destructive" />
             default:
-                return <IconMail className="h-10 w-10 text-gray-600 dark:text-gray-400" />
+                return <IconMail className="h-10 w-10 text-muted-foreground" />
         }
     }
 
     const getStatusColor = () => {
         switch (status) {
             case "loading":
-                return "bg-blue-100 dark:bg-blue-900"
+                return "bg-info/15"
             case "success":
-                return "bg-green-100 dark:bg-green-900"
+                return "bg-success/15"
             case "error":
             case "invalid":
-                return "bg-red-100 dark:bg-red-900"
+                return "bg-destructive/15"
             default:
-                return "bg-gray-100 dark:bg-gray-900"
+                return "bg-muted"
         }
     }
 
