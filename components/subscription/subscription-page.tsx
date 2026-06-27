@@ -253,6 +253,10 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         switch (metricType) {
             case 'AI_RESPONSES':
                 return <MessageSquare className="h-4 w-4" />;
+            case 'MESSAGES_RECEIVED':
+            case 'MESSAGES_SENT':
+            case 'BOT_AUTO_REPLIES':
+                return <MessageSquare className="h-4 w-4" />;
             default:
                 return <BarChart3 className="h-4 w-4" />;
         }
@@ -262,6 +266,12 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         switch (metricType) {
             case 'AI_RESPONSES':
                 return t("page.aiResponses");
+            case 'MESSAGES_RECEIVED':
+                return t("page.messagesReceived");
+            case 'MESSAGES_SENT':
+                return t("page.messagesSent");
+            case 'BOT_AUTO_REPLIES':
+                return t("page.botAutoReplies");
             default:
                 return metricType;
         }
@@ -525,6 +535,50 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 )}
                             </div>
                         ))}
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Per-channel message usage */}
+            {usage?.channelUsage && usage.channelUsage.length > 0 && (
+                <Card className="elegant-card">
+                    <CardHeader>
+                        <CardTitle className="heading-secondary flex items-center gap-2">
+                            <MessageSquare className="h-5 w-5" />
+                            {t("page.channelUsage")}
+                        </CardTitle>
+                        <CardDescription className="body-secondary">
+                            {t("page.channelUsageDescription")}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b text-left text-muted-foreground">
+                                        <th className="py-2 pr-4 font-medium">{t("page.phoneNumber")}</th>
+                                        <th className="py-2 pr-4 font-medium">{t("page.messagesReceived")}</th>
+                                        <th className="py-2 pr-4 font-medium">{t("page.messagesSent")}</th>
+                                        <th className="py-2 font-medium">{t("page.botAutoReplies")}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {usage.channelUsage.map((channel: {
+                                        phoneNumber?: string
+                                        messagesReceived: number
+                                        messagesSent: number
+                                        botAutoReplies: number
+                                    }) => (
+                                        <tr key={channel.phoneNumber} className="border-b last:border-0">
+                                            <td className="py-2 pr-4 font-medium">{channel.phoneNumber}</td>
+                                            <td className="py-2 pr-4">{channel.messagesReceived.toLocaleString()}</td>
+                                            <td className="py-2 pr-4">{channel.messagesSent.toLocaleString()}</td>
+                                            <td className="py-2">{channel.botAutoReplies.toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </CardContent>
                 </Card>
             )}

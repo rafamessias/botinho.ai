@@ -15,14 +15,17 @@ export const useInboxRealtime = (params: {
   conversationId?: string | null
   onConversationsChange?: () => void
   onMessagesChange?: () => void
+  onListenerError?: () => void
 }) => {
   const companyId = params.companyId ? String(params.companyId) : null
   const conversationId = params.conversationId ?? null
 
   const onConversationsChangeRef = useRef(params.onConversationsChange)
   const onMessagesChangeRef = useRef(params.onMessagesChange)
+  const onListenerErrorRef = useRef(params.onListenerError)
   onConversationsChangeRef.current = params.onConversationsChange
   onMessagesChangeRef.current = params.onMessagesChange
+  onListenerErrorRef.current = params.onListenerError
 
   useEffect(() => {
     if (!companyId) return
@@ -47,6 +50,7 @@ export const useInboxRealtime = (params: {
       },
       (error) => {
         console.error("Inbox conversations listener error:", error)
+        onListenerErrorRef.current?.()
       },
     )
 
@@ -82,6 +86,7 @@ export const useInboxRealtime = (params: {
       },
       (error) => {
         console.error("Inbox messages listener error:", error)
+        onListenerErrorRef.current?.()
       },
     )
 

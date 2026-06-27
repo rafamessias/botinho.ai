@@ -287,6 +287,8 @@
         "title": "Caixa de Entrada",
         "description": "Gerencie suas conversas e mensagens",
         "searchPlaceholder": "Pesquisar conversas...",
+        "searchOrStartChat": "Pesquisar ou iniciar nova conversa",
+        "clearSearch": "Limpar pesquisa",
         "typeMessagePlaceholder": "Digite uma mensagem...",
         "status": {
             "online": "Online",
@@ -306,12 +308,22 @@
         },
         "conversations": {
             "title": "Conversas",
+            "yesterday": "Ontem",
             "empty": {
                 "title": "Nenhuma conversa ainda",
                 "description": "As conversas que você iniciar ou receber aparecerão aqui. Continue interagindo com seus clientes!"
             },
+            "filteredEmpty": {
+                "title": "Nenhuma conversa encontrada",
+                "description": "Tente outro filtro ou termo de busca."
+            },
             "noMessage": "Nenhuma mensagem ainda",
             "selectConversationAria": "Selecionar conversa com {name}"
+        },
+        "filters": {
+            "all": "Tudo",
+            "unread": "Não lidas",
+            "favorites": "Salvas"
         },
         "context": {
             "title": "Contexto",
@@ -326,6 +338,24 @@
             },
             "quickReplies": {
                 "title": "Respostas rápidas",
+                "manage": "Gerenciar",
+                "empty": {
+                    "title": "Nenhuma resposta rápida ainda",
+                    "description": "Adicione respostas salvas que sua equipe pode usar nas conversas.",
+                    "action": "Adicionar respostas rápidas"
+                }
+            },
+            "templates": {
+                "title": "Modelos",
+                "manage": "Gerenciar",
+                "empty": {
+                    "title": "Nenhum modelo ainda",
+                    "description": "Crie modelos de mensagem para interações comuns com clientes.",
+                    "action": "Adicionar modelos"
+                }
+            },
+            "aiSuggestions": {
+                "title": "Sugestões da IA",
                 "empty": {
                     "title": "Nenhuma sugestão ainda",
                     "description": "Mantenha a conversa fluindo—respostas da IA aparecerão assim que os clientes enviarem mensagens."
@@ -341,7 +371,9 @@
                 "title": "Nenhuma mensagem ainda",
                 "description": "Quebre o gelo e envie a primeira resposta para manter a conversa em andamento."
             },
-            "inputPlaceholderNoSelection": "Selecione uma conversa para responder"
+            "inputPlaceholderNoSelection": "Selecione uma conversa para responder",
+            "sendFailed": "Não foi possível enviar a mensagem",
+            "whatsappDeliveryFailed": "Mensagem salva, mas o envio pelo WhatsApp falhou. Verifique a conexão em Configurações."
         },
         "actions": {
             "openConversations": "Abrir lista de conversas",
@@ -350,12 +382,27 @@
             "showContext": "Mostrar contexto",
             "hideContext": "Ocultar contexto",
             "send": "Enviar mensagem",
-            "newConversation": "Nova conversa"
+            "newConversation": "Nova conversa",
+            "addBookmark": "Salvar conversa",
+            "removeBookmark": "Remover dos salvos",
+            "bookmarkFailed": "Não foi possível atualizar o favorito"
         },
         "toolbar": {
             "connectionLabel": "Conexão",
             "connectionPlaceholder": "Selecione uma conexão",
-            "allConnections": "Todas as conexões"
+            "allConnections": "Todas as conexões",
+            "selectConnectionTitle": "Selecionar números",
+            "selectConnectionDescription": "Pesquise e selecione um ou mais números para filtrar conversas. Deixe vazio para ver todos.",
+            "viewingConnection": "Visualizando: {connection}",
+            "viewingMultiple": "{count} números selecionados",
+            "connectionButtonTitle": "Alterar conexão ({connection})",
+            "searchConnectionsPlaceholder": "Pesquisar números...",
+            "noConnectionsFound": "Nenhum número encontrado.",
+            "selectAll": "Selecionar todos",
+            "clearSelection": "Limpar",
+            "selectedCount": "{selected} de {total} selecionados",
+            "applySelection": "Aplicar",
+            "cancelSelection": "Cancelar"
         },
         "newConversation": {
             "title": "Iniciar conversa",
@@ -415,6 +462,7 @@
             "addKnowledge": "Adicionar Conhecimento",
             "addQuickAnswer": "Adicionar Resposta Rápida",
             "createTemplate": "Criar Modelo",
+            "copyTemplate": "Copiar modelo",
             "cancel": "Cancelar",
             "update": "Atualizar",
             "addOption": "Adicionar Opção"
@@ -448,7 +496,79 @@
             "buttonLabelPlaceholder": "Rótulo do botão (o que o usuário vê)",
             "buttonValuePlaceholder": "Valor (o que é enviado)",
             "noOptionsAdded": "Nenhuma opção adicionada ainda",
-            "noOptionsAddedDescription": "Clique em \"Adicionar Opção\" para criar botões de resposta rápida"
+            "noOptionsAddedDescription": "Clique em \"Adicionar Opção\" para criar botões de resposta rápida",
+            "quickAnswerContentPlaceholder": "Digite uma resposta curta que sua IA pode reutilizar nas conversas...",
+            "quickAnswerContentTip": "Dica: Adicione fatos que sua IA deve saber — horários, frete, devoluções, formas de pagamento, etc."
+        },
+        "quickAnswerExamples": {
+            "title": "Comece com um exemplo",
+            "items": {
+                "businessHours": {
+                    "label": "Horário de funcionamento",
+                    "content": "Funcionamos de segunda a sexta, das 9h às 18h. Fechado nos fins de semana e feriados."
+                },
+                "shippingPolicy": {
+                    "label": "Política de frete",
+                    "content": "O frete padrão leva de 3 a 5 dias úteis. Frete grátis em pedidos acima de R$ 200."
+                },
+                "returnPolicy": {
+                    "label": "Política de devolução",
+                    "content": "Aceitamos devoluções em até 30 dias. Os itens devem estar sem uso e na embalagem original."
+                },
+                "paymentMethods": {
+                    "label": "Formas de pagamento",
+                    "content": "Aceitamos cartões de crédito, débito e PIX."
+                },
+                "orderTracking": {
+                    "label": "Rastreamento de pedido",
+                    "content": "Você pode rastrear seu pedido pelo link de rastreio enviado ao seu e-mail após o envio."
+                },
+                "speakToHuman": {
+                    "label": "Falar com atendente",
+                    "content": "Vou conectar você com um membro da equipe que pode ajudar."
+                }
+            }
+        },
+        "messageExamples": {
+            "title": "Comece com um exemplo",
+            "items": {
+                "welcomeGreeting": {
+                    "label": "Mensagem de boas-vindas",
+                    "name": "Mensagem de Boas-vindas",
+                    "category": "greeting",
+                    "content": "Olá [NOME_CLIENTE]! 👋 Bem-vindo(a) à [NOME_EMPRESA].\n\nEstamos felizes em ter você aqui. Como podemos ajudar hoje?"
+                },
+                "orderConfirmation": {
+                    "label": "Confirmação de pedido",
+                    "name": "Confirmação de Pedido",
+                    "category": "orders",
+                    "content": "Olá [NOME_CLIENTE], seu pedido #[ID_PEDIDO] foi confirmado! ✅\n\nTotal: [VALOR_PEDIDO]\nEntrega prevista: [DATA_ENTREGA]\n\nManteremos você informado(a) sobre o status."
+                },
+                "orderShipped": {
+                    "label": "Pedido enviado",
+                    "name": "Pedido Enviado",
+                    "category": "orders",
+                    "content": "Ótimas notícias, [NOME_CLIENTE]! 📦\n\nSeu pedido #[ID_PEDIDO] foi enviado.\nRastreio: [CODIGO_RASTREIO]\nEntrega prevista: [DATA_ENTREGA]\n\nAvise se precisar de algo!"
+                },
+                "productRecommendation": {
+                    "label": "Recomendação de produto",
+                    "name": "Recomendação de Produto",
+                    "category": "products",
+                    "content": "Olá [NOME_CLIENTE]! Com base no que você procura, recomendamos:\n\n[NOME_PRODUTO] — [PRECO_PRODUTO]\n[DESCRICAO_PRODUTO]\n\nQuer mais detalhes ou ajuda para fechar o pedido?"
+                },
+                "supportAcknowledgment": {
+                    "label": "Confirmação de suporte",
+                    "name": "Confirmação de Suporte",
+                    "category": "support",
+                    "content": "Olá [NOME_CLIENTE], obrigado pelo contato. 🙏\n\nRecebemos sua mensagem sobre [ASSUNTO] e um membro da equipe responderá em breve.\n\nReferência: [ID_CHAMADO]"
+                },
+                "closingThankYou": {
+                    "label": "Agradecimento e encerramento",
+                    "name": "Agradecimento e Encerramento",
+                    "category": "closing",
+                    "content": "Obrigado por escolher a [NOME_EMPRESA], [NOME_CLIENTE]! 🌟\n\nSe precisar de mais alguma coisa, é só nos enviar uma mensagem. Tenha um ótimo dia!"
+                }
+            }
         },
         "categories": {
             "greeting": "Saudação",
@@ -541,14 +661,500 @@
             "quickAnswerDeleted": "Resposta rápida removida"
         }
     },
+    "AiAgents": {
+        "title": "Agentes IA",
+        "description": "Crie e gerencie agentes de IA com prompts personalizados, conhecimento e números atribuídos",
+        "subtitle": "Configure agentes que respondem nos seus números de WhatsApp",
+        "buttons": {
+            "addKnowledge": "Adicionar Conhecimento",
+            "addQuickAnswer": "Adicionar Resposta Rápida",
+            "createTemplate": "Criar Modelo",
+            "createAgent": "Criar Agente",
+            "manageAgent": "Gerenciar",
+            "saveAgent": "Salvar Agente",
+            "saving": "Salvando...",
+            "creating": "Criando...",
+            "backToAgents": "Voltar aos agentes",
+            "cancel": "Cancelar",
+            "update": "Atualizar",
+            "addOption": "Adicionar Opção"
+        },
+        "list": {
+            "title": "Seus agentes IA",
+            "description": "Cada agente pode ter seu próprio prompt, base de conhecimento e número de WhatsApp.",
+            "loading": "Carregando agentes...",
+            "count": "{count, plural, one {# agente} other {# agentes}}",
+            "statusReady": "Pronto",
+            "statusSetup": "Configuração pendente",
+            "noPrompt": "Nenhum prompt personalizado ainda",
+            "autoReplyOn": "Auto-resposta ativa",
+            "autoReplyOff": "Auto-resposta inativa",
+            "numberAssigned": "Número WhatsApp atribuído",
+            "numbersAssigned": "{count} números WhatsApp atribuídos",
+            "noNumber": "Nenhum número atribuído",
+            "empty": {
+                "title": "Nenhum agente ainda",
+                "description": "Crie seu primeiro agente usando o formulário acima."
+            },
+            "delete": {
+                "title": "Excluir agente",
+                "description": "Esta ação não pode ser desfeita. O agente e sua base de conhecimento serão removidos permanentemente.",
+                "nameLabel": "Digite o nome do agente para confirmar",
+                "nameNote": "Você deve digitar o nome exato do agente para confirmar a exclusão",
+                "warning": "Todo o conhecimento, configurações e números atribuídos a este agente serão excluídos permanentemente.",
+                "confirm": "Excluir agente"
+            }
+        },
+        "setup": {
+            "badge": "Interação IA",
+            "title": "Configure seu agente IA em minutos",
+            "description": "Crie um agente, defina o comportamento, adicione conhecimento e conecte um número de WhatsApp.",
+            "steps": {
+                "1": "Crie um agente e dê um nome",
+                "2": "Escolha um modelo de prompt e atribua um número WhatsApp",
+                "3": "Adicione conhecimento que o agente deve usar nas respostas",
+                "4": "Ative a auto-resposta para entrar no ar"
+            },
+            "create": {
+                "title": "Novo agente",
+                "description": "Comece com um nome — você configura o resto na próxima tela.",
+                "button": "Criar e configurar"
+            },
+            "continueSetup": "Continuar configuração",
+            "checklist": {
+                "name": "Nome definido",
+                "prompt": "Prompt definido",
+                "phone": "Número atribuído",
+                "live": "Auto-resposta ativa"
+            },
+            "links": {
+                "quickAnswers": "Respostas Rápidas",
+                "templates": "Modelos de Mensagem",
+                "hint": "Compartilhados entre todos os agentes"
+            }
+        },
+        "detail": {
+            "loading": "Carregando agente...",
+            "subtitle": "Complete cada etapa para deixar seu agente pronto.",
+            "steps": {
+                "settings": "Comportamento e número",
+                "knowledge": "Base de conhecimento"
+            },
+            "nextStep": "Próximo: Base de conhecimento",
+            "previousStep": "Voltar às configurações",
+            "finishSetup": "Concluir — voltar aos agentes",
+            "sharedResources": {
+                "title": "Recursos compartilhados",
+                "description": "Respostas rápidas e modelos se aplicam a todos os agentes.",
+                "quickAnswers": "Gerenciar respostas rápidas →",
+                "templates": "Gerenciar modelos →"
+            }
+        },
+        "settings": {
+            "title": "Configurações do agente",
+            "description": "Nomeie seu agente, defina seu comportamento e atribua números de WhatsApp."
+        },
+        "noCompany": {
+            "title": "Conecte uma empresa para continuar",
+            "description": "Crie ou selecione uma empresa para desbloquear as ferramentas de agentes IA."
+        },
+        "tabs": {
+            "knowledgeBase": "Base de Conhecimento",
+            "quickAnswers": "Respostas Rápidas",
+            "templates": "Modelos",
+            "textContent": "Conteúdo de Texto",
+            "websiteUrl": "URL do Site"
+        },
+        "form": {
+            "agentName": "Nome do agente",
+            "agentNamePlaceholder": "ex., Bot de Vendas, Agente de Suporte",
+            "systemPrompt": "Prompt do sistema",
+            "systemPromptPlaceholder": "Descreva como este agente deve se comportar, tom e regras...",
+            "systemPromptDescription": "Este prompt é adicionado junto com a base de conhecimento ao gerar respostas.",
+            "assignedNumbers": "Números WhatsApp atribuídos",
+            "selectNumbers": "Selecione números conectados",
+            "numbersSelected": "{count} números selecionados",
+            "selectNumber": "Selecione um número conectado",
+            "noNumberAssigned": "Nenhum número atribuído",
+            "noConnectedNumbers": "Conecte um número WhatsApp em Configurações para atribuí-lo aqui.",
+            "autoReply": "Auto-resposta",
+            "autoReplyDescription": "Quando ativada, este agente responde automaticamente às mensagens recebidas nos números atribuídos.",
+            "title": "Título",
+            "content": "Conteúdo",
+            "templateName": "Nome do Modelo",
+            "category": "Categoria",
+            "messageContent": "Conteúdo da Mensagem",
+            "quickReplyOptions": "Opções de Resposta Rápida",
+            "option": "Opção",
+            "websiteUrl": "URL do Site",
+            "titlePlaceholder": "ex., Horário de Funcionamento, Preços, Política de Devolução",
+            "contentPlaceholder": "Digite as informações que você quer que sua IA saiba...",
+            "urlTitlePlaceholder": "ex., Catálogo de Produtos, Página de FAQ",
+            "urlPlaceholder": "https://exemplo.com/pagina",
+            "urlDescription": "Extrairemos e aprenderemos com o conteúdo desta página",
+            "templateNamePlaceholder": "ex., Mensagem de Boas-vindas, Confirmação de Pedido",
+            "selectCategory": "Selecione uma categoria",
+            "messageContentPlaceholder": "Digite sua mensagem modelo... Use [NOME_DA_VARIAVEL] para conteúdo dinâmico",
+            "messageContentTip": "Dica: Use [COLCHETES] para variáveis como [NOME_CLIENTE], [ID_PEDIDO], etc.",
+            "quickReplyOptionsDescription": "Adicione botões para os clientes selecionarem (opcional)",
+            "buttonLabelPlaceholder": "Rótulo do botão (o que o usuário vê)",
+            "buttonValuePlaceholder": "Valor (o que é enviado)",
+            "noOptionsAdded": "Nenhuma opção adicionada ainda",
+            "noOptionsAddedDescription": "Clique em \"Adicionar Opção\" para criar botões de resposta rápida"
+        },
+        "promptTemplates": {
+            "title": "Comece com um modelo",
+            "items": {
+                "generalSupport": {
+                    "label": "Suporte geral",
+                    "content": "Você é um assistente de atendimento ao cliente. Cumprimente os clientes com cordialidade, entenda a necessidade e responda usando apenas a base de conhecimento. Mantenha respostas curtas e amigáveis, no estilo WhatsApp. Se não souber algo, diga que vai confirmar com a equipe. Nunca invente preços, políticas ou prazos. Encaminhe casos complexos ou clientes irritados com educação."
+                },
+                "sales": {
+                    "label": "Vendas e leads",
+                    "content": "Você é um assistente de vendas focado em ajudar o cliente a encontrar o produto ou serviço certo. Faça uma pergunta de esclarecimento por vez, quando necessário. Destaque benefícios com base apenas na base de conhecimento—nunca invente recursos ou preços. Conduza clientes interessados para o próximo passo (orçamento, demonstração ou contato humano). Seja entusiasmado, mas sem pressão. Mensagens objetivas."
+                },
+                "ecommerce": {
+                    "label": "E-commerce e pedidos",
+                    "content": "Você ajuda clientes com pedidos, entrega, trocas, devoluções e dúvidas sobre produtos. Peça número do pedido ou e-mail quando fizer sentido. Explique políticas usando somente a base de conhecimento. Se faltar informação ou for um pedido de reembolso que não pode confirmar, ofereça contato com a equipe. Seja claro sobre prazos e próximos passos. Tom calmo e tranquilizador."
+                },
+                "appointments": {
+                    "label": "Agendamentos",
+                    "content": "Você ajuda clientes a agendar, remarcar ou cancelar horários. Confirme data, horário e tipo de serviço antes de finalizar. Informe disponibilidade e regras apenas com base na base de conhecimento. Se o horário não estiver disponível ou for urgente, sugira alternativas ou encaminhe para um atendente. Lembre preparos necessários, se houver. Respostas breves e organizadas."
+                },
+                "restaurant": {
+                    "label": "Restaurante e delivery",
+                    "content": "Você atende clientes de restaurante com dúvidas sobre cardápio, horário, reservas e delivery. Descreva pratos com base na base de conhecimento—mencione alérgenos só se estiver documentado. Para reservas, colete número de pessoas, data e horário. Para delivery, confirme endereço e prazos oficiais. Seja acolhedor e ágil, como um bom anfitrião no WhatsApp."
+                },
+                "realEstate": {
+                    "label": "Imobiliário",
+                    "content": "Você ajuda interessados com dúvidas sobre imóveis, visitas e requisitos básicos. Compartilhe detalhes apenas da base de conhecimento (localização, metragem, preço, diferenciais). Ofereça agendar visita ou falar com um corretor quando houver interesse. Pergunte sobre orçamento, prazo e região preferida quando útil. Tom profissional e confiável—nunca garanta disponibilidade ou condições não listadas."
+                }
+            }
+        },
+        "categories": {
+            "greeting": "Saudação",
+            "orders": "Pedidos",
+            "products": "Produtos",
+            "support": "Suporte",
+            "closing": "Encerramento"
+        },
+        "stats": {
+            "knowledgeItems": "Itens de Conhecimento",
+            "templates": "Modelos",
+            "quickAnswers": "Respostas Rápidas",
+            "trainingStatus": "Status do Agente",
+            "active": "Ativo",
+            "knowledgeItemsDescription": "Total de itens na base de conhecimento",
+            "templatesDescription": "Modelos de mensagem prontos para uso",
+            "quickAnswersDescription": "Respostas salvas para respostas rápidas",
+            "trainingStatusDescription": "Agente configurado e pronto"
+        },
+        "knowledge": {
+            "title": "Base de Conhecimento",
+            "description": "Todas as informações que este agente usa para responder aos clientes",
+            "type": {
+                "text": "Texto",
+                "url": "URL"
+            },
+            "added": "Adicionado",
+            "empty": {
+                "title": "Nenhum conhecimento ainda",
+                "description": "Comece adicionando informações para este agente",
+                "button": "Adicionar Primeiro Item"
+            }
+        },
+        "quickAnswers": {
+            "title": "Respostas Rápidas",
+            "description": "Respostas curtas que este agente pode reutilizar nas conversas",
+            "label": "Resposta Rápida",
+            "added": "Adicionado",
+            "empty": {
+                "title": "Nenhuma resposta rápida ainda",
+                "description": "Crie respostas rápidas para suas respostas mais comuns",
+                "button": "Criar Primeira Resposta Rápida"
+            }
+        },
+        "templates": {
+            "title": "Modelos de Mensagem",
+            "description": "Mensagens pré-escritas para interações comuns com clientes",
+            "quickReplyOptions": "Opções de Resposta Rápida",
+            "created": "Criado",
+            "empty": {
+                "title": "Nenhum modelo ainda",
+                "description": "Crie seu primeiro modelo de mensagem",
+                "button": "Criar Primeiro Modelo"
+            }
+        },
+        "dialog": {
+            "createAgent": "Criar Agente IA",
+            "createAgentDescription": "Dê um nome ao seu agente e um prompt opcional. Você pode adicionar conhecimento e atribuir um número após a criação.",
+            "addKnowledge": "Adicionar Novo Conhecimento",
+            "editKnowledge": "Editar Conhecimento",
+            "addKnowledgeDescription": "Adicione informações para treinar este agente",
+            "editKnowledgeDescription": "Atualize as informações abaixo",
+            "createTemplate": "Criar Novo Modelo",
+            "editTemplate": "Editar Modelo",
+            "createTemplateDescription": "Crie um modelo de mensagem reutilizável",
+            "editTemplateDescription": "Atualize seu modelo abaixo",
+            "createQuickAnswer": "Criar Resposta Rápida",
+            "editQuickAnswer": "Editar Resposta Rápida",
+            "createQuickAnswerDescription": "Salve uma resposta curta para reutilizar depois",
+            "editQuickAnswerDescription": "Atualize a resposta rápida abaixo"
+        },
+        "errors": {
+            "fillAllFields": "Erro",
+            "fillAllFieldsDescription": "Por favor, preencha todos os campos",
+            "agentNameRequired": "Nome do agente obrigatório",
+            "agentNameRequiredDescription": "Por favor, insira um nome para seu agente.",
+            "setupIncomplete": "Preencha os campos obrigatórios",
+            "setupIncompleteDescription": "Adicione um nome, prompt do sistema e pelo menos um número do WhatsApp antes de continuar.",
+            "loadFailed": "Não foi possível carregar os agentes",
+            "createFailed": "Não foi possível criar o agente",
+            "deleteFailed": "Não foi possível excluir o agente",
+            "saveFailed": "Não foi possível salvar o agente",
+            "saveKnowledgeFailed": "Não foi possível salvar o conhecimento",
+            "deleteKnowledgeFailed": "Não foi possível excluir o conhecimento",
+            "agentNotFound": "Agente não encontrado",
+            "tryAgain": "Por favor, tente novamente."
+        },
+        "success": {
+            "agentCreated": "Agente criado!",
+            "agentCreatedDescription": "Seu novo agente está pronto para configurar.",
+            "agentUpdated": "Agente salvo",
+            "agentUpdatedDescription": "As configurações do agente foram atualizadas.",
+            "agentDeleted": "Agente excluído",
+            "agentDeletedDescription": "O agente foi removido.",
+            "knowledgeAdded": "Conhecimento adicionado!",
+            "knowledgeAddedDescription": "Seu agente foi atualizado com novas informações",
+            "knowledgeUpdated": "Item de conhecimento foi atualizado",
+            "knowledgeDeleted": "Item de conhecimento removido",
+            "templateCreated": "Modelo criado!",
+            "templateCreatedDescription": "Seu novo modelo está pronto para uso",
+            "templateUpdated": "Modelo foi atualizado",
+            "templateDeleted": "Modelo removido",
+            "copied": "Copiado!",
+            "templateCopied": "Modelo copiado para a área de transferência",
+            "deleted": "Excluído",
+            "updated": "Atualizado!",
+            "quickAnswerCreated": "Resposta rápida criada!",
+            "quickAnswerCreatedDescription": "Sua nova resposta rápida está pronta para uso",
+            "quickAnswerUpdated": "Resposta rápida foi atualizada",
+            "quickAnswerDeleted": "Resposta rápida removida"
+        }
+    },
+    "QuickAnswers": {
+        "title": "Respostas Rápidas",
+        "description": "Respostas curtas compartilhadas entre todos os agentes IA.",
+        "noCompany": {
+            "title": "Conecte uma empresa para continuar",
+            "description": "Crie ou selecione uma empresa para gerenciar respostas rápidas."
+        },
+        "buttons": {
+            "addQuickAnswer": "Adicionar Resposta Rápida",
+            "cancel": "Cancelar",
+            "update": "Atualizar"
+        },
+        "quickAnswers": {
+            "title": "Respostas Rápidas",
+            "description": "Respostas reutilizáveis que seus agentes podem usar nas conversas",
+            "label": "Resposta Rápida",
+            "added": "Adicionado",
+            "empty": {
+                "title": "Nenhuma resposta rápida ainda",
+                "description": "Crie respostas rápidas para suas respostas mais comuns",
+                "button": "Criar Primeira Resposta Rápida"
+            }
+        },
+        "dialog": {
+            "createQuickAnswer": "Criar Resposta Rápida",
+            "editQuickAnswer": "Editar Resposta Rápida",
+            "createQuickAnswerDescription": "Salve uma resposta curta para reutilizar depois",
+            "editQuickAnswerDescription": "Atualize a resposta rápida abaixo"
+        },
+        "form": {
+            "content": "Conteúdo",
+            "contentPlaceholder": "Digite uma resposta curta para reutilizar nas conversas...",
+            "quickAnswerContentPlaceholder": "Digite uma resposta curta que sua IA pode reutilizar nas conversas...",
+            "quickAnswerContentTip": "Dica: Adicione fatos que sua IA deve saber — horários, frete, devoluções, formas de pagamento, etc."
+        },
+        "quickAnswerExamples": {
+            "title": "Comece com um exemplo",
+            "items": {
+                "businessHours": {
+                    "label": "Horário de funcionamento",
+                    "content": "Funcionamos de segunda a sexta, das 9h às 18h. Fechado nos fins de semana e feriados."
+                },
+                "shippingPolicy": {
+                    "label": "Política de frete",
+                    "content": "O frete padrão leva de 3 a 5 dias úteis. Frete grátis em pedidos acima de R$ 200."
+                },
+                "returnPolicy": {
+                    "label": "Política de devolução",
+                    "content": "Aceitamos devoluções em até 30 dias. Os itens devem estar sem uso e na embalagem original."
+                },
+                "paymentMethods": {
+                    "label": "Formas de pagamento",
+                    "content": "Aceitamos cartões de crédito, débito e PIX."
+                },
+                "orderTracking": {
+                    "label": "Rastreamento de pedido",
+                    "content": "Você pode rastrear seu pedido pelo link de rastreio enviado ao seu e-mail após o envio."
+                },
+                "speakToHuman": {
+                    "label": "Falar com atendente",
+                    "content": "Vou conectar você com um membro da equipe que pode ajudar."
+                }
+            }
+        },
+        "errors": {
+            "fillAllFields": "Conteúdo ausente",
+            "fillAllFieldsDescription": "Por favor, insira uma resposta rápida",
+            "loadFailed": "Não foi possível carregar as respostas rápidas",
+            "saveFailed": "Não foi possível salvar a resposta rápida",
+            "deleteFailed": "Não foi possível excluir a resposta rápida",
+            "tryAgain": "Por favor, tente novamente."
+        },
+        "success": {
+            "created": "Resposta rápida criada!",
+            "createdDescription": "Sua nova resposta rápida está pronta para uso",
+            "updated": "Atualizado!",
+            "updatedDescription": "Resposta rápida foi atualizada",
+            "deleted": "Excluído",
+            "deletedDescription": "Resposta rápida removida"
+        }
+    },
+    "Templates": {
+        "title": "Modelos",
+        "description": "Modelos de mensagem compartilhados entre todos os agentes IA.",
+        "noCompany": {
+            "title": "Conecte uma empresa para continuar",
+            "description": "Crie ou selecione uma empresa para gerenciar modelos."
+        },
+        "buttons": {
+            "createTemplate": "Criar Modelo",
+            "copyTemplate": "Copiar modelo",
+            "cancel": "Cancelar",
+            "update": "Atualizar",
+            "addOption": "Adicionar Opção"
+        },
+        "form": {
+            "templateName": "Nome do Modelo",
+            "category": "Categoria",
+            "messageContent": "Conteúdo da Mensagem",
+            "quickReplyOptions": "Opções de Resposta Rápida",
+            "option": "Opção",
+            "templateNamePlaceholder": "ex., Mensagem de Boas-vindas, Confirmação de Pedido",
+            "selectCategory": "Selecione uma categoria",
+            "messageContentPlaceholder": "Digite sua mensagem modelo... Use [NOME_DA_VARIAVEL] para conteúdo dinâmico",
+            "messageContentTip": "Dica: Use [COLCHETES] para variáveis como [NOME_CLIENTE], [ID_PEDIDO], etc.",
+            "quickReplyOptionsDescription": "Adicione botões para os clientes selecionarem (opcional)",
+            "buttonLabelPlaceholder": "Rótulo do botão (o que o usuário vê)",
+            "buttonValuePlaceholder": "Valor (o que é enviado)",
+            "noOptionsAdded": "Nenhuma opção adicionada ainda",
+            "noOptionsAddedDescription": "Clique em \"Adicionar Opção\" para criar botões de resposta rápida"
+        },
+        "messageExamples": {
+            "title": "Comece com um exemplo",
+            "items": {
+                "welcomeGreeting": {
+                    "label": "Mensagem de boas-vindas",
+                    "name": "Mensagem de Boas-vindas",
+                    "category": "greeting",
+                    "content": "Olá [NOME_CLIENTE]! 👋 Bem-vindo(a) à [NOME_EMPRESA].\n\nEstamos felizes em ter você aqui. Como podemos ajudar hoje?"
+                },
+                "orderConfirmation": {
+                    "label": "Confirmação de pedido",
+                    "name": "Confirmação de Pedido",
+                    "category": "orders",
+                    "content": "Olá [NOME_CLIENTE], seu pedido #[ID_PEDIDO] foi confirmado! ✅\n\nTotal: [VALOR_PEDIDO]\nEntrega prevista: [DATA_ENTREGA]\n\nManteremos você informado(a) sobre o status."
+                },
+                "orderShipped": {
+                    "label": "Pedido enviado",
+                    "name": "Pedido Enviado",
+                    "category": "orders",
+                    "content": "Ótimas notícias, [NOME_CLIENTE]! 📦\n\nSeu pedido #[ID_PEDIDO] foi enviado.\nRastreio: [CODIGO_RASTREIO]\nEntrega prevista: [DATA_ENTREGA]\n\nAvise se precisar de algo!"
+                },
+                "productRecommendation": {
+                    "label": "Recomendação de produto",
+                    "name": "Recomendação de Produto",
+                    "category": "products",
+                    "content": "Olá [NOME_CLIENTE]! Com base no que você procura, recomendamos:\n\n[NOME_PRODUTO] — [PRECO_PRODUTO]\n[DESCRICAO_PRODUTO]\n\nQuer mais detalhes ou ajuda para fechar o pedido?"
+                },
+                "supportAcknowledgment": {
+                    "label": "Confirmação de suporte",
+                    "name": "Confirmação de Suporte",
+                    "category": "support",
+                    "content": "Olá [NOME_CLIENTE], obrigado pelo contato. 🙏\n\nRecebemos sua mensagem sobre [ASSUNTO] e um membro da equipe responderá em breve.\n\nReferência: [ID_CHAMADO]"
+                },
+                "closingThankYou": {
+                    "label": "Agradecimento e encerramento",
+                    "name": "Agradecimento e Encerramento",
+                    "category": "closing",
+                    "content": "Obrigado por escolher a [NOME_EMPRESA], [NOME_CLIENTE]! 🌟\n\nSe precisar de mais alguma coisa, é só nos enviar uma mensagem. Tenha um ótimo dia!"
+                }
+            }
+        },
+        "categories": {
+            "greeting": "Saudação",
+            "orders": "Pedidos",
+            "products": "Produtos",
+            "support": "Suporte",
+            "closing": "Encerramento"
+        },
+        "templates": {
+            "title": "Modelos de Mensagem",
+            "description": "Mensagens pré-escritas para interações comuns com clientes",
+            "quickReplyOptions": "Opções de Resposta Rápida",
+            "created": "Criado",
+            "empty": {
+                "title": "Nenhum modelo ainda",
+                "description": "Crie seu primeiro modelo de mensagem",
+                "button": "Criar Primeiro Modelo"
+            }
+        },
+        "dialog": {
+            "createTemplate": "Criar Novo Modelo",
+            "editTemplate": "Editar Modelo",
+            "createTemplateDescription": "Crie um modelo de mensagem reutilizável",
+            "editTemplateDescription": "Atualize seu modelo abaixo"
+        },
+        "errors": {
+            "fillAllFields": "Campos ausentes",
+            "fillAllFieldsDescription": "Por favor, preencha todos os campos",
+            "loadFailed": "Não foi possível carregar os modelos",
+            "saveFailed": "Não foi possível salvar o modelo",
+            "deleteFailed": "Não foi possível excluir o modelo",
+            "copyFailed": "Não foi possível copiar o modelo",
+            "tryAgain": "Por favor, tente novamente."
+        },
+        "success": {
+            "created": "Modelo criado!",
+            "createdDescription": "Seu novo modelo está pronto para uso",
+            "updated": "Atualizado!",
+            "updatedDescription": "Modelo foi atualizado",
+            "deleted": "Excluído",
+            "deletedDescription": "Modelo removido",
+            "copied": "Copiado!",
+            "copiedDescription": "Modelo copiado para a área de transferência"
+        }
+    },
     "AppSidebar": {
+        "sections": {
+            "workspace": "Principal",
+            "aiInteraction": "Interação IA",
+            "management": "Gerenciamento"
+        },
         "navigation": {
             "dashboard": "Dashboard",
             "customer": "Clientes",
             "inbox": "Caixa de Entrada",
-            "aiTraining": "Treinamento IA",
+            "aiAgents": "Agentes IA",
+            "quickAnswers": "Respostas Rápidas",
+            "templates": "Modelos",
             "company": "Empresa",
             "settings": "Configurações",
+            "connectWhatsApp": "Conectar WhatsApp",
+            "subscription": "Assinatura",
             "support": "Suporte"
         },
         "documents": {
@@ -635,11 +1241,22 @@
             "rowsPerPage": "Linhas por página",
             "page": "Página",
             "of": "de",
-            "rowsSelected": "linha(s) selecionada(s)",
+            "rowsSelected": "{selected} de {total} linha(s) selecionada(s).",
+            "totalRows": "{count} linha(s) no total.",
             "goToFirstPage": "Ir para primeira página",
             "goToPreviousPage": "Ir para página anterior",
             "goToNextPage": "Ir para próxima página",
-            "goToLastPage": "Ir para última página"
+            "goToLastPage": "Ir para última página",
+            "showingRange": "Exibindo {from}-{to} de {total}"
+        },
+        "columnHeader": {
+            "sortAsc": "Crescente",
+            "sortDesc": "Decrescente",
+            "hide": "Ocultar"
+        },
+        "view": {
+            "view": "Visualizar",
+            "toggleColumns": "Alternar colunas"
         },
         "messages": {
             "noResults": "Nenhum resultado.",
@@ -685,7 +1302,7 @@
         }
     },
     "NavUser": {
-        "account": "Conta",
+        "profile": "Perfil",
         "subscription": "Assinatura",
         "notifications": "Notificações",
         "settings": "Configurações",
@@ -1167,8 +1784,18 @@
         "inviteCompanyConflict": "Esta conta já pertence a outra empresa e não pode aceitar este convite."
     },
     "Company": {
-        "title": "Gestão de Empresa",
-        "description": "Gerencie suas empresas e membros da equipe",
+        "title": "Configurações",
+        "description": "Gerencie os dados da empresa e os membros da equipe.",
+        "tabs": {
+            "company": "Empresa",
+            "users": "Usuários",
+            "checklist": "Modelos de checklist"
+        },
+        "checklist": {
+            "title": "Modelos de checklist",
+            "description": "Gerencie os modelos de checklist da sua empresa.",
+            "empty": "Nenhum modelo de checklist cadastrado ainda."
+        },
         "companies": "Empresas",
         "createCompany": "Criar Empresa",
         "createCompanyDescription": "Crie uma nova empresa para começar com sua equipe.",
@@ -1183,14 +1810,21 @@
         "deleteCompanyConfirmation": "Tem certeza de que deseja excluir a empresa \"{companyName}\"? Esta ação não pode ser desfeita e removerá todos os membros da empresa e dados associados.",
         "delete": "Excluir",
         "form": {
-            "name": "Nome da Empresa",
+            "name": "Nome da empresa",
             "namePlaceholder": "Digite o nome da empresa",
             "description": "Descrição",
             "descriptionPlaceholder": "Digite a descrição da empresa (opcional)",
-            "documentType": "Tipo de Documento",
+            "descriptionHint": "Conte um pouco sobre sua empresa e seus diferenciais.",
+            "country": "País da empresa",
+            "countryPlaceholder": "Selecione o país",
+            "documentType": "Tipo de documento",
             "selectDocumentType": "Tipo de documento",
+            "documentNumber": "CPF/CNPJ",
             "document": "Número do Documento",
             "documentPlaceholder": "Digite o número do documento",
+            "number": "Número",
+            "complement": "Complemento (opcional)",
+            "clearAddress": "Limpar endereço",
             "zipCode": "CEP",
             "zipCodePlaceholder": "Digite o CEP",
             "state": "Estado",
@@ -1203,7 +1837,9 @@
             "create": "Criar Empresa",
             "creating": "Criando...",
             "update": "Atualizar Empresa",
-            "updating": "Atualizando..."
+            "updating": "Atualizando...",
+            "save": "Salvar",
+            "saving": "Salvando..."
         },
         "documentTypes": {
             "cpf": "CPF",
@@ -1212,6 +1848,20 @@
         "members": {
             "title": "Membros da Equipe",
             "description": "Gerencie os membros da sua equipe e suas permissões",
+            "helpTitle": "Membro da equipe ou convidado do projeto?",
+            "helpDescription": "Membros da equipe têm acesso contínuo à empresa e podem colaborar em conversas e configurações conforme suas permissões. Convidados recebem um link por e-mail e precisam aceitar o convite antes de acessar a plataforma.",
+            "inviteMemberButton": "Convidar Membro",
+            "searchPlaceholder": "Buscar por nome ou e-mail...",
+            "statusFilter": "Todos os status",
+            "statusAll": "Todos os status",
+            "memberCountSingular": "1 membro",
+            "memberCountPlural": "{count} membros",
+            "noResults": "Nenhum membro encontrado para os filtros selecionados.",
+            "permissionsFullAccess": "Acesso total",
+            "permissionsAdminAccess": "Acesso administrativo",
+            "permissionsLimited": "Acesso limitado",
+            "canPostShort": "Criar",
+            "canApproveShort": "Ler",
             "inviteMember": "Convidar Membro",
             "inviteDescription": "Envie um convite para um novo membro da equipe.",
             "email": "Endereço de Email",
@@ -1550,6 +2200,12 @@
             "featuresIncluded": "Recursos incluídos no seu plano atual",
             "maxAiResponses": "Respostas IA / mês",
             "aiResponses": "Respostas IA",
+            "messagesReceived": "Mensagens Recebidas",
+            "messagesSent": "Mensagens Enviadas",
+            "botAutoReplies": "Respostas Automáticas do Bot",
+            "channelUsage": "Uso por Linha WhatsApp",
+            "channelUsageDescription": "Contagem de mensagens por número WhatsApp conectado neste período",
+            "phoneNumber": "Número de Telefone",
             "analytics": "Análises",
             "removeBranding": "Remover Marca",
             "exports": "Exportação de Dados",
@@ -1649,7 +2305,9 @@
         "description": "Gerencie sua base de clientes e mantenha os dados sempre atualizados.",
         "toolbar": {
             "searchPlaceholder": "Buscar clientes...",
-            "addCustomer": "Novo cliente"
+            "addCustomer": "Novo cliente",
+            "statusFilter": "Filtrar por status",
+            "statusAll": "Todos os status"
         },
         "table": {
             "columns": {
@@ -1658,15 +2316,20 @@
                 "phone": "Telefone",
                 "company": "Empresa",
                 "status": "Status",
-                "createdAt": "Criado em"
+                "createdAt": "Criado em",
+                "actions": "Ações"
             },
             "empty": {
                 "title": "Nenhum cliente ainda",
                 "description": "Comece adicionando o seu primeiro cliente."
             },
+            "messages": {
+                "noResults": "Nenhum cliente encontrado"
+            },
             "actions": {
                 "edit": "Editar",
-                "startConversation": "Mensagem"
+                "startConversation": "Mensagem",
+                "openMenu": "Abrir menu"
             },
             "badges": {
                 "active": "Ativo",
@@ -1703,6 +2366,10 @@
                 "status": {
                     "label": "Status",
                     "placeholder": "Selecione o status"
+                },
+                "description": {
+                    "label": "Descrição",
+                    "placeholder": "Adicione informações sobre este cliente para sua equipe e assistente de IA"
                 }
             },
             "buttons": {
@@ -1717,6 +2384,8 @@
             }
         },
         "messages": {
+            "loading": "Carregando clientes...",
+            "loadFailed": "Não foi possível carregar os clientes",
             "customerCreated": "Cliente adicionado com sucesso",
             "customerUpdated": "Cliente atualizado com sucesso",
             "customerSaveError": "Ocorreu um erro ao salvar o cliente.",

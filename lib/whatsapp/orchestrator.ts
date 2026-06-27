@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto"
+import { normalizeStoredPhone } from "@/lib/phone-utils"
 import type { WhatsAppConfig } from "@/lib/whatsapp/config"
 import type { WhatsAppRegistry } from "@/lib/whatsapp/registry"
 import { WhatsAppScaler } from "@/lib/whatsapp/scaler"
@@ -40,7 +41,7 @@ export class WhatsAppOrchestrator {
     await this.registry.assignSession(sessionId, worker.workerId)
     await this.workerClient.startSession(worker.url, sessionId)
 
-    return session
+    return this.syncSessionWebhookUrl(session)
   }
 
   async connectSession(sessionId: string, companyId: string): Promise<WhatsAppSession> {
@@ -113,33 +114,58 @@ export class WhatsAppOrchestrator {
   }
 
   async sendMessage(params: SendMessageRequest & { companyId: string }): Promise<WhatsAppMessage> {
+    const normalizedTo = normalizeStoredPhone(params.to)
+    if (!normalizedTo) {
+      throw new Error("Invalid recipient phone number")
+    }
+
     const sessionId = await this.resolveSessionId(params.sessionId, params.phoneNumber, params.companyId)
     const workerUrl = await this.workerUrlForSession(sessionId)
+    await this.ensureSessionOnWorker(sessionId, workerUrl)
     const message = await this.workerClient.sendMessage(workerUrl, sessionId, {
-      to: params.to,
+      to: normalizedTo,
       text: params.text,
-    })
-
-    await this.repository.saveMessage({
-      ...message,
-      companyId: params.companyId,
     })
 
     return message
   }
 
   buildInboundWebhookUrl(companyId: string): string {
-    const url = new URL("/api/webhooks/whatsapp/inbound", this.config.appUrl)
+    const url = new URL("/api/webhooks/whatsapp/inbound", this.config.webhookAppUrl)
     url.searchParams.set("companyId", companyId)
     url.searchParams.set("token", this.config.webhookSecret)
     return url.toString()
+  }
+
+  private async syncSessionWebhookUrl(session: WhatsAppSession): Promise<WhatsAppSession> {
+    const expectedWebhookUrl = this.buildInboundWebhookUrl(session.companyId)
+    if (session.webhookUrl === expectedWebhookUrl) {
+      return session
+    }
+
+    const updated: WhatsAppSession = {
+      ...session,
+      webhookUrl: expectedWebhookUrl,
+      updatedAt: new Date().toISOString(),
+    }
+    await this.repository.updateSession(updated)
+    return updated
   }
 
   private async enrichAndPersist(session: WhatsAppSession): Promise<WhatsAppSession> {
     const workerUrl = await this.workerUrlForSession(session.sessionId).catch(() => null)
     if (!workerUrl) return session
 
-    const live = await this.workerClient.sessionStatus(workerUrl, session.sessionId).catch(() => null)
+    let live = await this.workerClient.sessionStatus(workerUrl, session.sessionId).catch(() => null)
+    if (!live && (session.status === "connected" || session.phoneNumber)) {
+      await this.ensureSessionOnWorker(session.sessionId, workerUrl).catch((error) => {
+        console.error("[whatsapp] failed to rehydrate session on worker:", {
+          sessionId: session.sessionId,
+          error: error instanceof Error ? error.message : error,
+        })
+      })
+      live = await this.workerClient.sessionStatus(workerUrl, session.sessionId).catch(() => null)
+    }
     if (!live) return session
 
     const phoneNumber = live.phoneNumber ?? session.phoneNumber
@@ -147,12 +173,14 @@ export class WhatsAppOrchestrator {
     const shouldAutoLabel = !session.label && status === "connected" && Boolean(phoneNumber)
     const label = session.label ?? (shouldAutoLabel ? buildSessionLabel(phoneNumber!, session.createdAt) : undefined)
 
+    const expectedWebhookUrl = this.buildInboundWebhookUrl(session.companyId)
     const changed =
       session.status !== status ||
       session.phoneNumber !== phoneNumber ||
       session.qrCode !== live.qrCode ||
       session.qrImage !== live.qrImage ||
-      session.label !== label
+      session.label !== label ||
+      session.webhookUrl !== expectedWebhookUrl
 
     const enriched: WhatsAppSession = {
       ...session,
@@ -161,6 +189,7 @@ export class WhatsAppOrchestrator {
       qrImage: live.qrImage ?? session.qrImage,
       expiresAt: live.expiresAt ?? session.expiresAt,
       phoneNumber,
+      webhookUrl: expectedWebhookUrl,
       ...(label ? { label } : {}),
       updatedAt: new Date().toISOString(),
     }
@@ -234,6 +263,19 @@ export class WhatsAppOrchestrator {
       currentSessions: 0,
       lastHeartbeat: Date.now(),
       status: "idle",
+    }
+  }
+
+  private async ensureSessionOnWorker(sessionId: string, workerUrl: string): Promise<void> {
+    const live = await this.workerClient.sessionStatus(workerUrl, sessionId).catch(() => null)
+    if (!live) {
+      await this.workerClient.startSession(workerUrl, sessionId)
+      await this.workerClient.connectSession(workerUrl, sessionId)
+      return
+    }
+
+    if (live.status !== "connected") {
+      await this.workerClient.connectSession(workerUrl, sessionId)
     }
   }
 }

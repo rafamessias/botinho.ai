@@ -8,20 +8,22 @@ import (
 )
 
 type Repositories struct {
-	Sessions    SessionRepository
-	Messages    MessageRepository
-	Checkpoints StoreCheckpointRepository
-	Close       func() error
+	Sessions      SessionRepository
+	Messages      MessageRepository
+	InboundEvents InboundEventRepository
+	Checkpoints   StoreCheckpointRepository
+	Close         func() error
 }
 
 func NewRepositories(ctx context.Context, firestoreProjectID string) (*Repositories, error) {
 	if firestoreProjectID == "" {
 		mem := NewMemoryRepository()
 		return &Repositories{
-			Sessions:    mem,
-			Messages:    mem,
-			Checkpoints: mem,
-			Close:       func() error { return nil },
+			Sessions:      mem,
+			Messages:      mem,
+			InboundEvents: mem,
+			Checkpoints:   mem,
+			Close:         func() error { return nil },
 		}, nil
 	}
 
@@ -30,10 +32,11 @@ func NewRepositories(ctx context.Context, firestoreProjectID string) (*Repositor
 		return nil, fmt.Errorf("firestore repository: %w", err)
 	}
 	return &Repositories{
-		Sessions:    fs,
-		Messages:    fs,
-		Checkpoints: fs,
-		Close:       fs.Close,
+		Sessions:      fs,
+		Messages:      fs,
+		InboundEvents: fs,
+		Checkpoints:   fs,
+		Close:         fs.Close,
 	}, nil
 }
 

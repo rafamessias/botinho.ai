@@ -1,71 +1,65 @@
 "use client"
 
-import { useCallback, useMemo, useState, type ChangeEvent } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
-import { Plus, Search } from "lucide-react"
+import { Loader2, Plus } from "lucide-react"
 import { toast } from "sonner"
 import { useRouter } from "@/i18n/navigation"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import type { Customer } from "@/lib/types/customer"
 import { CustomerModal, type CustomerFormValues } from "@/components/customer/customer-modal"
 import { CustomerTable } from "@/components/customer/customer-table"
-
-const now = new Date()
-
-const initialCustomers: Customer[] = [
-    {
-        id: "cust-001",
-        name: "Maria Silva",
-        email: "maria.silva@example.com",
-        phone: "+55 (11) 99999-1234",
-        company: "Botinho LTDA",
-        status: "active",
-        createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 7).toISOString(),
-        updatedAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 3).toISOString(),
-    },
-    {
-        id: "cust-002",
-        name: "João Pereira",
-        email: "joao.pereira@example.com",
-        phone: "+55 (21) 98888-4321",
-        company: "Loja do João",
-        status: "prospect",
-        createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 15).toISOString(),
-        updatedAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 1).toISOString(),
-    },
-    {
-        id: "cust-003",
-        name: "Ana Costa",
-        email: "ana.costa@example.com",
-        phone: "+55 (31) 97777-5678",
-        company: "Costa Consulting",
-        status: "inactive",
-        createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 30).toISOString(),
-        updatedAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 12).toISOString(),
-    },
-]
-
-const generateCustomerId = () =>
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `cust-${Math.random().toString(36).slice(2, 10)}`
+import {
+    bulkImportCustomersAction,
+    createCustomerAction,
+    listCustomersAction,
+    updateCustomerAction,
+} from "@/components/server-actions/customers"
+import { useUser } from "@/components/user-provider"
 
 export const CustomerPage = () => {
     const t = useTranslations("Customer")
     const router = useRouter()
+    const { user } = useUser()
 
-    const [customers, setCustomers] = useState<Customer[]>(initialCustomers)
-    const [searchTerm, setSearchTerm] = useState("")
+    const [customers, setCustomers] = useState<Customer[]>([])
+    const [isLoading, setIsLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalMode, setModalMode] = useState<"create" | "edit">("create")
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
     const [isSaving, setIsSaving] = useState(false)
 
-    const handleSearchChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value)
-    }, [])
+    const companyId = user?.defaultCompanyId != null ? String(user.defaultCompanyId) : null
+
+    const loadCustomers = useCallback(async () => {
+        if (!companyId) {
+            setCustomers([])
+            setIsLoading(false)
+            return
+        }
+
+        setIsLoading(true)
+        try {
+            const result = await listCustomersAction({ pageSize: 200 })
+
+            if (!result.success || !result.data) {
+                throw new Error(result.error || "Unable to load customers")
+            }
+
+            setCustomers(result.data.customers)
+        } catch (error) {
+            console.error("Failed to load customers", error)
+            toast.error(t("messages.loadFailed"))
+            setCustomers([])
+        } finally {
+            setIsLoading(false)
+        }
+    }, [companyId, t])
+
+    useEffect(() => {
+        void loadCustomers()
+    }, [loadCustomers])
 
     const handleCloseModal = useCallback(() => {
         setIsModalOpen(false)
@@ -107,39 +101,43 @@ export const CustomerPage = () => {
 
     const handleSubmitCustomer = useCallback(
         async (values: CustomerFormValues) => {
+            setIsSaving(true)
             try {
-                setIsSaving(true)
-                const timestamp = new Date().toISOString()
-
                 if (modalMode === "create") {
-                    const newCustomer: Customer = {
-                        id: generateCustomerId(),
+                    const result = await createCustomerAction({
                         name: values.name,
-                        email: values.email,
                         phone: values.phone,
+                        email: values.email,
                         company: values.company,
+                        description: values.description,
                         status: values.status,
-                        createdAt: timestamp,
-                        updatedAt: timestamp,
+                    })
+
+                    if (!result.success || !result.data) {
+                        throw new Error(result.error || "Unable to create customer")
                     }
 
-                    setCustomers((previous) => [newCustomer, ...previous])
+                    const { customer } = result.data
+                    setCustomers((previous) => [customer, ...previous])
                     toast.success(t("messages.customerCreated"))
                 } else if (selectedCustomer) {
+                    const result = await updateCustomerAction({
+                        customerId: selectedCustomer.id,
+                        name: values.name,
+                        phone: values.phone,
+                        email: values.email,
+                        company: values.company,
+                        description: values.description,
+                        status: values.status,
+                    })
+
+                    if (!result.success || !result.data) {
+                        throw new Error(result.error || "Unable to update customer")
+                    }
+
+                    const { customer } = result.data
                     setCustomers((previous) =>
-                        previous.map((customer) =>
-                            customer.id === selectedCustomer.id
-                                ? {
-                                      ...customer,
-                                      name: values.name,
-                                      email: values.email,
-                                      phone: values.phone,
-                                      company: values.company,
-                                      status: values.status,
-                                      updatedAt: timestamp,
-                                  }
-                                : customer,
-                        ),
+                        previous.map((item) => (item.id === selectedCustomer.id ? customer : item)),
                     )
                     toast.success(t("messages.customerUpdated"))
                 }
@@ -147,7 +145,9 @@ export const CustomerPage = () => {
                 handleCloseModal()
             } catch (error) {
                 console.error("Failed to save customer", error)
-                toast.error(t("messages.customerSaveError"))
+                const message = error instanceof Error ? error.message : t("messages.customerSaveError")
+                toast.error(message || t("messages.customerSaveError"))
+            } finally {
                 setIsSaving(false)
             }
         },
@@ -157,67 +157,52 @@ export const CustomerPage = () => {
     const handleBulkImport = useCallback(
         async (customersToImport: Omit<Customer, "id" | "createdAt" | "updatedAt">[]) => {
             try {
-                const timestamp = new Date().toISOString()
-                const newCustomers: Customer[] = customersToImport.map((customer) => ({
-                    ...customer,
-                    id: generateCustomerId(),
-                    createdAt: timestamp,
-                    updatedAt: timestamp,
-                }))
+                const result = await bulkImportCustomersAction({
+                    customers: customersToImport.map((customer) => ({
+                        name: customer.name,
+                        phone: customer.phone,
+                        email: customer.email,
+                        company: customer.company,
+                        status: customer.status,
+                    })),
+                })
 
-                setCustomers((previous) => [...newCustomers, ...previous])
-                toast.success(t("messages.customersImported", { count: newCustomers.length }))
+                if (!result.success || !result.data) {
+                    throw new Error(result.error || "Unable to import customers")
+                }
+
+                if (result.data.customers.length > 0) {
+                    setCustomers((previous) => [...result.data!.customers, ...previous])
+                    toast.success(t("messages.customersImported", { count: result.data.customers.length }))
+                }
+
+                if (result.data.errors.length > 0) {
+                    toast.warning(t("import.parsedWithErrors", { count: result.data.errors.length }))
+                }
+
                 handleCloseModal()
             } catch (error) {
                 console.error("Failed to import customers", error)
-                toast.error(t("messages.customersImportError"))
+                const message = error instanceof Error ? error.message : t("messages.customersImportError")
+                toast.error(message || t("messages.customersImportError"))
                 throw error
             }
         },
         [handleCloseModal, t],
     )
 
-    const filteredCustomers = useMemo(() => {
-        const query = searchTerm.trim().toLowerCase()
-        if (!query) {
-            return customers
-        }
-
-        return customers.filter((customer) => {
-            if (customer.name.toLowerCase().includes(query)) {
-                return true
-            }
-
-            if (customer.email?.toLowerCase().includes(query)) {
-                return true
-            }
-
-            if (customer.phone.toLowerCase().includes(query)) {
-                return true
-            }
-
-            if (customer.company?.toLowerCase().includes(query)) {
-                return true
-            }
-
-            return false
-        })
-    }, [customers, searchTerm])
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                {t("messages.loading")}
+            </div>
+        )
+    }
 
     return (
         <div className="section-spacing space-y-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <label className="relative flex w-full sm:max-w-xs" htmlFor="customer-search">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-                    <Input
-                        id="customer-search"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        placeholder={t("toolbar.searchPlaceholder")}
-                        className="pl-9"
-                        aria-label={t("toolbar.searchPlaceholder")}
-                    />
-                </label>
+            <div className="flex justify-end">
                 <Button
                     onClick={handleOpenCreateModal}
                     className="sm:w-auto"
@@ -229,7 +214,7 @@ export const CustomerPage = () => {
             </div>
 
             <CustomerTable
-                customers={filteredCustomers}
+                customers={customers}
                 onEdit={handleEditCustomer}
                 onStartConversation={handleStartConversation}
             />
@@ -248,4 +233,3 @@ export const CustomerPage = () => {
 }
 
 export default CustomerPage
-

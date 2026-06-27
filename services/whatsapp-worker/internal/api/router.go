@@ -1,8 +1,10 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -85,7 +87,9 @@ func (h *WorkerHandlers) SendMessage(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "invalid request body", err.Error())
 		return
 	}
-	message, err := h.pool.SendText(r.Context(), sessionID, req.To, req.Text)
+	ctx, cancel := context.WithTimeout(r.Context(), 25*time.Second)
+	defer cancel()
+	message, err := h.pool.SendText(ctx, sessionID, req.To, req.Text)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "failed to send message", err.Error())
 		return

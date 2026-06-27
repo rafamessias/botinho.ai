@@ -26,6 +26,10 @@ type MessageRepository interface {
 	ListMessages(ctx context.Context, sessionID string, limit int) ([]*models.Message, error)
 }
 
+type InboundEventRepository interface {
+	UpsertInboundEvent(ctx context.Context, companyID, eventID string, event *models.InboundEvent) error
+}
+
 type StoreCheckpointRepository interface {
 	SaveCheckpoint(ctx context.Context, sessionID string, data []byte) error
 	LoadCheckpoint(ctx context.Context, sessionID string) ([]byte, error)
@@ -33,19 +37,21 @@ type StoreCheckpointRepository interface {
 }
 
 type MemoryRepository struct {
-	mu        sync.RWMutex
-	sessions  map[string]*models.Session
-	phoneIdx  map[string]string
-	messages  []*models.Message
-	checkpoints map[string][]byte
+	mu            sync.RWMutex
+	sessions      map[string]*models.Session
+	phoneIdx      map[string]string
+	messages      []*models.Message
+	inboundEvents map[string]*models.InboundEvent
+	checkpoints   map[string][]byte
 }
 
 func NewMemoryRepository() *MemoryRepository {
 	return &MemoryRepository{
-		sessions:    make(map[string]*models.Session),
-		phoneIdx:    make(map[string]string),
-		messages:    make([]*models.Message, 0),
-		checkpoints: make(map[string][]byte),
+		sessions:      make(map[string]*models.Session),
+		phoneIdx:      make(map[string]string),
+		messages:      make([]*models.Message, 0),
+		inboundEvents: make(map[string]*models.InboundEvent),
+		checkpoints:   make(map[string][]byte),
 	}
 }
 
@@ -171,5 +177,14 @@ func (m *MemoryRepository) DeleteCheckpoint(_ context.Context, sessionID string)
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	delete(m.checkpoints, sessionID)
+	return nil
+}
+
+func (m *MemoryRepository) UpsertInboundEvent(_ context.Context, companyID, eventID string, event *models.InboundEvent) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	copyEvent := *event
+	key := companyID + ":" + eventID
+	m.inboundEvents[key] = &copyEvent
 	return nil
 }

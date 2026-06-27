@@ -86,6 +86,32 @@ export const extractPhoneDigits = (value: string): string => {
 }
 
 /**
+ * Normalize a phone number for database storage and WhatsApp lookups.
+ * Strips formatting characters and keeps digits only.
+ */
+export const normalizeStoredPhone = (value: string): string => {
+    return extractPhoneDigits(value.trim())
+}
+
+/**
+ * Format a digits-only stored phone for display (e.g. 5511981622360 → +55 (11) 98162-2360).
+ */
+export const formatStoredPhoneForDisplay = (value: string): string => {
+    const digits = normalizeStoredPhone(value)
+    if (!digits) return value
+
+    if (digits.startsWith("55") && digits.length >= 12) {
+        return `+55 ${formatPhoneNumber(digits.slice(2), "BR")}`
+    }
+
+    if (digits.startsWith("1") && digits.length === 11) {
+        return `+1 ${formatPhoneNumber(digits.slice(1), "US")}`
+    }
+
+    return `+${digits}`
+}
+
+/**
  * Validates if a phone number has the minimum required digits
  * @param value - The phone number string to validate
  * @param minLength - Minimum number of digits required (default: 10)

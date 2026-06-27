@@ -25,11 +25,11 @@ import {
     updateQuickAnswerAction,
 } from "@/components/server-actions/ai-training"
 import { AiTemplateCategory, KnowledgeItemType } from "@/lib/types/enums"
+import { copyToClipboard } from "@/lib/copy-to-clipboard"
 import type {
     KnowledgeItemView,
     MainTab,
     QuickAnswerView,
-    TemplateOptionView,
     TemplateView,
 } from "./types"
 type TemplateRecord = {
@@ -224,7 +224,6 @@ export default function AITrainingPage() {
     const [newTemplateName, setNewTemplateName] = useState("")
     const [newTemplateContent, setNewTemplateContent] = useState("")
     const [newTemplateCategory, setNewTemplateCategory] = useState<AiTemplateCategory>(AiTemplateCategory.greeting)
-    const [newTemplateOptions, setNewTemplateOptions] = useState<TemplateOptionView[]>([])
 
     const [knowledgeBeingDeleted, setKnowledgeBeingDeleted] = useState<string | null>(null)
     const [quickAnswerBeingDeleted, setQuickAnswerBeingDeleted] = useState<string | null>(null)
@@ -591,30 +590,11 @@ export default function AITrainingPage() {
         }
     }
 
-    const handleAddOption = () => {
-        const optionId = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString()
-        const newOption: TemplateOptionView = {
-            id: optionId,
-            label: "",
-            value: "",
-        }
-        setNewTemplateOptions((prev) => [...prev, newOption])
-    }
-
-    const handleUpdateOption = (id: string, field: "label" | "value", value: string) => {
-        setNewTemplateOptions((prev) => prev.map((opt) => (opt.id === id ? { ...opt, [field]: value } : opt)))
-    }
-
-    const handleRemoveOption = (id: string) => {
-        setNewTemplateOptions((prev) => prev.filter((opt) => opt.id !== id))
-    }
-
     const resetTemplateForm = () => {
         setEditingTemplate(null)
         setNewTemplateName("")
         setNewTemplateContent("")
         setNewTemplateCategory(AiTemplateCategory.greeting)
-        setNewTemplateOptions([])
     }
 
     const handleOpenTemplateDialog = () => {
@@ -622,12 +602,9 @@ export default function AITrainingPage() {
         setIsTemplateDialogOpen(true)
     }
 
-    const sanitizeTemplateOptions = (options: TemplateOptionView[]) =>
-        options
-            .map((option) => ({
-                label: option.label.trim(),
-                value: option.value.trim(),
-            }))
+    const preserveTemplateOptions = (template: TemplateView) =>
+        template.options
+            ?.map((option) => ({ label: option.label.trim(), value: option.value.trim() }))
             .filter((option) => option.label && option.value)
 
     const handleAddTemplate = async () => {
@@ -646,13 +623,10 @@ export default function AITrainingPage() {
 
         try {
             setIsTemplateSubmitting(true)
-            const validOptions = sanitizeTemplateOptions(newTemplateOptions)
-
             const result = await createAiTemplateAction({
                 name: newTemplateName.trim(),
                 content: newTemplateContent.trim(),
                 category: newTemplateCategory,
-                options: validOptions.length > 0 ? validOptions : undefined,
             })
 
             if (!result.success || !result.data || !result.data.template) {
@@ -701,7 +675,6 @@ export default function AITrainingPage() {
         setNewTemplateName(template.name)
         setNewTemplateContent(template.content)
         setNewTemplateCategory(template.category)
-        setNewTemplateOptions(template.options || [])
         setIsTemplateDialogOpen(true)
     }
 
@@ -721,14 +694,14 @@ export default function AITrainingPage() {
 
         try {
             setIsTemplateSubmitting(true)
-            const validOptions = sanitizeTemplateOptions(newTemplateOptions)
+            const preservedOptions = preserveTemplateOptions(editingTemplate)
 
             const result = await updateAiTemplateAction({
                 id: editingTemplate.id,
                 name: newTemplateName.trim(),
                 content: newTemplateContent.trim(),
                 category: newTemplateCategory,
-                options: validOptions.length > 0 ? validOptions : undefined,
+                options: preservedOptions?.length ? preservedOptions : undefined,
             })
 
             if (!result.success || !result.data || !result.data.template) {
@@ -811,13 +784,11 @@ export default function AITrainingPage() {
 
     const handleCopyTemplate = async (content: string) => {
         try {
-            if (typeof navigator !== "undefined" && navigator.clipboard) {
-                await navigator.clipboard.writeText(content)
-                toast({
-                    title: t("success.copied"),
-                    description: t("success.templateCopied"),
-                })
-            }
+            await copyToClipboard(content)
+            toast({
+                title: t("success.copied"),
+                description: t("success.templateCopied"),
+            })
         } catch (error) {
             console.error("Copy template error", error)
             toast({
@@ -967,10 +938,6 @@ export default function AITrainingPage() {
                             onContentChange: (value) => setNewTemplateContent(value),
                             newTemplateCategory,
                             onCategoryChange: (value) => setNewTemplateCategory(value),
-                            newTemplateOptions,
-                            onAddOption: handleAddOption,
-                            onUpdateOption: handleUpdateOption,
-                            onRemoveOption: handleRemoveOption,
                             onCancel: () => {
                                 setIsTemplateDialogOpen(false)
                                 resetTemplateForm()

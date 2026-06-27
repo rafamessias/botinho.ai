@@ -29,15 +29,28 @@ const mapMemberForClient = (
   user,
 })
 
+const mapCompanyFields = (data: FirebaseFirestore.DocumentData) => ({
+  slug: data.slug as string,
+  name: data.name as string,
+  description: (data.description as string | undefined) ?? null,
+  country: (data.country as string | undefined) ?? null,
+  documentType: (data.documentType as "cpf" | "cnpj" | undefined) ?? null,
+  document: (data.document as string | undefined) ?? null,
+  address: (data.address as string | undefined) ?? null,
+  addressNumber: (data.addressNumber as string | undefined) ?? null,
+  zipCode: (data.zipCode as string | undefined) ?? null,
+  complement: (data.complement as string | undefined) ?? null,
+  city: (data.city as string | undefined) ?? null,
+  state: (data.state as string | undefined) ?? null,
+})
+
 const mapCompanyForClient = (
   companyId: string,
   data: FirebaseFirestore.DocumentData,
   members: ReturnType<typeof mapMemberForClient>[],
 ) => ({
   id: companyId,
-  slug: data.slug as string,
-  name: data.name as string,
-  description: (data.description as string | undefined) ?? null,
+  ...mapCompanyFields(data),
   members,
 })
 
@@ -49,10 +62,8 @@ export const getCompanyById = async (companyId: string) => {
   const data = snap.data()!
   return {
     id: snap.id,
-    name: data.name as string,
-    description: (data.description as string | undefined) ?? null,
+    ...mapCompanyFields(data),
     tokenApi: (data.tokenApi as string | undefined) ?? null,
-    slug: data.slug as string | undefined,
   }
 }
 
@@ -88,7 +99,21 @@ export const assertCompanyMember = async (companyId: string, uid: string) => {
   return member
 }
 
-export const updateCompany = async (companyId: string, data: { name?: string; description?: string }) => {
+export type CompanyUpdateData = {
+  name?: string
+  description?: string
+  country?: string
+  documentType?: "cpf" | "cnpj"
+  document?: string
+  address?: string
+  addressNumber?: string
+  zipCode?: string
+  complement?: string
+  city?: string
+  state?: string
+}
+
+export const updateCompany = async (companyId: string, data: CompanyUpdateData) => {
   await companyRef(companyId).set(
     {
       ...data,

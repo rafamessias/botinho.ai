@@ -14,6 +14,7 @@ const (
 
 type Session struct {
 	ID          string        `json:"sessionId"`
+	CompanyID   string        `json:"companyId,omitempty"`
 	PhoneNumber string        `json:"phoneNumber,omitempty"`
 	WorkerID    string        `json:"workerId,omitempty"`
 	Status      SessionStatus `json:"status"`
@@ -56,6 +57,22 @@ type WorkerInfo struct {
 	CurrentSessions int    `json:"currentSessions"`
 	Status          string `json:"status"`
 	LastHeartbeat   int64  `json:"lastHeartbeat"`
+}
+
+type InboundEvent struct {
+	Channel     string    `json:"channel"`
+	SessionID   string    `json:"sessionId"`
+	MessageID   string    `json:"messageId"`
+	From        string    `json:"from"`
+	To          string    `json:"to,omitempty"`
+	Body        string    `json:"body"`
+	Type        string    `json:"type,omitempty"`
+	Timestamp   time.Time `json:"timestamp"`
+	PhoneNumber string    `json:"phoneNumber,omitempty"`
+	Status      string    `json:"status"`
+	Attempts    int       `json:"attempts"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type SendMessageRequest struct {

@@ -5,7 +5,10 @@ export type WhatsAppConfig = {
   scalerMode: "local" | "docker" | "gke"
   workerBaseUrl: string
   webhookSecret: string
+  /** Public app URL (browser-facing). */
   appUrl: string
+  /** URL workers use to POST inbound webhooks (may differ in Docker, e.g. host.docker.internal). */
+  webhookAppUrl: string
 }
 
 const parseIntEnv = (value: string | undefined, fallback: number) => {
@@ -23,6 +26,9 @@ export const getWhatsAppConfig = (): WhatsAppConfig | null => {
 
   const scalerMode = (process.env.SCALER_MODE?.trim() ?? "local") as WhatsAppConfig["scalerMode"]
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL?.trim() ?? "http://localhost:3000"
+  const webhookAppUrl = process.env.WEBHOOK_APP_URL?.trim() ?? appUrl
+
   return {
     redisUrl,
     workerInternalToken,
@@ -30,7 +36,8 @@ export const getWhatsAppConfig = (): WhatsAppConfig | null => {
     scalerMode,
     workerBaseUrl: process.env.WORKER_BASE_URL?.trim() ?? "http://localhost",
     webhookSecret: process.env.WHATSAPP_WEBHOOK_SECRET?.trim() ?? workerInternalToken,
-    appUrl: process.env.NEXT_PUBLIC_APP_URL?.trim() ?? "http://localhost:3000",
+    appUrl,
+    webhookAppUrl,
   }
 }
 

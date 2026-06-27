@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"log"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -80,6 +82,7 @@ func (p *Pool) Start(ctx context.Context, sessionID string) (*models.Session, er
 	}
 
 	client := whatsmeow.NewClient(device, p.logger)
+	client.EnableAutoReconnect = true
 	session := &Session{
 		ID:        sessionID,
 		container: container,
@@ -182,7 +185,15 @@ func (p *Pool) SendText(ctx context.Context, sessionID, toNumber, text string) (
 }
 
 func (p *Pool) openStore(ctx context.Context, sessionID string) (*sqlstore.Container, *store.Device, error) {
-	container, err := sqlstore.New(ctx, "sqlite", fmt.Sprintf("file:%s?mode=memory&cache=private&_pragma=foreign_keys(1)", sessionID), p.logger)
+	dsn := fmt.Sprintf("file:%s?mode=memory&cache=private&_pragma=foreign_keys(1)", sessionID)
+	if dir := strings.TrimSpace(os.Getenv("SESSION_STORE_DIR")); dir != "" {
+		if err := os.MkdirAll(dir, 0o700); err != nil {
+			return nil, nil, fmt.Errorf("create session store dir: %w", err)
+		}
+		dsn = fmt.Sprintf("file:%s/%s.db?_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)", dir, sessionID)
+	}
+
+	container, err := sqlstore.New(ctx, "sqlite", dsn, p.logger)
 	if err != nil {
 		return nil, nil, fmt.Errorf("open memory store: %w", err)
 	}
@@ -250,12 +261,31 @@ func (p *Pool) handleEvent(ctx context.Context, sessionID string, raw any) {
 		session.mu.Unlock()
 		_ = p.syncSession(ctx, sessionID)
 	case *events.Message:
+		bodyPreview := extractMessageBody(evt)
+		log.Printf(
+			"[wa] message session=%s fromMe=%v chat=%s sender=%s id=%s bodyLen=%d",
+			sessionID,
+			evt.Info.IsFromMe,
+			evt.Info.Chat.String(),
+			evt.Info.Sender.String(),
+			evt.Info.ID,
+			len(bodyPreview),
+		)
 		if evt.Info.IsFromMe {
 			return
 		}
+		if evt.Info.IsGroup {
+			log.Printf("[wa] skipping group message session=%s chat=%s", sessionID, evt.Info.Chat.String())
+			return
+		}
 		message := inboundMessage(sessionID, evt)
+		if message.From == "" {
+			log.Printf("[wa] inbound message missing sender phone session=%s chat=%s sender=%s id=%s", sessionID, evt.Info.Chat.String(), evt.Info.Sender.String(), evt.Info.ID)
+		}
 		if p.callbacks.OnMessage != nil {
-			_ = p.callbacks.OnMessage(ctx, message)
+			if err := p.callbacks.OnMessage(ctx, message); err != nil {
+				log.Printf("[wa] failed to persist inbound message session=%s id=%s: %v", sessionID, evt.Info.ID, err)
+			}
 		}
 	case *events.Disconnected:
 		p.mu.RLock()
@@ -344,7 +374,13 @@ func parsePhoneJID(phone string) (types.JID, error) {
 }
 
 func normalizePhone(phone string) string {
-	return strings.TrimPrefix(strings.TrimSpace(phone), "+")
+	var digits strings.Builder
+	for _, r := range phone {
+		if r >= '0' && r <= '9' {
+			digits.WriteRune(r)
+		}
+	}
+	return digits.String()
 }
 
 func sessionPhone(session *Session) string {
@@ -360,16 +396,14 @@ func sessionPhone(session *Session) string {
 }
 
 func inboundMessage(sessionID string, evt *events.Message) *models.Message {
-	body := evt.Message.GetConversation()
-	if body == "" && evt.Message.GetExtendedTextMessage() != nil {
-		body = evt.Message.GetExtendedTextMessage().GetText()
-	}
+	body := extractMessageBody(evt)
 	msgType := "text"
 	if body == "" {
+		body = inferInboundPlaceholder(evt)
 		msgType = "unknown"
 	}
-	from := normalizePhone(evt.Info.Sender.User)
-	to := normalizePhone(evt.Info.Chat.User)
+	from := resolveInboundCustomerPhone(evt)
+	to := sessionPhoneFromEvent(sessionID, evt)
 	return &models.Message{
 		SessionID:   sessionID,
 		PhoneNumber: to,
@@ -382,4 +416,78 @@ func inboundMessage(sessionID string, evt *events.Message) *models.Message {
 		Body:        body,
 		Timestamp:   evt.Info.Timestamp,
 	}
+}
+
+func resolveInboundCustomerPhone(evt *events.Message) string {
+	if evt.Info.IsGroup {
+		return ""
+	}
+	if chat := evt.Info.Chat.ToNonAD(); chat.User != "" && chat.Server == types.DefaultUserServer {
+		return normalizePhone(chat.User)
+	}
+	if sender := evt.Info.Sender.ToNonAD(); sender.User != "" && sender.Server == types.DefaultUserServer {
+		return normalizePhone(sender.User)
+	}
+	if phone := normalizePhone(evt.Info.Chat.User); phone != "" {
+		return phone
+	}
+	return normalizePhone(evt.Info.Sender.User)
+}
+
+func sessionPhoneFromEvent(sessionID string, evt *events.Message) string {
+	if evt.Info.IsGroup {
+		return normalizePhone(evt.Info.Chat.User)
+	}
+	return resolveInboundCustomerPhone(evt)
+}
+
+func inferInboundPlaceholder(evt *events.Message) string {
+	if evt == nil || evt.Message == nil {
+		return "[Message]"
+	}
+	switch {
+	case evt.Message.GetImageMessage() != nil:
+		return "[Image]"
+	case evt.Message.GetVideoMessage() != nil:
+		return "[Video]"
+	case evt.Message.GetAudioMessage() != nil:
+		return "[Audio]"
+	case evt.Message.GetDocumentMessage() != nil:
+		return "[Document]"
+	case evt.Message.GetStickerMessage() != nil:
+		return "[Sticker]"
+	case evt.Message.GetContactMessage() != nil:
+		return "[Contact]"
+	case evt.Message.GetLocationMessage() != nil:
+		return "[Location]"
+	default:
+		return "[Message]"
+	}
+}
+
+func extractMessageBody(evt *events.Message) string {
+	if evt == nil || evt.Message == nil {
+		return ""
+	}
+
+	body := evt.Message.GetConversation()
+	if body == "" && evt.Message.GetExtendedTextMessage() != nil {
+		body = evt.Message.GetExtendedTextMessage().GetText()
+	}
+	if body == "" && evt.Message.GetImageMessage() != nil {
+		body = evt.Message.GetImageMessage().GetCaption()
+	}
+	if body == "" && evt.Message.GetVideoMessage() != nil {
+		body = evt.Message.GetVideoMessage().GetCaption()
+	}
+	if body == "" && evt.Message.GetDocumentMessage() != nil {
+		body = evt.Message.GetDocumentMessage().GetCaption()
+	}
+	if body == "" && evt.Message.GetButtonsResponseMessage() != nil {
+		body = evt.Message.GetButtonsResponseMessage().GetSelectedDisplayText()
+	}
+	if body == "" && evt.Message.GetListResponseMessage() != nil {
+		body = evt.Message.GetListResponseMessage().GetTitle()
+	}
+	return strings.TrimSpace(body)
 }

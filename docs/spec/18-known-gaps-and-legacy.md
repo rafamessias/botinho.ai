@@ -22,7 +22,6 @@ Previously removed remnants:
 
 | Location | Was | Resolution |
 |----------|-----|------------|
-| vercel.json | Survey API routes and cache headers | Removed; regions-only config |
 | readme.md | Prisma, PostgreSQL, Resend references | Rewritten for Firebase stack |
 | Contact email | `contact@opineeo.com` | `SUPPORT_EMAIL` env (default `hello@botinho.ai`) |
 | Subscription UI | Survey-era feature names | AI responses, API access, export, branding |

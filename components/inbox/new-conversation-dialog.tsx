@@ -49,7 +49,7 @@ type NewConversationDialogProps = {
     open: boolean
     onOpenChange: (open: boolean) => void
     connections: InboxConnectionView[]
-    selectedConnectionId: string | null
+    selectedConnectionIds: string[]
     prefilledCustomer?: Partial<AdHocCustomer> | null
     onConversationCreated: (conversationId: string, existing?: boolean) => void
 }
@@ -64,7 +64,7 @@ export const NewConversationDialog = ({
     open,
     onOpenChange,
     connections,
-    selectedConnectionId,
+    selectedConnectionIds,
     prefilledCustomer,
     onConversationCreated,
 }: NewConversationDialogProps) => {
@@ -79,8 +79,18 @@ export const NewConversationDialog = ({
     const [dialogConnectionId, setDialogConnectionId] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const requiresConnectionSelection = selectedConnectionId === null && connections.length > 1
-    const effectiveConnectionId = selectedConnectionId ?? dialogConnectionId
+    const availableConnections = useMemo(() => {
+        if (selectedConnectionIds.length === 0) {
+            return connections
+        }
+
+        return connections.filter((connection) => selectedConnectionIds.includes(connection.sessionId))
+    }, [connections, selectedConnectionIds])
+
+    const requiresConnectionSelection =
+        (selectedConnectionIds.length === 0 || selectedConnectionIds.length > 1) && connections.length > 1
+    const effectiveConnectionId =
+        selectedConnectionIds.length === 1 ? selectedConnectionIds[0]! : dialogConnectionId
 
     const selectedCustomer = useMemo(
         () => customers.find((customer) => customer.id === selectedCustomerId) ?? null,
@@ -134,12 +144,12 @@ export const NewConversationDialog = ({
             })
         }
 
-        if (connections.length === 1) {
-            setDialogConnectionId(connections[0]!.sessionId)
+        if (availableConnections.length === 1) {
+            setDialogConnectionId(availableConnections[0]!.sessionId)
         }
 
         void loadCustomers("")
-    }, [connections, loadCustomers, open, prefilledCustomer, resetForm])
+    }, [availableConnections, loadCustomers, open, prefilledCustomer, resetForm])
 
     useEffect(() => {
         if (!open || activeTab !== "existing") {
@@ -245,7 +255,7 @@ export const NewConversationDialog = ({
                                     <SelectValue placeholder={t("connectionPlaceholder")} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {connections.map((connection) => (
+                                    {availableConnections.map((connection) => (
                                         <SelectItem key={connection.sessionId} value={connection.sessionId}>
                                             {getConnectionLabel(connection)}
                                         </SelectItem>

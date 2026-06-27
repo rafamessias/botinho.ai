@@ -3,23 +3,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
+import { Link, useRouter } from "@/i18n/navigation"
 import { format, formatDistanceToNow } from "date-fns"
+import { toast } from "sonner"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
-    Search,
     Send,
     Bot,
     User,
@@ -35,29 +28,41 @@ import {
     ArrowLeft,
     PanelLeft,
     PanelLeftClose,
-    Inbox,
+    Bookmark,
     MessageCircle,
     MessageSquarePlus,
     Contact,
     Sparkles,
+    MessageSquare,
+    Zap,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { formatStoredPhoneForDisplay } from "@/lib/phone-utils"
 import { useUser } from "@/components/user-provider"
-import { useSidebar } from "../ui/sidebar"
 import {
+    createInboxConversationAction,
     getInboxConnectionsAction,
     getInboxConversationsAction,
     getInboxConversationDetailAction,
     getSuggestedResponsesAction,
     markInboxConversationReadAction,
     sendInboxMessageAction,
+    updateInboxConversationMetadataAction,
     type InboxConnectionView,
 } from "../server-actions/inbox"
+import { getAiTrainingDataAction } from "@/components/server-actions/ai-training"
+import type { QuickAnswerView, TemplateView } from "@/components/ai-training/types"
 import { NewConversationDialog } from "@/components/inbox/new-conversation-dialog"
+import {
+    ConversationListPanel,
+    type ConversationFilter,
+} from "@/components/inbox/conversation-list-panel"
+import { InboxMessageCache } from "@/components/inbox/inbox-message-cache"
 import { useInboxRealtime } from "@/hooks/use-inbox-realtime"
 
 type InboxConversationPriority = "low" | "medium" | "high"
 type InboxMessageSenderType = "customer" | "agent" | "bot" | "system"
+type InboxMessageSentBy = "customer" | "user" | "robot" | "system"
 type InboxMessageStatus = "pending" | "sent" | "delivered" | "read" | "failed"
 
 type SuggestedResponse = {
@@ -73,6 +78,7 @@ type ConversationEntity = {
     unreadCount: number
     priority?: InboxConversationPriority | null
     satisfactionScore?: number | null
+    isBookmarked?: boolean | null
     tags?: string[] | null
     createdAt: string | Date
     updatedAt: string | Date
@@ -89,6 +95,7 @@ type MessageEntity = {
     id: string
     content: string
     senderType: InboxMessageSenderType
+    sentBy?: InboxMessageSentBy
     status?: InboxMessageStatus | null
     sentAt?: string | Date | null
     createdAt?: string | Date | null
@@ -106,6 +113,7 @@ type InboxConversationSummary = {
     unreadCount: number
     priority: InboxConversationPriority
     satisfactionScore?: number
+    isBookmarked: boolean
     tags: string[]
 }
 
@@ -113,9 +121,21 @@ type InboxMessage = {
     id: string
     content: string
     senderType: InboxMessageSenderType
+    sentBy: InboxMessageSentBy
     sentAt: string | Date
     sentAtLabel: string
     status?: InboxMessageStatus
+}
+
+const resolveSentByFromMessage = (
+    senderType: InboxMessageSenderType,
+    sentBy?: InboxMessageSentBy,
+): InboxMessageSentBy => {
+    if (sentBy) return sentBy
+    if (senderType === "bot") return "robot"
+    if (senderType === "agent") return "user"
+    if (senderType === "system") return "system"
+    return "customer"
 }
 
 const useMediaQuery = (query: string) => {
@@ -164,6 +184,28 @@ const formatMessageTimestamp = (value?: string | Date | null) => {
     return format(date, "HH:mm")
 }
 
+const isTransientServerActionError = (error: unknown) =>
+    error instanceof Error && error.message.includes("unexpected response was received")
+
+const withServerActionRetry = async <T,>(action: () => Promise<T>, retries = 1): Promise<T> => {
+    let lastError: unknown
+
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+        try {
+            return await action()
+        } catch (error) {
+            lastError = error
+            if (!isTransientServerActionError(error) || attempt === retries) {
+                throw error
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)))
+        }
+    }
+
+    throw lastError
+}
+
 const mapConversationSummary = (
     conversation: ConversationEntity,
     fallbackName: string,
@@ -182,6 +224,7 @@ const mapConversationSummary = (
         unreadCount: conversation.unreadCount ?? 0,
         priority: conversation.priority ?? "medium",
         satisfactionScore: conversation.satisfactionScore ?? undefined,
+        isBookmarked: conversation.isBookmarked ?? false,
         tags: conversation.tags?.filter((tag) => !!tag?.trim()) || [],
     }
 }
@@ -193,6 +236,7 @@ const mapMessage = (message: MessageEntity): InboxMessage => {
         id: message.id,
         content: message.content,
         senderType: message.senderType,
+        sentBy: resolveSentByFromMessage(message.senderType, message.sentBy),
         sentAt,
         sentAtLabel: formatMessageTimestamp(sentAt),
         status: message.status ?? undefined,
@@ -207,16 +251,20 @@ const sortConversations = (items: InboxConversationSummary[]) => {
         return Number.isNaN(time) ? 0 : time
     }
 
-    return [...items].sort((a, b) => getTimeValue(b.lastMessageAt) - getTimeValue(a.lastMessageAt))
-}
+    return [...items].sort((a, b) => {
+        if (a.isBookmarked !== b.isBookmarked) {
+            return a.isBookmarked ? -1 : 1
+        }
 
-const ALL_CONNECTIONS_VALUE = "all"
+        return getTimeValue(b.lastMessageAt) - getTimeValue(a.lastMessageAt)
+    })
+}
 
 export default function InboxPage() {
     const [conversations, setConversations] = useState<InboxConversationSummary[]>([])
     const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
     const [connections, setConnections] = useState<InboxConnectionView[]>([])
-    const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null)
+    const [selectedConnectionIds, setSelectedConnectionIds] = useState<string[]>([])
     const [showNewConversationDialog, setShowNewConversationDialog] = useState(false)
     const [prefilledCustomer, setPrefilledCustomer] = useState<{
         name?: string
@@ -225,7 +273,12 @@ export default function InboxPage() {
     } | null>(null)
     const [messages, setMessages] = useState<InboxMessage[]>([])
     const [suggestedResponses, setSuggestedResponses] = useState<SuggestedResponse[]>([])
+    const [quickAnswers, setQuickAnswers] = useState<QuickAnswerView[]>([])
+    const [templates, setTemplates] = useState<TemplateView[]>([])
     const [searchQuery, setSearchQuery] = useState("")
+    const [conversationFilter, setConversationFilter] = useState<ConversationFilter>("all")
+    const [unreadTotal, setUnreadTotal] = useState(0)
+    const [isTogglingBookmark, setIsTogglingBookmark] = useState(false)
     const [messageInput, setMessageInput] = useState("")
     const [showContextPanel, setShowContextPanel] = useState(false)
     const [showDesktopConversations, setShowDesktopConversations] = useState(false)
@@ -233,28 +286,35 @@ export default function InboxPage() {
     const [isLoadingConversations, setIsLoadingConversations] = useState(true)
     const [isLoadingMessages, setIsLoadingMessages] = useState(false)
     const [isSendingMessage, setIsSendingMessage] = useState(false)
+    const [isConnectionsLoaded, setIsConnectionsLoaded] = useState(false)
     const messageInputRef = useRef<HTMLTextAreaElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const initialLoadRef = useRef(false)
     const selectedConversationIdRef = useRef<string | null>(null)
     const searchQueryRef = useRef("")
-    const selectedConnectionIdRef = useRef<string | null>(null)
+    const selectedConnectionIdsRef = useRef<string[]>([])
     const loadConversationsRef = useRef<
         (page?: number, searchValue?: string, options?: { silent?: boolean }) => Promise<void>
     >(async () => {})
     const fetchConversationDetailRef = useRef<
-        (conversationId: string, options?: { silent?: boolean }) => Promise<void>
+        (conversationId: string, options?: { silent?: boolean; force?: boolean }) => Promise<void>
     >(async () => {})
+    const messageCacheRef = useRef(new InboxMessageCache())
+    const conversationsRef = useRef<InboxConversationSummary[]>([])
     const previousCompanyIdRef = useRef<string | null>(null)
     const isFirstSearchEffectRef = useRef(true)
     const conversationsRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const messagesRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const isFetchingConversationsRef = useRef(false)
-    const isFetchingConversationDetailRef = useRef(false)
+    const inFlightConversationDetailRef = useRef<string | null>(null)
+    const skipNextMessagesRefreshRef = useRef(false)
+    const notifiedFailedMessageIdsRef = useRef<Set<string>>(new Set())
+    const startConversationProcessedRef = useRef(false)
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
-    const { setOpen } = useSidebar()
     const t = useTranslations("Inbox")
+    const tTemplates = useTranslations("Templates")
+    const router = useRouter()
     const { user } = useUser()
     const searchParams = useSearchParams()
 
@@ -262,14 +322,29 @@ export default function InboxPage() {
 
     selectedConversationIdRef.current = selectedConversationId
     searchQueryRef.current = searchQuery
-    selectedConnectionIdRef.current = selectedConnectionId
+    selectedConnectionIdsRef.current = selectedConnectionIds
+    conversationsRef.current = conversations
 
     const selectedConversation = useMemo(
         () => conversations.find((conversation) => conversation.id === selectedConversationId) ?? null,
         [conversations, selectedConversationId],
     )
 
-    const hasClosedSidebarRef = useRef(false)
+    const filteredConversations = useMemo(() => {
+        if (conversationFilter === "unread") {
+            return conversations.filter((conversation) => conversation.unreadCount > 0)
+        }
+
+        if (conversationFilter === "favorites") {
+            return conversations.filter((conversation) => conversation.isBookmarked)
+        }
+
+        return conversations
+    }, [conversationFilter, conversations])
+
+    const isConversationListFiltered =
+        conversationFilter !== "all" || searchQuery.trim().length > 0
+
     const tRef = useRef(t)
     tRef.current = t
 
@@ -278,30 +353,6 @@ export default function InboxPage() {
             mapConversationSummary(conversation, tRef.current("labels.customerFallback")),
         [],
     )
-
-    const getPriorityLabel = useCallback(
-        (priority?: InboxConversationPriority | null) => {
-            if (priority === "high") {
-                return t("priority.high")
-            }
-
-            if (priority === "low") {
-                return t("priority.low")
-            }
-
-            return t("priority.medium")
-        },
-        [t],
-    )
-
-    useEffect(() => {
-        if (hasClosedSidebarRef.current) {
-            return
-        }
-
-        setOpen(false)
-        hasClosedSidebarRef.current = true
-    }, [setOpen])
 
     useEffect(() => {
         if (!isDesktop) {
@@ -330,32 +381,94 @@ export default function InboxPage() {
         }
     }, [isLoadingMessages, selectedConversationId])
 
+    useEffect(() => {
+        for (const message of messages) {
+            if (
+                message.sentBy === "user" &&
+                message.status === "failed" &&
+                !notifiedFailedMessageIdsRef.current.has(message.id)
+            ) {
+                notifiedFailedMessageIdsRef.current.add(message.id)
+                toast.warning(t("messages.whatsappDeliveryFailed"))
+            }
+        }
+    }, [messages, t])
+
     const loadSuggestedResponses = useCallback(async (conversationId: string) => {
+        const cached = messageCacheRef.current.get(conversationId)
+        if (cached?.suggestedResponses.length) {
+            setSuggestedResponses(cached.suggestedResponses)
+            return cached.suggestedResponses
+        }
+
         try {
             const result = await getSuggestedResponsesAction({ conversationId })
             if (result.success && result.data) {
                 setSuggestedResponses(result.data)
-            } else {
-                setSuggestedResponses([])
+
+                const existingCache = messageCacheRef.current.get(conversationId)
+                if (existingCache) {
+                    messageCacheRef.current.set(conversationId, {
+                        ...existingCache,
+                        suggestedResponses: result.data,
+                    })
+                }
+
+                return result.data
             }
+
+            setSuggestedResponses([])
+            return []
         } catch (error) {
             console.error("Failed to load suggested responses", error)
             setSuggestedResponses([])
+            return []
         }
     }, [])
 
+    const applyCachedConversation = useCallback((conversationId: string) => {
+        const cached = messageCacheRef.current.get(conversationId)
+        if (!cached) {
+            return false
+        }
+
+        setMessages(cached.messages)
+        setSuggestedResponses(cached.suggestedResponses)
+        return true
+    }, [])
+
     const fetchConversationDetail = useCallback(
-        async (conversationId: string, options?: { silent?: boolean }) => {
-            if (isFetchingConversationDetailRef.current) {
+        async (conversationId: string, options?: { silent?: boolean; force?: boolean }) => {
+            const conversationSummary = conversationsRef.current.find(
+                (conversation) => conversation.id === conversationId,
+            )
+            const lastMessageAt =
+                conversationSummary?.lastMessageAt ??
+                messageCacheRef.current.get(conversationId)?.messages.at(-1)?.sentAt
+
+            if (
+                !options?.force &&
+                messageCacheRef.current.isFresh(conversationId, lastMessageAt)
+            ) {
+                applyCachedConversation(conversationId)
                 return
             }
 
-            isFetchingConversationDetailRef.current = true
+            if (
+                inFlightConversationDetailRef.current === conversationId &&
+                !options?.force
+            ) {
+                return
+            }
+
+            inFlightConversationDetailRef.current = conversationId
             if (!options?.silent) {
                 setIsLoadingMessages(true)
             }
             try {
-                const result = await getInboxConversationDetailAction({ conversationId })
+                const result = await withServerActionRetry(() =>
+                    getInboxConversationDetailAction({ conversationId }),
+                )
                 if (!result.success || !result.data) {
                     throw new Error(result.error || "Unable to load conversation")
                 }
@@ -363,6 +476,17 @@ export default function InboxPage() {
                 const summaryBase = buildConversationSummary(result.data as ConversationEntity)
                 const summary = { ...summaryBase, unreadCount: 0 }
                 const mappedMessages = (result.data.messages as MessageEntity[]).map(mapMessage)
+                const cachedSuggestions =
+                    messageCacheRef.current.get(conversationId)?.suggestedResponses ?? []
+
+                messageCacheRef.current.set(
+                    conversationId,
+                    messageCacheRef.current.createEntry(
+                        mappedMessages,
+                        cachedSuggestions,
+                        summary.lastMessageAt,
+                    ),
+                )
 
                 setConversations((previous) => {
                     const index = previous.findIndex((item) => item.id === summary.id)
@@ -375,20 +499,32 @@ export default function InboxPage() {
                     return sortConversations(updated)
                 })
 
-                setMessages(mappedMessages)
-                await loadSuggestedResponses(conversationId)
+                if (selectedConversationIdRef.current === conversationId) {
+                    setMessages(mappedMessages)
+                    if (cachedSuggestions.length > 0) {
+                        setSuggestedResponses(cachedSuggestions)
+                    }
+                }
+
+                void loadSuggestedResponses(conversationId)
             } catch (error) {
                 console.error("Failed to fetch conversation detail", error)
-                setMessages([])
-                setSuggestedResponses([])
+                if (selectedConversationIdRef.current === conversationId) {
+                    if (!applyCachedConversation(conversationId)) {
+                        setMessages([])
+                        setSuggestedResponses([])
+                    }
+                }
             } finally {
-                isFetchingConversationDetailRef.current = false
+                if (inFlightConversationDetailRef.current === conversationId) {
+                    inFlightConversationDetailRef.current = null
+                }
                 if (!options?.silent) {
                     setIsLoadingMessages(false)
                 }
             }
         },
-        [buildConversationSummary, loadSuggestedResponses],
+        [applyCachedConversation, buildConversationSummary, loadSuggestedResponses],
     )
 
     const loadConversations = useCallback(
@@ -402,10 +538,11 @@ export default function InboxPage() {
                 setIsLoadingConversations(true)
             }
             try {
+                const selectedSessionIds = selectedConnectionIdsRef.current
                 const result = await getInboxConversationsAction({
                     page,
                     search: searchValue.trim() ? searchValue.trim() : undefined,
-                    sessionId: selectedConnectionIdRef.current ?? undefined,
+                    sessionIds: selectedSessionIds.length > 0 ? selectedSessionIds : undefined,
                     includeCounts: true,
                 })
 
@@ -417,21 +554,39 @@ export default function InboxPage() {
                     (result.data.conversations as ConversationEntity[]).map(buildConversationSummary),
                 )
 
-                setConversations(mapped)
-
-                if (mapped.length === 0) {
-                    setSelectedConversationId(null)
-                    setMessages([])
-                    setSuggestedResponses([])
-                    return
+                if (result.data.metrics?.unreadTotal != null) {
+                    setUnreadTotal(result.data.metrics.unreadTotal)
                 }
 
                 const currentSelectedId = selectedConversationIdRef.current
+
+                setConversations((previous) => {
+                    if (!currentSelectedId || mapped.some((conversation) => conversation.id === currentSelectedId)) {
+                        return mapped
+                    }
+
+                    const selectedSummary = previous.find((conversation) => conversation.id === currentSelectedId)
+                    if (!selectedSummary) {
+                        return mapped
+                    }
+
+                    return sortConversations([...mapped, selectedSummary])
+                })
+
+                if (mapped.length === 0) {
+                    if (!currentSelectedId) {
+                        setSelectedConversationId(null)
+                        setMessages([])
+                        setSuggestedResponses([])
+                    }
+                    return
+                }
+
                 const hasSelected = currentSelectedId
                     ? mapped.some((conversation) => conversation.id === currentSelectedId)
                     : false
 
-                if (!hasSelected) {
+                if (!hasSelected && !currentSelectedId) {
                     const nextConversationId = mapped[0].id
                     const nextConversation = mapped[0]
                     selectedConversationIdRef.current = nextConversationId
@@ -471,6 +626,8 @@ export default function InboxPage() {
             setConversations([])
             setMessages([])
             setSuggestedResponses([])
+            setQuickAnswers([])
+            setTemplates([])
             selectedConversationIdRef.current = null
             setSelectedConversationId(null)
             setSearchQuery("")
@@ -484,14 +641,19 @@ export default function InboxPage() {
         if (companyChanged) {
             initialLoadRef.current = false
             isFirstSearchEffectRef.current = true
+            messageCacheRef.current.clear()
             setConversations([])
             setMessages([])
             setSuggestedResponses([])
+            setQuickAnswers([])
+            setTemplates([])
             selectedConversationIdRef.current = null
             setSelectedConversationId(null)
-            setSelectedConnectionId(null)
-            selectedConnectionIdRef.current = null
+            setSelectedConnectionIds([])
+            selectedConnectionIdsRef.current = []
             setConnections([])
+            setIsConnectionsLoaded(false)
+            startConversationProcessedRef.current = false
             setSearchQuery("")
             setMessageInput("")
         }
@@ -506,10 +668,12 @@ export default function InboxPage() {
 
     useEffect(() => {
         if (!companyId) {
+            setIsConnectionsLoaded(false)
             return
         }
 
         let isMounted = true
+        setIsConnectionsLoaded(false)
 
         const loadConnections = async () => {
             try {
@@ -528,10 +692,69 @@ export default function InboxPage() {
                 if (isMounted) {
                     setConnections([])
                 }
+            } finally {
+                if (isMounted) {
+                    setIsConnectionsLoaded(true)
+                }
             }
         }
 
         void loadConnections()
+
+        return () => {
+            isMounted = false
+        }
+    }, [companyId])
+
+    useEffect(() => {
+        if (!companyId) {
+            return
+        }
+
+        let isMounted = true
+
+        const loadReplyResources = async () => {
+            try {
+                const result = await getAiTrainingDataAction()
+                if (!isMounted || !result.success || !result.data) {
+                    return
+                }
+
+                setQuickAnswers(
+                    result.data.quickAnswers
+                        .filter((item) => item.content.trim().length > 0)
+                        .map((item) => ({
+                            id: item.id,
+                            content: item.content,
+                            createdAt: "",
+                            updatedAt: "",
+                        })),
+                )
+                setTemplates(
+                    result.data.templates.map((item) => ({
+                        id: item.id,
+                        name: item.name,
+                        content: item.content,
+                        category: item.category,
+                        createdAt: "",
+                        updatedAt: "",
+                        options: item.options?.map((option) => ({
+                            id: option.id,
+                            label: option.label,
+                            value: option.value,
+                        })),
+                    })),
+                )
+            } catch (error) {
+                console.error("Failed to load inbox reply resources", error)
+                if (isMounted) {
+                    setQuickAnswers([])
+                    setTemplates([])
+                }
+            }
+        }
+
+        void loadReplyResources()
 
         return () => {
             isMounted = false
@@ -544,20 +767,7 @@ export default function InboxPage() {
         }
 
         void loadConversationsRef.current(1, searchQueryRef.current)
-    }, [selectedConnectionId])
-
-    useEffect(() => {
-        if (searchParams.get("startConversation") !== "1") {
-            return
-        }
-
-        setPrefilledCustomer({
-            name: searchParams.get("name") ?? undefined,
-            phone: searchParams.get("phone") ?? undefined,
-            email: searchParams.get("email") ?? undefined,
-        })
-        setShowNewConversationDialog(true)
-    }, [searchParams])
+    }, [selectedConnectionIds])
 
     useEffect(() => {
         if (!initialLoadRef.current || isFirstSearchEffectRef.current) {
@@ -594,6 +804,11 @@ export default function InboxPage() {
     }, [])
 
     const scheduleRealtimeMessagesRefresh = useCallback(() => {
+        if (skipNextMessagesRefreshRef.current) {
+            skipNextMessagesRefreshRef.current = false
+            return
+        }
+
         const conversationId = selectedConversationIdRef.current
         if (!conversationId) {
             return
@@ -604,7 +819,7 @@ export default function InboxPage() {
         }
 
         messagesRefreshTimeoutRef.current = setTimeout(() => {
-            void fetchConversationDetailRef.current(conversationId, { silent: true })
+            void fetchConversationDetailRef.current(conversationId, { silent: true, force: true })
         }, 300)
     }, [])
 
@@ -616,12 +831,34 @@ export default function InboxPage() {
         scheduleRealtimeMessagesRefresh()
     }, [scheduleRealtimeMessagesRefresh])
 
+    const handleRealtimeListenerError = useCallback(() => {
+        scheduleRealtimeConversationsRefresh()
+        scheduleRealtimeMessagesRefresh()
+    }, [scheduleRealtimeConversationsRefresh, scheduleRealtimeMessagesRefresh])
+
     useInboxRealtime({
         companyId,
         conversationId: selectedConversationId,
         onConversationsChange: handleRealtimeConversationsChange,
         onMessagesChange: handleRealtimeMessagesChange,
+        onListenerError: handleRealtimeListenerError,
     })
+
+    useEffect(() => {
+        if (!companyId) {
+            return
+        }
+
+        const interval = setInterval(() => {
+            void loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
+            const conversationId = selectedConversationIdRef.current
+            if (conversationId) {
+                void fetchConversationDetailRef.current(conversationId, { silent: true, force: true })
+            }
+        }, 12_000)
+
+        return () => clearInterval(interval)
+    }, [companyId])
 
     const handleSelectConversation = useCallback(
         async (conversationId: string) => {
@@ -633,8 +870,12 @@ export default function InboxPage() {
             setSelectedConversationId(conversationId)
             selectedConversationIdRef.current = conversationId
             setShowConversationsList(false)
-            setMessages([])
-            setSuggestedResponses([])
+
+            const hasCachedMessages = applyCachedConversation(conversationId)
+            if (!hasCachedMessages) {
+                setMessages([])
+                setSuggestedResponses([])
+            }
 
             setConversations((previous) =>
                 previous.map((conversation) =>
@@ -651,9 +892,9 @@ export default function InboxPage() {
                 })
             }
 
-            await fetchConversationDetail(conversationId)
+            await fetchConversationDetail(conversationId, { silent: hasCachedMessages })
         },
-        [conversations, fetchConversationDetail, selectedConversationId],
+        [applyCachedConversation, conversations, fetchConversationDetail, selectedConversationId],
     )
 
     const handleSendMessage = useCallback(async () => {
@@ -661,11 +902,33 @@ export default function InboxPage() {
             return
         }
 
+        const content = messageInput.trim()
+        const conversationId = selectedConversationId
+        const optimisticId = `optimistic-${Date.now()}`
+        const optimisticMessage: InboxMessage = {
+            id: optimisticId,
+            content,
+            senderType: "agent",
+            sentBy: "user",
+            sentAt: new Date(),
+            sentAtLabel: formatMessageTimestamp(new Date()),
+            status: "pending",
+        }
+
+        setMessages((previous) => {
+            const nextMessages = [...previous, optimisticMessage]
+            messageCacheRef.current.updateMessages(conversationId, nextMessages, new Date())
+            return nextMessages
+        })
+        setMessageInput("")
+        messageInputRef.current?.focus()
         setIsSendingMessage(true)
+        skipNextMessagesRefreshRef.current = true
+
         try {
             const result = await sendInboxMessageAction({
-                conversationId: selectedConversationId,
-                content: messageInput.trim(),
+                conversationId,
+                content,
                 senderType: "agent",
             })
 
@@ -676,9 +939,22 @@ export default function InboxPage() {
             const mappedMessage = mapMessage(result.data.message as MessageEntity)
             const summary = buildConversationSummary(result.data.conversation as ConversationEntity)
 
-            setMessages((previous) => [...previous, mappedMessage])
+            setMessages((previous) => {
+                const nextMessages = previous.map((message) =>
+                    message.id === optimisticId ? mappedMessage : message,
+                )
+                messageCacheRef.current.set(
+                    conversationId,
+                    messageCacheRef.current.createEntry(
+                        nextMessages,
+                        messageCacheRef.current.get(conversationId)?.suggestedResponses ?? [],
+                        summary.lastMessageAt,
+                    ),
+                )
+                return nextMessages
+            })
             setConversations((previous) => {
-                const index = previous.findIndex((conversation) => conversation.id === summary.id)
+                const index = previous.findIndex((item) => item.id === summary.id)
                 if (index === -1) {
                     return sortConversations([...previous, summary])
                 }
@@ -688,18 +964,29 @@ export default function InboxPage() {
                 return sortConversations(updated)
             })
 
-            setMessageInput("")
-            messageInputRef.current?.focus()
-            await loadSuggestedResponses(summary.id)
+            void loadSuggestedResponses(summary.id)
             requestAnimationFrame(() => {
                 messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
             })
         } catch (error) {
+            skipNextMessagesRefreshRef.current = false
+            setMessages((previous) => {
+                const nextMessages = previous.filter((message) => message.id !== optimisticId)
+                const cached = messageCacheRef.current.get(conversationId)
+                if (cached) {
+                    messageCacheRef.current.updateMessages(conversationId, nextMessages)
+                }
+                return nextMessages
+            })
+            setMessageInput(content)
+            messageInputRef.current?.focus()
             console.error("Failed to send message", error)
+            const message = error instanceof Error ? error.message : t("messages.sendFailed")
+            toast.error(message || t("messages.sendFailed"))
         } finally {
             setIsSendingMessage(false)
         }
-    }, [buildConversationSummary, loadSuggestedResponses, messageInput, selectedConversationId])
+    }, [buildConversationSummary, loadSuggestedResponses, messageInput, selectedConversationId, t])
 
     const handleUseSuggestedResponse = useCallback((text: string) => {
         setMessageInput(text)
@@ -717,120 +1004,192 @@ export default function InboxPage() {
             selectedConversationIdRef.current = conversationId
             setSelectedConversationId(conversationId)
             setShowConversationsList(false)
+            await fetchConversationDetailRef.current(conversationId, { force: true })
             await loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
-            await fetchConversationDetailRef.current(conversationId)
         },
         [],
     )
 
-    const handleConnectionChange = useCallback((value: string) => {
-        const nextConnectionId = value === ALL_CONNECTIONS_VALUE ? null : value
-        selectedConnectionIdRef.current = nextConnectionId
-        setSelectedConnectionId(nextConnectionId)
+    useEffect(() => {
+        if (searchParams.get("startConversation") !== "1") {
+            startConversationProcessedRef.current = false
+            return
+        }
+
+        if (!initialLoadRef.current || !isConnectionsLoaded || startConversationProcessedRef.current) {
+            return
+        }
+
+        const name = searchParams.get("name")?.trim()
+        const phone = searchParams.get("phone")?.trim()
+        const email = searchParams.get("email")?.trim()
+
+        if (!name) {
+            toast.error(t("newConversation.errors.nameRequired"))
+            router.replace("/inbox")
+            return
+        }
+
+        if (!phone) {
+            toast.error(t("newConversation.errors.phoneRequired"))
+            router.replace("/inbox")
+            return
+        }
+
+        const resolveSessionId = (): string | undefined => {
+            if (selectedConnectionIdsRef.current.length === 1) {
+                return selectedConnectionIdsRef.current[0]
+            }
+
+            if (connections.length === 1) {
+                return connections[0]!.sessionId
+            }
+
+            if (connections.length > 1) {
+                return connections[0]!.sessionId
+            }
+
+            return undefined
+        }
+
+        startConversationProcessedRef.current = true
+        router.replace("/inbox")
+
+        const startConversation = async () => {
+            try {
+                const sessionId = resolveSessionId()
+
+                const result = await createInboxConversationAction({
+                    customer: {
+                        name,
+                        phone,
+                        ...(email ? { email } : {}),
+                    },
+                    ...(sessionId ? { sessionId } : {}),
+                })
+
+                if (!result.success || !result.data) {
+                    throw new Error(result.error || t("newConversation.errors.createFailed"))
+                }
+
+                toast.success(
+                    result.data.existing
+                        ? t("newConversation.messages.existingConversation")
+                        : t("newConversation.messages.created"),
+                )
+
+                await handleConversationCreated(result.data.conversation.id)
+            } catch (error) {
+                console.error("Failed to start conversation from customer", error)
+                const message =
+                    error instanceof Error ? error.message : t("newConversation.errors.createFailed")
+                toast.error(message)
+            }
+        }
+
+        void startConversation()
+    }, [
+        connections,
+        handleConversationCreated,
+        isConnectionsLoaded,
+        router,
+        searchParams,
+        t,
+    ])
+
+    const handleConnectionChange = useCallback((connectionIds: string[]) => {
+        selectedConnectionIdsRef.current = connectionIds
+        setSelectedConnectionIds(connectionIds)
         selectedConversationIdRef.current = null
         setSelectedConversationId(null)
+        messageCacheRef.current.clear()
         setMessages([])
         setSuggestedResponses([])
     }, [])
 
-    const getPriorityColor = (priority?: InboxConversationPriority | null) => {
-        switch (priority) {
-            case "high":
-                return "bg-red-500/10 text-red-600 border-red-500/20"
-            case "medium":
-                return "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
-            default:
-                return "bg-muted/50 text-muted-foreground"
-        }
-    }
+    const handleOpenNewConversation = useCallback(() => {
+        setPrefilledCustomer(null)
+        setShowNewConversationDialog(true)
+    }, [])
 
-    const renderConversationItems = () => {
-        if (isLoadingConversations) {
-            return (
-                <div className="space-y-2">
-                    {Array.from({ length: 6 }).map((_, index) => (
-                        <div key={`conversation-skeleton-${index}`} className="h-14 rounded-lg bg-muted animate-pulse" />
-                    ))}
-                </div>
+    const handleToggleBookmark = useCallback(async () => {
+        if (!selectedConversationId || !selectedConversation || isTogglingBookmark) {
+            return
+        }
+
+        const nextIsBookmarked = !selectedConversation.isBookmarked
+        setIsTogglingBookmark(true)
+
+        setConversations((previous) =>
+            sortConversations(
+                previous.map((conversation) =>
+                    conversation.id === selectedConversationId
+                        ? { ...conversation, isBookmarked: nextIsBookmarked }
+                        : conversation,
+                ),
+            ),
+        )
+
+        try {
+            const result = await updateInboxConversationMetadataAction({
+                conversationId: selectedConversationId,
+                isBookmarked: nextIsBookmarked,
+            })
+
+            if (!result.success || !result.data) {
+                throw new Error(result.error || "Unable to update bookmark")
+            }
+
+            const summary = buildConversationSummary(result.data.conversation as ConversationEntity)
+            setConversations((previous) => {
+                const index = previous.findIndex((item) => item.id === summary.id)
+                if (index === -1) {
+                    return sortConversations([...previous, summary])
+                }
+
+                const updated = [...previous]
+                updated[index] = summary
+                return sortConversations(updated)
+            })
+        } catch (error) {
+            setConversations((previous) =>
+                sortConversations(
+                    previous.map((conversation) =>
+                        conversation.id === selectedConversationId
+                            ? { ...conversation, isBookmarked: !nextIsBookmarked }
+                            : conversation,
+                    ),
+                ),
             )
+            console.error("Failed to toggle bookmark", error)
+            toast.error(t("actions.bookmarkFailed"))
+        } finally {
+            setIsTogglingBookmark(false)
         }
+    }, [
+        buildConversationSummary,
+        isTogglingBookmark,
+        selectedConversation,
+        selectedConversationId,
+        t,
+    ])
 
-        if (!conversations.length) {
-            return (
-                <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-                        <Inbox className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
-                    </div>
-                    <div className="space-y-1">
-                        <h3 className="text-sm font-semibold text-foreground">{t("conversations.empty.title")}</h3>
-                        <p className="text-xs text-muted-foreground">{t("conversations.empty.description")}</p>
-                    </div>
-                </div>
-            )
-        }
-
-        return conversations.map((conversation) => (
-            <button
-                key={conversation.id}
-                onClick={() => {
-                    void handleSelectConversation(conversation.id)
-                }}
-                className={cn(
-                    "w-full rounded-lg px-3 py-2 flex items-start gap-3 text-left transition-colors",
-                    selectedConversationId === conversation.id
-                        ? "bg-primary/10 border border-primary/30"
-                        : "hover:bg-muted",
-                )}
-                aria-label={t("conversations.selectConversationAria", { name: conversation.customerName })}
-            >
-                <Avatar className="w-10 h-10 flex-shrink-0 border border-border/70">
-                    <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
-                        {conversation.customerName
-                            .split(" ")
-                            .map((namePart) => namePart[0])
-                            .join("")
-                            .toUpperCase()
-                            .slice(0, 2)}
-                    </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                        <h4 className="font-semibold text-sm text-foreground truncate">
-                            {conversation.customerName}
-                        </h4>
-                        <span className="text-[11px] text-muted-foreground flex-shrink-0">
-                            {conversation.timestampLabel}
-                        </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground truncate mt-1">
-                        {conversation.lastMessage || t("conversations.noMessage")}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                        {conversation.priority && (
-                            <Badge
-                                variant="outline"
-                                className={cn(
-                                    "text-[11px] px-1.5 py-0.5 border capitalize",
-                                    getPriorityColor(conversation.priority),
-                                )}
-                            >
-                                {getPriorityLabel(conversation.priority)}
-                            </Badge>
-                        )}
-                        {conversation.tags.slice(0, 1).map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-[11px] px-1.5 py-0.5">
-                                {tag}
-                            </Badge>
-                        ))}
-                    </div>
-                </div>
-                {conversation.unreadCount > 0 && (
-                    <Badge className="bg-primary text-primary-foreground flex-shrink-0 h-5 min-w-5 items-center justify-center text-[11px] font-semibold">
-                        {conversation.unreadCount}
-                    </Badge>
-                )}
-            </button>
-        ))
+    const conversationListPanelProps = {
+        conversations: filteredConversations,
+        selectedConversationId,
+        searchQuery,
+        onSearchChange: setSearchQuery,
+        conversationFilter,
+        onFilterChange: setConversationFilter,
+        unreadTotal,
+        isLoading: isLoadingConversations,
+        isFiltered: isConversationListFiltered,
+        onSelectConversation: handleSelectConversation,
+        onNewConversation: handleOpenNewConversation,
+        connections,
+        selectedConnectionIds,
+        onConnectionChange: handleConnectionChange,
+        getConnectionLabel,
     }
 
     const ContextPanelContent = () => {
@@ -859,7 +1218,7 @@ export default function InboxPage() {
                             {selectedConversation.customerPhone && (
                                 <div className="flex items-center gap-2">
                                     <Phone className="w-3.5 h-3.5" aria-hidden="true" />
-                                    <span>{selectedConversation.customerPhone}</span>
+                                    <span>{formatStoredPhoneForDisplay(selectedConversation.customerPhone)}</span>
                                 </div>
                             )}
                             {selectedConversation.customerEmail && (
@@ -888,8 +1247,121 @@ export default function InboxPage() {
                     </Card>
 
                     <Card className="shadow-none">
-                        <CardHeader>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">{t("context.quickReplies.title")}</CardTitle>
+                            <Link
+                                href="/quick-answers"
+                                className="text-[11px] font-medium text-primary hover:underline"
+                            >
+                                {t("context.quickReplies.manage")}
+                            </Link>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            {quickAnswers.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/60 bg-muted/40 px-4 py-6 text-center">
+                                    <Zap className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-medium text-foreground">
+                                            {t("context.quickReplies.empty.title")}
+                                        </p>
+                                        <p className="text-[11px] text-muted-foreground">
+                                            {t("context.quickReplies.empty.description")}
+                                        </p>
+                                    </div>
+                                    <Button variant="outline" size="sm" className="mt-1 h-7 text-xs" asChild>
+                                        <Link href="/quick-answers">{t("context.quickReplies.empty.action")}</Link>
+                                    </Button>
+                                </div>
+                            ) : (
+                                quickAnswers.map((quickAnswer) => (
+                                    <Button
+                                        key={quickAnswer.id}
+                                        variant="outline"
+                                        className="w-full justify-start items-start text-left text-xs h-auto py-2 px-3 whitespace-normal break-words"
+                                        onClick={() => {
+                                            handleUseSuggestedResponse(quickAnswer.content)
+                                        }}
+                                    >
+                                        {quickAnswer.content}
+                                    </Button>
+                                ))
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    <Card className="shadow-none">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">{t("context.templates.title")}</CardTitle>
+                            <Link
+                                href="/templates"
+                                className="text-[11px] font-medium text-primary hover:underline"
+                            >
+                                {t("context.templates.manage")}
+                            </Link>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            {templates.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/60 bg-muted/40 px-4 py-6 text-center">
+                                    <MessageSquare className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-medium text-foreground">
+                                            {t("context.templates.empty.title")}
+                                        </p>
+                                        <p className="text-[11px] text-muted-foreground">
+                                            {t("context.templates.empty.description")}
+                                        </p>
+                                    </div>
+                                    <Button variant="outline" size="sm" className="mt-1 h-7 text-xs" asChild>
+                                        <Link href="/templates">{t("context.templates.empty.action")}</Link>
+                                    </Button>
+                                </div>
+                            ) : (
+                                templates.map((template) => (
+                                    <div
+                                        key={template.id}
+                                        className="rounded-lg border border-border/60 bg-background p-3 space-y-2"
+                                    >
+                                        <div className="flex items-start justify-between gap-2">
+                                            <p className="text-xs font-medium text-foreground">{template.name}</p>
+                                            <Badge variant="secondary" className="shrink-0 text-[10px]">
+                                                {tTemplates(`categories.${template.category}`)}
+                                            </Badge>
+                                        </div>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-start items-start text-left text-xs h-auto py-2 px-3 whitespace-normal break-words"
+                                            onClick={() => {
+                                                handleUseSuggestedResponse(template.content)
+                                            }}
+                                        >
+                                            {template.content}
+                                        </Button>
+                                        {template.options && template.options.length > 0 ? (
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {template.options.map((option) => (
+                                                    <Button
+                                                        key={option.id}
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-6 px-2 text-[10px]"
+                                                        onClick={() => {
+                                                            handleUseSuggestedResponse(option.value || option.label)
+                                                        }}
+                                                    >
+                                                        {option.label}
+                                                    </Button>
+                                                ))}
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                ))
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    <Card className="shadow-none">
+                        <CardHeader>
+                            <CardTitle className="text-sm font-medium">{t("context.aiSuggestions.title")}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                             {suggestedResponses.length === 0 ? (
@@ -897,10 +1369,10 @@ export default function InboxPage() {
                                     <Sparkles className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                                     <div className="space-y-1">
                                         <p className="text-xs font-medium text-foreground">
-                                            {t("context.quickReplies.empty.title")}
+                                            {t("context.aiSuggestions.empty.title")}
                                         </p>
                                         <p className="text-[11px] text-muted-foreground">
-                                            {t("context.quickReplies.empty.description")}
+                                            {t("context.aiSuggestions.empty.description")}
                                         </p>
                                     </div>
                                 </div>
@@ -973,39 +1445,58 @@ export default function InboxPage() {
         return (
             <div className="px-4 py-5 space-y-3">
                 {messages.map((message) => {
-                    const isCustomer = message.senderType === "customer"
-                    const shouldShowStatus = message.senderType !== "customer" && message.status && message.status !== "failed"
+                    const sentBy = message.sentBy
+                    const isCustomer = sentBy === "customer"
+                    const isBot = sentBy === "robot"
+                    const isAgent = sentBy === "user"
+                    const isSystem = sentBy === "system"
+                    const isOutbound = !isCustomer
+                    const shouldShowStatus =
+                        isOutbound &&
+                        message.status &&
+                        (message.status === "delivered" || message.status === "read")
+
+                    const avatarFallbackClass = cn(
+                        "text-xs font-semibold",
+                        isCustomer && "bg-muted text-muted-foreground",
+                        isAgent && "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+                        isBot && "bg-primary/10 text-primary",
+                        isSystem && "bg-muted text-muted-foreground",
+                    )
+
+                    const bubbleClass = cn(
+                        "max-w-[80%] md:max-w-[70%] rounded-lg px-3 py-2 text-sm",
+                        isCustomer && "bg-card border border-border text-foreground",
+                        isAgent && "bg-blue-500/10 border border-blue-500/20 text-foreground",
+                        isBot && "bg-primary/5 border border-primary/20 text-foreground",
+                        isSystem && "bg-muted/60 border border-border/60 text-muted-foreground italic",
+                    )
+
+                    const metaClass = cn(
+                        "flex items-center gap-1.5 mt-2 text-[11px]",
+                        isCustomer && "text-muted-foreground",
+                        isAgent && "text-blue-600/70 dark:text-blue-400/70",
+                        isBot && "text-primary/60",
+                        isSystem && "text-muted-foreground",
+                    )
 
                     return (
                         <div
                             key={message.id}
-                            className={cn("flex items-end gap-2", !isCustomer && "flex-row-reverse")}
+                            className={cn("flex items-end gap-2", isOutbound && "flex-row-reverse")}
                         >
                             <Avatar className="w-8 h-8 flex-shrink-0 border border-border/70">
-                                <AvatarFallback
-                                    className={cn(
-                                        "text-xs font-semibold",
-                                        isCustomer ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary",
+                                <AvatarFallback className={avatarFallbackClass}>
+                                    {isBot ? (
+                                        <Bot className="w-4 h-4" aria-hidden="true" />
+                                    ) : (
+                                        <User className="w-4 h-4" aria-hidden="true" />
                                     )}
-                                >
-                                    {isCustomer ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                                 </AvatarFallback>
                             </Avatar>
-                            <div
-                                className={cn(
-                                    "max-w-[80%] md:max-w-[70%] rounded-lg px-3 py-2 text-sm",
-                                    isCustomer
-                                        ? "bg-card border border-border text-foreground"
-                                        : "bg-primary/5 border border-primary/20 text-foreground",
-                                )}
-                            >
+                            <div className={bubbleClass}>
                                 <p>{message.content}</p>
-                                <div
-                                    className={cn(
-                                        "flex items-center gap-1.5 mt-2 text-[11px]",
-                                        isCustomer ? "text-muted-foreground" : "text-primary/60",
-                                    )}
-                                >
+                                <div className={metaClass}>
                                     <Clock className="w-3 h-3" aria-hidden="true" />
                                     <span>{message.sentAtLabel}</span>
                                     {shouldShowStatus && <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />}
@@ -1020,91 +1511,21 @@ export default function InboxPage() {
     }
 
     return (
-        <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden bg-background">
-            <div className="flex h-14 flex-shrink-0 items-center justify-between gap-3 border-b border-border/60 px-4">
-                <div className="flex min-w-0 items-center gap-3">
-                    {connections.length > 0 && (
-                        <Select
-                            value={selectedConnectionId ?? ALL_CONNECTIONS_VALUE}
-                            onValueChange={handleConnectionChange}
-                        >
-                            <SelectTrigger
-                                className="w-full min-w-[180px] max-w-[260px] bg-background"
-                                aria-label={t("toolbar.connectionLabel")}
-                            >
-                                <SelectValue placeholder={t("toolbar.connectionPlaceholder")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value={ALL_CONNECTIONS_VALUE}>{t("toolbar.allConnections")}</SelectItem>
-                                {connections.map((connection) => (
-                                    <SelectItem key={connection.sessionId} value={connection.sessionId}>
-                                        {getConnectionLabel(connection)}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-                </div>
-                <Button
-                    onClick={() => {
-                        setPrefilledCustomer(null)
-                        setShowNewConversationDialog(true)
-                    }}
-                    size="sm"
-                    className="shrink-0"
-                >
-                    <MessageSquarePlus className="mr-2 size-4" aria-hidden="true" />
-                    {t("actions.newConversation")}
-                </Button>
-            </div>
-
-            <div className="flex-1 min-h-0 flex overflow-hidden bg-background">
+        <div className="flex h-[calc(100vh-48px)] flex-col overflow-hidden bg-background">
+            <div className="flex min-h-0 flex-1 overflow-hidden bg-background">
                 {showDesktopConversations && (
-                    <div className="hidden md:flex w-64 border-r border-border/60 flex-col bg-background flex-shrink-0 overflow-hidden">
-                        <div className="h-14 px-4 flex items-center border-b border-border/60">
-                            <div className="relative w-full">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                                <Input
-                                    placeholder={t("searchPlaceholder")}
-                                    value={searchQuery}
-                                    onChange={(event) => setSearchQuery(event.target.value)}
-                                    className="h-9 pl-9 text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary"
-                                    aria-label={t("searchPlaceholder")}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex-1 min-h-0 overflow-y-auto">
-                            <div className="p-2 pb-4 space-y-1 h-full">{renderConversationItems()}</div>
-                        </div>
+                    <div className="hidden w-[350px] shrink-0 overflow-hidden border-r border-border/60 md:flex">
+                        <ConversationListPanel {...conversationListPanelProps} className="w-full" />
                     </div>
                 )}
 
                 <Sheet open={showConversationsList} onOpenChange={setShowConversationsList}>
-                    <SheetContent side="left" className="w-full sm:w-72 p-0 flex flex-col">
-                        <SheetHeader className="px-4 py-4 border-b border-border/60">
-                            <SheetTitle className="text-left">{t("conversations.title")}</SheetTitle>
-                        </SheetHeader>
-                        <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-                            <div className="px-4 py-3 border-b border-border/60">
-                                <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                                    <Input
-                                        placeholder={t("searchPlaceholder")}
-                                        value={searchQuery}
-                                        onChange={(event) => setSearchQuery(event.target.value)}
-                                        className="h-9 pl-9 text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary"
-                                        aria-label={t("searchPlaceholder")}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex-1 min-h-0 overflow-y-auto">
-                                <div className="p-2 pb-4 space-y-1 h-full">{renderConversationItems()}</div>
-                            </div>
-                        </div>
+                    <SheetContent side="left" className="flex w-full flex-col p-0 sm:w-[350px]">
+                        <ConversationListPanel {...conversationListPanelProps} className="w-full" />
                     </SheetContent>
                 </Sheet>
 
-                <div className="flex-1 min-h-0 flex flex-col min-w-0">
+                <div className="flex min-h-0 min-w-0 flex-1 flex-col">
                     <div className="h-14 px-4 flex items-center justify-between border-b border-border/60 flex-shrink-0">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
                             <Button
@@ -1150,11 +1571,41 @@ export default function InboxPage() {
                                     {selectedConversation?.customerName || t("messages.empty.title")}
                                 </h3>
                                 <p className="text-xs text-muted-foreground truncate">
-                                    {selectedConversation?.customerPhone || ""}
+                                    {selectedConversation?.customerPhone
+                                        ? formatStoredPhoneForDisplay(selectedConversation.customerPhone)
+                                        : ""}
                                 </p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => void handleToggleBookmark()}
+                                disabled={!selectedConversationId || isTogglingBookmark}
+                                className="hover:bg-muted"
+                                title={
+                                    selectedConversation?.isBookmarked
+                                        ? t("actions.removeBookmark")
+                                        : t("actions.addBookmark")
+                                }
+                                aria-label={
+                                    selectedConversation?.isBookmarked
+                                        ? t("actions.removeBookmark")
+                                        : t("actions.addBookmark")
+                                }
+                                aria-pressed={selectedConversation?.isBookmarked ?? false}
+                            >
+                                <Bookmark
+                                    className={cn(
+                                        "w-4 h-4",
+                                        selectedConversation?.isBookmarked
+                                            ? "fill-primary text-primary"
+                                            : "text-muted-foreground",
+                                    )}
+                                    aria-hidden="true"
+                                />
+                            </Button>
                             <Button
                                 variant="ghost"
                                 size="icon"
@@ -1263,7 +1714,7 @@ export default function InboxPage() {
                 open={showNewConversationDialog}
                 onOpenChange={setShowNewConversationDialog}
                 connections={connections}
-                selectedConnectionId={selectedConnectionId}
+                selectedConnectionIds={selectedConnectionIds}
                 prefilledCustomer={prefilledCustomer}
                 onConversationCreated={handleConversationCreated}
             />

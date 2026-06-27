@@ -38,14 +38,71 @@ func (f *FirestoreRepository) Close() error {
 }
 
 func (f *FirestoreRepository) CreateSession(ctx context.Context, session *models.Session) error {
-	_, err := f.client.Collection("sessions").Doc(session.ID).Set(ctx, session)
+	_, err := f.client.Collection("sessions").Doc(session.ID).Set(ctx, sessionToMap(session))
 	return err
 }
 
 func (f *FirestoreRepository) UpdateSession(ctx context.Context, session *models.Session) error {
 	session.UpdatedAt = time.Now().UTC()
-	_, err := f.client.Collection("sessions").Doc(session.ID).Set(ctx, session, firestore.MergeAll)
+	_, err := f.client.Collection("sessions").Doc(session.ID).Set(ctx, sessionToMap(session), firestore.MergeAll)
 	return err
+}
+
+func sessionToMap(session *models.Session) map[string]any {
+	data := map[string]any{
+		"sessionId": session.ID,
+		"status":    session.Status,
+		"updatedAt": session.UpdatedAt,
+	}
+	if session.CompanyID != "" {
+		data["companyId"] = session.CompanyID
+	}
+	if session.PhoneNumber != "" {
+		data["phoneNumber"] = session.PhoneNumber
+	}
+	if session.WorkerID != "" {
+		data["workerId"] = session.WorkerID
+	}
+	if session.QRCode != "" {
+		data["qrCode"] = session.QRCode
+	}
+	if session.QRImage != "" {
+		data["qrImage"] = session.QRImage
+	}
+	if session.Label != "" {
+		data["label"] = session.Label
+	}
+	if session.WebhookURL != "" {
+		data["webhookUrl"] = session.WebhookURL
+	}
+	if session.QRExpiresAt != nil {
+		data["expiresAt"] = *session.QRExpiresAt
+	}
+	if session.LastSeenAt != nil {
+		data["lastSeenAt"] = *session.LastSeenAt
+	}
+	if !session.CreatedAt.IsZero() {
+		data["createdAt"] = session.CreatedAt
+	}
+	return data
+}
+
+func inboundEventToMap(event *models.InboundEvent) map[string]any {
+	return map[string]any{
+		"channel":     event.Channel,
+		"sessionId":   event.SessionID,
+		"messageId":   event.MessageID,
+		"from":        event.From,
+		"to":          event.To,
+		"body":        event.Body,
+		"type":        event.Type,
+		"timestamp":   event.Timestamp,
+		"phoneNumber": event.PhoneNumber,
+		"status":      event.Status,
+		"attempts":    event.Attempts,
+		"createdAt":   event.CreatedAt,
+		"updatedAt":   event.UpdatedAt,
+	}
 }
 
 func (f *FirestoreRepository) GetSession(ctx context.Context, sessionID string) (*models.Session, error) {
@@ -180,5 +237,11 @@ func (f *FirestoreRepository) LoadCheckpoint(ctx context.Context, sessionID stri
 
 func (f *FirestoreRepository) DeleteCheckpoint(ctx context.Context, sessionID string) error {
 	_, err := f.client.Collection("waStores").Doc(sessionID).Delete(ctx)
+	return err
+}
+
+func (f *FirestoreRepository) UpsertInboundEvent(ctx context.Context, companyID, eventID string, event *models.InboundEvent) error {
+	ref := f.client.Collection("companies").Doc(companyID).Collection("inboundEvents").Doc(eventID)
+	_, err := ref.Set(ctx, inboundEventToMap(event), firestore.MergeAll)
 	return err
 }

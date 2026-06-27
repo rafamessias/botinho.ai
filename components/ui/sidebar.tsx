@@ -26,14 +26,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { IconChevronLeft, IconChevronRight, IconMenu2 } from "@tabler/icons-react"
-import { useEffect } from "react"
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state"
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+const SIDEBAR_STORAGE_KEY = "sidebar_state"
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+
+let cachedSidebarOpen: boolean | undefined
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
@@ -56,6 +56,40 @@ function useSidebar() {
   return context
 }
 
+function readSidebarOpenPreference(fallback: boolean): boolean {
+  if (typeof window === "undefined") {
+    return fallback
+  }
+
+  try {
+    const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY)
+    if (stored === "true") return true
+    if (stored === "false") return false
+  } catch {
+    // Ignore storage access errors (private browsing, etc.)
+  }
+
+  return fallback
+}
+
+function getInitialSidebarOpen(fallback: boolean): boolean {
+  if (cachedSidebarOpen !== undefined) {
+    return cachedSidebarOpen
+  }
+
+  return readSidebarOpenPreference(fallback)
+}
+
+function writeSidebarOpenPreference(open: boolean): void {
+  cachedSidebarOpen = open
+
+  try {
+    localStorage.setItem(SIDEBAR_STORAGE_KEY, String(open))
+  } catch {
+    // Ignore storage access errors (private browsing, etc.)
+  }
+}
+
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -74,8 +108,19 @@ function SidebarProvider({
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen)
+  const [_open, _setOpen] = React.useState(() => getInitialSidebarOpen(defaultOpen))
   const open = openProp ?? _open
+
+  React.useEffect(() => {
+    if (openProp !== undefined || cachedSidebarOpen !== undefined) {
+      return
+    }
+
+    const stored = readSidebarOpenPreference(defaultOpen)
+    writeSidebarOpenPreference(stored)
+    _setOpen(stored)
+  }, [defaultOpen, openProp])
+
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === "function" ? value(open) : value
@@ -85,8 +130,7 @@ function SidebarProvider({
         _setOpen(openState)
       }
 
-      // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      writeSidebarOpenPreference(openState)
     },
     [setOpenProp, open]
   )

@@ -10,6 +10,7 @@ export const collections = {
 export const companySubcollections = {
   members: "members",
   settings: "settings",
+  aiAgents: "aiAgents",
   knowledge: "knowledge",
   quickAnswers: "quickAnswers",
   templates: "templates",
@@ -17,10 +18,19 @@ export const companySubcollections = {
   conversations: "conversations",
   subscription: "subscription",
   usage: "usage",
+  inboundEvents: "inboundEvents",
+  channelUsage: "channelUsage",
+  messageDedupe: "messageDedupe",
 } as const
 
 export const conversationSubcollections = {
   messages: "messages",
+} as const
+
+export const aiAgentSubcollections = {
+  knowledge: "knowledge",
+  quickAnswers: "quickAnswers",
+  templates: "templates",
 } as const
 
 export const settingsDocIds = {

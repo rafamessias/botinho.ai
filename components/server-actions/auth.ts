@@ -398,6 +398,22 @@ export const getCurrentUserAction = async () => {
   }
 }
 
+export const getFirebaseCustomTokenAction = async () => {
+  try {
+    const { getServerAuthSession } = await import("@/lib/auth/server-session")
+    const session = await getServerAuthSession()
+    if (!session?.uid) {
+      return { success: false, error: "Not authenticated" }
+    }
+
+    const token = await adminAuth.createCustomToken(session.uid)
+    return { success: true, token }
+  } catch (error) {
+    console.error("Firebase custom token error:", error)
+    return { success: false, error: "Failed to create Firebase token" }
+  }
+}
+
 export const getSessionBootstrapAction = async () => {
   try {
     const { getServerAuthSession } = await import("@/lib/auth/server-session")

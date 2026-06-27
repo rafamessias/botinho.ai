@@ -29,12 +29,30 @@ import { validateApiAccess } from "@/lib/services/subscription-validation"
 const createCompanySchema = z.object({
   name: z.string().min(2),
   description: z.string().optional(),
+  country: z.string().optional(),
+  documentType: z.enum(["cpf", "cnpj"]).optional(),
+  document: z.string().optional(),
+  address: z.string().optional(),
+  addressNumber: z.string().optional(),
+  zipCode: z.string().optional(),
+  complement: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
 })
 
 const updateCompanySchema = z.object({
   id: z.string().min(1),
   name: z.string().min(2),
   description: z.string().optional(),
+  country: z.string().optional(),
+  documentType: z.enum(["cpf", "cnpj"]).optional(),
+  document: z.string().optional(),
+  address: z.string().optional(),
+  addressNumber: z.string().optional(),
+  zipCode: z.string().optional(),
+  complement: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
 })
 
 const inviteMemberSchema = z.object({
@@ -124,6 +142,15 @@ export const updateCompanyAction = async (formData: z.infer<typeof updateCompany
     const company = await updateCompany(validatedData.id, {
       name: validatedData.name,
       description: validatedData.description,
+      country: validatedData.country,
+      documentType: validatedData.documentType,
+      document: validatedData.document,
+      address: validatedData.address,
+      addressNumber: validatedData.addressNumber,
+      zipCode: validatedData.zipCode,
+      complement: validatedData.complement,
+      city: validatedData.city,
+      state: validatedData.state,
     })
     return { success: true, message: t("messages.updateSuccess"), company }
   } catch (error) {

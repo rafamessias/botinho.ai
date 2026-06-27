@@ -13,7 +13,6 @@ Document all environment variables, config files, and discrepancies between `.en
 - [.env.example](../../.env.example)
 - Code references via `process.env.*`
 - [next.config.mjs](../../next.config.mjs)
-- [vercel.json](../../vercel.json)
 - [components.json](../../components.json)
 - [tsconfig.json](../../tsconfig.json)
 
@@ -82,16 +81,10 @@ Document all environment variables, config files, and discrepancies between `.en
 
 | Setting | Value |
 |---------|-------|
-| Plugins | next-intl, botid |
+| Plugins | next-intl |
 | eslint.ignoreDuringBuilds | true |
 | typescript.ignoreBuildErrors | true |
 | images.unoptimized | true |
-
-### vercel.json
-
-| Setting | Value |
-|---------|-------|
-| Regions | iad1, sfo1, lhr1 |
 
 ### tsconfig.json
 

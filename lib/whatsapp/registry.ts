@@ -42,7 +42,11 @@ export class WhatsAppRegistry {
     const ids = await this.client.sMembers(WORKER_SET_KEY)
     for (const id of ids) {
       const record = await this.getWorker(id)
-      if (record && record.currentSessions < record.capacity) {
+      if (!record) {
+        await this.client.sRem(WORKER_SET_KEY, id)
+        continue
+      }
+      if (record.currentSessions < record.capacity) {
         return record
       }
     }

@@ -287,6 +287,8 @@
         "title": "Inbox",
         "description": "Manage your conversations and messages",
         "searchPlaceholder": "Search conversations...",
+        "searchOrStartChat": "Search or start a new chat",
+        "clearSearch": "Clear search",
         "typeMessagePlaceholder": "Type a message...",
         "status": {
             "online": "Online",
@@ -305,13 +307,23 @@
             "customerFallback": "Customer"
         },
         "conversations": {
-            "title": "Conversations",
+            "title": "Chats",
+            "yesterday": "Yesterday",
             "empty": {
                 "title": "No conversations yet",
                 "description": "Conversations you start or receive will appear here. Keep engaging with your customers!"
             },
+            "filteredEmpty": {
+                "title": "No chats found",
+                "description": "Try a different filter or search term."
+            },
             "noMessage": "No messages yet",
             "selectConversationAria": "Select conversation with {name}"
+        },
+        "filters": {
+            "all": "All",
+            "unread": "Unread",
+            "favorites": "Bookmarked"
         },
         "context": {
             "title": "Context",
@@ -326,6 +338,24 @@
             },
             "quickReplies": {
                 "title": "Quick replies",
+                "manage": "Manage",
+                "empty": {
+                    "title": "No quick replies yet",
+                    "description": "Add saved replies your team can insert into conversations.",
+                    "action": "Add quick replies"
+                }
+            },
+            "templates": {
+                "title": "Templates",
+                "manage": "Manage",
+                "empty": {
+                    "title": "No templates yet",
+                    "description": "Create message templates for common customer interactions.",
+                    "action": "Add templates"
+                }
+            },
+            "aiSuggestions": {
+                "title": "AI suggestions",
                 "empty": {
                     "title": "No suggestions yet",
                     "description": "Keep the conversation going—AI replies will show up once customers message you."
@@ -341,7 +371,9 @@
                 "title": "No messages yet",
                 "description": "Break the ice and send the first reply to keep the conversation flowing."
             },
-            "inputPlaceholderNoSelection": "Select a conversation to reply"
+            "inputPlaceholderNoSelection": "Select a conversation to reply",
+            "sendFailed": "Could not send message",
+            "whatsappDeliveryFailed": "Message saved, but WhatsApp delivery failed. Check your connection in Settings."
         },
         "actions": {
             "openConversations": "Open conversations list",
@@ -350,12 +382,27 @@
             "showContext": "Show context",
             "hideContext": "Hide context",
             "send": "Send message",
-            "newConversation": "New conversation"
+            "newConversation": "New conversation",
+            "addBookmark": "Bookmark conversation",
+            "removeBookmark": "Remove bookmark",
+            "bookmarkFailed": "Could not update bookmark"
         },
         "toolbar": {
             "connectionLabel": "Connection",
             "connectionPlaceholder": "Select a connection",
-            "allConnections": "All connections"
+            "allConnections": "All connections",
+            "selectConnectionTitle": "Select phone numbers",
+            "selectConnectionDescription": "Search and select one or more numbers to filter conversations. Leave none selected to view all.",
+            "viewingConnection": "Viewing: {connection}",
+            "viewingMultiple": "{count} numbers selected",
+            "connectionButtonTitle": "Change connection ({connection})",
+            "searchConnectionsPlaceholder": "Search numbers...",
+            "noConnectionsFound": "No numbers found.",
+            "selectAll": "Select all",
+            "clearSelection": "Clear",
+            "selectedCount": "{selected} of {total} selected",
+            "applySelection": "Apply",
+            "cancelSelection": "Cancel"
         },
         "newConversation": {
             "title": "Start a conversation",
@@ -415,6 +462,7 @@
             "addKnowledge": "Add Knowledge",
             "addQuickAnswer": "Add Quick Answer",
             "createTemplate": "Create Template",
+            "copyTemplate": "Copy template",
             "cancel": "Cancel",
             "update": "Update",
             "addOption": "Add Option"
@@ -448,7 +496,79 @@
             "buttonLabelPlaceholder": "Button label (what user sees)",
             "buttonValuePlaceholder": "Value (what gets sent)",
             "noOptionsAdded": "No options added yet",
-            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons"
+            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons",
+            "quickAnswerContentPlaceholder": "Enter a short reply your AI can reuse in conversations...",
+            "quickAnswerContentTip": "Tip: Add facts your AI should know — hours, shipping, returns, payment methods, etc."
+        },
+        "quickAnswerExamples": {
+            "title": "Start from an example",
+            "items": {
+                "businessHours": {
+                    "label": "Business hours",
+                    "content": "We're open Monday to Friday, 9 AM–6 PM. Closed on weekends and public holidays."
+                },
+                "shippingPolicy": {
+                    "label": "Shipping policy",
+                    "content": "Standard shipping takes 3–5 business days. Free shipping on orders over $50."
+                },
+                "returnPolicy": {
+                    "label": "Return policy",
+                    "content": "Returns are accepted within 30 days. Items must be unused and in original packaging."
+                },
+                "paymentMethods": {
+                    "label": "Payment methods",
+                    "content": "We accept credit cards, debit cards, and PIX."
+                },
+                "orderTracking": {
+                    "label": "Order tracking",
+                    "content": "You can track your order using the tracking link sent to your email after shipping."
+                },
+                "speakToHuman": {
+                    "label": "Speak to a person",
+                    "content": "I'll connect you with a team member who can help you further."
+                }
+            }
+        },
+        "messageExamples": {
+            "title": "Start from an example",
+            "items": {
+                "welcomeGreeting": {
+                    "label": "Welcome message",
+                    "name": "Welcome Message",
+                    "category": "greeting",
+                    "content": "Hi [CUSTOMER_NAME]! 👋 Welcome to [COMPANY_NAME].\n\nWe're happy to have you here. How can we help you today?"
+                },
+                "orderConfirmation": {
+                    "label": "Order confirmation",
+                    "name": "Order Confirmation",
+                    "category": "orders",
+                    "content": "Hi [CUSTOMER_NAME], your order #[ORDER_ID] has been confirmed! ✅\n\nTotal: [ORDER_TOTAL]\nEstimated delivery: [DELIVERY_DATE]\n\nWe'll keep you updated on the status."
+                },
+                "orderShipped": {
+                    "label": "Order shipped",
+                    "name": "Order Shipped",
+                    "category": "orders",
+                    "content": "Great news, [CUSTOMER_NAME]! 📦\n\nYour order #[ORDER_ID] has been shipped.\nTracking: [TRACKING_NUMBER]\nExpected delivery: [DELIVERY_DATE]\n\nLet us know if you need anything!"
+                },
+                "productRecommendation": {
+                    "label": "Product recommendation",
+                    "name": "Product Recommendation",
+                    "category": "products",
+                    "content": "Hi [CUSTOMER_NAME]! Based on what you're looking for, we recommend:\n\n[PRODUCT_NAME] — [PRODUCT_PRICE]\n[PRODUCT_DESCRIPTION]\n\nWould you like more details or help placing an order?"
+                },
+                "supportAcknowledgment": {
+                    "label": "Support acknowledgment",
+                    "name": "Support Acknowledgment",
+                    "category": "support",
+                    "content": "Hi [CUSTOMER_NAME], thanks for reaching out. 🙏\n\nWe've received your message about [ISSUE_TOPIC] and a team member will get back to you shortly.\n\nReference: [TICKET_ID]"
+                },
+                "closingThankYou": {
+                    "label": "Thank you & closing",
+                    "name": "Thank You & Closing",
+                    "category": "closing",
+                    "content": "Thank you for choosing [COMPANY_NAME], [CUSTOMER_NAME]! 🌟\n\nIf you need anything else, just send us a message. Have a great day!"
+                }
+            }
         },
         "categories": {
             "greeting": "Greeting",
@@ -541,14 +661,500 @@
             "quickAnswerDeleted": "Quick answer removed"
         }
     },
+    "AiAgents": {
+        "title": "AI Agents",
+        "description": "Create and manage AI agents with custom prompts, knowledge, and phone assignments",
+        "subtitle": "Configure agents that reply on your WhatsApp numbers",
+        "buttons": {
+            "addKnowledge": "Add Knowledge",
+            "addQuickAnswer": "Add Quick Answer",
+            "createTemplate": "Create Template",
+            "createAgent": "Create Agent",
+            "manageAgent": "Manage",
+            "saveAgent": "Save Agent",
+            "saving": "Saving...",
+            "creating": "Creating...",
+            "backToAgents": "Back to agents",
+            "cancel": "Cancel",
+            "update": "Update",
+            "addOption": "Add Option"
+        },
+        "list": {
+            "title": "Your AI agents",
+            "description": "Each agent can have its own prompt, knowledge base, and assigned WhatsApp number.",
+            "loading": "Loading agents...",
+            "count": "{count, plural, one {# agent} other {# agents}}",
+            "statusReady": "Ready",
+            "statusSetup": "Setup needed",
+            "noPrompt": "No custom prompt yet",
+            "autoReplyOn": "Auto-reply on",
+            "autoReplyOff": "Auto-reply off",
+            "numberAssigned": "WhatsApp number assigned",
+            "numbersAssigned": "{count} WhatsApp numbers assigned",
+            "noNumber": "No number assigned",
+            "empty": {
+                "title": "No agents yet",
+                "description": "Create your first AI agent using the form above."
+            },
+            "delete": {
+                "title": "Delete agent",
+                "description": "This action cannot be undone. The agent and its knowledge base will be permanently removed.",
+                "nameLabel": "Type the agent name to confirm",
+                "nameNote": "You must type the exact agent name to confirm deletion",
+                "warning": "All knowledge, settings, and phone assignments for this agent will be permanently deleted.",
+                "confirm": "Delete agent"
+            }
+        },
+        "setup": {
+            "badge": "AI Interaction",
+            "title": "Set up your AI agent in minutes",
+            "description": "Create an agent, define how it should behave, add knowledge, and connect a WhatsApp number.",
+            "steps": {
+                "1": "Create an agent and give it a name",
+                "2": "Pick a prompt template and assign a WhatsApp number",
+                "3": "Add knowledge your agent should use when replying",
+                "4": "Enable auto-reply to go live"
+            },
+            "create": {
+                "title": "New agent",
+                "description": "Start with a name — you'll configure the rest on the next screen.",
+                "button": "Create & configure"
+            },
+            "continueSetup": "Continue setup",
+            "checklist": {
+                "name": "Named",
+                "prompt": "Prompt set",
+                "phone": "Number assigned",
+                "live": "Auto-reply on"
+            },
+            "links": {
+                "quickAnswers": "Quick Answers",
+                "templates": "Message Templates",
+                "hint": "Shared across all agents"
+            }
+        },
+        "detail": {
+            "loading": "Loading agent...",
+            "subtitle": "Complete each step to get your agent ready.",
+            "steps": {
+                "settings": "Behavior & number",
+                "knowledge": "Knowledge base"
+            },
+            "nextStep": "Next: Knowledge base",
+            "previousStep": "Back to settings",
+            "finishSetup": "Done — back to agents",
+            "sharedResources": {
+                "title": "Shared resources",
+                "description": "Quick answers and templates apply to all agents.",
+                "quickAnswers": "Manage quick answers →",
+                "templates": "Manage templates →"
+            }
+        },
+        "settings": {
+            "title": "Agent settings",
+            "description": "Name your agent, define its behavior, and assign WhatsApp numbers."
+        },
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to unlock AI agent tools tied to your team."
+        },
+        "tabs": {
+            "knowledgeBase": "Knowledge Base",
+            "quickAnswers": "Quick Answers",
+            "templates": "Templates",
+            "textContent": "Text Content",
+            "websiteUrl": "Website URL"
+        },
+        "form": {
+            "agentName": "Agent name",
+            "agentNamePlaceholder": "e.g., Sales Bot, Support Agent",
+            "systemPrompt": "System prompt",
+            "systemPromptPlaceholder": "Describe how this agent should behave, tone, and rules...",
+            "systemPromptDescription": "This prompt is added on top of the knowledge base when generating replies.",
+            "assignedNumbers": "Assigned WhatsApp numbers",
+            "selectNumbers": "Select connected numbers",
+            "numbersSelected": "{count} numbers selected",
+            "selectNumber": "Select a connected number",
+            "noNumberAssigned": "No numbers assigned",
+            "noConnectedNumbers": "Connect a WhatsApp number in Settings to assign it here.",
+            "autoReply": "Auto-reply",
+            "autoReplyDescription": "When enabled, this agent automatically replies to incoming messages on its assigned numbers.",
+            "title": "Title",
+            "content": "Content",
+            "templateName": "Template Name",
+            "category": "Category",
+            "messageContent": "Message Content",
+            "quickReplyOptions": "Quick Reply Options",
+            "option": "Option",
+            "websiteUrl": "Website URL",
+            "titlePlaceholder": "e.g., Business Hours, Pricing, Return Policy",
+            "contentPlaceholder": "Enter the information you want your AI to know...",
+            "urlTitlePlaceholder": "e.g., Product Catalog, FAQ Page",
+            "urlPlaceholder": "https://example.com/page",
+            "urlDescription": "We'll extract and learn from this page's content",
+            "templateNamePlaceholder": "e.g., Welcome Message, Order Confirmation",
+            "selectCategory": "Select a category",
+            "messageContentPlaceholder": "Enter your template message... Use [VARIABLE_NAME] for dynamic content",
+            "messageContentTip": "Tip: Use [BRACKETS] for variables like [CUSTOMER_NAME], [ORDER_ID], etc.",
+            "quickReplyOptionsDescription": "Add buttons for customers to select from (optional)",
+            "buttonLabelPlaceholder": "Button label (what user sees)",
+            "buttonValuePlaceholder": "Value (what gets sent)",
+            "noOptionsAdded": "No options added yet",
+            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons"
+        },
+        "promptTemplates": {
+            "title": "Start from a template",
+            "items": {
+                "generalSupport": {
+                    "label": "General support",
+                    "content": "You are a helpful customer support assistant. Greet customers warmly, listen to their needs, and answer using only the knowledge base. Keep replies short and friendly, like WhatsApp messages. If you don't know something, say you'll check with the team. Never invent prices, policies, or deadlines. Escalate angry or complex cases politely."
+                },
+                "sales": {
+                    "label": "Sales & leads",
+                    "content": "You are a sales assistant focused on helping customers find the right product or service. Ask one clarifying question at a time when needed. Highlight benefits based on the knowledge base only—never make up features or prices. Guide interested customers toward the next step (quote, demo, or human follow-up). Stay enthusiastic but not pushy. Keep messages concise."
+                },
+                "ecommerce": {
+                    "label": "E-commerce & orders",
+                    "content": "You help customers with orders, shipping, returns, and product questions. Ask for order number or email when relevant. Explain policies using only the knowledge base. For missing order info or refund requests you cannot confirm, offer to connect them with the team. Be clear about timelines and next steps. Use a calm, reassuring tone."
+                },
+                "appointments": {
+                    "label": "Appointments",
+                    "content": "You help customers schedule, reschedule, or cancel appointments. Confirm date, time, and service type before finalizing. Share availability and rules from the knowledge base only. If a slot is unavailable or the request is urgent, suggest alternatives or hand off to a human. Remind customers of any preparation needed. Keep replies brief and organized."
+                },
+                "restaurant": {
+                    "label": "Restaurant & delivery",
+                    "content": "You assist restaurant customers with menu questions, hours, reservations, and delivery. Describe dishes using the knowledge base—mention allergens only if documented. For reservations, collect party size, date, and time. For delivery, confirm address and estimated times from official info. Be welcoming and efficient, like a great host on WhatsApp."
+                },
+                "realEstate": {
+                    "label": "Real estate",
+                    "content": "You help prospects with property questions, visits, and basic requirements. Share details only from the knowledge base (location, size, price, amenities). Offer to schedule a visit or connect with an agent when interest is clear. Ask about budget, timeline, and preferred area when helpful. Professional, trustworthy tone—never guarantee availability or terms not listed."
+                }
+            }
+        },
+        "categories": {
+            "greeting": "Greeting",
+            "orders": "Orders",
+            "products": "Products",
+            "support": "Support",
+            "closing": "Closing"
+        },
+        "stats": {
+            "knowledgeItems": "Knowledge Items",
+            "templates": "Templates",
+            "quickAnswers": "Quick Answers",
+            "trainingStatus": "Agent Status",
+            "active": "Active",
+            "knowledgeItemsDescription": "Total items in knowledge base",
+            "templatesDescription": "Ready-to-use message templates",
+            "quickAnswersDescription": "Saved replies for rapid responses",
+            "trainingStatusDescription": "Agent is configured and ready"
+        },
+        "knowledge": {
+            "title": "Knowledge Base",
+            "description": "All information this agent uses to respond to customers",
+            "type": {
+                "text": "Text",
+                "url": "URL"
+            },
+            "added": "Added",
+            "empty": {
+                "title": "No knowledge yet",
+                "description": "Start by adding information for this agent",
+                "button": "Add First Item"
+            }
+        },
+        "quickAnswers": {
+            "title": "Quick Answers",
+            "description": "Short responses this agent can reuse in conversations",
+            "label": "Quick Answer",
+            "added": "Added",
+            "empty": {
+                "title": "No quick answers yet",
+                "description": "Create quick answers for your most common replies",
+                "button": "Create First Quick Answer"
+            }
+        },
+        "templates": {
+            "title": "Message Templates",
+            "description": "Pre-written messages for common customer interactions",
+            "quickReplyOptions": "Quick Reply Options",
+            "created": "Created",
+            "empty": {
+                "title": "No templates yet",
+                "description": "Create your first message template",
+                "button": "Create First Template"
+            }
+        },
+        "dialog": {
+            "createAgent": "Create AI Agent",
+            "createAgentDescription": "Give your agent a name and optional behavior prompt. You can add knowledge and assign a number after creation.",
+            "addKnowledge": "Add New Knowledge",
+            "editKnowledge": "Edit Knowledge",
+            "addKnowledgeDescription": "Add information to train this agent",
+            "editKnowledgeDescription": "Update the information below",
+            "createTemplate": "Create New Template",
+            "editTemplate": "Edit Template",
+            "createTemplateDescription": "Create a reusable message template",
+            "editTemplateDescription": "Update your template below",
+            "createQuickAnswer": "Create Quick Answer",
+            "editQuickAnswer": "Edit Quick Answer",
+            "createQuickAnswerDescription": "Save a short response to reuse later",
+            "editQuickAnswerDescription": "Update the quick answer below"
+        },
+        "errors": {
+            "fillAllFields": "Error",
+            "fillAllFieldsDescription": "Please fill in all fields",
+            "agentNameRequired": "Agent name required",
+            "agentNameRequiredDescription": "Please enter a name for your agent.",
+            "setupIncomplete": "Complete required fields",
+            "setupIncompleteDescription": "Add a name, system prompt, and at least one WhatsApp number before continuing.",
+            "loadFailed": "Unable to load agents",
+            "createFailed": "Unable to create agent",
+            "deleteFailed": "Unable to delete agent",
+            "saveFailed": "Unable to save agent",
+            "saveKnowledgeFailed": "Unable to save knowledge",
+            "deleteKnowledgeFailed": "Unable to delete knowledge",
+            "agentNotFound": "Agent not found",
+            "tryAgain": "Please try again."
+        },
+        "success": {
+            "agentCreated": "Agent created!",
+            "agentCreatedDescription": "Your new agent is ready to configure.",
+            "agentUpdated": "Agent saved",
+            "agentUpdatedDescription": "Agent settings have been updated.",
+            "agentDeleted": "Agent deleted",
+            "agentDeletedDescription": "The agent has been removed.",
+            "knowledgeAdded": "Knowledge added!",
+            "knowledgeAddedDescription": "Your agent has been updated with new information",
+            "knowledgeUpdated": "Knowledge item has been updated",
+            "knowledgeDeleted": "Knowledge item removed",
+            "templateCreated": "Template created!",
+            "templateCreatedDescription": "Your new template is ready to use",
+            "templateUpdated": "Template has been updated",
+            "templateDeleted": "Template removed",
+            "copied": "Copied!",
+            "templateCopied": "Template copied to clipboard",
+            "deleted": "Deleted",
+            "updated": "Updated!",
+            "quickAnswerCreated": "Quick answer created!",
+            "quickAnswerCreatedDescription": "Your new quick answer is ready to use",
+            "quickAnswerUpdated": "Quick answer has been updated",
+            "quickAnswerDeleted": "Quick answer removed"
+        }
+    },
+    "QuickAnswers": {
+        "title": "Quick Answers",
+        "description": "Short canned responses shared across all AI agents.",
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to manage quick answers."
+        },
+        "buttons": {
+            "addQuickAnswer": "Add Quick Answer",
+            "cancel": "Cancel",
+            "update": "Update"
+        },
+        "quickAnswers": {
+            "title": "Quick Answers",
+            "description": "Reusable replies your agents can draw from during conversations",
+            "label": "Quick Answer",
+            "added": "Added",
+            "empty": {
+                "title": "No quick answers yet",
+                "description": "Create quick answers for your most common replies",
+                "button": "Create First Quick Answer"
+            }
+        },
+        "dialog": {
+            "createQuickAnswer": "Create Quick Answer",
+            "editQuickAnswer": "Edit Quick Answer",
+            "createQuickAnswerDescription": "Save a short response to reuse later",
+            "editQuickAnswerDescription": "Update the quick answer below"
+        },
+        "form": {
+            "content": "Content",
+            "contentPlaceholder": "Enter a short reply to reuse in conversations...",
+            "quickAnswerContentPlaceholder": "Enter a short reply your AI can reuse in conversations...",
+            "quickAnswerContentTip": "Tip: Add facts your AI should know — hours, shipping, returns, payment methods, etc."
+        },
+        "quickAnswerExamples": {
+            "title": "Start from an example",
+            "items": {
+                "businessHours": {
+                    "label": "Business hours",
+                    "content": "We're open Monday to Friday, 9 AM–6 PM. Closed on weekends and public holidays."
+                },
+                "shippingPolicy": {
+                    "label": "Shipping policy",
+                    "content": "Standard shipping takes 3–5 business days. Free shipping on orders over $50."
+                },
+                "returnPolicy": {
+                    "label": "Return policy",
+                    "content": "Returns are accepted within 30 days. Items must be unused and in original packaging."
+                },
+                "paymentMethods": {
+                    "label": "Payment methods",
+                    "content": "We accept credit cards, debit cards, and PIX."
+                },
+                "orderTracking": {
+                    "label": "Order tracking",
+                    "content": "You can track your order using the tracking link sent to your email after shipping."
+                },
+                "speakToHuman": {
+                    "label": "Speak to a person",
+                    "content": "I'll connect you with a team member who can help you further."
+                }
+            }
+        },
+        "errors": {
+            "fillAllFields": "Missing content",
+            "fillAllFieldsDescription": "Please enter a quick answer",
+            "loadFailed": "Unable to load quick answers",
+            "saveFailed": "Unable to save quick answer",
+            "deleteFailed": "Unable to delete quick answer",
+            "tryAgain": "Please try again."
+        },
+        "success": {
+            "created": "Quick answer created!",
+            "createdDescription": "Your new quick answer is ready to use",
+            "updated": "Updated!",
+            "updatedDescription": "Quick answer has been updated",
+            "deleted": "Deleted",
+            "deletedDescription": "Quick answer removed"
+        }
+    },
+    "Templates": {
+        "title": "Templates",
+        "description": "Message templates shared across all AI agents.",
+        "noCompany": {
+            "title": "Connect a company to continue",
+            "description": "Create or select a company to manage templates."
+        },
+        "buttons": {
+            "createTemplate": "Create Template",
+            "copyTemplate": "Copy template",
+            "cancel": "Cancel",
+            "update": "Update",
+            "addOption": "Add Option"
+        },
+        "form": {
+            "templateName": "Template Name",
+            "category": "Category",
+            "messageContent": "Message Content",
+            "quickReplyOptions": "Quick Reply Options",
+            "option": "Option",
+            "templateNamePlaceholder": "e.g., Welcome Message, Order Confirmation",
+            "selectCategory": "Select a category",
+            "messageContentPlaceholder": "Enter your template message... Use [VARIABLE_NAME] for dynamic content",
+            "messageContentTip": "Tip: Use [BRACKETS] for variables like [CUSTOMER_NAME], [ORDER_ID], etc.",
+            "quickReplyOptionsDescription": "Add buttons for customers to select from (optional)",
+            "buttonLabelPlaceholder": "Button label (what user sees)",
+            "buttonValuePlaceholder": "Value (what gets sent)",
+            "noOptionsAdded": "No options added yet",
+            "noOptionsAddedDescription": "Click \"Add Option\" to create quick reply buttons"
+        },
+        "messageExamples": {
+            "title": "Start from an example",
+            "items": {
+                "welcomeGreeting": {
+                    "label": "Welcome message",
+                    "name": "Welcome Message",
+                    "category": "greeting",
+                    "content": "Hi [CUSTOMER_NAME]! 👋 Welcome to [COMPANY_NAME].\n\nWe're happy to have you here. How can we help you today?"
+                },
+                "orderConfirmation": {
+                    "label": "Order confirmation",
+                    "name": "Order Confirmation",
+                    "category": "orders",
+                    "content": "Hi [CUSTOMER_NAME], your order #[ORDER_ID] has been confirmed! ✅\n\nTotal: [ORDER_TOTAL]\nEstimated delivery: [DELIVERY_DATE]\n\nWe'll keep you updated on the status."
+                },
+                "orderShipped": {
+                    "label": "Order shipped",
+                    "name": "Order Shipped",
+                    "category": "orders",
+                    "content": "Great news, [CUSTOMER_NAME]! 📦\n\nYour order #[ORDER_ID] has been shipped.\nTracking: [TRACKING_NUMBER]\nExpected delivery: [DELIVERY_DATE]\n\nLet us know if you need anything!"
+                },
+                "productRecommendation": {
+                    "label": "Product recommendation",
+                    "name": "Product Recommendation",
+                    "category": "products",
+                    "content": "Hi [CUSTOMER_NAME]! Based on what you're looking for, we recommend:\n\n[PRODUCT_NAME] — [PRODUCT_PRICE]\n[PRODUCT_DESCRIPTION]\n\nWould you like more details or help placing an order?"
+                },
+                "supportAcknowledgment": {
+                    "label": "Support acknowledgment",
+                    "name": "Support Acknowledgment",
+                    "category": "support",
+                    "content": "Hi [CUSTOMER_NAME], thanks for reaching out. 🙏\n\nWe've received your message about [ISSUE_TOPIC] and a team member will get back to you shortly.\n\nReference: [TICKET_ID]"
+                },
+                "closingThankYou": {
+                    "label": "Thank you & closing",
+                    "name": "Thank You & Closing",
+                    "category": "closing",
+                    "content": "Thank you for choosing [COMPANY_NAME], [CUSTOMER_NAME]! 🌟\n\nIf you need anything else, just send us a message. Have a great day!"
+                }
+            }
+        },
+        "categories": {
+            "greeting": "Greeting",
+            "orders": "Orders",
+            "products": "Products",
+            "support": "Support",
+            "closing": "Closing"
+        },
+        "templates": {
+            "title": "Message Templates",
+            "description": "Pre-written messages for common customer interactions",
+            "quickReplyOptions": "Quick Reply Options",
+            "created": "Created",
+            "empty": {
+                "title": "No templates yet",
+                "description": "Create your first message template",
+                "button": "Create First Template"
+            }
+        },
+        "dialog": {
+            "createTemplate": "Create New Template",
+            "editTemplate": "Edit Template",
+            "createTemplateDescription": "Create a reusable message template",
+            "editTemplateDescription": "Update your template below"
+        },
+        "errors": {
+            "fillAllFields": "Missing fields",
+            "fillAllFieldsDescription": "Please fill in all fields",
+            "loadFailed": "Unable to load templates",
+            "saveFailed": "Unable to save template",
+            "deleteFailed": "Unable to delete template",
+            "copyFailed": "Unable to copy template",
+            "tryAgain": "Please try again."
+        },
+        "success": {
+            "created": "Template created!",
+            "createdDescription": "Your new template is ready to use",
+            "updated": "Updated!",
+            "updatedDescription": "Template has been updated",
+            "deleted": "Deleted",
+            "deletedDescription": "Template removed",
+            "copied": "Copied!",
+            "copiedDescription": "Template copied to clipboard"
+        }
+    },
     "AppSidebar": {
+        "sections": {
+            "workspace": "Workspace",
+            "aiInteraction": "AI Interaction",
+            "management": "Management"
+        },
         "navigation": {
             "dashboard": "Dashboard",
             "customer": "Customers",
             "inbox": "Inbox",
-            "aiTraining": "AI Training",
+            "aiAgents": "AI Agents",
+            "quickAnswers": "Quick Answers",
+            "templates": "Templates",
             "company": "Company",
             "settings": "Settings",
+            "connectWhatsApp": "Connect WhatsApp",
+            "subscription": "Subscription",
             "support": "Support"
         },
         "documents": {
@@ -635,11 +1241,22 @@
             "rowsPerPage": "Rows per page",
             "page": "Page",
             "of": "of",
-            "rowsSelected": "row(s) selected",
+            "rowsSelected": "{selected} of {total} row(s) selected.",
+            "totalRows": "{count} row(s) total.",
             "goToFirstPage": "Go to first page",
             "goToPreviousPage": "Go to previous page",
             "goToNextPage": "Go to next page",
-            "goToLastPage": "Go to last page"
+            "goToLastPage": "Go to last page",
+            "showingRange": "Showing {from}-{to} of {total}"
+        },
+        "columnHeader": {
+            "sortAsc": "Asc",
+            "sortDesc": "Desc",
+            "hide": "Hide"
+        },
+        "view": {
+            "view": "View",
+            "toggleColumns": "Toggle columns"
         },
         "messages": {
             "noResults": "No results.",
@@ -685,7 +1302,7 @@
         }
     },
     "NavUser": {
-        "account": "Account",
+        "profile": "Profile",
         "subscription": "Subscription",
         "notifications": "Notifications",
         "settings": "Settings",
@@ -1167,8 +1784,18 @@
         "inviteCompanyConflict": "This account already belongs to another company and cannot accept this invitation."
     },
     "Company": {
-        "title": "Company Management",
-        "description": "Manage your companies and company members",
+        "title": "Settings",
+        "description": "Manage your company details and team members.",
+        "tabs": {
+            "company": "Company",
+            "users": "Users",
+            "checklist": "Checklist templates"
+        },
+        "checklist": {
+            "title": "Checklist templates",
+            "description": "Manage your company checklist templates.",
+            "empty": "No checklist templates yet."
+        },
         "companies": "Companies",
         "createCompany": "Create Company",
         "createCompanyDescription": "Create a new company to collaborate with others.",
@@ -1181,19 +1808,58 @@
         "noCompaniesDescription": "You haven't created any companies yet. Create your first company to get started.",
         "createFirstCompany": "Create Your First Company",
         "form": {
-            "name": "Company Name",
+            "name": "Company name",
             "namePlaceholder": "Enter company name",
             "description": "Description",
             "descriptionPlaceholder": "Enter company description (optional)",
+            "descriptionHint": "Tell us a little about your company and what makes it unique.",
+            "country": "Company country",
+            "countryPlaceholder": "Select country",
+            "documentType": "Document type",
+            "selectDocumentType": "Document type",
+            "documentNumber": "Tax ID",
+            "document": "Document number",
+            "documentPlaceholder": "Enter document number",
+            "number": "Number",
+            "complement": "Complement (optional)",
+            "clearAddress": "Clear address",
+            "zipCode": "Zip code",
+            "zipCodePlaceholder": "Enter zip code",
+            "state": "State",
+            "statePlaceholder": "Enter state",
+            "city": "City",
+            "cityPlaceholder": "Enter city",
+            "address": "Address",
+            "addressPlaceholder": "Enter full address",
             "cancel": "Cancel",
             "create": "Create Company",
             "creating": "Creating...",
             "update": "Update Company",
-            "updating": "Updating..."
+            "updating": "Updating...",
+            "save": "Save",
+            "saving": "Saving..."
+        },
+        "documentTypes": {
+            "cpf": "CPF",
+            "cnpj": "CNPJ"
         },
         "members": {
-            "title": "Company Members",
-            "description": "Manage your company members and their permissions",
+            "title": "Team Members",
+            "description": "Manage your team members and their permissions",
+            "helpTitle": "Team member or project guest?",
+            "helpDescription": "Team members have ongoing access to the company and can collaborate on conversations and settings based on their permissions. Guests receive an email link and must accept the invitation before accessing the platform.",
+            "inviteMemberButton": "Invite Member",
+            "searchPlaceholder": "Search by name or email...",
+            "statusFilter": "All statuses",
+            "statusAll": "All statuses",
+            "memberCountSingular": "1 member",
+            "memberCountPlural": "{count} members",
+            "noResults": "No members found for the selected filters.",
+            "permissionsFullAccess": "Full access",
+            "permissionsAdminAccess": "Admin access",
+            "permissionsLimited": "Limited access",
+            "canPostShort": "Create",
+            "canApproveShort": "Read",
             "inviteMember": "Invite Member",
             "inviteDescription": "Send an invitation to a new company member.",
             "email": "Email Address",
@@ -1533,6 +2199,12 @@
             "featuresIncluded": "Features included in your current plan",
             "maxAiResponses": "AI Responses / month",
             "aiResponses": "AI Responses",
+            "messagesReceived": "Messages Received",
+            "messagesSent": "Messages Sent",
+            "botAutoReplies": "Bot Auto-Replies",
+            "channelUsage": "WhatsApp Line Usage",
+            "channelUsageDescription": "Message counts per connected WhatsApp number this period",
+            "phoneNumber": "Phone Number",
             "analytics": "Analytics",
             "removeBranding": "Remove Branding",
             "exports": "Data Export",
@@ -1632,7 +2304,9 @@
         "description": "Manage your customer directory and keep their details up to date.",
         "toolbar": {
             "searchPlaceholder": "Search customers...",
-            "addCustomer": "Add Customer"
+            "addCustomer": "Add Customer",
+            "statusFilter": "Filter by status",
+            "statusAll": "All statuses"
         },
         "table": {
             "columns": {
@@ -1641,15 +2315,20 @@
                 "phone": "Phone",
                 "company": "Company",
                 "status": "Status",
-                "createdAt": "Created"
+                "createdAt": "Created",
+                "actions": "Actions"
             },
             "empty": {
                 "title": "No customers yet",
                 "description": "Start by adding your first customer."
             },
+            "messages": {
+                "noResults": "No customers found"
+            },
             "actions": {
                 "edit": "Edit",
-                "startConversation": "Message"
+                "startConversation": "Message",
+                "openMenu": "Open menu"
             },
             "badges": {
                 "active": "Active",
@@ -1686,6 +2365,10 @@
                 "status": {
                     "label": "Status",
                     "placeholder": "Select status"
+                },
+                "description": {
+                    "label": "Description",
+                    "placeholder": "Add notes about this customer for your team and AI assistant"
                 }
             },
             "buttons": {
@@ -1700,6 +2383,8 @@
             }
         },
         "messages": {
+            "loading": "Loading customers...",
+            "loadFailed": "Could not load customers",
             "customerCreated": "Customer added successfully",
             "customerUpdated": "Customer updated successfully",
             "customerSaveError": "Something went wrong while saving the customer.",

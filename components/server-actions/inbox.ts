@@ -6,6 +6,7 @@ import {
   createInboxConversation,
   createInboxMessage,
   getInboxConversationDetail,
+  getInboxConversationForSend,
   getLastCustomerMessage,
   listInboxConversations,
   listInboxCustomers,
@@ -14,13 +15,63 @@ import {
   updateConversationMetadata,
 } from "@/lib/firebase/services/inbox-service"
 import { generateSuggestedResponses } from "@/lib/firebase/ai/generate"
+import { sendOutbound } from "@/lib/messaging/messaging-service"
 import { isWhatsAppConfigured, getWhatsAppOrchestrator } from "@/lib/whatsapp"
-import { WhatsAppSessionRepository } from "@/lib/whatsapp/session-repository"
 import type {
   InboxConversationPriority,
   InboxMessageSenderType,
   InboxMessageStatus,
 } from "@/lib/firebase/types"
+
+type InboxConversationDetail = NonNullable<Awaited<ReturnType<typeof getInboxConversationDetail>>>
+type SerializedInboxConversationDetail = Omit<
+  InboxConversationDetail,
+  "lastMessageSentAt" | "archivedAt" | "createdAt" | "updatedAt" | "messages"
+> & {
+  lastMessageSentAt: string | null
+  archivedAt: string | null
+  createdAt: string
+  updatedAt: string
+  messages: Array<
+    Omit<InboxConversationDetail["messages"][number], "sentAt" | "createdAt" | "updatedAt"> & {
+      sentAt: string
+      createdAt: string
+      updatedAt: string
+    }
+  >
+}
+
+const toIsoString = (value: Date | null | undefined): string | null => {
+  if (!value) {
+    return null
+  }
+
+  return value.toISOString()
+}
+
+const serializeInboxMessage = (message: InboxConversationDetail["messages"][number]) => ({
+  ...message,
+  sentAt: message.sentAt.toISOString(),
+  createdAt: message.createdAt.toISOString(),
+  updatedAt: message.updatedAt.toISOString(),
+})
+
+const serializeInboxConversation = (
+  conversation: Omit<InboxConversationDetail, "messages">,
+): Omit<SerializedInboxConversationDetail, "messages"> => ({
+  ...conversation,
+  lastMessageSentAt: toIsoString(conversation.lastMessageSentAt),
+  archivedAt: toIsoString(conversation.archivedAt),
+  createdAt: conversation.createdAt.toISOString(),
+  updatedAt: conversation.updatedAt.toISOString(),
+})
+
+const serializeInboxConversationDetail = (
+  conversation: InboxConversationDetail,
+): SerializedInboxConversationDetail => ({
+  ...serializeInboxConversation(conversation),
+  messages: conversation.messages.map(serializeInboxMessage),
+})
 
 const companyIdSchema = z.object({
   companyId: z.string().optional(),
@@ -29,6 +80,7 @@ const companyIdSchema = z.object({
 const getInboxConversationsSchema = companyIdSchema.extend({
   search: z.string().optional(),
   sessionId: z.string().min(1).optional(),
+  sessionIds: z.array(z.string().min(1)).min(1).optional(),
   page: z.number().int().positive().optional(),
   pageSize: z.number().int().min(1).max(100).optional(),
   includeCounts: z.boolean().optional(),
@@ -51,6 +103,7 @@ export const getInboxConversationsAction = async (
       companyId,
       search: payload.search,
       sessionId: payload.sessionId,
+      sessionIds: payload.sessionIds,
       page: payload.page,
       pageSize: payload.pageSize,
       includeArchived: payload.includeArchived,
@@ -72,7 +125,7 @@ const getInboxConversationDetailSchema = z.object({
 
 export const getInboxConversationDetailAction = async (
   input: z.infer<typeof getInboxConversationDetailSchema>,
-): Promise<BaseActionResponse<NonNullable<Awaited<ReturnType<typeof getInboxConversationDetail>>>>> =>
+): Promise<BaseActionResponse<SerializedInboxConversationDetail>> =>
   handleAction(async () => {
     const payload = getInboxConversationDetailSchema.parse(input)
     const { companyId } = await resolveCompanyContext()
@@ -86,7 +139,7 @@ export const getInboxConversationDetailAction = async (
       return { success: false, error: "Conversation not found" }
     }
 
-    return { success: true, data: conversation }
+    return { success: true, data: serializeInboxConversationDetail(conversation) }
   })
 
 const baseCustomerSchema = z.object({
@@ -215,8 +268,8 @@ export const getInboxConnectionsAction = async (
     const payload = companyIdSchema.parse(input ?? {})
     const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
 
-    const repository = new WhatsAppSessionRepository()
-    const sessions = await repository.listSessionsByCompany(companyId)
+    const orchestrator = await getWhatsAppOrchestrator()
+    const sessions = await orchestrator.listSessions(companyId)
     const connections = sessions
       .filter((session) => session.status === "connected")
       .map((session) => ({
@@ -247,23 +300,23 @@ export const sendInboxMessageAction = async (
 ): Promise<
   BaseActionResponse<{
     message: Awaited<ReturnType<typeof createInboxMessage>>
-    conversation: NonNullable<Awaited<ReturnType<typeof getInboxConversationDetail>>>
+    conversation: NonNullable<Awaited<ReturnType<typeof getInboxConversationForSend>>>
   }>
 > =>
   handleAction(async () => {
     const payload = sendInboxMessageSchema.parse(input)
     const { companyId, userId } = await resolveCompanyContext({ requireCanPost: true })
 
-    const conversationDetail = await getInboxConversationDetail({
+    const sendContext = await getInboxConversationForSend({
       companyId,
       conversationId: payload.conversationId,
     })
 
-    if (!conversationDetail) {
+    if (!sendContext) {
       return { success: false, error: "Conversation not found" }
     }
 
-    const message = await createInboxMessage({
+    const { message } = await sendOutbound({
       companyId,
       conversationId: payload.conversationId,
       content: payload.content,
@@ -271,43 +324,23 @@ export const sendInboxMessageAction = async (
       senderUserId: payload.senderType === "agent" ? userId : undefined,
       status: payload.status as InboxMessageStatus | undefined,
       incrementUnread: payload.senderType === "customer",
+      sessionId: sendContext.sessionId,
+      customerPhone: sendContext.customer?.phone ?? undefined,
     })
 
-    if (payload.senderType === "agent" && isWhatsAppConfigured()) {
-      const customerPhone = conversationDetail.customer?.phone
-      if (customerPhone) {
-        try {
-          const repository = new WhatsAppSessionRepository()
-          const sessionId = conversationDetail.sessionId
-          const session = sessionId
-            ? await repository.getSession(sessionId)
-            : await repository.getConnectedSessionForCompany(companyId)
-
-          if (session && session.status === "connected") {
-            const orchestrator = await getWhatsAppOrchestrator()
-            await orchestrator.sendMessage({
-              companyId,
-              sessionId: session.sessionId,
-              to: customerPhone,
-              text: payload.content,
-            })
-          }
-        } catch (error) {
-          console.error("[inbox] WhatsApp delivery failed:", error)
-        }
-      }
+    const conversation = {
+      ...sendContext,
+      lastMessagePreview: payload.content,
+      lastMessageSentAt: message.sentAt,
+      unreadCount: payload.senderType === "customer" ? sendContext.unreadCount + 1 : 0,
+      updatedAt: message.updatedAt,
     }
-
-    const conversation = await getInboxConversationDetail({
-      companyId,
-      conversationId: payload.conversationId,
-    })
 
     return {
       success: true,
       data: {
         message,
-        conversation: conversation!,
+        conversation,
       },
     }
   })
@@ -338,11 +371,14 @@ const updateInboxConversationMetadataSchema = z.object({
   satisfactionScore: z.number().int().min(1).max(5).optional(),
   assignedToId: z.string().nullable().optional(),
   isArchived: z.boolean().optional(),
+  isBookmarked: z.boolean().optional(),
 })
 
 export const updateInboxConversationMetadataAction = async (
   input: z.infer<typeof updateInboxConversationMetadataSchema>,
-): Promise<BaseActionResponse<{ conversation: Awaited<ReturnType<typeof updateConversationMetadata>> }>> =>
+): Promise<
+  BaseActionResponse<{ conversation: Omit<SerializedInboxConversationDetail, "messages"> }>
+> =>
   handleAction(async () => {
     const payload = updateInboxConversationMetadataSchema.parse(input)
     const { companyId } = await resolveCompanyContext()
@@ -355,9 +391,13 @@ export const updateInboxConversationMetadataAction = async (
       satisfactionScore: payload.satisfactionScore,
       assignedToId: payload.assignedToId,
       isArchived: payload.isArchived,
+      isBookmarked: payload.isBookmarked,
     })
 
-    return { success: true, data: { conversation } }
+    return {
+      success: true,
+      data: { conversation: serializeInboxConversation(await conversation) },
+    }
   })
 
 const getSuggestedResponsesSchema = z.object({

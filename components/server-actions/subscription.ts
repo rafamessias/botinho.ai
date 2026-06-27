@@ -8,6 +8,7 @@ import { getCustomerSubscription, updateCustomerSubscription } from "@/lib/custo
 import { getCurrentCompanyId } from "@/lib/firebase/get-current-company-id"
 import { getActivePlans, getPlanByType } from "@/lib/firebase/services/subscription-service"
 import { getAiUsageSnapshot } from "@/lib/firebase/services/ai-usage-service"
+import { getMessageUsageMetrics, listChannelUsageForCompany } from "@/lib/messaging/message-usage-service"
 import { PlanType, SubscriptionStatus } from "@/lib/types/enums"
 import { getServerAuthSession } from "@/lib/auth/server-session"
 
@@ -64,13 +65,16 @@ export const getSubscriptionData = async () => {
     }
 
     const aiUsage = await getAiUsageSnapshot(companyId)
+    const messageUsage = await getMessageUsageMetrics(companyId)
+    const channelUsage = await listChannelUsageForCompany(companyId)
 
     return {
       success: true,
       data: {
         subscription: subscriptionResult.data,
         usage: {
-          usage: [aiUsage],
+          usage: [aiUsage, ...messageUsage],
+          channelUsage,
         },
       },
     }

@@ -44,7 +44,7 @@
 | 14 | [i18n](14-i18n.md) | `implemented` | Locales, routing, messages |
 | 15 | [UI and design system](15-ui-and-design-system.md) | `implemented` | shadcn, Tailwind, components |
 | 16 | [Environment and config](16-environment-and-config.md) | — | Env vars, config files |
-| 17 | [Deployment and ops](17-deployment-and-ops.md) | `partial` | Vercel; no CI/tests |
+| 17 | [Deployment and ops](17-deployment-and-ops.md) | `partial` | No CI/tests |
 | 18 | [Known gaps and legacy](18-known-gaps-and-legacy.md) | — | Technical debt inventory |
 | 19 | [Company and members](19-company-and-members.md) | `implemented` | Single-company policy, invites, workspace sync |
 

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
     Form,
@@ -64,6 +65,11 @@ const useCustomerSchema = (messages: {
         company: z
             .string()
             .trim()
+            .optional(),
+        description: z
+            .string()
+            .trim()
+            .max(1000)
             .optional(),
         status: z.enum(statusOptions),
     })
@@ -117,6 +123,7 @@ export const CustomerModal = ({
             email: initialCustomer?.email ?? "",
             phone: initialCustomer?.phone ?? "",
             company: initialCustomer?.company ?? "",
+            description: initialCustomer?.description ?? "",
             status: initialCustomer?.status ?? "active",
         },
     })
@@ -135,6 +142,7 @@ export const CustomerModal = ({
             email: initialCustomer?.email ?? "",
             phone: initialCustomer?.phone ?? "",
             company: initialCustomer?.company ?? "",
+            description: initialCustomer?.description ?? "",
             status: initialCustomer?.status ?? "active",
         })
     }, [form, initialCustomer, isOpen, mode])
@@ -303,6 +311,7 @@ export const CustomerModal = ({
             email: values.email?.trim() ? values.email.trim() : undefined,
             phone: values.phone.trim(),
             company: values.company?.trim() ? values.company.trim() : undefined,
+            description: values.description?.trim() ? values.description.trim() : undefined,
         }
 
         await onSubmit(normalizedValues)
@@ -315,7 +324,7 @@ export const CustomerModal = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="max-w-lg space-y-6 p-6">
+            <DialogContent className="max-h-[90vh] max-w-lg space-y-6 overflow-y-auto p-6">
                 <DialogHeader className="space-y-1">
                     <DialogTitle>{dialogTitle}</DialogTitle>
                     <DialogDescription>{dialogDescription}</DialogDescription>
@@ -487,6 +496,26 @@ export const CustomerModal = ({
 
                                     <FormField
                                         control={form.control}
+                                        name="description"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>{t("form.fields.description.label")}</FormLabel>
+                                                <FormControl>
+                                                    <Textarea
+                                                        {...field}
+                                                        value={field.value ?? ""}
+                                                        onChange={(event) => field.onChange(event.target.value)}
+                                                        placeholder={t("form.fields.description.placeholder")}
+                                                        rows={3}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
                                         name="status"
                                         render={({ field }) => (
                                             <FormItem>
@@ -619,6 +648,26 @@ export const CustomerModal = ({
                                                 onChange={(event) => field.onChange(event.target.value)}
                                                 placeholder={t("form.fields.company.placeholder")}
                                                 autoComplete="organization"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t("form.fields.description.label")}</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                {...field}
+                                                value={field.value ?? ""}
+                                                onChange={(event) => field.onChange(event.target.value)}
+                                                placeholder={t("form.fields.description.placeholder")}
+                                                rows={3}
                                             />
                                         </FormControl>
                                         <FormMessage />

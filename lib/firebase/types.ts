@@ -18,10 +18,21 @@ export type FirestoreUser = {
   updatedAt: Timestamp
 }
 
+export type CompanyDocumentType = "cpf" | "cnpj"
+
 export type FirestoreCompany = {
   slug: string
   name: string
   description?: string
+  country?: string
+  documentType?: CompanyDocumentType
+  document?: string
+  address?: string
+  addressNumber?: string
+  zipCode?: string
+  complement?: string
+  city?: string
+  state?: string
   tokenApi?: string
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -50,8 +61,13 @@ export type FirestoreCompanySettings = {
 }
 
 export type InboxMessageSenderType = "customer" | "agent" | "bot" | "system"
+export type InboxMessageSentBy = "customer" | "user" | "robot" | "system"
 export type InboxMessageStatus = "pending" | "sent" | "delivered" | "read" | "failed"
 export type InboxConversationPriority = "low" | "medium" | "high"
+export type MessageChannel = "whatsapp" | "manual"
+export type MessageDirection = "inbound" | "outbound"
+export type InboundEventStatus = "pending" | "processing" | "processed" | "failed"
+export type AutoReplyStatus = "skipped" | "pending" | "sent" | "failed"
 
 export type FirestoreInboxCustomer = {
   name: string
@@ -59,6 +75,8 @@ export type FirestoreInboxCustomer = {
   email?: string
   address?: string
   notes?: string
+  company?: string
+  status?: "active" | "inactive" | "prospect"
   createdAt: Timestamp
   updatedAt: Timestamp
 }
@@ -75,6 +93,7 @@ export type FirestoreInboxConversation = {
   tags: string[]
   assignedToId?: string | null
   isArchived: boolean
+  isBookmarked?: boolean
   archivedAt?: Timestamp | null
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -82,11 +101,52 @@ export type FirestoreInboxConversation = {
 
 export type FirestoreInboxMessage = {
   senderType: InboxMessageSenderType
+  sentBy: InboxMessageSentBy
   senderUserId?: string
   content: string
   attachments?: unknown
   status: InboxMessageStatus
+  channel?: MessageChannel
+  direction?: MessageDirection
+  externalMessageId?: string
+  channelPhoneNumber?: string
+  failureReason?: string
+  metricsSentCounted?: boolean
   sentAt: Timestamp
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+
+export type FirestoreInboundEvent = {
+  channel: MessageChannel
+  sessionId: string
+  messageId: string
+  from: string
+  to?: string
+  body: string
+  type?: string
+  timestamp: Timestamp | Date | string
+  phoneNumber?: string
+  status: InboundEventStatus
+  attempts: number
+  lastError?: string | null
+  nextAttemptAt?: Timestamp | Date | null
+  inboxMessageId?: string | null
+  conversationId?: string | null
+  autoReplyStatus?: AutoReplyStatus
+  autoReplyReason?: string | null
+  metricsReceivedCounted?: boolean
+  createdAt: Timestamp
+  updatedAt: Timestamp
+  processedAt?: Timestamp | null
+}
+
+export type FirestoreAiAgent = {
+  name: string
+  systemPrompt: string
+  sessionId?: string | null
+  autoReply: boolean
+  createdById?: string
   createdAt: Timestamp
   updatedAt: Timestamp
 }

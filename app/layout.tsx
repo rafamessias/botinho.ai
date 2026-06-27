@@ -3,8 +3,10 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
+import { Toaster as ShadcnToaster } from '@/components/ui/toaster'
 import AuthSessionProvider from '@/components/session-provider'
 import { UserProvider } from '@/components/user-provider'
+import { FirebaseSessionBridge } from '@/components/firebase-session-bridge'
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
@@ -52,9 +54,11 @@ export default function RootLayout({
                 >
                     <AuthSessionProvider>
                         <UserProvider>
+                            <FirebaseSessionBridge />
                             {children}
                         </UserProvider>
                         <Toaster />
+                        <ShadcnToaster />
                     </AuthSessionProvider>
                 </ThemeProvider>
             </body>

@@ -5,13 +5,17 @@ import { useTranslations } from "next-intl"
 import {
   IconDashboard,
   IconHelp,
-  IconListDetails,
-  IconSettings,
+  IconRobot,
+  IconBrandWhatsapp,
   IconUsers,
   IconMessageCircle,
   IconUserCircle,
+  IconCreditCard,
+  IconMessage,
+  IconTemplate,
 } from "@tabler/icons-react"
 
+import { BrandLogo } from "@/components/brand-logo"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -31,73 +35,97 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations("AppSidebar")
   const { usagePercentage } = useUser()
 
-  const data = {
-    navMain: [
-      {
-        title: t("navigation.dashboard"),
-        url: "/dashboard",
-        icon: IconDashboard,
-      },
-      {
-        title: t("navigation.inbox"),
-        url: "/inbox",
-        icon: IconMessageCircle,
-      },
-      {
-        title: t("navigation.customer"),
-        url: "/customer",
-        icon: IconUserCircle,
-      },
-      {
-        title: t("navigation.aiTraining"),
-        url: "/ai-training",
-        icon: IconListDetails,
-      },
-      {
-        title: t("navigation.company"),
-        url: "/company",
-        icon: IconUsers,
-      },
-      {
-        title: t("navigation.settings"),
-        icon: IconSettings,
-        url: '/settings',
-      },
-      {
-        title: t("navigation.support"),
-        url: "/support",
-        icon: IconHelp,
-      },
-    ],
-
-  }
+  const navGroups = [
+    {
+      label: t("sections.workspace"),
+      items: [
+        {
+          title: t("navigation.dashboard"),
+          url: "/dashboard",
+          icon: IconDashboard,
+        },
+        {
+          title: t("navigation.inbox"),
+          url: "/inbox",
+          icon: IconMessageCircle,
+        },
+        {
+          title: t("navigation.customer"),
+          url: "/customer",
+          icon: IconUserCircle,
+        },
+      ],
+    },
+    {
+      label: t("sections.aiInteraction"),
+      items: [
+        {
+          title: t("navigation.aiAgents"),
+          url: "/ai-agents",
+          icon: IconRobot,
+        },
+        {
+          title: t("navigation.quickAnswers"),
+          url: "/quick-answers",
+          icon: IconMessage,
+        },
+        {
+          title: t("navigation.templates"),
+          url: "/templates",
+          icon: IconTemplate,
+        },
+      ],
+    },
+    {
+      label: t("sections.management"),
+      items: [
+        {
+          title: t("navigation.company"),
+          url: "/company",
+          icon: IconUsers,
+        },
+        {
+          title: t("navigation.connectWhatsApp"),
+          icon: IconBrandWhatsapp,
+          url: "/settings",
+        },
+        {
+          title: t("navigation.subscription"),
+          url: "/subscription",
+          icon: IconCreditCard,
+        },
+        {
+          title: t("navigation.support"),
+          url: "/support",
+          icon: IconHelp,
+        },
+      ],
+    },
+  ]
   return (
     <Sidebar
-      className="border-r border-border/60 bg-background/80 backdrop-blur"
-      collapsible="offcanvas"
+      className="border-r border-border/60 bg-background/80 backdrop-blur pt-0"
+      collapsible="icon"
       {...props}
     >
-      <SidebarHeader className="px-1 py-0">
-        <SidebarMenu>
+      <SidebarHeader className="flex h-(--header-height) shrink-0 flex-row items-center gap-0 px-1 py-0">
+        <SidebarMenu className="h-full w-full px-2">
           <Link
             href="/"
             aria-label="botinho.ai home"
-            className="flex items-center justify-start px-1"
+            className="flex h-full w-full items-center justify-start p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2"
             tabIndex={0}
           >
-            <div className="relative h-14 w-32 ">
+            <BrandLogo
+              className="h-8 w-auto max-w-[135px] object-contain object-left group-data-[collapsible=icon]:hidden"
+              priority
+            />
+            <div className="relative hidden size-8 shrink-0 group-data-[collapsible=icon]:block">
               <Image
-                src="/logo-green.png"
+                src="/bot-green.svg"
                 alt="botinho.ai"
                 fill
-                className="object-contain dark:hidden"
-                priority
-              />
-              <Image
-                src="/logo-white.png"
-                alt="botinho.ai"
-                fill
-                className="hidden object-contain dark:block"
+                className="object-contain"
                 priority
               />
             </div>
@@ -106,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent className="px-1">
-        <NavMain items={data.navMain} />
+        <NavMain groups={navGroups} />
       </SidebarContent>
       <SidebarFooter>
         {/* 
@@ -116,7 +144,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {usagePercentage >= 65 && usagePercentage < 80 && (
           <Link
             href="/subscription"
-            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-cyan-100/60 px-3 py-2 text-xs font-medium text-cyan-900 transition-colors hover:bg-cyan-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 dark:bg-cyan-900/60 dark:text-cyan-100 dark:hover:bg-cyan-800/70"
+            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-cyan-100/60 px-3 py-2 text-xs font-medium text-cyan-900 transition-colors hover:bg-cyan-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 group-data-[collapsible=icon]:hidden dark:bg-cyan-900/60 dark:text-cyan-100 dark:hover:bg-cyan-800/70"
             aria-label="Usage approaching limit"
             title="Starting to reach plan limit"
             tabIndex={0}
@@ -132,7 +160,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {usagePercentage >= 80 && usagePercentage < 100 && (
           <Link
             href="/subscription"
-            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-orange-100/70 px-3 py-2 text-xs font-semibold text-orange-800 transition-colors hover:bg-orange-200/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 dark:bg-orange-900/70 dark:text-orange-200 dark:hover:bg-orange-800/70"
+            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-orange-100/70 px-3 py-2 text-xs font-semibold text-orange-800 transition-colors hover:bg-orange-200/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 group-data-[collapsible=icon]:hidden dark:bg-orange-900/70 dark:text-orange-200 dark:hover:bg-orange-800/70"
             aria-label="Usage warning"
             title="Almost reached your plan's limit"
             tabIndex={0}
@@ -148,7 +176,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {usagePercentage >= 100 && (
           <Link
             href="/subscription"
-            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-rose-100/70 px-3 py-2 text-xs font-bold text-rose-800 transition-colors hover:bg-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 dark:bg-rose-900/80 dark:text-rose-100 dark:hover:bg-rose-800"
+            className="mb-3 flex items-center justify-between gap-2 rounded-full bg-rose-100/70 px-3 py-2 text-xs font-bold text-rose-800 transition-colors hover:bg-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 group-data-[collapsible=icon]:hidden dark:bg-rose-900/80 dark:text-rose-100 dark:hover:bg-rose-800"
             aria-label="Limit reached"
             title="Plan limit reached. Upgrade required."
             tabIndex={0}
@@ -161,7 +189,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <ArrowRight className="h-4 w-4 text-rose-500 dark:text-rose-300" />
           </Link>
         )}
-        <div className="rounded-xl bg-muted/40 px-3 py-2">
+        <div className="rounded-xl bg-muted/40 px-3 py-2 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0">
           <NavUser />
         </div>
       </SidebarFooter>

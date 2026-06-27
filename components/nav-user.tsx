@@ -1,11 +1,8 @@
 "use client"
 
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
-  IconSettings,
   IconUserCircle,
 } from "@tabler/icons-react"
 
@@ -59,15 +56,10 @@ export function NavUser() {
 
   const menuItems = [
     {
-      label: t("account"),
+      label: t("profile"),
       icon: IconUserCircle,
       href: "/account",
     },
-    {
-      label: t("subscription"),
-      icon: IconCreditCard,
-      href: "/subscription",
-    }
   ]
 
   // Helper to truncate string to max 20 chars, adding ... if longer
@@ -100,21 +92,22 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
+              tooltip={truncatedName}
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer group-data-[collapsible=icon]:justify-center"
             >
-              <Avatar className="h-8 w-8 rounded-lg ">
+              <Avatar className="h-8 w-8 shrink-0 rounded-lg">
                 <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
                 <AvatarFallback className="rounded-lg">
                   {user.firstName?.charAt(0) || ""}{user.lastName?.charAt(0) || ""}
                 </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                 <span className="truncate font-medium">{truncatedName}</span>
                 <span className="text-muted-foreground truncate text-xs">
                   {truncatedEmail}
                 </span>
               </div>
-              <IconDotsVertical className="ml-auto size-4" />
+              <IconDotsVertical className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -138,6 +131,7 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              variant="destructive"
               onSelect={handleLogout}
               disabled={isLoggingOut}
               className="cursor-pointer"

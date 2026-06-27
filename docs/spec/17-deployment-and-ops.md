@@ -6,24 +6,16 @@ Document deployment target, monitoring, and operational procedures.
 
 ## Status
 
-`partial` — Vercel deployment configured; Firebase App Hosting planned; no CI/CD or tests.
+`partial` — no CI/CD or automated tests; deploy via Firebase App Hosting or self-hosted Node.
 
 ## Source of truth
 
-- [vercel.json](../../vercel.json)
 - [readme.md](../../readme.md)
-- [app/instrumentation-client.ts](../../app/instrumentation-client.ts)
 - [app/layout.tsx](../../app/layout.tsx)
 
 ## Deployment platform
 
-**Primary: Vercel**
-
-- Connect GitHub repo → auto-deploy on push to main
-- Multi-region: `iad1`, `sfo1`, `lhr1`
-- `.vercel` directory gitignored
-
-**Planned: Firebase App Hosting** (per ADR 0001)
+**Primary: Firebase App Hosting** (per ADR 0001), or any Node.js host running `next start`.
 
 ### Not configured
 
@@ -66,7 +58,6 @@ No automated gate before deploy in repository.
 
 ## Monitoring
 
-- Client instrumentation: [app/instrumentation-client.ts](../../app/instrumentation-client.ts)
 - Server errors logged via `console.error` in server actions and API routes
 - No Sentry/Datadog integration in repo
 
@@ -77,4 +68,4 @@ No automated gate before deploy in repository.
 
 ## Open questions
 
-- Migration timeline to Firebase App Hosting.
+- App Hosting rollout timeline and environment/secrets setup.

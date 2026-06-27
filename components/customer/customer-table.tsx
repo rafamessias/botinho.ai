@@ -1,19 +1,38 @@
 "use client"
 
-import { memo, useMemo } from "react"
+import { memo, useEffect, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
-import { MoreHorizontal, MessageSquarePlus, Pencil, Mail, Phone, Building } from "lucide-react"
+import { Search, Building, MessageSquarePlus, Pencil, Phone } from "lucide-react"
+import {
+    type ColumnFiltersState,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    type SortingState,
+    type VisibilityState,
+    useReactTable,
+} from "@tanstack/react-table"
 
+import { DataTablePagination } from "@/components/data-table/data-table-pagination"
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
+import { useCustomerColumnLabels, useCustomerColumns } from "@/components/customer/columns"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import type { Customer } from "@/lib/types/customer"
+import type { Customer, CustomerStatus } from "@/lib/types/customer"
+
+export type CustomerStatusFilter = CustomerStatus | "all"
 
 type CustomerTableProps = {
     customers: Customer[]
@@ -21,10 +40,10 @@ type CustomerTableProps = {
     onStartConversation?: (customer: Customer) => void
 }
 
-const statusToneClasses: Record<Customer["status"], string> = {
-    active: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300",
-    inactive: "bg-muted text-muted-foreground",
-    prospect: "bg-blue-500/15 text-blue-600 dark:text-blue-300",
+const statusBadgeVariant: Record<CustomerStatus, "default" | "secondary" | "outline"> = {
+    active: "default",
+    inactive: "outline",
+    prospect: "secondary",
 }
 
 const formatDate = (value: string) => {
@@ -42,6 +61,19 @@ const formatDate = (value: string) => {
 
 const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: CustomerTableProps) => {
     const t = useTranslations("Customer")
+    const columns = useCustomerColumns({ onEdit, onStartConversation })
+    const columnLabels = useCustomerColumnLabels()
+
+    const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }])
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+    const [globalFilter, setGlobalFilter] = useState("")
+    const [statusFilter, setStatusFilter] = useState<CustomerStatusFilter>("all")
+    const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 })
+
+    const columnFilters = useMemo<ColumnFiltersState>(
+        () => (statusFilter === "all" ? [] : [{ id: "status", value: statusFilter }]),
+        [statusFilter],
+    )
 
     const statusLabels = useMemo(
         () => ({
@@ -52,9 +84,49 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
         [t],
     )
 
-    if (customers.length === 0) {
+    const table = useReactTable({
+        data: customers,
+        columns,
+        state: {
+            sorting,
+            columnVisibility,
+            globalFilter,
+            columnFilters,
+            pagination,
+        },
+        getRowId: (row) => row.id,
+        onSortingChange: setSorting,
+        onColumnVisibilityChange: setColumnVisibility,
+        onGlobalFilterChange: setGlobalFilter,
+        onPaginationChange: setPagination,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        globalFilterFn: (row, _columnId, filterValue) => {
+            const query = String(filterValue).trim().toLowerCase()
+            if (!query) {
+                return true
+            }
+
+            const customer = row.original
+            const values = [customer.name, customer.email, customer.phone, customer.company]
+
+            return values.some((value) => value?.toLowerCase().includes(query))
+        },
+    })
+
+    useEffect(() => {
+        setPagination((previous) => ({ ...previous, pageIndex: 0 }))
+    }, [globalFilter, statusFilter])
+
+    const rows = table.getRowModel().rows
+    const hasCustomers = customers.length > 0
+    const hasResults = table.getFilteredRowModel().rows.length > 0
+
+    if (!hasCustomers) {
         return (
-            <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed bg-muted/20 px-6 py-12 text-center">
+            <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/20 px-6 py-12 text-center">
                 <p className="text-base font-medium">{t("table.empty.title")}</p>
                 <p className="max-w-md text-sm text-muted-foreground">{t("table.empty.description")}</p>
             </div>
@@ -63,131 +135,171 @@ const CustomerTableComponent = ({ customers, onEdit, onStartConversation }: Cust
 
     return (
         <div className="space-y-4">
-            <div className="grid gap-3 md:hidden">
-                {customers.map((customer) => (
-                    <article
-                        key={customer.id}
-                        className="rounded-xl border bg-card p-4 shadow-sm transition hover:shadow-md"
-                    >
-                        <div className="flex items-start justify-between gap-3">
-                            <div className="space-y-1">
-                                <h3 className="text-base font-semibold text-foreground">{customer.name}</h3>
-                                <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Phone className="size-4" aria-hidden="true" />
-                                    <span>{customer.phone}</span>
-                                </p>
-                                {customer.email && (
-                                    <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <Mail className="size-4" aria-hidden="true" />
-                                        <span>{customer.email}</span>
-                                    </p>
-                                )}
-                                {customer.company && (
-                                    <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <Building className="size-4" aria-hidden="true" />
-                                        <span>{customer.company}</span>
-                                    </p>
-                                )}
-                            </div>
-                            <Badge className={`px-2 py-1 text-xs font-medium ${statusToneClasses[customer.status]}`}>
-                                {statusLabels[customer.status]}
-                            </Badge>
-                        </div>
-                        <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-                            <span>{formatDate(customer.createdAt)}</span>
-                            <div className="flex items-center gap-1">
-                                {onStartConversation && (
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 px-2"
-                                        onClick={() => onStartConversation(customer)}
-                                        aria-label={t("table.actions.startConversation")}
-                                    >
-                                        <MessageSquarePlus className="mr-2 size-4" aria-hidden="true" />
-                                        {t("table.actions.startConversation")}
-                                    </Button>
-                                )}
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 px-2"
-                                    onClick={() => onEdit(customer)}
-                                    aria-label={t("table.actions.edit")}
-                                >
-                                    <Pencil className="mr-2 size-4" aria-hidden="true" />
-                                    {t("table.actions.edit")}
-                                </Button>
-                            </div>
-                        </div>
-                    </article>
-                ))}
+            <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center">
+                <label className="relative flex flex-1 sm:max-w-sm" htmlFor="customer-search">
+                    <Search
+                        className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                        aria-hidden="true"
+                    />
+                    <Input
+                        id="customer-search"
+                        placeholder={t("toolbar.searchPlaceholder")}
+                        value={globalFilter}
+                        onChange={(event) => setGlobalFilter(event.target.value)}
+                        className="pl-9"
+                        aria-label={t("toolbar.searchPlaceholder")}
+                    />
+                </label>
+                <Select
+                    value={statusFilter}
+                    onValueChange={(value) => setStatusFilter(value as CustomerStatusFilter)}
+                >
+                    <SelectTrigger className="w-full sm:w-[160px]" aria-label={t("toolbar.statusFilter")}>
+                        <SelectValue placeholder={t("toolbar.statusFilter")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">{t("toolbar.statusAll")}</SelectItem>
+                        <SelectItem value="active">{t("table.badges.active")}</SelectItem>
+                        <SelectItem value="prospect">{t("table.badges.prospect")}</SelectItem>
+                        <SelectItem value="inactive">{t("table.badges.inactive")}</SelectItem>
+                    </SelectContent>
+                </Select>
+                <DataTableViewOptions table={table} columnLabels={columnLabels} />
             </div>
 
-            <div className="hidden overflow-x-auto rounded-xl border bg-card md:block">
-                <Table>
-                    <TableHeader className="bg-muted/40">
-                        <TableRow>
-                            <TableHead className="min-w-[220px]">{t("table.columns.name")}</TableHead>
-                            <TableHead className="min-w-[200px]">{t("table.columns.email")}</TableHead>
-                            <TableHead>{t("table.columns.phone")}</TableHead>
-                            <TableHead>{t("table.columns.company")}</TableHead>
-                            <TableHead>{t("table.columns.status")}</TableHead>
-                            <TableHead className="text-right">{t("table.columns.createdAt")}</TableHead>
-                            <TableHead className="w-[60px] text-right">
-                                <span className="sr-only">{t("table.actions.edit")}</span>
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {customers.map((customer) => (
-                            <TableRow key={customer.id} className="hover:bg-muted/30">
-                                <TableCell className="font-medium">{customer.name}</TableCell>
-                                <TableCell>{customer.email ?? "—"}</TableCell>
-                                <TableCell>{customer.phone}</TableCell>
-                                <TableCell>{customer.company ?? "—"}</TableCell>
-                                <TableCell>
-                                    <Badge className={`px-2 py-1 text-xs font-medium ${statusToneClasses[customer.status]}`}>
-                                        {statusLabels[customer.status]}
-                                    </Badge>
+            {!hasResults ? (
+                <div className="overflow-hidden rounded-md border">
+                    <Table>
+                        <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                      header.column.columnDef.header,
+                                                      header.getContext(),
+                                                  )}
+                                        </TableHead>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    {t("table.messages.noResults")}
                                 </TableCell>
-                                <TableCell className="text-right text-sm text-muted-foreground">
-                                    {formatDate(customer.createdAt)}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </div>
+            ) : (
+                <>
+                    <div className="grid gap-3 md:hidden">
+                        {rows.map((row) => {
+                            const customer = row.original
+
+                            return (
+                                <Card key={customer.id} className="gap-0 py-0 shadow-sm">
+                                    <CardContent className="p-4">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div className="space-y-1">
+                                                <h3 className="text-base font-semibold text-foreground">
+                                                    {customer.name}
+                                                </h3>
+                                                <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                    <Phone className="size-4 shrink-0" aria-hidden="true" />
+                                                    <span>{customer.phone}</span>
+                                                </p>
+                                                {customer.company && (
+                                                    <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                        <Building className="size-4 shrink-0" aria-hidden="true" />
+                                                        <span>{customer.company}</span>
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <Badge variant={statusBadgeVariant[customer.status]}>
+                                                {statusLabels[customer.status]}
+                                            </Badge>
+                                        </div>
+                                    </CardContent>
+                                    <CardFooter className="flex items-center justify-between px-4 pb-4 pt-0 text-xs text-muted-foreground">
+                                        <span>{formatDate(customer.createdAt)}</span>
+                                        <div className="flex items-center gap-1">
+                                            {onStartConversation && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
+                                                    onClick={() => onStartConversation(customer)}
+                                                    aria-label={t("table.actions.startConversation")}
+                                                >
+                                                    <MessageSquarePlus className="size-4" aria-hidden="true" />
+                                                </Button>
+                                            )}
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-8 w-8"
+                                                className="size-8"
+                                                onClick={() => onEdit(customer)}
                                                 aria-label={t("table.actions.edit")}
                                             >
-                                                <MoreHorizontal className="size-4" aria-hidden="true" />
+                                                <Pencil className="size-4" aria-hidden="true" />
                                             </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            {onStartConversation && (
-                                                <DropdownMenuItem onSelect={() => onStartConversation(customer)}>
-                                                    <MessageSquarePlus className="mr-2 size-4" aria-hidden="true" />
-                                                    {t("table.actions.startConversation")}
-                                                </DropdownMenuItem>
-                                            )}
-                                            <DropdownMenuItem onSelect={() => onEdit(customer)}>
-                                                <Pencil className="mr-2 size-4" aria-hidden="true" />
-                                                {t("table.actions.edit")}
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+                                        </div>
+                                    </CardFooter>
+                                </Card>
+                            )
+                        })}
+                    </div>
+
+                    <div className="hidden md:block">
+                        <div className="overflow-hidden rounded-md border">
+                            <Table>
+                                <TableHeader>
+                                    {table.getHeaderGroups().map((headerGroup) => (
+                                        <TableRow key={headerGroup.id}>
+                                            {headerGroup.headers.map((header) => (
+                                                <TableHead key={header.id}>
+                                                    {header.isPlaceholder
+                                                        ? null
+                                                        : flexRender(
+                                                              header.column.columnDef.header,
+                                                              header.getContext(),
+                                                          )}
+                                                </TableHead>
+                                            ))}
+                                        </TableRow>
+                                    ))}
+                                </TableHeader>
+                                <TableBody>
+                                    {rows.map((row) => (
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={row.getIsSelected() && "selected"}
+                                        >
+                                            {row.getVisibleCells().map((cell) => (
+                                                <TableCell key={cell.id}>
+                                                    {flexRender(
+                                                        cell.column.columnDef.cell,
+                                                        cell.getContext(),
+                                                    )}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+
+                    <DataTablePagination table={table} pageSizeOptions={[5, 10, 20, 50]} />
+                </>
+            )}
         </div>
     )
 }
 
 export const CustomerTable = memo(CustomerTableComponent)
-

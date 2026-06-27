@@ -20,6 +20,32 @@ import (
 	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/webhook"
 )
 
+func recoverWorkerSessions(ctx context.Context, workerID string, repos *repository.Repositories, pool *wa.Pool) {
+	sessions, err := repos.Sessions.ListSessions(ctx)
+	if err != nil {
+		log.Printf("[worker] session recovery list failed: %v", err)
+		return
+	}
+
+	for _, session := range sessions {
+		if session.WorkerID != workerID {
+			continue
+		}
+		if session.Status != models.SessionStatusConnected {
+			continue
+		}
+
+		log.Printf("[worker] recovering session %s", session.ID)
+		if _, err := pool.Start(ctx, session.ID); err != nil {
+			log.Printf("[worker] recover start failed session=%s: %v", session.ID, err)
+			continue
+		}
+		if err := pool.Connect(ctx, session.ID); err != nil {
+			log.Printf("[worker] recover connect failed session=%s: %v", session.ID, err)
+		}
+	}
+}
+
 func main() {
 	_ = godotenv.Load()
 	_ = godotenv.Load("../../.env.local")
@@ -50,6 +76,7 @@ func main() {
 			if err == nil {
 				session.Label = existing.Label
 				session.WebhookURL = existing.WebhookURL
+				session.CompanyID = existing.CompanyID
 				session.WorkerID = cfg.WorkerID
 				session.CreatedAt = existing.CreatedAt
 			} else {
@@ -70,11 +97,44 @@ func main() {
 			return nil
 		},
 		OnMessage: func(ctx context.Context, message *models.Message) error {
-			if err := repos.Messages.SaveMessage(ctx, message); err != nil {
+			if message.Direction != models.MessageDirectionInbound {
+				return repos.Messages.SaveMessage(ctx, message)
+			}
+
+			session, err := repos.Sessions.GetSession(ctx, message.SessionID)
+			if err != nil {
+				log.Printf("[worker] inbound message session lookup failed session=%s: %v", message.SessionID, err)
 				return err
 			}
-			session, err := repos.Sessions.GetSession(ctx, message.SessionID)
-			if err == nil && session.WebhookURL != "" {
+
+			if session.CompanyID == "" {
+				log.Printf("[worker] inbound message missing companyId for session=%s", message.SessionID)
+				return nil
+			}
+
+			eventID := webhook.BuildInboundEventID(message.SessionID, message.MessageID)
+			now := time.Now().UTC()
+			event := &models.InboundEvent{
+				Channel:     "whatsapp",
+				SessionID:   message.SessionID,
+				MessageID:   message.MessageID,
+				From:        message.From,
+				To:          message.To,
+				Body:        message.Body,
+				Type:        message.Type,
+				Timestamp:   message.Timestamp,
+				PhoneNumber: session.PhoneNumber,
+				Status:      "pending",
+				Attempts:    0,
+				CreatedAt:   now,
+				UpdatedAt:   now,
+			}
+
+			if err := repos.InboundEvents.UpsertInboundEvent(ctx, session.CompanyID, eventID, event); err != nil {
+				return err
+			}
+
+			if session.WebhookURL != "" {
 				go webhook.DispatchInbound(context.Background(), session.WebhookURL, message)
 			}
 			return nil
@@ -86,6 +146,8 @@ func main() {
 
 	handlers := api.NewWorkerHandlers(pool)
 	router := api.NewWorkerRouter(cfg, handlers)
+
+	go recoverWorkerSessions(ctx, cfg.WorkerID, repos, pool)
 
 	go func() {
 		ticker := time.NewTicker(10 * time.Second)

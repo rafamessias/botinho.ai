@@ -36,10 +36,14 @@ export default async function CompanyPage() {
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader title={t("title")} />
+        <SiteHeader />
         <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2 max-w-7xl w-full mx-auto">
-            <div className="px-4 md:px-6 py-6 lg:px-8 space-y-6 md:space-y-8">
+          <div className="@container/main mx-auto flex w-full max-w-7xl flex-1 flex-col gap-2">
+            <div className="space-y-6 px-4 py-6 md:space-y-8 md:px-6 lg:px-8">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-semibold tracking-tight">{t("title")}</h2>
+                <p className="text-muted-foreground">{t("description")}</p>
+              </div>
               <CompanyDashboard initialCompanies={companies as any} currentUserId={session.uid} />
             </div>
           </div>

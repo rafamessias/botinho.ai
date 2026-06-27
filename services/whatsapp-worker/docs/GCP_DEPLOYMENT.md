@@ -4,7 +4,7 @@ Session orchestration runs in the **botinho.ai Next.js app** (`lib/whatsapp/`). 
 
 ## Recommended stack
 
-- **Firebase App Hosting / Vercel** — Next.js app (orchestrator)
+- **Firebase App Hosting** — Next.js app (orchestrator)
 - **GKE** — WhatsApp Worker Deployment (HPA)
 - **Memorystore (Redis)** — worker registry
 - **Cloud Firestore** — sessions, messages, waStores checkpoints

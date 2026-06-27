@@ -104,11 +104,13 @@ export const generateAutoReplyText = async (params: {
   companyId: string
   conversationId: string
   customerMessage: string
+  sessionId?: string | null
 }) => {
   const context = await loadCompanyAiContext({
     companyId: params.companyId,
     conversationId: params.conversationId,
     customerMessage: params.customerMessage,
+    sessionId: params.sessionId,
   })
 
   if (!isAiConfigured()) {
@@ -142,22 +144,29 @@ export const generateAutoReplyText = async (params: {
 }
 
 export const summarizeUrlContent = async (params: { url: string; title: string }) => {
+  const fallbackSummary = `Summary unavailable for ${params.title} (${params.url})`
+
   if (!isAiConfigured()) {
-    return `Summary unavailable for ${params.title} (${params.url})`
+    return fallbackSummary
   }
 
-  const model = getGenerativeModelFor(AI_MODELS.urlSummary, {
-    temperature: 0.2,
-    maxOutputTokens: 512,
-  })
+  try {
+    const model = getGenerativeModelFor(AI_MODELS.urlSummary, {
+      temperature: 0.2,
+      maxOutputTokens: 512,
+    })
 
-  const prompt = [
-    `Summarize the following URL for use in a customer support knowledge base.`,
-    `Title: ${params.title}`,
-    `URL: ${params.url}`,
-    "Return a factual summary in 3-5 sentences. If you cannot access the URL, summarize based on the title only.",
-  ].join("\n")
+    const prompt = [
+      `Summarize the following URL for use in a customer support knowledge base.`,
+      `Title: ${params.title}`,
+      `URL: ${params.url}`,
+      "Return a factual summary in 3-5 sentences. If you cannot access the URL, summarize based on the title only.",
+    ].join("\n")
 
-  const result = await model.generateContent(prompt)
-  return result.response.text().trim()
+    const result = await model.generateContent(prompt)
+    return result.response.text().trim()
+  } catch (error) {
+    console.error("[gemini] URL summary failed:", error)
+    return fallbackSummary
+  }
 }

@@ -28,7 +28,7 @@ Describe system layers, major components, and how data flows between the Next.js
 | Payments | Stripe |
 | Email | Stub in `lib/email/` — provider TBD |
 | i18n | next-intl |
-| Deployment | Vercel (primary); Firebase App Hosting planned |
+| Deployment | Firebase App Hosting (or self-hosted Node) |
 
 ## Layer diagram
 
@@ -124,7 +124,7 @@ WhatsApp and transactional email have **no production provider**. Inbox messages
 
 [`next.config.mjs`](../../next.config.mjs):
 
-- Plugins: `next-intl`, `botid`
+- Plugins: `next-intl`
 - `eslint.ignoreDuringBuilds: true`
 - `typescript.ignoreBuildErrors: true`
 - `images.unoptimized: true`

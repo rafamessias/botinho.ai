@@ -16,6 +16,12 @@ export class WhatsAppScaler {
   ) {}
 
   async scaleUp(): Promise<ScaleUpResult> {
+    if (this.mode === "local") {
+      throw new Error(
+        "No WhatsApp worker is available. Start one with: docker compose -f docker-compose.dev.yml up",
+      )
+    }
+
     localWorkerCounter += 1
     const workerId = `worker-${localWorkerCounter}`
     const port = 8080 + localWorkerCounter

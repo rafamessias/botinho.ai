@@ -192,7 +192,7 @@ export default function DashboardPage() {
                             <p className="text-muted-foreground">{t("quickActions.description")}</p>
                         </div>
                         <Button asChild className="professional-button bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3">
-                            <Link href="/ai-training" className="flex items-center gap-2">
+                            <Link href="/ai-agents" className="flex items-center gap-2">
                                 <Zap className="w-4 h-4" />
                                 {t("quickActions.startTraining")}
                             </Link>

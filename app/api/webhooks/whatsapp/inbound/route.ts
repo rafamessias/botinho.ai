@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
-import { sendAutoReplyForInboundMessage } from "@/lib/firebase/ai/auto-reply"
-import { recordInboundMessage } from "@/lib/firebase/services/inbox-service"
+import { processInboundFromWebhook } from "@/lib/messaging/messaging-service"
 import { getWhatsAppConfig } from "@/lib/whatsapp/config"
 
 const inboundPayloadSchema = z.object({
@@ -12,6 +11,7 @@ const inboundPayloadSchema = z.object({
   body: z.string(),
   type: z.string().optional(),
   timestamp: z.string().optional(),
+  eventId: z.string().min(1).optional(),
 })
 
 export const POST = async (request: NextRequest) => {
@@ -38,30 +38,24 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
   }
 
-  if (!payload.body.trim()) {
-    return NextResponse.json({ ok: true, skipped: "empty body" })
-  }
-
   try {
-    const { conversationId, message } = await recordInboundMessage({
+    const result = await processInboundFromWebhook({
       companyId,
-      from: payload.from,
-      text: payload.body,
       sessionId: payload.sessionId,
-    })
-
-    const autoReply = await sendAutoReplyForInboundMessage({
-      companyId,
-      conversationId,
-      customerPhone: payload.from,
-      customerMessage: payload.body,
+      messageId: payload.messageId,
+      from: payload.from,
+      body: payload.body,
+      eventId: payload.eventId,
+      to: payload.to,
+      type: payload.type,
     })
 
     return NextResponse.json({
       ok: true,
-      conversationId,
-      messageId: message.id,
-      autoReply,
+      skipped: result.skipped,
+      eventId: result.eventId,
+      conversationId: result.conversationId,
+      messageId: result.inboxMessageId,
     })
   } catch (error) {
     console.error("[whatsapp] inbound webhook failed:", error)

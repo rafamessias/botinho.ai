@@ -35,6 +35,18 @@ service cloud.firestore {
         allow read, write: if false;
       }
 
+      match /channelUsage/{docId} {
+        allow read, write: if false;
+      }
+
+      match /inboundEvents/{docId} {
+        allow read, write: if false;
+      }
+
+      match /messageDedupe/{docId} {
+        allow read, write: if false;
+      }
+
       match /knowledge/{docId} {
         allow read, write: if false;
       }

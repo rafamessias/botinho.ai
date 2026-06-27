@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Save } from "lucide-react"
+import { QuickAnswerExamplesPicker } from "../quick-answer-examples-picker"
 import type { QuickAnswerView, TranslationFn } from "../types"
 
 type QuickAnswerDialogProps = {
@@ -39,7 +40,7 @@ export const QuickAnswerDialog = ({
                 {t("buttons.addQuickAnswer")}
             </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
             <DialogHeader>
                 <DialogTitle>
                     {editingQuickAnswer ? t("dialog.editQuickAnswer") : t("dialog.createQuickAnswer")}
@@ -49,15 +50,19 @@ export const QuickAnswerDialog = ({
                 </DialogDescription>
             </DialogHeader>
             <div className="mt-4 space-y-4">
+                {!editingQuickAnswer && (
+                    <QuickAnswerExamplesPicker t={t} onSelect={onContentChange} />
+                )}
                 <div className="space-y-2">
                     <Label htmlFor="quick-answer-content">{t("form.content")}</Label>
                     <Textarea
                         id="quick-answer-content"
-                        placeholder={t("form.contentPlaceholder")}
+                        placeholder={t("form.quickAnswerContentPlaceholder")}
                         value={content}
                         onChange={(event) => onContentChange(event.target.value)}
                         rows={6}
                     />
+                    <p className="text-xs text-muted-foreground">{t("form.quickAnswerContentTip")}</p>
                 </div>
             </div>
             <div className="mt-6 flex justify-end gap-3">

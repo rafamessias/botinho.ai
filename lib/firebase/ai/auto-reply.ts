@@ -8,12 +8,14 @@ export const sendAutoReplyForInboundMessage = async (params: {
   conversationId: string
   customerPhone: string
   customerMessage: string
+  sessionId?: string | null
 }) => {
   try {
     const replyText = await generateAutoReplyText({
       companyId: params.companyId,
       conversationId: params.conversationId,
       customerMessage: params.customerMessage,
+      sessionId: params.sessionId,
     })
 
     if (!replyText) {
@@ -31,12 +33,6 @@ export const sendAutoReplyForInboundMessage = async (params: {
     }
 
     const orchestrator = await getWhatsAppOrchestrator()
-    await orchestrator.sendMessage({
-      companyId: params.companyId,
-      sessionId: session.sessionId,
-      to: params.customerPhone,
-      text: replyText,
-    })
 
     await createInboxMessage({
       companyId: params.companyId,
@@ -45,6 +41,13 @@ export const sendAutoReplyForInboundMessage = async (params: {
       senderType: "bot",
       status: "sent",
       incrementUnread: false,
+    })
+
+    await orchestrator.sendMessage({
+      companyId: params.companyId,
+      sessionId: session.sessionId,
+      to: params.customerPhone,
+      text: replyText,
     })
 
     return { sent: true, reason: null }

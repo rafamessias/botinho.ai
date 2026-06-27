@@ -75,6 +75,7 @@ Configure `.env.local` — see `.env.example` for required variables:
 - Stripe keys (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_SECRET_KEY`, etc.)
 - `NEXT_PUBLIC_APP_URL`
 - WhatsApp: `REDIS_URL`, `WORKER_INTERNAL_TOKEN`, `WHATSAPP_WEBHOOK_SECRET`
+- When using Docker for the worker (`npm run dev:infra`), set `WEBHOOK_APP_URL=http://host.docker.internal:3000` so inbound WhatsApp messages reach the Next.js app
 
 ### Run the app
 
@@ -117,9 +118,7 @@ botinho.ai/
 
 ## Deployment
 
-**Primary:** Vercel — connect repo, set env vars, deploy on push to `main`.
-
-Multi-region config in [`vercel.json`](vercel.json).
+Deploy the Next.js app with Firebase App Hosting or any Node.js host (`npm run build` → `npm run start`). Configure environment variables from [`.env.example`](.env.example).
 
 ## Support
 

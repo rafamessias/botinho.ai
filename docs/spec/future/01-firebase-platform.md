@@ -20,7 +20,7 @@ This document is retained as the migration record. For current behavior, use the
 | Pending signup / OTP docs | ✅ `pendingSignups` collection |
 | Remove Prisma/PostgreSQL | ✅ No prisma folder |
 | Firestore security rules | ⚠️ Not in repo |
-| Firebase App Hosting deploy | ⚠️ Still on Vercel |
+| Firebase App Hosting deploy | ⚠️ Not configured in repo |
 | Data migration script | N/A — big-bang cutover assumed complete |
 
 ## Intentional deviations

@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 
+import { BrandLogo } from "@/components/brand-logo"
 import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -215,14 +216,7 @@ export default async function LandingPage() {
             aria-label={t("header.logoAria")}
             tabIndex={0}
           >
-            <Image
-              src="/logo-green.png"
-              alt={sharedLogoAlt}
-              width={120}
-              height={40}
-              priority
-              className="h-8 w-auto"
-            />
+            <BrandLogo className="h-8 w-auto max-w-[135px] object-contain object-left" priority />
           </Link>
           <nav className="hidden items-center gap-5 lg:flex" aria-label="Main navigation">
             {navItems.map((item) => (
@@ -266,7 +260,7 @@ export default async function LandingPage() {
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-xs border-l bg-background/95">
                 <div className="flex items-center gap-3 px-4 pt-2">
-                  <Image src="/logo-green.png" alt={sharedLogoAlt} width={100} height={40} />
+                  <BrandLogo className="h-8 w-auto max-w-[135px] object-contain object-left" />
                 </div>
                 <Separator />
                 <nav className="flex flex-col gap-1 px-2">
@@ -627,7 +621,7 @@ export default async function LandingPage() {
                 className="flex items-center gap-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
                 tabIndex={0}
               >
-                <Image src="/logo-green.png" alt={sharedLogoAlt} width={100} height={40} />
+                <BrandLogo className="h-8 w-auto max-w-[135px] object-contain object-left" />
               </Link>
               <p className="max-w-md text-sm leading-relaxed text-foreground/70">{t("footer.description")}</p>
             </div>
