@@ -7,7 +7,17 @@ type WorkerErrorResponse = {
   }
 }
 
+type WorkerHealthResponse = {
+  status?: string
+  apiVersion?: number
+  sessions?: number
+  details?: unknown[]
+}
+
 const DEFAULT_SEND_TIMEOUT_MS = 30_000
+const DEFAULT_READ_TIMEOUT_MS = 5_000
+const STALE_WORKER_MESSAGE =
+  "Stale WhatsApp worker detected (missing health.details). Run: npm run dev:worker:doctor"
 
 export class WhatsAppWorkerClient {
   constructor(private readonly token: string) {}
@@ -32,13 +42,36 @@ export class WhatsAppWorkerClient {
   }
 
   async sessionStatus(workerUrl: string, sessionId: string): Promise<WhatsAppSession> {
-    return this.get<WhatsAppSession>(`${workerUrl}/internal/sessions/${sessionId}/status`)
+    return this.get<WhatsAppSession>(
+      `${workerUrl}/internal/sessions/${sessionId}/status`,
+      DEFAULT_READ_TIMEOUT_MS,
+    )
+  }
+
+  async assertHealthyWorker(workerUrl: string): Promise<void> {
+    const response = await this.request(
+      `${workerUrl}/health`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      },
+      DEFAULT_READ_TIMEOUT_MS,
+    )
+
+    if (!response.ok) {
+      throw new Error(`WhatsApp worker health check failed with status ${response.status}`)
+    }
+
+    const body = (await response.json()) as WorkerHealthResponse
+    if (!Array.isArray(body.details)) {
+      throw new Error(STALE_WORKER_MESSAGE)
+    }
   }
 
   async sendMessage(
     workerUrl: string,
     sessionId: string,
-    payload: Pick<SendMessageRequest, "to" | "text">,
+    payload: Pick<SendMessageRequest, "to" | "text" | "quote">,
     timeoutMs = DEFAULT_SEND_TIMEOUT_MS,
   ): Promise<WhatsAppMessage> {
     return this.post<WhatsAppMessage>(
@@ -118,7 +151,9 @@ export class WhatsAppWorkerClient {
     try {
       const body = (await response.json()) as WorkerErrorResponse
       if (body.error?.message) {
-        message = body.error.message
+        message = body.error.details
+          ? `${body.error.message}: ${body.error.details}`
+          : body.error.message
       }
     } catch {
       // ignore parse errors

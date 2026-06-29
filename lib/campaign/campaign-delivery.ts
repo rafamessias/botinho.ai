@@ -21,6 +21,7 @@ import {
   mapInboxCustomerRecord,
 } from "@/lib/firebase/services/inbox-service"
 import type { FirestoreInboxCustomer } from "@/lib/firebase/types"
+import { CAMPAIGN_IMMEDIATE_DELIVERY_THRESHOLD, isImmediateCampaignAudience } from "@/lib/types/campaign"
 import { sendOutbound } from "@/lib/messaging/messaging-service"
 import { isWhatsAppConfigured } from "@/lib/whatsapp"
 
@@ -244,6 +245,10 @@ export const processCampaignBatch = async (
   const campaign = mapCampaign(campaignSnap.id, campaignSnap.data()!)
   if (campaign.status !== "running") return { processed: 0, succeeded: 0 }
 
+  if (isImmediateCampaignAudience(campaign.metrics.targeted)) {
+    return processImmediateCampaignBatch(companyId, campaign)
+  }
+
   const capacity = getRemainingBatchCapacity(campaign)
   if (capacity <= 0) return { processed: 0, succeeded: 0 }
 
@@ -253,6 +258,47 @@ export const processCampaignBatch = async (
     return { processed: 0, succeeded: 0 }
   }
 
+  return finalizeCampaignBatch(companyId, campaignId, campaign, deliveries)
+}
+
+const processImmediateCampaignBatch = async (
+  companyId: string,
+  campaign: CampaignRecord,
+): Promise<{ processed: number; succeeded: number }> => {
+  let processed = 0
+  let succeeded = 0
+
+  while (true) {
+    const deliveries = await listPendingCampaignDeliveries(
+      companyId,
+      campaign.id,
+      CAMPAIGN_IMMEDIATE_DELIVERY_THRESHOLD,
+    )
+    if (deliveries.length === 0) break
+
+    for (const delivery of deliveries) {
+      const result = await processCampaignDelivery(companyId, campaign, delivery)
+      processed += 1
+      if (result.success) succeeded += 1
+    }
+  }
+
+  const now = new Date()
+  await updateCampaignRuntime(companyId, campaign.id, {
+    lastBatchAt: now,
+    sentInCurrentInterval: processed,
+  })
+  await markCampaignCompletedIfDone(companyId, campaign.id)
+
+  return { processed, succeeded }
+}
+
+const finalizeCampaignBatch = async (
+  companyId: string,
+  campaignId: string,
+  campaign: CampaignRecord,
+  deliveries: CampaignDeliveryRecord[],
+): Promise<{ processed: number; succeeded: number }> => {
   let succeeded = 0
   for (const delivery of deliveries) {
     const result = await processCampaignDelivery(companyId, campaign, delivery)

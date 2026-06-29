@@ -44,15 +44,15 @@ No Prisma schema or survey models remain in the codebase.
 
 | Feature | Status | Detail |
 |---------|--------|--------|
-| WhatsApp / messaging | `stub` | No provider connected; inbox is Firestore-only |
+| WhatsApp / messaging | `partial` | whatsmeow worker + webhook wired; linked-device can drop (re-pair) — [23-whatsapp-inbound-reliability.md](23-whatsapp-inbound-reliability.md) |
 | Production email | `stub` | Dev console fallback only ([lib/email/](../../lib/email/)) |
-| Auto-reply delivery | `partial` | Gemini generates text; send blocked without provider |
+| Auto-reply delivery | `partial` | Works when session `connected` and agent enabled |
 | Customer CRM | `stub` | [customer-page.tsx](../../components/customer/customer-page.tsx) uses mock local state |
 | Dashboard analytics | `partial` | UI exists; not all KPIs from live data |
-| Inbound message webhook | `stub` | `recordInboundMessage` exists but no HTTP route |
+| Inbound message webhook | `partial` | Worker → `/api/webhooks/whatsapp/inbound`; requires active linked session |
 | Firestore security rules | `implemented` | Deny-all with inbox read exception for accepted members |
 | Company membership guards | `implemented` | Single-company policy — [19-company-and-members.md](19-company-and-members.md) |
-| Surveys & live agent panel | `partial` | [20-customer-interaction-surveys-and-live-agents.md](20-customer-interaction-surveys-and-live-agents.md) |
+| WhatsApp session store persistence | `partial` | Phase 1 implemented — [24-whatsapp-session-store-persistence.md](24-whatsapp-session-store-persistence.md) |
 
 ---
 

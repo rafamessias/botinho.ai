@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Plus, Smartphone } from "lucide-react"
 import { StatusCallout } from "@/components/ui/status-callout"
@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useUser } from "@/components/user-provider"
+import { withServerActionRetry } from "@/lib/server-action-retry"
 import {
   deleteWhatsAppSessionAction,
   getWhatsAppSessionsAction,
@@ -35,8 +36,9 @@ export default function SettingsPage() {
   const [isLoadingWhatsapp, setIsLoadingWhatsapp] = useState(true)
   const [isPairingOpen, setIsPairingOpen] = useState(false)
   const [disconnectingSessionId, setDisconnectingSessionId] = useState<string | null>(null)
+  const loadInFlightRef = useRef(false)
 
-  const loadWhatsappSessions = useCallback(async (options?: { silent?: boolean }) => {
+  const loadWhatsappSessions = useCallback(async (options?: { silent?: boolean; syncLive?: boolean }) => {
     if (isUserLoading || !companyId) {
       setWhatsappSessions([])
       setWhatsappAvailable(true)
@@ -44,11 +46,21 @@ export default function SettingsPage() {
       return
     }
 
+    if (loadInFlightRef.current) {
+      return
+    }
+
     if (!options?.silent) {
       setIsLoadingWhatsapp(true)
     }
+    loadInFlightRef.current = true
     try {
-      const response = await getWhatsAppSessionsAction({ companyId })
+      const response = await withServerActionRetry(() =>
+        getWhatsAppSessionsAction({
+          companyId,
+          syncLive: options?.syncLive ?? !options?.silent,
+        }),
+      )
       if (!response.success || !response.data) {
         throw new Error(response.error ?? "Failed to load WhatsApp sessions")
       }
@@ -56,9 +68,12 @@ export default function SettingsPage() {
       setWhatsappSessions(response.data.sessions)
     } catch (error) {
       console.error("Failed to load WhatsApp sessions", error)
-      setWhatsappAvailable(false)
-      setWhatsappSessions([])
+      if (!options?.silent) {
+        setWhatsappAvailable(false)
+        setWhatsappSessions([])
+      }
     } finally {
+      loadInFlightRef.current = false
       if (!options?.silent) {
         setIsLoadingWhatsapp(false)
       }
@@ -68,6 +83,26 @@ export default function SettingsPage() {
   useEffect(() => {
     void loadWhatsappSessions()
   }, [loadWhatsappSessions])
+
+  useEffect(() => {
+    if (!companyId || isLoadingWhatsapp || whatsappSessions.length === 0) {
+      return
+    }
+
+    const needsLivePolling = whatsappSessions.some((session) =>
+      ["pending", "qr_pending", "needs_qr", "disconnected"].includes(session.status),
+    )
+
+    if (!needsLivePolling) {
+      return
+    }
+
+    const interval = setInterval(() => {
+      void loadWhatsappSessions({ silent: true, syncLive: true })
+    }, 10_000)
+
+    return () => clearInterval(interval)
+  }, [companyId, isLoadingWhatsapp, whatsappSessions, loadWhatsappSessions])
 
   const handleDisconnectSession = async (sessionId: string) => {
     if (!companyId) return
@@ -100,6 +135,16 @@ export default function SettingsPage() {
 
   const pendingPairingSessionId = pendingPairingSession?.sessionId
 
+  const needsRepair =
+    whatsappSessions.some((session) => ["qr_pending", "needs_qr", "disconnected"].includes(session.status)) ||
+    (whatsappSessions.length > 0 && !whatsappSessions.some((session) => session.status === "connected"))
+
+  useEffect(() => {
+    if (pendingPairingSessionId && !isLoadingWhatsapp && whatsappAvailable) {
+      setIsPairingOpen(true)
+    }
+  }, [pendingPairingSessionId, isLoadingWhatsapp, whatsappAvailable])
+
   return (
     <div className="space-y-6">
       <Card>
@@ -123,6 +168,15 @@ export default function SettingsPage() {
         <CardContent className="space-y-4">
           {!whatsappAvailable && !isLoadingWhatsapp && (
             <StatusCallout variant="warning" message={t("whatsapp.offlineBanner")} />
+          )}
+
+          {whatsappAvailable && !isLoadingWhatsapp && needsRepair && (
+            <div className="flex flex-wrap items-center gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-foreground">
+              <StatusCallout variant="warning" message={t("whatsapp.repairBanner")} className="border-0 bg-transparent p-0" />
+              <Button type="button" size="sm" variant="outline" onClick={() => setIsPairingOpen(true)}>
+                {t("whatsapp.repairAction")}
+              </Button>
+            </div>
           )}
 
           {isLoadingWhatsapp ? (
@@ -162,7 +216,7 @@ export default function SettingsPage() {
         resumeSessionId={pendingPairingSessionId}
         resumeSessionLabel={pendingPairingSession?.label}
         onSessionUpdate={() => {
-          void loadWhatsappSessions({ silent: true })
+          void loadWhatsappSessions({ silent: true, syncLive: true })
         }}
         onCompleted={() => {
           void loadWhatsappSessions()

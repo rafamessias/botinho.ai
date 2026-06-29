@@ -15,64 +15,20 @@ import {
   updateConversationMetadata,
 } from "@/lib/firebase/services/inbox-service"
 import { generateSuggestedResponses } from "@/lib/firebase/ai/generate"
+import {
+  serializeInboxConversation,
+  serializeInboxConversationDetail,
+  type SerializedInboxConversation,
+  type SerializedInboxConversationDetail,
+} from "@/lib/inbox/serialize-inbox-data"
 import { sendOutbound } from "@/lib/messaging/messaging-service"
-import { isWhatsAppConfigured, checkWhatsAppAvailability } from "@/lib/whatsapp"
-import { WhatsAppSessionRepository } from "@/lib/whatsapp/session-repository"
+import { isWhatsAppConfigured, checkWhatsAppAvailability, listCompanyWhatsAppSessions } from "@/lib/whatsapp"
+import type { WhatsAppSession } from "@/lib/whatsapp/types"
 import type {
   InboxConversationPriority,
   InboxMessageSenderType,
   InboxMessageStatus,
 } from "@/lib/firebase/types"
-
-type InboxConversationDetail = NonNullable<Awaited<ReturnType<typeof getInboxConversationDetail>>>
-type SerializedInboxConversationDetail = Omit<
-  InboxConversationDetail,
-  "lastMessageSentAt" | "archivedAt" | "createdAt" | "updatedAt" | "messages"
-> & {
-  lastMessageSentAt: string | null
-  archivedAt: string | null
-  createdAt: string
-  updatedAt: string
-  messages: Array<
-    Omit<InboxConversationDetail["messages"][number], "sentAt" | "createdAt" | "updatedAt"> & {
-      sentAt: string
-      createdAt: string
-      updatedAt: string
-    }
-  >
-}
-
-const toIsoString = (value: Date | null | undefined): string | null => {
-  if (!value) {
-    return null
-  }
-
-  return value.toISOString()
-}
-
-const serializeInboxMessage = (message: InboxConversationDetail["messages"][number]) => ({
-  ...message,
-  sentAt: message.sentAt.toISOString(),
-  createdAt: message.createdAt.toISOString(),
-  updatedAt: message.updatedAt.toISOString(),
-})
-
-const serializeInboxConversation = (
-  conversation: Omit<InboxConversationDetail, "messages">,
-): Omit<SerializedInboxConversationDetail, "messages"> => ({
-  ...conversation,
-  lastMessageSentAt: toIsoString(conversation.lastMessageSentAt),
-  archivedAt: toIsoString(conversation.archivedAt),
-  createdAt: conversation.createdAt.toISOString(),
-  updatedAt: conversation.updatedAt.toISOString(),
-})
-
-const serializeInboxConversationDetail = (
-  conversation: InboxConversationDetail,
-): SerializedInboxConversationDetail => ({
-  ...serializeInboxConversation(conversation),
-  messages: conversation.messages.map(serializeInboxMessage),
-})
 
 const companyIdSchema = z.object({
   companyId: z.string().optional(),
@@ -92,7 +48,7 @@ export const getInboxConversationsAction = async (
   input?: z.infer<typeof getInboxConversationsSchema>,
 ): Promise<
   BaseActionResponse<{
-    conversations: Awaited<ReturnType<typeof listInboxConversations>>["conversations"]
+    conversations: SerializedInboxConversation[]
     pagination: Awaited<ReturnType<typeof listInboxConversations>>["pagination"]
     metrics?: { unreadTotal: number }
   }>
@@ -113,7 +69,7 @@ export const getInboxConversationsAction = async (
     return {
       success: true,
       data: {
-        conversations: result.conversations,
+        conversations: result.conversations.map(serializeInboxConversation),
         pagination: result.pagination,
         ...(payload.includeCounts ? { metrics: result.metrics } : {}),
       },
@@ -252,29 +208,37 @@ export type InboxConnectionView = {
   connected: boolean
 }
 
+const WHATSAPP_REPAIR_STATUSES: WhatsAppSession["status"][] = ["qr_pending", "needs_qr", "disconnected"]
+
+const sessionNeedsRepair = (sessions: WhatsAppSession[]) =>
+  sessions.some((session) => WHATSAPP_REPAIR_STATUSES.includes(session.status)) ||
+  (sessions.length > 0 && !sessions.some((session) => session.status === "connected"))
+
 export const getInboxConnectionsAction = async (
   input?: z.infer<typeof companyIdSchema>,
 ): Promise<
   BaseActionResponse<{
     configured: boolean
     available: boolean
+    needsRepair: boolean
     connections: InboxConnectionView[]
   }>
 > =>
   handleAction<{
     configured: boolean
     available: boolean
+    needsRepair: boolean
     connections: InboxConnectionView[]
   }>(async () => {
     if (!isWhatsAppConfigured()) {
-      return { success: true, data: { configured: false, available: false, connections: [] } }
+      return { success: true, data: { configured: false, available: false, needsRepair: false, connections: [] } }
     }
 
     const payload = companyIdSchema.parse(input ?? {})
     const { companyId } = await resolveCompanyContext({ companyId: payload.companyId })
 
-    const repository = new WhatsAppSessionRepository()
-    const sessions = await repository.listSessionsByCompany(companyId)
+    const { available } = await checkWhatsAppAvailability()
+    const sessions = await listCompanyWhatsAppSessions(companyId)
     const connections = sessions
       .filter((session) => session.status === "connected")
       .map((session) => ({
@@ -284,13 +248,12 @@ export const getInboxConnectionsAction = async (
         connected: true,
       }))
 
-    const { available } = await checkWhatsAppAvailability()
-
     return {
       success: true,
       data: {
         configured: true,
         available,
+        needsRepair: sessionNeedsRepair(sessions),
         connections,
       },
     }
@@ -301,6 +264,7 @@ const sendInboxMessageSchema = z.object({
   content: z.string().trim().min(1),
   senderType: z.enum(["customer", "agent", "bot", "system"]).default("agent"),
   status: z.enum(["pending", "sent", "delivered", "read", "failed"]).optional(),
+  replyToMessageId: z.string().min(1).optional(),
 })
 
 export const sendInboxMessageAction = async (
@@ -334,6 +298,7 @@ export const sendInboxMessageAction = async (
       incrementUnread: payload.senderType === "customer",
       sessionId: sendContext.sessionId,
       customerPhone: sendContext.customer?.phone ?? undefined,
+      replyToMessageId: payload.replyToMessageId,
     })
 
     const conversation = {
@@ -384,9 +349,7 @@ const updateInboxConversationMetadataSchema = z.object({
 
 export const updateInboxConversationMetadataAction = async (
   input: z.infer<typeof updateInboxConversationMetadataSchema>,
-): Promise<
-  BaseActionResponse<{ conversation: Omit<SerializedInboxConversationDetail, "messages"> }>
-> =>
+): Promise<BaseActionResponse<{ conversation: SerializedInboxConversation }>> =>
   handleAction(async () => {
     const payload = updateInboxConversationMetadataSchema.parse(input)
     const { companyId } = await resolveCompanyContext()
@@ -425,11 +388,15 @@ export const getSuggestedResponsesAction = async (
     let customerMessage = payload.customerMessage
 
     if (!customerMessage && payload.conversationId) {
-      const lastMessage = await getLastCustomerMessage({
-        companyId,
-        conversationId: payload.conversationId,
-      })
-      customerMessage = lastMessage?.content
+      try {
+        const lastMessage = await getLastCustomerMessage({
+          companyId,
+          conversationId: payload.conversationId,
+        })
+        customerMessage = lastMessage?.content
+      } catch (error) {
+        console.error("[inbox] failed to load last customer message for suggestions:", error)
+      }
     }
 
     const suggestions = await generateSuggestedResponses({

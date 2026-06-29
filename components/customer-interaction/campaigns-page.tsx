@@ -28,7 +28,6 @@ import {
   createCampaignAction,
   duplicateCampaignAction,
   getCampaignAction,
-  getCampaignMetricsAction,
   launchCampaignAction,
   listAgentsForCampaignAction,
   listCampaignsAction,
@@ -599,7 +598,7 @@ export default function CampaignsPage({
           <CardContent>
             <CampaignMetricsPanel
               campaignId={selectedCampaign.id}
-              onLoadMetrics={getCampaignMetricsAction}
+              initialSummary={selectedCampaign.metrics}
             />
           </CardContent>
         </Card>

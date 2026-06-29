@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button"
 import { maskPhoneForDisplay } from "@/lib/phone-utils"
 import { ReplyPreviewHoverCard } from "@/components/inbox/reply-preview-hover-card"
 import type { QuickAnswerView, TemplateView } from "@/components/ai-training/types"
-import type { InboxConversationSummary } from "@/components/inbox/inbox-mappers"
+import type { AssignedAgentView, InboxConversationSummary } from "@/components/inbox/inbox-mappers"
 import type { SurveyView } from "@/components/server-actions/surveys"
 
 type SuggestedResponse = {
@@ -31,11 +31,6 @@ type SuggestedResponse = {
   text: string
   category: string
 }
-
-type AssignedAgentView = {
-  id: string
-  name: string
-} | null
 
 export type ContextPanelProps = {
   conversation: InboxConversationSummary | null
@@ -56,6 +51,20 @@ export type ContextPanelProps = {
   onShowTemplatesModal: () => void
   isSendingSurvey?: boolean
 }
+
+export const ContextPanelSkeleton = () => (
+  <div className="h-full overflow-y-auto p-4 space-y-3 pb-6">
+    {Array.from({ length: 4 }).map((_, index) => (
+      <div key={`context-skeleton-${index}`} className="rounded-xl border border-border/60 p-4 space-y-3">
+        <div className="h-4 w-24 rounded bg-muted animate-pulse" />
+        <div className="space-y-2">
+          <div className="h-3 w-full rounded bg-muted animate-pulse" />
+          <div className="h-3 w-2/3 rounded bg-muted animate-pulse" />
+        </div>
+      </div>
+    ))}
+  </div>
+)
 
 export const ContextPanel = ({
   conversation,
@@ -105,9 +114,9 @@ export const ContextPanel = ({
           </CardHeader>
           <CardContent className="px-4 space-y-2">
             {assignedTo ? (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs">
                 <UserCheck className="h-3.5 w-3.5 shrink-0 text-primary" />
-                <span>
+                <span className="text-foreground">
                   {isAssignedToMe
                     ? t("context.assignment.assignedToYou")
                     : t("context.assignment.assignedTo", { name: assignedTo.name })}

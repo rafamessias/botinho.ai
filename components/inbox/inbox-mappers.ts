@@ -30,6 +30,13 @@ export type ConversationEntity = {
   } | null
 }
 
+export type InboxMessageQuote = {
+  content: string
+  senderType?: InboxMessageSenderType
+  externalMessageId?: string
+  inboxMessageId?: string
+}
+
 export type MessageEntity = {
   id: string
   content: string
@@ -38,6 +45,23 @@ export type MessageEntity = {
   status?: InboxMessageStatus | null
   sentAt?: string | Date | null
   createdAt?: string | Date | null
+  externalMessageId?: string | null
+  replyToMessageId?: string | null
+  replyToExternalMessageId?: string | null
+  quotedMessage?: InboxMessageQuote | null
+}
+
+export type AssignedAgentView = {
+  id: string
+  name: string
+} | null
+
+export type AssignedAgentEntity = {
+  id: string
+  name?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
 }
 
 export type InboxConversationSummary = {
@@ -56,6 +80,22 @@ export type InboxConversationSummary = {
   satisfactionScore?: number
   isBookmarked: boolean
   tags: string[]
+  assignedToId?: string | null
+  assignedTo?: AssignedAgentView
+}
+
+export const normalizeAssignedAgent = (
+  agent: AssignedAgentEntity | null | undefined,
+): AssignedAgentView => {
+  if (!agent?.id) return null
+
+  const name =
+    agent.name?.trim() ||
+    [agent.firstName, agent.lastName].filter(Boolean).join(" ").trim() ||
+    agent.email?.trim() ||
+    agent.id
+
+  return { id: agent.id, name }
 }
 
 export type InboxMessage = {
@@ -66,6 +106,10 @@ export type InboxMessage = {
   sentAt: string | Date
   sentAtLabel: string
   status?: InboxMessageStatus
+  externalMessageId?: string
+  replyToMessageId?: string
+  replyToExternalMessageId?: string
+  quotedMessage?: InboxMessageQuote
 }
 
 export const resolveSentByFromMessage = (
@@ -136,6 +180,11 @@ export const mapConversationSummary = (
     satisfactionScore: conversation.satisfactionScore ?? undefined,
     isBookmarked: conversation.isBookmarked ?? false,
     tags: conversation.tags?.filter((tag) => !!tag?.trim()) || [],
+    assignedToId: conversation.assignedToId ?? null,
+    assignedTo: normalizeAssignedAgent(
+      conversation.assignedTo ??
+        (conversation.assignedToId ? { id: conversation.assignedToId } : null),
+    ),
   }
 }
 
@@ -150,6 +199,10 @@ export const mapMessage = (message: MessageEntity): InboxMessage => {
     sentAt,
     sentAtLabel: formatMessageTimestamp(sentAt),
     status: message.status ?? undefined,
+    externalMessageId: message.externalMessageId ?? undefined,
+    replyToMessageId: message.replyToMessageId ?? undefined,
+    replyToExternalMessageId: message.replyToExternalMessageId ?? undefined,
+    quotedMessage: message.quotedMessage ?? undefined,
   }
 }
 

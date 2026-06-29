@@ -23,7 +23,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-type PairingPhase = "creating" | "waiting" | "connected" | "failed"
+type PairingPhase = "creating" | "waiting" | "finalizing" | "connected" | "failed"
+
+const isPairingScanned = (session: WhatsAppSessionView): boolean =>
+  !session.connected && (session.loggedIn || session.hasCredentials)
 
 type WhatsAppPairingDialogProps = {
   open: boolean
@@ -53,6 +56,8 @@ export const WhatsAppPairingDialog = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const hasStartedRef = useRef(false)
+  const connectionHandledRef = useRef(false)
+  const scannedDetectedRef = useRef(false)
   const labelRef = useRef("")
 
   useEffect(() => {
@@ -69,6 +74,8 @@ export const WhatsAppPairingDialog = ({
   const resetState = useCallback(() => {
     clearPollTimer()
     hasStartedRef.current = false
+    connectionHandledRef.current = false
+    scannedDetectedRef.current = false
     setPhase("creating")
     setSessionId(null)
     setQrImage(null)
@@ -92,6 +99,10 @@ export const WhatsAppPairingDialog = ({
 
   const pollQr = useCallback(
     async (activeSessionId: string) => {
+      if (connectionHandledRef.current) {
+        return
+      }
+
       const response = await getWhatsAppSessionQrAction({
         companyId,
         sessionId: activeSessionId,
@@ -101,13 +112,16 @@ export const WhatsAppPairingDialog = ({
         throw new Error(response.error ?? t("whatsapp.pairing.messages.unexpected"))
       }
 
-      setSession(response.data.session)
-
-      if (response.data.qrImage) {
-        setQrImage(response.data.qrImage)
+      if (connectionHandledRef.current) {
+        return
       }
 
+      setSession(response.data.session)
+
       if (response.data.session.connected) {
+        connectionHandledRef.current = true
+        clearPollTimer()
+
         const trimmedLabel = labelRef.current.trim()
         if (trimmedLabel && trimmedLabel !== (response.data.session.label ?? "")) {
           await updateWhatsAppSessionLabelAction({
@@ -121,10 +135,20 @@ export const WhatsAppPairingDialog = ({
 
         onSessionUpdate?.()
         setPhase("connected")
-        clearPollTimer()
         toast.success(t("toasts.whatsappLinked"))
         onCompleted()
         return
+      }
+
+      if (isPairingScanned(response.data.session)) {
+        scannedDetectedRef.current = true
+        setQrImage(null)
+        setPhase("finalizing")
+      } else if (!scannedDetectedRef.current) {
+        if (response.data.qrImage) {
+          setQrImage(response.data.qrImage)
+          setPhase("waiting")
+        }
       }
 
       onSessionUpdate?.()
@@ -242,6 +266,8 @@ export const WhatsAppPairingDialog = ({
         return qrImage
           ? t("whatsapp.pairing.messages.scan")
           : t("whatsapp.pairing.messages.requesting")
+      case "finalizing":
+        return t("whatsapp.pairing.messages.scanned")
       case "connected":
         return t("whatsapp.pairing.messages.completed")
       case "failed":
@@ -283,7 +309,14 @@ export const WhatsAppPairingDialog = ({
             </div>
           )}
 
-          {qrImage && (phase === "waiting" || phase === "creating") && (
+          {phase === "finalizing" && (
+            <div className="flex flex-col items-center gap-2 py-6">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-xs text-muted-foreground">{t("whatsapp.pairing.button.waiting")}</p>
+            </div>
+          )}
+
+          {qrImage && phase === "waiting" && (
             <div className="flex flex-col items-center gap-2">
               <Image
                 src={qrImage}
@@ -297,7 +330,7 @@ export const WhatsAppPairingDialog = ({
             </div>
           )}
 
-          {session?.phoneNumber && phase !== "failed" && (
+          {session?.phoneNumber && phase === "connected" && (
             <div className="rounded-lg border bg-muted/40 p-4 text-sm">
               <p className="font-medium">{t("whatsapp.pairing.latest.title")}</p>
               <p className="text-muted-foreground">{session.phoneNumber}</p>

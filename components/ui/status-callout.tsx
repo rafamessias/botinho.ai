@@ -8,25 +8,29 @@ type StatusCalloutVariant = "warning" | "info" | "success" | "destructive"
 
 const variantClasses: Record<
   StatusCalloutVariant,
-  { container: string; icon: string; link?: string }
+  { container: string; icon: string; message: string; link?: string }
 > = {
   warning: {
-    container: "border-warning/30 bg-warning/10 text-warning-foreground",
+    container: "border-warning/30 bg-warning/10",
     icon: "text-warning",
+    message: "text-foreground",
     link: "text-warning hover:text-warning/80",
   },
   info: {
-    container: "border-info/30 bg-info/10 text-info-foreground",
+    container: "border-info/30 bg-info/10",
     icon: "text-info",
+    message: "text-foreground",
     link: "text-info hover:text-info/80",
   },
   success: {
-    container: "border-success/30 bg-success/10 text-success-foreground",
+    container: "border-success/30 bg-success/10",
     icon: "text-success",
+    message: "text-foreground",
   },
   destructive: {
-    container: "border-destructive/30 bg-destructive/10 text-destructive",
+    container: "border-destructive/30 bg-destructive/10",
     icon: "text-destructive",
+    message: "text-foreground",
   },
 }
 
@@ -57,7 +61,7 @@ export function StatusCallout({
       )}
     >
       <AlertTriangle className={cn("size-3.5 shrink-0", styles.icon)} aria-hidden="true" />
-      <span>
+      <span className={styles.message}>
         {message}
         {linkHref && linkLabel ? (
           <>

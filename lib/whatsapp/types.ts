@@ -19,6 +19,9 @@ export type WhatsAppSession = {
   createdAt: string
   updatedAt: string
   lastSeenAt?: string
+  loggedIn?: boolean
+  hasCredentials?: boolean
+  hasSnapshot?: boolean
 }
 
 export type MessageDirection = "inbound" | "outbound"
@@ -48,11 +51,18 @@ export type WorkerInfo = {
   lastHeartbeat: number
 }
 
+export type WhatsAppMessageQuote = {
+  messageId: string
+  body: string
+  participant?: string
+}
+
 export type SendMessageRequest = {
   sessionId?: string
   phoneNumber?: string
   to: string
   text: string
+  quote?: WhatsAppMessageQuote
 }
 
 export type WorkerRecord = {

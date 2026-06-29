@@ -2,8 +2,8 @@
 
 import { z } from "zod"
 import { BaseActionResponse, handleAction, resolveCompanyContext } from "./utils"
-import { getWhatsAppOrchestrator, isWhatsAppConfigured, checkWhatsAppAvailability } from "@/lib/whatsapp"
-import { WhatsAppSessionRepository } from "@/lib/whatsapp/session-repository"
+import { removeSessionIdFromAllAgents } from "@/lib/firebase/services/ai-agent-service"
+import { getWhatsAppOrchestrator, isWhatsAppConfigured, checkWhatsAppAvailability, listCompanyWhatsAppSessions } from "@/lib/whatsapp"
 import type { WhatsAppSession } from "@/lib/whatsapp/types"
 
 export type WhatsAppSessionView = {
@@ -12,6 +12,12 @@ export type WhatsAppSessionView = {
   phoneNumber: string | null
   status: WhatsAppSession["status"]
   connected: boolean
+  loggedIn: boolean
+  hasCredentials: boolean
+  hasSnapshot: boolean
+  createdAt: string
+  updatedAt: string
+  lastSeenAt: string | null
 }
 
 const toSessionView = (session: WhatsAppSession): WhatsAppSessionView => ({
@@ -19,11 +25,18 @@ const toSessionView = (session: WhatsAppSession): WhatsAppSessionView => ({
   label: session.label ?? null,
   phoneNumber: session.phoneNumber ?? null,
   status: session.status,
-  connected: session.status === "connected",
+  connected: session.status === "connected" && Boolean(session.phoneNumber) && session.loggedIn === true && session.hasSnapshot === true,
+  loggedIn: session.loggedIn === true,
+  hasCredentials: session.hasCredentials === true,
+  hasSnapshot: session.hasSnapshot === true,
+  createdAt: session.createdAt,
+  updatedAt: session.updatedAt,
+  lastSeenAt: session.lastSeenAt ?? null,
 })
 
 const companyScopeSchema = z.object({
   companyId: z.string().optional(),
+  syncLive: z.boolean().optional(),
 })
 
 const sessionIdSchema = companyScopeSchema.extend({
@@ -51,12 +64,16 @@ export const getWhatsAppSessionsAction = async (
     const parsed = companyScopeSchema.parse(input ?? {})
     const { companyId } = await resolveCompanyContext({ companyId: parsed.companyId, requireAdmin: true })
 
-    const repository = new WhatsAppSessionRepository()
-    const sessions = await repository.listSessionsByCompany(companyId)
     const configured = isWhatsAppConfigured()
     const { available } = configured
       ? await checkWhatsAppAvailability()
       : { available: false }
+    const sessions = configured
+      ? await listCompanyWhatsAppSessions(companyId, {
+          available,
+          syncLive: parsed.syncLive ?? true,
+        })
+      : []
 
     return {
       success: true,
@@ -101,22 +118,24 @@ export const getWhatsAppSessionQrAction = async (
 
     try {
       const session = await orchestrator.getQrCode(parsed.sessionId, companyId)
+      const pairingScanned = session.loggedIn === true || session.hasCredentials === true
       return {
         success: true,
         data: {
           session: toSessionView(session),
-          qrImage: session.qrImage ?? null,
+          qrImage: pairingScanned ? null : session.qrImage ?? null,
         },
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "qr not available yet"
       if (message.includes("qr not available")) {
         const session = await orchestrator.getSession(parsed.sessionId, companyId)
+        const pairingScanned = session.loggedIn === true || session.hasCredentials === true
         return {
           success: true,
           data: {
             session: toSessionView(session),
-            qrImage: session.qrImage ?? null,
+            qrImage: pairingScanned ? null : session.qrImage ?? null,
           },
         }
       }
@@ -149,6 +168,7 @@ export const deleteWhatsAppSessionAction = async (
 
     const orchestrator = await getWhatsAppOrchestrator()
     await orchestrator.deleteSession(parsed.sessionId, companyId)
+    await removeSessionIdFromAllAgents(companyId, parsed.sessionId)
 
     return { success: true, data: { sessionId: parsed.sessionId } }
   })

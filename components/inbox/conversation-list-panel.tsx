@@ -6,13 +6,15 @@ import { useTranslations } from "next-intl"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ConnectionSelectDialog } from "@/components/inbox/connection-select-dialog"
 import { IconBrandWhatsapp } from "@tabler/icons-react"
-import { Inbox, Bookmark, MessageSquarePlus, Search, User, X } from "lucide-react"
+import { Inbox, Bookmark, Bot, Mail, MessageSquarePlus, Search, User, UserCheck, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { InboxConnectionView } from "@/components/server-actions/inbox"
+import type { AssignedAgentView } from "@/components/inbox/inbox-mappers"
 
-export type ConversationFilter = "all" | "unread" | "favorites"
+export type ConversationFilter = "all" | "unread" | "favorites" | "human" | "bot"
 
 export type ConversationListItem = {
     id: string
@@ -22,6 +24,8 @@ export type ConversationListItem = {
     lastMessageAt?: string | Date
     unreadCount: number
     isBookmarked?: boolean
+    assignedToId?: string | null
+    assignedTo?: AssignedAgentView
 }
 
 type ConversationListPanelProps = {
@@ -73,25 +77,39 @@ const getInitials = (name: string) =>
         .toUpperCase()
         .slice(0, 2)
 
-type FilterChipProps = {
+type FilterIconButtonProps = {
     active: boolean
+    label: string
     onClick: () => void
     children: ReactNode
+    badge?: number
 }
 
-const FilterChip = ({ active, onClick, children }: FilterChipProps) => (
-    <button
-        type="button"
-        onClick={onClick}
-        className={cn(
-            "shrink-0 rounded-full px-3 py-1 text-sm font-medium transition-colors",
-            active
-                ? "bg-primary/15 text-primary"
-                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
-        )}
-    >
-        {children}
-    </button>
+const FilterIconButton = ({ active, label, onClick, children, badge }: FilterIconButtonProps) => (
+    <Tooltip>
+        <TooltipTrigger asChild>
+            <button
+                type="button"
+                onClick={onClick}
+                aria-label={label}
+                aria-pressed={active}
+                className={cn(
+                    "relative flex size-8 items-center justify-center rounded-lg transition-colors",
+                    active
+                        ? "bg-primary/15 text-primary"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+            >
+                {children}
+                {badge != null && badge > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium leading-none text-primary-foreground">
+                        {badge > 99 ? "99+" : badge}
+                    </span>
+                )}
+            </button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">{label}</TooltipContent>
+    </Tooltip>
 )
 
 export const ConversationListPanel = ({
@@ -172,6 +190,7 @@ export const ConversationListPanel = ({
         return conversations.map((conversation) => {
             const hasUnread = conversation.unreadCount > 0
             const isSelected = selectedConversationId === conversation.id
+            const isHumanHandled = Boolean(conversation.assignedToId)
 
             return (
                 <button
@@ -202,6 +221,29 @@ export const ConversationListPanel = ({
                                         className="size-3.5 shrink-0 fill-primary text-primary"
                                         aria-hidden="true"
                                     />
+                                )}
+                                {isHumanHandled ? (
+                                    <span
+                                        title={
+                                            conversation.assignedTo?.name
+                                                ? t("conversations.handledByHuman", {
+                                                      name: conversation.assignedTo.name,
+                                                  })
+                                                : t("conversations.handledByHumanShort")
+                                        }
+                                    >
+                                        <UserCheck
+                                            className="size-3.5 shrink-0 text-primary"
+                                            aria-hidden="true"
+                                        />
+                                    </span>
+                                ) : (
+                                    <span title={t("conversations.handledByBot")}>
+                                        <Bot
+                                            className="size-3.5 shrink-0 text-muted-foreground"
+                                            aria-hidden="true"
+                                        />
+                                    </span>
                                 )}
                                 <span className="truncate">{conversation.customerName}</span>
                             </span>
@@ -312,20 +354,43 @@ export const ConversationListPanel = ({
                 </div>
             </div>
 
-            <div className="flex shrink-0 gap-2 overflow-x-auto px-3 pb-2 scrollbar-none">
-                <FilterChip active={conversationFilter === "all"} onClick={() => onFilterChange("all")}>
-                    {t("filters.all")}
-                </FilterChip>
-                <FilterChip active={conversationFilter === "unread"} onClick={() => onFilterChange("unread")}>
-                    {t("filters.unread")}
-                    {unreadTotal > 0 ? ` ${unreadTotal}` : ""}
-                </FilterChip>
-                <FilterChip
+            <div className="grid shrink-0 grid-cols-5 gap-1 px-3 pb-2">
+                <FilterIconButton
+                    active={conversationFilter === "all"}
+                    label={t("filters.all")}
+                    onClick={() => onFilterChange("all")}
+                >
+                    <Inbox className="size-4" aria-hidden="true" />
+                </FilterIconButton>
+                <FilterIconButton
+                    active={conversationFilter === "unread"}
+                    label={t("filters.unread")}
+                    onClick={() => onFilterChange("unread")}
+                    badge={unreadTotal}
+                >
+                    <Mail className="size-4" aria-hidden="true" />
+                </FilterIconButton>
+                <FilterIconButton
                     active={conversationFilter === "favorites"}
+                    label={t("filters.favorites")}
                     onClick={() => onFilterChange("favorites")}
                 >
-                    {t("filters.favorites")}
-                </FilterChip>
+                    <Bookmark className="size-4" aria-hidden="true" />
+                </FilterIconButton>
+                <FilterIconButton
+                    active={conversationFilter === "human"}
+                    label={t("filters.human")}
+                    onClick={() => onFilterChange("human")}
+                >
+                    <UserCheck className="size-4" aria-hidden="true" />
+                </FilterIconButton>
+                <FilterIconButton
+                    active={conversationFilter === "bot"}
+                    label={t("filters.bot")}
+                    onClick={() => onFilterChange("bot")}
+                >
+                    <Bot className="size-4" aria-hidden="true" />
+                </FilterIconButton>
             </div>
 
             <div className="min-h-0 flex-1 overflow-y-auto">{renderItems()}</div>

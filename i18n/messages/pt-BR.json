@@ -318,12 +318,17 @@
                 "description": "Tente outro filtro ou termo de busca."
             },
             "noMessage": "Nenhuma mensagem ainda",
-            "selectConversationAria": "Selecionar conversa com {name}"
+            "selectConversationAria": "Selecionar conversa com {name}",
+            "handledByBot": "Atendimento automático (bot)",
+            "handledByHuman": "Atendido por {name}",
+            "handledByHumanShort": "Atendimento humano"
         },
         "filters": {
             "all": "Tudo",
             "unread": "Não lidas",
-            "favorites": "Salvas"
+            "favorites": "Salvas",
+            "human": "Humano",
+            "bot": "Bot"
         },
         "context": {
             "title": "Contexto",
@@ -407,11 +412,27 @@
             },
             "inputPlaceholderNoSelection": "Selecione uma conversa para responder",
             "sendFailed": "Não foi possível enviar a mensagem",
-            "whatsappDeliveryFailed": "Mensagem salva, mas o envio pelo WhatsApp falhou. Verifique a conexão em Configurações."
+            "whatsappDeliveryFailed": "Mensagem salva, mas o envio pelo WhatsApp falhou. Verifique a conexão em Configurações.",
+            "botPending": "Enviando…",
+            "botFailed": "Resposta automática falhou",
+            "reply": "Responder",
+            "replyingTo": "Respondendo a {name}",
+            "cancelReply": "Cancelar resposta",
+            "quoteSender": {
+                "customer": "Cliente",
+                "agent": "Você",
+                "bot": "Bot",
+                "system": "Sistema",
+                "unknown": "Mensagem"
+            }
         },
         "whatsappOffline": {
             "message": "WhatsApp offline — envio de mensagens pausado.",
             "settingsLink": "Configurações"
+        },
+        "whatsappRepair": {
+            "message": "O WhatsApp não está recebendo mensagens — vincule novamente em Configurações.",
+            "settingsLink": "Vincular em Configurações"
         },
         "actions": {
             "openConversations": "Abrir lista de conversas",
@@ -854,6 +875,16 @@
             "noConnectedNumbers": "Conecte um número WhatsApp em Configurações para atribuí-lo aqui.",
             "autoReply": "Auto-resposta",
             "autoReplyDescription": "Quando ativada, este Botinho responde automaticamente às mensagens recebidas nos números atribuídos.",
+            "responseLanguage": "Idioma das respostas",
+            "responseLanguagePtBr": "Português (Brasil)",
+            "responseLanguageEn": "Inglês",
+            "responseLanguageAuto": "Automático (cliente + prompt)",
+            "responseLanguageDescription": "Define o idioma das respostas automáticas e sugestões da IA. Use Português para Botinhos em pt-BR.",
+            "reassignNumberTitle": "Número já atribuído a outro Botinho",
+            "reassignNumberDescription": "Um ou mais números selecionados já estão em uso. Ao confirmar, eles serão removidos do outro Botinho e atribuídos a este.",
+            "reassignNumberConflict": "{number} está atribuído a {agentName}",
+            "reassignNumberConfirm": "Reatribuir e salvar",
+            "reassignNumberCancel": "Cancelar",
             "title": "Título",
             "content": "Conteúdo",
             "templateName": "Nome do Modelo",
@@ -1800,6 +1831,8 @@
                     "description": "Clique no botão acima para conectar o seu primeiro número."
                 },
                 "offlineBanner": "WhatsApp offline. Seus números aparecem abaixo, mas o envio de mensagens está pausado.",
+                "repairBanner": "O WhatsApp não está recebendo mensagens. Escaneie o QR code novamente para restaurar o recebimento.",
+                "repairAction": "Vincular agora",
                 "status": {
                     "connected": "Conectado",
                     "disconnected": "Desconectado",
@@ -1820,6 +1853,24 @@
                     "editAria": "Editar número do WhatsApp {name}",
                     "removeAria": "Remover número do WhatsApp {name}",
                     "connect": "Conectar Número"
+                },
+                "details": {
+                    "title": "Detalhes da conexão",
+                    "openAria": "Ver detalhes de {name}",
+                    "fields": {
+                        "sessionId": "ID da sessão",
+                        "label": "Identificador",
+                        "phoneNumber": "Número de telefone",
+                        "status": "Status",
+                        "pairedAt": "Pareado em",
+                        "lastSeenAt": "Visto por último",
+                        "updatedAt": "Última atualização"
+                    },
+                    "status": {
+                        "pending": "Pendente",
+                        "qrPending": "Aguardando leitura do QR",
+                        "needsQr": "Precisa escanear o QR"
+                    }
                 },
                 "autoReply": {
                     "label": "Resposta Automática",
@@ -1904,7 +1955,8 @@
                     "save": "Salvar Alterações"
                 },
                 "delete": {
-                    "confirm": "Tem certeza que deseja desconectar este número do WhatsApp?"
+                    "title": "Desconectar número do WhatsApp",
+                    "confirm": "Tem certeza que deseja desconectar {name}? Isso interromperá o recebimento de mensagens neste número."
                 }
             }
         }

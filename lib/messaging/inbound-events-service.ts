@@ -31,6 +31,10 @@ export const mapInboundEvent = (companyId: string, id: string, data: FirestoreIn
   type: data.type,
   timestamp: toDate(data.timestamp),
   phoneNumber: data.phoneNumber,
+  quotedMessageId: data.quotedMessageId,
+  quotedBody: data.quotedBody,
+  quotedParticipant: data.quotedParticipant,
+  senderJid: data.senderJid,
   status: data.status,
   attempts: data.attempts ?? 0,
   lastError: data.lastError ?? null,
@@ -64,6 +68,10 @@ export const upsertInboundEventFromWebhook = async (params: {
   to?: string
   type?: string
   phoneNumber?: string
+  quotedMessageId?: string
+  quotedBody?: string
+  quotedParticipant?: string
+  senderJid?: string
 }) => {
   const ref = inboundEventsRef(params.companyId).doc(params.eventId)
   const existing = await ref.get()
@@ -82,6 +90,10 @@ export const upsertInboundEventFromWebhook = async (params: {
     type: params.type ?? "text",
     timestamp: now,
     phoneNumber: params.phoneNumber ?? null,
+    ...(params.quotedMessageId ? { quotedMessageId: params.quotedMessageId } : {}),
+    ...(params.quotedBody ? { quotedBody: params.quotedBody } : {}),
+    ...(params.quotedParticipant ? { quotedParticipant: params.quotedParticipant } : {}),
+    ...(params.senderJid ? { senderJid: params.senderJid } : {}),
     status: "pending",
     attempts: 0,
     createdAt: now,

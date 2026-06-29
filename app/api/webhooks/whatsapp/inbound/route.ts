@@ -12,6 +12,11 @@ const inboundPayloadSchema = z.object({
   type: z.string().optional(),
   timestamp: z.string().optional(),
   eventId: z.string().min(1).optional(),
+  phoneNumber: z.string().optional(),
+  quotedMessageId: z.string().optional(),
+  quotedBody: z.string().optional(),
+  quotedParticipant: z.string().optional(),
+  senderJid: z.string().optional(),
 })
 
 export const POST = async (request: NextRequest) => {
@@ -48,6 +53,11 @@ export const POST = async (request: NextRequest) => {
       eventId: payload.eventId,
       to: payload.to,
       type: payload.type,
+      phoneNumber: payload.phoneNumber,
+      quotedMessageId: payload.quotedMessageId,
+      quotedBody: payload.quotedBody,
+      quotedParticipant: payload.quotedParticipant,
+      senderJid: payload.senderJid,
     })
 
     return NextResponse.json({

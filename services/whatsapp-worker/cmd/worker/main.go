@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -16,11 +18,49 @@ import (
 	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/models"
 	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/registry"
 	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/repository"
+	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/systemprops"
 	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/wa"
+	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/wastore"
 	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/webhook"
 )
 
-func recoverWorkerSessions(ctx context.Context, workerID string, repos *repository.Repositories, pool *wa.Pool) {
+func resolveInboundWebhookURL(session *models.Session) string {
+	if session.WebhookURL != "" {
+		return session.WebhookURL
+	}
+	if session.CompanyID == "" {
+		return ""
+	}
+
+	base := strings.TrimRight(os.Getenv("WEBHOOK_APP_URL"), "/")
+	if base == "" {
+		base = "http://host.docker.internal:3000"
+	}
+
+	secret := strings.TrimSpace(os.Getenv("WHATSAPP_WEBHOOK_SECRET"))
+	if secret == "" {
+		secret = strings.TrimSpace(os.Getenv("WORKER_INTERNAL_TOKEN"))
+	}
+	if secret == "" {
+		return ""
+	}
+
+	return fmt.Sprintf(
+		"%s/api/webhooks/whatsapp/inbound?companyId=%s&token=%s",
+		base,
+		session.CompanyID,
+		secret,
+	)
+}
+
+func recoverWorkerSessions(
+	ctx context.Context,
+	workerID string,
+	repos *repository.Repositories,
+	reg *registry.Registry,
+	pool *wa.Pool,
+	storeManager *wastore.Manager,
+) {
 	sessions, err := repos.Sessions.ListSessions(ctx)
 	if err != nil {
 		log.Printf("[worker] session recovery list failed: %v", err)
@@ -31,19 +71,147 @@ func recoverWorkerSessions(ctx context.Context, workerID string, repos *reposito
 		if session.WorkerID != workerID {
 			continue
 		}
-		if session.Status != models.SessionStatusConnected {
+		if session.Status == models.SessionStatusPending ||
+			session.Status == models.SessionStatusQRPending ||
+			session.Status == models.SessionStatusNeedsQR {
+			continue
+		}
+		if session.Status != models.SessionStatusConnected &&
+			session.Status != models.SessionStatusDisconnected {
 			continue
 		}
 
-		log.Printf("[worker] recovering session %s", session.ID)
-		if _, err := pool.Start(ctx, session.ID); err != nil {
-			log.Printf("[worker] recover start failed session=%s: %v", session.ID, err)
+		hasSnapshot := storeManager == nil || !storeManager.Enabled() || storeManager.HasSnapshot(ctx, session.ID)
+
+		if session.Status == models.SessionStatusConnected && !hasSnapshot {
+			if _, liveErr := pool.Status(session.ID); liveErr == nil {
+				runtime, runErr := pool.SessionRuntime(session.ID)
+				if runErr == nil {
+					switch {
+					case runtime.LoggedIn:
+						if err := pool.SnapshotSessionRequired(ctx, session.ID); err != nil {
+							log.Printf("[worker] snapshot retry failed session=%s: %v", session.ID, err)
+						} else {
+							_ = pool.SyncSession(ctx, session.ID)
+						}
+					case runtime.HasCredentials:
+						_ = pool.Connect(ctx, session.ID)
+					case runtime.Status == models.SessionStatusQRPending ||
+						runtime.Status == models.SessionStatusNeedsQR ||
+						runtime.Status == models.SessionStatusPending:
+						_ = pool.SyncSession(ctx, session.ID)
+					default:
+						_ = pool.SyncSession(ctx, session.ID)
+					}
+					continue
+				}
+			}
+
+			log.Printf(
+				"[worker] ghost session %s firestore=connected but no persisted store — purging",
+				session.ID,
+			)
+			downgradeStaleConnectedSession(ctx, repos, reg, pool, session)
 			continue
 		}
-		if err := pool.Connect(ctx, session.ID); err != nil {
-			log.Printf("[worker] recover connect failed session=%s: %v", session.ID, err)
+
+		if session.Status == models.SessionStatusDisconnected && storeManager != nil &&
+			storeManager.Enabled() && !hasSnapshot {
+			continue
+		}
+
+		ensureWorkerSession(ctx, pool, session.ID, session.Status)
+	}
+}
+
+func downgradeStaleConnectedSession(
+	ctx context.Context,
+	repos *repository.Repositories,
+	reg *registry.Registry,
+	pool *wa.Pool,
+	session *models.Session,
+) {
+	if err := pool.Stop(ctx, session.ID, true); err != nil {
+		log.Printf("[worker] ghost purge stop failed session=%s: %v", session.ID, err)
+	}
+
+	oldPhone := session.PhoneNumber
+	session.Status = models.SessionStatusNeedsQR
+	session.PhoneNumber = ""
+	session.QRCode = ""
+	session.QRImage = ""
+	session.QRExpiresAt = nil
+	session.UpdatedAt = time.Now().UTC()
+	if err := repos.Sessions.UpdateSession(ctx, session); err != nil {
+		log.Printf("[worker] downgrade stale session failed session=%s: %v", session.ID, err)
+		return
+	}
+	log.Printf("[worker] downgraded stale session %s to needs_qr", session.ID)
+	if oldPhone != "" {
+		_ = repos.Sessions.DeletePhoneIndex(ctx, oldPhone)
+		_ = reg.RemovePhoneIndex(ctx, oldPhone, session.ID)
+	}
+}
+
+func ensureWorkerSession(ctx context.Context, pool *wa.Pool, sessionID string, firestoreStatus models.SessionStatus) {
+	live, err := pool.Status(sessionID)
+	if err == nil {
+		runtime, healthErr := pool.SessionRuntime(sessionID)
+		if healthErr == nil {
+			if firestoreStatus == models.SessionStatusConnected && !runtime.LoggedIn && !runtime.HasCredentials {
+				log.Printf(
+					"[worker] session %s firestore=connected but not paired live=%s — syncing",
+					sessionID,
+					live.Status,
+				)
+				_ = pool.SyncSession(ctx, sessionID)
+				return
+			}
+			if !runtime.LoggedIn && !runtime.HasCredentials &&
+				(live.Status == models.SessionStatusQRPending ||
+					live.Status == models.SessionStatusNeedsQR ||
+					runtime.Connected) {
+				_ = pool.SyncSession(ctx, sessionID)
+				return
+			}
 		}
 	}
+	if err == nil && live.Status == models.SessionStatusConnected {
+		health, healthErr := pool.SessionRuntime(sessionID)
+		if healthErr == nil && health.LoggedIn {
+			return
+		}
+	}
+
+	if err == nil && live.Status != models.SessionStatusConnected {
+		health, healthErr := pool.SessionRuntime(sessionID)
+		if healthErr == nil && health.Connected && health.HasCredentials && !health.LoggedIn {
+			log.Printf(
+				"[worker] session %s connected with credentials, waiting for login (firestore=%s live=%s)",
+				sessionID,
+				firestoreStatus,
+				live.Status,
+			)
+			_ = pool.Connect(ctx, sessionID)
+			return
+		}
+	}
+
+	log.Printf("[worker] ensuring session %s firestoreStatus=%s liveStatus=%v", sessionID, firestoreStatus, liveStatusLabel(live, err))
+	if _, err := pool.Start(ctx, sessionID); err != nil {
+		log.Printf("[worker] ensure start failed session=%s: %v", sessionID, err)
+		return
+	}
+	if err := pool.Connect(ctx, sessionID); err != nil {
+		log.Printf("[worker] ensure connect failed session=%s: %v", sessionID, err)
+	}
+}
+
+func liveStatusLabel(live *models.Session, err error) string {
+	if err != nil {
+		return "missing"
+	}
+	return string(live.Status)
 }
 
 func main() {
@@ -70,6 +238,15 @@ func main() {
 	}
 	defer repos.Close()
 
+	storeCfg := wastore.LoadConfig()
+	storeManager, err := wastore.NewManager(ctx, storeCfg, repos.StoreSnapshots)
+	if err != nil {
+		log.Fatalf("wastore: %v", err)
+	}
+
+	systemProperties := systemprops.Load(ctx, repos)
+	log.Printf("[worker] systemProperties whatsappSkipHistorySync=%v", systemProperties.WhatsAppSkipHistorySync)
+
 	pool := wa.NewPool(cfg.MaxSessions, repos, wa.SessionCallbacks{
 		OnSessionUpdate: func(ctx context.Context, session *models.Session) error {
 			existing, err := repos.Sessions.GetSession(ctx, session.ID)
@@ -93,6 +270,9 @@ func main() {
 			if session.PhoneNumber != "" {
 				_ = repos.Sessions.SetPhoneIndex(ctx, session.PhoneNumber, session.ID)
 				_ = reg.SetPhoneIndex(ctx, session.PhoneNumber, session.ID)
+			} else if err == nil && existing.PhoneNumber != "" {
+				_ = repos.Sessions.DeletePhoneIndex(ctx, existing.PhoneNumber)
+				_ = reg.RemovePhoneIndex(ctx, existing.PhoneNumber, session.ID)
 			}
 			return nil
 		},
@@ -112,42 +292,37 @@ func main() {
 				return nil
 			}
 
-			eventID := webhook.BuildInboundEventID(message.SessionID, message.MessageID)
-			now := time.Now().UTC()
-			event := &models.InboundEvent{
-				Channel:     "whatsapp",
-				SessionID:   message.SessionID,
-				MessageID:   message.MessageID,
-				From:        message.From,
-				To:          message.To,
-				Body:        message.Body,
-				Type:        message.Type,
-				Timestamp:   message.Timestamp,
-				PhoneNumber: session.PhoneNumber,
-				Status:      "pending",
-				Attempts:    0,
-				CreatedAt:   now,
-				UpdatedAt:   now,
+			webhookURL := resolveInboundWebhookURL(session)
+			if webhookURL == "" {
+				log.Printf("[worker] inbound message missing webhook URL for session=%s companyId=%s", message.SessionID, session.CompanyID)
+				return nil
 			}
 
-			if err := repos.InboundEvents.UpsertInboundEvent(ctx, session.CompanyID, eventID, event); err != nil {
-				return err
-			}
-
-			if session.WebhookURL != "" {
-				go webhook.DispatchInbound(context.Background(), session.WebhookURL, message)
-			}
+			log.Printf(
+				"[worker] dispatching inbound webhook session=%s from=%s messageId=%s",
+				message.SessionID,
+				message.From,
+				message.MessageID,
+			)
+			go webhook.DispatchInbound(context.Background(), webhookURL, message, session.PhoneNumber)
 			return nil
 		},
-		OnCheckpoint: func(ctx context.Context, sessionID string, data []byte) error {
-			return repos.Checkpoints.SaveCheckpoint(ctx, sessionID, data)
-		},
-	})
+	}, storeManager, cfg.WorkerID, systemProperties.WhatsAppSkipHistorySync)
 
 	handlers := api.NewWorkerHandlers(pool)
 	router := api.NewWorkerRouter(cfg, handlers)
 
-	go recoverWorkerSessions(ctx, cfg.WorkerID, repos, pool)
+	go recoverWorkerSessions(ctx, cfg.WorkerID, repos, reg, pool, storeManager)
+
+	go func() {
+		ticker := time.NewTicker(30 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			props := systemprops.Load(context.Background(), repos)
+			pool.SetSkipHistorySync(props.WhatsAppSkipHistorySync)
+			recoverWorkerSessions(context.Background(), cfg.WorkerID, repos, reg, pool, storeManager)
+		}
+	}()
 
 	go func() {
 		ticker := time.NewTicker(10 * time.Second)
@@ -156,6 +331,16 @@ func main() {
 			_ = reg.Heartbeat(context.Background(), cfg.WorkerID, pool.Count())
 		}
 	}()
+
+	if storeManager.Enabled() {
+		go func() {
+			ticker := time.NewTicker(storeCfg.SnapshotEvery)
+			defer ticker.Stop()
+			for range ticker.C {
+				pool.SnapshotAll(context.Background())
+			}
+		}()
+	}
 
 	server := &http.Server{
 		Addr:              ":" + cfg.Port,
@@ -173,6 +358,8 @@ func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 	<-stop
+
+	pool.SnapshotAll(context.Background())
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

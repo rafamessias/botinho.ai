@@ -35,6 +35,7 @@ import {
     Zap,
     AlertTriangle,
     Building2,
+    CornerDownLeft,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { StatusCallout } from "@/components/ui/status-callout"
@@ -54,7 +55,7 @@ import {
 import { getAiTrainingDataAction } from "@/components/server-actions/ai-training"
 import { listActiveSurveysAction, sendSurveyAction, type SurveyView } from "@/components/server-actions/surveys"
 import type { QuickAnswerView, TemplateView } from "@/components/ai-training/types"
-import { ContextPanel } from "@/components/inbox/context-panel"
+import { ContextPanel, ContextPanelSkeleton } from "@/components/inbox/context-panel"
 import { NewConversationDialog } from "@/components/inbox/new-conversation-dialog"
 import { InboxReplyListModal } from "@/components/inbox/inbox-reply-list-modal"
 import { ReplyPreviewHoverCard } from "@/components/inbox/reply-preview-hover-card"
@@ -62,10 +63,11 @@ import {
     ConversationListPanel,
     type ConversationFilter,
 } from "@/components/inbox/conversation-list-panel"
-import { InboxMessageCache } from "@/components/inbox/inbox-message-cache"
+import { MessageQuoteBlock, resolveQuoteSenderLabel } from "@/components/inbox/message-quote-block"
 import {
     mapConversationSummary,
     mapMessage,
+    normalizeAssignedAgent,
     sortConversations,
     formatMessageTimestamp,
     type ConversationEntity,
@@ -73,15 +75,34 @@ import {
     type InboxMessage,
     type MessageEntity,
 } from "@/components/inbox/inbox-mappers"
-import type { InboxInitialData } from "@/lib/inbox/load-inbox-initial-data"
+import {
+    inboxSessionCache,
+    resolveInboxBootstrap,
+} from "@/lib/inbox/inbox-session-cache"
 import { useInboxRealtime } from "@/hooks/use-inbox-realtime"
 import { useInboxReplyBookmarks } from "@/hooks/use-inbox-reply-bookmarks"
 import { applyItemOrder, mergeItemOrder, resolveSidebarItems } from "@/lib/inbox-reply-bookmarks"
+import { isTransientServerActionError, withServerActionRetry } from "@/lib/server-action-retry"
 
 type InboxPageProps = {
     hasCompanyAccess: boolean
     initialCompanyId?: string | null
-    initialData?: InboxInitialData | null
+}
+
+const INBOX_BACKGROUND_POLL_MS = 60_000
+
+const getInboxMountBootstrap = (companyId: string | null) => {
+    const { source, snapshot } = resolveInboxBootstrap(companyId)
+    const isFreshSession =
+        source === "session" &&
+        companyId != null &&
+        inboxSessionCache.isFresh(String(companyId))
+
+    return {
+        snapshot,
+        hasBootstrap: Boolean(snapshot),
+        isFreshSession,
+    }
 }
 
 type SuggestedResponse = {
@@ -90,8 +111,55 @@ type SuggestedResponse = {
     category: string
 }
 
+type MessageSkeletonItem = {
+    side: "left" | "right"
+    widthClass: string
+    heightClass: string
+}
+
+const MESSAGE_THREAD_SKELETON_ITEMS: MessageSkeletonItem[] = [
+    { side: "left", widthClass: "w-[52%]", heightClass: "h-10" },
+    { side: "right", widthClass: "w-[44%]", heightClass: "h-10" },
+    { side: "left", widthClass: "w-[36%]", heightClass: "h-10" },
+    { side: "right", widthClass: "w-[58%]", heightClass: "h-14" },
+    { side: "left", widthClass: "w-[48%]", heightClass: "h-10" },
+    { side: "right", widthClass: "w-[40%]", heightClass: "h-10" },
+    { side: "left", widthClass: "w-[55%]", heightClass: "h-14" },
+    { side: "right", widthClass: "w-[32%]", heightClass: "h-10" },
+    { side: "left", widthClass: "w-[42%]", heightClass: "h-10" },
+    { side: "right", widthClass: "w-[50%]", heightClass: "h-12" },
+]
+
+const MessageThreadSkeleton = () => (
+    <div className="flex h-full min-h-full flex-col px-4 py-5" aria-hidden="true">
+        <div className="space-y-3">
+            {MESSAGE_THREAD_SKELETON_ITEMS.map((item, index) => (
+                <div
+                    key={`message-skeleton-${index}`}
+                    className={cn("flex items-end gap-2", item.side === "right" && "flex-row-reverse")}
+                >
+                    <div className="h-8 w-8 flex-shrink-0 rounded-full bg-muted animate-pulse" />
+                    <div
+                        className={cn(
+                            "max-w-[80%] rounded-lg bg-muted/80 animate-pulse md:max-w-[70%]",
+                            item.widthClass,
+                            item.heightClass,
+                        )}
+                    />
+                </div>
+            ))}
+        </div>
+    </div>
+)
+
 const useMediaQuery = (query: string) => {
-    const [matches, setMatches] = useState(false)
+    const [matches, setMatches] = useState(() => {
+        if (typeof window === "undefined") {
+            return false
+        }
+
+        return window.matchMedia(query).matches
+    })
 
     useEffect(() => {
         if (typeof window === "undefined") return
@@ -114,103 +182,116 @@ const useMediaQuery = (query: string) => {
     return matches
 }
 
-const isTransientServerActionError = (error: unknown) =>
-    error instanceof Error && error.message.includes("unexpected response was received")
-
-const withServerActionRetry = async <T,>(action: () => Promise<T>, retries = 1): Promise<T> => {
-    let lastError: unknown
-
-    for (let attempt = 0; attempt <= retries; attempt += 1) {
-        try {
-            return await action()
-        } catch (error) {
-            lastError = error
-            if (!isTransientServerActionError(error) || attempt === retries) {
-                throw error
-            }
-
-            await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)))
-        }
-    }
-
-    throw lastError
-}
-
 export default function InboxPage({
     hasCompanyAccess,
     initialCompanyId = null,
-    initialData = null,
 }: InboxPageProps) {
-    const hasInitialData = Boolean(initialData && !initialData.loadError)
+    const mountBootstrap = getInboxMountBootstrap(
+        initialCompanyId != null ? String(initialCompanyId) : null,
+    )
+    const bootstrapSnapshot = mountBootstrap.snapshot
+    const hasBootstrap = mountBootstrap.hasBootstrap
+    const isFreshSession = mountBootstrap.isFreshSession
+
     const [conversations, setConversations] = useState<InboxConversationSummary[]>(
-        initialData?.conversations ?? [],
+        bootstrapSnapshot?.conversations ?? [],
     )
     const [selectedConversationId, setSelectedConversationId] = useState<string | null>(
-        initialData?.selectedConversationId ?? null,
+        bootstrapSnapshot?.selectedConversationId ?? null,
     )
-    const [connections, setConnections] = useState<InboxConnectionView[]>(initialData?.connections ?? [])
-    const [whatsappConfigured, setWhatsappConfigured] = useState(initialData?.whatsappConfigured ?? false)
-    const [whatsappAvailable, setWhatsappAvailable] = useState(initialData?.whatsappAvailable ?? true)
-    const [selectedConnectionIds, setSelectedConnectionIds] = useState<string[]>([])
+    const [connections, setConnections] = useState<InboxConnectionView[]>(
+        bootstrapSnapshot?.connections ?? [],
+    )
+    const [whatsappConfigured, setWhatsappConfigured] = useState(
+        bootstrapSnapshot?.whatsappConfigured ?? false,
+    )
+    const [whatsappAvailable, setWhatsappAvailable] = useState(
+        bootstrapSnapshot?.whatsappAvailable ?? true,
+    )
+    const [whatsappNeedsRepair, setWhatsappNeedsRepair] = useState(
+        bootstrapSnapshot?.whatsappNeedsRepair ?? false,
+    )
+    const [selectedConnectionIds, setSelectedConnectionIds] = useState<string[]>(
+        bootstrapSnapshot?.selectedConnectionIds ?? [],
+    )
     const [showNewConversationDialog, setShowNewConversationDialog] = useState(false)
     const [prefilledCustomer, setPrefilledCustomer] = useState<{
         name?: string
         phone?: string
         email?: string
     } | null>(null)
-    const [messages, setMessages] = useState<InboxMessage[]>(initialData?.messages ?? [])
+    const [messages, setMessages] = useState<InboxMessage[]>(bootstrapSnapshot?.messages ?? [])
     const [suggestedResponses, setSuggestedResponses] = useState<SuggestedResponse[]>([])
-    const [quickAnswers, setQuickAnswers] = useState<QuickAnswerView[]>(initialData?.quickAnswers ?? [])
-    const [templates, setTemplates] = useState<TemplateView[]>(initialData?.templates ?? [])
+    const [quickAnswers, setQuickAnswers] = useState<QuickAnswerView[]>(
+        bootstrapSnapshot?.quickAnswers ?? [],
+    )
+    const [templates, setTemplates] = useState<TemplateView[]>(bootstrapSnapshot?.templates ?? [])
     const [surveys, setSurveys] = useState<SurveyView[]>([])
-    const [assignedTo, setAssignedTo] = useState<{ id: string; name: string } | null>(null)
     const [activeSurveyResponseId, setActiveSurveyResponseId] = useState<string | null>(null)
     const [isSendingSurvey, setIsSendingSurvey] = useState(false)
-    const [searchQuery, setSearchQuery] = useState("")
-    const [conversationFilter, setConversationFilter] = useState<ConversationFilter>("all")
-    const [unreadTotal, setUnreadTotal] = useState(initialData?.unreadTotal ?? 0)
+    const [searchQuery, setSearchQuery] = useState(bootstrapSnapshot?.searchQuery ?? "")
+    const [conversationFilter, setConversationFilter] = useState<ConversationFilter>(
+        bootstrapSnapshot?.conversationFilter ?? "all",
+    )
+    const [unreadTotal, setUnreadTotal] = useState(bootstrapSnapshot?.unreadTotal ?? 0)
     const [isTogglingBookmark, setIsTogglingBookmark] = useState(false)
     const [messageInput, setMessageInput] = useState("")
-    const [showContextPanel, setShowContextPanel] = useState(false)
+    const [replyToMessage, setReplyToMessage] = useState<InboxMessage | null>(null)
+    const [showContextPanel, setShowContextPanel] = useState(true)
     const [showQuickRepliesModal, setShowQuickRepliesModal] = useState(false)
     const [showTemplatesModal, setShowTemplatesModal] = useState(false)
-    const [showDesktopConversations, setShowDesktopConversations] = useState(false)
+    const [showDesktopConversations, setShowDesktopConversations] = useState(true)
     const [showConversationsList, setShowConversationsList] = useState(false)
-    const [isLoadingConversations, setIsLoadingConversations] = useState(false)
+    const [isLoadingConversations, setIsLoadingConversations] = useState(
+        hasCompanyAccess && !hasBootstrap,
+    )
     const [isLoadingMessages, setIsLoadingMessages] = useState(false)
     const [isSendingMessage, setIsSendingMessage] = useState(false)
-    const [isConnectionsLoaded, setIsConnectionsLoaded] = useState(hasInitialData)
+    const [isConnectionsLoaded, setIsConnectionsLoaded] = useState(hasBootstrap)
+    const [isReplyResourcesLoaded, setIsReplyResourcesLoaded] = useState(hasBootstrap)
     const messageInputRef = useRef<HTMLTextAreaElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
-    const initialLoadRef = useRef(hasInitialData && hasCompanyAccess)
-    const selectedConversationIdRef = useRef<string | null>(initialData?.selectedConversationId ?? null)
-    const searchQueryRef = useRef("")
-    const selectedConnectionIdsRef = useRef<string[]>([])
+    const initialLoadRef = useRef(isFreshSession && hasCompanyAccess)
+    const selectedConversationIdRef = useRef<string | null>(
+        bootstrapSnapshot?.selectedConversationId ?? null,
+    )
+    const searchQueryRef = useRef(bootstrapSnapshot?.searchQuery ?? "")
+    const selectedConnectionIdsRef = useRef<string[]>(bootstrapSnapshot?.selectedConnectionIds ?? [])
     const loadConversationsRef = useRef<
         (page?: number, searchValue?: string, options?: { silent?: boolean }) => Promise<void>
     >(async () => {})
     const fetchConversationDetailRef = useRef<
         (conversationId: string, options?: { silent?: boolean; force?: boolean }) => Promise<void>
     >(async () => {})
-    const messageCacheRef = useRef(new InboxMessageCache())
-    const conversationsRef = useRef<InboxConversationSummary[]>(initialData?.conversations ?? [])
+    const messageCacheRef = useRef(inboxSessionCache.messageCache)
+    const conversationsRef = useRef<InboxConversationSummary[]>(bootstrapSnapshot?.conversations ?? [])
+    const messagesRef = useRef<InboxMessage[]>(bootstrapSnapshot?.messages ?? [])
+    const unreadTotalRef = useRef(bootstrapSnapshot?.unreadTotal ?? 0)
     const previousCompanyIdRef = useRef<string | null>(initialCompanyId ?? null)
     const isFirstSearchEffectRef = useRef(true)
     const conversationsRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const messagesRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const isFetchingConversationsRef = useRef(false)
-    const inFlightConversationDetailRef = useRef<string | null>(null)
+    const inFlightConversationDetailPromisesRef = useRef(new Map<string, Promise<void>>())
+    const inFlightSuggestedResponsesPromisesRef = useRef(
+        new Map<string, Promise<SuggestedResponse[]>>(),
+    )
     const skipNextMessagesRefreshRef = useRef(false)
     const notifiedFailedMessageIdsRef = useRef<Set<string>>(
         new Set(
-            (initialData?.messages ?? [])
+            (bootstrapSnapshot?.messages ?? [])
                 .filter((message) => message.sentBy === "user" && message.status === "failed")
                 .map((message) => message.id),
         ),
     )
-    const skipInitialConnectionsLoadRef = useRef(hasInitialData)
-    const skipInitialReplyResourcesLoadRef = useRef(hasInitialData)
-    const initialHydrationRef = useRef(hasInitialData)
+    const skipInitialConnectionsLoadRef = useRef(isFreshSession)
+    const skipInitialReplyResourcesLoadRef = useRef(isFreshSession)
+    const isFirstConnectionFilterEffectRef = useRef(true)
+    const initialHydrationRef = useRef(isFreshSession)
+    const isMountedRef = useRef(true)
+    const conversationFilterRef = useRef<ConversationFilter>(
+        bootstrapSnapshot?.conversationFilter ?? "all",
+    )
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
     const t = useTranslations("Inbox")
@@ -264,6 +345,62 @@ export default function InboxPage({
     searchQueryRef.current = searchQuery
     selectedConnectionIdsRef.current = selectedConnectionIds
     conversationsRef.current = conversations
+    messagesRef.current = messages
+    unreadTotalRef.current = unreadTotal
+    conversationFilterRef.current = conversationFilter
+
+    const persistInboxSession = useCallback(() => {
+        if (!companyId) {
+            return
+        }
+
+        inboxSessionCache.save({
+            companyId: String(companyId),
+            conversations: conversationsRef.current,
+            unreadTotal: unreadTotalRef.current,
+            selectedConversationId: selectedConversationIdRef.current,
+            messages:
+                (selectedConversationIdRef.current
+                    ? messageCacheRef.current.get(selectedConversationIdRef.current)?.messages
+                    : undefined) ?? messagesRef.current,
+            connections,
+            whatsappConfigured,
+            whatsappAvailable,
+            whatsappNeedsRepair,
+            quickAnswers,
+            templates,
+            selectedConnectionIds: selectedConnectionIdsRef.current,
+            searchQuery: searchQueryRef.current,
+            conversationFilter: conversationFilterRef.current,
+        })
+    }, [
+        companyId,
+        connections,
+        quickAnswers,
+        templates,
+        whatsappConfigured,
+        whatsappAvailable,
+        whatsappNeedsRepair,
+    ])
+
+    useEffect(() => {
+        persistInboxSession()
+    }, [
+        conversations,
+        messages,
+        selectedConversationId,
+        unreadTotal,
+        searchQuery,
+        conversationFilter,
+        selectedConnectionIds,
+        persistInboxSession,
+    ])
+
+    useEffect(() => {
+        return () => {
+            persistInboxSession()
+        }
+    }, [persistInboxSession])
 
     const selectedConversation = useMemo(
         () => conversations.find((conversation) => conversation.id === selectedConversationId) ?? null,
@@ -279,11 +416,25 @@ export default function InboxPage({
             return conversations.filter((conversation) => conversation.isBookmarked)
         }
 
+        if (conversationFilter === "human") {
+            return conversations.filter((conversation) => Boolean(conversation.assignedToId))
+        }
+
+        if (conversationFilter === "bot") {
+            return conversations.filter((conversation) => !conversation.assignedToId)
+        }
+
         return conversations
     }, [conversationFilter, conversations])
 
     const isConversationListFiltered =
         conversationFilter !== "all" || searchQuery.trim().length > 0
+
+    const isInboxReady =
+        !hasCompanyAccess ||
+        (isConnectionsLoaded && isReplyResourcesLoaded && !isLoadingConversations)
+
+    const showConversationSkeleton = !isInboxReady || isLoadingMessages
 
     const tRef = useRef(t)
     tRef.current = t
@@ -322,6 +473,10 @@ export default function InboxPage({
     }, [isLoadingMessages, selectedConversationId])
 
     useEffect(() => {
+        setReplyToMessage(null)
+    }, [selectedConversationId])
+
+    useEffect(() => {
         for (const message of messages) {
             if (
                 message.sentBy === "user" &&
@@ -337,14 +492,32 @@ export default function InboxPage({
     const loadSuggestedResponses = useCallback(async (conversationId: string) => {
         const cached = messageCacheRef.current.get(conversationId)
         if (cached?.suggestedResponses.length) {
-            setSuggestedResponses(cached.suggestedResponses)
+            if (selectedConversationIdRef.current === conversationId) {
+                setSuggestedResponses(cached.suggestedResponses)
+            }
             return cached.suggestedResponses
         }
 
-        try {
-            const result = await getSuggestedResponsesAction({ conversationId })
-            if (result.success && result.data) {
-                setSuggestedResponses(result.data)
+        const inFlight = inFlightSuggestedResponsesPromisesRef.current.get(conversationId)
+        if (inFlight) {
+            return inFlight
+        }
+
+        const fetchPromise = (async () => {
+            try {
+                const result = await withServerActionRetry(() =>
+                    getSuggestedResponsesAction({ conversationId }),
+                )
+
+                if (!result.success || !result.data) {
+                    if (
+                        isMountedRef.current &&
+                        selectedConversationIdRef.current === conversationId
+                    ) {
+                        setSuggestedResponses([])
+                    }
+                    return []
+                }
 
                 const existingCache = messageCacheRef.current.get(conversationId)
                 if (existingCache) {
@@ -354,16 +527,32 @@ export default function InboxPage({
                     })
                 }
 
-                return result.data
-            }
+                if (
+                    isMountedRef.current &&
+                    selectedConversationIdRef.current === conversationId
+                ) {
+                    setSuggestedResponses(result.data)
+                }
 
-            setSuggestedResponses([])
-            return []
-        } catch (error) {
-            console.error("Failed to load suggested responses", error)
-            setSuggestedResponses([])
-            return []
-        }
+                return result.data
+            } catch (error) {
+                if (
+                    isMountedRef.current &&
+                    selectedConversationIdRef.current === conversationId
+                ) {
+                    if (!isTransientServerActionError(error)) {
+                        console.error("Failed to load suggested responses", error)
+                    }
+                    setSuggestedResponses([])
+                }
+                return []
+            } finally {
+                inFlightSuggestedResponsesPromisesRef.current.delete(conversationId)
+            }
+        })()
+
+        inFlightSuggestedResponsesPromisesRef.current.set(conversationId, fetchPromise)
+        return fetchPromise
     }, [])
 
     useEffect(() => {
@@ -377,32 +566,34 @@ export default function InboxPage({
     }, [hasCompanyAccess])
 
     useEffect(() => {
-        if (!initialHydrationRef.current || !initialData || initialData.loadError) {
+        if (!initialHydrationRef.current || !bootstrapSnapshot) {
             return
         }
 
         initialHydrationRef.current = false
 
-        const conversationId = initialData.selectedConversationId
-        if (!conversationId || initialData.messages.length === 0) {
+        const conversationId = bootstrapSnapshot.selectedConversationId
+        if (!conversationId || bootstrapSnapshot.messages.length === 0) {
             return
         }
 
-        const conversation = initialData.conversations.find((item) => item.id === conversationId)
-        messageCacheRef.current.set(
-            conversationId,
-            messageCacheRef.current.createEntry(
-                initialData.messages,
-                [],
-                conversation?.lastMessageAt,
-            ),
-        )
+        const conversation = bootstrapSnapshot.conversations.find((item) => item.id === conversationId)
+        if (!messageCacheRef.current.get(conversationId)) {
+            messageCacheRef.current.set(
+                conversationId,
+                messageCacheRef.current.createEntry(
+                    bootstrapSnapshot.messages,
+                    [],
+                    conversation?.lastMessageAt,
+                ),
+            )
+        }
 
         void markInboxConversationReadAction({ conversationId }).catch((error) => {
             console.error("Failed to mark conversation as read", error)
         })
         void loadSuggestedResponses(conversationId)
-    }, [initialData, loadSuggestedResponses])
+    }, [bootstrapSnapshot, loadSuggestedResponses])
 
     const applyCachedConversation = useCallback((conversationId: string) => {
         const cached = messageCacheRef.current.get(conversationId)
@@ -432,85 +623,93 @@ export default function InboxPage({
                 return
             }
 
-            if (
-                inFlightConversationDetailRef.current === conversationId &&
-                !options?.force
-            ) {
-                return
+            const inFlight = inFlightConversationDetailPromisesRef.current.get(conversationId)
+            if (inFlight) {
+                return inFlight
             }
 
-            inFlightConversationDetailRef.current = conversationId
-            if (!options?.silent) {
-                setIsLoadingMessages(true)
-            }
-            try {
-                const result = await withServerActionRetry(() =>
-                    getInboxConversationDetailAction({ conversationId }),
-                )
-                if (!result.success || !result.data) {
-                    throw new Error(result.error || "Unable to load conversation")
-                }
-
-                const detail = result.data as ConversationEntity & {
-                    assignedTo?: { id: string; name: string } | null
-                    activeSurveyResponseId?: string | null
-                }
-                setAssignedTo(detail.assignedTo ?? null)
-                setActiveSurveyResponseId(detail.activeSurveyResponseId ?? null)
-
-                const summaryBase = buildConversationSummary(result.data as ConversationEntity)
-                const summary = { ...summaryBase, unreadCount: 0 }
-                const mappedMessages = (result.data.messages as MessageEntity[]).map(mapMessage)
-                for (const message of mappedMessages) {
-                    if (message.sentBy === "user" && message.status === "failed") {
-                        notifiedFailedMessageIdsRef.current.add(message.id)
-                    }
-                }
-                const cachedSuggestions =
-                    messageCacheRef.current.get(conversationId)?.suggestedResponses ?? []
-
-                messageCacheRef.current.set(
-                    conversationId,
-                    messageCacheRef.current.createEntry(
-                        mappedMessages,
-                        cachedSuggestions,
-                        summary.lastMessageAt,
-                    ),
-                )
-
-                setConversations((previous) => {
-                    const index = previous.findIndex((item) => item.id === summary.id)
-                    if (index === -1) {
-                        return sortConversations([...previous, summary])
-                    }
-
-                    const updated = [...previous]
-                    updated[index] = summary
-                    return sortConversations(updated)
-                })
-
-                if (selectedConversationIdRef.current === conversationId) {
-                    setMessages(mappedMessages)
-                    if (cachedSuggestions.length > 0) {
-                        setSuggestedResponses(cachedSuggestions)
-                    }
-                }
-
-                void loadSuggestedResponses(conversationId)
-            } catch (error) {
-                console.error("Failed to fetch conversation detail", error)
-                if (selectedConversationIdRef.current === conversationId) {
-                    if (!applyCachedConversation(conversationId)) {
-                        setMessages([])
-                        setSuggestedResponses([])
-                    }
-                }
-            } finally {
-                if (inFlightConversationDetailRef.current === conversationId) {
-                    inFlightConversationDetailRef.current = null
-                }
+            const fetchPromise = (async () => {
                 if (!options?.silent) {
-                    setIsLoadingMessages(false)
+                    setIsLoadingMessages(true)
+                }
+                try {
+                    const result = await withServerActionRetry(() =>
+                        getInboxConversationDetailAction({ conversationId }),
+                    )
+                    if (!result.success || !result.data) {
+                        throw new Error(result.error || "Unable to load conversation")
+                    }
+
+                    const detail = result.data as ConversationEntity & {
+                        assignedTo?: { id: string; name: string } | null
+                        activeSurveyResponseId?: string | null
+                    }
+                    setActiveSurveyResponseId(detail.activeSurveyResponseId ?? null)
+
+                    const summaryBase = buildConversationSummary(result.data as ConversationEntity)
+                    const summary = { ...summaryBase, unreadCount: 0 }
+                    const mappedMessages = (result.data.messages as MessageEntity[]).map(mapMessage)
+                    for (const message of mappedMessages) {
+                        if (message.sentBy === "user" && message.status === "failed") {
+                            notifiedFailedMessageIdsRef.current.add(message.id)
+                        }
+                    }
+                    const cachedSuggestions =
+                        messageCacheRef.current.get(conversationId)?.suggestedResponses ?? []
+
+                    messageCacheRef.current.set(
+                        conversationId,
+                        messageCacheRef.current.createEntry(
+                            mappedMessages,
+                            cachedSuggestions,
+                            summary.lastMessageAt,
+                        ),
+                    )
+
+                    setConversations((previous) => {
+                        const index = previous.findIndex((item) => item.id === summary.id)
+                        if (index === -1) {
+                            return sortConversations([...previous, summary])
+                        }
+
+                        const updated = [...previous]
+                        updated[index] = summary
+                        return sortConversations(updated)
+                    })
+
+                    if (selectedConversationIdRef.current === conversationId) {
+                        setMessages(mappedMessages)
+                        if (cachedSuggestions.length > 0) {
+                            setSuggestedResponses(cachedSuggestions)
+                        }
+                    }
+
+                    void loadSuggestedResponses(conversationId)
+                } catch (error) {
+                    if (!isMountedRef.current) {
+                        return
+                    }
+                    console.error("Failed to fetch conversation detail", error)
+                    if (selectedConversationIdRef.current === conversationId) {
+                        if (!applyCachedConversation(conversationId)) {
+                            setMessages([])
+                            setSuggestedResponses([])
+                        }
+                    }
+                } finally {
+                    if (!options?.silent) {
+                        setIsLoadingMessages(false)
+                    }
+                }
+            })()
+
+            inFlightConversationDetailPromisesRef.current.set(conversationId, fetchPromise)
+
+            try {
+                await fetchPromise
+            } finally {
+                if (inFlightConversationDetailPromisesRef.current.get(conversationId) === fetchPromise) {
+                    inFlightConversationDetailPromisesRef.current.delete(conversationId)
                 }
             }
         },
@@ -529,12 +728,14 @@ export default function InboxPage({
             }
             try {
                 const selectedSessionIds = selectedConnectionIdsRef.current
-                const result = await getInboxConversationsAction({
-                    page,
-                    search: searchValue.trim() ? searchValue.trim() : undefined,
-                    sessionIds: selectedSessionIds.length > 0 ? selectedSessionIds : undefined,
-                    includeCounts: true,
-                })
+                const result = await withServerActionRetry(() =>
+                    getInboxConversationsAction({
+                        page,
+                        search: searchValue.trim() ? searchValue.trim() : undefined,
+                        sessionIds: selectedSessionIds.length > 0 ? selectedSessionIds : undefined,
+                        includeCounts: true,
+                    }),
+                )
 
                 if (!result.success || !result.data) {
                     throw new Error(result.error || "Unable to load conversations")
@@ -589,6 +790,9 @@ export default function InboxPage({
                     }
                 }
             } catch (error) {
+                if (!isMountedRef.current) {
+                    return
+                }
                 console.error("Failed to load conversations", error)
                 setConversations([])
                 setMessages([])
@@ -627,13 +831,14 @@ export default function InboxPage({
             return
         }
 
-        const companyChanged = previousCompanyIdRef.current !== companyId
+        const previousCompanyId = previousCompanyIdRef.current
+        const companyChanged = previousCompanyId !== companyId
         previousCompanyIdRef.current = companyId
 
         if (companyChanged) {
             initialLoadRef.current = false
             isFirstSearchEffectRef.current = true
-            messageCacheRef.current.clear()
+            inboxSessionCache.clear(previousCompanyId ?? undefined)
             setConversations([])
             setMessages([])
             setSuggestedResponses([])
@@ -646,10 +851,14 @@ export default function InboxPage({
             setConnections([])
             setWhatsappConfigured(false)
             setWhatsappAvailable(true)
+            setWhatsappNeedsRepair(false)
             setIsConnectionsLoaded(false)
+            setIsReplyResourcesLoaded(false)
+            setIsLoadingConversations(true)
             startConversationProcessedRef.current = false
             setSearchQuery("")
             setMessageInput("")
+            isFirstConnectionFilterEffectRef.current = true
         }
 
         if (initialLoadRef.current) {
@@ -663,6 +872,7 @@ export default function InboxPage({
     useEffect(() => {
         if (!companyId) {
             setIsConnectionsLoaded(false)
+            setIsReplyResourcesLoaded(false)
             return
         }
 
@@ -676,7 +886,7 @@ export default function InboxPage({
 
         const loadConnections = async () => {
             try {
-                const result = await getInboxConnectionsAction()
+                const result = await withServerActionRetry(() => getInboxConnectionsAction())
                 if (!isMounted) {
                     return
                 }
@@ -684,10 +894,12 @@ export default function InboxPage({
                 if (result.success && result.data) {
                     setWhatsappConfigured(result.data.configured)
                     setWhatsappAvailable(result.data.available)
+                    setWhatsappNeedsRepair(result.data.needsRepair)
                     setConnections(result.data.connections)
                 } else {
                     setWhatsappConfigured(false)
                     setWhatsappAvailable(true)
+                    setWhatsappNeedsRepair(false)
                     setConnections([])
                 }
             } catch (error) {
@@ -712,6 +924,7 @@ export default function InboxPage({
 
     useEffect(() => {
         if (!companyId) {
+            setIsReplyResourcesLoaded(false)
             return
         }
 
@@ -721,6 +934,7 @@ export default function InboxPage({
         }
 
         let isMounted = true
+        setIsReplyResourcesLoaded(false)
 
         const loadReplyResources = async () => {
             try {
@@ -760,6 +974,10 @@ export default function InboxPage({
                     setQuickAnswers([])
                     setTemplates([])
                 }
+            } finally {
+                if (isMounted) {
+                    setIsReplyResourcesLoaded(true)
+                }
             }
         }
 
@@ -772,6 +990,11 @@ export default function InboxPage({
 
     useEffect(() => {
         if (!initialLoadRef.current) {
+            return
+        }
+
+        if (isFirstConnectionFilterEffectRef.current) {
+            isFirstConnectionFilterEffectRef.current = false
             return
         }
 
@@ -792,7 +1015,10 @@ export default function InboxPage({
     }, [searchQuery])
 
     useEffect(() => {
+        isMountedRef.current = true
+
         return () => {
+            isMountedRef.current = false
             if (conversationsRefreshTimeoutRef.current) {
                 clearTimeout(conversationsRefreshTimeoutRef.current)
             }
@@ -828,7 +1054,7 @@ export default function InboxPage({
         }
 
         messagesRefreshTimeoutRef.current = setTimeout(() => {
-            void fetchConversationDetailRef.current(conversationId, { silent: true, force: true })
+            void fetchConversationDetailRef.current(conversationId, { silent: true })
         }, 300)
     }, [])
 
@@ -859,12 +1085,14 @@ export default function InboxPage({
         }
 
         const interval = setInterval(() => {
-            void loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
-            const conversationId = selectedConversationIdRef.current
-            if (conversationId) {
-                void fetchConversationDetailRef.current(conversationId, { silent: true, force: true })
-            }
-        }, 12_000)
+            void (async () => {
+                await loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
+                const conversationId = selectedConversationIdRef.current
+                if (conversationId) {
+                    void fetchConversationDetailRef.current(conversationId, { silent: true })
+                }
+            })()
+        }, INBOX_BACKGROUND_POLL_MS)
 
         return () => clearInterval(interval)
     }, [companyId])
@@ -906,6 +1134,32 @@ export default function InboxPage({
         [applyCachedConversation, conversations, fetchConversationDetail, selectedConversationId],
     )
 
+    const quoteSenderLabels = useMemo(
+        () => ({
+            customer: selectedConversation?.customerName || t("messages.quoteSender.customer"),
+            agent: t("messages.quoteSender.agent"),
+            bot: t("messages.quoteSender.bot"),
+            system: t("messages.quoteSender.system"),
+            unknown: t("messages.quoteSender.unknown"),
+        }),
+        [selectedConversation?.customerName, t],
+    )
+
+    const getQuoteSenderLabel = useCallback(
+        (senderType?: InboxMessage["senderType"]) =>
+            resolveQuoteSenderLabel(senderType, quoteSenderLabels),
+        [quoteSenderLabels],
+    )
+
+    const handleReplyToMessage = useCallback((message: InboxMessage) => {
+        setReplyToMessage(message)
+        messageInputRef.current?.focus()
+    }, [])
+
+    const handleClearReplyToMessage = useCallback(() => {
+        setReplyToMessage(null)
+    }, [])
+
     const handleSendMessage = useCallback(async () => {
         if (!messageInput.trim() || !selectedConversationId) {
             return
@@ -913,6 +1167,7 @@ export default function InboxPage({
 
         const content = messageInput.trim()
         const conversationId = selectedConversationId
+        const replyTarget = replyToMessage
         const optimisticId = `optimistic-${Date.now()}`
         const optimisticMessage: InboxMessage = {
             id: optimisticId,
@@ -922,6 +1177,15 @@ export default function InboxPage({
             sentAt: new Date(),
             sentAtLabel: formatMessageTimestamp(new Date()),
             status: "pending",
+            replyToMessageId: replyTarget?.id,
+            quotedMessage: replyTarget
+                ? {
+                      content: replyTarget.content,
+                      senderType: replyTarget.senderType,
+                      inboxMessageId: replyTarget.id,
+                      externalMessageId: replyTarget.externalMessageId,
+                  }
+                : undefined,
         }
 
         setMessages((previous) => {
@@ -930,6 +1194,7 @@ export default function InboxPage({
             return nextMessages
         })
         setMessageInput("")
+        setReplyToMessage(null)
         messageInputRef.current?.focus()
         setIsSendingMessage(true)
         skipNextMessagesRefreshRef.current = true
@@ -939,6 +1204,7 @@ export default function InboxPage({
                 conversationId,
                 content,
                 senderType: "agent",
+                replyToMessageId: replyTarget?.id,
             })
 
             if (!result.success || !result.data) {
@@ -992,6 +1258,9 @@ export default function InboxPage({
                 return nextMessages
             })
             setMessageInput(content)
+            if (replyTarget) {
+                setReplyToMessage(replyTarget)
+            }
             messageInputRef.current?.focus()
             console.error("Failed to send message", error)
             const message = error instanceof Error ? error.message : t("messages.sendFailed")
@@ -999,7 +1268,14 @@ export default function InboxPage({
         } finally {
             setIsSendingMessage(false)
         }
-    }, [buildConversationSummary, loadSuggestedResponses, messageInput, selectedConversationId, t])
+    }, [
+        buildConversationSummary,
+        loadSuggestedResponses,
+        messageInput,
+        replyToMessage,
+        selectedConversationId,
+        t,
+    ])
 
     const handleUseSuggestedResponse = useCallback((text: string) => {
         setMessageInput(text)
@@ -1212,10 +1488,25 @@ export default function InboxPage({
             assignedToId: user.uid,
         })
         if (result.success && result.data) {
-            const detail = result.data.conversation as ConversationEntity & {
-                assignedTo?: { id: string; name: string } | null
-            }
-            setAssignedTo(detail.assignedTo ?? { id: user.uid, name: user.firstName || user.email || "You" })
+            const detail = result.data.conversation as ConversationEntity
+            const assignedAgent =
+                normalizeAssignedAgent(detail.assignedTo) ??
+                normalizeAssignedAgent({
+                    id: user.uid,
+                    name: user.firstName || user.email || "You",
+                })
+
+            setConversations((previous) =>
+                previous.map((conversation) =>
+                    conversation.id === selectedConversationId
+                        ? {
+                              ...conversation,
+                              assignedToId: user.uid,
+                              assignedTo: assignedAgent,
+                          }
+                        : conversation,
+                ),
+            )
             toast.success(t("context.assignment.takenOver"))
         } else {
             toast.error(result.error || t("context.assignment.failed"))
@@ -1229,7 +1520,17 @@ export default function InboxPage({
             assignedToId: null,
         })
         if (result.success) {
-            setAssignedTo(null)
+            setConversations((previous) =>
+                previous.map((conversation) =>
+                    conversation.id === selectedConversationId
+                        ? {
+                              ...conversation,
+                              assignedToId: null,
+                              assignedTo: null,
+                          }
+                        : conversation,
+                ),
+            )
             toast.success(t("context.assignment.released"))
         } else {
             toast.error(result.error || t("context.assignment.failed"))
@@ -1263,14 +1564,16 @@ export default function InboxPage({
         [fetchConversationDetail, selectedConversationId, t, user?.language],
     )
 
-    const contextPanelElement = (
+    const contextPanelElement = !isInboxReady ? (
+        <ContextPanelSkeleton />
+    ) : (
         <ContextPanel
             conversation={selectedConversation}
             quickAnswers={quickAnswers}
             templates={templates}
             surveys={surveys}
             suggestedResponses={suggestedResponses}
-            assignedTo={assignedTo}
+            assignedTo={selectedConversation?.assignedTo ?? null}
             activeSurveyResponseId={activeSurveyResponseId}
             currentUserId={user?.uid ?? ""}
             visibleQuickAnswers={visibleQuickAnswers}
@@ -1285,7 +1588,23 @@ export default function InboxPage({
         />
     )
 
+    const renderMessageSkeleton = () => <MessageThreadSkeleton />
+
+    const renderConversationHeaderSkeleton = () => (
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="w-9 h-9 rounded-full bg-muted animate-pulse flex-shrink-0" />
+            <div className="min-w-0 space-y-2">
+                <div className="h-4 w-32 rounded bg-muted animate-pulse" />
+                <div className="h-3 w-24 rounded bg-muted animate-pulse" />
+            </div>
+        </div>
+    )
+
     const renderMessages = () => {
+        if (!isInboxReady) {
+            return renderMessageSkeleton()
+        }
+
         if (!selectedConversationId) {
             return (
                 <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
@@ -1300,20 +1619,8 @@ export default function InboxPage({
             )
         }
 
-        if (isLoadingMessages) {
-            return (
-                <div className="px-4 py-5 space-y-3">
-                    {Array.from({ length: 6 }).map((_, index) => (
-                        <div key={`message-skeleton-${index}`} className="flex gap-2">
-                            <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
-                            <div className="flex-1 space-y-2">
-                                <div className="h-4 rounded bg-muted animate-pulse" />
-                                <div className="h-4 w-1/2 rounded bg-muted animate-pulse" />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )
+        if (showConversationSkeleton) {
+            return renderMessageSkeleton()
         }
 
         if (!messages.length) {
@@ -1342,7 +1649,11 @@ export default function InboxPage({
                     const shouldShowStatus =
                         isOutbound &&
                         message.status &&
-                        (message.status === "delivered" || message.status === "read")
+                        (message.status === "delivered" ||
+                            message.status === "read" ||
+                            (isBot && (message.status === "pending" || message.status === "failed")))
+                    const isBotFailed = isBot && message.status === "failed"
+                    const isBotPending = isBot && message.status === "pending"
 
                     const avatarFallbackClass = cn(
                         "text-xs font-semibold",
@@ -1371,7 +1682,7 @@ export default function InboxPage({
                     return (
                         <div
                             key={message.id}
-                            className={cn("flex items-end gap-2", isOutbound && "flex-row-reverse")}
+                            className={cn("group flex items-end gap-2", isOutbound && "flex-row-reverse")}
                         >
                             <Avatar className="w-8 h-8 flex-shrink-0 border border-border/70">
                                 <AvatarFallback className={avatarFallbackClass}>
@@ -1382,13 +1693,54 @@ export default function InboxPage({
                                     )}
                                 </AvatarFallback>
                             </Avatar>
-                            <div className={bubbleClass}>
-                                <p>{message.content}</p>
-                                <div className={metaClass}>
-                                    <Clock className="w-3 h-3" aria-hidden="true" />
-                                    <span>{message.sentAtLabel}</span>
-                                    {shouldShowStatus && <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />}
+                            <div className={cn("flex min-w-0 items-end gap-1", isOutbound && "flex-row-reverse")}>
+                                <div className={bubbleClass}>
+                                    {message.quotedMessage && (
+                                        <MessageQuoteBlock
+                                            quote={message.quotedMessage}
+                                            senderLabel={getQuoteSenderLabel(message.quotedMessage.senderType)}
+                                            accentClassName={
+                                                isCustomer ? "border-muted-foreground/50" : "border-agent/60"
+                                            }
+                                            labelClassName={
+                                                isCustomer ? "text-muted-foreground" : "text-agent"
+                                            }
+                                        />
+                                    )}
+                                    <p>{message.content}</p>
+                                    <div className={metaClass}>
+                                        <Clock className="w-3 h-3" aria-hidden="true" />
+                                        <span>{message.sentAtLabel}</span>
+                                        {shouldShowStatus && message.status === "delivered" && (
+                                            <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />
+                                        )}
+                                        {shouldShowStatus && message.status === "read" && (
+                                            <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />
+                                        )}
+                                        {isBotPending && (
+                                            <span className="italic">{t("messages.botPending")}</span>
+                                        )}
+                                        {isBotFailed && (
+                                            <span className="flex items-center gap-1 text-destructive">
+                                                <AlertTriangle className="w-3 h-3" aria-hidden="true" />
+                                                {t("messages.botFailed")}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
+                                {!isSystem && selectedConversationId && (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-7 w-7 shrink-0 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+                                        onClick={() => handleReplyToMessage(message)}
+                                        title={t("messages.reply")}
+                                        aria-label={t("messages.reply")}
+                                    >
+                                        <CornerDownLeft className="h-3.5 w-3.5 text-muted-foreground" />
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     )
@@ -1407,6 +1759,15 @@ export default function InboxPage({
                     message={t("whatsappOffline.message")}
                     linkHref="/settings"
                     linkLabel={t("whatsappOffline.settingsLink")}
+                />
+            )}
+            {whatsappConfigured && whatsappAvailable && whatsappNeedsRepair && (
+                <StatusCallout
+                    variant="warning"
+                    className="mx-3 mt-2"
+                    message={t("whatsappRepair.message")}
+                    linkHref="/settings"
+                    linkLabel={t("whatsappRepair.settingsLink")}
                 />
             )}
             <div className="flex min-h-0 flex-1 overflow-hidden bg-background">
@@ -1453,30 +1814,36 @@ export default function InboxPage({
                                     <PanelLeft className="w-4 h-4 text-muted-foreground" />
                                 )}
                             </Button>
-                            <Avatar className="w-9 h-9 flex-shrink-0 border border-border/70">
-                                <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
-                                    {selectedConversation?.hasCustomerName ? (
-                                        selectedConversation.customerName
-                                            .split(" ")
-                                            .map((namePart) => namePart[0])
-                                            .join("")
-                                            .toUpperCase()
-                                            .slice(0, 2)
-                                    ) : (
-                                        <User className="w-4 h-4" aria-hidden="true" />
-                                    )}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className="min-w-0">
-                                <h3 className="font-semibold text-sm text-foreground truncate">
-                                    {selectedConversation?.customerName || t("messages.empty.title")}
-                                </h3>
-                                <p className="text-xs text-muted-foreground truncate">
-                                    {selectedConversation?.customerPhone
-                                        ? maskPhoneForDisplay(selectedConversation.customerPhone)
-                                        : ""}
-                                </p>
-                            </div>
+                            {showConversationSkeleton ? (
+                                renderConversationHeaderSkeleton()
+                            ) : (
+                                <>
+                                    <Avatar className="w-9 h-9 flex-shrink-0 border border-border/70">
+                                        <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
+                                            {selectedConversation?.hasCustomerName ? (
+                                                selectedConversation.customerName
+                                                    .split(" ")
+                                                    .map((namePart) => namePart[0])
+                                                    .join("")
+                                                    .toUpperCase()
+                                                    .slice(0, 2)
+                                            ) : (
+                                                <User className="w-4 h-4" aria-hidden="true" />
+                                            )}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="min-w-0">
+                                        <h3 className="font-semibold text-sm text-foreground truncate">
+                                            {selectedConversation?.customerName || t("messages.empty.title")}
+                                        </h3>
+                                        <p className="text-xs text-muted-foreground truncate">
+                                            {selectedConversation?.customerPhone
+                                                ? maskPhoneForDisplay(selectedConversation.customerPhone)
+                                                : ""}
+                                        </p>
+                                    </div>
+                                </>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
                             <Button
@@ -1527,6 +1894,31 @@ export default function InboxPage({
                     <div className="flex-1 min-h-0 overflow-y-auto bg-secondary">{renderMessages()}</div>
 
                     <div className="border-t border-border/60 px-4 py-3 flex-shrink-0">
+                        {replyToMessage && (
+                            <div className="mb-2 flex items-start gap-2 rounded-md border border-border/70 bg-muted/50 px-3 py-2">
+                                <div className="min-w-0 flex-1 border-l-4 border-agent/60 pl-2.5">
+                                    <p className="truncate text-xs font-semibold text-agent">
+                                        {t("messages.replyingTo", {
+                                            name: getQuoteSenderLabel(replyToMessage.senderType),
+                                        })}
+                                    </p>
+                                    <p className="line-clamp-2 text-xs text-muted-foreground">
+                                        {replyToMessage.content}
+                                    </p>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 shrink-0"
+                                    onClick={handleClearReplyToMessage}
+                                    title={t("messages.cancelReply")}
+                                    aria-label={t("messages.cancelReply")}
+                                >
+                                    <X className="h-3.5 w-3.5" />
+                                </Button>
+                            </div>
+                        )}
                         <div className="flex items-end gap-3">
                             <div className="flex-1 relative">
                                 <Textarea
@@ -1546,7 +1938,7 @@ export default function InboxPage({
                                     }}
                                     className="flex-1 min-h-[48px] max-h-[120px] resize-none text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary pr-9"
                                     rows={2}
-                                    disabled={!selectedConversationId}
+                                    disabled={!selectedConversationId || !isInboxReady}
                                     aria-label={
                                         selectedConversation
                                             ? t("typeMessagePlaceholder")
@@ -1561,7 +1953,12 @@ export default function InboxPage({
                             </div>
                             <Button
                                 onClick={() => void handleSendMessage()}
-                                disabled={!messageInput.trim() || !selectedConversationId || isSendingMessage}
+                                disabled={
+                                    !messageInput.trim() ||
+                                    !selectedConversationId ||
+                                    isSendingMessage ||
+                                    !isInboxReady
+                                }
                                 size="icon"
                                 className="bg-primary hover:bg-primary/90 text-primary-foreground h-[48px] w-[48px] flex-shrink-0 disabled:opacity-50"
                                 aria-label={t("actions.send")}

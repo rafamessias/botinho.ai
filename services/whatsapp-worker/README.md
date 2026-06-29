@@ -13,7 +13,19 @@ botinho.ai (Next.js)          services/whatsapp-worker (Go)
 └── /api/webhooks/whatsapp/inbound
 ```
 
-Shared infrastructure: **Redis** (routing), **Firestore** (sessions, messages, checkpoints).
+## Session store persistence (Phase 1)
+
+whatsmeow credentials are snapshotted to durable storage on pair/connect/shutdown. See [docs/spec/24-whatsapp-session-store-persistence.md](../../docs/spec/24-whatsapp-session-store-persistence.md).
+
+| Env | Purpose |
+|-----|---------|
+| `SESSION_STORE_DIR` | Live SQLite per session |
+| `WA_STORE_BACKEND` | `local` or `gcs` |
+| `WA_STORE_LOCAL_DIR` | Local snapshot directory |
+| `WA_STORE_BUCKET` | GCS bucket when `backend=gcs` |
+
+Firestore `waStores/{sessionId}` holds snapshot metadata; worker restores only sessions assigned via Firestore `sessions.workerId`.
+
 
 ## Local development
 

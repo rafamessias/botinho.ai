@@ -1,6 +1,13 @@
 import { z } from "zod"
-import { AI_MODELS, Schema, getGenerativeModelFor, isAiConfigured } from "@/lib/firebase/ai/server-ai"
 import {
+  AI_MODELS,
+  generateGeminiContent,
+  isAiConfigured,
+  parseGeminiJsonResponse,
+  suggestionResponseSchema,
+} from "@/lib/gemini/client"
+import {
+  buildAutoReplyInstruction,
   buildSystemPrompt,
   formatConversationHistory,
   loadCompanyAiContext,
@@ -14,22 +21,6 @@ const suggestionSchema = z.array(
     category: z.enum(["general", "hours", "pricing", "delivery", "support", "closing"]),
   }),
 )
-
-const responseSchema = Schema.object({
-  properties: {
-    suggestions: Schema.array({
-      items: Schema.object({
-        properties: {
-          id: Schema.string(),
-          text: Schema.string(),
-          category: Schema.enumString({
-            enum: ["general", "hours", "pricing", "delivery", "support", "closing"],
-          }),
-        },
-      }),
-    }),
-  },
-})
 
 const fallbackSuggestions = (language: "en" | "pt-BR") => {
   if (language === "pt-BR") {
@@ -46,16 +37,36 @@ const fallbackSuggestions = (language: "en" | "pt-BR") => {
   ]
 }
 
+const fetchSuggestionPayload = async (prompt: string) => {
+  const raw = await generateGeminiContent({
+    model: AI_MODELS.suggestions,
+    prompt,
+    temperature: 0.3,
+    maxOutputTokens: 1024,
+    responseMimeType: "application/json",
+    responseSchema: suggestionResponseSchema,
+    disableThinking: true,
+  })
+
+  return parseGeminiJsonResponse<{ suggestions?: unknown }>(raw)
+}
+
 export const generateSuggestedResponses = async (params: {
   companyId: string
   conversationId?: string
   customerMessage?: string
 }) => {
-  const context = await loadCompanyAiContext({
-    companyId: params.companyId,
-    conversationId: params.conversationId,
-    customerMessage: params.customerMessage,
-  })
+  let context: Awaited<ReturnType<typeof loadCompanyAiContext>>
+  try {
+    context = await loadCompanyAiContext({
+      companyId: params.companyId,
+      conversationId: params.conversationId,
+      customerMessage: params.customerMessage,
+    })
+  } catch (error) {
+    console.error("[gemini] failed to load AI context for suggestions:", error)
+    return fallbackSuggestions("en")
+  }
 
   if (!isAiConfigured()) {
     return fallbackSuggestions(context.language)
@@ -69,13 +80,6 @@ export const generateSuggestedResponses = async (params: {
       context.recentMessages.filter((m) => m.role === "customer").at(-1)?.content ??
       ""
 
-    const model = getGenerativeModelFor(AI_MODELS.suggestions, {
-      temperature: 0.5,
-      maxOutputTokens: 512,
-      responseMimeType: "application/json",
-      responseSchema,
-    })
-
     const prompt = [
       buildSystemPrompt(context),
       "",
@@ -85,12 +89,18 @@ export const generateSuggestedResponses = async (params: {
       `Latest customer message: ${lastCustomerMessage || "(none)"}`,
       "",
       "Generate exactly 3 short reply suggestions an agent could send next.",
+      "Each suggestion must be at most 160 characters and suitable for WhatsApp.",
       'Return JSON: { "suggestions": [{ "id", "text", "category" }] }',
     ].join("\n")
 
-    const result = await model.generateContent(prompt)
-    const raw = result.response.text()
-    const json = JSON.parse(raw) as { suggestions?: unknown }
+    let json: { suggestions?: unknown }
+    try {
+      json = await fetchSuggestionPayload(prompt)
+    } catch (firstError) {
+      console.warn("[gemini] suggested responses retry after:", firstError)
+      json = await fetchSuggestionPayload(prompt)
+    }
+
     const parsed = suggestionSchema.parse(json.suggestions ?? json)
     await incrementAiUsage(params.companyId)
     return parsed.slice(0, 3)
@@ -123,11 +133,6 @@ export const generateAutoReplyText = async (params: {
 
   await assertAiUsageAllowed(params.companyId)
 
-  const model = getGenerativeModelFor(AI_MODELS.autoReply, {
-    temperature: 0.3,
-    maxOutputTokens: 256,
-  })
-
   const prompt = [
     buildSystemPrompt(context),
     "",
@@ -136,11 +141,16 @@ export const generateAutoReplyText = async (params: {
     "",
     `Customer message: ${params.customerMessage}`,
     "",
-    "Write ONE concise WhatsApp reply as the business. No markdown. Max 2 short sentences.",
+    buildAutoReplyInstruction(context.language),
   ].join("\n")
 
-  const result = await model.generateContent(prompt)
-  const text = result.response.text().trim()
+  const text = await generateGeminiContent({
+    model: AI_MODELS.autoReply,
+    prompt,
+    temperature: 0.3,
+    maxOutputTokens: 256,
+  })
+
   await incrementAiUsage(params.companyId)
   return text
 }
@@ -153,11 +163,6 @@ export const summarizeUrlContent = async (params: { url: string; title: string }
   }
 
   try {
-    const model = getGenerativeModelFor(AI_MODELS.urlSummary, {
-      temperature: 0.2,
-      maxOutputTokens: 512,
-    })
-
     const prompt = [
       `Summarize the following URL for use in a customer support knowledge base.`,
       `Title: ${params.title}`,
@@ -165,8 +170,12 @@ export const summarizeUrlContent = async (params: { url: string; title: string }
       "Return a factual summary in 3-5 sentences. If you cannot access the URL, summarize based on the title only.",
     ].join("\n")
 
-    const result = await model.generateContent(prompt)
-    return result.response.text().trim()
+    return await generateGeminiContent({
+      model: AI_MODELS.urlSummary,
+      prompt,
+      temperature: 0.2,
+      maxOutputTokens: 512,
+    })
   } catch (error) {
     console.error("[gemini] URL summary failed:", error)
     return fallbackSummary

@@ -4,6 +4,7 @@ import { clearWhatsAppRedisClient, WhatsAppRegistry } from "@/lib/whatsapp/regis
 import { WhatsAppScaler } from "@/lib/whatsapp/scaler"
 import { WhatsAppSessionRepository } from "@/lib/whatsapp/session-repository"
 import { WhatsAppWorkerClient } from "@/lib/whatsapp/worker-client"
+import { checkWhatsAppAvailability } from "@/lib/whatsapp/availability"
 
 type GlobalOrchestrator = typeof globalThis & {
   __whatsappOrchestrator?: Promise<WhatsAppOrchestrator>
@@ -43,6 +44,22 @@ export const getWhatsAppOrchestrator = async (): Promise<WhatsAppOrchestrator> =
   }
 
   return globalStore.__whatsappOrchestrator
+}
+
+export const listCompanyWhatsAppSessions = async (
+  companyId: string,
+  options?: { available?: boolean; syncLive?: boolean },
+) => {
+  const available =
+    options?.available ?? (await checkWhatsAppAvailability()).available
+
+  if (!available) {
+    const repository = new WhatsAppSessionRepository()
+    return repository.listSessionsByCompany(companyId)
+  }
+
+  const orchestrator = await getWhatsAppOrchestrator()
+  return orchestrator.listSessions(companyId, { syncLive: options?.syncLive })
 }
 
 export { isWhatsAppConfigured }

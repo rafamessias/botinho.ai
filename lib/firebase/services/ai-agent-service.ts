@@ -4,6 +4,10 @@ import { aiAgentSubcollections, collections, companySubcollections } from "@/lib
 import { AiTemplateCategory, KnowledgeItemType } from "@/lib/types/enums"
 import { listAiTrainingData } from "@/lib/firebase/services/ai-training-service"
 import { DEFAULT_SURVEY_TRIGGERS, type SurveyTriggers } from "@/lib/types/survey"
+import {
+  normalizeAgentLanguagePreference,
+  type AgentLanguagePreference,
+} from "@/lib/firebase/ai/language"
 
 const companyRef = (companyId: string) => adminDb.collection(collections.companies).doc(companyId)
 const toDate = (value: Timestamp) => value.toDate()
@@ -27,6 +31,7 @@ export type AiAgentRecord = {
   systemPrompt: string
   sessionIds: string[]
   autoReply: boolean
+  language: AgentLanguagePreference
   surveyIds: string[]
   surveyTriggers: SurveyTriggers
   createdAt: Date
@@ -49,6 +54,7 @@ const mapAgent = (id: string, data: FirebaseFirestore.DocumentData): AiAgentReco
   systemPrompt: (data.systemPrompt as string) ?? "",
   sessionIds: normalizeSessionIds(data),
   autoReply: data.autoReply !== false,
+  language: normalizeAgentLanguagePreference(data.language),
   surveyIds: Array.isArray(data.surveyIds)
     ? data.surveyIds.filter((sid): sid is string => typeof sid === "string")
     : [],
@@ -174,7 +180,13 @@ export const getAiAgentBySessionId = async (companyId: string, sessionId: string
 export const createAiAgent = async (
   companyId: string,
   userId: string,
-  input: { name: string; systemPrompt?: string; sessionIds?: string[]; autoReply?: boolean },
+  input: {
+    name: string
+    systemPrompt?: string
+    sessionIds?: string[]
+    autoReply?: boolean
+    language?: AgentLanguagePreference
+  },
 ) => {
   const sessionIds = input.sessionIds ?? []
   if (sessionIds.length > 0) {
@@ -188,6 +200,7 @@ export const createAiAgent = async (
     systemPrompt: input.systemPrompt ?? "",
     sessionIds,
     autoReply: input.autoReply !== false,
+    language: input.language ?? "pt-BR",
     surveyIds: [],
     surveyTriggers: DEFAULT_SURVEY_TRIGGERS,
     createdById: userId,
@@ -207,6 +220,7 @@ export const updateAiAgent = async (
     systemPrompt?: string
     sessionIds?: string[]
     autoReply?: boolean
+    language?: AgentLanguagePreference
     surveyIds?: string[]
     surveyTriggers?: SurveyTriggers
   },
@@ -228,6 +242,7 @@ export const updateAiAgent = async (
     update.sessionId = FieldValue.delete()
   }
   if (input.autoReply !== undefined) update.autoReply = input.autoReply
+  if (input.language !== undefined) update.language = input.language
   if (input.surveyIds !== undefined) update.surveyIds = input.surveyIds
   if (input.surveyTriggers !== undefined) update.surveyTriggers = input.surveyTriggers
 
@@ -265,21 +280,13 @@ export const deleteAiAgent = async (companyId: string, agentId: string) => {
   await batch.commit()
 }
 
-const clearSessionsFromOtherAgents = async (
-  companyId: string,
-  sessionIds: string[],
-  excludeAgentId?: string,
-) => {
-  for (const sessionId of sessionIds) {
-    await clearSessionFromOtherAgents(companyId, sessionId, excludeAgentId)
-  }
+export type AgentSessionAssignmentConflict = {
+  sessionId: string
+  agentId: string
+  agentName: string
 }
 
-const clearSessionFromOtherAgents = async (
-  companyId: string,
-  sessionId: string,
-  excludeAgentId?: string,
-) => {
+const findAgentsAssignedToSession = async (companyId: string, sessionId: string) => {
   const [bySessionIds, byLegacySessionId] = await Promise.all([
     agentsRef(companyId).where("sessionIds", "array-contains", sessionId).get(),
     agentsRef(companyId).where("sessionId", "==", sessionId).get(),
@@ -289,10 +296,51 @@ const clearSessionFromOtherAgents = async (
   bySessionIds.docs.forEach((doc) => docs.set(doc.id, doc))
   byLegacySessionId.docs.forEach((doc) => docs.set(doc.id, doc))
 
+  return [...docs.values()]
+}
+
+export const listAgentSessionAssignmentConflicts = async (
+  companyId: string,
+  sessionIds: string[],
+  excludeAgentId?: string,
+): Promise<AgentSessionAssignmentConflict[]> => {
+  const conflicts: AgentSessionAssignmentConflict[] = []
+  const seen = new Set<string>()
+
+  for (const sessionId of sessionIds) {
+    for (const doc of await findAgentsAssignedToSession(companyId, sessionId)) {
+      if (excludeAgentId && doc.id === excludeAgentId) {
+        continue
+      }
+
+      const key = `${sessionId}:${doc.id}`
+      if (seen.has(key)) {
+        continue
+      }
+      seen.add(key)
+
+      conflicts.push({
+        sessionId,
+        agentId: doc.id,
+        agentName: String(doc.data().name ?? "Botinho"),
+      })
+    }
+  }
+
+  return conflicts
+}
+
+const clearSessionFromOtherAgents = async (
+  companyId: string,
+  sessionId: string,
+  excludeAgentId?: string,
+) => {
+  const docs = await findAgentsAssignedToSession(companyId, sessionId)
+
   const batch = adminDb.batch()
   let hasUpdates = false
 
-  for (const doc of docs.values()) {
+  for (const doc of docs) {
     if (excludeAgentId && doc.id === excludeAgentId) continue
 
     const currentSessionIds = normalizeSessionIds(doc.data())
@@ -310,6 +358,67 @@ const clearSessionFromOtherAgents = async (
     await batch.commit()
   }
 }
+
+const clearSessionsFromOtherAgents = async (
+  companyId: string,
+  sessionIds: string[],
+  excludeAgentId?: string,
+) => {
+  for (const sessionId of sessionIds) {
+    await clearSessionFromOtherAgents(companyId, sessionId, excludeAgentId)
+  }
+}
+
+export const removeSessionIdFromAllAgents = async (companyId: string, sessionId: string) => {
+  await clearSessionFromOtherAgents(companyId, sessionId)
+}
+
+export const pruneStaleSessionIdsFromAgents = async (
+  companyId: string,
+  validSessionIds: readonly string[],
+) => {
+  const valid = new Set(validSessionIds)
+  const snap = await agentsRef(companyId).get()
+  const batch = adminDb.batch()
+  let hasUpdates = false
+
+  for (const doc of snap.docs) {
+    const currentSessionIds = normalizeSessionIds(doc.data())
+    const nextSessionIds = currentSessionIds.filter((id) => valid.has(id))
+    if (nextSessionIds.length === currentSessionIds.length) {
+      continue
+    }
+
+    batch.update(doc.ref, {
+      sessionIds: nextSessionIds,
+      sessionId: FieldValue.delete(),
+      updatedAt: FieldValue.serverTimestamp(),
+    })
+    hasUpdates = true
+  }
+
+  if (hasUpdates) {
+    await batch.commit()
+  }
+}
+
+const filterAgentSessionIds = (agent: AiAgentRecord, validSessionIds: ReadonlySet<string>) => ({
+  ...agent,
+  sessionIds: agent.sessionIds.filter((id) => validSessionIds.has(id)),
+})
+
+export const filterAgentsWithValidSessionIds = (
+  agents: AiAgentRecord[],
+  validSessionIds: readonly string[],
+) => {
+  const valid = new Set(validSessionIds)
+  return agents.map((agent) => filterAgentSessionIds(agent, valid))
+}
+
+export const filterAgentWithValidSessionIds = (
+  agent: AiAgentRecord,
+  validSessionIds: readonly string[],
+) => filterAgentSessionIds(agent, new Set(validSessionIds))
 
 export const listAgentTrainingData = async (companyId: string, agentId: string) => {
   const [knowledgeSnap, quickSnap, templateSnap] = await Promise.all([

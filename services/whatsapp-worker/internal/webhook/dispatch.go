@@ -15,14 +15,19 @@ import (
 )
 
 type InboundPayload struct {
-	SessionID string `json:"sessionId"`
-	MessageID string `json:"messageId"`
-	From      string `json:"from"`
-	To        string `json:"to"`
-	Body      string `json:"body"`
-	Type      string `json:"type"`
-	Timestamp string `json:"timestamp"`
-	EventID   string `json:"eventId"`
+	SessionID         string `json:"sessionId"`
+	MessageID         string `json:"messageId"`
+	From              string `json:"from"`
+	SenderJID         string `json:"senderJid,omitempty"`
+	To                string `json:"to"`
+	Body              string `json:"body"`
+	Type              string `json:"type"`
+	Timestamp         string `json:"timestamp"`
+	EventID           string `json:"eventId"`
+	PhoneNumber       string `json:"phoneNumber,omitempty"`
+	QuotedMessageID   string `json:"quotedMessageId,omitempty"`
+	QuotedBody        string `json:"quotedBody,omitempty"`
+	QuotedParticipant string `json:"quotedParticipant,omitempty"`
 }
 
 const (
@@ -36,21 +41,26 @@ func BuildInboundEventID(sessionID, messageID string) string {
 	return replacer.Replace(raw)
 }
 
-func DispatchInbound(ctx context.Context, webhookURL string, message *models.Message) {
+func DispatchInbound(ctx context.Context, webhookURL string, message *models.Message, phoneNumber string) {
 	if webhookURL == "" || message.Direction != models.MessageDirectionInbound {
 		return
 	}
 
 	eventID := BuildInboundEventID(message.SessionID, message.MessageID)
 	payload := InboundPayload{
-		SessionID: message.SessionID,
-		MessageID: message.MessageID,
-		From:      message.From,
-		To:        message.To,
-		Body:      message.Body,
-		Type:      message.Type,
-		Timestamp: message.Timestamp.UTC().Format(time.RFC3339),
-		EventID:   eventID,
+		SessionID:         message.SessionID,
+		MessageID:         message.MessageID,
+		From:              message.From,
+		SenderJID:         message.SenderJID,
+		To:                message.To,
+		Body:              message.Body,
+		Type:              message.Type,
+		Timestamp:         message.Timestamp.UTC().Format(time.RFC3339),
+		EventID:           eventID,
+		PhoneNumber:       phoneNumber,
+		QuotedMessageID:   message.QuotedMessageID,
+		QuotedBody:        message.QuotedBody,
+		QuotedParticipant: message.QuotedParticipant,
 	}
 
 	data, err := json.Marshal(payload)

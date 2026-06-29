@@ -44,7 +44,14 @@ func (f *FirestoreRepository) CreateSession(ctx context.Context, session *models
 
 func (f *FirestoreRepository) UpdateSession(ctx context.Context, session *models.Session) error {
 	session.UpdatedAt = time.Now().UTC()
-	_, err := f.client.Collection("sessions").Doc(session.ID).Set(ctx, sessionToMap(session), firestore.MergeAll)
+	data := sessionToMap(session)
+	if session.PhoneNumber == "" && session.Status == models.SessionStatusNeedsQR {
+		data["phoneNumber"] = firestore.Delete
+		data["qrCode"] = firestore.Delete
+		data["qrImage"] = firestore.Delete
+		data["expiresAt"] = firestore.Delete
+	}
+	_, err := f.client.Collection("sessions").Doc(session.ID).Set(ctx, data, firestore.MergeAll)
 	return err
 }
 
@@ -210,17 +217,7 @@ func (f *FirestoreRepository) ListMessages(ctx context.Context, sessionID string
 	return out, nil
 }
 
-func (f *FirestoreRepository) SaveCheckpoint(ctx context.Context, sessionID string, data []byte) error {
-	_, err := f.client.Collection("waStores").Doc(sessionID).Set(ctx, map[string]any{
-		"sessionId": sessionID,
-		"data":      data,
-		"updatedAt": time.Now().UTC(),
-		"version":   1,
-	}, firestore.MergeAll)
-	return err
-}
-
-func (f *FirestoreRepository) LoadCheckpoint(ctx context.Context, sessionID string) ([]byte, error) {
+func (f *FirestoreRepository) GetStoreSnapshot(ctx context.Context, sessionID string) (*models.StoreSnapshot, error) {
 	doc, err := f.client.Collection("waStores").Doc(sessionID).Get(ctx)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
@@ -228,14 +225,35 @@ func (f *FirestoreRepository) LoadCheckpoint(ctx context.Context, sessionID stri
 		}
 		return nil, err
 	}
-	raw, ok := doc.Data()["data"].([]byte)
-	if !ok {
-		return nil, ErrNotFound
+	var snapshot models.StoreSnapshot
+	if err := doc.DataTo(&snapshot); err != nil {
+		return nil, err
 	}
-	return raw, nil
+	snapshot.SessionID = doc.Ref.ID
+	return &snapshot, nil
 }
 
-func (f *FirestoreRepository) DeleteCheckpoint(ctx context.Context, sessionID string) error {
+func (f *FirestoreRepository) SaveStoreSnapshot(ctx context.Context, snapshot *models.StoreSnapshot) error {
+	data := map[string]any{
+		"sessionId":       snapshot.SessionID,
+		"storageProvider": snapshot.StorageProvider,
+		"objectPath":      snapshot.ObjectPath,
+		"version":         snapshot.Version,
+		"sha256":          snapshot.SHA256,
+		"sizeBytes":       snapshot.SizeBytes,
+		"updatedAt":       snapshot.UpdatedAt,
+	}
+	if snapshot.CompanyID != "" {
+		data["companyId"] = snapshot.CompanyID
+	}
+	if snapshot.WorkerID != "" {
+		data["workerId"] = snapshot.WorkerID
+	}
+	_, err := f.client.Collection("waStores").Doc(snapshot.SessionID).Set(ctx, data, firestore.MergeAll)
+	return err
+}
+
+func (f *FirestoreRepository) DeleteStoreSnapshot(ctx context.Context, sessionID string) error {
 	_, err := f.client.Collection("waStores").Doc(sessionID).Delete(ctx)
 	return err
 }
@@ -244,4 +262,19 @@ func (f *FirestoreRepository) UpsertInboundEvent(ctx context.Context, companyID,
 	ref := f.client.Collection("companies").Doc(companyID).Collection("inboundEvents").Doc(eventID)
 	_, err := ref.Set(ctx, inboundEventToMap(event), firestore.MergeAll)
 	return err
+}
+
+func (f *FirestoreRepository) Get(ctx context.Context) (*models.SystemProperties, error) {
+	doc, err := f.client.Collection("systemProperties").Doc("default").Get(ctx)
+	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			return &models.SystemProperties{WhatsAppSkipHistorySync: true}, nil
+		}
+		return nil, err
+	}
+	var props models.SystemProperties
+	if err := doc.DataTo(&props); err != nil {
+		return nil, err
+	}
+	return &props, nil
 }

@@ -61,6 +61,7 @@ export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
         systemPrompt: loaded.systemPrompt,
         sessionIds: loaded.sessionIds,
         autoReply: loaded.autoReply,
+        language: loaded.language,
       })
       setAgentSurveys({
         id: loaded.id,

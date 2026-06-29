@@ -5,8 +5,10 @@ import { generateAutoReplyText } from "@/lib/firebase/ai/generate"
 import { getAiAgent, isAgentAutoReplyEnabled } from "@/lib/firebase/services/ai-agent-service"
 import {
   createInboxMessage,
+  findInboxMessageByExternalId,
   findOpenConversationForCustomer,
   getInboxConversationDetail,
+  getInboxMessage,
   listPendingOutboundMessages,
   upsertCustomerByPhone,
 } from "@/lib/firebase/services/inbox-service"
@@ -26,6 +28,7 @@ import {
 } from "@/lib/messaging/inbound-events-service"
 import { incrementMessageUsage } from "@/lib/messaging/message-usage-service"
 import type { ProcessInboundResult, SendOutboundParams, SendOutboundResult } from "@/lib/messaging/types"
+import type { InboxMessageSenderType } from "@/lib/firebase/types"
 import { isWhatsAppConfigured } from "@/lib/whatsapp"
 
 const MAX_INBOUND_ATTEMPTS = 10
@@ -49,6 +52,106 @@ const nextRetryAt = (attempts: number) => new Date(Date.now() + RETRY_DELAY_MS *
 const trackCampaignInbound = async (companyId: string, conversationId: string) => {
   const { trackCampaignResponseIfApplicable } = await import("@/lib/campaign/campaign-delivery")
   return trackCampaignResponseIfApplicable({ companyId, conversationId })
+}
+
+const resolveInboundQuote = async (params: {
+  companyId: string
+  conversationId: string
+  quotedMessageId?: string
+  quotedBody?: string
+}) => {
+  if (!params.quotedMessageId?.trim()) {
+    return null
+  }
+
+  const resolved = await findInboxMessageByExternalId({
+    companyId: params.companyId,
+    conversationId: params.conversationId,
+    externalMessageId: params.quotedMessageId,
+  })
+
+  const quotedContent = params.quotedBody?.trim() || resolved?.content || ""
+  if (!quotedContent) {
+    return null
+  }
+
+  return {
+    replyToMessageId: resolved?.id,
+    replyToExternalMessageId: params.quotedMessageId,
+    quotedMessage: {
+      content: quotedContent,
+      senderType: resolved?.senderType,
+      externalMessageId: params.quotedMessageId,
+      inboxMessageId: resolved?.id,
+    },
+  }
+}
+
+const resolveOutboundQuoteParticipant = (params: {
+  senderType: InboxMessageSenderType
+  externalParticipantJid?: string | null
+  channelPhoneNumber?: string
+}): string | undefined => {
+  const storedJid = params.externalParticipantJid?.trim()
+  if (storedJid) {
+    return storedJid
+  }
+
+  // Guessing phone@s.whatsapp.net breaks quoted replies on LID-based WhatsApp accounts.
+  if (params.senderType === "customer") {
+    return undefined
+  }
+
+  if (!params.channelPhoneNumber) {
+    return undefined
+  }
+
+  const phone = normalizeStoredPhone(params.channelPhoneNumber) || params.channelPhoneNumber
+  return `${phone}@s.whatsapp.net`
+}
+
+const resolveOutboundQuote = async (params: {
+  companyId: string
+  conversationId: string
+  replyToMessageId: string
+  customerPhone?: string
+  channelPhoneNumber?: string
+}) => {
+  const target = await getInboxMessage({
+    companyId: params.companyId,
+    conversationId: params.conversationId,
+    messageId: params.replyToMessageId,
+  })
+
+  if (!target) {
+    return null
+  }
+
+  const externalMessageId = target.externalMessageId ?? target.replyToExternalMessageId ?? undefined
+  const participant = resolveOutboundQuoteParticipant({
+    senderType: target.senderType,
+    externalParticipantJid: target.externalParticipantJid,
+    channelPhoneNumber: params.channelPhoneNumber,
+  })
+
+  return {
+    replyToMessageId: target.id,
+    replyToExternalMessageId: externalMessageId,
+    quotedMessage: {
+      content: target.content,
+      senderType: target.senderType,
+      externalMessageId,
+      inboxMessageId: target.id,
+    },
+    whatsAppQuote:
+      externalMessageId && target.content
+        ? {
+            externalMessageId,
+            content: target.content,
+            participant,
+          }
+        : null,
+  }
 }
 
 export const processInboundEvent = async (
@@ -146,6 +249,13 @@ export const processInboundEvent = async (
       ? normalizeStoredPhone(event.phoneNumber) || event.phoneNumber
       : undefined
 
+    const quote = await resolveInboundQuote({
+      companyId,
+      conversationId,
+      quotedMessageId: event.quotedMessageId,
+      quotedBody: event.quotedBody,
+    })
+
     const message = await createInboxMessage({
       companyId,
       conversationId,
@@ -156,7 +266,11 @@ export const processInboundEvent = async (
       channel: event.channel,
       direction: "inbound",
       externalMessageId: event.messageId,
+      externalParticipantJid: event.senderJid,
       channelPhoneNumber,
+      replyToMessageId: quote?.replyToMessageId,
+      replyToExternalMessageId: quote?.replyToExternalMessageId,
+      quotedMessage: quote?.quotedMessage,
     })
 
     await messageDedupeRef(companyId, event.channel, event.messageId).set({
@@ -230,6 +344,10 @@ export const processInboundFromWebhook = async (params: {
   to?: string
   type?: string
   phoneNumber?: string
+  quotedMessageId?: string
+  quotedBody?: string
+  quotedParticipant?: string
+  senderJid?: string
 }) => {
   const eventId = params.eventId ?? resolveInboundEventId(params.sessionId, params.messageId)
 
@@ -243,6 +361,10 @@ export const processInboundFromWebhook = async (params: {
     to: params.to,
     type: params.type,
     phoneNumber: params.phoneNumber,
+    quotedMessageId: params.quotedMessageId,
+    quotedBody: params.quotedBody,
+    quotedParticipant: params.quotedParticipant,
+    senderJid: params.senderJid,
   })
 
   return processInboundEvent(params.companyId, eventId)
@@ -380,6 +502,16 @@ export const sendOutbound = async (params: SendOutboundParams): Promise<SendOutb
     isWhatsAppConfigured() &&
     Boolean(params.customerPhone)
 
+  const quote = params.replyToMessageId
+    ? await resolveOutboundQuote({
+        companyId: params.companyId,
+        conversationId: params.conversationId,
+        replyToMessageId: params.replyToMessageId,
+        customerPhone: params.customerPhone,
+        channelPhoneNumber: params.channelPhoneNumber,
+      })
+    : null
+
   const message = await createInboxMessage({
     companyId: params.companyId,
     conversationId: params.conversationId,
@@ -391,6 +523,9 @@ export const sendOutbound = async (params: SendOutboundParams): Promise<SendOutb
     channel: shouldDeliverViaWhatsApp ? "whatsapp" : "manual",
     direction: "outbound",
     channelPhoneNumber: params.channelPhoneNumber,
+    replyToMessageId: quote?.replyToMessageId,
+    replyToExternalMessageId: quote?.replyToExternalMessageId,
+    quotedMessage: quote?.quotedMessage,
   })
 
   if (!shouldDeliverViaWhatsApp || !params.customerPhone) {
@@ -406,12 +541,14 @@ export const sendOutbound = async (params: SendOutboundParams): Promise<SendOutb
     customerPhone: params.customerPhone,
     senderType: params.senderType === "bot" ? "bot" : "agent",
     countAsBotAutoReply: params.countAsBotAutoReply,
+    quote: quote?.whatsAppQuote ?? undefined,
   })
 
   return {
     message: {
       ...message,
       status: delivery.delivered ? "delivered" : "failed",
+      externalMessageId: delivery.externalMessageId ?? message.externalMessageId ?? null,
     } as typeof message,
     delivered: delivery.delivered,
   }

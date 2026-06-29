@@ -4,6 +4,8 @@ export type WhatsAppConfig = {
   maxSessionsPerWorker: number
   scalerMode: "local" | "docker" | "gke"
   workerBaseUrl: string
+  /** Host port mapped to the worker container (local dev). */
+  workerPort: number
   webhookSecret: string
   /** Public app URL (browser-facing). */
   appUrl: string
@@ -35,6 +37,7 @@ export const getWhatsAppConfig = (): WhatsAppConfig | null => {
     maxSessionsPerWorker: parseIntEnv(process.env.MAX_SESSIONS_PER_WORKER, 25),
     scalerMode,
     workerBaseUrl: process.env.WORKER_BASE_URL?.trim() ?? "http://localhost",
+    workerPort: parseIntEnv(process.env.WHATSAPP_WORKER_PORT, 8082),
     webhookSecret: process.env.WHATSAPP_WEBHOOK_SECRET?.trim() ?? workerInternalToken,
     appUrl,
     webhookAppUrl,

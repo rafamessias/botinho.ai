@@ -12,9 +12,13 @@ import {
   deleteAgentQuickAnswer,
   deleteAgentTemplate,
   deleteAiAgent,
+  filterAgentWithValidSessionIds,
+  filterAgentsWithValidSessionIds,
   getAiAgent,
+  listAgentSessionAssignmentConflicts,
   listAgentTrainingData,
   listAiAgents,
+  pruneStaleSessionIdsFromAgents,
   updateAgentKnowledgeItem,
   updateAgentQuickAnswer,
   updateAgentTemplate,
@@ -31,13 +35,33 @@ import type { WhatsAppSession } from "@/lib/whatsapp/types"
 
 const agentIdSchema = z.object({ agentId: z.string().min(1) })
 
+const listCompanySessionIds = async (companyId: string): Promise<string[]> => {
+  if (!isWhatsAppConfigured()) {
+    return []
+  }
+
+  const orchestrator = await getWhatsAppOrchestrator()
+  const sessions = await orchestrator.listSessions(companyId)
+  return sessions.map((session) => session.sessionId)
+}
+
+const syncAgentSessionIds = async (companyId: string) => {
+  const validSessionIds = await listCompanySessionIds(companyId)
+  await pruneStaleSessionIdsFromAgents(companyId, validSessionIds)
+  return validSessionIds
+}
+
 export const listAiAgentsAction = async (): Promise<
   BaseActionResponse<{ agents: Awaited<ReturnType<typeof listAiAgents>> }>
 > =>
   handleAction(async () => {
     const { companyId, userId } = await resolveCompanyContext()
     const agents = await listAiAgents(companyId, userId)
-    return { success: true, data: { agents } }
+    const validSessionIds = await syncAgentSessionIds(companyId)
+    return {
+      success: true,
+      data: { agents: filterAgentsWithValidSessionIds(agents, validSessionIds) },
+    }
   })
 
 export const getAiAgentAction = async (
@@ -50,7 +74,8 @@ export const getAiAgentAction = async (
     if (!agent) {
       throw new Error("Botinho not found")
     }
-    return { success: true, data: { agent } }
+    const validSessionIds = await syncAgentSessionIds(companyId)
+    return { success: true, data: { agent: filterAgentWithValidSessionIds(agent, validSessionIds) } }
   })
 
 const createAgentSchema = z.object({
@@ -58,6 +83,7 @@ const createAgentSchema = z.object({
   systemPrompt: z.string().trim().max(4000).optional(),
   sessionIds: z.array(z.string().min(1)).optional(),
   autoReply: z.boolean().optional(),
+  language: z.enum(["en", "pt-BR", "auto"]).optional(),
 })
 
 export const createAiAgentAction = async (
@@ -76,6 +102,7 @@ const updateAgentSchema = agentIdSchema.merge(
     systemPrompt: z.string().trim().max(4000).optional(),
     sessionIds: z.array(z.string().min(1)).optional(),
     autoReply: z.boolean().optional(),
+    language: z.enum(["en", "pt-BR", "auto"]).optional(),
     surveyIds: z.array(z.string()).optional(),
     surveyTriggers: z
       .object({
@@ -102,6 +129,30 @@ export const updateAiAgentAction = async (
         : undefined,
     })
     return { success: true, data: { agent }, message: "Botinho updated" }
+  })
+
+const checkSessionAssignmentSchema = agentIdSchema.merge(
+  z.object({
+    sessionIds: z.array(z.string().min(1)).min(1),
+  }),
+)
+
+export const checkAgentSessionAssignmentConflictsAction = async (
+  input: z.infer<typeof checkSessionAssignmentSchema>,
+): Promise<
+  BaseActionResponse<{
+    conflicts: Awaited<ReturnType<typeof listAgentSessionAssignmentConflicts>>
+  }>
+> =>
+  handleAction(async () => {
+    const payload = checkSessionAssignmentSchema.parse(input)
+    const { companyId } = await resolveCompanyContext()
+    const conflicts = await listAgentSessionAssignmentConflicts(
+      companyId,
+      payload.sessionIds,
+      payload.agentId,
+    )
+    return { success: true, data: { conflicts } }
   })
 
 export const deleteAiAgentAction = async (

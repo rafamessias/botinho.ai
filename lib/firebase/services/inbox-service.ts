@@ -10,6 +10,7 @@ import type {
   FirestoreInboxConversation,
   FirestoreInboxCustomer,
   FirestoreInboxMessage,
+  FirestoreUser,
   InboxConversationPriority,
   InboxMessageSenderType,
   InboxMessageSentBy,
@@ -339,7 +340,20 @@ export const updateInboxCustomer = async (params: {
   })
 
   const snapshot = await customerRef.get()
-  return mapInboxCustomerRecord(customerRef.id, snapshot.data() as FirestoreInboxCustomer)
+  const updatedCustomer = mapInboxCustomerRecord(customerRef.id, snapshot.data() as FirestoreInboxCustomer)
+
+  await syncConversationCustomerSnapshots({
+    companyId: params.companyId,
+    customerId: params.customerId,
+    snapshot: buildConversationCustomerSnapshot({
+      name: updatedCustomer.name,
+      phone: updatedCustomer.phone,
+      email: updatedCustomer.email,
+      company: updatedCustomer.company,
+    }),
+  })
+
+  return updatedCustomer
 }
 
 export const bulkCreateInboxCustomers = async (params: {
@@ -372,18 +386,163 @@ export const bulkCreateInboxCustomers = async (params: {
   return { created, errors }
 }
 
-const mapAssignedTo = async (uid: string | null | undefined) => {
-  if (!uid) return null
-  const profile = await getUserProfile(uid)
-  if (!profile) return null
+const mapAssignedToFromProfile = (uid: string, profile: FirestoreUser | null | undefined) => {
+  if (!profile) {
+    return {
+      id: uid,
+      name: uid,
+    }
+  }
+
+  const name =
+    [profile.firstName, profile.lastName].filter(Boolean).join(" ").trim() || profile.email
+
   return {
     id: uid,
+    name,
     firstName: profile.firstName,
     lastName: profile.lastName ?? null,
     email: profile.email,
     avatarUrl: profile.avatarUrl ?? null,
   }
 }
+
+const mapAssignedTo = async (uid: string | null | undefined) => {
+  if (!uid) return null
+  const profile = await getUserProfile(uid)
+  return mapAssignedToFromProfile(uid, profile)
+}
+
+const chunkDocumentIds = <T,>(items: T[], size: number): T[][] => {
+  const chunks: T[][] = []
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size))
+  }
+  return chunks
+}
+
+const batchGetDocumentSnapshots = async (
+  refs: FirebaseFirestore.DocumentReference[],
+): Promise<Map<string, FirebaseFirestore.DocumentSnapshot>> => {
+  const snapshots = new Map<string, FirebaseFirestore.DocumentSnapshot>()
+
+  const chunks = chunkDocumentIds(refs, 300)
+  const chunkResults = await Promise.all(
+    chunks.map((chunk) => (chunk.length > 0 ? adminDb.getAll(...chunk) : Promise.resolve([]))),
+  )
+
+  for (const docs of chunkResults) {
+    for (const doc of docs) {
+      snapshots.set(doc.id, doc)
+    }
+  }
+
+  return snapshots
+}
+
+const buildConversationCustomerSnapshot = (customer: {
+  name: string
+  phone?: string | null
+  email?: string | null
+  company?: string | null
+}) => ({
+  customerName: customer.name.trim(),
+  customerPhone: customer.phone ?? null,
+  customerEmail: customer.email ?? null,
+  customerCompany: customer.company?.trim() ?? null,
+})
+
+const hasDenormalizedCustomer = (data: FirestoreInboxConversation) =>
+  Boolean(data.customerName?.trim() || data.customerPhone)
+
+const customerFromDenormalizedFields = (
+  customerId: string,
+  data: FirestoreInboxConversation,
+): ReturnType<typeof mapCustomer> | null => {
+  if (!hasDenormalizedCustomer(data)) {
+    return null
+  }
+
+  return mapCustomer(customerId, {
+    name: data.customerName ?? "",
+    phone: data.customerPhone ?? undefined,
+    email: data.customerEmail ?? undefined,
+    company: data.customerCompany ?? undefined,
+  } as FirestoreInboxCustomer)
+}
+
+const assignedToFromDenormalizedFields = (
+  data: FirestoreInboxConversation,
+): ReturnType<typeof mapAssignedToFromProfile> | null | undefined => {
+  if (!data.assignedToId) {
+    return null
+  }
+
+  if (data.assignedToName?.trim()) {
+    return {
+      id: data.assignedToId,
+      name: data.assignedToName.trim(),
+    }
+  }
+
+  return undefined
+}
+
+const syncConversationCustomerSnapshots = async (params: {
+  companyId: string
+  customerId: string
+  snapshot: ReturnType<typeof buildConversationCustomerSnapshot>
+}) => {
+  const conversationSnap = await conversationsRef(params.companyId)
+    .where("customerId", "==", params.customerId)
+    .get()
+
+  if (conversationSnap.empty) {
+    return
+  }
+
+  for (const chunk of chunkDocumentIds(conversationSnap.docs, 400)) {
+    const batch = adminDb.batch()
+    for (const doc of chunk) {
+      batch.update(doc.ref, {
+        ...params.snapshot,
+        updatedAt: FieldValue.serverTimestamp(),
+      })
+    }
+    await batch.commit()
+  }
+}
+
+const buildConversationRecord = (
+  companyId: string,
+  conversationId: string,
+  data: FirestoreInboxConversation,
+  customer: ReturnType<typeof mapCustomer> | null,
+  assignedTo: ReturnType<typeof mapAssignedToFromProfile> | null,
+) => ({
+  id: conversationId,
+  companyId,
+  customerId: data.customerId,
+  sessionId: data.sessionId ?? null,
+  subject: data.subject ?? null,
+  lastMessagePreview: data.lastMessagePreview ?? null,
+  lastMessageSentAt: toIso(data.lastMessageSentAt),
+  unreadCount: data.unreadCount ?? 0,
+  priority: data.priority,
+  satisfactionScore: data.satisfactionScore ?? null,
+  tags: data.tags ?? [],
+  assignedToId: data.assignedToId ?? null,
+  activeSurveyResponseId: data.activeSurveyResponseId ?? null,
+  activeCampaignId: data.activeCampaignId ?? null,
+  activeCampaignDeliveryId: data.activeCampaignDeliveryId ?? null,
+  isArchived: data.isArchived ?? false,
+  isBookmarked: data.isBookmarked ?? false,
+  archivedAt: toIso(data.archivedAt ?? null),
+  createdAt: toIso(data.createdAt) ?? new Date(),
+  updatedAt: toIso(data.updatedAt) ?? new Date(),
+  customer,
+  assignedTo,
+})
 
 export const mapConversation = async (
   companyId: string,
@@ -393,30 +552,13 @@ export const mapConversation = async (
   const customerSnap = await customersRef(companyId).doc(data.customerId).get()
   const customerData = customerSnap.data() as FirestoreInboxCustomer | undefined
 
-  return {
-    id: conversationId,
+  return buildConversationRecord(
     companyId,
-    customerId: data.customerId,
-    sessionId: data.sessionId ?? null,
-    subject: data.subject ?? null,
-    lastMessagePreview: data.lastMessagePreview ?? null,
-    lastMessageSentAt: toIso(data.lastMessageSentAt),
-    unreadCount: data.unreadCount ?? 0,
-    priority: data.priority,
-    satisfactionScore: data.satisfactionScore ?? null,
-    tags: data.tags ?? [],
-    assignedToId: data.assignedToId ?? null,
-    activeSurveyResponseId: data.activeSurveyResponseId ?? null,
-    activeCampaignId: data.activeCampaignId ?? null,
-    activeCampaignDeliveryId: data.activeCampaignDeliveryId ?? null,
-    isArchived: data.isArchived ?? false,
-    isBookmarked: data.isBookmarked ?? false,
-    archivedAt: toIso(data.archivedAt ?? null),
-    createdAt: toIso(data.createdAt) ?? new Date(),
-    updatedAt: toIso(data.updatedAt) ?? new Date(),
-    customer: customerData ? mapCustomer(data.customerId, customerData) : null,
-    assignedTo: await mapAssignedTo(data.assignedToId),
-  }
+    conversationId,
+    data,
+    customerData ? mapCustomer(data.customerId, customerData) : null,
+    await mapAssignedTo(data.assignedToId),
+  )
 }
 
 export const mapMessage = (id: string, data: FirestoreInboxMessage) => ({
@@ -429,6 +571,11 @@ export const mapMessage = (id: string, data: FirestoreInboxMessage) => ({
   sentAt: toIso(data.sentAt) ?? new Date(),
   createdAt: toIso(data.createdAt) ?? new Date(),
   updatedAt: toIso(data.updatedAt) ?? new Date(),
+  externalMessageId: data.externalMessageId ?? null,
+  externalParticipantJid: data.externalParticipantJid ?? null,
+  replyToMessageId: data.replyToMessageId ?? null,
+  replyToExternalMessageId: data.replyToExternalMessageId ?? null,
+  quotedMessage: data.quotedMessage ?? null,
 })
 
 export const listInboxCustomers = async (params: {
@@ -584,11 +731,57 @@ export const listInboxConversations = async (params: {
     .orderBy("lastMessageSentAt", "desc")
     .get()
 
-  let conversations = await Promise.all(
-    snapshot.docs.map(async (doc) =>
-      mapConversation(params.companyId, doc.id, doc.data() as FirestoreInboxConversation),
-    ),
-  )
+  const conversationDocs = snapshot.docs
+
+  const customerIdsToFetch = new Set<string>()
+  const assignedToIdsToFetch = new Set<string>()
+
+  for (const doc of conversationDocs) {
+    const data = doc.data() as FirestoreInboxConversation
+    if (!hasDenormalizedCustomer(data)) {
+      customerIdsToFetch.add(data.customerId)
+    }
+    if (data.assignedToId && !data.assignedToName?.trim()) {
+      assignedToIdsToFetch.add(data.assignedToId)
+    }
+  }
+
+  const [customerSnapshots, assignedToSnapshots] = await Promise.all([
+    customerIdsToFetch.size > 0
+      ? batchGetDocumentSnapshots(
+          [...customerIdsToFetch].map((customerId) => customersRef(params.companyId).doc(customerId)),
+        )
+      : Promise.resolve(new Map<string, FirebaseFirestore.DocumentSnapshot>()),
+    assignedToIdsToFetch.size > 0
+      ? batchGetDocumentSnapshots(
+          [...assignedToIdsToFetch].map((userId) => adminDb.collection(collections.users).doc(userId)),
+        )
+      : Promise.resolve(new Map<string, FirebaseFirestore.DocumentSnapshot>()),
+  ])
+
+  let conversations = conversationDocs.map((doc) => {
+    const data = doc.data() as FirestoreInboxConversation
+    const denormalizedCustomer = customerFromDenormalizedFields(data.customerId, data)
+    const customerSnap = customerSnapshots.get(data.customerId)
+    const customerData = customerSnap?.data() as FirestoreInboxCustomer | undefined
+    const customer =
+      denormalizedCustomer ??
+      (customerData ? mapCustomer(data.customerId, customerData) : null)
+
+    const denormalizedAssignedTo = assignedToFromDenormalizedFields(data)
+    const assignedToId = data.assignedToId ?? null
+    const assignedTo =
+      denormalizedAssignedTo === undefined
+        ? assignedToId
+          ? mapAssignedToFromProfile(
+              assignedToId,
+              assignedToSnapshots.get(assignedToId)?.data() as FirestoreUser | undefined,
+            )
+          : null
+        : denormalizedAssignedTo
+
+    return buildConversationRecord(params.companyId, doc.id, data, customer, assignedTo)
+  })
 
   if (!params.includeArchived) {
     conversations = conversations.filter((conversation) => !conversation.isArchived)
@@ -703,13 +896,42 @@ export const updateInboxMessageStatus = async (params: {
   status: InboxMessageStatus
   failureReason?: string
   channelPhoneNumber?: string
+  externalMessageId?: string
+  externalParticipantJid?: string
 }) => {
   await messagesRef(params.companyId, params.conversationId).doc(params.messageId).update({
     status: params.status,
     ...(params.failureReason ? { failureReason: params.failureReason } : {}),
     ...(params.channelPhoneNumber ? { channelPhoneNumber: params.channelPhoneNumber } : {}),
+    ...(params.externalMessageId ? { externalMessageId: params.externalMessageId } : {}),
+    ...(params.externalParticipantJid ? { externalParticipantJid: params.externalParticipantJid } : {}),
     updatedAt: FieldValue.serverTimestamp(),
   })
+}
+
+export const getInboxMessage = async (params: {
+  companyId: string
+  conversationId: string
+  messageId: string
+}) => {
+  const snap = await messagesRef(params.companyId, params.conversationId).doc(params.messageId).get()
+  if (!snap.exists) return null
+  return mapMessage(snap.id, snap.data() as FirestoreInboxMessage)
+}
+
+export const findInboxMessageByExternalId = async (params: {
+  companyId: string
+  conversationId: string
+  externalMessageId: string
+}) => {
+  const snap = await messagesRef(params.companyId, params.conversationId)
+    .where("externalMessageId", "==", params.externalMessageId)
+    .limit(1)
+    .get()
+
+  const doc = snap.docs[0]
+  if (!doc) return null
+  return mapMessage(doc.id, doc.data() as FirestoreInboxMessage)
 }
 
 export const markMessageMetricsSent = async (params: {
@@ -819,6 +1041,18 @@ export const upsertCustomerByPhone = async (params: {
       },
       { merge: true },
     )
+
+    await syncConversationCustomerSnapshots({
+      companyId: params.companyId,
+      customerId: doc.id,
+      snapshot: buildConversationCustomerSnapshot({
+        name: resolvedName,
+        phone,
+        email: resolvedEmail,
+        company: existingData.company ?? null,
+      }),
+    })
+
     return { customerId: doc.id, created: false as const }
   }
 
@@ -890,7 +1124,11 @@ export const createInboxMessage = async (params: {
   channel?: FirestoreInboxMessage["channel"]
   direction?: FirestoreInboxMessage["direction"]
   externalMessageId?: string
+  externalParticipantJid?: string
   channelPhoneNumber?: string
+  replyToMessageId?: string
+  replyToExternalMessageId?: string
+  quotedMessage?: FirestoreInboxMessage["quotedMessage"]
 }) => {
   const now = FieldValue.serverTimestamp()
   const messageRef = messagesRef(params.companyId, params.conversationId).doc()
@@ -912,7 +1150,11 @@ export const createInboxMessage = async (params: {
       ...(params.channel ? { channel: params.channel } : {}),
       ...(params.direction ? { direction: params.direction } : {}),
       ...(params.externalMessageId ? { externalMessageId: params.externalMessageId } : {}),
+      ...(params.externalParticipantJid ? { externalParticipantJid: params.externalParticipantJid } : {}),
       ...(params.channelPhoneNumber ? { channelPhoneNumber: params.channelPhoneNumber } : {}),
+      ...(params.replyToMessageId ? { replyToMessageId: params.replyToMessageId } : {}),
+      ...(params.replyToExternalMessageId ? { replyToExternalMessageId: params.replyToExternalMessageId } : {}),
+      ...(params.quotedMessage ? { quotedMessage: params.quotedMessage } : {}),
       sentAt: now,
       createdAt: now,
       updatedAt: now,
@@ -1035,6 +1277,11 @@ export const createInboxConversation = async (params: {
 
     tx.set(conversationRef, {
       customerId: customerRef.id,
+      ...buildConversationCustomerSnapshot({
+        name: trimmedName,
+        phone: normalizedPhone ?? null,
+        email: trimmedEmail,
+      }),
       sessionId: params.sessionId ?? null,
       subject: params.subject ?? null,
       priority: params.priority ?? "medium",
@@ -1098,6 +1345,17 @@ export const markConversationRead = async (params: {
   })
 }
 
+export const rebindConversationSession = async (params: {
+  companyId: string
+  conversationId: string
+  sessionId: string | null
+}) => {
+  await conversationsRef(params.companyId).doc(params.conversationId).update({
+    ...(params.sessionId ? { sessionId: params.sessionId } : { sessionId: FieldValue.delete() }),
+    updatedAt: FieldValue.serverTimestamp(),
+  })
+}
+
 export const updateConversationMetadata = async (params: {
   companyId: string
   conversationId: string
@@ -1112,10 +1370,18 @@ export const updateConversationMetadata = async (params: {
     updatedAt: FieldValue.serverTimestamp(),
   }
 
+  if (params.assignedToId !== undefined) {
+    update.assignedToId = params.assignedToId
+    if (params.assignedToId) {
+      const profile = await getUserProfile(params.assignedToId)
+      update.assignedToName = mapAssignedToFromProfile(params.assignedToId, profile).name
+    } else {
+      update.assignedToName = null
+    }
+  }
   if (params.priority) update.priority = params.priority
   if (params.tags) update.tags = sanitizeTags(params.tags)
   if (params.satisfactionScore != null) update.satisfactionScore = params.satisfactionScore
-  if (params.assignedToId !== undefined) update.assignedToId = params.assignedToId
   if (params.isBookmarked != null) update.isBookmarked = params.isBookmarked
   if (params.isArchived != null) {
     update.isArchived = params.isArchived
@@ -1163,10 +1429,20 @@ export const recordInboundMessage = async (params: {
   if (existingConversation) {
     conversationId = existingConversation.id
   } else {
+    const customerSnap = await customersRef(params.companyId).doc(customerId).get()
+    const customerData = customerSnap.data() as FirestoreInboxCustomer | undefined
     const conversationRef = conversationsRef(params.companyId).doc()
     const now = FieldValue.serverTimestamp()
     await conversationRef.set({
       customerId,
+      ...(customerData
+        ? buildConversationCustomerSnapshot({
+            name: customerData.name,
+            phone: customerData.phone ?? null,
+            email: customerData.email ?? null,
+            company: customerData.company ?? null,
+          })
+        : {}),
       sessionId: params.sessionId ?? null,
       priority: "medium",
       tags: [],

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
@@ -12,32 +13,59 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { getCampaignMetricsAction } from "@/components/server-actions/campaigns"
+import {
+  getCampaignMetricsAction,
+  type CampaignMetricsView,
+} from "@/components/server-actions/campaigns"
+import type { CampaignMetrics } from "@/lib/types/campaign"
 
 type CampaignMetricsPanelProps = {
   campaignId: string
-  onLoadMetrics: typeof getCampaignMetricsAction
+  initialSummary?: CampaignMetrics
 }
 
-export const CampaignMetricsPanel = ({ campaignId, onLoadMetrics }: CampaignMetricsPanelProps) => {
+export const CampaignMetricsPanel = ({
+  campaignId,
+  initialSummary,
+}: CampaignMetricsPanelProps) => {
   const t = useTranslations("Campaigns.metrics")
-  const [metrics, setMetrics] = useState<Awaited<
-    ReturnType<typeof getCampaignMetricsAction>
-  >["data"] | null>(null)
+  const tToolbar = useTranslations("Campaigns.toolbar")
+  const tErrors = useTranslations("Campaigns.errors")
+  const [metrics, setMetrics] = useState<CampaignMetricsView | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
-    void (async () => {
-      setIsLoading(true)
-      const result = await onLoadMetrics({ campaignId })
-      if (result.success && result.data) {
-        setMetrics(result.data)
-      }
-      setIsLoading(false)
-    })()
-  }, [campaignId, onLoadMetrics])
+    let cancelled = false
 
-  if (isLoading) {
+    const loadMetrics = async () => {
+      setIsLoading(true)
+      setLoadError(null)
+      try {
+        const result = await getCampaignMetricsAction({ campaignId })
+        if (cancelled) return
+        if (result.success && result.data?.metrics) {
+          setMetrics(result.data.metrics)
+        } else {
+          setLoadError(result.error ?? t("empty"))
+        }
+      } catch {
+        if (!cancelled) setLoadError(tErrors("loadFailed"))
+      } finally {
+        if (!cancelled) setIsLoading(false)
+      }
+    }
+
+    void loadMetrics()
+    return () => {
+      cancelled = true
+    }
+  }, [campaignId, reloadKey])
+
+  const summary = metrics ?? initialSummary
+
+  if (isLoading && !summary) {
     return (
       <div className="flex items-center justify-center py-12 text-muted-foreground">
         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -46,30 +74,59 @@ export const CampaignMetricsPanel = ({ campaignId, onLoadMetrics }: CampaignMetr
     )
   }
 
-  if (!metrics) {
-    return <p className="text-sm text-muted-foreground">{t("empty")}</p>
+  if (!summary) {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-muted-foreground">{loadError ?? t("empty")}</p>
+        {loadError && (
+          <Button variant="outline" size="sm" onClick={() => setReloadKey((key) => key + 1)}>
+            {tToolbar("retry")}
+          </Button>
+        )}
+      </div>
+    )
   }
 
-  const { metrics: data } = metrics
   const progress =
-    data.targeted > 0
-      ? Math.round(((data.delivered + data.failed + data.skipped) / data.targeted) * 100)
+    summary.targeted > 0
+      ? Math.round(((summary.delivered + summary.failed + summary.skipped) / summary.targeted) * 100)
       : 0
+
+  const deliveries = metrics?.deliveries ?? []
 
   return (
     <div className="space-y-6">
+      {isLoading && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          {t("loading")}
+        </div>
+      )}
+
+      {loadError && !isLoading && (
+        <div className="flex flex-wrap items-center gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          <span>{loadError}</span>
+          <Button variant="outline" size="sm" onClick={() => setReloadKey((key) => key + 1)}>
+            {tToolbar("retry")}
+          </Button>
+        </div>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard label={t("targeted")} value={String(data.targeted)} />
-        <MetricCard label={t("delivered")} value={String(data.delivered)} />
-        <MetricCard label={t("failed")} value={String(data.failed)} />
-        <MetricCard label={t("responses")} value={String(data.responses)} />
-        <MetricCard label={t("responseRate")} value={`${Math.round(data.responseRate * 100)}%`} />
-        <MetricCard label={t("botReplies")} value={String(data.botReplies)} />
-        <MetricCard label={t("skipped")} value={String(data.skipped)} />
+        <MetricCard label={t("targeted")} value={String(summary.targeted)} />
+        <MetricCard label={t("delivered")} value={String(summary.delivered)} />
+        <MetricCard label={t("failed")} value={String(summary.failed)} />
+        <MetricCard label={t("responses")} value={String(summary.responses)} />
+        <MetricCard
+          label={t("responseRate")}
+          value={`${Math.round(summary.responseRate * 100)}%`}
+        />
+        <MetricCard label={t("botReplies")} value={String(summary.botReplies)} />
+        <MetricCard label={t("skipped")} value={String(summary.skipped)} />
         <MetricCard label={t("progress")} value={`${progress}%`} />
       </div>
 
-      {data.deliveries.length > 0 && (
+      {deliveries.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="text-base">{t("deliveries")}</CardTitle>
@@ -86,7 +143,7 @@ export const CampaignMetricsPanel = ({ campaignId, onLoadMetrics }: CampaignMetr
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.deliveries.map((delivery) => (
+                {deliveries.map((delivery) => (
                   <TableRow key={delivery.id}>
                     <TableCell>{delivery.customerName}</TableCell>
                     <TableCell>{delivery.status}</TableCell>

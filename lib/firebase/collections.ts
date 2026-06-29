@@ -5,6 +5,7 @@ export const collections = {
   plans: "plans",
   companies: "companies",
   pendingSignups: "pendingSignups",
+  systemProperties: "systemProperties",
 } as const
 
 export const companySubcollections = {
@@ -38,6 +39,10 @@ export const aiAgentSubcollections = {
 } as const
 
 export const settingsDocIds = {
+  default: "default",
+} as const
+
+export const systemPropertyDocIds = {
   default: "default",
 } as const
 

@@ -1,4 +1,5 @@
 import type { DocumentData } from "firebase-admin/firestore"
+import { FieldValue } from "firebase-admin/firestore"
 import { adminDb } from "@/lib/firebase/admin"
 import type { SendMessageRequest, SessionStatus, WhatsAppMessage, WhatsAppSession } from "@/lib/whatsapp/types"
 
@@ -58,10 +59,18 @@ export class WhatsAppSessionRepository {
   }
 
   async updateSession(session: WhatsAppSession): Promise<void> {
-    await adminDb
-      .collection(SESSIONS_COLLECTION)
-      .doc(session.sessionId)
-      .set(toFirestoreSession({ ...session, updatedAt: new Date().toISOString() }), { merge: true })
+    const payload = toFirestoreSession({ ...session, updatedAt: new Date().toISOString() })
+    const ref = adminDb.collection(SESSIONS_COLLECTION).doc(session.sessionId)
+
+    if (
+      !session.phoneNumber &&
+      (session.status === "needs_qr" || session.status === "qr_pending" || session.status === "pending")
+    ) {
+      await ref.set({ ...payload, phoneNumber: FieldValue.delete() }, { merge: true })
+      return
+    }
+
+    await ref.set(payload, { merge: true })
   }
 
   async patchSessionLabel(sessionId: string, label: string): Promise<void> {

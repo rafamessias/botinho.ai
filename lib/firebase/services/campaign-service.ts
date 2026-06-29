@@ -630,13 +630,15 @@ export const listCampaignDeliveries = async (
   campaignId: string,
   params?: { limit?: number },
 ): Promise<CampaignDeliveryRecord[]> => {
+  const limit = params?.limit ?? 200
   const snap = await campaignDeliveriesRef(companyId)
     .where("campaignId", "==", campaignId)
-    .orderBy("createdAt", "asc")
-    .limit(params?.limit ?? 200)
+    .limit(limit)
     .get()
 
-  return snap.docs.map((doc) => mapDelivery(doc.id, doc.data()))
+  return snap.docs
+    .map((doc) => mapDelivery(doc.id, doc.data()))
+    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
 }
 
 export const getCampaignMetricsDetail = async (

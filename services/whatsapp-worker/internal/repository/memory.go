@@ -30,10 +30,14 @@ type InboundEventRepository interface {
 	UpsertInboundEvent(ctx context.Context, companyID, eventID string, event *models.InboundEvent) error
 }
 
-type StoreCheckpointRepository interface {
-	SaveCheckpoint(ctx context.Context, sessionID string, data []byte) error
-	LoadCheckpoint(ctx context.Context, sessionID string) ([]byte, error)
-	DeleteCheckpoint(ctx context.Context, sessionID string) error
+type StoreSnapshotRepository interface {
+	GetStoreSnapshot(ctx context.Context, sessionID string) (*models.StoreSnapshot, error)
+	SaveStoreSnapshot(ctx context.Context, snapshot *models.StoreSnapshot) error
+	DeleteStoreSnapshot(ctx context.Context, sessionID string) error
+}
+
+type SystemPropertiesRepository interface {
+	Get(ctx context.Context) (*models.SystemProperties, error)
 }
 
 type MemoryRepository struct {
@@ -42,7 +46,7 @@ type MemoryRepository struct {
 	phoneIdx      map[string]string
 	messages      []*models.Message
 	inboundEvents map[string]*models.InboundEvent
-	checkpoints   map[string][]byte
+	checkpoints   map[string]*models.StoreSnapshot
 }
 
 func NewMemoryRepository() *MemoryRepository {
@@ -51,7 +55,7 @@ func NewMemoryRepository() *MemoryRepository {
 		phoneIdx:      make(map[string]string),
 		messages:      make([]*models.Message, 0),
 		inboundEvents: make(map[string]*models.InboundEvent),
-		checkpoints:   make(map[string][]byte),
+		checkpoints:   make(map[string]*models.StoreSnapshot),
 	}
 }
 
@@ -156,24 +160,26 @@ func (m *MemoryRepository) ListMessages(_ context.Context, sessionID string, lim
 	return out, nil
 }
 
-func (m *MemoryRepository) SaveCheckpoint(_ context.Context, sessionID string, data []byte) error {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	m.checkpoints[sessionID] = append([]byte(nil), data...)
-	return nil
-}
-
-func (m *MemoryRepository) LoadCheckpoint(_ context.Context, sessionID string) ([]byte, error) {
+func (m *MemoryRepository) GetStoreSnapshot(_ context.Context, sessionID string) (*models.StoreSnapshot, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	data, ok := m.checkpoints[sessionID]
+	snapshot, ok := m.checkpoints[sessionID]
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return append([]byte(nil), data...), nil
+	copySnapshot := *snapshot
+	return &copySnapshot, nil
 }
 
-func (m *MemoryRepository) DeleteCheckpoint(_ context.Context, sessionID string) error {
+func (m *MemoryRepository) SaveStoreSnapshot(_ context.Context, snapshot *models.StoreSnapshot) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	copySnapshot := *snapshot
+	m.checkpoints[snapshot.SessionID] = &copySnapshot
+	return nil
+}
+
+func (m *MemoryRepository) DeleteStoreSnapshot(_ context.Context, sessionID string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	delete(m.checkpoints, sessionID)
@@ -187,4 +193,8 @@ func (m *MemoryRepository) UpsertInboundEvent(_ context.Context, companyID, even
 	key := companyID + ":" + eventID
 	m.inboundEvents[key] = &copyEvent
 	return nil
+}
+
+func (m *MemoryRepository) Get(_ context.Context) (*models.SystemProperties, error) {
+	return &models.SystemProperties{WhatsAppSkipHistorySync: true}, nil
 }

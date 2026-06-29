@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils"
 type BrandLogoLinkProps = {
   className?: string
   height?: number
+  logoClassName?: string
 }
 
 export const BrandLogoLink = ({
   className,
   height = 32,
+  logoClassName,
 }: BrandLogoLinkProps) => (
   <Link
     href="/"
@@ -17,7 +19,7 @@ export const BrandLogoLink = ({
     className={cn("flex items-center justify-center rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary", className)}
   >
     <div style={{ height }}>
-      <BrandLogo className="h-full w-auto" priority />
+      <BrandLogo className={cn("h-full w-auto", logoClassName)} priority />
     </div>
   </Link>
 )

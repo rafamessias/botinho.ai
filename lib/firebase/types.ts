@@ -87,6 +87,10 @@ export type FirestoreInboxCustomer = {
 
 export type FirestoreInboxConversation = {
   customerId: string
+  customerName?: string
+  customerPhone?: string | null
+  customerEmail?: string | null
+  customerCompany?: string | null
   sessionId?: string | null
   subject?: string
   lastMessagePreview?: string
@@ -96,6 +100,7 @@ export type FirestoreInboxConversation = {
   satisfactionScore?: number
   tags: string[]
   assignedToId?: string | null
+  assignedToName?: string | null
   activeSurveyResponseId?: string | null
   activeCampaignId?: string | null
   activeCampaignDeliveryId?: string | null
@@ -104,6 +109,13 @@ export type FirestoreInboxConversation = {
   archivedAt?: Timestamp | null
   createdAt: Timestamp
   updatedAt: Timestamp
+}
+
+export type InboxMessageQuote = {
+  content: string
+  senderType?: InboxMessageSenderType
+  externalMessageId?: string
+  inboxMessageId?: string
 }
 
 export type FirestoreInboxMessage = {
@@ -116,6 +128,10 @@ export type FirestoreInboxMessage = {
   channel?: MessageChannel
   direction?: MessageDirection
   externalMessageId?: string
+  externalParticipantJid?: string
+  replyToMessageId?: string
+  replyToExternalMessageId?: string
+  quotedMessage?: InboxMessageQuote
   channelPhoneNumber?: string
   failureReason?: string
   metricsSentCounted?: boolean
@@ -134,6 +150,10 @@ export type FirestoreInboundEvent = {
   type?: string
   timestamp: Timestamp | Date | string
   phoneNumber?: string
+  quotedMessageId?: string
+  quotedBody?: string
+  quotedParticipant?: string
+  senderJid?: string
   status: InboundEventStatus
   attempts: number
   lastError?: string | null

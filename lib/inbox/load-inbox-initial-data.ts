@@ -27,6 +27,7 @@ export type InboxInitialData = {
   connections: InboxConnectionView[]
   whatsappConfigured: boolean
   whatsappAvailable: boolean
+  whatsappNeedsRepair: boolean
   quickAnswers: QuickAnswerView[]
   templates: TemplateView[]
   loadError: string | null
@@ -60,6 +61,7 @@ export const loadInboxInitialData = async (): Promise<InboxInitialData> => {
     connections: [],
     whatsappConfigured: false,
     whatsappAvailable: true,
+    whatsappNeedsRepair: false,
     quickAnswers: [],
     templates: [],
     loadError: null,
@@ -115,6 +117,9 @@ export const loadInboxInitialData = async (): Promise<InboxInitialData> => {
   const whatsappAvailable =
     connectionsResult.success && connectionsResult.data ? connectionsResult.data.available : true
 
+  const whatsappNeedsRepair =
+    connectionsResult.success && connectionsResult.data ? connectionsResult.data.needsRepair : false
+
   let quickAnswers: QuickAnswerView[] = []
   let templates: TemplateView[] = []
 
@@ -131,6 +136,7 @@ export const loadInboxInitialData = async (): Promise<InboxInitialData> => {
     connections,
     whatsappConfigured,
     whatsappAvailable,
+    whatsappNeedsRepair,
     quickAnswers,
     templates,
     loadError: null,

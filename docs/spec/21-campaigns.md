@@ -82,12 +82,12 @@ Per-recipient send tracking with status lifecycle and failure reasons.
 
 ## 5. Delivery
 
-1. `launchCampaignAction` resolves audience → creates delivery docs → **processes first batch immediately**
-2. **Google Cloud Scheduler** hits `/api/cron/process-campaigns` every 2 min for throttled batches and scheduled starts (see [22-scheduled-jobs.md](22-scheduled-jobs.md))
-3. Throttle: up to `messagesPerInterval` per `intervalMinutes`
+1. `launchCampaignAction` resolves audience → creates delivery docs → **processes delivery immediately**
+2. **Small audiences (≤ 50 contacts):** all messages send on launch/resume — no batch throttle, cron only needed for failed retries
+3. **Large audiences (> 50):** throttled batches via schedule (`messagesPerInterval` / `intervalMinutes`); **Google Cloud Scheduler** hits `/api/cron/process-campaigns` every 2 min
 4. `sendOutbound` delivers via WhatsApp; sets conversation campaign flags
 
-**Local dev:** Cron does not run automatically — launch/resume trigger immediate send; use manual `curl` for retries (see spec 22).
+**Local dev:** Cron does not run automatically — launch/resume trigger immediate send for ≤50 contacts; use manual `curl` for large campaigns or retries (see spec 22).
 
 ---
 

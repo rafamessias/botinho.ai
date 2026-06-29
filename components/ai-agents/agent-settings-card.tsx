@@ -10,10 +10,27 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { CheckboxVisual } from "@/components/ui/checkbox"
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import {
+  checkAgentSessionAssignmentConflictsAction,
   getAgentPhoneOptionsAction,
   updateAiAgentAction,
   type WhatsAppSessionOption,
@@ -26,6 +43,7 @@ export type AgentSettingsView = {
   systemPrompt: string
   sessionIds: string[]
   autoReply: boolean
+  language: "en" | "pt-BR" | "auto"
 }
 
 type AgentSettingsCardProps = {
@@ -37,6 +55,17 @@ export type AgentSettingsCardHandle = {
   save: (options?: { requireComplete?: boolean }) => Promise<boolean>
 }
 
+type SaveOptions = {
+  requireComplete?: boolean
+  confirmedReassignment?: boolean
+}
+
+type SessionAssignmentConflict = {
+  sessionId: string
+  agentId: string
+  agentName: string
+}
+
 export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettingsCardProps>(
   ({ agent, onUpdated }, ref) => {
   const t = useTranslations("AiAgents")
@@ -46,16 +75,25 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
   const [systemPrompt, setSystemPrompt] = useState(agent.systemPrompt)
   const [sessionIds, setSessionIds] = useState<string[]>(agent.sessionIds)
   const [autoReply, setAutoReply] = useState(agent.autoReply)
+  const [language, setLanguage] = useState(agent.language)
   const [sessions, setSessions] = useState<WhatsAppSessionOption[]>([])
+  const connectedSessions = useMemo(
+    () => sessions.filter((session) => session.connected),
+    [sessions],
+  )
   const [isSaving, setIsSaving] = useState(false)
   const [isLoadingSessions, setIsLoadingSessions] = useState(true)
   const [phonePickerOpen, setPhonePickerOpen] = useState(false)
+  const [reassignmentDialogOpen, setReassignmentDialogOpen] = useState(false)
+  const [pendingConflicts, setPendingConflicts] = useState<SessionAssignmentConflict[]>([])
+  const [pendingSaveOptions, setPendingSaveOptions] = useState<SaveOptions | null>(null)
 
   useEffect(() => {
     setName(agent.name)
     setSystemPrompt(agent.systemPrompt)
     setSessionIds(agent.sessionIds)
     setAutoReply(agent.autoReply)
+    setLanguage(agent.language)
   }, [agent])
 
   const loadSessions = useCallback(async () => {
@@ -63,7 +101,7 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
     try {
       const result = await getAgentPhoneOptionsAction()
       if (result.success && result.data) {
-        setSessions(result.data.sessions.filter((session) => session.connected))
+        setSessions(result.data.sessions)
       }
     } finally {
       setIsLoadingSessions(false)
@@ -74,8 +112,72 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
     void loadSessions()
   }, [loadSessions])
 
+  useEffect(() => {
+    if (sessions.length === 0) {
+      return
+    }
+
+    const validSessionIds = new Set(sessions.map((session) => session.sessionId))
+    setSessionIds((previous) => {
+      const next = previous.filter((sessionId) => validSessionIds.has(sessionId))
+      return next.length === previous.length ? previous : next
+    })
+  }, [sessions])
+
+  const performSave = useCallback(
+    async (options?: SaveOptions): Promise<boolean> => {
+      setIsSaving(true)
+      try {
+        const result = await updateAiAgentAction({
+          agentId: agent.id,
+          name: name.trim(),
+          systemPrompt: systemPrompt.trim(),
+          sessionIds,
+          autoReply,
+          language,
+        })
+
+        if (!result.success || !result.data) {
+          toast({
+            title: t("errors.saveFailed"),
+            description: result.error || t("errors.tryAgain"),
+            variant: "destructive",
+          })
+          return false
+        }
+
+        const updated = result.data.agent
+        onUpdated({
+          id: updated.id,
+          name: updated.name,
+          systemPrompt: updated.systemPrompt,
+          sessionIds: updated.sessionIds,
+          autoReply: updated.autoReply,
+          language: updated.language,
+        })
+
+        toast({
+          title: t("success.agentUpdated"),
+          description: t("success.agentUpdatedDescription"),
+        })
+        return true
+      } catch (error) {
+        console.error("Update agent error", error)
+        toast({
+          title: t("errors.saveFailed"),
+          description: t("errors.tryAgain"),
+          variant: "destructive",
+        })
+        return false
+      } finally {
+        setIsSaving(false)
+      }
+    },
+    [agent.id, autoReply, language, name, onUpdated, sessionIds, systemPrompt, t, toast],
+  )
+
   const save = useCallback(
-    async (options?: { requireComplete?: boolean }): Promise<boolean> => {
+    async (options?: SaveOptions): Promise<boolean> => {
       const requireComplete = options?.requireComplete ?? false
 
       if (!name.trim()) {
@@ -105,58 +207,69 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
         return false
       }
 
-      setIsSaving(true)
-      try {
-        const result = await updateAiAgentAction({
-          agentId: agent.id,
-          name: name.trim(),
-          systemPrompt: systemPrompt.trim(),
-          sessionIds,
-          autoReply,
-        })
+      const newlyAssignedSessionIds = sessionIds.filter(
+        (sessionId) => !agent.sessionIds.includes(sessionId),
+      )
 
-        if (!result.success || !result.data) {
+      if (newlyAssignedSessionIds.length > 0 && !options?.confirmedReassignment) {
+        try {
+          const conflictResult = await checkAgentSessionAssignmentConflictsAction({
+            agentId: agent.id,
+            sessionIds: newlyAssignedSessionIds,
+          })
+
+          if (
+            conflictResult.success &&
+            conflictResult.data &&
+            conflictResult.data.conflicts.length > 0
+          ) {
+            setPendingConflicts(conflictResult.data.conflicts)
+            setPendingSaveOptions(options ?? {})
+            setReassignmentDialogOpen(true)
+            return false
+          }
+        } catch (error) {
+          console.error("Check session assignment conflicts error", error)
           toast({
             title: t("errors.saveFailed"),
-            description: result.error || t("errors.tryAgain"),
+            description: t("errors.tryAgain"),
             variant: "destructive",
           })
           return false
         }
-
-        const updated = result.data.agent
-        onUpdated({
-          id: updated.id,
-          name: updated.name,
-          systemPrompt: updated.systemPrompt,
-          sessionIds: updated.sessionIds,
-          autoReply: updated.autoReply,
-        })
-
-        toast({
-          title: t("success.agentUpdated"),
-          description: t("success.agentUpdatedDescription"),
-        })
-        return true
-      } catch (error) {
-        console.error("Update agent error", error)
-        toast({
-          title: t("errors.saveFailed"),
-          description: t("errors.tryAgain"),
-          variant: "destructive",
-        })
-        return false
-      } finally {
-        setIsSaving(false)
       }
+
+      return performSave(options)
     },
-    [agent.id, autoReply, name, onUpdated, sessionIds, systemPrompt, t, toast],
+    [agent.id, agent.sessionIds, name, performSave, sessionIds, systemPrompt, t, toast],
   )
+
+  const handleConfirmReassignment = useCallback(() => {
+    setReassignmentDialogOpen(false)
+    const options = pendingSaveOptions ?? {}
+    setPendingSaveOptions(null)
+    setPendingConflicts([])
+    void performSave({ ...options, confirmedReassignment: true })
+  }, [pendingSaveOptions, performSave])
+
+  const handleCancelReassignment = useCallback(() => {
+    setReassignmentDialogOpen(false)
+    setPendingSaveOptions(null)
+    setPendingConflicts([])
+  }, [])
 
   useImperativeHandle(ref, () => ({ save }), [save])
 
   const formatSessionLabel = (session: WhatsAppSessionOption) =>
     session.label ?? session.phoneNumber ?? session.sessionId
+
+  const formatSessionLabelById = useCallback(
+    (sessionId: string) => {
+      const session = sessions.find((item) => item.sessionId === sessionId)
+      return session ? formatSessionLabel(session) : sessionId
+    },
+    [sessions],
+  )
 
   const selectedSessions = useMemo(
     () => sessions.filter((session) => sessionIds.includes(session.sessionId)),
@@ -176,7 +289,7 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
       return t("form.numbersSelected", { count: selectedSessions.length })
     }
 
-    return t("form.numbersSelected", { count: sessionIds.length })
+    return t("form.noNumberAssigned")
   }, [selectedSessions, sessionIds.length, t])
 
   const toggleSession = (sessionId: string) => {
@@ -188,6 +301,7 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
   }
 
   return (
+    <>
     <Card className="elegant-card">
       <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
@@ -236,11 +350,11 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
                 className="w-[var(--radix-popover-trigger-width)] p-0"
                 align="start"
               >
-                {sessions.length === 0 ? (
+                {connectedSessions.length === 0 ? (
                   <p className="p-3 text-sm text-muted-foreground">{t("form.noConnectedNumbers")}</p>
                 ) : (
                   <div className="max-h-60 overflow-y-auto p-1" role="listbox" aria-multiselectable="true">
-                    {sessions.map((session) => {
+                    {connectedSessions.map((session) => {
                       const isSelected = sessionIds.includes(session.sessionId)
                       const label = formatSessionLabel(session)
 
@@ -271,10 +385,25 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
                 )}
               </PopoverContent>
             </Popover>
-            {!isLoadingSessions && sessions.length === 0 && (
+            {!isLoadingSessions && connectedSessions.length === 0 && (
               <p className="text-xs text-muted-foreground">{t("form.noConnectedNumbers")}</p>
             )}
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="agent-language">{t("form.responseLanguage")}</Label>
+          <Select value={language} onValueChange={(value) => setLanguage(value as AgentSettingsView["language"])}>
+            <SelectTrigger id="agent-language" className="w-full md:w-80">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pt-BR">{t("form.responseLanguagePtBr")}</SelectItem>
+              <SelectItem value="en">{t("form.responseLanguageEn")}</SelectItem>
+              <SelectItem value="auto">{t("form.responseLanguageAuto")}</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">{t("form.responseLanguageDescription")}</p>
         </div>
 
         <div className="space-y-2">
@@ -303,6 +432,45 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
         </div>
       </CardContent>
     </Card>
+
+    <AlertDialog
+      open={reassignmentDialogOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          handleCancelReassignment()
+        }
+      }}
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("form.reassignNumberTitle")}</AlertDialogTitle>
+          <AlertDialogDescription asChild>
+            <div className="space-y-3">
+              <p>{t("form.reassignNumberDescription")}</p>
+              <ul className="list-disc space-y-1 pl-5 text-sm">
+                {pendingConflicts.map((conflict) => (
+                  <li key={`${conflict.sessionId}:${conflict.agentId}`}>
+                    {t("form.reassignNumberConflict", {
+                      number: formatSessionLabelById(conflict.sessionId),
+                      agentName: conflict.agentName,
+                    })}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isSaving} onClick={handleCancelReassignment}>
+            {t("form.reassignNumberCancel")}
+          </AlertDialogCancel>
+          <Button type="button" disabled={isSaving} onClick={handleConfirmReassignment}>
+            {isSaving ? t("buttons.saving") : t("form.reassignNumberConfirm")}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   )
 },
 )

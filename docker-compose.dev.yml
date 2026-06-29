@@ -16,24 +16,41 @@ services:
     build:
       context: ./services/whatsapp-worker
       dockerfile: deploy/docker/Dockerfile.worker
+    # Host port 8082 avoids stale docker-proxy on 8081 after WSL/Docker restarts (see npm run dev:worker:doctor).
     ports:
-      - "8081:8081"
+      - "${WHATSAPP_WORKER_PORT:-8082}:8081"
     env_file:
       - .env
     environment:
       PORT: "8081"
       WORKER_ID: worker-1
-      WORKER_URL: http://localhost:8081
+      WORKER_URL: http://localhost:${WHATSAPP_WORKER_PORT:-8082}
       REDIS_URL: redis://redis:6379
       WORKER_INTERNAL_TOKEN: dev-worker-token
       MAX_SESSIONS_PER_WORKER: "25"
       FIRESTORE_PROJECT_ID: ${FIRESTORE_PROJECT_ID:-}
+      WEBHOOK_APP_URL: ${WEBHOOK_APP_URL:-http://host.docker.internal:3000}
+      WHATSAPP_WEBHOOK_SECRET: ${WHATSAPP_WEBHOOK_SECRET:-dev-worker-token}
       SESSION_STORE_DIR: /data/sessions
+      WA_STORE_BACKEND: ${WA_STORE_BACKEND:-local}
+      WA_STORE_BUCKET: ${WA_STORE_BUCKET:-}
+      WA_STORE_LOCAL_DIR: /data/wa-store-backups
+      WA_STORE_SNAPSHOT_INTERVAL: ${WA_STORE_SNAPSHOT_INTERVAL:-60s}
+      WA_STORE_RETAIN_VERSIONS: ${WA_STORE_RETAIN_VERSIONS:-3}
+      WA_SKIP_HISTORY_SYNC: ${WA_SKIP_HISTORY_SYNC:-true}
     volumes:
       - whatsapp-sessions:/data/sessions
+      - whatsapp-store-backups:/data/wa-store-backups
     depends_on:
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8081/health | grep -q details"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
 volumes:
   whatsapp-sessions:
+  whatsapp-store-backups:

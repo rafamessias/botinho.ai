@@ -9,13 +9,20 @@ import { listAiTrainingData } from "@/lib/firebase/services/ai-training-service"
 import { listActiveSurveys } from "@/lib/firebase/services/survey-service"
 import { getRecentConversationMessages } from "@/lib/firebase/services/inbox-service"
 import { KnowledgeItemType } from "@/lib/types/enums"
+import {
+  normalizeAgentLanguagePreference,
+  resolveResponseLanguage,
+  type AgentLanguagePreference,
+  type ResponseLanguage,
+} from "@/lib/firebase/ai/language"
 
 export type CompanyAiContext = {
   companyId: string
   companyName: string
   companyDescription: string
   customerDescription?: string
-  language: "en" | "pt-BR"
+  language: ResponseLanguage
+  agentLanguage?: AgentLanguagePreference
   agentName?: string
   customSystemPrompt?: string
   knowledgeText: string
@@ -23,15 +30,6 @@ export type CompanyAiContext = {
   templatesText: string
   surveysText: string
   recentMessages: Array<{ role: "customer" | "agent" | "bot"; content: string }>
-}
-
-const detectLanguage = (text: string): "en" | "pt-BR" => {
-  const lower = text.toLowerCase()
-  const ptHints = ["olá", "ola", "obrigad", "preço", "preco", "horário", "horario", "entrega", "você", "voce", "não", "nao"]
-  if (ptHints.some((hint) => lower.includes(hint))) {
-    return "pt-BR"
-  }
-  return "en"
 }
 
 const truncate = (value: string, max: number) =>
@@ -93,6 +91,7 @@ export const loadCompanyAiContext = async (params: {
 
   let agentName: string | undefined
   let customSystemPrompt: string | undefined
+  let agentLanguage: AgentLanguagePreference | undefined
   let knowledgeText: string
   let quickAnswersText: string
   let templatesText: string
@@ -112,6 +111,7 @@ export const loadCompanyAiContext = async (params: {
   if (agent) {
     agentName = agent.name
     customSystemPrompt = agent.systemPrompt || undefined
+    agentLanguage = agent.language
     const agentTraining = await listAgentTrainingData(params.companyId, agent.id)
     knowledgeText = formatKnowledgeText(agentTraining.knowledgeBase)
 
@@ -161,17 +161,23 @@ export const loadCompanyAiContext = async (params: {
     }))
   }
 
-  const languageSeed =
-    params.customerMessage ??
-    recentMessages.filter((m) => m.role === "customer").at(-1)?.content ??
-    ""
+  const recentCustomerMessages = recentMessages
+    .filter((message) => message.role === "customer")
+    .map((message) => message.content)
 
   return {
     companyId: params.companyId,
     companyName: (companyData?.name as string) ?? "Company",
     companyDescription: truncate((companyData?.description as string) ?? "", 500),
     customerDescription,
-    language: detectLanguage(languageSeed),
+    language: resolveResponseLanguage({
+      agentLanguage,
+      customerMessage: params.customerMessage,
+      recentCustomerMessages,
+      agentSystemPrompt: customSystemPrompt,
+      trainingText: [quickAnswersText, templatesText, knowledgeText].join("\n"),
+    }),
+    agentLanguage,
     agentName,
     customSystemPrompt,
     knowledgeText,
@@ -183,10 +189,34 @@ export const loadCompanyAiContext = async (params: {
 }
 
 export const buildSystemPrompt = (context: CompanyAiContext): string => {
-  const langInstruction =
-    context.language === "pt-BR"
-      ? "Responda sempre em português do Brasil. Seja conciso e amigável, no estilo WhatsApp."
-      : "Always respond in English. Be concise and friendly, WhatsApp-style."
+  if (context.language === "pt-BR") {
+    const agentLabel = context.agentName ? ` (${context.agentName})` : ""
+
+    return [
+      `Você é um assistente de atendimento da empresa "${context.companyName}"${agentLabel}.`,
+      context.companyDescription ? `Sobre a empresa: ${context.companyDescription}` : "",
+      context.customerDescription ? `Sobre este cliente: ${context.customerDescription}` : "",
+      context.customSystemPrompt ? `Instruções adicionais:\n${context.customSystemPrompt}` : "",
+      "Responda sempre em português do Brasil. Seja conciso e amigável, no estilo WhatsApp.",
+      "Use SOMENTE fatos da base de conhecimento abaixo. Não invente preços, políticas ou horários.",
+      "Se faltar informação, diga que vai verificar com a equipe.",
+      "",
+      "## Base de conhecimento",
+      context.knowledgeText,
+      "",
+      "## Respostas rápidas",
+      context.quickAnswersText,
+      "",
+      "## Modelos de mensagem",
+      context.templatesText,
+      "",
+      "## Pesquisas de satisfação",
+      context.surveysText,
+      "Não envie pesquisas sem consentimento do cliente, exceto quando as regras automáticas se aplicarem.",
+    ]
+      .filter(Boolean)
+      .join("\n")
+  }
 
   const agentLabel = context.agentName ? ` (${context.agentName})` : ""
 
@@ -195,7 +225,7 @@ export const buildSystemPrompt = (context: CompanyAiContext): string => {
     context.companyDescription ? `About the business: ${context.companyDescription}` : "",
     context.customerDescription ? `About this customer: ${context.customerDescription}` : "",
     context.customSystemPrompt ? `Additional instructions:\n${context.customSystemPrompt}` : "",
-    langInstruction,
+    "Always respond in English. Be concise and friendly, WhatsApp-style.",
     "Use ONLY facts from the knowledge base below. Do not invent prices, policies, or hours.",
     "If information is missing, say you will check with the team.",
     "",
@@ -215,6 +245,11 @@ export const buildSystemPrompt = (context: CompanyAiContext): string => {
     .filter(Boolean)
     .join("\n")
 }
+
+export const buildAutoReplyInstruction = (language: ResponseLanguage): string =>
+  language === "pt-BR"
+    ? "Escreva UMA resposta concisa para WhatsApp como a empresa. Sem markdown. Máximo de 2 frases curtas."
+    : "Write ONE concise WhatsApp reply as the business. No markdown. Max 2 short sentences."
 
 export const formatConversationHistory = (messages: CompanyAiContext["recentMessages"]): string => {
   if (!messages.length) {

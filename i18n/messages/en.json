@@ -318,12 +318,17 @@
                 "description": "Try a different filter or search term."
             },
             "noMessage": "No messages yet",
-            "selectConversationAria": "Select conversation with {name}"
+            "selectConversationAria": "Select conversation with {name}",
+            "handledByBot": "Handled by bot",
+            "handledByHuman": "Handled by {name}",
+            "handledByHumanShort": "Handled by agent"
         },
         "filters": {
             "all": "All",
             "unread": "Unread",
-            "favorites": "Bookmarked"
+            "favorites": "Bookmarked",
+            "human": "Human",
+            "bot": "Bot"
         },
         "context": {
             "title": "Context",
@@ -407,11 +412,27 @@
             },
             "inputPlaceholderNoSelection": "Select a conversation to reply",
             "sendFailed": "Could not send message",
-            "whatsappDeliveryFailed": "Message saved, but WhatsApp delivery failed. Check your connection in Settings."
+            "whatsappDeliveryFailed": "Message saved, but WhatsApp delivery failed. Check your connection in Settings.",
+            "botPending": "Sending…",
+            "botFailed": "Auto-reply failed",
+            "reply": "Reply",
+            "replyingTo": "Replying to {name}",
+            "cancelReply": "Cancel reply",
+            "quoteSender": {
+                "customer": "Customer",
+                "agent": "You",
+                "bot": "Bot",
+                "system": "System",
+                "unknown": "Message"
+            }
         },
         "whatsappOffline": {
             "message": "WhatsApp offline — outbound messages are paused.",
             "settingsLink": "Settings"
+        },
+        "whatsappRepair": {
+            "message": "WhatsApp is not receiving messages — re-pair your number in Settings.",
+            "settingsLink": "Re-pair in Settings"
         },
         "actions": {
             "openConversations": "Open conversations list",
@@ -854,6 +875,16 @@
             "noConnectedNumbers": "Connect a WhatsApp number in Settings to assign it here.",
             "autoReply": "Auto-reply",
             "autoReplyDescription": "When enabled, this Botinho automatically replies to incoming messages on its assigned numbers.",
+            "responseLanguage": "Response language",
+            "responseLanguagePtBr": "Portuguese (Brazil)",
+            "responseLanguageEn": "English",
+            "responseLanguageAuto": "Automatic (customer + prompt)",
+            "responseLanguageDescription": "Controls the language used for auto-replies and AI suggestions. Choose Portuguese for pt-BR Botinhos.",
+            "reassignNumberTitle": "Number already assigned to another Botinho",
+            "reassignNumberDescription": "One or more selected numbers are already in use. Confirming will remove them from the other Botinho and assign them here.",
+            "reassignNumberConflict": "{number} is assigned to {agentName}",
+            "reassignNumberConfirm": "Reassign and save",
+            "reassignNumberCancel": "Cancel",
             "title": "Title",
             "content": "Content",
             "templateName": "Template Name",
@@ -1799,6 +1830,8 @@
                     "description": "Click the button above to connect your first number."
                 },
                 "offlineBanner": "WhatsApp is offline. Your numbers are listed below, but messaging is paused.",
+                "repairBanner": "WhatsApp is not receiving messages. Scan the QR code again to restore inbound delivery.",
+                "repairAction": "Re-pair now",
                 "status": {
                     "connected": "Connected",
                     "disconnected": "Disconnected",
@@ -1819,6 +1852,24 @@
                     "editAria": "Edit WhatsApp number {name}",
                     "removeAria": "Remove WhatsApp number {name}",
                     "connect": "Connect Number"
+                },
+                "details": {
+                    "title": "Connection details",
+                    "openAria": "View details for {name}",
+                    "fields": {
+                        "sessionId": "Session ID",
+                        "label": "Label",
+                        "phoneNumber": "Phone number",
+                        "status": "Status",
+                        "pairedAt": "Paired on",
+                        "lastSeenAt": "Last seen",
+                        "updatedAt": "Last updated"
+                    },
+                    "status": {
+                        "pending": "Pending",
+                        "qrPending": "Waiting for QR scan",
+                        "needsQr": "Needs QR scan"
+                    }
                 },
                 "autoReply": {
                     "label": "Auto-Reply",
@@ -1903,7 +1954,8 @@
                     "save": "Save Changes"
                 },
                 "delete": {
-                    "confirm": "Are you sure you want to disconnect this WhatsApp number?"
+                    "title": "Disconnect WhatsApp number",
+                    "confirm": "Are you sure you want to disconnect {name}? This will stop receiving messages on this number."
                 }
             }
         }

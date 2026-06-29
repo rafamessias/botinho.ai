@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/config"
+	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/models"
 	"github.com/botinho/botinho.ai/services/whatsapp-worker/internal/wa"
 )
 
@@ -23,8 +24,10 @@ func NewWorkerHandlers(pool *wa.Pool) *WorkerHandlers {
 
 func (h *WorkerHandlers) Health(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
-		"status":   "ok",
-		"sessions": h.pool.Count(),
+		"status":     "ok",
+		"apiVersion": 2,
+		"sessions":   h.pool.Count(),
+		"details":    h.pool.ListSessionHealth(),
 	})
 }
 
@@ -60,7 +63,7 @@ func (h *WorkerHandlers) ConnectSession(w http.ResponseWriter, r *http.Request) 
 
 func (h *WorkerHandlers) StopSession(w http.ResponseWriter, r *http.Request) {
 	sessionID := chi.URLParam(r, "sessionID")
-	if err := h.pool.Stop(r.Context(), sessionID); err != nil {
+	if err := h.pool.Stop(r.Context(), sessionID, true); err != nil {
 		writeError(w, http.StatusInternalServerError, "failed to stop session", err.Error())
 		return
 	}
@@ -80,8 +83,9 @@ func (h *WorkerHandlers) SessionStatus(w http.ResponseWriter, r *http.Request) {
 func (h *WorkerHandlers) SendMessage(w http.ResponseWriter, r *http.Request) {
 	sessionID := chi.URLParam(r, "sessionID")
 	var req struct {
-		To   string `json:"to"`
-		Text string `json:"text"`
+		To    string               `json:"to"`
+		Text  string               `json:"text"`
+		Quote *models.MessageQuote `json:"quote"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid request body", err.Error())
@@ -89,7 +93,7 @@ func (h *WorkerHandlers) SendMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), 25*time.Second)
 	defer cancel()
-	message, err := h.pool.SendText(ctx, sessionID, req.To, req.Text)
+	message, err := h.pool.SendText(ctx, sessionID, req.To, req.Text, req.Quote)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "failed to send message", err.Error())
 		return

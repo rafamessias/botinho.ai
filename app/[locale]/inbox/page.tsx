@@ -5,17 +5,12 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import Inbox from "@/components/inbox/inbox-page"
-import { loadInboxInitialData } from "@/lib/inbox/load-inbox-initial-data"
 import { getBotinhoSession } from "@/lib/botinho-auth"
-
-export const dynamic = "force-dynamic"
 
 export default async function InboxPage() {
   const t = await getTranslations("Inbox")
   const session = await getBotinhoSession()
   const hasCompanyAccess = session.ok && Boolean(session.companyId)
-
-  const initialData = hasCompanyAccess ? await loadInboxInitialData() : null
 
   return (
     <SidebarProvider
@@ -34,7 +29,6 @@ export default async function InboxPage() {
             <Inbox
               hasCompanyAccess={hasCompanyAccess}
               initialCompanyId={session.companyId ?? null}
-              initialData={initialData}
             />
           </Suspense>
         </div>

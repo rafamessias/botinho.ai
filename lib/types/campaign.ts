@@ -64,6 +64,12 @@ export const DEFAULT_CAMPAIGN_SCHEDULE = (): CampaignSchedule => ({
   intervalMinutes: 5,
 })
 
+/** Audiences at or below this size are sent immediately on launch/resume (no cron throttle). */
+export const CAMPAIGN_IMMEDIATE_DELIVERY_THRESHOLD = 50
+
+export const isImmediateCampaignAudience = (targeted: number): boolean =>
+  targeted > 0 && targeted <= CAMPAIGN_IMMEDIATE_DELIVERY_THRESHOLD
+
 export const DEFAULT_CAMPAIGN_RUNTIME = (): CampaignRuntime => ({
   sentInCurrentInterval: 0,
 })

@@ -32,15 +32,40 @@ import { ErrorState } from "@/components/ai-training/components/error-state"
 import {
   createAiAgentAction,
   deleteAiAgentAction,
+  getAgentPhoneOptionsAction,
   listAiAgentsAction,
+  type WhatsAppSessionOption,
 } from "@/components/server-actions/ai-agents"
 import { mapAiAgentsToView, type AgentListItem } from "@/components/ai-agents/map-agent-views"
 import { cn } from "@/lib/utils"
 
 type AiAgentsListPageProps = {
   initialAgents: AgentListItem[]
+  initialSessions?: WhatsAppSessionOption[]
   initialLoadError?: string | null
   hasCompanyAccess: boolean
+}
+
+const formatSessionLabel = (session: WhatsAppSessionOption) =>
+  session.label ?? session.phoneNumber ?? session.sessionId
+
+const getAssignedNumbersLabel = (
+  sessionIds: string[],
+  sessions: WhatsAppSessionOption[],
+  t: (key: string, values?: Record<string, string | number>) => string,
+) => {
+  if (sessionIds.length === 0) return null
+
+  if (sessionIds.length > 2) {
+    return t("list.numbersAssigned", { count: sessionIds.length })
+  }
+
+  return sessionIds
+    .map((sessionId) => {
+      const session = sessions.find((item) => item.sessionId === sessionId)
+      return session ? formatSessionLabel(session) : sessionId
+    })
+    .join(" · ")
 }
 
 const getSetupSteps = (agent: AgentListItem) => [
@@ -52,6 +77,7 @@ const getSetupSteps = (agent: AgentListItem) => [
 
 export default function AiAgentsListPage({
   initialAgents,
+  initialSessions = [],
   initialLoadError = null,
   hasCompanyAccess,
 }: AiAgentsListPageProps) {
@@ -61,6 +87,7 @@ export default function AiAgentsListPage({
   const { toast } = useToast()
 
   const [agents, setAgents] = useState<AgentListItem[]>(initialAgents)
+  const [sessions, setSessions] = useState<WhatsAppSessionOption[]>(initialSessions)
   const [isLoading, setIsLoading] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(initialLoadError)
   const [newAgentName, setNewAgentName] = useState("")
@@ -79,12 +106,20 @@ export default function AiAgentsListPage({
     setLoadError(null)
 
     try {
-      const result = await listAiAgentsAction()
-      if (!result.success || !result.data) {
-        setLoadError(result.error || t("errors.loadFailed"))
+      const [agentsResult, sessionsResult] = await Promise.all([
+        listAiAgentsAction(),
+        getAgentPhoneOptionsAction(),
+      ])
+
+      if (!agentsResult.success || !agentsResult.data) {
+        setLoadError(agentsResult.error || t("errors.loadFailed"))
         return
       }
-      setAgents(mapAiAgentsToView(result.data.agents))
+      setAgents(mapAiAgentsToView(agentsResult.data.agents))
+
+      if (sessionsResult.success && sessionsResult.data) {
+        setSessions(sessionsResult.data.sessions)
+      }
     } catch (error) {
       console.error("Load agents error", error)
       setLoadError(t("errors.loadFailed"))
@@ -302,10 +337,10 @@ export default function AiAgentsListPage({
 
                       {agent.sessionIds.length > 0 && (
                         <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                          <Phone className="h-3 w-3" />
-                          {agent.sessionIds.length === 1
-                            ? t("list.numberAssigned")
-                            : t("list.numbersAssigned", { count: agent.sessionIds.length })}
+                          <Phone className="h-3 w-3 shrink-0" />
+                          <span className="truncate">
+                            {getAssignedNumbersLabel(agent.sessionIds, sessions, t)}
+                          </span>
                         </p>
                       )}
                     </div>

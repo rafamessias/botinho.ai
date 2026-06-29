@@ -14,7 +14,10 @@ export function SiteHeader({ title }: { title?: string }) {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <div className="md:hidden" aria-hidden="true">
-          <BrandLogoLink height={32} />
+          <BrandLogoLink
+            height={28}
+            logoClassName="max-w-[112px] object-contain object-left"
+          />
         </div>
         <h1 className="text-base font-medium">
           <span className="sr-only md:hidden">{title}</span>

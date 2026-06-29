@@ -2,15 +2,25 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
-import { Check, Pencil, X } from "lucide-react"
+import { Check, Pencil, Settings, X } from "lucide-react"
 import { toast } from "sonner"
 import {
   updateWhatsAppSessionLabelAction,
   type WhatsAppSessionView,
 } from "@/components/server-actions/whatsapp"
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { WhatsAppSessionDetailsDialog } from "@/components/settings/whatsapp-session-details-dialog"
 
 type WhatsAppSessionRowProps = {
   session: WhatsAppSessionView
@@ -32,7 +42,10 @@ export const WhatsAppSessionRow = ({
   onDisconnect,
 }: WhatsAppSessionRowProps) => {
   const t = useTranslations("Settings.page")
+  const commonT = useTranslations("Common")
   const inputRef = useRef<HTMLInputElement>(null)
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [label, setLabel] = useState(session.label ?? "")
   const [isSaving, setIsSaving] = useState(false)
@@ -181,14 +194,57 @@ export const WhatsAppSessionRow = ({
         <Badge variant={badgeVariant}>{statusLabel}</Badge>
       </div>
 
-      <Button
-        type="button"
-        variant="outline"
-        disabled={!serviceAvailable || isDisconnecting || isSaving}
-        onClick={() => onDisconnect(session.sessionId)}
-      >
-        {t("whatsapp.disconnect")}
-      </Button>
+      <div className="flex shrink-0 items-center gap-2">
+        <Button
+          type="button"
+          size="icon"
+          variant="outline"
+          onClick={() => setIsDetailsOpen(true)}
+          aria-label={t("whatsapp.details.openAria", { name: displayLabel })}
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          disabled={!serviceAvailable || isDisconnecting || isSaving}
+          onClick={() => setIsConfirmOpen(true)}
+        >
+          {t("whatsapp.disconnect")}
+        </Button>
+      </div>
+
+      <WhatsAppSessionDetailsDialog
+        session={session}
+        open={isDetailsOpen}
+        onOpenChange={setIsDetailsOpen}
+      />
+
+      <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("dialogs.delete.title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("dialogs.delete.confirm", { name: displayLabel })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDisconnecting}>{commonT("cancel")}</AlertDialogCancel>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={isDisconnecting}
+              onClick={() => {
+                setIsConfirmOpen(false)
+                onDisconnect(session.sessionId)
+              }}
+            >
+              {t("whatsapp.disconnect")}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

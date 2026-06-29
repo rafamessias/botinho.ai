@@ -4,7 +4,8 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import AiAgentsListPage from "@/components/ai-agents/ai-agents-list-page"
-import { listAiAgentsAction } from "@/components/server-actions/ai-agents"
+import { getAgentPhoneOptionsAction, listAiAgentsAction } from "@/components/server-actions/ai-agents"
+import type { WhatsAppSessionOption } from "@/components/server-actions/ai-agents"
 import { mapAiAgentsToView } from "@/components/ai-agents/map-agent-views"
 import { getBotinhoSession } from "@/lib/botinho-auth"
 
@@ -16,14 +17,23 @@ export default async function AiAgentsPage() {
   const hasCompanyAccess = session.ok && Boolean(session.companyId)
 
   let initialAgents = mapAiAgentsToView([])
+  let initialSessions: WhatsAppSessionOption[] = []
   let initialLoadError: string | null = null
 
   if (hasCompanyAccess) {
-    const result = await listAiAgentsAction()
-    if (!result.success || !result.data) {
-      initialLoadError = result.error || t("errors.loadFailed")
+    const [agentsResult, sessionsResult] = await Promise.all([
+      listAiAgentsAction(),
+      getAgentPhoneOptionsAction(),
+    ])
+
+    if (!agentsResult.success || !agentsResult.data) {
+      initialLoadError = agentsResult.error || t("errors.loadFailed")
     } else {
-      initialAgents = mapAiAgentsToView(result.data.agents)
+      initialAgents = mapAiAgentsToView(agentsResult.data.agents)
+    }
+
+    if (sessionsResult.success && sessionsResult.data) {
+      initialSessions = sessionsResult.data.sessions
     }
   }
 
@@ -47,6 +57,7 @@ export default async function AiAgentsPage() {
               </div>
               <AiAgentsListPage
                 initialAgents={initialAgents}
+                initialSessions={initialSessions}
                 initialLoadError={initialLoadError}
                 hasCompanyAccess={hasCompanyAccess}
               />

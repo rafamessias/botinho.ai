@@ -20,6 +20,10 @@ export type InboundEventRecord = {
   type?: string
   timestamp: Date
   phoneNumber?: string
+  quotedMessageId?: string
+  quotedBody?: string
+  quotedParticipant?: string
+  senderJid?: string
   status: InboundEventStatus
   attempts: number
   lastError?: string | null
@@ -53,6 +57,7 @@ export type SendOutboundParams = {
   customerPhone?: string
   channelPhoneNumber?: string
   countAsBotAutoReply?: boolean
+  replyToMessageId?: string
 }
 
 export type SendOutboundResult = {
