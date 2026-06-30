@@ -27,12 +27,14 @@
                 "startAria": "Criar sua conta na botinho"
             },
             "mobileMenu": {
-                "open": "Abrir menu de navegação"
+                "open": "Abrir menu de navegação",
+                "title": "Menu de navegação",
+                "description": "Links das seções do site e opções de conta."
             }
         },
         "hero": {
             "badge": "IA para WhatsApp, reinventada",
-            "title": "Transforme cada conversa no WhatsApp em um momento de fidelização",
+            "title": "IA que responde clientes no seu WhatsApp",
             "description": "A botinho automatiza suporte, vendas e follow-ups com um assistente de IA amigável que conhece seu negócio de cabo a rabo, aciona seu time sem atritos e nunca perde uma mensagem.",
             "primaryCta": "Comece grátis em 5 minutos",
             "primaryCtaAria": "Inicie seu teste gratuito na botinho",
@@ -41,24 +43,54 @@
             "rating": "Nota 4,9/5 de 200+ equipes",
             "compliance": "Pronta para GDPR e LGPD",
             "inbox": {
-                "title": "Inbox do WhatsApp",
+                "conversationsTitle": "Conversas",
+                "contextTitle": "Contexto",
+                "handledByBot": "Atendimento automático",
+                "suggestionsTitle": "Sugestões da IA",
+                "messagePlaceholder": "Digite uma mensagem...",
                 "customerName": "Julia Andrade",
+                "customerPhone": "+55 (11) *****-4821",
                 "customerQuestion": "Olá! Vocês têm opções vegetarianas para o almoço de hoje?",
                 "aiReply": "Oi, Julia! Hoje temos strogonoff de cogumelos, salada mediterrânea e lasanha de abobrinha. Posso reservar para você?",
                 "customerConfirmation": "Sim! Reserva para 12h30 no nome da Julia.",
-                "followUpsTitle": "Follow-ups automatizados",
-                "followUpsDescription": "Envie lembretes de reserva automaticamente via WhatsApp",
-                "followUpsAria": "Ativar follow-ups"
+                "reservationConfirmation": "Perfeito, Julia! Sua reserva para 12h30 está confirmada.",
+                "reservationCode": "#BTH-2847",
+                "reservationLinkLabel": "Ver detalhes da reserva",
+                "conversations": [
+                    {
+                        "id": "julia",
+                        "name": "Julia Andrade",
+                        "preview": "Olá! Vocês têm opções vegetarianas...",
+                        "time": "12:04",
+                        "unread": 1
+                    },
+                    {
+                        "id": "marco",
+                        "name": "Marco Silva",
+                        "preview": "Qual o horário de funcionamento?",
+                        "botReply": "Funcionamos das 11h às 23h, todos os dias!",
+                        "time": "11:42",
+                        "unread": 1
+                    },
+                    {
+                        "id": "ana",
+                        "name": "Ana Costa",
+                        "preview": "Vocês entregam no Jardins?",
+                        "botReply": "Sim! Entrega em até 45 min no Jardins.",
+                        "time": "11:48",
+                        "unread": 1
+                    }
+                ]
             }
         },
         "about": {
             "badge": "O que é a botinho",
-            "title": "Seu co-piloto de WhatsApp para marcas de hospitalidade, varejo e serviços",
-            "description": "A botinho centraliza cada mensagem, automatiza respostas com uma IA treinada no DNA do seu negócio e mantém humanos no loop para conversas delicadas. Sem código, sem estresse, só clientes encantados.",
+            "title": "IA que atende seus clientes no WhatsApp",
+            "description": "Centralize o WhatsApp da sua empresa em um inbox só. A IA responde clientes na hora, aprende com seu negócio e chama sua equipe quando precisar de um humano.",
             "cards": {
                 "humanFriendly": {
                     "title": "IA com jeito de gente",
-                    "description": "Treine a botinho uma vez e ela segue aprendendo com cada conversa resolvida, deixando cada resposta mais pessoal."
+                    "description": "Treine o botinho uma vez e ele segue aprendendo com cada conversa resolvida, deixando cada resposta mais pessoal."
                 },
                 "builtForTeams": {
                     "title": "Feita para equipes",
@@ -68,10 +100,22 @@
             "reasons": {
                 "title": "Por que as marcas escolhem a botinho",
                 "items": [
-                    "Respostas instantâneas 24/7 treinadas com a sua base de conhecimento.",
-                    "Handoff humano sem atritos com todo o histórico da conversa.",
-                    "Automatizações inteligentes para pedidos, reservas e follow-ups.",
-                    "Analytics completos para entender sentimento, conversões e performance do time."
+                    {
+                        "title": "Respostas instantâneas 24/7",
+                        "description": "Treinadas com a sua base de conhecimento, FAQs e documentos do negócio."
+                    },
+                    {
+                        "title": "Handoff humano sem atritos",
+                        "description": "Sua equipe assume com todo o histórico da conversa quando precisar."
+                    },
+                    {
+                        "title": "Automações inteligentes",
+                        "description": "Pedidos, reservas e follow-ups no piloto automático."
+                    },
+                    {
+                        "title": "Analytics completos",
+                        "description": "Entenda sentimento, conversões e performance do time em um só lugar."
+                    }
                 ]
             }
         },
@@ -86,11 +130,11 @@
                 },
                 "train": {
                     "title": "Treine sua IA",
-                    "description": "Envie FAQs, cardápios, promoções e documentos para a botinho falar exatamente como a sua marca."
+                    "description": "Envie FAQs, cardápios, promoções e documentos para o botinho falar exatamente como a sua marca."
                 },
                 "automate": {
                     "title": "Automatize conversas",
-                    "description": "Deixe a botinho responder na hora, qualificar leads, agendar horários e escalar quando necessário."
+                    "description": "Deixe o botinho responder na hora, qualificar leads, agendar horários e escalar quando necessário."
                 },
                 "measure": {
                     "title": "Meça e evolua",
@@ -128,6 +172,59 @@
                     "description": "Use modelos prontos para vendas, suporte, reservas e follow-ups e lance mais rápido."
                 }
             },
+            "mocks": {
+                "humanFriendly": {
+                    "configLabel": "Você configura",
+                    "promptSnippet": "Tom amigável. Responda com o cardápio do dia e ofereça reservas.",
+                    "customerLabel": "Cliente no WhatsApp",
+                    "customerMessage": "Tem opção vegana hoje?",
+                    "botLabel": "botinho",
+                    "botReply": "Sim! Temos lasanha de abobrinha e salada mediterrânea. Quer reservar uma mesa?"
+                },
+                "secure": {
+                    "encryptionLabel": "Dados protegidos",
+                    "encryptionStatus": "Criptografia ponta a ponta",
+                    "rolesLabel": "Quem pode fazer o quê",
+                    "roles": [
+                        { "name": "Admin", "access": "Acesso total" },
+                        { "name": "Atendente", "access": "Responder conversas" },
+                        { "name": "Leitura", "access": "Só visualizar" }
+                    ],
+                    "compliance": "LGPD · GDPR"
+                },
+                "collaboration": {
+                    "assignmentLabel": "Responsável pela conversa",
+                    "assignedTo": "Ana · Atendente",
+                    "internalNoteLabel": "Nota interna",
+                    "note": "Cliente VIP — priorizar resposta humana",
+                    "customerLabel": "Cliente",
+                    "customerMessage": "Preciso falar com alguém da equipe.",
+                    "agentLabel": "Ana",
+                    "agentReply": "Oi! Sou a Ana. Vou cuidar do seu pedido agora."
+                },
+                "appointments": {
+                    "eventLabel": "Reserva confirmada",
+                    "event": "Julia · Hoje, 12h30",
+                    "autoLabel": "Lembrete automático",
+                    "reminder": "Oi Julia! Sua reserva é hoje às 12h30. Te esperamos!"
+                },
+                "integrations": {
+                    "connectedLabel": "Conectado ao botinho",
+                    "whatsapp": "WhatsApp",
+                    "whatsappStatus": "Conectado",
+                    "calendar": "Google Calendar",
+                    "calendarStatus": "Sincronizado",
+                    "webhook": "Webhook / CRM",
+                    "webhookStatus": "Ativo"
+                },
+                "playbooks": {
+                    "templatesLabel": "Modelos prontos",
+                    "template1": "Horário de funcionamento",
+                    "template2": "Confirmar reserva",
+                    "previewLabel": "Mensagem no chat",
+                    "composed": "Sua reserva está confirmada para 12h30. Até logo!"
+                }
+            },
             "banner": {
                 "title": "Integrações que aceleram seus fluxos",
                 "tag": "Em breve",
@@ -138,7 +235,7 @@
         "testimonials": {
             "badge": "Confiado por equipes",
             "title": "Menos tarefas repetitivas, clientes mais felizes",
-            "description": "Veja como equipes de hospitalidade, varejo e serviços criam experiências memoráveis com a botinho.",
+            "description": "Veja como outras equipes usam o botinho para atender clientes no WhatsApp.",
             "items": [
                 {
                     "quote": "A botinho resolve mais de 80% das nossas mensagens no WhatsApp. Os clientes recebem resposta na hora e o time foca no que é complexo.",
@@ -160,8 +257,8 @@
         "pricing": {
             "badge": "Planos",
             "title": "Planos simples que crescem com você",
-            "description": "Comece grátis e faça upgrade quando estiver pronto. Cancele a qualquer momento, sem taxas escondidas e com membros ilimitados em todos os planos.",
-            "savingsNote": "Pague anual e economize 20% nos planos Starter, Pro e Business.",
+            "description": "Comece grátis e faça upgrade quando estiver pronto. Cancele a qualquer momento, sem taxas escondidas.",
+            "savingsNote": "Pague anual e economize ~17% nos planos Starter, Pro e Business.",
             "mostLoved": "Queridinho",
             "perMonthLabel": "/mês",
             "plans": {
@@ -1878,6 +1975,11 @@
                     "aria": "Alternar resposta automática",
                     "save": "Salvar Alterações"
                 },
+                "groupMessages": {
+                    "label": "Grupos, comunidades e canais",
+                    "description": "Receba mensagens de grupos, comunidades e canais do WhatsApp neste número. Mensagens diretas são sempre recebidas.",
+                    "aria": "Alternar mensagens de grupos, comunidades e canais para este número"
+                },
                 "dialog": {
                     "title": "Adicionar Número de WhatsApp",
                     "description": "Conecte um novo número do WhatsApp Business à sua empresa"
@@ -2258,8 +2360,12 @@
             "documentType": "Tipo de documento",
             "selectDocumentType": "Tipo de documento",
             "documentNumber": "CPF/CNPJ",
+            "documentNumberEin": "EIN",
+            "documentNumberEntity": "Número da entidade",
             "document": "Número do Documento",
             "documentPlaceholder": "Digite o número do documento",
+            "documentPlaceholderEin": "12-3456789",
+            "documentPlaceholderEntity": "Digite o número da entidade",
             "number": "Número",
             "complement": "Complemento (opcional)",
             "clearAddress": "Limpar endereço",
@@ -2277,7 +2383,12 @@
             "update": "Atualizar Empresa",
             "updating": "Atualizando...",
             "save": "Salvar",
-            "saving": "Salvando..."
+            "saving": "Salvando...",
+            "validation": {
+                "nameRequired": "O nome da empresa é obrigatório",
+                "documentRequired": "O número do documento é obrigatório",
+                "addressRequired": "O endereço é obrigatório"
+            }
         },
         "documentTypes": {
             "cpf": "CPF",
@@ -2636,7 +2747,10 @@
             "currentUsage": "Uso atual para este período de cobrança",
             "planFeatures": "Recursos do Plano",
             "featuresIncluded": "Recursos incluídos no seu plano atual",
-            "maxAiResponses": "Respostas IA / mês",
+            "maxAiCredits": "Créditos IA / mês",
+            "maxSyncedNumbers": "Números WhatsApp sincronizados",
+            "aiCredits": "Créditos IA",
+            "syncedNumbers": "Números sincronizados",
             "aiResponses": "Respostas IA",
             "messagesReceived": "Mensagens Recebidas",
             "messagesSent": "Mensagens Enviadas",
@@ -2842,6 +2956,8 @@
             "customerUpdated": "Cliente atualizado com sucesso",
             "customerSaveError": "Ocorreu um erro ao salvar o cliente.",
             "customersImported": "{count} cliente(s) importado(s) com sucesso",
+            "customersUpdatedFromImport": "{count} cliente(s) existente(s) atualizado(s) pela importação",
+            "customersSkippedFromImport": "{count} cliente(s) duplicado(s) ignorado(s)",
             "customersImportError": "Falha ao importar clientes"
         },
         "import": {
@@ -2870,6 +2986,16 @@
             "clear": "Limpar",
             "importing": "Importando...",
             "importAll": "Importar Tudo ({count})",
+            "duplicateStrategy": {
+                "label": "Telefones duplicados",
+                "description": "Escolha como tratar linhas que correspondem a um cliente existente pelo número de telefone.",
+                "merge": "Mesclar dados",
+                "mergeDescription": "Atualiza clientes existentes com os valores importados. Campos vazios na importação mantêm o valor atual.",
+                "overwrite": "Substituir dados",
+                "overwriteDescription": "Substitui os campos do cliente existente pelos dados da linha importada.",
+                "skip": "Ignorar duplicados",
+                "skipDescription": "Mantém os clientes existentes inalterados e importa apenas novos telefones."
+            },
             "bulkSuccess": "Importado com sucesso {count} cliente(s)",
             "bulkErrors": "Falha ao importar {count} cliente(s)",
             "bulkFailed": "Falha na importação em massa",
@@ -2879,104 +3005,99 @@
     "Dashboard": {
         "title": "Dashboard",
         "description": "Bem-vindo de volta! Aqui está o que está acontecendo hoje.",
+        "noCompanyAccess": "Selecione ou crie uma empresa para ver as métricas do dashboard.",
+        "errors": {
+            "loadFailed": "Não foi possível carregar as métricas do dashboard."
+        },
         "stats": {
+            "noData": "—",
             "messagesHandled": {
                 "title": "Mensagens Processadas",
-                "value": "445",
-                "change": "12%",
                 "changeLabel": "vs semana passada"
             },
             "avgResponseTime": {
                 "title": "Tempo Médio de Resposta",
-                "value": "1,2s",
-                "change": "8%",
-                "changeLabel": "mais rápido"
+                "changeLabel": "vs semana passada",
+                "formats": {
+                    "seconds": "{value}s",
+                    "minutes": "{value} min",
+                    "hours": "{hours}h {minutes}m"
+                }
             },
             "satisfactionRate": {
                 "title": "Taxa de Satisfação",
-                "value": "94%",
-                "change": "3%",
-                "changeLabel": "melhoria"
+                "formatted": "{value}%",
+                "changeLabel": "vs semana passada"
             },
             "activeCustomers": {
                 "title": "Clientes Ativos",
-                "value": "1.234",
-                "change": "18%",
-                "changeLabel": "crescimento"
+                "changeLabel": "novos clientes vs semana passada"
             }
         },
         "charts": {
             "messageVolume": {
                 "title": "Volume de Mensagens",
-                "description": "Mensagens diárias processadas esta semana",
-                "label": "Mensagens"
+                "description": "Mensagens diárias processadas nos últimos 7 dias",
+                "label": "Mensagens",
+                "total": "{count} mensagens esta semana"
             },
-            "performance": {
-                "title": "Gráfico de Área",
-                "description": "Mostrando visitantes totais nos últimos 6 meses",
-                "trend": "Em alta 5,2% este mês",
-                "period": "Janeiro - Junho 2024",
-                "series": {
-                    "desktop": "Computador"
-                }
-            }
-        },
-        "months": {
-            "january": {
-                "short": "Jan",
-                "full": "Janeiro"
-            },
-            "february": {
-                "short": "Fev",
-                "full": "Fevereiro"
-            },
-            "march": {
-                "short": "Mar",
-                "full": "Março"
-            },
-            "april": {
-                "short": "Abr",
-                "full": "Abril"
-            },
-            "may": {
-                "short": "Mai",
-                "full": "Maio"
-            },
-            "june": {
-                "short": "Jun",
-                "full": "Junho"
-            }
-        },
-        "recentActivity": {
-            "title": "Atividade Recente",
-            "description": "Últimas interações com clientes",
-            "customers": {
-                "maria": "Maria Silva",
-                "joao": "João Santos",
-                "ana": "Ana Costa",
-                "pedro": "Pedro Lima"
-            },
-            "messages": {
-                "hours": "Qual o horário de funcionamento?",
-                "delivery": "Vocês fazem entrega?",
-                "price": "Qual o preço do produto X?",
-                "cancel": "Como faço para cancelar?"
-            },
-            "time": {
-                "2min": "2 min atrás",
-                "5min": "5 min atrás",
-                "12min": "12 min atrás",
-                "18min": "18 min atrás"
-            },
-            "status": {
-                "answered": "respondida",
-                "pending": "pendente"
+            "empty": {
+                "title": "Nenhuma atividade de mensagens ainda",
+                "description": "Quando os clientes começarem a enviar mensagens, o volume diário aparecerá aqui.",
+                "action": "Abrir Caixa de Entrada"
             }
         },
         "quickActions": {
             "title": "Pronto para configurar o Botinho?",
             "description": "Adicione conhecimento para tornar o Botinho ainda mais inteligente",
             "startTraining": "Abrir Botinho"
+        }
+    },
+    "Pricing": {
+        "mostLoved": "Queridinho",
+        "perMonth": "/mês",
+        "contactSales": "Falar com vendas",
+        "billedAnnually": "cobrado anualmente",
+        "creditsTooltip": "1 resposta automática = 1 crédito. 1 pedido de sugestões no inbox = 0,25 crédito.",
+        "loading": "Carregando...",
+        "cta": "Começar",
+        "billing": {
+            "monthly": "Mensal",
+            "yearly": "Anual",
+            "save": "Economize ~17%"
+        },
+        "features": {
+            "syncedNumbers": "{count, plural, one {# número WhatsApp sincronizado} other {# números WhatsApp sincronizados}}",
+            "aiCredits": "{count} créditos IA/mês",
+            "analytics": "Dashboard de analytics",
+            "removeBranding": "Remover branding",
+            "dataExport": "Exportação de dados",
+            "apiAccess": "API e webhooks",
+            "communitySupport": "Suporte comunitário",
+            "emailSupport": "Suporte por e-mail",
+            "prioritySupport": "Suporte prioritário"
+        },
+        "plans": {
+            "free": {
+                "name": "Grátis",
+                "description": "Perfeito para testar",
+                "cta": "Começar grátis"
+            },
+            "starter": {
+                "name": "Starter",
+                "description": "Para equipes pequenas",
+                "cta": "Escolher Starter"
+            },
+            "pro": {
+                "name": "Pro",
+                "description": "Nosso plano mais popular",
+                "cta": "Fazer upgrade para Pro"
+            },
+            "business": {
+                "name": "Business",
+                "description": "Para empresas em escala",
+                "cta": "Falar com vendas"
+            }
         }
     }
 }

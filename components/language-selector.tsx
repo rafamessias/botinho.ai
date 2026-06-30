@@ -2,7 +2,6 @@
 
 import { useTranslations, useLocale } from "next-intl"
 import { Globe } from "lucide-react"
-import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -43,17 +42,15 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
         try {
             const result = await updateUserLanguageAction(newLanguage as "en" | "pt-BR")
 
-            if (!result?.success) {
-                toast.error(result?.error || "Failed to update language")
+            if (result?.success) {
+                router.replace(pathname, { locale: result.locale ?? newLanguage })
                 return
             }
-
-            const updatedLocale = result.locale ?? newLanguage
-            router.replace(pathname, { locale: updatedLocale })
         } catch (error) {
             console.error("Language update error:", error)
-            toast.error("Unexpected error while changing language")
         }
+
+        router.replace(pathname, { locale: newLanguage })
     }
 
     // Compact variant - icon only

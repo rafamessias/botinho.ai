@@ -5,16 +5,18 @@ import { cn } from "@/lib/utils"
 type BrandLogoProps = {
   className?: string
   priority?: boolean
+  alt?: string
 }
 
 export const BrandLogo = ({
   className,
   priority = false,
+  alt = "botinho.ai",
 }: BrandLogoProps) => (
   <>
     <Image
       src="/logo-green.png"
-      alt="botinho.ai"
+      alt={alt}
       width={420}
       height={96}
       priority={priority}
@@ -22,7 +24,7 @@ export const BrandLogo = ({
     />
     <Image
       src="/logo-white.png"
-      alt="botinho.ai"
+      alt={alt}
       width={420}
       height={96}
       priority={priority}
@@ -34,11 +36,12 @@ export const BrandLogo = ({
 export const BrandLogoIcon = ({
   className,
   priority = false,
+  alt = "botinho.ai",
 }: BrandLogoProps) => (
   <span className={cn("relative inline-flex size-8 shrink-0 items-center justify-center", className)}>
     <Image
       src="/bot-icon-green.png"
-      alt="botinho.ai"
+      alt={alt}
       width={64}
       height={64}
       priority={priority}
@@ -46,7 +49,7 @@ export const BrandLogoIcon = ({
     />
     <Image
       src="/bot-icon-white.png"
-      alt="botinho.ai"
+      alt={alt}
       width={64}
       height={64}
       priority={priority}

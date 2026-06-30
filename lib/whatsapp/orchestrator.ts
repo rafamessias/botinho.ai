@@ -47,6 +47,7 @@ export class WhatsAppOrchestrator {
       companyId: params.companyId,
       workerId: worker.workerId,
       status: "pending",
+      acceptGroupMessages: false,
       createdAt: now,
       updatedAt: now,
       ...(params.label ? { label: params.label } : {}),
@@ -77,6 +78,22 @@ export class WhatsAppOrchestrator {
   ): Promise<WhatsAppSession> {
     await this.requireCompanySession(sessionId, companyId)
     await this.repository.patchSessionLabel(sessionId, label.trim())
+
+    const session = await this.repository.getSession(sessionId)
+    if (!session) {
+      throw new Error("session not found")
+    }
+
+    return session
+  }
+
+  async updateSessionAcceptGroupMessages(
+    sessionId: string,
+    companyId: string,
+    acceptGroupMessages: boolean,
+  ): Promise<WhatsAppSession> {
+    await this.requireCompanySession(sessionId, companyId)
+    await this.repository.patchSessionAcceptGroupMessages(sessionId, acceptGroupMessages)
 
     const session = await this.repository.getSession(sessionId)
     if (!session) {

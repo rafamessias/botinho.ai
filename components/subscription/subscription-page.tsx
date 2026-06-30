@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, FileCheck, BarChart3, Users, MessageSquare, Calendar, AlertTriangle, CheckCircle, Clock, Info, Zap, RefreshCw, Eye } from "lucide-react";
-import { createPortalSession, getAvailablePlans } from "@/components/server-actions/subscription";
+import { createPortalSession } from "@/components/server-actions/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { PlanType } from "@/lib/types/enums"
@@ -43,8 +43,6 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
     const t = useTranslations("Subscription");
     const [isLoading, setIsLoading] = useState(false);
     const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
-    const [availablePlans, setAvailablePlans] = useState<any[]>([]);
-    const [loadingPlans, setLoadingPlans] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [showUpgradeButton, setShowUpgradeButton] = useState(true);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -145,7 +143,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         }
     };
 
-    const handleUpgradeClick = async () => {
+    const handleUpgradeClick = () => {
         if (!userHasPermission.isAdmin) {
             toast({
                 title: t("Access denied"),
@@ -155,65 +153,12 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
             return;
         }
         setShowUpgradeButton(true);
-        if (availablePlans.length === 0) {
-            setLoadingPlans(true);
-            try {
-                const result = await getAvailablePlans();
-                if (result.success && result.plans) {
-                    setAvailablePlans(result.plans);
-                    setShowUpgradeButton(true);
-                    setUpgradeModalOpen(true);
-                } else {
-                    toast({
-                        title: t("toast.error.title"),
-                        description: t("toast.error.description"),
-                        variant: "destructive",
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching plans:', error);
-                toast({
-                    title: t("toast.error.title"),
-                    description: t("toast.error.description"),
-                    variant: "destructive",
-                });
-            } finally {
-                setLoadingPlans(false);
-            }
-        } else {
-            setUpgradeModalOpen(true);
-        }
+        setUpgradeModalOpen(true);
     };
 
-    const handleViewPlans = async () => {
-        if (availablePlans.length === 0) {
-            setLoadingPlans(true);
-            try {
-                const result = await getAvailablePlans();
-                if (result.success && result.plans) {
-                    setAvailablePlans(result.plans);
-                    setShowUpgradeButton(false);
-                    setUpgradeModalOpen(true);
-                } else {
-                    toast({
-                        title: t("toast.error.title"),
-                        description: t("toast.error.description"),
-                        variant: "destructive",
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching plans:', error);
-                toast({
-                    title: t("toast.error.title"),
-                    description: t("toast.error.description"),
-                    variant: "destructive",
-                });
-            } finally {
-                setLoadingPlans(false);
-            }
-        } else {
-            setUpgradeModalOpen(true);
-        }
+    const handleViewPlans = () => {
+        setShowUpgradeButton(false);
+        setUpgradeModalOpen(true);
     };
 
     // Manual refresh function
@@ -249,10 +194,20 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
         return value === -1 ? t("page.unlimited") : value.toLocaleString();
     };
 
+    const formatMetricUsage = (metricType: string, value: number) => {
+        if (metricType === "AI_CREDITS" || metricType === "AI_RESPONSES") {
+            return value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+        }
+        return value.toLocaleString();
+    };
+
     const getMetricIcon = (metricType: string) => {
         switch (metricType) {
+            case 'AI_CREDITS':
             case 'AI_RESPONSES':
                 return <MessageSquare className="h-4 w-4" />;
+            case 'SYNCED_NUMBERS':
+                return <Users className="h-4 w-4" />;
             case 'MESSAGES_RECEIVED':
             case 'MESSAGES_SENT':
             case 'BOT_AUTO_REPLIES':
@@ -264,8 +219,11 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
 
     const getMetricLabel = (metricType: string) => {
         switch (metricType) {
+            case 'AI_CREDITS':
             case 'AI_RESPONSES':
-                return t("page.aiResponses");
+                return t("page.aiCredits");
+            case 'SYNCED_NUMBERS':
+                return t("page.syncedNumbers");
             case 'MESSAGES_RECEIVED':
                 return t("page.messagesReceived");
             case 'MESSAGES_SENT':
@@ -375,40 +333,20 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 <Button
                                     onClick={handleViewPlans}
                                     variant="outline"
-                                    disabled={loadingPlans}
                                     className="flex "
                                 >
-                                    {loadingPlans ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            {t("page.loading")}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Eye className="mr-2 h-4 w-4" />
-                                            {t("page.viewPlans")}
-                                        </>
-                                    )}
+                                    <Eye className="mr-2 h-4 w-4" />
+                                    {t("page.viewPlans")}
                                 </Button>
                             )}
 
                             {isFreePlan && userHasPermission.isAdmin ? (
                                 <Button
                                     onClick={handleUpgradeClick}
-                                    disabled={loadingPlans}
                                     className="bg-warning hover:bg-warning/90 text-warning-foreground"
                                 >
-                                    {loadingPlans ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            {t("page.loading")}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Zap className="mr-2 h-4 w-4" />
-                                            {t("upgradeModal.upgradeNow")}
-                                        </>
-                                    )}
+                                    <Zap className="mr-2 h-4 w-4" />
+                                    {t("upgradeModal.upgradeNow")}
                                 </Button>
                             ) : (
                                 userHasPermission.isAdmin && (
@@ -505,7 +443,7 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                     </div>
                                     <div className="text-right">
                                         <span className="text-sm font-medium">
-                                            {metric.currentUsage.toLocaleString()} / {metric.limit === -1 ? t("page.unlimited") : metric.limit.toLocaleString()}
+                                            {formatMetricUsage(metric.metricType, metric.currentUsage)} / {metric.limit === -1 ? t("page.unlimited") : formatMetricUsage(metric.metricType, metric.limit)}
                                         </span>
                                         {metric.limit !== -1 && (
                                             <span className="text-xs text-muted-foreground ml-2">
@@ -598,7 +536,13 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                 <div className="flex items-center gap-2">
                                     <CheckCircle className="h-4 w-4 text-success" />
                                     <span className="text-sm">
-                                        {t("page.maxAiResponses")}: {formatPlanLimit(subscription.plan.maxAiResponses)}
+                                        {t("page.maxSyncedNumbers")}: {formatPlanLimit(subscription.plan.maxSyncedNumbers)}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="h-4 w-4 text-success" />
+                                    <span className="text-sm">
+                                        {t("page.maxAiCredits")}: {formatPlanLimit(subscription.plan.maxAiCredits ?? subscription.plan.maxAiResponses)}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -659,7 +603,6 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
             <UpgradeModalPlans
                 open={upgradeModalOpen}
                 onOpenChange={setUpgradeModalOpen}
-                plans={availablePlans}
                 showUpgradeButton={showUpgradeButton}
             />
         </div>

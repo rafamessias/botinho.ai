@@ -32,15 +32,22 @@ type SessionCallbacks struct {
 }
 
 type Pool struct {
-	maxSessions     int
-	sessions        map[string]*Session
-	mu              sync.RWMutex
-	repos           *repository.Repositories
-	callbacks       SessionCallbacks
-	logger          waLog.Logger
-	storeManager    *wastore.Manager
-	workerID        string
-	skipHistorySync atomic.Bool
+	maxSessions      int
+	sessions         map[string]*Session
+	mu               sync.RWMutex
+	repos            *repository.Repositories
+	callbacks        SessionCallbacks
+	logger           waLog.Logger
+	storeManager     *wastore.Manager
+	workerID         string
+	skipHistorySync  atomic.Bool
+	sessionSettingsMu sync.RWMutex
+	sessionSettings  map[string]cachedSessionSetting
+}
+
+type cachedSessionSetting struct {
+	acceptGroupMessages bool
+	expiresAt           time.Time
 }
 
 type Session struct {
@@ -68,13 +75,14 @@ func NewPool(
 	skipHistorySync bool,
 ) *Pool {
 	pool := &Pool{
-		maxSessions:  maxSessions,
-		sessions:     make(map[string]*Session),
-		repos:        repos,
-		callbacks:    callbacks,
-		logger:       waLog.Stdout("WhatsApp", "INFO", true),
-		storeManager: storeManager,
-		workerID:     workerID,
+		maxSessions:     maxSessions,
+		sessions:        make(map[string]*Session),
+		repos:           repos,
+		callbacks:       callbacks,
+		logger:          waLog.Stdout("WhatsApp", "INFO", true),
+		storeManager:    storeManager,
+		workerID:        workerID,
+		sessionSettings: make(map[string]cachedSessionSetting),
 	}
 	pool.skipHistorySync.Store(skipHistorySync)
 	return pool
@@ -819,8 +827,8 @@ func (p *Pool) handleEvent(ctx context.Context, sessionID string, raw any) {
 			log.Printf("[wa] ignoring inbound message session=%s loggedIn=%v", sessionID, loggedIn)
 			return
 		}
-		if evt.Info.IsGroup {
-			log.Printf("[wa] skipping group message session=%s chat=%s", sessionID, evt.Info.Chat.String())
+		if isGroupCommunityOrChannel(evt) && !p.acceptGroupCommunityChannelMessages(ctx, sessionID) {
+			log.Printf("[wa] skipping group/community/channel message session=%s chat=%s", sessionID, evt.Info.Chat.String())
 			return
 		}
 		waSession.mu.Lock()
@@ -1069,9 +1077,52 @@ func resolveInboundSenderJID(evt *events.Message) string {
 	return strings.TrimSpace(evt.Info.Chat.String())
 }
 
-func resolveInboundCustomerPhone(evt *events.Message) string {
+func isGroupCommunityOrChannel(evt *events.Message) bool {
+	if evt == nil {
+		return false
+	}
 	if evt.Info.IsGroup {
-		return ""
+		return true
+	}
+	chat := evt.Info.Chat.ToNonAD()
+	if chat.Server == types.GroupServer || chat.Server == types.NewsletterServer {
+		return true
+	}
+	return chat.IsBroadcastList()
+}
+
+func (p *Pool) acceptGroupCommunityChannelMessages(ctx context.Context, sessionID string) bool {
+	now := time.Now().UTC()
+
+	p.sessionSettingsMu.RLock()
+	if cached, ok := p.sessionSettings[sessionID]; ok && now.Before(cached.expiresAt) {
+		p.sessionSettingsMu.RUnlock()
+		return cached.acceptGroupMessages
+	}
+	p.sessionSettingsMu.RUnlock()
+
+	accept := false
+	session, err := p.repos.Sessions.GetSession(ctx, sessionID)
+	if err == nil && session != nil {
+		accept = session.AcceptGroupMessages
+	}
+
+	p.sessionSettingsMu.Lock()
+	p.sessionSettings[sessionID] = cachedSessionSetting{
+		acceptGroupMessages: accept,
+		expiresAt:           now.Add(30 * time.Second),
+	}
+	p.sessionSettingsMu.Unlock()
+
+	return accept
+}
+
+func resolveInboundCustomerPhone(evt *events.Message) string {
+	if isGroupCommunityOrChannel(evt) {
+		chat := evt.Info.Chat.ToNonAD()
+		if id := normalizePhone(chat.User); id != "" {
+			return id
+		}
 	}
 	if alt := evt.Info.SenderAlt.ToNonAD(); alt.User != "" && alt.Server == types.DefaultUserServer {
 		if phone := normalizePhone(alt.User); phone != "" {

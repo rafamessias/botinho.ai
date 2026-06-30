@@ -12,7 +12,7 @@ import {
   formatConversationHistory,
   loadCompanyAiContext,
 } from "@/lib/firebase/ai/prompt-context"
-import { assertAiUsageAllowed, incrementAiUsage } from "@/lib/firebase/services/ai-usage-service"
+import { assertAiUsageAllowed, incrementAiUsage, SUGGESTION_CREDIT_TENTHS } from "@/lib/firebase/services/ai-usage-service"
 
 const suggestionSchema = z.array(
   z.object({
@@ -102,7 +102,7 @@ export const generateSuggestedResponses = async (params: {
     }
 
     const parsed = suggestionSchema.parse(json.suggestions ?? json)
-    await incrementAiUsage(params.companyId)
+    await incrementAiUsage(params.companyId, SUGGESTION_CREDIT_TENTHS)
     return parsed.slice(0, 3)
   } catch (error) {
     console.error("[gemini] suggested responses failed:", error)
@@ -144,15 +144,23 @@ export const generateAutoReplyText = async (params: {
     buildAutoReplyInstruction(context.language),
   ].join("\n")
 
-  const text = await generateGeminiContent({
-    model: AI_MODELS.autoReply,
-    prompt,
-    temperature: 0.3,
-    maxOutputTokens: 256,
-  })
+  try {
+    const text = await generateGeminiContent({
+      model: AI_MODELS.autoReply,
+      prompt,
+      temperature: 0.3,
+      maxOutputTokens: 256,
+      disableThinking: true,
+    })
 
-  await incrementAiUsage(params.companyId)
-  return text
+    await incrementAiUsage(params.companyId)
+    return text
+  } catch (error) {
+    console.error("[gemini] auto-reply generation failed:", error)
+    return context.language === "pt-BR"
+      ? "Obrigado pela mensagem! Nossa equipe retornará em breve."
+      : "Thanks for your message! Our team will get back to you shortly."
+  }
 }
 
 export const summarizeUrlContent = async (params: { url: string; title: string }) => {

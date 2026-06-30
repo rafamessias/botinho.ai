@@ -1,7 +1,13 @@
 import { FieldValue, Timestamp } from "firebase-admin/firestore"
 import { adminDb } from "@/lib/firebase/admin"
 import { collections, companySubcollections, subscriptionDocIds } from "@/lib/firebase/collections"
-import { getAiLimitForPlan, PLAN_AI_LIMITS } from "@/lib/plan-limits"
+import {
+  currencyToIso,
+  getCatalogEntryByPlanType,
+  getLimitsForPlanType,
+  type PlanCurrency,
+} from "@/lib/plan-catalog"
+import { getAiLimitForPlan, getSyncedNumbersLimitForPlan } from "@/lib/plan-limits"
 import { BillingInterval, PlanType, SubscriptionStatus } from "@/lib/types/enums"
 
 export type FirestoreSubscriptionPlan = {
@@ -10,11 +16,18 @@ export type FirestoreSubscriptionPlan = {
   stripeProductId?: string | null
   stripePriceIdMonthly?: string | null
   stripePriceIdYearly?: string | null
+  stripePriceIdMonthlyUsd?: string | null
+  stripePriceIdYearlyUsd?: string | null
   priceMonthly: number
   priceYearly: number
+  priceMonthlyUsd: number
+  priceYearlyUsd: number
   currency: string
   isActive: boolean
+  /** @deprecated use maxAiCredits */
   maxAiResponses: number
+  maxAiCredits: number
+  maxSyncedNumbers: number
   allowExport?: boolean
   allowApiAccess?: boolean
   removeBranding?: boolean
@@ -38,66 +51,58 @@ export type FirestoreCustomerSubscription = {
   updatedAt: Timestamp
 }
 
+const stripeEnvForPlan = (planType: PlanType) => {
+  const prefix = planType === PlanType.STARTER ? "STARTER" : planType === PlanType.PRO ? "PRO" : "BUSINESS"
+  return {
+    product: process.env[`STRIPE_PRODUCT_${prefix}`] ?? null,
+    monthly: process.env[`STRIPE_PRICE_${prefix}_MONTHLY`] ?? null,
+    yearly: process.env[`STRIPE_PRICE_${prefix}_YEARLY`] ?? null,
+    monthlyUsd: process.env[`STRIPE_PRICE_${prefix}_MONTHLY_USD`] ?? null,
+    yearlyUsd: process.env[`STRIPE_PRICE_${prefix}_YEARLY_USD`] ?? null,
+  }
+}
+
+const buildPlanDefinition = (key: "free" | "starter" | "pro" | "business"): Omit<FirestoreSubscriptionPlan, "id"> & { id: string } => {
+  const entry = getCatalogEntryByPlanType(
+    key === "free"
+      ? PlanType.FREE
+      : key === "starter"
+        ? PlanType.STARTER
+        : key === "pro"
+          ? PlanType.PRO
+          : PlanType.BUSINESS,
+  )!
+  const limits = getLimitsForPlanType(entry.planType)
+  const stripe = key === "free" ? null : stripeEnvForPlan(entry.planType)
+
+  return {
+    id: key,
+    planType: entry.planType,
+    priceMonthly: entry.prices.brl.monthly,
+    priceYearly: entry.prices.brl.yearly,
+    priceMonthlyUsd: entry.prices.usd.monthly,
+    priceYearlyUsd: entry.prices.usd.yearly,
+    currency: currencyToIso("brl"),
+    isActive: true,
+    maxAiResponses: limits.maxAiCredits,
+    maxAiCredits: limits.maxAiCredits,
+    maxSyncedNumbers: limits.maxSyncedNumbers,
+    allowExport: entry.flags.allowExport,
+    allowApiAccess: entry.flags.allowApiAccess,
+    removeBranding: entry.flags.removeBranding,
+    stripeProductId: stripe?.product ?? null,
+    stripePriceIdMonthly: key === "free" ? process.env.STRIPE_PRICE_FREE_MONTHLY ?? null : stripe?.monthly ?? null,
+    stripePriceIdYearly: key === "free" ? process.env.STRIPE_PRICE_FREE_YEARLY ?? null : stripe?.yearly ?? null,
+    stripePriceIdMonthlyUsd: key === "free" ? process.env.STRIPE_PRICE_FREE_MONTHLY_USD ?? null : stripe?.monthlyUsd ?? null,
+    stripePriceIdYearlyUsd: key === "free" ? process.env.STRIPE_PRICE_FREE_YEARLY_USD ?? null : stripe?.yearlyUsd ?? null,
+  }
+}
+
 const PLAN_DEFINITIONS: Array<Omit<FirestoreSubscriptionPlan, "id"> & { id: string }> = [
-  {
-    id: "free",
-    planType: PlanType.FREE,
-    priceMonthly: 0,
-    priceYearly: 0,
-    currency: "BRL",
-    isActive: true,
-    maxAiResponses: PLAN_AI_LIMITS[PlanType.FREE],
-    allowExport: false,
-    allowApiAccess: false,
-    removeBranding: false,
-    stripePriceIdMonthly: process.env.STRIPE_PRICE_FREE_MONTHLY ?? null,
-    stripePriceIdYearly: process.env.STRIPE_PRICE_FREE_YEARLY ?? null,
-  },
-  {
-    id: "starter",
-    planType: PlanType.STARTER,
-    priceMonthly: 49,
-    priceYearly: 490,
-    currency: "BRL",
-    isActive: true,
-    maxAiResponses: PLAN_AI_LIMITS[PlanType.STARTER],
-    allowExport: true,
-    allowApiAccess: false,
-    removeBranding: false,
-    stripeProductId: process.env.STRIPE_PRODUCT_STARTER ?? null,
-    stripePriceIdMonthly: process.env.STRIPE_PRICE_STARTER_MONTHLY ?? null,
-    stripePriceIdYearly: process.env.STRIPE_PRICE_STARTER_YEARLY ?? null,
-  },
-  {
-    id: "pro",
-    planType: PlanType.PRO,
-    priceMonthly: 99,
-    priceYearly: 990,
-    currency: "BRL",
-    isActive: true,
-    maxAiResponses: PLAN_AI_LIMITS[PlanType.PRO],
-    allowExport: true,
-    allowApiAccess: true,
-    removeBranding: true,
-    stripeProductId: process.env.STRIPE_PRODUCT_PRO ?? null,
-    stripePriceIdMonthly: process.env.STRIPE_PRICE_PRO_MONTHLY ?? null,
-    stripePriceIdYearly: process.env.STRIPE_PRICE_PRO_YEARLY ?? null,
-  },
-  {
-    id: "business",
-    planType: PlanType.BUSINESS,
-    priceMonthly: 199,
-    priceYearly: 1990,
-    currency: "BRL",
-    isActive: true,
-    maxAiResponses: PLAN_AI_LIMITS[PlanType.BUSINESS],
-    allowExport: true,
-    allowApiAccess: true,
-    removeBranding: true,
-    stripeProductId: process.env.STRIPE_PRODUCT_BUSINESS ?? null,
-    stripePriceIdMonthly: process.env.STRIPE_PRICE_BUSINESS_MONTHLY ?? null,
-    stripePriceIdYearly: process.env.STRIPE_PRICE_BUSINESS_YEARLY ?? null,
-  },
+  buildPlanDefinition("free"),
+  buildPlanDefinition("starter"),
+  buildPlanDefinition("pro"),
+  buildPlanDefinition("business"),
 ]
 
 const subscriptionRef = (companyId: string) =>
@@ -107,10 +112,18 @@ const subscriptionRef = (companyId: string) =>
     .collection(companySubcollections.subscription)
     .doc(subscriptionDocIds.current)
 
-const enrichPlan = (plan: FirestoreSubscriptionPlan): FirestoreSubscriptionPlan => ({
-  ...plan,
-  maxAiResponses: plan.maxAiResponses ?? getAiLimitForPlan(plan.planType),
-})
+const enrichPlan = (plan: FirestoreSubscriptionPlan): FirestoreSubscriptionPlan => {
+  const limits = getLimitsForPlanType(plan.planType)
+  const maxAiCredits = plan.maxAiCredits ?? plan.maxAiResponses ?? getAiLimitForPlan(plan.planType)
+  return {
+    ...plan,
+    maxAiCredits,
+    maxAiResponses: maxAiCredits,
+    maxSyncedNumbers: plan.maxSyncedNumbers ?? limits.maxSyncedNumbers ?? getSyncedNumbersLimitForPlan(plan.planType),
+    priceMonthlyUsd: plan.priceMonthlyUsd ?? getCatalogEntryByPlanType(plan.planType)?.prices.usd.monthly ?? plan.priceMonthly,
+    priceYearlyUsd: plan.priceYearlyUsd ?? getCatalogEntryByPlanType(plan.planType)?.prices.usd.yearly ?? plan.priceYearly,
+  }
+}
 
 const serializeTimestamp = (value?: Timestamp | null) => (value ? value.toDate() : null)
 
@@ -164,10 +177,28 @@ export const getPlanByType = async (planType: PlanType): Promise<FirestoreSubscr
   return fallback ? enrichPlan({ ...fallback }) : null
 }
 
+export const getStripePriceIdForPlan = (
+  plan: FirestoreSubscriptionPlan,
+  billingInterval: BillingInterval | "monthly" | "yearly",
+  currency: PlanCurrency = "brl",
+): string | null => {
+  const isYearly =
+    billingInterval === BillingInterval.yearly || String(billingInterval) === "yearly"
+  if (currency === "usd") {
+    return isYearly ? plan.stripePriceIdYearlyUsd ?? null : plan.stripePriceIdMonthlyUsd ?? null
+  }
+  return isYearly ? plan.stripePriceIdYearly ?? null : plan.stripePriceIdMonthly ?? null
+}
+
 export const getPlanByStripePriceId = async (priceId: string): Promise<FirestoreSubscriptionPlan | null> => {
   for (const plan of PLAN_DEFINITIONS) {
-    if (plan.stripePriceIdMonthly === priceId || plan.stripePriceIdYearly === priceId) {
-      return plan
+    if (
+      plan.stripePriceIdMonthly === priceId ||
+      plan.stripePriceIdYearly === priceId ||
+      plan.stripePriceIdMonthlyUsd === priceId ||
+      plan.stripePriceIdYearlyUsd === priceId
+    ) {
+      return enrichPlan(plan)
     }
   }
 
@@ -178,8 +209,13 @@ export const getPlanByStripePriceId = async (priceId: string): Promise<Firestore
 
   for (const doc of snap.docs) {
     const data = doc.data() as Omit<FirestoreSubscriptionPlan, "id">
-    if (data.stripePriceIdMonthly === priceId || data.stripePriceIdYearly === priceId) {
-      return { id: doc.id, ...data }
+    if (
+      data.stripePriceIdMonthly === priceId ||
+      data.stripePriceIdYearly === priceId ||
+      data.stripePriceIdMonthlyUsd === priceId ||
+      data.stripePriceIdYearlyUsd === priceId
+    ) {
+      return enrichPlan({ id: doc.id, ...data })
     }
   }
 

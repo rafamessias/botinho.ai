@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import { createCompanyAction, updateCompanyAction } from "@/components/server-actions/company"
+import { createCompanyAction, updateCompanyBasicAction } from "@/components/server-actions/company"
 
 const companySchema = z.object({
     name: z.string().min(2, "Company name must be at least 2 characters"),
@@ -52,7 +52,7 @@ export const CompanyForm = ({ company, onSuccess, onCancel }: CompanyFormProps) 
 
             let result
             if (company) {
-                result = await updateCompanyAction({
+                result = await updateCompanyBasicAction({
                     id: company.id,
                     ...data,
                 })

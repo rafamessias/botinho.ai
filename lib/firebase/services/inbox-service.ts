@@ -18,6 +18,7 @@ import type {
 } from "@/lib/firebase/types"
 import { getUserProfile } from "@/lib/firebase/services/user-service"
 import { normalizeStoredPhone } from "@/lib/phone-utils"
+import type { CustomerImportMergeStrategy } from "@/lib/types/customer"
 
 const companyRef = (companyId: string) =>
   adminDb.collection(collections.companies).doc(companyId)
@@ -356,25 +357,101 @@ export const updateInboxCustomer = async (params: {
   return updatedCustomer
 }
 
-export const bulkCreateInboxCustomers = async (params: {
+type BulkImportCustomerInput = {
+  name: string
+  phone: string
+  email?: string
+  company?: string
+  tags?: string[]
+  status?: "active" | "inactive" | "prospect"
+}
+
+const resolveImportedCustomerFields = (
+  existing: FirestoreInboxCustomer,
+  imported: BulkImportCustomerInput,
+  phone: string,
+  mergeStrategy: Exclude<CustomerImportMergeStrategy, "skip">,
+) => {
+  const importedName = imported.name.trim()
+  const importedEmail = imported.email?.trim()
+  const importedCompany = imported.company?.trim()
+  const importedStatus = imported.status ?? "active"
+  const existingTags = sanitizeTags(existing.tags)
+
+  if (mergeStrategy === "overwrite") {
+    return {
+      name: importedName,
+      phone,
+      email: importedEmail,
+      company: importedCompany,
+      tags: existingTags,
+      status: importedStatus,
+      notes: existing.notes ?? undefined,
+    }
+  }
+
+  return {
+    name: importedName || existing.name,
+    phone,
+    email: importedEmail || existing.email || undefined,
+    company: importedCompany || existing.company || undefined,
+    tags: existingTags,
+    status: importedStatus,
+    notes: existing.notes ?? undefined,
+  }
+}
+
+export const bulkImportInboxCustomers = async (params: {
   companyId: string
-  customers: Array<{
-    name: string
-    phone: string
-    email?: string
-    company?: string
-    tags?: string[]
-    status?: "active" | "inactive" | "prospect"
-  }>
+  customers: BulkImportCustomerInput[]
+  mergeStrategy?: CustomerImportMergeStrategy
 }) => {
+  const mergeStrategy = params.mergeStrategy ?? "skip"
   const created: InboxCustomerRecord[] = []
+  const updated: InboxCustomerRecord[] = []
+  let skipped = 0
   const errors: string[] = []
 
   for (const [index, customer] of params.customers.entries()) {
     try {
+      const phone = normalizeStoredPhone(customer.phone)
+      if (!phone) {
+        throw new Error("Invalid phone number")
+      }
+
+      const existingByPhone = await findCustomerByField({
+        companyId: params.companyId,
+        field: "phone",
+        value: phone,
+      })
+
+      if (existingByPhone) {
+        if (mergeStrategy === "skip") {
+          skipped += 1
+          continue
+        }
+
+        const existingData = existingByPhone.data() as FirestoreInboxCustomer
+        const resolved = resolveImportedCustomerFields(
+          existingData,
+          customer,
+          phone,
+          mergeStrategy,
+        )
+
+        const record = await updateInboxCustomer({
+          companyId: params.companyId,
+          customerId: existingByPhone.id,
+          ...resolved,
+        })
+        updated.push(record)
+        continue
+      }
+
       const record = await createInboxCustomer({
         companyId: params.companyId,
         ...customer,
+        phone,
       })
       created.push(record)
     } catch (error) {
@@ -383,8 +460,13 @@ export const bulkCreateInboxCustomers = async (params: {
     }
   }
 
-  return { created, errors }
+  return { created, updated, skipped, errors }
 }
+
+export const bulkCreateInboxCustomers = async (params: {
+  companyId: string
+  customers: BulkImportCustomerInput[]
+}) => bulkImportInboxCustomers({ ...params, mergeStrategy: "skip" })
 
 const mapAssignedToFromProfile = (uid: string, profile: FirestoreUser | null | undefined) => {
   if (!profile) {

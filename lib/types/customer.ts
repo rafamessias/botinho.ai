@@ -1,5 +1,7 @@
 export type CustomerStatus = "active" | "inactive" | "prospect"
 
+export type CustomerImportMergeStrategy = "skip" | "merge" | "overwrite"
+
 export type Customer = {
     id: string
     name: string

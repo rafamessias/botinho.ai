@@ -82,6 +82,7 @@ func sessionToMap(session *models.Session) map[string]any {
 	if session.WebhookURL != "" {
 		data["webhookUrl"] = session.WebhookURL
 	}
+	data["acceptGroupMessages"] = session.AcceptGroupMessages
 	if session.QRExpiresAt != nil {
 		data["expiresAt"] = *session.QRExpiresAt
 	}

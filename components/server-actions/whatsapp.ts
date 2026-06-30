@@ -15,6 +15,7 @@ export type WhatsAppSessionView = {
   loggedIn: boolean
   hasCredentials: boolean
   hasSnapshot: boolean
+  acceptGroupMessages: boolean
   createdAt: string
   updatedAt: string
   lastSeenAt: string | null
@@ -29,6 +30,7 @@ const toSessionView = (session: WhatsAppSession): WhatsAppSessionView => ({
   loggedIn: session.loggedIn === true,
   hasCredentials: session.hasCredentials === true,
   hasSnapshot: session.hasSnapshot === true,
+  acceptGroupMessages: session.acceptGroupMessages === true,
   createdAt: session.createdAt,
   updatedAt: session.updatedAt,
   lastSeenAt: session.lastSeenAt ?? null,
@@ -49,6 +51,10 @@ const createSessionSchema = companyScopeSchema.extend({
 
 const updateSessionLabelSchema = sessionIdSchema.extend({
   label: z.string().trim().min(1).max(120),
+})
+
+const updateSessionAcceptGroupMessagesSchema = sessionIdSchema.extend({
+  acceptGroupMessages: z.boolean(),
 })
 
 type WhatsAppSessionsOverview = {
@@ -91,6 +97,12 @@ export const createWhatsAppSessionAction = async (
   handleAction(async () => {
     const parsed = createSessionSchema.parse(input)
     const { companyId } = await resolveCompanyContext({ companyId: parsed.companyId, requireAdmin: true })
+
+    const { getSyncedNumbersSnapshot } = await import("@/lib/firebase/services/synced-numbers-service")
+    const syncedSnapshot = await getSyncedNumbersSnapshot(companyId)
+    if (syncedSnapshot.currentUsage >= syncedSnapshot.limit) {
+      throw new Error("Synced WhatsApp number limit reached for your plan. Upgrade to add more numbers.")
+    }
 
     const orchestrator = await getWhatsAppOrchestrator()
     const webhookUrl = orchestrator.buildInboundWebhookUrl(companyId)
@@ -152,6 +164,26 @@ export const updateWhatsAppSessionLabelAction = async (
 
     const orchestrator = await getWhatsAppOrchestrator()
     const session = await orchestrator.updateSessionLabel(parsed.sessionId, companyId, parsed.label)
+
+    return {
+      success: true,
+      data: { session: toSessionView(session) },
+    }
+  })
+
+export const updateWhatsAppSessionAcceptGroupMessagesAction = async (
+  input: z.input<typeof updateSessionAcceptGroupMessagesSchema>,
+): Promise<BaseActionResponse<{ session: WhatsAppSessionView }>> =>
+  handleAction(async () => {
+    const parsed = updateSessionAcceptGroupMessagesSchema.parse(input)
+    const { companyId } = await resolveCompanyContext({ companyId: parsed.companyId, requireAdmin: true })
+
+    const orchestrator = await getWhatsAppOrchestrator()
+    const session = await orchestrator.updateSessionAcceptGroupMessages(
+      parsed.sessionId,
+      companyId,
+      parsed.acceptGroupMessages,
+    )
 
     return {
       success: true,

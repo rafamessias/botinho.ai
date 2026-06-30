@@ -4,13 +4,14 @@ import { z } from "zod"
 import type { Customer, CustomerStatus } from "@/lib/types/customer"
 import { BaseActionResponse, handleAction, resolveCompanyContext } from "./utils"
 import {
-  bulkCreateInboxCustomers,
+  bulkImportInboxCustomers,
   createInboxCustomer,
   listInboxCustomers,
   sanitizeTags,
   updateInboxCustomer,
   type InboxCustomerRecord,
 } from "@/lib/firebase/services/inbox-service"
+import type { CustomerImportMergeStrategy } from "@/lib/types/customer"
 
 const customerStatusSchema = z.enum(["active", "inactive", "prospect"])
 
@@ -131,8 +132,11 @@ export const updateCustomerAction = async (
     }
   })
 
+const customerImportMergeStrategySchema = z.enum(["skip", "merge", "overwrite"])
+
 const bulkImportCustomersSchema = z.object({
   customers: z.array(customerInputSchema).min(1).max(500),
+  mergeStrategy: customerImportMergeStrategySchema.default("merge"),
 })
 
 export const bulkImportCustomersAction = async (
@@ -140,6 +144,8 @@ export const bulkImportCustomersAction = async (
 ): Promise<
   BaseActionResponse<{
     customers: Customer[]
+    updated: Customer[]
+    skipped: number
     errors: string[]
   }>
 > =>
@@ -147,15 +153,18 @@ export const bulkImportCustomersAction = async (
     const payload = bulkImportCustomersSchema.parse(input)
     const { companyId } = await resolveCompanyContext({ requireCanPost: true })
 
-    const result = await bulkCreateInboxCustomers({
+    const result = await bulkImportInboxCustomers({
       companyId,
       customers: payload.customers,
+      mergeStrategy: payload.mergeStrategy as CustomerImportMergeStrategy,
     })
 
     return {
       success: true,
       data: {
         customers: result.created.map(mapCustomerRecord),
+        updated: result.updated.map(mapCustomerRecord),
+        skipped: result.skipped,
         errors: result.errors,
       },
     }

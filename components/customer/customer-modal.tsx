@@ -20,10 +20,12 @@ import {
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Form } from "@/components/ui/form"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { cn } from "@/lib/utils"
 import { CustomerFormFields } from "@/components/customer/customer-form-fields"
 import { downloadCustomerImportTemplate } from "@/lib/customer/customer-import-template"
-import type { Customer, CustomerStatus } from "@/lib/types/customer"
+import type { Customer, CustomerImportMergeStrategy, CustomerStatus } from "@/lib/types/customer"
 
 const statusOptions = ["active", "inactive", "prospect"] as const satisfies CustomerStatus[]
 
@@ -79,7 +81,10 @@ type CustomerModalProps = {
     onSubmit: (values: CustomerFormValues) => Promise<void> | void
     initialCustomer?: Customer | null
     isSubmitting?: boolean
-    onBulkImport?: (customers: Omit<Customer, "id" | "createdAt" | "updatedAt">[]) => Promise<void> | void
+    onBulkImport?: (
+        customers: Omit<Customer, "id" | "createdAt" | "updatedAt">[],
+        mergeStrategy: CustomerImportMergeStrategy,
+    ) => Promise<void> | void
     tagSuggestions?: string[]
 }
 
@@ -98,6 +103,7 @@ export const CustomerModal = ({
     const [excelData, setExcelData] = useState<ExcelCustomerRow[]>([])
     const [parseErrors, setParseErrors] = useState<string[]>([])
     const [isBulkSubmitting, setIsBulkSubmitting] = useState(false)
+    const [mergeStrategy, setMergeStrategy] = useState<CustomerImportMergeStrategy>("merge")
 
     const schema = useCustomerSchema({
         nameRequired: t("form.validation.nameRequired"),
@@ -143,6 +149,7 @@ export const CustomerModal = ({
             setActiveTab("single")
             setExcelData([])
             setParseErrors([])
+            setMergeStrategy("merge")
         }
     }, [isOpen])
 
@@ -271,7 +278,7 @@ export const CustomerModal = ({
                 status: row.status,
             }))
 
-            await onBulkImport(customersToImport)
+            await onBulkImport(customersToImport, mergeStrategy)
 
             setExcelData([])
             setParseErrors([])
@@ -361,7 +368,62 @@ export const CustomerModal = ({
                             </div>
 
                             {excelData.length > 0 && (
-                                <div className="space-y-2 rounded-lg border bg-muted/50 p-4">
+                                <div className="space-y-3 rounded-lg border bg-muted/50 p-4">
+                                    <div className="space-y-2">
+                                        <Label>{t("import.duplicateStrategy.label")}</Label>
+                                        <p className="text-xs text-muted-foreground">
+                                            {t("import.duplicateStrategy.description")}
+                                        </p>
+                                        <RadioGroup
+                                            value={mergeStrategy}
+                                            onValueChange={(value) =>
+                                                setMergeStrategy(value as CustomerImportMergeStrategy)
+                                            }
+                                            disabled={isBulkSubmitting}
+                                            className="gap-3"
+                                        >
+                                            <div className="flex items-start gap-2">
+                                                <RadioGroupItem
+                                                    value="merge"
+                                                    id="customer-import-merge"
+                                                    className="mt-0.5"
+                                                />
+                                                <Label htmlFor="customer-import-merge" className="font-normal">
+                                                    <span className="block text-sm">{t("import.duplicateStrategy.merge")}</span>
+                                                    <span className="block text-xs text-muted-foreground">
+                                                        {t("import.duplicateStrategy.mergeDescription")}
+                                                    </span>
+                                                </Label>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <RadioGroupItem
+                                                    value="overwrite"
+                                                    id="customer-import-overwrite"
+                                                    className="mt-0.5"
+                                                />
+                                                <Label htmlFor="customer-import-overwrite" className="font-normal">
+                                                    <span className="block text-sm">{t("import.duplicateStrategy.overwrite")}</span>
+                                                    <span className="block text-xs text-muted-foreground">
+                                                        {t("import.duplicateStrategy.overwriteDescription")}
+                                                    </span>
+                                                </Label>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <RadioGroupItem
+                                                    value="skip"
+                                                    id="customer-import-skip"
+                                                    className="mt-0.5"
+                                                />
+                                                <Label htmlFor="customer-import-skip" className="font-normal">
+                                                    <span className="block text-sm">{t("import.duplicateStrategy.skip")}</span>
+                                                    <span className="block text-xs text-muted-foreground">
+                                                        {t("import.duplicateStrategy.skipDescription")}
+                                                    </span>
+                                                </Label>
+                                            </div>
+                                        </RadioGroup>
+                                    </div>
+
                                     <div className="flex items-center justify-between">
                                         <p className="text-sm font-medium">{t("import.preview", { count: excelData.length })}</p>
                                         <Button

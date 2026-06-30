@@ -1,11 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { useTranslations } from "next-intl"
-import { X } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,22 +19,31 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { updateCompanyAction } from "@/components/server-actions/company"
+import { AddressAutocompleteInput } from "@/components/company/address-autocomplete-input"
+import {
+    formatCompanyDocumentForDisplay,
+    getCompanyCountryIso,
+    getCompanyDocumentMaxLength,
+    getDocumentCountryMode,
+    normalizeStoredDocument,
+    normalizeCompanyCountry,
+    type CompanyDocumentType,
+} from "@/lib/document-utils"
+import { createCompanySettingsSchema } from "@/lib/company-form-schema"
 
-const companySettingsSchema = z.object({
-    name: z.string().min(2),
-    description: z.string().optional(),
-    country: z.string().optional(),
-    documentType: z.enum(["cpf", "cnpj"]).optional(),
-    document: z.string().optional(),
-    address: z.string().optional(),
-    addressNumber: z.string().optional(),
-    zipCode: z.string().optional(),
-    complement: z.string().optional(),
-    city: z.string().optional(),
-    state: z.string().optional(),
-})
-
-type CompanySettingsFormData = z.infer<typeof companySettingsSchema>
+type CompanySettingsFormData = {
+    name: string
+    description?: string
+    country?: string
+    documentType?: "cpf" | "cnpj"
+    document: string
+    address: string
+    addressNumber?: string
+    zipCode?: string
+    complement?: string
+    city?: string
+    state?: string
+}
 
 export type CompanySettings = {
     id: string
@@ -59,11 +66,21 @@ type CompanySettingsFormProps = {
     onSuccess?: () => void
 }
 
-const COUNTRY_OPTIONS = ["Brasil", "United States", "Portugal"] as const
+const COUNTRY_OPTIONS = ["Brasil", "United States", "Other"] as const
 
 export const CompanySettingsForm = ({ company, disabled = false, onSuccess }: CompanySettingsFormProps) => {
     const t = useTranslations("Company")
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const companySettingsSchema = useMemo(
+        () =>
+            createCompanySettingsSchema({
+                nameRequired: t("form.validation.nameRequired"),
+                documentRequired: t("form.validation.documentRequired"),
+                addressRequired: t("form.validation.addressRequired"),
+            }),
+        [t],
+    )
 
     const {
         register,
@@ -77,7 +94,7 @@ export const CompanySettingsForm = ({ company, disabled = false, onSuccess }: Co
         defaultValues: {
             name: company.name ?? "",
             description: company.description ?? "",
-            country: company.country ?? "Brasil",
+            country: normalizeCompanyCountry(company.country ?? "Brasil"),
             documentType: company.documentType ?? "cnpj",
             document: company.document ?? "",
             address: company.address ?? "",
@@ -89,7 +106,31 @@ export const CompanySettingsForm = ({ company, disabled = false, onSuccess }: Co
         },
     })
 
-    const addressValue = watch("address")
+    const countryValue = watch("country")
+    const documentTypeValue = watch("documentType")
+    const documentCountryMode = getDocumentCountryMode(countryValue)
+    const countryIso = getCompanyCountryIso(countryValue)
+
+    const documentLabel = useMemo(() => {
+        if (documentCountryMode === "brazil") return t("form.documentNumber")
+        if (documentCountryMode === "us") return t("form.documentNumberEin")
+        return t("form.documentNumberEntity")
+    }, [documentCountryMode, t])
+
+    const documentPlaceholder = useMemo(() => {
+        if (documentCountryMode === "brazil") return t("form.documentPlaceholder")
+        if (documentCountryMode === "us") return t("form.documentPlaceholderEin")
+        return t("form.documentPlaceholderEntity")
+    }, [documentCountryMode, t])
+
+    const clearAddressFields = useCallback(() => {
+        setValue("address", "")
+        setValue("addressNumber", "")
+        setValue("zipCode", "")
+        setValue("complement", "")
+        setValue("city", "")
+        setValue("state", "")
+    }, [setValue])
 
     const onSubmit = async (data: CompanySettingsFormData) => {
         try {
@@ -97,6 +138,7 @@ export const CompanySettingsForm = ({ company, disabled = false, onSuccess }: Co
             const result = await updateCompanyAction({
                 id: company.id,
                 ...data,
+                document: normalizeStoredDocument(data.document ?? "", data.country),
             })
 
             if (result?.success) {
@@ -122,6 +164,7 @@ export const CompanySettingsForm = ({ company, disabled = false, onSuccess }: Co
                         <Input
                             id="company-name"
                             disabled={disabled}
+                            aria-required={true}
                             {...register("name")}
                         />
                         {errors.name && (
@@ -166,68 +209,99 @@ export const CompanySettingsForm = ({ company, disabled = false, onSuccess }: Co
                         />
                     </div>
 
-                    <div className="space-y-3">
-                        <Label>{t("form.documentType")}</Label>
-                        <Controller
-                            control={control}
-                            name="documentType"
-                            render={({ field }) => (
-                                <RadioGroup
-                                    disabled={disabled}
-                                    value={field.value}
-                                    onValueChange={field.onChange}
-                                    className="flex flex-row gap-6"
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <RadioGroupItem value="cnpj" id="document-cnpj" />
-                                        <Label htmlFor="document-cnpj" className="font-normal">
-                                            {t("documentTypes.cnpj")}
-                                        </Label>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <RadioGroupItem value="cpf" id="document-cpf" />
-                                        <Label htmlFor="document-cpf" className="font-normal">
-                                            {t("documentTypes.cpf")}
-                                        </Label>
-                                    </div>
-                                </RadioGroup>
-                            )}
-                        />
-                    </div>
+                    {documentCountryMode === "brazil" && (
+                        <div className="space-y-3">
+                            <Label>{t("form.documentType")}</Label>
+                            <Controller
+                                control={control}
+                                name="documentType"
+                                render={({ field }) => (
+                                    <RadioGroup
+                                        disabled={disabled}
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                        className="flex flex-row gap-6"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <RadioGroupItem value="cnpj" id="document-cnpj" />
+                                            <Label htmlFor="document-cnpj" className="font-normal">
+                                                {t("documentTypes.cnpj")}
+                                            </Label>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <RadioGroupItem value="cpf" id="document-cpf" />
+                                            <Label htmlFor="document-cpf" className="font-normal">
+                                                {t("documentTypes.cpf")}
+                                            </Label>
+                                        </div>
+                                    </RadioGroup>
+                                )}
+                            />
+                        </div>
+                    )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="company-document">{t("form.documentNumber")}</Label>
-                        <Input
-                            id="company-document"
-                            disabled={disabled}
-                            placeholder={t("form.documentPlaceholder")}
-                            {...register("document")}
+                        <Label htmlFor="company-document">{documentLabel}</Label>
+                        <Controller
+                            control={control}
+                            name="document"
+                            render={({ field }) => (
+                                <Input
+                                    id="company-document"
+                                    disabled={disabled}
+                                    aria-required={true}
+                                    placeholder={documentPlaceholder}
+                                    maxLength={getCompanyDocumentMaxLength(
+                                        countryValue,
+                                        (documentTypeValue ?? "cnpj") as CompanyDocumentType,
+                                    )}
+                                    value={formatCompanyDocumentForDisplay(
+                                        field.value ?? "",
+                                        countryValue,
+                                        (documentTypeValue ?? "cnpj") as CompanyDocumentType,
+                                    )}
+                                    onChange={(event) => {
+                                        field.onChange(
+                                            normalizeStoredDocument(event.target.value, countryValue),
+                                        )
+                                    }}
+                                />
+                            )}
                         />
+                        {errors.document && (
+                            <p className="text-sm text-destructive">{errors.document.message}</p>
+                        )}
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="company-address">{t("form.address")}</Label>
-                        <div className="relative">
-                            <Input
-                                id="company-address"
-                                disabled={disabled}
-                                placeholder={t("form.addressPlaceholder")}
-                                className="pr-10"
-                                {...register("address")}
-                            />
-                            {addressValue && !disabled && (
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    className="absolute right-1 top-1/2 size-7 -translate-y-1/2"
-                                    onClick={() => setValue("address", "")}
-                                    aria-label={t("form.clearAddress")}
-                                >
-                                    <X className="size-4" aria-hidden="true" />
-                                </Button>
+                        <Controller
+                            control={control}
+                            name="address"
+                            render={({ field }) => (
+                                <AddressAutocompleteInput
+                                    id="company-address"
+                                    disabled={disabled}
+                                    aria-required={true}
+                                    placeholder={t("form.addressPlaceholder")}
+                                    countryIso={countryIso}
+                                    clearLabel={t("form.clearAddress")}
+                                    value={field.value ?? ""}
+                                    onValueChange={field.onChange}
+                                    onPlaceSelected={(parsed) => {
+                                        field.onChange(parsed.address)
+                                        setValue("addressNumber", parsed.addressNumber)
+                                        setValue("zipCode", parsed.zipCode)
+                                        setValue("city", parsed.city)
+                                        setValue("state", parsed.state)
+                                    }}
+                                    onClear={clearAddressFields}
+                                />
                             )}
-                        </div>
+                        />
+                        {errors.address && (
+                            <p className="text-sm text-destructive">{errors.address.message}</p>
+                        )}
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-2">

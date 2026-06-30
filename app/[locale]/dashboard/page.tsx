@@ -4,11 +4,42 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import Dashboard from "@/components/dashboard/dashboard-page"
+import { getDashboardMetricsAction } from "@/components/server-actions/dashboard"
+import { getBotinhoSession } from "@/lib/botinho-auth"
+import type { DashboardMetrics } from "@/lib/firebase/services/dashboard-service"
 
 export const dynamic = "force-dynamic"
 
+const emptyMetrics: DashboardMetrics = {
+  messagesHandled: 0,
+  messagesHandledChange: null,
+  avgResponseTimeMs: null,
+  avgResponseTimeChange: null,
+  satisfactionRate: null,
+  satisfactionChange: null,
+  activeCustomers: 0,
+  activeCustomersChange: null,
+  messageVolume: [],
+}
+
 export default async function DashboardPage() {
   const t = await getTranslations("Dashboard")
+  const session = await getBotinhoSession()
+  const hasCompanyAccess = session.ok && Boolean(session.companyId)
+
+  let metrics: DashboardMetrics | null = hasCompanyAccess ? emptyMetrics : null
+  let loadError: string | null = null
+
+  if (hasCompanyAccess) {
+    const result = await getDashboardMetricsAction()
+
+    if (!result.success || !result.data) {
+      loadError = result.error || t("errors.loadFailed")
+      metrics = emptyMetrics
+    } else {
+      metrics = result.data
+    }
+  }
 
   return (
     <SidebarProvider
@@ -28,7 +59,11 @@ export default async function DashboardPage() {
               <div className="space-y-2">
                 <p className="text-muted-foreground">{t("description")}</p>
               </div>
-              <Dashboard />
+              <Dashboard
+                metrics={metrics}
+                hasCompanyAccess={hasCompanyAccess}
+                loadError={loadError}
+              />
             </div>
           </div>
         </div>

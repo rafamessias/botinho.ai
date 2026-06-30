@@ -21,9 +21,10 @@ type Session struct {
 	QRCode      string        `firestore:"qrCode,omitempty" json:"qrCode,omitempty"`
 	QRImage     string        `firestore:"qrImage,omitempty" json:"qrImage,omitempty"`
 	QRExpiresAt *time.Time    `firestore:"expiresAt,omitempty" json:"expiresAt,omitempty"`
-	Label       string        `firestore:"label,omitempty" json:"label,omitempty"`
-	WebhookURL  string        `firestore:"webhookUrl,omitempty" json:"webhookUrl,omitempty"`
-	CreatedAt   time.Time     `firestore:"createdAt,omitempty" json:"createdAt"`
+	Label               string        `firestore:"label,omitempty" json:"label,omitempty"`
+	WebhookURL          string        `firestore:"webhookUrl,omitempty" json:"webhookUrl,omitempty"`
+	AcceptGroupMessages bool          `firestore:"acceptGroupMessages" json:"acceptGroupMessages"`
+	CreatedAt           time.Time     `firestore:"createdAt,omitempty" json:"createdAt"`
 	UpdatedAt   time.Time     `firestore:"updatedAt,omitempty" json:"updatedAt"`
 	LastSeenAt  *time.Time    `firestore:"lastSeenAt,omitempty" json:"lastSeenAt,omitempty"`
 	LoggedIn       bool `firestore:"-" json:"loggedIn"`

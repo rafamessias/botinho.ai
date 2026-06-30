@@ -217,8 +217,10 @@ export const WhatsAppSessionRow = ({
 
       <WhatsAppSessionDetailsDialog
         session={session}
+        companyId={companyId}
         open={isDetailsOpen}
         onOpenChange={setIsDetailsOpen}
+        onUpdated={onUpdated}
       />
 
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>

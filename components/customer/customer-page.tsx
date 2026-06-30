@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { useRouter } from "@/i18n/navigation"
 
 import { Button } from "@/components/ui/button"
-import type { Customer } from "@/lib/types/customer"
+import type { Customer, CustomerImportMergeStrategy } from "@/lib/types/customer"
 import { CustomerModal, type CustomerFormValues } from "@/components/customer/customer-modal"
 import { CustomerTable } from "@/components/customer/customer-table"
 import { collectCustomerTags } from "@/components/customer/customer-tag-utils"
@@ -165,7 +165,10 @@ export const CustomerPage = ({
     )
 
     const handleBulkImport = useCallback(
-        async (customersToImport: Omit<Customer, "id" | "createdAt" | "updatedAt">[]) => {
+        async (
+            customersToImport: Omit<Customer, "id" | "createdAt" | "updatedAt">[],
+            mergeStrategy: CustomerImportMergeStrategy,
+        ) => {
             try {
                 const result = await bulkImportCustomersAction({
                     customers: customersToImport.map((customer) => ({
@@ -176,6 +179,7 @@ export const CustomerPage = ({
                         tags: customer.tags,
                         status: customer.status,
                     })),
+                    mergeStrategy,
                 })
 
                 if (!result.success || !result.data) {
@@ -185,6 +189,18 @@ export const CustomerPage = ({
                 if (result.data.customers.length > 0) {
                     setCustomers((previous) => [...result.data!.customers, ...previous])
                     toast.success(t("messages.customersImported", { count: result.data.customers.length }))
+                }
+
+                if (result.data.updated.length > 0) {
+                    setCustomers((previous) => {
+                        const updatedById = new Map(result.data!.updated.map((customer) => [customer.id, customer]))
+                        return previous.map((customer) => updatedById.get(customer.id) ?? customer)
+                    })
+                    toast.success(t("messages.customersUpdatedFromImport", { count: result.data.updated.length }))
+                }
+
+                if (result.data.skipped > 0) {
+                    toast.info(t("messages.customersSkippedFromImport", { count: result.data.skipped }))
                 }
 
                 if (result.data.errors.length > 0) {

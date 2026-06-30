@@ -21,6 +21,7 @@ const toFirestoreSession = (session: WhatsAppSession): DocumentData =>
     qrImage: session.qrImage,
     label: session.label,
     webhookUrl: session.webhookUrl,
+    acceptGroupMessages: session.acceptGroupMessages === true,
     expiresAt: session.expiresAt ? new Date(session.expiresAt) : undefined,
     lastSeenAt: session.lastSeenAt ? new Date(session.lastSeenAt) : undefined,
     createdAt: new Date(session.createdAt),
@@ -46,9 +47,10 @@ const mapSession = (id: string, data: DocumentData): WhatsAppSession => ({
   qrCode: data.qrCode ?? undefined,
   qrImage: data.qrImage ?? undefined,
   expiresAt: toIso(data.expiresAt),
-  label: data.label ?? undefined,
-  webhookUrl: data.webhookUrl ?? undefined,
-  createdAt: toIso(data.createdAt) ?? new Date().toISOString(),
+    label: data.label ?? undefined,
+    webhookUrl: data.webhookUrl ?? undefined,
+    acceptGroupMessages: data.acceptGroupMessages === true,
+    createdAt: toIso(data.createdAt) ?? new Date().toISOString(),
   updatedAt: toIso(data.updatedAt) ?? new Date().toISOString(),
   lastSeenAt: toIso(data.lastSeenAt),
 })
@@ -76,6 +78,13 @@ export class WhatsAppSessionRepository {
   async patchSessionLabel(sessionId: string, label: string): Promise<void> {
     await adminDb.collection(SESSIONS_COLLECTION).doc(sessionId).update({
       label,
+      updatedAt: new Date(),
+    })
+  }
+
+  async patchSessionAcceptGroupMessages(sessionId: string, acceptGroupMessages: boolean): Promise<void> {
+    await adminDb.collection(SESSIONS_COLLECTION).doc(sessionId).update({
+      acceptGroupMessages,
       updatedAt: new Date(),
     })
   }

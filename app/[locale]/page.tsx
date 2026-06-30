@@ -21,18 +21,23 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { HeroInboxDemo } from "@/components/landing/hero-inbox-demo"
 import { LandingThemeToggle } from "@/components/landing/landing-theme-toggle"
+import { LandingPricingSection } from "@/components/pricing/landing-pricing-section"
+import { LandingFeaturesSection, type FeatureMocks } from "@/components/landing/landing-features-section"
+import { LanguageSelector } from "@/components/language-selector"
 import {
-  Bot,
   CalendarCheck,
   CheckCircle2,
-  ChevronRight,
   Clock,
+  Menu,
   MessageCircle,
   Shield,
   Sparkles,
@@ -42,22 +47,8 @@ import {
   Zap,
 } from "lucide-react"
 
-type PricingPlan = {
-  key: "free" | "starter" | "pro" | "business"
-  name: string
-  price: string
-  description: string
-  cta: string
-  href: string
-  features: string[]
-  variant?: "outline"
-  highlight?: boolean
-}
-
 export default async function LandingPage() {
   const t = await getTranslations("Landing")
-
-  const sharedLogoAlt = t("shared.logoAlt")
 
   const navItems = [
     { href: "#about", label: t("header.nav.about") },
@@ -104,78 +95,44 @@ export default async function LandingPage() {
 
   const featureHighlights = [
     {
-      icon: Bot,
+      key: "humanFriendly" as const,
+      icon: "bot" as const,
       title: t("features.cards.humanFriendly.title"),
       description: t("features.cards.humanFriendly.description"),
     },
     {
-      icon: Shield,
+      key: "secure" as const,
+      icon: "shield" as const,
       title: t("features.cards.secure.title"),
       description: t("features.cards.secure.description"),
     },
     {
-      icon: Users,
+      key: "collaboration" as const,
+      icon: "users" as const,
       title: t("features.cards.collaboration.title"),
       description: t("features.cards.collaboration.description"),
     },
     {
-      icon: CalendarCheck,
+      key: "appointments" as const,
+      icon: "calendarCheck" as const,
       title: t("features.cards.appointments.title"),
       description: t("features.cards.appointments.description"),
     },
     {
-      icon: Zap,
+      key: "integrations" as const,
+      icon: "zap" as const,
       title: t("features.cards.integrations.title"),
       description: t("features.cards.integrations.description"),
     },
     {
-      icon: CheckCircle2,
+      key: "playbooks" as const,
+      icon: "checkCircle2" as const,
       title: t("features.cards.playbooks.title"),
       description: t("features.cards.playbooks.description"),
     },
   ]
 
-  const pricingPlans: PricingPlan[] = [
-    {
-      key: "free",
-      name: t("pricing.plans.free.name"),
-      price: t("pricing.plans.free.price"),
-      description: t("pricing.plans.free.description"),
-      cta: t("pricing.plans.free.cta"),
-      href: "/register",
-      features: t.raw("pricing.plans.free.features") as string[],
-      variant: "outline",
-    },
-    {
-      key: "starter",
-      name: t("pricing.plans.starter.name"),
-      price: t("pricing.plans.starter.price"),
-      description: t("pricing.plans.starter.description"),
-      cta: t("pricing.plans.starter.cta"),
-      href: "/register",
-      features: t.raw("pricing.plans.starter.features") as string[],
-    },
-    {
-      key: "pro",
-      name: t("pricing.plans.pro.name"),
-      price: t("pricing.plans.pro.price"),
-      description: t("pricing.plans.pro.description"),
-      cta: t("pricing.plans.pro.cta"),
-      href: "/register",
-      features: t.raw("pricing.plans.pro.features") as string[],
-      highlight: true,
-    },
-    {
-      key: "business",
-      name: t("pricing.plans.business.name"),
-      price: t("pricing.plans.business.price"),
-      description: t("pricing.plans.business.description"),
-      cta: t("pricing.plans.business.cta"),
-      href: "/contact",
-      features: t.raw("pricing.plans.business.features") as string[],
-      variant: "outline",
-    },
-  ]
+  const featureMocks = t.raw("features.mocks") as FeatureMocks
 
   const testimonials = t.raw("testimonials.items") as Array<{
     quote: string
@@ -188,7 +145,12 @@ export default async function LandingPage() {
     answer: string
   }>
 
-  const reasons = t.raw("about.reasons.items") as string[]
+  const reasons = t.raw("about.reasons.items") as Array<{
+    title: string
+    description: string
+  }>
+
+  const aboutReasonIcons = [Zap, Users, CalendarCheck, TrendingUp] as const
 
   const contactSpecialist = {
     title: t("contact.specialist.title"),
@@ -203,8 +165,6 @@ export default async function LandingPage() {
     note: t("contact.demo.note"),
     cta: t("contact.demo.cta"),
   }
-
-  const perMonthLabel = t("pricing.perMonthLabel", { defaultValue: "/month" })
 
   return (
     <main className="relative min-h-screen bg-gradient-to-b from-background via-background/60 to-muted/40">
@@ -233,6 +193,7 @@ export default async function LandingPage() {
           </nav>
           <div className="hidden items-center gap-2 lg:flex">
             <LandingThemeToggle labels={themeLabels} />
+            <LanguageSelector variant="compact" />
             <Button asChild variant="ghost" size="sm" className="rounded-full px-4">
               <Link href="/sign-in" aria-label={t("header.auth.login")} tabIndex={0}>
                 {t("header.auth.login")}
@@ -246,6 +207,7 @@ export default async function LandingPage() {
           </div>
           <div className="flex items-center gap-1 lg:hidden">
             <LandingThemeToggle labels={themeLabels} />
+            <LanguageSelector variant="compact" />
             <Sheet>
               <SheetTrigger asChild>
                 <Button
@@ -255,10 +217,14 @@ export default async function LandingPage() {
                   aria-label={t("header.mobileMenu.open")}
                   tabIndex={0}
                 >
-                  <ChevronRight className="size-5" />
+                  <Menu className="size-5" aria-hidden />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-xs border-l bg-background/95">
+                <SheetHeader className="sr-only">
+                  <SheetTitle>{t("header.mobileMenu.title")}</SheetTitle>
+                  <SheetDescription>{t("header.mobileMenu.description")}</SheetDescription>
+                </SheetHeader>
                 <div className="flex items-center gap-3 px-4 pt-2">
                   <BrandLogo className="h-8 w-auto max-w-[135px] object-contain object-left" />
                 </div>
@@ -333,61 +299,81 @@ export default async function LandingPage() {
           </div>
         </div>
         <HeroInboxDemo
-          logoAlt={sharedLogoAlt}
-          title={t("hero.inbox.title")}
+          conversationsTitle={t("hero.inbox.conversationsTitle")}
           customerName={t("hero.inbox.customerName")}
+          customerPhone={t("hero.inbox.customerPhone")}
           customerQuestion={t("hero.inbox.customerQuestion")}
           aiReply={t("hero.inbox.aiReply")}
           customerConfirmation={t("hero.inbox.customerConfirmation")}
-          followUpsTitle={t("hero.inbox.followUpsTitle")}
-          followUpsDescription={t("hero.inbox.followUpsDescription")}
-          followUpsAria={t("hero.inbox.followUpsAria")}
+          reservationConfirmation={t("hero.inbox.reservationConfirmation")}
+          reservationCode={t("hero.inbox.reservationCode")}
+          reservationLinkLabel={t("hero.inbox.reservationLinkLabel")}
+          conversations={t.raw("hero.inbox.conversations") as Array<{
+            id: string
+            name: string
+            preview: string
+            botReply?: string
+            time: string
+            unread?: number
+          }>}
         />
       </section>
 
       <section id="about" className="bg-card/40">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-4 py-16 md:px-6 lg:flex-row lg:items-center lg:gap-16">
-          <div className="flex-1 space-y-6">
+        <div className="mx-auto w-full max-w-7xl px-4 py-16 md:px-6">
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
             <Badge className="rounded-full bg-primary/10 px-4 py-1 text-primary">{t("about.badge")}</Badge>
             <h2 className="text-balance text-3xl font-semibold sm:text-4xl lg:text-5xl">{t("about.title")}</h2>
             <p className="text-pretty text-lg leading-relaxed text-foreground/75">{t("about.description")}</p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Card className="rounded-2xl border-primary/15 bg-background/90 shadow-sm">
-                <CardHeader className="gap-3">
-                  <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Sparkles className="size-6" />
-                  </span>
-                  <CardTitle className="text-lg">{t("about.cards.humanFriendly.title")}</CardTitle>
-                </CardHeader>
-                <CardContent className="pb-6 text-sm leading-relaxed text-foreground/70">
-                  {t("about.cards.humanFriendly.description")}
-                </CardContent>
-              </Card>
-              <Card className="rounded-2xl border-primary/15 bg-background/90 shadow-sm">
-                <CardHeader className="gap-3">
-                  <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Users className="size-6" />
-                  </span>
-                  <CardTitle className="text-lg">{t("about.cards.builtForTeams.title")}</CardTitle>
-                </CardHeader>
-                <CardContent className="pb-6 text-sm leading-relaxed text-foreground/70">
-                  {t("about.cards.builtForTeams.description")}
-                </CardContent>
-              </Card>
-            </div>
           </div>
-          <div className="flex-1 space-y-6 rounded-3xl border border-primary/10 bg-background/70 p-8 shadow-xl">
-            <h3 className="text-xl font-semibold">{t("about.reasons.title")}</h3>
-            <ul className="grid gap-4 text-sm leading-relaxed text-foreground/70">
-              {reasons.map((reason, index) => (
-                <li key={reason} className="flex items-start gap-3">
-                  <span className="mt-1 flex size-6 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
-                    {(index + 1).toString().padStart(2, "0")}
-                  </span>
-                  <span>{reason}</span>
-                </li>
-              ))}
-            </ul>
+
+          <h3 className="mt-12 text-center text-xl font-semibold">{t("about.reasons.title")}</h3>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {reasons.map((reason, index) => {
+              const ReasonIcon = aboutReasonIcons[index] ?? CheckCircle2
+
+              return (
+                <Card
+                  key={reason.title}
+                  className="rounded-2xl border border-primary/10 bg-background/90 shadow-sm"
+                >
+                  <CardHeader className="gap-3">
+                    <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <ReasonIcon className="size-6" aria-hidden />
+                    </span>
+                    <CardTitle className="text-lg">{reason.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pb-6 text-sm leading-relaxed text-foreground/70">
+                    {reason.description}
+                  </CardContent>
+                </Card>
+              )
+            })}
+
+            <Card className="rounded-2xl border border-primary/10 bg-background/90 shadow-sm">
+              <CardHeader className="gap-3">
+                <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <Sparkles className="size-6" />
+                </span>
+                <CardTitle className="text-lg">{t("about.cards.humanFriendly.title")}</CardTitle>
+              </CardHeader>
+              <CardContent className="pb-6 text-sm leading-relaxed text-foreground/70">
+                {t("about.cards.humanFriendly.description")}
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border border-primary/10 bg-background/90 shadow-sm">
+              <CardHeader className="gap-3">
+                <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <Users className="size-6" />
+                </span>
+                <CardTitle className="text-lg">{t("about.cards.builtForTeams.title")}</CardTitle>
+              </CardHeader>
+              <CardContent className="pb-6 text-sm leading-relaxed text-foreground/70">
+                {t("about.cards.builtForTeams.description")}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -420,32 +406,7 @@ export default async function LandingPage() {
             <h2 className="text-balance text-3xl font-semibold sm:text-4xl">{t("features.title")}</h2>
             <p className="mx-auto max-w-3xl text-pretty text-lg leading-relaxed text-foreground/75">{t("features.description")}</p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {featureHighlights.map((feature) => (
-              <Card key={feature.title} className="rounded-2xl border border-primary/10 bg-background/90 shadow-sm">
-                <CardHeader className="gap-4">
-                  <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <feature.icon className="size-6" />
-                  </span>
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
-                  <CardDescription>{feature.description}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-          <div className="flex flex-col gap-4 rounded-3xl border border-primary/10 bg-primary/5 p-8 text-center md:flex-row md:items-center md:justify-between md:text-left">
-            <div>
-              <h3 className="text-2xl font-semibold text-primary">
-                {t("features.banner.title")} <span className="text-sm text-primary/80">{t("features.banner.tag")}</span>
-              </h3>
-              <p className="mt-2 max-w-2xl text-sm text-primary/80">{t("features.banner.description")}</p>
-            </div>
-            <Button asChild className="rounded-full bg-primary px-6 py-5 text-sm font-semibold text-primary-foreground">
-              <Link href="#contact" tabIndex={0}>
-                {t("features.banner.cta")}
-              </Link>
-            </Button>
-          </div>
+          <LandingFeaturesSection features={featureHighlights} mocks={featureMocks} />
         </div>
       </section>
 
@@ -483,55 +444,7 @@ export default async function LandingPage() {
             <p className="mx-auto max-w-3xl text-pretty text-lg leading-relaxed text-foreground/75">{t("pricing.description")}</p>
             <p className="text-sm leading-relaxed text-foreground/65">{t("pricing.savingsNote")}</p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {pricingPlans.map((plan) => (
-              <Card
-                key={plan.key}
-                className={cn(
-                  "rounded-2xl border border-primary/10 bg-background/90 shadow-sm transition duration-200",
-                  plan.highlight && "border-primary/60 shadow-xl",
-                )}
-              >
-                {plan.highlight ? (
-                  <Badge className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary px-4 py-1 text-primary-foreground">
-                    {t("pricing.mostLoved")}
-                  </Badge>
-                ) : null}
-                <CardHeader className="gap-3">
-                  <CardTitle className="text-xl">{plan.name}</CardTitle>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-semibold">{plan.price}</span>
-                    <span className="text-sm text-muted-foreground">{perMonthLabel}</span>
-                  </div>
-                  <CardDescription>{plan.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-6 pb-8">
-                  <ul className="space-y-3 text-sm leading-relaxed text-foreground/70">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2">
-                        <span className="mt-1 flex size-5 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                          ✓
-                        </span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    asChild
-                    className={cn(
-                      "rounded-full px-6 py-5 text-sm font-semibold",
-                      plan.variant === "outline" && "bg-transparent",
-                    )}
-                    variant={plan.variant ?? "default"}
-                  >
-                    <Link href={plan.href} tabIndex={0}>
-                      {plan.cta}
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <LandingPricingSection />
         </div>
       </section>
 
@@ -566,13 +479,13 @@ export default async function LandingPage() {
               </CardHeader>
               <CardContent className="flex flex-col gap-4 pb-8 text-sm leading-relaxed text-foreground/70">
                 <Button asChild className="rounded-full">
-                  <Link href="mailto:oi@botinho.ai" tabIndex={0}>
-                    {contactSpecialist.emailCta}
+                  <Link href="https://wa.me/5511999999999" target="_blank" rel="noreferrer" tabIndex={0}>
+                    {contactSpecialist.whatsappCta}
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="rounded-full">
-                  <Link href="https://wa.me/5511999999999" target="_blank" rel="noreferrer" tabIndex={0}>
-                    {contactSpecialist.whatsappCta}
+                  <Link href="mailto:oi@botinho.ai" tabIndex={0}>
+                    {contactSpecialist.emailCta}
                   </Link>
                 </Button>
               </CardContent>
@@ -595,38 +508,47 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto my-16 w-full max-w-5xl rounded-3xl border border-primary/20 bg-primary/10 px-6 py-10 text-center md:px-12">
-        <h2 className="text-balance text-3xl font-semibold text-primary sm:text-4xl">{t("cta.title")}</h2>
-        <p className="mt-4 text-pretty text-base leading-relaxed text-primary/85 md:text-lg">{t("cta.description")}</p>
-        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button asChild className="w-full rounded-full bg-primary px-8 py-5 text-sm font-semibold text-primary-foreground sm:w-auto">
-            <Link href="/register" tabIndex={0}>
-              {t("cta.primaryCta")}
-            </Link>
-          </Button>
-          <Button asChild variant="outline" className="w-full rounded-full px-8 py-5 text-sm font-semibold sm:w-auto">
-            <Link href="#pricing" tabIndex={0}>
-              {t("cta.secondaryCta")}
-            </Link>
-          </Button>
+      <section>
+        <div className="mx-auto flex w-full max-w-5xl flex-col px-4 py-16 md:px-6">
+          <Card className="rounded-2xl border border-primary/10 bg-primary/10 text-center shadow-sm">
+            <CardHeader className="gap-3">
+              <CardTitle className="text-balance text-3xl text-primary sm:text-4xl">{t("cta.title")}</CardTitle>
+              <CardDescription className="text-pretty text-base leading-relaxed text-primary/85 md:text-lg">
+                {t("cta.description")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center gap-3 pb-8 sm:flex-row">
+              <Button asChild className="w-full rounded-full bg-primary px-8 py-5 text-sm font-semibold text-primary-foreground sm:w-auto">
+                <Link href="/register" tabIndex={0}>
+                  {t("cta.primaryCta")}
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full rounded-full px-8 py-5 text-sm font-semibold sm:w-auto">
+                <Link href="#pricing" tabIndex={0}>
+                  {t("cta.secondaryCta")}
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       <footer className="border-t border-primary/10 bg-background/90">
-        <div className="mx-auto w-full max-w-7xl px-4 py-12 md:px-6">
-          <div className="flex flex-col gap-10 md:flex-row md:justify-between">
-            <div className="flex flex-col gap-4">
+        <div className="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 md:py-12">
+          <div className="flex w-full flex-col items-start gap-8 md:flex-row md:justify-between md:gap-10">
+            <div className="flex w-full flex-col items-start gap-4 md:max-w-md">
               <Link
                 href="/"
-                className="flex items-center gap-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                className="flex w-fit shrink-0 items-center gap-3 rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
                 tabIndex={0}
+                aria-label={t("header.logoAria")}
               >
                 <BrandLogo className="h-8 w-auto max-w-[135px] object-contain object-left" />
               </Link>
-              <p className="max-w-md text-sm leading-relaxed text-foreground/70">{t("footer.description")}</p>
+              <p className="text-sm leading-relaxed text-foreground/70">{t("footer.description")}</p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+            <div className="grid w-full grid-cols-2 gap-x-6 gap-y-6 md:w-auto md:gap-x-10">
+              <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
                 <span className="text-sm font-semibold text-foreground">{t("footer.exploreTitle")}</span>
                 {footerNavItems.map((item) => (
                   <Link key={item.href} href={item.href} className="transition hover:text-foreground" tabIndex={0}>
@@ -634,20 +556,19 @@ export default async function LandingPage() {
                   </Link>
                 ))}
               </div>
-              <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
                 <span className="text-sm font-semibold text-foreground">{t("footer.contactTitle")}</span>
-                <Link href="mailto:oi@botinho.ai" className="transition hover:text-foreground" tabIndex={0}>
-                  oi@botinho.ai
-                </Link>
                 <Link href="https://wa.me/5511999999999" target="_blank" rel="noreferrer" className="transition hover:text-foreground" tabIndex={0}>
                   {t("footer.whatsappLabel")}
                 </Link>
-                <span className="text-sm">{t("footer.address")}</span>
+                <Link href="mailto:oi@botinho.ai" className="transition hover:text-foreground" tabIndex={0}>
+                  oi@botinho.ai
+                </Link>
               </div>
             </div>
           </div>
           <Separator className="my-8" />
-          <div className="flex flex-col gap-3 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
+          <div className="flex w-full flex-col items-start gap-3 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
             <span>{t("footer.copyright", { year: new Date().getFullYear() })}</span>
             <div className="flex flex-wrap gap-4">
               <Link href="/privacy" className="hover:text-foreground" tabIndex={0}>

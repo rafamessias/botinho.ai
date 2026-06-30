@@ -1,11 +1,17 @@
 import { stripe } from "@/lib/stripe"
 import { getServerAuthSession } from "@/lib/auth/server-session"
-import { getPlanByType, getCompanySubscription } from "@/lib/firebase/services/subscription-service"
+import {
+  getPlanByType,
+  getCompanySubscription,
+  getStripePriceIdForPlan,
+} from "@/lib/firebase/services/subscription-service"
+import { localeToCurrency, type PlanCurrency } from "@/lib/plan-catalog"
 import { PlanType, SubscriptionStatus } from "@/lib/types/enums"
 
 export interface CreateCheckoutSessionParams {
   planId: PlanType
   billingCycle: "monthly" | "yearly"
+  currency?: PlanCurrency
   userEmail?: string
   companyId?: string
   customerSubscriptionId?: string
@@ -28,7 +34,7 @@ export const createCheckoutSession = async (
   params: CreateCheckoutSessionParams,
 ): Promise<CreateCheckoutSessionResult> => {
   try {
-    const { planId, billingCycle, userEmail, companyId, customerSubscriptionId } = params
+    const { planId, billingCycle, currency: currencyParam, userEmail, companyId, customerSubscriptionId } = params
 
     let email = userEmail
     let userCompanyId = companyId
@@ -53,18 +59,28 @@ export const createCheckoutSession = async (
     }
 
     const subscriptionPlan = await getPlanByType(planId)
-    if (!subscriptionPlan?.stripePriceIdMonthly || !subscriptionPlan?.stripePriceIdYearly) {
+    if (!subscriptionPlan) {
       return { success: false, error: "Invalid plan or billing cycle" }
     }
 
-    const priceId =
-      billingCycle === "monthly" ? subscriptionPlan.stripePriceIdMonthly : subscriptionPlan.stripePriceIdYearly
+    const currency = currencyParam ?? localeToCurrency("en")
+    let resolvedPriceId = getStripePriceIdForPlan(subscriptionPlan, billingCycle, currency)
+    if (!resolvedPriceId) {
+      resolvedPriceId = getStripePriceIdForPlan(
+        subscriptionPlan,
+        billingCycle,
+        currency === "usd" ? "brl" : "usd",
+      )
+    }
+    if (!resolvedPriceId) {
+      return { success: false, error: "Invalid plan or billing cycle" }
+    }
 
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
 
     const checkoutSession = await stripe.checkout.sessions.create({
       customer_email: email,
-      line_items: [{ price: priceId, quantity: 1 }],
+      line_items: [{ price: resolvedPriceId, quantity: 1 }],
       mode: "subscription",
       success_url: `${baseUrl}/subscription?success=true`,
       cancel_url: `${baseUrl}/subscription?canceled=true`,

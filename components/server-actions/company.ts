@@ -25,34 +25,21 @@ import { generateConfirmationToken, getCurrentLocale } from "./auth"
 import { sendTransactionalEmail } from "@/lib/email/send-transactional-email"
 import { buildCompanyInviteEmail } from "@/lib/email/email-messages"
 import { validateApiAccess } from "@/lib/services/subscription-validation"
+import { companyProfileFieldsSchema } from "@/lib/company-form-schema"
 
 const createCompanySchema = z.object({
-  name: z.string().min(2),
+  name: z.string().trim().min(2),
   description: z.string().optional(),
-  country: z.string().optional(),
-  documentType: z.enum(["cpf", "cnpj"]).optional(),
-  document: z.string().optional(),
-  address: z.string().optional(),
-  addressNumber: z.string().optional(),
-  zipCode: z.string().optional(),
-  complement: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
 })
 
-const updateCompanySchema = z.object({
+const updateCompanyBasicSchema = z.object({
   id: z.string().min(1),
-  name: z.string().min(2),
+  name: z.string().trim().min(2),
   description: z.string().optional(),
-  country: z.string().optional(),
-  documentType: z.enum(["cpf", "cnpj"]).optional(),
-  document: z.string().optional(),
-  address: z.string().optional(),
-  addressNumber: z.string().optional(),
-  zipCode: z.string().optional(),
-  complement: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
+})
+
+const updateCompanySchema = companyProfileFieldsSchema.extend({
+  id: z.string().min(1),
 })
 
 const inviteMemberSchema = z.object({
@@ -130,6 +117,26 @@ export const createCompanyAction = async (formData: z.infer<typeof createCompany
       return { success: false, error: t("messages.alreadyHasCompany") }
     }
     return { success: false, error: t("messages.createFailed") }
+  }
+}
+
+export const updateCompanyBasicAction = async (formData: z.infer<typeof updateCompanyBasicSchema>) => {
+  const t = await getTranslations("Company")
+  try {
+    const session = await requireSession()
+    const validatedData = updateCompanyBasicSchema.parse(formData)
+    await assertCompanyAdmin(validatedData.id, session.uid)
+    const company = await updateCompany(validatedData.id, {
+      name: validatedData.name,
+      description: validatedData.description,
+    })
+    return { success: true, message: t("messages.updateSuccess"), company }
+  } catch (error) {
+    console.error("Update company basic error:", error)
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.errors[0].message }
+    }
+    return { success: false, error: t("messages.updateFailed") }
   }
 }
 

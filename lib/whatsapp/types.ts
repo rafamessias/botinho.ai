@@ -16,6 +16,7 @@ export type WhatsAppSession = {
   expiresAt?: string
   label?: string
   webhookUrl?: string
+  acceptGroupMessages?: boolean
   createdAt: string
   updatedAt: string
   lastSeenAt?: string
