@@ -26,6 +26,18 @@ export const companySubcollections = {
   surveyResponses: "surveyResponses",
   campaigns: "campaigns",
   campaignDeliveries: "campaignDeliveries",
+  tickets: "tickets",
+  ticketCounters: "ticketCounters",
+  scheduleServices: "scheduleServices",
+  agendaProfiles: "agendaProfiles",
+  scheduleBlocks: "scheduleBlocks",
+  scheduleReservations: "scheduleReservations",
+  scheduleCounters: "scheduleCounters",
+} as const
+
+export const ticketSubcollections = {
+  comments: "comments",
+  activities: "activities",
 } as const
 
 export const conversationSubcollections = {
@@ -40,6 +52,7 @@ export const aiAgentSubcollections = {
 
 export const settingsDocIds = {
   default: "default",
+  schedule: "schedule",
 } as const
 
 export const systemPropertyDocIds = {

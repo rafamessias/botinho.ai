@@ -79,6 +79,22 @@ service cloud.firestore {
         allow read, write: if false;
       }
 
+      match /tickets/{ticketId} {
+        allow read, write: if false;
+
+        match /comments/{docId} {
+          allow read, write: if false;
+        }
+
+        match /activities/{docId} {
+          allow read, write: if false;
+        }
+      }
+
+      match /ticketCounters/{docId} {
+        allow read, write: if false;
+      }
+
       match /conversations/{conversationId} {
         allow read: if isAcceptedCompanyMember(companyId);
         allow write: if false;

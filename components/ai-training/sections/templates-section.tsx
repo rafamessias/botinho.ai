@@ -109,7 +109,7 @@ export const TemplatesSection = ({
                     {items.map((template) => (
                         <div
                             key={template.id}
-                            className="refined-card rounded-xl border border-primary/10 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-primary/5"
+                            className="refined-card rounded-xl border border-border p-4 transition-colors duration-200 hover:border-primary/40 hover:bg-muted"
                         >
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-start justify-between gap-2">
@@ -148,7 +148,7 @@ export const TemplatesSection = ({
                                             type="button"
                                             variant="ghost"
                                             size="sm"
-                                            className="text-primary hover:bg-primary/10 hover:text-primary/80"
+                                            className="text-primary hover:bg-muted hover:text-primary"
                                             aria-label={t("buttons.copyTemplate")}
                                             onClick={() => onCopy(template.content)}
                                         >

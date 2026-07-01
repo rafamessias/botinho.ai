@@ -71,6 +71,7 @@ export const PlanPricingCards = ({
   const getPlanFeatures = (plan: PlanCatalogEntry): string[] => {
     const features = [
       t("features.syncedNumbers", { count: plan.maxSyncedNumbers }),
+      t("features.unlimitedManualConversations"),
       t("features.aiCredits", { count: plan.maxAiCredits.toLocaleString(locale) }),
     ]
 
@@ -175,8 +176,8 @@ export const PlanPricingCards = ({
               <Card
                 key={plan.key}
                 className={cn(
-                  "relative flex flex-col overflow-visible rounded-2xl border border-primary/10 bg-background/90 shadow-sm transition duration-200",
-                  isPopular && "border-primary/60 shadow-xl",
+                  "relative flex flex-col overflow-visible rounded-xl border border-border bg-card shadow-none transition duration-200",
+                  isPopular && "border-primary shadow-lg",
                 )}
               >
                 {isPopular ? (
@@ -209,11 +210,11 @@ export const PlanPricingCards = ({
                 </CardHeader>
 
                 <CardContent className="flex flex-1 flex-col gap-6 pb-8">
-                  <ul className="space-y-3 text-sm leading-relaxed text-foreground/70">
+                  <ul className="space-y-3 text-sm leading-relaxed text-muted-foreground">
                     {getPlanFeatures(plan).map((feature, index) => (
                       <li key={`${plan.key}-${index}`} className="flex items-start gap-2">
                         <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-success" />
-                        {index === 1 ? (
+                        {index === 2 ? (
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <span className="cursor-help underline decoration-dotted underline-offset-2">

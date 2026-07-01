@@ -25,6 +25,7 @@ Firestore path: `companies/{companyId}/members/{uid}`
 | `isAdmin` | boolean | Admin privileges |
 | `canPost` | boolean | Can create/send content |
 | `canApprove` | boolean | Approval permission (reserved) |
+| `canManageAgenda` | boolean | Can manage schedule, block time, view meetings |
 | `status` | enum | `invited` \| `accepted` \| `rejected` |
 
 Only members with `status: accepted` can access company data.
@@ -40,6 +41,7 @@ resolveCompanyContext({
   companyId?: string,      // defaults to user.defaultCompanyId or first membership
   requireAdmin?: boolean,  // requires isAdmin
   requireCanPost?: boolean // requires isAdmin OR canPost
+  requireCanManageAgenda?: boolean // requires isAdmin OR canManageAgenda
 })
 ```
 
@@ -72,6 +74,8 @@ Returns: `{ companyId, userId, membership }`.
 | Company token generate/regenerate | Admin + plan API access check |
 | Inbox send / create conversation | `requireCanPost: true` |
 | AI training CRUD | `requireCanPost: true` |
+| Schedule CRUD / calendar | `requireCanManageAgenda: true` |
+| Schedule services/settings | `requireAdmin: true` |
 
 ## Company API token
 

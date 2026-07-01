@@ -5,6 +5,7 @@ import { BaseActionResponse, handleAction, resolveCompanyContext } from "./utils
 import {
   archiveSurvey,
   createSurvey,
+  deleteSurvey,
   duplicateSurvey,
   getSurvey,
   getSurveyMetrics,
@@ -134,6 +135,16 @@ export const archiveSurveyAction = async (input: {
     const { companyId } = await resolveCompanyContext({ requireCanPost: true })
     await archiveSurvey(companyId, payload.surveyId)
     return { success: true, message: "Survey archived" }
+  })
+
+export const deleteSurveyAction = async (input: {
+  surveyId: string
+}): Promise<BaseActionResponse> =>
+  handleAction(async () => {
+    const payload = z.object({ surveyId: z.string().min(1) }).parse(input)
+    const { companyId } = await resolveCompanyContext({ requireCanPost: true })
+    await deleteSurvey(companyId, payload.surveyId)
+    return { success: true, message: "Survey deleted" }
   })
 
 export const duplicateSurveyAction = async (input: {

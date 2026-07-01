@@ -32,25 +32,24 @@ export const CampaignMessageTemplates = ({ onApply }: CampaignMessageTemplatesPr
   }, [t])
 
   return (
-    <div className="space-y-3 rounded-md border bg-muted/20 p-4">
-      <div className="flex items-start gap-2">
-        <FileText className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-        <div>
-          <p className="text-sm font-medium">{t("title")}</p>
-          <p className="text-xs text-muted-foreground">{t("description")}</p>
-        </div>
+    <div className="space-y-2 rounded-md border bg-muted/20 p-3">
+      <div className="flex items-center gap-1.5">
+        <FileText className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+        <p className="text-xs font-medium">{t("title")}</p>
+        <span className="text-xs text-muted-foreground">·</span>
+        <p className="text-xs text-muted-foreground">{t("description")}</p>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
         {templates.map((template) => (
           <Button
             key={template.id}
             type="button"
             variant="outline"
-            className="h-auto flex-col items-start gap-1 px-3 py-3 text-left whitespace-normal"
+            className="group h-auto flex-col items-start gap-0 px-2.5 py-2 text-left whitespace-normal hover:border-primary/40 hover:bg-primary/5 hover:text-foreground dark:hover:bg-primary/10"
             onClick={() => onApply(template)}
           >
-            <span className="font-medium">{template.name}</span>
-            <span className="text-xs font-normal text-muted-foreground line-clamp-2">
+            <span className="text-sm leading-tight font-medium">{template.name}</span>
+            <span className="text-xs font-normal leading-snug text-muted-foreground line-clamp-1 group-hover:text-foreground/80">
               {template.description}
             </span>
           </Button>

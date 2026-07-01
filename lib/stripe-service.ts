@@ -15,6 +15,8 @@ export interface CreateCheckoutSessionParams {
   userEmail?: string
   companyId?: string
   customerSubscriptionId?: string
+  successUrl?: string
+  cancelUrl?: string
 }
 
 export interface CreateCheckoutSessionResult {
@@ -34,7 +36,7 @@ export const createCheckoutSession = async (
   params: CreateCheckoutSessionParams,
 ): Promise<CreateCheckoutSessionResult> => {
   try {
-    const { planId, billingCycle, currency: currencyParam, userEmail, companyId, customerSubscriptionId } = params
+    const { planId, billingCycle, currency: currencyParam, userEmail, companyId, customerSubscriptionId, successUrl, cancelUrl } = params
 
     let email = userEmail
     let userCompanyId = companyId
@@ -82,8 +84,8 @@ export const createCheckoutSession = async (
       customer_email: email,
       line_items: [{ price: resolvedPriceId, quantity: 1 }],
       mode: "subscription",
-      success_url: `${baseUrl}/subscription?success=true`,
-      cancel_url: `${baseUrl}/subscription?canceled=true`,
+      success_url: successUrl ?? `${baseUrl}/subscription?success=true`,
+      cancel_url: cancelUrl ?? `${baseUrl}/subscription?canceled=true`,
       metadata: {
         userEmail: email,
         companyId: userCompanyId,

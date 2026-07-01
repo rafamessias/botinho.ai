@@ -22,6 +22,7 @@ const inviteMemberSchema = z.object({
     isAdmin: z.boolean().default(false),
     canPost: z.boolean().default(true),
     canApprove: z.boolean().default(false),
+    canManageAgenda: z.boolean().default(false),
 })
 
 type InviteMemberFormData = z.infer<typeof inviteMemberSchema>
@@ -62,6 +63,7 @@ export const InviteMemberForm = ({ companyId, onSuccess, onCancel }: InviteMembe
             isAdmin: false,
             canPost: true,
             canApprove: false,
+            canManageAgenda: false,
         },
     })
 
@@ -294,12 +296,14 @@ export const InviteMemberForm = ({ companyId, onSuccess, onCancel }: InviteMembe
 
                                 <div className="flex items-center space-x-2">
                                     <Checkbox
-                                        id="canApprove"
-                                        checked={watch("canApprove")}
-                                        onCheckedChange={(checked) => setValue("canApprove", checked as boolean)}
+                                        id="canManageAgenda"
+                                        checked={watch("canManageAgenda")}
+                                        onCheckedChange={(checked) =>
+                                            setValue("canManageAgenda", checked as boolean)
+                                        }
                                     />
-                                    <Label htmlFor="canApprove" className="text-sm font-normal">
-                                        {t("members.canApprove")}
+                                    <Label htmlFor="canManageAgenda" className="text-sm font-normal">
+                                        {t("members.canManageAgenda")}
                                     </Label>
                                 </div>
                             </div>

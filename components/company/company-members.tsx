@@ -71,6 +71,7 @@ export const CompanyMembers = ({
         isAdmin: false,
         canPost: false,
         canApprove: false,
+        canManageAgenda: false,
     })
     const [sorting, setSorting] = useState<SortingState>([])
     const [globalFilter, setGlobalFilter] = useState("")
@@ -127,6 +128,7 @@ export const CompanyMembers = ({
                 isAdmin: member.isAdmin,
                 canPost: member.canPost,
                 canApprove: member.canApprove,
+                canManageAgenda: member.canManageAgenda ?? false,
             })
         },
         onRemove: setRemovingMember,
@@ -183,6 +185,7 @@ export const CompanyMembers = ({
                 isAdmin: editForm.isAdmin,
                 canPost: editForm.canPost,
                 canApprove: editForm.canApprove,
+                canManageAgenda: editForm.canManageAgenda,
             })
 
             if (result?.success) {
@@ -395,17 +398,17 @@ export const CompanyMembers = ({
                                     </div>
                                     <div className="flex items-center space-x-3">
                                         <Checkbox
-                                            id="edit-approve"
-                                            checked={editForm.canApprove}
+                                            id="edit-agenda"
+                                            checked={editForm.canManageAgenda}
                                             onCheckedChange={(checked) =>
                                                 setEditForm((previous) => ({
                                                     ...previous,
-                                                    canApprove: checked as boolean,
+                                                    canManageAgenda: checked as boolean,
                                                 }))
                                             }
                                         />
-                                        <Label htmlFor="edit-approve" className="text-sm font-medium">
-                                            {t("modals.editMember.canApproveContent")}
+                                        <Label htmlFor="edit-agenda" className="text-sm font-medium">
+                                            {t("modals.editMember.canManageAgendaContent")}
                                         </Label>
                                     </div>
                                 </div>

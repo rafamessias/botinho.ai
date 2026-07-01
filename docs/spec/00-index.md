@@ -52,6 +52,8 @@
 | 22 | [Scheduled jobs](22-scheduled-jobs.md) | `implemented` | Cloud Scheduler cron routes (messaging retries, campaigns) |
 | 23 | [WhatsApp inbound reliability](23-whatsapp-inbound-reliability.md) | `partial` | Linked-device pipeline, session states, observability |
 | 24 | [WhatsApp session store persistence](24-whatsapp-session-store-persistence.md) | `partial` | Phase 1: SQLite snapshot + Firestore waStores + local/GCS |
+| 27 | [Onboarding](27-onboarding.md) | `implemented` | Post-signup 4-step wizard for new account owners |
+| 28 | [Schedule reservations](28-schedule-reservations.md) | `implemented` | Appointments, agenda role, Botinho booking tools |
 
 ## Roadmap specs (not yet implemented)
 

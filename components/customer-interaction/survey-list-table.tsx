@@ -10,10 +10,10 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
 } from "@tanstack/react-table"
 import {
+  Archive,
   BarChart3,
   ClipboardList,
   Copy,
@@ -48,8 +48,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import type { SurveySummaryView } from "@/components/server-actions/surveys"
+import { usePersistedTableSorting } from "@/hooks/use-persisted-table-sorting"
 
 type SurveyStatusFilter = SurveySummaryView["status"] | "all"
 
@@ -58,7 +60,9 @@ type SurveyListTableProps = {
   onEdit: (survey: SurveySummaryView) => void
   onMetrics: (survey: SurveySummaryView) => void
   onDuplicate: (surveyId: string) => void
+  onDelete: (surveyId: string) => void
   onArchive: (surveyId: string) => void
+  deletingSurveyId?: string | null
 }
 
 const statusVariant = (status: SurveySummaryView["status"]) => {
@@ -67,16 +71,115 @@ const statusVariant = (status: SurveySummaryView["status"]) => {
   return "outline" as const
 }
 
+const canDeleteSurvey = (survey: SurveySummaryView) => survey.responseCount === 0
+
+type SurveyRowActionsProps = {
+  survey: SurveySummaryView
+  onEdit: (survey: SurveySummaryView) => void
+  onMetrics: (survey: SurveySummaryView) => void
+  onDuplicate: (surveyId: string) => void
+  onDelete: (surveyId: string) => void
+  onArchive: (surveyId: string) => void
+  isDeleting?: boolean
+  t: ReturnType<typeof useTranslations<"Surveys">>
+}
+
+const SurveyRowActions = ({
+  survey,
+  onEdit,
+  onMetrics,
+  onDuplicate,
+  onDelete,
+  onArchive,
+  isDeleting = false,
+  t,
+}: SurveyRowActionsProps) => {
+  const deletable = canDeleteSurvey(survey)
+
+  return (
+    <div className="flex items-center justify-end gap-1">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-8"
+        onClick={() => onEdit(survey)}
+        aria-label={t("actions.edit")}
+      >
+        <Pencil className="size-4" aria-hidden="true" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-8"
+        onClick={() => onMetrics(survey)}
+        disabled={survey.responseCount === 0}
+        aria-label={t("actions.viewMetrics")}
+      >
+        <BarChart3 className="size-4" aria-hidden="true" />
+      </Button>
+      {deletable ? (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8 text-destructive hover:text-destructive"
+          onClick={() => onDelete(survey.id)}
+          disabled={isDeleting}
+          aria-label={t("actions.delete")}
+        >
+          <Trash2 className="size-4" aria-hidden="true" />
+        </Button>
+      ) : (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8"
+          onClick={() => onArchive(survey.id)}
+          aria-label={t("actions.archive")}
+        >
+          <Archive className="size-4" aria-hidden="true" />
+        </Button>
+      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="size-8" aria-label={t("table.moreActions")}>
+            <MoreHorizontal className="size-4" aria-hidden="true" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => onDuplicate(survey.id)}>
+            <Copy className="mr-2 size-4" />
+            {t("actions.duplicate")}
+          </DropdownMenuItem>
+          {!deletable && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={() => onArchive(survey.id)}
+              >
+                <Archive className="mr-2 size-4" />
+                {t("actions.archive")}
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  )
+}
+
 export const SurveyListTable = ({
   surveys,
   onEdit,
   onMetrics,
   onDuplicate,
+  onDelete,
   onArchive,
+  deletingSurveyId = null,
 }: SurveyListTableProps) => {
   const t = useTranslations("Surveys")
 
-  const [sorting, setSorting] = useState<SortingState>([{ id: "name", desc: false }])
+  const [sorting, setSorting] = usePersistedTableSorting("surveys", [{ id: "name", desc: false }])
   const [globalFilter, setGlobalFilter] = useState("")
   const [statusFilter, setStatusFilter] = useState<SurveyStatusFilter>("all")
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 })
@@ -90,7 +193,9 @@ export const SurveyListTable = ({
     () => [
       {
         accessorKey: "name",
-        header: t("table.name"),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t("table.name")} />
+        ),
         cell: ({ row }) => (
           <button
             type="button"
@@ -103,7 +208,9 @@ export const SurveyListTable = ({
       },
       {
         accessorKey: "status",
-        header: t("table.status"),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t("table.status")} />
+        ),
         cell: ({ row }) => (
           <Badge variant={statusVariant(row.original.status)} className="capitalize">
             {t(`status.${row.original.status}`)}
@@ -113,14 +220,22 @@ export const SurveyListTable = ({
       },
       {
         accessorKey: "deliveryMode",
-        header: t("table.delivery"),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t("table.delivery")} />
+        ),
         cell: ({ row }) => (
           <span className="text-muted-foreground">{t(`deliveryMode.${row.original.deliveryMode}`)}</span>
         ),
       },
       {
         accessorKey: "questionCount",
-        header: () => <span className="block text-center">{t("table.questions")}</span>,
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.questions")}
+            className="justify-center"
+          />
+        ),
         cell: ({ row }) => (
           <span className="block text-center tabular-nums text-muted-foreground">
             {row.original.questionCount}
@@ -129,7 +244,13 @@ export const SurveyListTable = ({
       },
       {
         accessorKey: "responseCount",
-        header: () => <span className="block text-center">{t("table.responses")}</span>,
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.responses")}
+            className="justify-center"
+          />
+        ),
         cell: ({ row }) =>
           row.original.responseCount > 0 ? (
             <button
@@ -145,57 +266,26 @@ export const SurveyListTable = ({
       },
       {
         id: "actions",
+        enableSorting: false,
         header: () => <span className="sr-only">{t("table.actions")}</span>,
         cell: ({ row }) => {
           const survey = row.original
           return (
-            <div className="flex items-center justify-end gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8"
-                onClick={() => onEdit(survey)}
-                aria-label={t("actions.edit")}
-              >
-                <Pencil className="size-4" aria-hidden="true" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8"
-                onClick={() => onMetrics(survey)}
-                disabled={survey.responseCount === 0}
-                aria-label={t("actions.viewMetrics")}
-              >
-                <BarChart3 className="size-4" aria-hidden="true" />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="size-8" aria-label={t("table.moreActions")}>
-                    <MoreHorizontal className="size-4" aria-hidden="true" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onDuplicate(survey.id)}>
-                    <Copy className="mr-2 size-4" />
-                    {t("actions.duplicate")}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={() => onArchive(survey.id)}
-                  >
-                    <Trash2 className="mr-2 size-4" />
-                    {t("actions.archive")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <SurveyRowActions
+              survey={survey}
+              onEdit={onEdit}
+              onMetrics={onMetrics}
+              onDuplicate={onDuplicate}
+              onDelete={onDelete}
+              onArchive={onArchive}
+              isDeleting={deletingSurveyId === survey.id}
+              t={t}
+            />
           )
         },
       },
     ],
-    [onArchive, onDuplicate, onEdit, onMetrics, t],
+    [deletingSurveyId, onArchive, onDelete, onDuplicate, onEdit, onMetrics, t],
   )
 
   const table = useReactTable({
@@ -316,25 +406,16 @@ export const SurveyListTable = ({
                     </div>
                   </CardContent>
                   <CardFooter className="flex items-center justify-end gap-1 px-4 pb-4 pt-0">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-8"
-                      onClick={() => onEdit(survey)}
-                      aria-label={t("actions.edit")}
-                    >
-                      <Pencil className="size-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-8"
-                      onClick={() => onMetrics(survey)}
-                      disabled={survey.responseCount === 0}
-                      aria-label={t("actions.viewMetrics")}
-                    >
-                      <BarChart3 className="size-4" aria-hidden="true" />
-                    </Button>
+                    <SurveyRowActions
+                      survey={survey}
+                      onEdit={onEdit}
+                      onMetrics={onMetrics}
+                      onDuplicate={onDuplicate}
+                      onDelete={onDelete}
+                      onArchive={onArchive}
+                      isDeleting={deletingSurveyId === survey.id}
+                      t={t}
+                    />
                   </CardFooter>
                 </Card>
               )

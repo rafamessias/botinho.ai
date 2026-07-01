@@ -364,7 +364,7 @@ export const NewConversationDialog = ({
                                                         key={customer.id}
                                                         className={cn(
                                                             "cursor-pointer",
-                                                            isStarting && "bg-primary/10",
+                                                            isStarting && "bg-muted",
                                                             (startingCustomerId !== null || isSubmitting) &&
                                                                 !isStarting &&
                                                                 "pointer-events-none opacity-50",
@@ -399,7 +399,7 @@ export const NewConversationDialog = ({
                         </TabsContent>
 
                         <TabsContent value="adhoc" className="mt-4 space-y-4">
-                            <div className="flex items-center gap-2 rounded-lg border border-dashed bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-2 rounded-lg border border-dashed border-border bg-muted px-3 py-2 text-xs text-muted-foreground">
                                 <UserPlus className="size-4 shrink-0" aria-hidden="true" />
                                 {t("adhocHint")}
                             </div>

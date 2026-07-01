@@ -13,6 +13,7 @@ type QuickAnswerDialogProps = {
     isOpen: boolean
     onOpenChange: (open: boolean) => void
     onTriggerClick: () => void
+    hideTrigger?: boolean
     content: string
     onContentChange: (value: string) => void
     isSubmitting: boolean
@@ -32,14 +33,17 @@ export const QuickAnswerDialog = ({
     editingQuickAnswer,
     onCancel,
     onSubmit,
+    hideTrigger = false,
 }: QuickAnswerDialogProps) => (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogTrigger asChild>
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={onTriggerClick}>
-                <Plus className="mr-2 h-4 w-4" />
-                {t("buttons.addQuickAnswer")}
-            </Button>
-        </DialogTrigger>
+        {!hideTrigger ? (
+            <DialogTrigger asChild>
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={onTriggerClick}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    {t("buttons.addQuickAnswer")}
+                </Button>
+            </DialogTrigger>
+        ) : null}
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
             <DialogHeader>
                 <DialogTitle>

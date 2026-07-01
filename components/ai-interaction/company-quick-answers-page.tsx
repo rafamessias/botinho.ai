@@ -2,9 +2,14 @@
 
 import { useCallback, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
+import { Loader2, MessageCircle, Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { QuickAnswersSection } from "@/components/ai-training/sections/quick-answers-section"
+import { Button } from "@/components/ui/button"
+import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog"
+import { ErrorState } from "@/components/ai-training/components/error-state"
+import { QuickAnswerDialog } from "@/components/ai-training/dialogs/quick-answer-dialog"
+import { QuickAnswerListTable } from "@/components/ai-interaction/quick-answer-list-table"
 import {
   createQuickAnswerAction,
   deleteQuickAnswerAction,
@@ -26,6 +31,7 @@ export default function CompanyQuickAnswersPage({
   hasCompanyAccess,
 }: CompanyQuickAnswersPageProps) {
   const t = useTranslations("QuickAnswers")
+  const commonT = useTranslations("Common")
   const { toast } = useToast()
 
   const [items, setItems] = useState<QuickAnswerView[]>(initialItems)
@@ -36,6 +42,7 @@ export default function CompanyQuickAnswersPage({
   const [editingItem, setEditingItem] = useState<QuickAnswerView | null>(null)
   const [content, setContent] = useState("")
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [itemToDelete, setItemToDelete] = useState<QuickAnswerView | null>(null)
 
   const displayedItems = useMemo(
     () => items.filter((item) => item.content.trim().length > 0),
@@ -69,6 +76,11 @@ export default function CompanyQuickAnswersPage({
   const resetForm = () => {
     setEditingItem(null)
     setContent("")
+  }
+
+  const openCreate = () => {
+    resetForm()
+    setIsDialogOpen(true)
   }
 
   const handleSubmit = async () => {
@@ -113,7 +125,10 @@ export default function CompanyQuickAnswersPage({
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!itemToDelete) return
+
+    const id = itemToDelete.id
     setDeletingId(id)
     try {
       const result = await deleteQuickAnswerAction({ id })
@@ -126,6 +141,7 @@ export default function CompanyQuickAnswersPage({
         return
       }
       setItems((prev) => prev.filter((item) => item.id !== id))
+      setItemToDelete(null)
       toast({ title: t("success.deleted"), description: t("success.deletedDescription") })
     } finally {
       setDeletingId(null)
@@ -134,9 +150,9 @@ export default function CompanyQuickAnswersPage({
 
   if (!hasCompanyAccess) {
     return (
-      <Card className="elegant-card">
-        <CardHeader className="space-y-2 text-center">
-          <CardTitle className="heading-secondary text-xl">{t("noCompany.title")}</CardTitle>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("noCompany.title")}</CardTitle>
           <CardDescription>{t("noCompany.description")}</CardDescription>
         </CardHeader>
       </Card>
@@ -144,39 +160,75 @@ export default function CompanyQuickAnswersPage({
   }
 
   return (
-    <QuickAnswersSection
-      t={t}
-      items={displayedItems}
-      isFetching={isFetching}
-      loadError={loadError}
-      onRetry={() => void loadItems()}
-      onEdit={(item) => {
-        setEditingItem(item)
-        setContent(item.content)
-        setIsDialogOpen(true)
-      }}
-      onDelete={(id) => void handleDelete(id)}
-      isDeletingId={deletingId}
-      dialog={{
-        isOpen: isDialogOpen,
-        onOpenChange: (open) => {
-          setIsDialogOpen(open)
-          if (!open) resetForm()
-        },
-        onTriggerClick: () => {
-          resetForm()
-          setIsDialogOpen(true)
-        },
-        editingQuickAnswer: editingItem,
-        content,
-        onContentChange: setContent,
-        isSubmitting,
-        onCancel: () => {
-          setIsDialogOpen(false)
-          resetForm()
-        },
-        onSubmit: () => void handleSubmit(),
-      }}
-    />
+    <div className="section-spacing space-y-6">
+      <div className="flex justify-end">
+        <Button onClick={openCreate} className="sm:w-auto" aria-label={t("toolbar.addQuickAnswer")}>
+          <Plus className="mr-2 size-4" aria-hidden="true" />
+          {t("toolbar.addQuickAnswer")}
+        </Button>
+        <QuickAnswerDialog
+          t={t}
+          hideTrigger
+          isOpen={isDialogOpen}
+          onOpenChange={(open) => {
+            setIsDialogOpen(open)
+            if (!open) resetForm()
+          }}
+          onTriggerClick={openCreate}
+          editingQuickAnswer={editingItem}
+          content={content}
+          onContentChange={setContent}
+          isSubmitting={isSubmitting}
+          onCancel={() => {
+            setIsDialogOpen(false)
+            resetForm()
+          }}
+          onSubmit={() => void handleSubmit()}
+        />
+      </div>
+
+      {isFetching ? (
+        <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          {t("loading")}
+        </div>
+      ) : loadError ? (
+        <ErrorState
+          icon={MessageCircle}
+          title={t("errors.loadFailed")}
+          description={loadError}
+          retryLabel={t("toolbar.retry")}
+          onRetry={() => void loadItems()}
+        />
+      ) : (
+        <QuickAnswerListTable
+          items={displayedItems}
+          onEdit={(item) => {
+            setEditingItem(item)
+            setContent(item.content)
+            setIsDialogOpen(true)
+          }}
+          onDelete={(id) => {
+            const item = displayedItems.find((entry) => entry.id === id)
+            if (item) setItemToDelete(item)
+          }}
+          isDeletingId={deletingId}
+        />
+      )}
+
+      <DeleteConfirmDialog
+        open={itemToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open && !deletingId) setItemToDelete(null)
+        }}
+        title={t("deleteConfirm.title")}
+        description={t("deleteConfirm.description")}
+        onConfirm={() => void handleDelete()}
+        isDeleting={Boolean(deletingId)}
+        confirmLabel={commonT("delete")}
+        cancelLabel={commonT("cancel")}
+        deletingLabel={commonT("deleting")}
+      />
+    </div>
   )
 }

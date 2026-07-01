@@ -9,6 +9,7 @@ import {
   type InboxConnectionView,
 } from "@/components/server-actions/inbox"
 import { getAiTrainingDataAction } from "@/components/server-actions/ai-training"
+import { INBOX_CONVERSATIONS_DEFAULT_PAGE_SIZE } from "@/lib/inbox/conversation-list-pagination"
 import {
   mapConversationSummary,
   mapMessage,
@@ -68,7 +69,10 @@ export const loadInboxInitialData = async (): Promise<InboxInitialData> => {
   }
 
   const [conversationsResult, connectionsResult, trainingResult] = await Promise.all([
-    getInboxConversationsAction({ page: 1, includeCounts: true }),
+    getInboxConversationsAction({
+      pageSize: INBOX_CONVERSATIONS_DEFAULT_PAGE_SIZE,
+      includeCounts: true,
+    }),
     getInboxConnectionsAction(),
     getAiTrainingDataAction(),
   ])

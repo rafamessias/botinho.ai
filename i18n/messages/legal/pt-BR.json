@@ -1,0 +1,329 @@
+{
+  "terms": {
+    "meta": {
+      "title": "Termos de uso",
+      "description": "Termo de Adesão e Condições de Uso da plataforma botinho.ai — automação de atendimento no WhatsApp com IA."
+    },
+    "title": "Termo de Adesão e Condições de Uso",
+    "intro": "Condições aplicáveis ao uso da plataforma botinho.ai (automação de atendimento no WhatsApp com inteligência artificial, inbox unificado, agendamentos, handoff humano e recursos correlatos), disponível em botinho.ai e no ambiente autenticado da aplicação. A OBRA GURU SERVICOS DIGITAIS LTDA, pessoa jurídica de direito privado inscrita no CNPJ sob o nº 39.962.566/0001-30, aqui denominada como botinho.",
+    "effectiveDate": "Vigente a partir de 1 de junho de 2026",
+    "lastUpdated": "Última atualização: 1 de junho de 2026",
+    "privacyLinkPrefix": "A Política de Privacidade complementa estes termos.",
+    "privacyLinkLabel": "Política de Privacidade",
+    "backHome": "Voltar para a página inicial",
+    "backHomeAria": "Voltar para a página inicial do botinho",
+    "indexTitle": "Índice",
+    "contactLabel": "Dúvidas sobre estes termos:",
+    "index": [
+      { "id": "definicoes", "label": "Definições" },
+      { "id": "objeto", "label": "Objeto deste termo" },
+      { "id": "funcionamento", "label": "Do funcionamento da plataforma botinho" },
+      { "id": "direitos", "label": "Direitos do Usuário" },
+      { "id": "obrigacoes", "label": "Obrigações do Usuário" },
+      { "id": "isencao", "label": "Isenção de responsabilidade da botinho" },
+      { "id": "vedacoes", "label": "Vedações e sanções" },
+      { "id": "dados", "label": "Do tratamento de informações" },
+      { "id": "rescisao", "label": "Rescisão" },
+      { "id": "foro", "label": "Foro e legislação aplicável" },
+      { "id": "disposicoes", "label": "Disposições gerais e contato" }
+    ],
+    "sections": [
+      {
+        "id": "definicoes",
+        "title": "1. Definições",
+        "paragraphs": [
+          "Para os efeitos deste instrumento, os vocábulos e expressões abaixo têm as seguintes definições:"
+        ],
+        "subsections": [
+          {
+            "title": "Plataforma",
+            "paragraphs": [
+              "software e serviços associados desenvolvidos e operados pela botinho, com o objetivo de permitir que a Empresa conecte números WhatsApp, centralize conversas, automatize respostas com IA, configure playbooks, realize agendamentos, faça handoff para equipe humana e utilize recursos correlatos (como sugestões de IA, analytics e integrações), conforme o plano contratado."
+            ]
+          },
+          {
+            "title": "Empresa",
+            "paragraphs": [
+              "pessoa física ou jurídica que utiliza os produtos botinho, seja de forma gratuita ou onerosa, em nome de um negócio como restaurante, clínica, loja ou equipe de atendimento e vendas."
+            ]
+          },
+          {
+            "title": "Visitante",
+            "paragraphs": [
+              "usuário da internet que somente visita o site botinho.ai ou páginas públicas relacionadas, sem realizar cadastro ou uso autenticado dos serviços."
+            ]
+          },
+          {
+            "title": "Usuário",
+            "paragraphs": [
+              "pessoa que utiliza o site ou o aplicativo da botinho, seja como titular da Empresa, colaborador ou Visitante, conforme o contexto e as permissões atribuídas."
+            ]
+          },
+          {
+            "title": "Conta / Inbox",
+            "paragraphs": [
+              "unidade lógica cadastrada na Plataforma para concentrar conversas, configurações de IA, equipe, integrações e comunicações com clientes finais."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "objeto",
+        "title": "2. Objeto deste termo",
+        "paragraphs": [
+          "Ao utilizar nossos serviços, você concorda com estes termos. A utilização da nossa plataforma está condicionada à concordância com a nossa política de privacidade.",
+          "A plataforma botinho é voltada a negócios que atendem clientes pelo WhatsApp e desejam responder mais rápido, automatizar tarefas repetitivas e manter o tom da marca com apoio de IA.",
+          "O presente termo pode ser alterado a qualquer momento e os Usuários serão notificados previamente, na medida do razoável e tecnicamente possível, inclusive por e-mail ou avisos na própria Plataforma."
+        ]
+      },
+      {
+        "id": "funcionamento",
+        "title": "3. Do funcionamento da plataforma botinho",
+        "paragraphs": [
+          "Nossa plataforma é destinada a empresas que desejam automatizar e organizar atendimento no WhatsApp. Para isso, a Empresa deverá criar uma conta e se responsabilizar pelo acesso e pela segurança das credenciais.",
+          "Alguns serviços são pagos e, para isso, a Empresa deverá tomar ciência das regras aplicáveis pela processadora de pagamentos utilizada no checkout.",
+          "O usuário concorda em receber avisos e mensagens pela botinho e poderá revisar preferências de comunicação quando a Plataforma oferecer essa opção."
+        ],
+        "subsections": [
+          {
+            "title": "Nossos serviços",
+            "paragraphs": [
+              "O serviço prestado pela botinho consiste na disponibilização de ferramentas para automação de conversas no WhatsApp, inbox unificado, treinamento de IA com base de conhecimento, playbooks, agendamentos, handoff humano, analytics e integrações, conforme exibido no produto e no plano contratado.",
+              "O uso da nossa plataforma poderá ser feito de forma gratuita ou onerosa. O uso gratuito ou de teste poderá limitar o número de números sincronizados, créditos de IA, usuários ou outras funcionalidades."
+            ]
+          },
+          {
+            "title": "Custos e forma de pagamento",
+            "paragraphs": [
+              "A botinho disponibiliza planos com periodicidade mensal ou anual, quando ofertados. O pagamento será processado por meio de processadora de pagamentos contratada (por exemplo, Stripe). A botinho não armazena dados completos de cartão de crédito em seu próprio ambiente quando o pagamento é processado pelo provedor de pagamentos."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "direitos",
+        "title": "4. Direitos do Usuário",
+        "paragraphs": [
+          "A botinho poderá utilizar as informações inseridas pelo usuário para operar a Plataforma e melhorar o serviço, observando a legislação de proteção de dados pessoais.",
+          "Podemos, a qualquer momento, suspender ou modificar funcionalidades. Se o usuário quiser excluir sua conta, recomenda-se exportar dados previamente quando a funcionalidade estiver disponível no plano."
+        ],
+        "subsections": [
+          {
+            "title": "Licença de conteúdo",
+            "paragraphs": [
+              "A Empresa é responsável pelo conteúdo inserido na Plataforma (mensagens, bases de conhecimento, playbooks, documentos de treinamento e demais materiais) e concede à botinho licença não exclusiva para hospedar, processar, exibir e distribuir tais conteúdos na medida necessária para prestar o serviço."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "obrigacoes",
+        "title": "5. Obrigações do Usuário",
+        "items": [
+          "Responsabilizar-se pela veracidade das informações registradas.",
+          "Utilizar os serviços apenas para fins lícitos e compatíveis com atendimento ao cliente e operações comerciais autorizadas.",
+          "Garantir que mensagens e dados publicados respeitem direitos de terceiros e normas aplicáveis, incluindo LGPD e regulamentações do WhatsApp/Meta.",
+          "Manter equipe e contatos informados sobre o tratamento de dados pessoais quando inserir dados de terceiros na Plataforma.",
+          "Revisar respostas geradas por IA antes de decisões críticas quando aplicável ao seu negócio."
+        ]
+      },
+      {
+        "id": "isencao",
+        "title": "6. Isenção de responsabilidade da botinho",
+        "paragraphs": [
+          "A botinho não se responsabiliza pelo conteúdo das mensagens enviadas ou recebidas pelos Usuários, nem pelos resultados comerciais, de atendimento ou de vendas decorrentes do uso da Plataforma.",
+          "Recursos de inteligência artificial são ferramentas de apoio. Cabe à Empresa revisar respostas sugeridas antes de tomar decisões comerciais, técnicas ou de atendimento sensível.",
+          "A botinho não é parte das relações contratuais entre a Empresa e seus clientes finais, salvo quando a lei impor responsabilidade distinta.",
+          "Na extensão máxima permitida pela lei aplicável, a botinho não será responsabilizada por danos indiretos, lucros cessantes ou perda de dados decorrentes do uso ou da impossibilidade de uso da Plataforma."
+        ]
+      },
+      {
+        "id": "vedacoes",
+        "title": "7. Vedações e sanções",
+        "paragraphs": ["O Usuário poderá ser advertido, suspenso ou excluído da plataforma em caso de violação destes termos, incluindo:"],
+        "items": [
+          "descumprimento de dispositivo destes Termos e Condições;",
+          "prática de fraude, spam ou uso abusivo do WhatsApp;",
+          "impossibilidade de verificação de identidade ou informações incorretas relevantes;",
+          "atitudes que causem ou possam causar dano a terceiros ou à própria botinho;",
+          "uso que sobrecarregue ou comprometa a segurança dos sistemas de forma abusiva."
+        ]
+      },
+      {
+        "id": "dados",
+        "title": "8. Do tratamento de informações",
+        "paragraphs": [
+          "A botinho trata dados pessoais em conformidade com a legislação vigente. As regras detalhadas estão na Política de Privacidade.",
+          "Ao utilizar nossos serviços, o usuário concorda com o tratamento descrito na Política de Privacidade."
+        ]
+      },
+      {
+        "id": "rescisao",
+        "title": "9. Rescisão",
+        "paragraphs": [
+          "O presente termo poderá ser rescindido a qualquer momento pelo Usuário, observado o período já pago em planos contratados, quando houver.",
+          "Em planos pagos, após solicitação e confirmação de cancelamento, o acesso às funcionalidades do plano pago costuma permanecer até o último dia do período já quitado.",
+          "Recomenda-se exportar dados antes da exclusão definitiva da conta."
+        ]
+      },
+      {
+        "id": "foro",
+        "title": "10. Foro e legislação aplicável",
+        "paragraphs": [
+          "Fica eleito o foro da Comarca Central da Capital do Estado de São Paulo, Estado de São Paulo, Brasil, para dirimir questões oriundas destes termos, com renúncia a qualquer outro, por mais privilegiado que seja, salvo hipóteses em que a legislação consumerista ou outra norma imperativa estabeleça competência diferente.",
+          "Ainda que a Plataforma possa ser acessada de outros países, o usuário reconhece que a relação jurídica relevante para estes termos rege-se pelas leis da República Federativa do Brasil, na medida aplicável."
+        ]
+      },
+      {
+        "id": "disposicoes",
+        "title": "11. Disposições gerais e contato",
+        "paragraphs": [
+          "Dúvidas relacionadas aos serviços da plataforma botinho podem ser encaminhadas ao e-mail hello@botinho.ai ou por meio dos canais de contato disponíveis no site.",
+          "O aceite a este termo poderá ser registrado por meio de check-box, clique de confirmação ou fluxo equivalente na Plataforma, quando disponível."
+        ]
+      }
+    ]
+  },
+  "privacy": {
+    "meta": {
+      "title": "Política de privacidade",
+      "description": "Política de Privacidade da plataforma botinho.ai — como tratamos dados pessoais no atendimento WhatsApp com IA."
+    },
+    "title": "Política de Privacidade",
+    "intro": "A OBRA GURU SERVICOS DIGITAIS LTDA, pessoa jurídica de direito privado inscrita no CNPJ sob o nº 39.962.566/0001-30, aqui denominada como botinho, preza pela segurança dos dados dos seus usuários. Esta política define as regras sobre o tratamento dos dados pessoais dos visitantes e dos usuários dos nossos serviços de automação de atendimento no WhatsApp com inteligência artificial.",
+    "effectiveDate": "Vigente a partir de 1 de junho de 2026",
+    "lastUpdated": "Última atualização: 1 de junho de 2026",
+    "termsLinkPrefix": "Esta política complementa os",
+    "termsLinkLabel": "Termos de Uso",
+    "backHome": "Voltar para a página inicial",
+    "backHomeAria": "Voltar para a página inicial do botinho",
+    "indexTitle": "Índice",
+    "contactLabel": "Para exercer seus direitos ou esclarecer dúvidas:",
+    "index": [
+      { "id": "definicoes", "label": "Definições" },
+      { "id": "dados", "label": "Dados que coletamos" },
+      { "id": "como-coletamos", "label": "Como coletamos seus dados?" },
+      { "id": "finalidades", "label": "Por que coletamos os dados" },
+      { "id": "compartilhamento", "label": "Compartilhamento de informações" },
+      { "id": "retencao", "label": "Por quanto tempo armazenamos seus dados?" },
+      { "id": "direitos", "label": "Direitos dos usuários" },
+      { "id": "seguranca", "label": "Segurança e hospedagem da nossa plataforma" },
+      { "id": "exercicio", "label": "Como exercer seus direitos enquanto usuário" },
+      { "id": "revisoes", "label": "Revisões a esta política" }
+    ],
+    "sections": [
+      {
+        "id": "definicoes",
+        "title": "1. Definições",
+        "items": [
+          "Usuário: pessoas que utilizam ou visitam o site botinho.ai e o ambiente autenticado da aplicação, maiores de 18 anos e capazes.",
+          "Dados Pessoais: informações que identifiquem ou permitam identificar uma pessoa natural, nos termos da Lei nº 13.709/2018.",
+          "Titular: a pessoa natural à qual se referem os dados pessoais.",
+          "Controlador de dados: OBRA GURU SERVICOS DIGITAIS LTDA, CNPJ 39.962.566/0001-30, operadora da plataforma botinho.",
+          "Consentimento: autorização expressa do titular quando exigida pela base legal aplicável."
+        ]
+      },
+      {
+        "id": "dados",
+        "title": "2. Dados que coletamos",
+        "paragraphs": [
+          "Coletamos dados pessoais durante o acesso ao site e aplicativo e após o cadastro para uso dos serviços de automação de atendimento no WhatsApp, inbox, treinamento de IA, agendamentos e integrações."
+        ],
+        "subsections": [
+          {
+            "title": "Cadastro e identidade",
+            "paragraphs": [
+              "Podem ser coletados nome, e-mail, telefone, nome da empresa, cargo e demais dados necessários para uso seguro dos serviços."
+            ]
+          },
+          {
+            "title": "Dados operacionais de atendimento",
+            "paragraphs": [
+              "Durante o uso, você pode inserir mensagens, contatos, histórico de conversas, bases de conhecimento, playbooks, documentos de treinamento e demais informações vinculadas à sua conta."
+            ]
+          },
+          {
+            "title": "Pagamento",
+            "paragraphs": [
+              "Para planos pagos, poderão ser coletados dados de faturamento e processados pela administradora de pagamentos (por exemplo, Stripe), conforme a política do provedor."
+            ]
+          },
+          {
+            "title": "Navegação e cookies",
+            "paragraphs": [
+              "Podemos coletar endereço IP, páginas visitadas, tempo de permanência e dados técnicos por cookies e tecnologias similares."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "como-coletamos",
+        "title": "3. Como coletamos seus dados?",
+        "paragraphs": [
+          "Coletamos dados quando os Usuários acessam a plataforma, realizam cadastros, conectam integrações (como WhatsApp Business) ou enviam formulários de contato.",
+          "Coletamos apenas informações essenciais para o funcionamento do serviço. Dados extras ou sensíveis, quando solicitados, serão de fornecimento facultativo, salvo exigência legal."
+        ]
+      },
+      {
+        "id": "finalidades",
+        "title": "4. Por que coletamos os dados",
+        "items": [
+          "Cumprir a legislação aplicável;",
+          "Permitir o acesso e operação da plataforma botinho;",
+          "Prestar serviços de automação de WhatsApp, inbox, IA e integrações;",
+          "Processar assinaturas, cobranças e suporte;",
+          "Enviar comunicações operacionais e, quando permitido, de marketing;",
+          "Investigar e impedir atividades ilícitas ou abusivas;",
+          "Manter a segurança da infraestrutura."
+        ]
+      },
+      {
+        "id": "compartilhamento",
+        "title": "5. Compartilhamento de informações",
+        "paragraphs": [
+          "Os dados pessoais podem ser compartilhados com provedores de hospedagem, autenticação, pagamentos, analytics, inteligência artificial, WhatsApp/Meta e suporte, no Brasil ou no exterior, em conformidade com a LGPD.",
+          "Dados inseridos na conta podem ser visíveis a outros usuários convidados pela Empresa, conforme permissões configuradas.",
+          "Na hipótese de fusão, aquisição ou reestruturação, dados poderão ser transferidos com notificação prévia quando aplicável."
+        ]
+      },
+      {
+        "id": "retencao",
+        "title": "6. Por quanto tempo armazenamos seus dados?",
+        "paragraphs": [
+          "Os dados serão armazenados pelo tempo necessário para cumprir as finalidades da coleta e obrigações legais.",
+          "Após encerramento da conta, o armazenamento poderá perdurar pelo prazo legal aplicável, salvo prazo diferente exigido por lei ou autoridade."
+        ]
+      },
+      {
+        "id": "direitos",
+        "title": "7. Direitos dos usuários",
+        "paragraphs": [
+          "A botinho assegura aos Usuários os direitos do titular previstos no artigo 18 da Lei Geral de Proteção de Dados, incluindo confirmação de tratamento, acesso, correção e revogação de consentimento quando aplicável."
+        ]
+      },
+      {
+        "id": "seguranca",
+        "title": "8. Segurança e hospedagem da nossa plataforma",
+        "paragraphs": [
+          "Os Dados Pessoais podem ser armazenados em infraestrutura em nuvem de fornecedores contratados (por exemplo, Google Cloud / Firebase e serviços correlatos), em conformidade com a legislação aplicável.",
+          "Adotamos procedimentos de segurança para proteger confidencialidade, integridade e disponibilidade dos dados. Não há garantia absoluta contra acessos não autorizados em caso de violação de proteções."
+        ]
+      },
+      {
+        "id": "exercicio",
+        "title": "9. Como exercer seus direitos enquanto usuário",
+        "paragraphs": [
+          "Para exercer os direitos previstos nesta política ou esclarecer dúvidas sobre o tratamento de dados, o Usuário poderá contatar o encarregado de dados (Data Protection Officer), Rafael Messias, pelo e-mail hello@botinho.ai."
+        ]
+      },
+      {
+        "id": "revisoes",
+        "title": "10. Revisões a esta política",
+        "paragraphs": [
+          "A botinho poderá revisar esta Política de Privacidade a qualquer momento. Alterações relevantes serão publicadas no site botinho.ai.",
+          "Quando apropriado, será enviada notificação por e-mail com antecedência mínima de 30 dias em relação a alterações materiais."
+        ]
+      }
+    ]
+  }
+}

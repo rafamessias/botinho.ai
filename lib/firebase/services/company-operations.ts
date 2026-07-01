@@ -24,6 +24,7 @@ const mapMemberForClient = (
   isAdmin: member.isAdmin,
   canPost: member.canPost,
   canApprove: member.canApprove,
+  canManageAgenda: member.canManageAgenda ?? member.isAdmin ?? member.isOwner ?? false,
   companyMemberStatus: member.status,
   status: member.status,
   user,
@@ -186,7 +187,7 @@ export const getUserCompanies = async (uid: string, onlyAccepted = false) => {
 export const updateMemberPermissions = async (
   companyId: string,
   memberUid: string,
-  permissions: { isAdmin: boolean; canPost: boolean; canApprove: boolean },
+  permissions: { isAdmin: boolean; canPost: boolean; canApprove: boolean; canManageAgenda: boolean },
 ) => {
   await companyRef(companyId)
     .collection(companySubcollections.members)
@@ -196,10 +197,16 @@ export const updateMemberPermissions = async (
         isAdmin: permissions.isAdmin,
         canPost: permissions.isAdmin ? true : permissions.canPost,
         canApprove: permissions.isAdmin ? true : permissions.canApprove,
+        canManageAgenda: permissions.isAdmin ? true : permissions.canManageAgenda,
         updatedAt: FieldValue.serverTimestamp(),
       },
       { merge: true },
     )
+
+  if (permissions.isAdmin || permissions.canManageAgenda) {
+    const { upsertAgendaProfile } = await import("@/lib/firebase/services/schedule-service")
+    await upsertAgendaProfile(companyId, { memberUid, enabled: true })
+  }
 }
 
 export const removeMember = async (companyId: string, memberUid: string) => {
@@ -219,6 +226,7 @@ export const inviteMemberByEmail = async (params: {
   isAdmin: boolean
   canPost: boolean
   canApprove: boolean
+  canManageAgenda: boolean
   inviterEmail: string
   locale: string
   confirmationToken: string
@@ -275,6 +283,7 @@ export const inviteMemberByEmail = async (params: {
     isAdmin: params.isAdmin,
     canPost: params.isAdmin ? true : params.canPost,
     canApprove: params.isAdmin ? true : params.canApprove,
+    canManageAgenda: params.isAdmin ? true : params.canManageAgenda,
     status: "invited" as MemberStatus,
     inviteToken: params.confirmationToken,
     createdAt: FieldValue.serverTimestamp(),

@@ -432,7 +432,7 @@ export default function CampaignsPage({
                 </Button>
               </div>
               {audiencePreview && (
-                <div className="rounded-md border bg-muted/30 p-4 space-y-3">
+                <div className="space-y-3 rounded-md border border-border bg-muted p-4">
                   <p className="text-sm font-medium">{t("editor.audiencePreviewTitle")}</p>
                   <p className="text-sm text-muted-foreground">
                     {t("editor.audienceCounts", {

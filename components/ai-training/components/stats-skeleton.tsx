@@ -8,7 +8,7 @@ export const StatsSkeleton = () => (
         {[0, 1, 2, 3].map((key) => (
             <Card
                 key={key}
-                className="border border-border/40 bg-muted/30 shadow-sm backdrop-blur-sm"
+                className="border border-border bg-muted shadow-sm"
             >
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <Skeleton className="h-4 w-24 rounded-full bg-muted-foreground/20" />

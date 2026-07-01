@@ -20,6 +20,7 @@ export type CompanyMemberRow = {
     isAdmin: boolean
     canPost: boolean
     canApprove: boolean
+    canManageAgenda: boolean
     isOwner: boolean
     companyMemberStatus: "invited" | "accepted" | "rejected"
     status?: "invited" | "accepted" | "rejected"
@@ -87,6 +88,9 @@ export const useCompanyMemberColumns = ({
             }
             if (member.canApprove) {
                 permissions.push(t("members.canApproveShort"))
+            }
+            if (member.canManageAgenda) {
+                permissions.push(t("members.canManageAgendaShort"))
             }
 
             return permissions.length > 0

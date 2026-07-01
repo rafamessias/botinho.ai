@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState, type ReactNode } from "react"
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { format, isToday, isYesterday } from "date-fns"
 import { useTranslations } from "next-intl"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -37,6 +37,9 @@ type ConversationListPanelProps = {
     onFilterChange: (filter: ConversationFilter) => void
     unreadTotal: number
     isLoading: boolean
+    isLoadingMore?: boolean
+    hasMore?: boolean
+    onLoadMore?: () => void
     isFiltered: boolean
     onSelectConversation: (id: string) => void
     onNewConversation: () => void
@@ -121,6 +124,9 @@ export const ConversationListPanel = ({
     onFilterChange,
     unreadTotal,
     isLoading,
+    isLoadingMore = false,
+    hasMore = false,
+    onLoadMore,
     isFiltered,
     onSelectConversation,
     onNewConversation,
@@ -132,6 +138,30 @@ export const ConversationListPanel = ({
 }: ConversationListPanelProps) => {
     const t = useTranslations("Inbox")
     const [isConnectionDialogOpen, setIsConnectionDialogOpen] = useState(false)
+    const loadMoreSentinelRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (!hasMore || isLoading || isLoadingMore || !onLoadMore) {
+            return
+        }
+
+        const sentinel = loadMoreSentinelRef.current
+        if (!sentinel) {
+            return
+        }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    onLoadMore()
+                }
+            },
+            { root: sentinel.parentElement, rootMargin: "120px" },
+        )
+
+        observer.observe(sentinel)
+        return () => observer.disconnect()
+    }, [hasMore, isLoading, isLoadingMore, onLoadMore, conversations.length])
 
     const selectedConnectionLabel = useMemo(() => {
         if (selectedConnectionIds.length === 0) {
@@ -187,7 +217,9 @@ export const ConversationListPanel = ({
             )
         }
 
-        return conversations.map((conversation) => {
+        return (
+            <>
+                {conversations.map((conversation) => {
             const hasUnread = conversation.unreadCount > 0
             const isSelected = selectedConversationId === conversation.id
             const isHumanHandled = Boolean(conversation.assignedToId)
@@ -270,7 +302,15 @@ export const ConversationListPanel = ({
                     </div>
                 </button>
             )
-        })
+        })}
+                {hasMore && <div ref={loadMoreSentinelRef} className="h-1 w-full" aria-hidden="true" />}
+                {isLoadingMore && (
+                    <div className="px-3 py-2">
+                        <div className="h-[72px] rounded-lg bg-muted/60 animate-pulse" />
+                    </div>
+                )}
+            </>
+        )
     }
 
     return (

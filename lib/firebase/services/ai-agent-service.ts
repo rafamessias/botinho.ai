@@ -31,6 +31,8 @@ export type AiAgentRecord = {
   systemPrompt: string
   sessionIds: string[]
   autoReply: boolean
+  ticketsEnabled: boolean
+  schedulingEnabled: boolean
   language: AgentLanguagePreference
   surveyIds: string[]
   surveyTriggers: SurveyTriggers
@@ -54,6 +56,8 @@ const mapAgent = (id: string, data: FirebaseFirestore.DocumentData): AiAgentReco
   systemPrompt: (data.systemPrompt as string) ?? "",
   sessionIds: normalizeSessionIds(data),
   autoReply: data.autoReply !== false,
+  ticketsEnabled: data.ticketsEnabled !== false,
+  schedulingEnabled: data.schedulingEnabled !== false,
   language: normalizeAgentLanguagePreference(data.language),
   surveyIds: Array.isArray(data.surveyIds)
     ? data.surveyIds.filter((sid): sid is string => typeof sid === "string")
@@ -124,6 +128,13 @@ const copyLegacyTrainingToAgent = async (companyId: string, agentId: string, use
 }
 
 const ensureAgentsExist = async (companyId: string, userId: string) => {
+  const { getUserProfile } = await import("@/lib/firebase/services/user-service")
+  const { resolveOnboardingStatus } = await import("@/lib/onboarding/onboarding-utils")
+  const user = await getUserProfile(userId)
+  if (user && resolveOnboardingStatus(user) === "pending") {
+    return
+  }
+
   const snap = await agentsRef(companyId).limit(1).get()
   if (!snap.empty) {
     return
@@ -136,6 +147,8 @@ const ensureAgentsExist = async (companyId: string, userId: string) => {
     systemPrompt: "",
     sessionIds: [],
     autoReply: true,
+    ticketsEnabled: true,
+    schedulingEnabled: true,
     createdById: userId,
     createdAt: now,
     updatedAt: now,
@@ -185,6 +198,8 @@ export const createAiAgent = async (
     systemPrompt?: string
     sessionIds?: string[]
     autoReply?: boolean
+    ticketsEnabled?: boolean
+    schedulingEnabled?: boolean
     language?: AgentLanguagePreference
   },
 ) => {
@@ -200,6 +215,8 @@ export const createAiAgent = async (
     systemPrompt: input.systemPrompt ?? "",
     sessionIds,
     autoReply: input.autoReply !== false,
+    ticketsEnabled: input.ticketsEnabled !== false,
+    schedulingEnabled: input.schedulingEnabled !== false,
     language: input.language ?? "pt-BR",
     surveyIds: [],
     surveyTriggers: DEFAULT_SURVEY_TRIGGERS,
@@ -220,6 +237,8 @@ export const updateAiAgent = async (
     systemPrompt?: string
     sessionIds?: string[]
     autoReply?: boolean
+    ticketsEnabled?: boolean
+    schedulingEnabled?: boolean
     language?: AgentLanguagePreference
     surveyIds?: string[]
     surveyTriggers?: SurveyTriggers
@@ -242,6 +261,8 @@ export const updateAiAgent = async (
     update.sessionId = FieldValue.delete()
   }
   if (input.autoReply !== undefined) update.autoReply = input.autoReply
+  if (input.ticketsEnabled !== undefined) update.ticketsEnabled = input.ticketsEnabled
+  if (input.schedulingEnabled !== undefined) update.schedulingEnabled = input.schedulingEnabled
   if (input.language !== undefined) update.language = input.language
   if (input.surveyIds !== undefined) update.surveyIds = input.surveyIds
   if (input.surveyTriggers !== undefined) update.surveyTriggers = input.surveyTriggers

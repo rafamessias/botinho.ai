@@ -29,6 +29,10 @@ import type {
   InboxMessageSenderType,
   InboxMessageStatus,
 } from "@/lib/firebase/types"
+import {
+  encodeInboxConversationCursor,
+  type InboxConversationListFilter,
+} from "@/lib/inbox/conversation-list-pagination"
 
 const companyIdSchema = z.object({
   companyId: z.string().optional(),
@@ -38,8 +42,9 @@ const getInboxConversationsSchema = companyIdSchema.extend({
   search: z.string().optional(),
   sessionId: z.string().min(1).optional(),
   sessionIds: z.array(z.string().min(1)).min(1).optional(),
-  page: z.number().int().positive().optional(),
   pageSize: z.number().int().min(1).max(100).optional(),
+  cursor: z.string().optional(),
+  filter: z.enum(["all", "unread", "favorites", "human", "bot"]).optional(),
   includeCounts: z.boolean().optional(),
   includeArchived: z.boolean().optional(),
 })
@@ -49,7 +54,11 @@ export const getInboxConversationsAction = async (
 ): Promise<
   BaseActionResponse<{
     conversations: SerializedInboxConversation[]
-    pagination: Awaited<ReturnType<typeof listInboxConversations>>["pagination"]
+    pagination: {
+      pageSize: number
+      hasMore: boolean
+      nextCursor: string | null
+    }
     metrics?: { unreadTotal: number }
   }>
 > =>
@@ -61,16 +70,23 @@ export const getInboxConversationsAction = async (
       search: payload.search,
       sessionId: payload.sessionId,
       sessionIds: payload.sessionIds,
-      page: payload.page,
       pageSize: payload.pageSize,
+      cursor: payload.cursor,
+      filter: payload.filter as InboxConversationListFilter | undefined,
       includeArchived: payload.includeArchived,
+      includeCounts: payload.includeCounts,
     })
 
     return {
       success: true,
       data: {
         conversations: result.conversations.map(serializeInboxConversation),
-        pagination: result.pagination,
+        pagination: {
+          ...result.pagination,
+          nextCursor: result.pagination.nextCursor
+            ? encodeInboxConversationCursor(result.pagination.nextCursor)
+            : null,
+        },
         ...(payload.includeCounts ? { metrics: result.metrics } : {}),
       },
     }

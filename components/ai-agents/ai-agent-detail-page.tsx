@@ -61,6 +61,8 @@ export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
         systemPrompt: loaded.systemPrompt,
         sessionIds: loaded.sessionIds,
         autoReply: loaded.autoReply,
+        ticketsEnabled: loaded.ticketsEnabled,
+        schedulingEnabled: loaded.schedulingEnabled,
         language: loaded.language,
       })
       setAgentSurveys({
@@ -167,18 +169,18 @@ export default function AiAgentDetailPage({ agentId }: AiAgentDetailPageProps) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <nav className="flex lg:w-56 shrink-0 flex-row gap-2 lg:flex-col lg:gap-1">
+      <div className="flex min-w-0 flex-col gap-6 lg:flex-row">
+        <nav className="flex w-full min-w-0 flex-col gap-1 lg:w-56 lg:shrink-0">
           {steps.map((step, index) => (
             <button
               key={step.id}
               type="button"
               onClick={() => setActiveStep(step.id)}
               className={cn(
-                "flex flex-1 items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition-colors lg:flex-none",
+                "flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition-colors lg:w-auto",
                 activeStep === step.id
-                  ? "bg-primary/10 font-medium text-primary"
-                  : "text-muted-foreground hover:bg-muted/60",
+                  ? "bg-muted font-medium text-foreground"
+                  : "text-muted-foreground hover:bg-muted",
               )}
             >
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs">

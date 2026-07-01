@@ -1,5 +1,9 @@
 {
     "Landing": {
+        "meta": {
+            "title": "botinho.ai — Atendimento no WhatsApp com IA",
+            "description": "Automatize atendimento, vendas e follow-ups no WhatsApp com IA. Ideal para restaurantes, clínicas e lojas. Comece grátis em 5 minutos."
+        },
         "shared": {
             "logoAlt": "logotipo da botinho"
         },
@@ -94,7 +98,7 @@
                 },
                 "builtForTeams": {
                     "title": "Feita para equipes",
-                    "description": "Colabore em tempo real, deixe notas internas e distribua chats enquanto a IA cuida das tarefas repetitivas."
+                    "description": "Compartilhe uma inbox, atribua conversas e deixe a IA cuidar das respostas repetitivas até um atendente assumir."
                 }
             },
             "reasons": {
@@ -110,7 +114,7 @@
                     },
                     {
                         "title": "Automações inteligentes",
-                        "description": "Pedidos, reservas e follow-ups no piloto automático."
+                        "description": "Auto-respostas, campanhas de saída e sugestões de IA que mantêm as conversas fluindo."
                     },
                     {
                         "title": "Analytics completos",
@@ -134,7 +138,7 @@
                 },
                 "automate": {
                     "title": "Automatize conversas",
-                    "description": "Deixe o botinho responder na hora, qualificar leads, agendar horários e escalar quando necessário."
+                    "description": "Deixe o botinho responder na hora, qualificar leads, rodar campanhas e escalar para o time quando necessário."
                 },
                 "measure": {
                     "title": "Meça e evolua",
@@ -156,30 +160,30 @@
                     "description": "Criptografia de nível empresarial, permissões por função e infraestrutura pensada para compliance."
                 },
                 "collaboration": {
-                    "title": "Colaboração em equipe",
-                    "description": "Atribua conversas, deixe notas internas e intervenha na hora certa quando um toque humano é necessário."
+                    "title": "Inbox compartilhada",
+                    "description": "Atribua conversas a atendentes, assuma do bot e responda com o histórico completo em um só lugar."
                 },
-                "appointments": {
-                    "title": "Agendamentos e lembretes",
-                    "description": "Confirme reservas, envie lembretes e sincronize agendas automaticamente sem trabalho manual."
+                "campaigns": {
+                    "title": "Campanhas no WhatsApp",
+                    "description": "Envie mensagens com modelos para tags de clientes, com entrega controlada e métricas por campanha."
                 },
-                "integrations": {
-                    "title": "Integrações inteligentes",
-                    "description": "Conecte CRM, delivery ou e-commerce para disparar fluxos em segundos."
+                "whatsapp": {
+                    "title": "Conexão WhatsApp",
+                    "description": "Vincule seu número com QR Code e gerencie sessões conectadas nas configurações."
                 },
-                "playbooks": {
-                    "title": "Playbooks guiados",
-                    "description": "Use modelos prontos para vendas, suporte, reservas e follow-ups e lance mais rápido."
+                "templates": {
+                    "title": "Modelos e respostas rápidas",
+                    "description": "Salve respostas reutilizáveis e modelos de mensagem que o time insere em qualquer conversa."
                 }
             },
             "mocks": {
                 "humanFriendly": {
                     "configLabel": "Você configura",
-                    "promptSnippet": "Tom amigável. Responda com o cardápio do dia e ofereça reservas.",
+                    "promptSnippet": "Tom amigável. Responda com cardápio e horário usando a base de conhecimento.",
                     "customerLabel": "Cliente no WhatsApp",
                     "customerMessage": "Tem opção vegana hoje?",
                     "botLabel": "botinho",
-                    "botReply": "Sim! Temos lasanha de abobrinha e salada mediterrânea. Quer reservar uma mesa?"
+                    "botReply": "Sim! Temos lasanha de abobrinha e salada mediterrânea. Quer ver o cardápio completo?"
                 },
                 "secure": {
                     "encryptionLabel": "Dados protegidos",
@@ -195,34 +199,39 @@
                 "collaboration": {
                     "assignmentLabel": "Responsável pela conversa",
                     "assignedTo": "Ana · Atendente",
-                    "internalNoteLabel": "Nota interna",
-                    "note": "Cliente VIP — priorizar resposta humana",
+                    "statusLabel": "Enquanto atribuída",
+                    "statusValue": "Auto-resposta da IA pausada",
                     "customerLabel": "Cliente",
                     "customerMessage": "Preciso falar com alguém da equipe.",
                     "agentLabel": "Ana",
                     "agentReply": "Oi! Sou a Ana. Vou cuidar do seu pedido agora."
                 },
-                "appointments": {
-                    "eventLabel": "Reserva confirmada",
-                    "event": "Julia · Hoje, 12h30",
-                    "autoLabel": "Lembrete automático",
-                    "reminder": "Oi Julia! Sua reserva é hoje às 12h30. Te esperamos!"
+                "campaigns": {
+                    "campaignLabel": "Campanha",
+                    "campaignName": "Promo fim de semana",
+                    "audienceLabel": "Público",
+                    "audienceTags": "VIP · Clientes ativos",
+                    "messageLabel": "Prévia da mensagem",
+                    "messagePreview": "Oi {{name}}! Só neste fim de semana: 20% off no delivery. Responda SIM para pedir.",
+                    "metricsLabel": "Entrega",
+                    "metricsValue": "842 enviadas · 96% entregues"
                 },
-                "integrations": {
-                    "connectedLabel": "Conectado ao botinho",
-                    "whatsapp": "WhatsApp",
-                    "whatsappStatus": "Conectado",
-                    "calendar": "Google Calendar",
-                    "calendarStatus": "Sincronizado",
-                    "webhook": "Webhook / CRM",
-                    "webhookStatus": "Ativo"
+                "whatsapp": {
+                    "connectionLabel": "Sessão WhatsApp",
+                    "phoneNumber": "+55 11 99999-9999",
+                    "statusConnected": "Conectado",
+                    "qrHint": "Vincule um novo número em Configurações → WhatsApp.",
+                    "inboundLabel": "Mensagens recebidas",
+                    "inboundStatus": "Indo para a inbox"
                 },
-                "playbooks": {
-                    "templatesLabel": "Modelos prontos",
-                    "template1": "Horário de funcionamento",
-                    "template2": "Confirmar reserva",
-                    "previewLabel": "Mensagem no chat",
-                    "composed": "Sua reserva está confirmada para 12h30. Até logo!"
+                "templates": {
+                    "quickRepliesLabel": "Respostas rápidas",
+                    "quickReply1": "Horário de funcionamento",
+                    "quickReply2": "Info de delivery",
+                    "templateLabel": "Modelo",
+                    "templateName": "Status do pedido",
+                    "previewLabel": "Inserir no chat",
+                    "composed": "Seu pedido #4821 saiu para entrega e chega em cerca de 30 minutos."
                 }
             },
             "banner": {
@@ -243,7 +252,7 @@
                     "role": "Proprietária, Bistro Verde"
                 },
                 {
-                    "quote": "Conectamos Shopify e CRM em minutos. Os playbooks dobraram nossos leads qualificados no primeiro mês.",
+                    "quote": "Lançamos uma campanha de fim de semana para clientes com tag em uma tarde. A taxa de resposta subiu e a inbox ficou organizada.",
                     "name": "Daniel Costa",
                     "role": "Líder de Vendas, Techfy"
                 },
@@ -325,11 +334,11 @@
                 },
                 {
                     "question": "Quais integrações estão disponíveis?",
-                    "answer": "A botinho conecta com CRMs, plataformas de e-commerce, delivery e muito mais. Use integrações nativas ou webhooks para plugar no seu stack."
+                    "answer": "Hoje a botinho conecta ao WhatsApp via pareamento por QR Code. Conectores de CRM, calendário e e-commerce estão no roadmap — o banner de integrações nesta página indica o que vem em seguida."
                 },
                 {
                     "question": "Posso escalar conversas para humanos?",
-                    "answer": "Sim. Defina regras inteligentes de roteamento, atribua agentes e retome a IA assim que o atendimento humano terminar. Seu time segue no controle."
+                    "answer": "Sim. Atendentes podem assumir um chat na inbox, responder manualmente e devolver para a IA quando terminar."
                 },
                 {
                     "question": "Meus dados de clientes ficam seguros?",
@@ -862,7 +871,7 @@
             "noNumber": "Nenhum número atribuído",
             "empty": {
                 "title": "Nenhum Botinho ainda",
-                "description": "Crie seu primeiro Botinho usando o formulário acima."
+                "description": "Crie seu primeiro Botinho para começar."
             },
             "delete": {
                 "title": "Excluir Botinho",
@@ -871,6 +880,27 @@
                 "nameNote": "Você deve digitar o nome exato do Botinho para confirmar a exclusão",
                 "warning": "Todo o conhecimento, configurações e números atribuídos a este Botinho serão excluídos permanentemente.",
                 "confirm": "Excluir Botinho"
+            }
+        },
+        "toolbar": {
+            "searchPlaceholder": "Buscar Botinhos...",
+            "statusFilter": "Filtrar por status",
+            "statusAll": "Todos os status",
+            "addBotinho": "Novo Botinho"
+        },
+        "table": {
+            "name": "Nome",
+            "status": "Status",
+            "setup": "Configuração",
+            "phones": "Números",
+            "autoReply": "Auto-resposta",
+            "actions": "Ações",
+            "empty": {
+                "title": "Nenhum Botinho ainda",
+                "description": "Crie seu primeiro Botinho para começar."
+            },
+            "messages": {
+                "noResults": "Nenhum Botinho encontrado"
             }
         },
         "setup": {
@@ -963,7 +993,11 @@
             "agentNamePlaceholder": "ex., Botinho de Vendas, Botinho de Suporte",
             "systemPrompt": "Prompt do sistema",
             "systemPromptPlaceholder": "Descreva como este Botinho deve se comportar, tom e regras...",
-            "systemPromptDescription": "Este prompt é adicionado junto com a base de conhecimento ao gerar respostas.",
+            "systemPromptDescription": "Este prompt é adicionado junto com a base de conhecimento ao gerar respostas. Use o guia acima para estruturar instruções claras para o seu Botinho.",
+            "ticketsEnabled": "Criação de tickets",
+            "ticketsEnabledDescription": "Quando ativado, este Botinho pode buscar e criar tickets de suporte durante as conversas (ex.: problemas com pedido, reclamações). Informe o número TKT ao cliente quando um ticket for aberto.",
+            "schedulingEnabled": "Agendamentos",
+            "schedulingEnabledDescription": "Quando ativado, este Botinho pode verificar disponibilidade e agendar ou cancelar horários durante as conversas.",
             "assignedNumbers": "Números WhatsApp atribuídos",
             "selectNumbers": "Selecione números conectados",
             "numbersSelected": "{count} números selecionados",
@@ -1020,27 +1054,103 @@
             "items": {
                 "generalSupport": {
                     "label": "Suporte geral",
-                    "content": "Você é um assistente de atendimento ao cliente. Cumprimente os clientes com cordialidade, entenda a necessidade e responda usando apenas a base de conhecimento. Mantenha respostas curtas e amigáveis, no estilo WhatsApp. Se não souber algo, diga que vai confirmar com a equipe. Nunca invente preços, políticas ou prazos. Encaminhe casos complexos ou clientes irritados com educação."
+                    "hint": "Assistente de atendimento para dúvidas frequentes, políticas e solicitações do dia a dia.",
+                    "content": "Você é um assistente de atendimento ao cliente da [nome da empresa].\n\n## Tom\n- Amigável e acolhedor\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Cumprimente o cliente e entenda a necessidade antes de responder\n- Responda usando apenas a base de conhecimento\n- Faça uma pergunta de esclarecimento quando necessário\n- Confirme detalhes importantes antes de prometer algo\n\n## O que evitar\n- Não invente preços, políticas, prazos ou características de produtos\n- Não prometa reembolsos ou descontos sem estar documentado\n\n## Escalação\n- Encaminhe para um humano quando: cliente irritado, caso complexo ou informação faltando na base\n- Diga: \"Vou conectar você com nossa equipe para ajudar com isso.\"",
+                    "contentWithTickets": "Você é um assistente de atendimento ao cliente da [nome da empresa].\n\n## Tom\n- Amigável e acolhedor\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Cumprimente o cliente e entenda a necessidade antes de responder\n- Responda usando apenas a base de conhecimento\n- Faça uma pergunta de esclarecimento quando necessário\n- Confirme detalhes importantes antes de prometer algo\n\n## O que evitar\n- Não invente preços, políticas, prazos ou características de produtos\n- Não prometa reembolsos ou descontos sem estar documentado\n\n## Escalação\n- Encaminhe para um humano quando: cliente irritado, caso complexo ou informação faltando na base\n- Diga: \"Vou conectar você com nossa equipe para ajudar com isso.\"\n\n## Tickets\n- Quando o cliente relatar problema, reclamação ou solicitação que precise de acompanhamento, crie um ticket de suporte\n- Antes de criar, busque tickets existentes para evitar duplicatas\n- Informe o número do ticket (ex.: TKT-00042) após criar um"
                 },
                 "sales": {
                     "label": "Vendas e leads",
-                    "content": "Você é um assistente de vendas focado em ajudar o cliente a encontrar o produto ou serviço certo. Faça uma pergunta de esclarecimento por vez, quando necessário. Destaque benefícios com base apenas na base de conhecimento—nunca invente recursos ou preços. Conduza clientes interessados para o próximo passo (orçamento, demonstração ou contato humano). Seja entusiasmado, mas sem pressão. Mensagens objetivas."
+                    "hint": "Ajuda o cliente a encontrar o produto certo e avançar para orçamento ou contato.",
+                    "content": "Você é um assistente de vendas da [nome da empresa].\n\n## Tom\n- Entusiasmado, mas sem pressão\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Ajude o cliente a encontrar o produto ou serviço certo\n- Faça uma pergunta de esclarecimento por vez, quando necessário\n- Destaque benefícios usando apenas a base de conhecimento\n- Conduza clientes interessados para o próximo passo (orçamento, demonstração ou contato humano)\n\n## O que evitar\n- Não invente preços, recursos, prazos ou condições comerciais\n- Não prometa descontos ou condições especiais sem estar documentado\n\n## Escalação\n- Encaminhe para um humano quando: negociação complexa, pedido de proposta formal ou cliente pronto para fechar\n- Diga: \"Vou conectar você com nossa equipe de vendas para dar continuidade.\"",
+                    "contentWithTickets": "Você é um assistente de vendas da [nome da empresa].\n\n## Tom\n- Entusiasmado, mas sem pressão\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Ajude o cliente a encontrar o produto ou serviço certo\n- Faça uma pergunta de esclarecimento por vez, quando necessário\n- Destaque benefícios usando apenas a base de conhecimento\n- Conduza clientes interessados para o próximo passo (orçamento, demonstração ou contato humano)\n\n## O que evitar\n- Não invente preços, recursos, prazos ou condições comerciais\n- Não prometa descontos ou condições especiais sem estar documentado\n\n## Escalação\n- Encaminhe para um humano quando: negociação complexa, pedido de proposta formal ou cliente pronto para fechar\n- Diga: \"Vou conectar você com nossa equipe de vendas para dar continuidade.\"\n\n## Tickets\n- Quando o cliente solicitar orçamento formal ou acompanhamento de proposta, crie um ticket de suporte\n- Antes de criar, busque tickets existentes para evitar duplicatas\n- Informe o número do ticket (ex.: TKT-00042) após criar um"
                 },
                 "ecommerce": {
                     "label": "E-commerce e pedidos",
-                    "content": "Você ajuda clientes com pedidos, entrega, trocas, devoluções e dúvidas sobre produtos. Peça número do pedido ou e-mail quando fizer sentido. Explique políticas usando somente a base de conhecimento. Se faltar informação ou for um pedido de reembolso que não pode confirmar, ofereça contato com a equipe. Seja claro sobre prazos e próximos passos. Tom calmo e tranquilizador."
+                    "hint": "Trata pedidos, entrega, trocas e dúvidas sobre produtos com próximos passos claros.",
+                    "content": "Você é um assistente de e-commerce da [nome da empresa].\n\n## Tom\n- Calmo e tranquilizador\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Ajude com pedidos, entrega, trocas, devoluções e dúvidas sobre produtos\n- Peça número do pedido ou e-mail quando fizer sentido\n- Responda usando apenas a base de conhecimento\n- Seja claro sobre prazos e próximos passos\n\n## O que evitar\n- Não invente status de pedido, prazos de entrega ou políticas de troca\n- Não confirme reembolsos sem estar documentado na base de conhecimento\n\n## Escalação\n- Encaminhe para um humano quando: disputa de pagamento, pedido extraviado ou reembolso que não pode confirmar\n- Diga: \"Vou conectar você com nossa equipe para resolver isso.\"",
+                    "contentWithTickets": "Você é um assistente de e-commerce da [nome da empresa].\n\n## Tom\n- Calmo e tranquilizador\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Ajude com pedidos, entrega, trocas, devoluções e dúvidas sobre produtos\n- Peça número do pedido ou e-mail quando fizer sentido\n- Responda usando apenas a base de conhecimento\n- Seja claro sobre prazos e próximos passos\n\n## O que evitar\n- Não invente status de pedido, prazos de entrega ou políticas de troca\n- Não confirme reembolsos sem estar documentado na base de conhecimento\n\n## Escalação\n- Encaminhe para um humano quando: disputa de pagamento, pedido extraviado ou reembolso que não pode confirmar\n- Diga: \"Vou conectar você com nossa equipe para resolver isso.\"\n\n## Tickets\n- Quando o cliente relatar problema com pedido, defeito ou solicitação que precise de acompanhamento, crie um ticket de suporte\n- Antes de criar, busque tickets existentes para evitar duplicatas\n- Informe o número do ticket (ex.: TKT-00042) após criar um"
                 },
                 "appointments": {
                     "label": "Agendamentos",
-                    "content": "Você ajuda clientes a agendar, remarcar ou cancelar horários. Confirme data, horário e tipo de serviço antes de finalizar. Informe disponibilidade e regras apenas com base na base de conhecimento. Se o horário não estiver disponível ou for urgente, sugira alternativas ou encaminhe para um atendente. Lembre preparos necessários, se houver. Respostas breves e organizadas."
+                    "hint": "Agenda, remarca e cancela horários confirmando data, horário e serviço.",
+                    "content": "Você é um assistente de agendamentos da [nome da empresa].\n\n## Tom\n- Organizado e prestativo\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Ajude a agendar, remarcar ou cancelar horários\n- Confirme data, horário e tipo de serviço antes de finalizar\n- Informe disponibilidade e regras usando apenas a base de conhecimento\n- Lembre preparos necessários, se houver\n\n## O que evitar\n- Não invente horários disponíveis ou políticas de cancelamento\n- Não confirme agendamentos sem validar os dados necessários\n\n## Escalação\n- Encaminhe para um humano quando: horário indisponível, solicitação urgente ou caso especial\n- Diga: \"Vou conectar você com nossa equipe para encontrar a melhor opção.\"",
+                    "contentWithTickets": "Você é um assistente de agendamentos da [nome da empresa].\n\n## Tom\n- Organizado e prestativo\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Ajude a agendar, remarcar ou cancelar horários\n- Confirme data, horário e tipo de serviço antes de finalizar\n- Informe disponibilidade e regras usando apenas a base de conhecimento\n- Lembre preparos necessários, se houver\n\n## O que evitar\n- Não invente horários disponíveis ou políticas de cancelamento\n- Não confirme agendamentos sem validar os dados necessários\n\n## Escalação\n- Encaminhe para um humano quando: horário indisponível, solicitação urgente ou caso especial\n- Diga: \"Vou conectar você com nossa equipe para encontrar a melhor opção.\"\n\n## Tickets\n- Quando o agendamento exigir acompanhamento ou confirmação manual, crie um ticket de suporte\n- Antes de criar, busque tickets existentes para evitar duplicatas\n- Informe o número do ticket (ex.: TKT-00042) após criar um"
                 },
                 "restaurant": {
                     "label": "Restaurante e delivery",
-                    "content": "Você atende clientes de restaurante com dúvidas sobre cardápio, horário, reservas e delivery. Descreva pratos com base na base de conhecimento—mencione alérgenos só se estiver documentado. Para reservas, colete número de pessoas, data e horário. Para delivery, confirme endereço e prazos oficiais. Seja acolhedor e ágil, como um bom anfitrião no WhatsApp."
+                    "hint": "Responde sobre cardápio, horário, reservas e delivery como um bom anfitrião.",
+                    "content": "Você é um assistente de atendimento da [nome da empresa].\n\n## Tom\n- Acolhedor e ágil, como um bom anfitrião\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Responda sobre cardápio, horário, reservas e delivery\n- Para reservas, colete número de pessoas, data e horário\n- Para delivery, confirme endereço e prazos usando a base de conhecimento\n- Mencione alérgenos somente se estiver documentado\n\n## O que evitar\n- Não invente pratos, preços, disponibilidade ou tempo de entrega\n- Não confirme reservas sem os dados necessários\n\n## Escalação\n- Encaminhe para um humano quando: pedido grande, evento especial ou reclamação sobre entrega\n- Diga: \"Vou conectar você com nossa equipe para ajudar com isso.\"",
+                    "contentWithTickets": "Você é um assistente de atendimento da [nome da empresa].\n\n## Tom\n- Acolhedor e ágil, como um bom anfitrião\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Responda sobre cardápio, horário, reservas e delivery\n- Para reservas, colete número de pessoas, data e horário\n- Para delivery, confirme endereço e prazos usando a base de conhecimento\n- Mencione alérgenos somente se estiver documentado\n\n## O que evitar\n- Não invente pratos, preços, disponibilidade ou tempo de entrega\n- Não confirme reservas sem os dados necessários\n\n## Escalação\n- Encaminhe para um humano quando: pedido grande, evento especial ou reclamação sobre entrega\n- Diga: \"Vou conectar você com nossa equipe para ajudar com isso.\"\n\n## Tickets\n- Quando o cliente relatar problema com pedido, entrega ou solicitação que precise de acompanhamento, crie um ticket de suporte\n- Antes de criar, busque tickets existentes para evitar duplicatas\n- Informe o número do ticket (ex.: TKT-00042) após criar um"
                 },
                 "realEstate": {
                     "label": "Imobiliário",
-                    "content": "Você ajuda interessados com dúvidas sobre imóveis, visitas e requisitos básicos. Compartilhe detalhes apenas da base de conhecimento (localização, metragem, preço, diferenciais). Ofereça agendar visita ou falar com um corretor quando houver interesse. Pergunte sobre orçamento, prazo e região preferida quando útil. Tom profissional e confiável—nunca garanta disponibilidade ou condições não listadas."
+                    "hint": "Atende dúvidas sobre imóveis, visitas e conecta interessados a um corretor.",
+                    "content": "Você é um assistente imobiliário da [nome da empresa].\n\n## Tom\n- Profissional e confiável\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Responda dúvidas sobre imóveis, visitas e requisitos básicos\n- Compartilhe detalhes apenas da base de conhecimento (localização, metragem, preço, diferenciais)\n- Pergunte sobre orçamento, prazo e região preferida quando útil\n- Ofereça agendar visita ou falar com um corretor quando houver interesse\n\n## O que evitar\n- Não invente disponibilidade, preços ou condições de negócio\n- Não garanta aprovação de financiamento ou documentação\n\n## Escalação\n- Encaminhe para um humano quando: cliente pronto para visita, negociação ou documentação\n- Diga: \"Vou conectar você com um de nossos corretores para dar continuidade.\"",
+                    "contentWithTickets": "Você é um assistente imobiliário da [nome da empresa].\n\n## Tom\n- Profissional e confiável\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Responda dúvidas sobre imóveis, visitas e requisitos básicos\n- Compartilhe detalhes apenas da base de conhecimento (localização, metragem, preço, diferenciais)\n- Pergunte sobre orçamento, prazo e região preferida quando útil\n- Ofereça agendar visita ou falar com um corretor quando houver interesse\n\n## O que evitar\n- Não invente disponibilidade, preços ou condições de negócio\n- Não garanta aprovação de financiamento ou documentação\n\n## Escalação\n- Encaminhe para um humano quando: cliente pronto para visita, negociação ou documentação\n- Diga: \"Vou conectar você com um de nossos corretores para dar continuidade.\"\n\n## Tickets\n- Quando o interessado solicitar visita, proposta ou acompanhamento, crie um ticket de suporte\n- Antes de criar, busque tickets existentes para evitar duplicatas\n- Informe o número do ticket (ex.: TKT-00042) após criar um"
+                }
+            }
+        },
+        "promptGuide": {
+            "title": "Como escrever um bom prompt do sistema",
+            "intro": "Um prompt claro ajuda o Botinho a manter a identidade da marca, evitar erros e saber quando escalar. Use as seções abaixo como checklist.",
+            "skeletonHint": "Comece com um modelo estruturado e preencha os campos para o seu negócio.",
+            "insertSkeleton": "Inserir modelo",
+            "skeleton": "Você é um [papel, ex.: assistente de atendimento] da [nome da empresa].\n\n## Tom\n- [Amigável / profissional / informal]\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Responda usando apenas a base de conhecimento\n- Faça uma pergunta de esclarecimento quando necessário\n- Confirme detalhes importantes antes de prometer algo\n\n## O que evitar\n- Não invente preços, políticas, prazos ou características de produtos\n- Não prometa reembolsos ou descontos sem estar documentado\n\n## Escalação\n- Encaminhe para um humano quando: [cliente irritado / disputa de pagamento / informação faltando]\n- Diga: \"Vou conectar você com nossa equipe para ajudar com isso.\"",
+            "skeletonWithTickets": "Você é um [papel, ex.: assistente de atendimento] da [nome da empresa].\n\n## Tom\n- [Amigável / profissional / informal]\n- Mantenha respostas curtas, no estilo WhatsApp\n\n## O que fazer\n- Responda usando apenas a base de conhecimento\n- Faça uma pergunta de esclarecimento quando necessário\n- Confirme detalhes importantes antes de prometer algo\n\n## O que evitar\n- Não invente preços, políticas, prazos ou características de produtos\n- Não prometa reembolsos ou descontos sem estar documentado\n\n## Escalação\n- Encaminhe para um humano quando: [cliente irritado / disputa de pagamento / informação faltando]\n- Diga: \"Vou conectar você com nossa equipe para ajudar com isso.\"\n\n## Tickets\n- Quando o cliente relatar problema com pedido, defeito ou solicitação que precise de acompanhamento, crie um ticket de suporte\n- Antes de criar, busque tickets existentes para evitar duplicatas\n- Informe o número do ticket (ex.: TKT-00042) após criar um",
+            "sections": {
+                "role": {
+                    "title": "1. Defina o papel",
+                    "description": "Diga ao Botinho quem ele representa e para que serve.",
+                    "tips": [
+                        "Nomeie a empresa e o objetivo do Botinho (suporte, vendas, agendamentos)",
+                        "Mencione o canal: WhatsApp — respostas breves",
+                        "Exemplo: \"Você é o assistente de suporte da Loja Acme.\""
+                    ]
+                },
+                "tone": {
+                    "title": "2. Tom e estilo",
+                    "description": "Defina como o Botinho deve soar em cada mensagem.",
+                    "tips": [
+                        "Escolha um tom: acolhedor, profissional, informal ou formal",
+                        "Prefira frases curtas; evite parágrafos longos",
+                        "Use o nome do cliente quando souber"
+                    ]
+                },
+                "rules": {
+                    "title": "3. Regras e limites",
+                    "description": "Evite informações inventadas e promessas indevidas.",
+                    "tips": [
+                        "Use apenas fatos da base de conhecimento",
+                        "Nunca invente preços, estoque, horários ou políticas",
+                        "Se não tiver certeza, diga que vai confirmar com a equipe"
+                    ]
+                },
+                "escalation": {
+                    "title": "4. Quando escalar",
+                    "description": "Defina quando um humano deve assumir.",
+                    "tips": [
+                        "Liste gatilhos: cliente irritado, questão legal, disputa de pagamento",
+                        "Diga o que falar ao cliente ao escalar",
+                        "Não tente resolver casos complexos sozinho"
+                    ]
+                },
+                "tickets": {
+                    "title": "5. Tickets de suporte",
+                    "description": "Oriente o Botinho sobre quando abrir ou consultar tickets.",
+                    "tips": [
+                        "Crie ticket para problemas com pedido, defeitos ou acompanhamentos",
+                        "Busque antes para evitar tickets duplicados",
+                        "Informe o número TKT ao cliente após criar um ticket"
+                    ]
+                },
+                "examples": {
+                    "title": "6. Exemplos (opcional)",
+                    "description": "Exemplos curtos melhoram a consistência.",
+                    "tips": [
+                        "Adicione 1–2 respostas modelo para perguntas comuns",
+                        "Mostre como pedir o número do pedido com educação",
+                        "Mostre como recusar quando a informação não está na base"
+                    ]
                 }
             }
         },
@@ -1159,6 +1269,7 @@
     "QuickAnswers": {
         "title": "Respostas Rápidas",
         "description": "Respostas curtas compartilhadas entre todos os Botinhos.",
+        "loading": "Carregando respostas rápidas...",
         "noCompany": {
             "title": "Conecte uma empresa para continuar",
             "description": "Crie ou selecione uma empresa para gerenciar respostas rápidas."
@@ -1167,6 +1278,31 @@
             "addQuickAnswer": "Adicionar Resposta Rápida",
             "cancel": "Cancelar",
             "update": "Atualizar"
+        },
+        "toolbar": {
+            "searchPlaceholder": "Buscar respostas rápidas...",
+            "addQuickAnswer": "Nova resposta rápida",
+            "retry": "Tentar novamente"
+        },
+        "table": {
+            "content": "Conteúdo",
+            "created": "Criado",
+            "actions": "Ações",
+            "empty": {
+                "title": "Nenhuma resposta rápida ainda",
+                "description": "Crie respostas rápidas para suas respostas mais comuns."
+            },
+            "messages": {
+                "noResults": "Nenhuma resposta rápida encontrada"
+            }
+        },
+        "actions": {
+            "edit": "Editar",
+            "delete": "Excluir"
+        },
+        "deleteConfirm": {
+            "title": "Excluir resposta rápida?",
+            "description": "Isso removerá permanentemente esta resposta rápida. Esta ação não pode ser desfeita."
         },
         "quickAnswers": {
             "title": "Respostas Rápidas",
@@ -1240,6 +1376,7 @@
     "Templates": {
         "title": "Modelos",
         "description": "Modelos de mensagem compartilhados entre todos os Botinhos.",
+        "loading": "Carregando modelos...",
         "noCompany": {
             "title": "Conecte uma empresa para continuar",
             "description": "Crie ou selecione uma empresa para gerenciar modelos."
@@ -1250,6 +1387,36 @@
             "cancel": "Cancelar",
             "update": "Atualizar",
             "addOption": "Adicionar Opção"
+        },
+        "toolbar": {
+            "searchPlaceholder": "Buscar modelos...",
+            "addTemplate": "Novo modelo",
+            "categoryFilter": "Filtrar por categoria",
+            "categoryAll": "Todas as categorias",
+            "retry": "Tentar novamente"
+        },
+        "table": {
+            "name": "Nome",
+            "category": "Categoria",
+            "content": "Conteúdo",
+            "created": "Criado",
+            "actions": "Ações",
+            "empty": {
+                "title": "Nenhum modelo ainda",
+                "description": "Crie seu primeiro modelo de mensagem para reutilizar nas conversas."
+            },
+            "messages": {
+                "noResults": "Nenhum modelo encontrado"
+            }
+        },
+        "actions": {
+            "edit": "Editar",
+            "delete": "Excluir"
+        },
+        "deleteConfirm": {
+            "title": "Excluir modelo?",
+            "description": "Isso removerá permanentemente \"{name}\". Esta ação não pode ser desfeita.",
+            "descriptionGeneric": "Esta ação não pode ser desfeita."
         },
         "form": {
             "templateName": "Nome do Modelo",
@@ -1363,6 +1530,8 @@
             "dashboard": "Dashboard",
             "customer": "Clientes",
             "inbox": "Caixa de Entrada",
+            "tickets": "Tickets",
+            "schedule": "Agenda",
             "aiAgents": "Botinho",
             "quickAnswers": "Respostas Rápidas",
             "templates": "Modelos",
@@ -1471,13 +1640,24 @@
             "edit": "Editar",
             "viewMetrics": "Ver métricas",
             "duplicate": "Duplicar",
+            "delete": "Excluir",
             "archive": "Arquivar",
             "addQuestion": "Adicionar pergunta",
             "remove": "Remover"
         },
+        "deleteConfirm": {
+            "title": "Excluir pesquisa?",
+            "description": "Isso removerá permanentemente esta pesquisa. Esta ação não pode ser desfeita."
+        },
+        "archiveConfirm": {
+            "title": "Arquivar pesquisa?",
+            "description": "Esta pesquisa tem respostas e será arquivada em vez de excluída. Você não poderá mais enviá-la, mas as métricas serão preservadas."
+        },
         "messages": {
             "saved": "Pesquisa salva",
-            "duplicated": "Pesquisa duplicada"
+            "duplicated": "Pesquisa duplicada",
+            "deleted": "Pesquisa excluída",
+            "archived": "Pesquisa arquivada"
         },
         "defaults": {
             "thankYou": "Obrigado pelo seu feedback!"
@@ -1486,6 +1666,7 @@
             "loadFailed": "Não foi possível carregar as pesquisas",
             "saveFailed": "Não foi possível salvar a pesquisa",
             "archiveFailed": "Não foi possível arquivar a pesquisa",
+            "deleteFailed": "Não foi possível excluir a pesquisa",
             "duplicateFailed": "Não foi possível duplicar a pesquisa",
             "nameRequired": "O nome da pesquisa é obrigatório"
         },
@@ -2292,6 +2473,66 @@
             "invalidToken": "Token de redefinição inválido ou expirado"
         }
     },
+    "Onboarding": {
+        "stepper": {
+            "company": "Empresa",
+            "whatsapp": "WhatsApp",
+            "bot": "Botinho",
+            "plan": "Plano"
+        },
+        "company": {
+            "title": "Crie sua empresa",
+            "description": "Conte sobre seu negócio para começar.",
+            "nameLabel": "Nome da empresa",
+            "namePlaceholder": "Minha Empresa",
+            "nameError": "O nome deve ter pelo menos 2 caracteres",
+            "descriptionLabel": "Descrição (opcional)",
+            "descriptionPlaceholder": "O que sua empresa faz?",
+            "continue": "Continuar",
+            "error": "Falha ao criar empresa"
+        },
+        "whatsapp": {
+            "title": "Conectar WhatsApp",
+            "description": "Vincule seu número do WhatsApp para receber e responder mensagens.",
+            "hint": "Escaneie o QR code com o WhatsApp no seu celular.",
+            "labelOptional": "Nome do número (opcional)",
+            "labelPlaceholder": "Linha de suporte",
+            "connect": "Conectar WhatsApp",
+            "skip": "Pular por agora",
+            "continue": "Continuar",
+            "retry": "Tentar novamente",
+            "creating": "Preparando conexão...",
+            "scan": "Escaneie este QR code com o WhatsApp",
+            "finalizing": "Finalizando conexão...",
+            "connected": "WhatsApp conectado com sucesso",
+            "connectedTitle": "WhatsApp conectado",
+            "qrAlt": "QR code do WhatsApp",
+            "notConfigured": "A integração com WhatsApp não está disponível neste ambiente. Você pode conectar depois em Configurações.",
+            "error": "Falha ao conectar WhatsApp"
+        },
+        "bot": {
+            "title": "Crie seu Botinho",
+            "description": "Configure um agente de IA para automatizar conversas.",
+            "nameLabel": "Nome do bot",
+            "namePlaceholder": "Bot de Suporte",
+            "nameRequired": "O nome do bot é obrigatório",
+            "promptLabel": "Instruções (opcional)",
+            "promptPlaceholder": "Você é um assistente útil para...",
+            "sessionsLabel": "Atribuir números WhatsApp",
+            "create": "Criar Botinho",
+            "skip": "Pular por agora",
+            "error": "Falha ao criar Botinho"
+        },
+        "plan": {
+            "title": "Escolha seu plano",
+            "description": "Selecione um plano para concluir a configuração. Você pode alterar depois.",
+            "completed": "Bem-vindo ao botinho!",
+            "checkoutSuccess": "Pagamento confirmado! Configurando sua conta...",
+            "checkoutCanceled": "Checkout cancelado. Escolha um plano abaixo.",
+            "redirecting": "Redirecionando para checkout...",
+            "error": "Falha ao selecionar plano"
+        }
+    },
     "AuthErrors": {
         "invalidCredentials": "Email ou senha inválidos",
         "emailNotConfirmed": "Por favor, confirme seu email antes de fazer login",
@@ -2419,6 +2660,8 @@
             "isAdmin": "Administrador - Pode gerenciar empresa e membros",
             "canPost": "Pode Criar - Pode enviar mensagens e gerenciar conteúdo",
             "canApprove": "Pode Ler - Pode visualizar conversas e relatórios",
+            "canManageAgenda": "Agenda - Pode gerenciar horários, bloquear tempo e ver reuniões",
+            "canManageAgendaShort": "Agenda",
             "sendInvite": "Enviar Convite",
             "inviting": "Enviando...",
             "name": "Nome",
@@ -2517,6 +2760,7 @@
                 "companyAdministrator": "Administrador da Empresa",
                 "canPostContent": "Pode enviar mensagens e gerenciar conteúdo",
                 "canApproveContent": "Pode visualizar conversas e relatórios",
+                "canManageAgendaContent": "Pode gerenciar a agenda da empresa, bloquear horários e ver reuniões",
                 "cancel": "Cancelar",
                 "saveChanges": "Salvar Alterações",
                 "saving": "Salvando..."
@@ -2755,6 +2999,7 @@
             "messagesReceived": "Mensagens Recebidas",
             "messagesSent": "Mensagens Enviadas",
             "botAutoReplies": "Respostas Automáticas do Bot",
+            "botAutoRepliesUsesCredits": "usa créditos IA",
             "channelUsage": "Uso por Linha WhatsApp",
             "channelUsageDescription": "Contagem de mensagens por número WhatsApp conectado neste período",
             "phoneNumber": "Número de Telefone",
@@ -3002,6 +3247,206 @@
             "invalidStatus": "Status inválido. Deve ser um dos: active, inactive, prospect"
         }
     },
+    "Tickets": {
+        "title": "Tickets",
+        "description": "Acompanhe solicitações de clientes, pedidos e problemas de suporte em um só lugar.",
+        "toolbar": {
+            "searchPlaceholder": "Buscar tickets...",
+            "addTicket": "Novo Ticket",
+            "statusFilter": "Filtrar por status",
+            "statusAll": "Todos os status",
+            "statusCount": "{count} status",
+            "statusSelectAll": "Selecionar todos",
+            "statusClear": "Limpar",
+            "typeFilter": "Filtrar por tipo",
+            "typeAll": "Todos os tipos"
+        },
+        "list": {
+            "title": "Tickets",
+            "empty": "Escolha um ticket na lista para ver detalhes e adicionar entradas no diário.",
+            "selectTicket": "Selecione um ticket"
+        },
+        "actions": {
+            "showTickets": "Mostrar lista de tickets",
+            "hideTickets": "Ocultar lista de tickets",
+            "openTickets": "Abrir lista de tickets",
+            "backToList": "Voltar para a lista"
+        },
+        "detail": {
+            "metadataTitle": "Detalhes",
+            "activityTitle": "Atividade",
+            "unsavedChangesTitle": "Descartar alterações não salvas?",
+            "unsavedChanges": "Há alterações não salvas neste ticket. Deseja descartá-las e continuar?",
+            "discardChanges": "Descartar alterações"
+        },
+        "table": {
+            "columns": {
+                "ticketNumber": "Ticket #",
+                "title": "Título",
+                "type": "Tipo",
+                "priority": "Prioridade",
+                "status": "Status",
+                "orderReference": "Pedido",
+                "createdAt": "Criado",
+                "actions": "Ações"
+            },
+            "empty": {
+                "title": "Nenhum ticket ainda",
+                "description": "Crie seu primeiro ticket para registrar uma solicitação ou pedido do cliente."
+            },
+            "messages": {
+                "noResults": "Nenhum ticket encontrado"
+            },
+            "actions": {
+                "edit": "Editar"
+            },
+            "badges": {
+                "status": {
+                    "open": "Aberto",
+                    "in_progress": "Em Andamento",
+                    "waiting": "Aguardando",
+                    "resolved": "Resolvido",
+                    "closed": "Fechado"
+                },
+                "priority": {
+                    "low": "Baixa",
+                    "medium": "Média",
+                    "high": "Alta"
+                },
+                "type": {
+                    "customer_request": "Solicitação",
+                    "order": "Pedido",
+                    "support": "Suporte",
+                    "complaint": "Reclamação",
+                    "other": "Outro"
+                }
+            }
+        },
+        "form": {
+            "title": {
+                "create": "Novo Ticket",
+                "edit": "Editar Ticket"
+            },
+            "description": {
+                "create": "Registre uma solicitação do cliente, problema com pedido ou caso de suporte.",
+                "edit": "Atualize os detalhes e o status do ticket."
+            },
+            "fields": {
+                "title": {
+                    "label": "Título",
+                    "placeholder": "Resumo breve do problema"
+                },
+                "description": {
+                    "label": "Descrição",
+                    "placeholder": "Descreva a solicitação ou problema do cliente em detalhes"
+                },
+                "type": {
+                    "label": "Tipo",
+                    "placeholder": "Selecione o tipo"
+                },
+                "priority": {
+                    "label": "Prioridade",
+                    "placeholder": "Selecione a prioridade"
+                },
+                "status": {
+                    "label": "Status",
+                    "placeholder": "Selecione o status"
+                },
+                "orderReference": {
+                    "label": "Referência do Pedido",
+                    "placeholder": "ID ou número do pedido (opcional)"
+                },
+                "customer": {
+                    "label": "Cliente",
+                    "placeholder": "Buscar clientes...",
+                    "loading": "Carregando clientes...",
+                    "clear": "Limpar",
+                    "empty": "Nenhum cliente encontrado"
+                }
+            },
+            "buttons": {
+                "cancel": "Cancelar",
+                "create": "Criar Ticket",
+                "update": "Atualizar Ticket",
+                "updateWithShortcut": "Atualizar Ticket ({shortcut})",
+                "updateShort": "Salvar"
+            },
+            "validation": {
+                "titleRequired": "O título é obrigatório",
+                "descriptionRequired": "A descrição é obrigatória"
+            },
+            "errors": {
+                "loadCustomers": "Não foi possível carregar os clientes"
+            }
+        },
+        "messages": {
+            "loading": "Carregando tickets...",
+            "loadingMore": "Carregando mais tickets...",
+            "loadFailed": "Não foi possível carregar os tickets",
+            "ticketCreated": "Ticket criado com sucesso",
+            "ticketUpdated": "Ticket atualizado com sucesso",
+            "ticketSaveError": "Algo deu errado ao salvar o ticket."
+        },
+        "tabs": {
+            "details": "Detalhes",
+            "journal": "Diário",
+            "activity": "Atividade"
+        },
+        "journal": {
+            "addLabel": "Adicionar entrada no diário",
+            "placeholder": "Descreva o que aconteceu, próximos passos ou notas internas...",
+            "addButton": "Adicionar entrada",
+            "shortcutHint": "{shortcut} para adicionar entrada",
+            "historyTitle": "Histórico do diário",
+            "loading": "Carregando entradas do diário...",
+            "empty": "Nenhuma entrada no diário ainda. Adicione a primeira atualização deste ticket.",
+            "added": "Entrada adicionada ao diário",
+            "addFailed": "Não foi possível adicionar entrada ao diário",
+            "loadFailed": "Não foi possível carregar entradas do diário",
+            "unknownAuthor": "Membro da equipe"
+        },
+        "activity": {
+            "loading": "Carregando atividade...",
+            "empty": "Nenhuma atividade registrada ainda.",
+            "loadFailed": "Não foi possível carregar a atividade",
+            "unknownActor": "Membro da equipe",
+            "actions": {
+                "created": "{actor} abriu o ticket {ticket}",
+                "status_changed": "{actor} alterou o status de {previous} para {next}",
+                "priority_changed": "{actor} alterou a prioridade de {previous} para {next}",
+                "type_changed": "{actor} alterou o tipo de {previous} para {next}",
+                "title_changed": "{actor} atualizou o título",
+                "description_changed": "{actor} atualizou a descrição",
+                "customer_changed": "{actor} alterou o cliente de {previous} para {next}",
+                "order_reference_changed": "{actor} alterou a referência do pedido de {previous} para {next}",
+                "assigned": "{actor} atribuiu o ticket para {next}",
+                "unassigned": "{actor} removeu a atribuição de {previous}",
+                "comment_added": "{actor} adicionou uma entrada no diário"
+            },
+            "values": {
+                "empty": "—",
+                "status": {
+                    "open": "Aberto",
+                    "in_progress": "Em Andamento",
+                    "waiting": "Aguardando",
+                    "resolved": "Resolvido",
+                    "closed": "Fechado"
+                },
+                "priority": {
+                    "low": "Baixa",
+                    "medium": "Média",
+                    "high": "Alta"
+                },
+                "type": {
+                    "customer_request": "Solicitação",
+                    "order": "Pedido",
+                    "support": "Suporte",
+                    "complaint": "Reclamação",
+                    "other": "Outro"
+                }
+            }
+        }
+    },
     "Dashboard": {
         "title": "Dashboard",
         "description": "Bem-vindo de volta! Aqui está o que está acontecendo hoje.",
@@ -3053,6 +3498,174 @@
             "startTraining": "Abrir Botinho"
         }
     },
+    "Schedule": {
+        "title": "Agenda",
+        "description": "Gerencie agendamentos, serviços e disponibilidade da equipe.",
+        "views": {
+            "table": "Tabela",
+            "calendar": "Calendário"
+        },
+        "tabs": {
+            "reservations": "Agendamentos",
+            "services": "Serviços",
+            "settings": "Configurações"
+        },
+        "table": {
+            "number": "Reserva #",
+            "datetime": "Data e hora",
+            "service": "Serviço",
+            "assignee": "Responsável",
+            "customer": "Cliente",
+            "status": "Status",
+            "source": "Origem",
+            "searchPlaceholder": "Buscar agendamentos...",
+            "empty": "Nenhum agendamento encontrado"
+        },
+        "status": {
+            "pending": "Pendente",
+            "confirmed": "Confirmado",
+            "cancelled": "Cancelado",
+            "completed": "Concluído",
+            "no_show": "Não compareceu"
+        },
+        "source": {
+            "bot": "Botinho",
+            "manual": "Manual"
+        },
+        "blockType": {
+            "blocked": "Bloqueado",
+            "break": "Intervalo",
+            "unavailable": "Indisponível"
+        },
+        "actions": {
+            "newReservation": "Novo agendamento",
+            "blockTime": "Bloquear horário",
+            "edit": "Editar",
+            "cancel": "Cancelar",
+            "close": "Fechar",
+            "save": "Salvar",
+            "saving": "Salvando...",
+            "retry": "Tentar novamente",
+            "addService": "Adicionar serviço",
+            "saveSettings": "Salvar configurações",
+            "delete": "Excluir"
+        },
+        "calendar": {
+            "today": "Hoje",
+            "previousWeek": "Semana anterior",
+            "nextWeek": "Próxima semana",
+            "createAt": "Criar agendamento às {time}"
+        },
+        "modal": {
+            "createTitle": "Novo agendamento",
+            "editTitle": "Editar agendamento",
+            "service": "Serviço",
+            "selectService": "Selecione um serviço",
+            "date": "Data",
+            "selectDate": "Selecione uma data",
+            "slot": "Horário disponível",
+            "selectSlot": "Selecione um horário",
+            "loadingSlots": "Carregando horários disponíveis...",
+            "status": "Status",
+            "customerName": "Nome do cliente",
+            "customer": {
+                "label": "Cliente",
+                "searchPlaceholder": "Buscar clientes por nome, telefone ou e-mail",
+                "clear": "Limpar cliente",
+                "loading": "Carregando clientes...",
+                "empty": "Nenhum cliente encontrado",
+                "loadFailed": "Falha ao carregar clientes",
+                "addNew": "Adicionar novo cliente",
+                "newCustomerTitle": "Novo cliente",
+                "backToSearch": "Voltar à busca",
+                "name": "Nome",
+                "namePlaceholder": "Nome do cliente",
+                "phone": "Telefone",
+                "email": "E-mail (opcional)",
+                "emailPlaceholder": "email@exemplo.com"
+            },
+            "notes": "Observações"
+        },
+        "blockModal": {
+            "title": "Bloquear horário",
+            "assignee": "Membro da equipe",
+            "type": "Tipo de bloqueio",
+            "start": "Início",
+            "end": "Fim",
+            "reason": "Motivo"
+        },
+        "services": {
+            "title": "Serviços",
+            "description": "Gerencie serviços, durações e disponibilidade da equipe.",
+            "name": "Nome do serviço",
+            "descriptionLabel": "Descrição",
+            "duration": "Duração (minutos)",
+            "bufferBefore": "Intervalo antes (minutos)",
+            "bufferAfter": "Intervalo após (minutos)",
+            "assignees": "Membros da equipe",
+            "noAssignees": "Nenhum membro da equipe disponível",
+            "active": "Ativo",
+            "activeHint": "Serviços inativos ficam ocultos em novos agendamentos.",
+            "inactive": "Inativo",
+            "empty": "Nenhum serviço ainda. Adicione o primeiro para começar a receber agendamentos.",
+            "minutesValue": "{value} min",
+            "bufferSummary": "{before} min antes · {after} min depois",
+            "deleteTitle": "Excluir serviço?",
+            "deleteDescription": "Isso removerá permanentemente \"{name}\". Agendamentos existentes não serão excluídos.",
+            "table": {
+                "name": "Serviço",
+                "duration": "Duração",
+                "buffer": "Intervalo",
+                "assignees": "Responsáveis",
+                "status": "Status",
+                "actions": "Ações"
+            },
+            "modal": {
+                "createTitle": "Adicionar serviço",
+                "editTitle": "Editar serviço",
+                "namePlaceholder": "ex.: Consulta",
+                "descriptionPlaceholder": "Detalhes opcionais para a equipe"
+            },
+            "errors": {
+                "assigneeRequired": "Selecione pelo menos um membro da equipe"
+            }
+        },
+        "settings": {
+            "title": "Configurações da agenda",
+            "description": "Configure fuso horário, intervalos de slots e janelas de agendamento.",
+            "timezone": "Fuso horário",
+            "timezonePlaceholder": "Selecione o fuso horário",
+            "defaultBuffer": "Intervalo padrão (minutos)",
+            "slotInterval": "Intervalo de slots (minutos)",
+            "minAdvance": "Antecedência mínima (minutos)",
+            "maxAdvanceDays": "Antecedência máxima (dias)",
+            "sections": {
+                "general": "Geral",
+                "generalHint": "Usado para exibir e calcular horários de agendamento.",
+                "slots": "Slots e intervalos",
+                "slotsHint": "Controla como o tempo é dividido e espaçado entre agendamentos.",
+                "booking": "Janelas de agendamento",
+                "bookingHint": "Define com quanta antecedência os clientes podem agendar."
+            }
+        },
+        "messages": {
+            "loadFailed": "Falha ao carregar a agenda",
+            "loading": "Carregando agenda...",
+            "created": "Agendamento criado",
+            "updated": "Agendamento atualizado",
+            "cancelled": "Agendamento cancelado",
+            "blockCreated": "Horário bloqueado com sucesso",
+            "serviceSaved": "Serviço salvo",
+            "serviceDeleted": "Serviço excluído",
+            "settingsSaved": "Configurações salvas",
+            "saveFailed": "Falha ao salvar",
+            "requiredFields": "Preencha todos os campos obrigatórios"
+        },
+        "accessDenied": {
+            "title": "Acesso à agenda necessário",
+            "description": "Você precisa de permissão de agenda para visualizar e gerenciar os horários da empresa."
+        }
+    },
     "Pricing": {
         "mostLoved": "Queridinho",
         "perMonth": "/mês",
@@ -3068,6 +3681,7 @@
         },
         "features": {
             "syncedNumbers": "{count, plural, one {# número WhatsApp sincronizado} other {# números WhatsApp sincronizados}}",
+            "unlimitedManualConversations": "Conversas manuais ilimitadas (sem IA)",
             "aiCredits": "{count} créditos IA/mês",
             "analytics": "Dashboard de analytics",
             "removeBranding": "Remover branding",

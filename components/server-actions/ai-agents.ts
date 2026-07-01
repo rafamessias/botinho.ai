@@ -83,6 +83,8 @@ const createAgentSchema = z.object({
   systemPrompt: z.string().trim().max(4000).optional(),
   sessionIds: z.array(z.string().min(1)).optional(),
   autoReply: z.boolean().optional(),
+  ticketsEnabled: z.boolean().optional(),
+  schedulingEnabled: z.boolean().optional(),
   language: z.enum(["en", "pt-BR", "auto"]).optional(),
 })
 
@@ -102,6 +104,8 @@ const updateAgentSchema = agentIdSchema.merge(
     systemPrompt: z.string().trim().max(4000).optional(),
     sessionIds: z.array(z.string().min(1)).optional(),
     autoReply: z.boolean().optional(),
+    ticketsEnabled: z.boolean().optional(),
+    schedulingEnabled: z.boolean().optional(),
     language: z.enum(["en", "pt-BR", "auto"]).optional(),
     surveyIds: z.array(z.string()).optional(),
     surveyTriggers: z

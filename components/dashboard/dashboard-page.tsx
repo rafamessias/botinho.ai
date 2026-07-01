@@ -185,7 +185,7 @@ export default function DashboardPage({
         <Card className="elegant-card">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <CardTitle className="caption-text uppercase tracking-wide">{t("stats.messagesHandled.title")}</CardTitle>
-            <div className="bg-primary/10 p-2.5 rounded-lg">
+            <div className="rounded-lg bg-muted p-2.5">
               <MessageSquare className="w-5 h-5 text-primary" />
             </div>
           </CardHeader>
@@ -335,7 +335,7 @@ export default function DashboardPage({
         </Card>
       </div>
 
-      <Card className="elegant-gradient border-primary/20 elegant-card">
+      <Card className="elegant-gradient elegant-card">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 text-center md:text-left">

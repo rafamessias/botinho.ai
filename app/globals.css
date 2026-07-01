@@ -22,15 +22,16 @@
   --secondary-foreground: oklch(0.22 0.008 120);
   --muted: oklch(0.96 0.005 120);
   /* Refined muted green-gray */
-  --muted-foreground: oklch(0.45 0.008 120);
+  --muted-foreground: oklch(0.40 0.008 120);
   --accent: oklch(0.55 0.12 140);
   /* More elegant accent green */
   --accent-foreground: oklch(0.98 0.003 120);
   --destructive: oklch(0.52 0.20 25);
   /* Sophisticated red */
   --destructive-foreground: oklch(0.98 0.003 120);
-  --border: oklch(0.92 0.005 120);
+  --border: oklch(0.88 0.006 120);
   /* Subtle refined border */
+  --section-muted: oklch(0.965 0.004 120);
   --input: oklch(0.97 0.005 120);
   --ring: oklch(0.52 0.12 140);
   --chart-1: oklch(0.52 0.12 140);
@@ -129,7 +130,8 @@
   --critical-foreground: oklch(0.12 0.02 15);
   --agent: oklch(0.65 0.12 250);
   --agent-foreground: oklch(0.12 0.02 250);
-  --rating: oklch(0.78 0.14 75);
+  --rating: oklch(0.72 0.16 75);
+  --section-muted: oklch(0.13 0.008 120);
 }
 
 @theme inline {
@@ -182,6 +184,7 @@
   --color-agent: var(--agent);
   --color-agent-foreground: var(--agent-foreground);
   --color-rating: var(--rating);
+  --color-section-muted: var(--section-muted);
 }
 
 @layer base {
@@ -226,6 +229,89 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* Marketing landing page — scoped layout utilities */
+.marketing-page {
+  --section-padding-y: 5rem;
+  --section-gap: 4rem;
+}
+
+.marketing-page .section-alt {
+  background: var(--muted);
+}
+
+.marketing-page .section-surface {
+  background: var(--card);
+}
+
+/* Authenticated app shell — scoped layout and surface utilities */
+.app-shell .app-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .app-shell .app-page-content {
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-shell .app-page-content {
+    padding: 1.5rem 2rem;
+  }
+}
+
+.app-shell .elegant-card,
+.app-shell .app-card {
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.app-shell .refined-card {
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.app-shell .refined-card:hover {
+  background: var(--muted);
+}
+
+.app-shell .section-spacing {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.app-shell .caption-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.app-shell .accent-blue {
+  background: color-mix(in oklch, var(--info) 15%, transparent);
+  color: var(--info);
+}
+
+.app-shell .accent-purple {
+  background: color-mix(in oklch, var(--agent) 15%, transparent);
+  color: var(--agent);
+}
+
+.app-shell .accent-orange {
+  background: color-mix(in oklch, var(--warning) 15%, transparent);
+  color: var(--warning-foreground);
+}
+
+.app-shell .elegant-gradient {
+  background: var(--muted);
+  border-color: var(--border);
 }
 
 /* Google Places Autocomplete dropdown — matches popover/select theme */

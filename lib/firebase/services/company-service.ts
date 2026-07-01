@@ -65,6 +65,7 @@ export const createCompanyForUser = async (params: {
       isAdmin: true,
       canPost: true,
       canApprove: true,
+      canManageAgenda: true,
       status: "accepted" as const,
       createdAt: now,
       updatedAt: now,
@@ -123,6 +124,7 @@ export const getUserCompaniesLight = async (uid: string, defaultCompanyId?: stri
             isAdmin: member.isAdmin,
             canPost: member.canPost,
             canApprove: member.canApprove,
+            canManageAgenda: member.canManageAgenda ?? member.isAdmin ?? member.isOwner ?? false,
             isOwner: member.isOwner,
           },
         ],
@@ -139,6 +141,7 @@ export const getUserCompaniesLight = async (uid: string, defaultCompanyId?: stri
       isAdmin: boolean
       canPost: boolean
       canApprove: boolean
+      canManageAgenda: boolean
       isOwner: boolean
     }>
   }>

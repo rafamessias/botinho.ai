@@ -35,7 +35,7 @@ import {
   updateAiAgentAction,
   type WhatsAppSessionOption,
 } from "@/components/server-actions/ai-agents"
-import { PromptTemplatePicker } from "./prompt-template-picker"
+import { PromptAssistant } from "./prompt-assistant"
 
 export type AgentSettingsView = {
   id: string
@@ -43,6 +43,8 @@ export type AgentSettingsView = {
   systemPrompt: string
   sessionIds: string[]
   autoReply: boolean
+  ticketsEnabled: boolean
+  schedulingEnabled: boolean
   language: "en" | "pt-BR" | "auto"
 }
 
@@ -75,6 +77,8 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
   const [systemPrompt, setSystemPrompt] = useState(agent.systemPrompt)
   const [sessionIds, setSessionIds] = useState<string[]>(agent.sessionIds)
   const [autoReply, setAutoReply] = useState(agent.autoReply)
+  const [ticketsEnabled, setTicketsEnabled] = useState(agent.ticketsEnabled)
+  const [schedulingEnabled, setSchedulingEnabled] = useState(agent.schedulingEnabled)
   const [language, setLanguage] = useState(agent.language)
   const [sessions, setSessions] = useState<WhatsAppSessionOption[]>([])
   const connectedSessions = useMemo(
@@ -87,13 +91,17 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
   const [reassignmentDialogOpen, setReassignmentDialogOpen] = useState(false)
   const [pendingConflicts, setPendingConflicts] = useState<SessionAssignmentConflict[]>([])
   const [pendingSaveOptions, setPendingSaveOptions] = useState<SaveOptions | null>(null)
+  const [nameError, setNameError] = useState<string | null>(null)
 
   useEffect(() => {
     setName(agent.name)
     setSystemPrompt(agent.systemPrompt)
     setSessionIds(agent.sessionIds)
     setAutoReply(agent.autoReply)
+    setTicketsEnabled(agent.ticketsEnabled)
+    setSchedulingEnabled(agent.schedulingEnabled)
     setLanguage(agent.language)
+    setNameError(null)
   }, [agent])
 
   const loadSessions = useCallback(async () => {
@@ -134,6 +142,8 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
           systemPrompt: systemPrompt.trim(),
           sessionIds,
           autoReply,
+          ticketsEnabled,
+          schedulingEnabled,
           language,
         })
 
@@ -153,6 +163,8 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
           systemPrompt: updated.systemPrompt,
           sessionIds: updated.sessionIds,
           autoReply: updated.autoReply,
+          ticketsEnabled: updated.ticketsEnabled,
+          schedulingEnabled: updated.schedulingEnabled,
           language: updated.language,
         })
 
@@ -173,7 +185,7 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
         setIsSaving(false)
       }
     },
-    [agent.id, autoReply, language, name, onUpdated, sessionIds, systemPrompt, t, toast],
+    [agent.id, autoReply, language, name, onUpdated, schedulingEnabled, sessionIds, systemPrompt, ticketsEnabled, t, toast],
   )
 
   const save = useCallback(
@@ -181,14 +193,11 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
       const requireComplete = options?.requireComplete ?? false
 
       if (!name.trim()) {
-        toast({
-          title: t("errors.agentNameRequired"),
-          description: t("errors.agentNameRequiredDescription"),
-          variant: "destructive",
-        })
+        setNameError(t("errors.agentNameRequiredDescription"))
         return false
       }
 
+      setNameError(null)
       if (requireComplete && !systemPrompt.trim()) {
         toast({
           title: t("errors.setupIncomplete"),
@@ -323,9 +332,19 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
             <Input
               id="agent-name"
               value={name}
-              onChange={(event) => setName(event.target.value)}
+              onChange={(event) => {
+                setName(event.target.value)
+                if (nameError) setNameError(null)
+              }}
               placeholder={t("form.agentNamePlaceholder")}
+              aria-invalid={Boolean(nameError)}
+              aria-describedby={nameError ? "agent-name-error" : undefined}
             />
+            {nameError ? (
+              <p id="agent-name-error" className="text-xs text-destructive">
+                {nameError}
+              </p>
+            ) : null}
           </div>
 
           <div className="space-y-2">
@@ -408,7 +427,18 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
 
         <div className="space-y-2">
           <Label htmlFor="agent-prompt">{t("form.systemPrompt")}</Label>
-          <PromptTemplatePicker onSelect={setSystemPrompt} />
+          <PromptAssistant
+            ticketsEnabled={ticketsEnabled}
+            onApplyPrompt={(content, options) => {
+              if (options?.append) {
+                setSystemPrompt((previous) =>
+                  previous.trim() ? `${previous.trim()}\n\n${content}` : content,
+                )
+                return
+              }
+              setSystemPrompt(content)
+            }}
+          />
           <Textarea
             id="agent-prompt"
             value={systemPrompt}
@@ -417,6 +447,30 @@ export const AgentSettingsCard = forwardRef<AgentSettingsCardHandle, AgentSettin
             className="resize-y min-h-[300px] field-sizing-fixed"
           />
           <p className="text-xs text-muted-foreground">{t("form.systemPromptDescription")}</p>
+        </div>
+
+        <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="space-y-0.5">
+            <Label htmlFor="agent-tickets">{t("form.ticketsEnabled")}</Label>
+            <p className="text-sm text-muted-foreground">{t("form.ticketsEnabledDescription")}</p>
+          </div>
+          <Switch
+            id="agent-tickets"
+            checked={ticketsEnabled}
+            onCheckedChange={setTicketsEnabled}
+          />
+        </div>
+
+        <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="space-y-0.5">
+            <Label htmlFor="agent-scheduling">{t("form.schedulingEnabled")}</Label>
+            <p className="text-sm text-muted-foreground">{t("form.schedulingEnabledDescription")}</p>
+          </div>
+          <Switch
+            id="agent-scheduling"
+            checked={schedulingEnabled}
+            onCheckedChange={setSchedulingEnabled}
+          />
         </div>
 
         <div className="flex items-center justify-between rounded-lg border p-4">

@@ -258,6 +258,24 @@ export const archiveSurvey = async (companyId: string, surveyId: string) => {
   await updateSurvey(companyId, surveyId, { status: "archived" })
 }
 
+export const deleteSurvey = async (companyId: string, surveyId: string) => {
+  const responseCount = (
+    await surveyResponsesRef(companyId).where("surveyId", "==", surveyId).count().get()
+  ).data().count
+
+  if (responseCount > 0) {
+    throw new Error("Cannot delete survey with responses")
+  }
+
+  const ref = surveysRef(companyId).doc(surveyId)
+  const existing = await ref.get()
+  if (!existing.exists) {
+    throw new Error("Survey not found")
+  }
+
+  await ref.delete()
+}
+
 export const duplicateSurvey = async (
   companyId: string,
   userId: string,

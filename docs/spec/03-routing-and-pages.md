@@ -46,6 +46,11 @@ Root layout providers: [`app/layout.tsx`](../../app/layout.tsx)
 | `/[locale]/sign-up/check-email` | `app/[locale]/sign-up/check-email/page.tsx` | Post-registration email notice |
 | `/[locale]/sign-up/confirm` | `app/[locale]/sign-up/confirm/page.tsx` | Email/invite token confirmation |
 | `/[locale]/sign-up/otp` | `app/[locale]/sign-up/otp/page.tsx` | OTP verification |
+| `/[locale]/onboarding` | `app/[locale]/onboarding/page.tsx` | Onboarding wizard entry (redirects to current step) |
+| `/[locale]/onboarding/company` | `app/[locale]/onboarding/company/page.tsx` | Onboarding step 1 — create company |
+| `/[locale]/onboarding/whatsapp` | `app/[locale]/onboarding/whatsapp/page.tsx` | Onboarding step 2 — WhatsApp pairing |
+| `/[locale]/onboarding/bot` | `app/[locale]/onboarding/bot/page.tsx` | Onboarding step 3 — create Botinho |
+| `/[locale]/onboarding/plan` | `app/[locale]/onboarding/plan/page.tsx` | Onboarding step 4 — select plan |
 | `/[locale]/reset-password` | `app/[locale]/reset-password/page.tsx` | Request reset |
 | `/[locale]/reset-password/confirm` | `app/[locale]/reset-password/confirm/page.tsx` | Set new password |
 

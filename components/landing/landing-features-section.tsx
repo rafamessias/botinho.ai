@@ -1,18 +1,14 @@
 import type { ReactNode } from "react"
 import {
   Bot,
-  Calendar,
-  CalendarCheck,
   CheckCircle2,
-  Link2,
   Lock,
+  Megaphone,
   MessageSquare,
   Shield,
-  StickyNote,
+  Smartphone,
   UserCheck,
-  Users,
   Zap,
-  type LucideIcon,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -27,11 +23,17 @@ export type FeatureKey =
   | "humanFriendly"
   | "secure"
   | "collaboration"
-  | "appointments"
-  | "integrations"
-  | "playbooks"
+  | "campaigns"
+  | "whatsapp"
+  | "templates"
 
-export type FeatureIconKey = "bot" | "shield" | "users" | "calendarCheck" | "zap" | "checkCircle2"
+export type FeatureIconKey =
+  | "bot"
+  | "shield"
+  | "users"
+  | "megaphone"
+  | "smartphone"
+  | "checkCircle2"
 
 export type FeatureMocks = {
   humanFriendly: {
@@ -52,32 +54,37 @@ export type FeatureMocks = {
   collaboration: {
     assignmentLabel: string
     assignedTo: string
-    internalNoteLabel: string
-    note: string
+    statusLabel: string
+    statusValue: string
     customerLabel: string
     customerMessage: string
     agentLabel: string
     agentReply: string
   }
-  appointments: {
-    eventLabel: string
-    event: string
-    autoLabel: string
-    reminder: string
+  campaigns: {
+    campaignLabel: string
+    campaignName: string
+    audienceLabel: string
+    audienceTags: string
+    messageLabel: string
+    messagePreview: string
+    metricsLabel: string
+    metricsValue: string
   }
-  integrations: {
-    connectedLabel: string
-    whatsapp: string
-    whatsappStatus: string
-    calendar: string
-    calendarStatus: string
-    webhook: string
-    webhookStatus: string
+  whatsapp: {
+    connectionLabel: string
+    phoneNumber: string
+    statusConnected: string
+    qrHint: string
+    inboundLabel: string
+    inboundStatus: string
   }
-  playbooks: {
-    templatesLabel: string
-    template1: string
-    template2: string
+  templates: {
+    quickRepliesLabel: string
+    quickReply1: string
+    quickReply2: string
+    templateLabel: string
+    templateName: string
     previewLabel: string
     composed: string
   }
@@ -90,22 +97,13 @@ export type LandingFeature = {
   icon: FeatureIconKey
 }
 
-const featureIconMap = {
-  bot: Bot,
-  shield: Shield,
-  users: Users,
-  calendarCheck: CalendarCheck,
-  zap: Zap,
-  checkCircle2: CheckCircle2,
-} satisfies Record<FeatureIconKey, LucideIcon>
-
 type LandingFeaturesSectionProps = {
   features: LandingFeature[]
   mocks: FeatureMocks
 }
 
 const MockShell = ({ children }: { children: ReactNode }) => (
-  <div className="h-[220px] overflow-hidden border-b border-border/60 bg-secondary/40 p-3">
+  <div className="h-[220px] overflow-hidden border-b border-border bg-muted p-3">
     {children}
   </div>
 )
@@ -191,12 +189,9 @@ const CollaborationMock = ({ labels }: { labels: FeatureMocks["collaboration"] }
         </div>
       </div>
 
-      <div className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-1.5">
-        <div className="flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
-          <StickyNote className="size-2.5" aria-hidden />
-          {labels.internalNoteLabel}
-        </div>
-        <p className="mt-0.5 text-[10px] leading-snug text-foreground">{labels.note}</p>
+      <div className="rounded-md border border-border bg-muted px-2 py-1.5">
+        <MockCaption>{labels.statusLabel}</MockCaption>
+        <p className="mt-0.5 text-[10px] font-medium text-foreground">{labels.statusValue}</p>
       </div>
 
       <div className="mt-auto space-y-1.5">
@@ -212,90 +207,88 @@ const CollaborationMock = ({ labels }: { labels: FeatureMocks["collaboration"] }
   </MockShell>
 )
 
-const AppointmentsMock = ({ labels }: { labels: FeatureMocks["appointments"] }) => (
+const CampaignsMock = ({ labels }: { labels: FeatureMocks["campaigns"] }) => (
   <MockShell>
     <div className="flex h-full flex-col gap-2">
-      <div className="rounded-lg border border-primary/30 bg-primary/5 p-2">
-        <MockCaption>{labels.eventLabel}</MockCaption>
-        <div className="mt-1 flex items-center gap-2">
-          <CalendarCheck className="size-3.5 text-primary" aria-hidden />
-          <span className="text-[10px] font-medium text-foreground">{labels.event}</span>
-          <CheckCircle2 className="ml-auto size-3.5 text-success" aria-hidden />
+      <div className="rounded-lg border border-border/60 bg-background p-2">
+        <MockCaption>{labels.campaignLabel}</MockCaption>
+        <div className="mt-1 flex items-center gap-1.5 text-[10px] font-medium text-foreground">
+          <Megaphone className="size-3 text-primary" aria-hidden />
+          {labels.campaignName}
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-1.5 py-0.5">
-        <span className="h-px flex-1 bg-border" aria-hidden />
-        <span className="rounded-full bg-muted px-2 py-0.5 text-[9px] font-medium text-muted-foreground">
-          {labels.autoLabel}
-        </span>
-        <span className="h-px flex-1 bg-border" aria-hidden />
+      <div className="rounded-lg border border-border/60 bg-background p-2">
+        <MockCaption>{labels.audienceLabel}</MockCaption>
+        <p className="mt-1 text-[10px] text-muted-foreground">{labels.audienceTags}</p>
       </div>
 
-      <OutboundBubble label="botinho">
-        <MessageSquare className="mb-0.5 inline size-2.5 text-primary" aria-hidden />
-        {labels.reminder}
-      </OutboundBubble>
+      <div className="mt-auto space-y-1">
+        <MockCaption>{labels.messageLabel}</MockCaption>
+        <p className="rounded-md border border-primary/20 bg-primary/5 px-2 py-1.5 text-[10px] leading-snug text-foreground">
+          {labels.messagePreview}
+        </p>
+        <p className="text-[9px] text-muted-foreground">
+          {labels.metricsLabel}: {labels.metricsValue}
+        </p>
+      </div>
     </div>
   </MockShell>
 )
 
-const IntegrationsMock = ({ labels }: { labels: FeatureMocks["integrations"] }) => {
-  const rows = [
-    { icon: MessageSquare, name: labels.whatsapp, status: labels.whatsappStatus },
-    { icon: Calendar, name: labels.calendar, status: labels.calendarStatus },
-    { icon: Link2, name: labels.webhook, status: labels.webhookStatus },
-  ]
-
-  return (
-    <MockShell>
-      <div className="flex h-full flex-col gap-2">
-        <MockCaption>{labels.connectedLabel}</MockCaption>
-        <div className="space-y-1.5">
-          {rows.map((row) => {
-            const RowIcon = row.icon
-
-            return (
-              <div
-                key={row.name}
-                className="flex items-center gap-2 rounded-lg border border-border/60 bg-background px-2.5 py-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-md bg-primary/10">
-                  <RowIcon className="size-3 text-primary" aria-hidden />
-                </div>
-                <span className="min-w-0 flex-1 truncate text-[10px] font-medium text-foreground">
-                  {row.name}
-                </span>
-                <span className="flex items-center gap-1 text-[10px] font-medium text-success">
-                  <span className="size-1.5 rounded-full bg-success" aria-hidden />
-                  {row.status}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    </MockShell>
-  )
-}
-
-const PlaybooksMock = ({ labels }: { labels: FeatureMocks["playbooks"] }) => (
+const WhatsAppMock = ({ labels }: { labels: FeatureMocks["whatsapp"] }) => (
   <MockShell>
     <div className="flex h-full flex-col gap-2">
-      <MockCaption>{labels.templatesLabel}</MockCaption>
+      <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-background px-2.5 py-2">
+        <div className="flex size-7 items-center justify-center rounded-md bg-primary/10">
+          <Smartphone className="size-3.5 text-primary" aria-hidden />
+        </div>
+        <div className="min-w-0 flex-1">
+          <MockCaption>{labels.connectionLabel}</MockCaption>
+          <p className="text-[10px] font-medium text-foreground">{labels.phoneNumber}</p>
+        </div>
+        <span className="flex items-center gap-1 text-[10px] font-medium text-success">
+          <CheckCircle2 className="size-3" aria-hidden />
+          {labels.statusConnected}
+        </span>
+      </div>
+
+      <p className="text-[10px] leading-snug text-muted-foreground">{labels.qrHint}</p>
+
+      <div className="mt-auto rounded-lg border border-border/60 bg-background p-2">
+        <MockCaption>{labels.inboundLabel}</MockCaption>
+        <div className="mt-1 flex items-center gap-1.5 text-[10px] font-medium text-foreground">
+          <MessageSquare className="size-3 text-primary" aria-hidden />
+          {labels.inboundStatus}
+        </div>
+      </div>
+    </div>
+  </MockShell>
+)
+
+const TemplatesMock = ({ labels }: { labels: FeatureMocks["templates"] }) => (
+  <MockShell>
+    <div className="flex h-full flex-col gap-2">
+      <MockCaption>{labels.quickRepliesLabel}</MockCaption>
       <div className="space-y-1">
         <div className="rounded-md border border-border/60 bg-background px-2 py-1.5 text-[10px] text-muted-foreground">
-          {labels.template1}
+          {labels.quickReply1}
         </div>
-        <div className="flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2 py-1.5 text-[10px] font-medium text-foreground">
-          <Zap className="size-3 shrink-0 text-primary" aria-hidden />
-          {labels.template2}
+        <div className="rounded-md border border-border/60 bg-background px-2 py-1.5 text-[10px] text-muted-foreground">
+          {labels.quickReply2}
         </div>
       </div>
 
       <div className="mt-auto rounded-lg border border-border/60 bg-background p-2">
-        <MockCaption>{labels.previewLabel}</MockCaption>
-        <p className="mt-1 text-[10px] leading-snug text-foreground">{labels.composed}</p>
+        <MockCaption>{labels.templateLabel}</MockCaption>
+        <div className="mt-1 flex items-center gap-1.5 text-[10px] font-medium text-foreground">
+          <Zap className="size-3 shrink-0 text-primary" aria-hidden />
+          {labels.templateName}
+        </div>
+        <p className="mt-2 text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
+          {labels.previewLabel}
+        </p>
+        <p className="mt-0.5 text-[10px] leading-snug text-foreground">{labels.composed}</p>
       </div>
     </div>
   </MockShell>
@@ -309,35 +302,28 @@ const FeatureMock = ({ featureKey, mocks }: { featureKey: FeatureKey; mocks: Fea
       return <SecureMock labels={mocks.secure} />
     case "collaboration":
       return <CollaborationMock labels={mocks.collaboration} />
-    case "appointments":
-      return <AppointmentsMock labels={mocks.appointments} />
-    case "integrations":
-      return <IntegrationsMock labels={mocks.integrations} />
-    case "playbooks":
-      return <PlaybooksMock labels={mocks.playbooks} />
+    case "campaigns":
+      return <CampaignsMock labels={mocks.campaigns} />
+    case "whatsapp":
+      return <WhatsAppMock labels={mocks.whatsapp} />
+    case "templates":
+      return <TemplatesMock labels={mocks.templates} />
   }
 }
 
 export const LandingFeaturesSection = ({ features, mocks }: LandingFeaturesSectionProps) => (
   <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-    {features.map((feature) => {
-      const FeatureIcon = featureIconMap[feature.icon]
-
-      return (
-        <Card
-          key={feature.key}
-          className="overflow-hidden rounded-2xl border border-primary/10 bg-background/90 shadow-sm"
-        >
-          <FeatureMock featureKey={feature.key} mocks={mocks} />
-          <CardHeader className="gap-3">
-            <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <FeatureIcon className="size-6" aria-hidden />
-            </span>
-            <CardTitle className="text-lg">{feature.title}</CardTitle>
-            <CardDescription className="text-sm leading-relaxed">{feature.description}</CardDescription>
-          </CardHeader>
-        </Card>
-      )
-    })}
+    {features.map((feature) => (
+      <Card
+        key={feature.key}
+        className="overflow-hidden rounded-xl border border-border bg-card py-0 shadow-none"
+      >
+        <FeatureMock featureKey={feature.key} mocks={mocks} />
+        <CardHeader className="gap-2 px-6 pb-6">
+          <CardTitle className="text-lg">{feature.title}</CardTitle>
+          <CardDescription className="text-sm leading-relaxed">{feature.description}</CardDescription>
+        </CardHeader>
+      </Card>
+    ))}
   </div>
 )

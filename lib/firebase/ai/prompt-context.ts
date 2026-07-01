@@ -20,10 +20,15 @@ export type CompanyAiContext = {
   companyId: string
   companyName: string
   companyDescription: string
+  customerId?: string
+  customerName?: string
   customerDescription?: string
   language: ResponseLanguage
   agentLanguage?: AgentLanguagePreference
   agentName?: string
+  agentId?: string
+  ticketsEnabled?: boolean
+  schedulingEnabled?: boolean
   customSystemPrompt?: string
   knowledgeText: string
   quickAnswersText: string
@@ -92,6 +97,9 @@ export const loadCompanyAiContext = async (params: {
   let agentName: string | undefined
   let customSystemPrompt: string | undefined
   let agentLanguage: AgentLanguagePreference | undefined
+  let ticketsEnabled = true
+  let schedulingEnabled = true
+  let resolvedAgentId: string | undefined
   let knowledgeText: string
   let quickAnswersText: string
   let templatesText: string
@@ -109,9 +117,12 @@ export const loadCompanyAiContext = async (params: {
         : null
 
   if (agent) {
+    resolvedAgentId = agent.id
     agentName = agent.name
     customSystemPrompt = agent.systemPrompt || undefined
     agentLanguage = agent.language
+    ticketsEnabled = agent.ticketsEnabled
+    schedulingEnabled = agent.schedulingEnabled
     const agentTraining = await listAgentTrainingData(params.companyId, agent.id)
     knowledgeText = formatKnowledgeText(agentTraining.knowledgeBase)
 
@@ -125,6 +136,8 @@ export const loadCompanyAiContext = async (params: {
 
   let recentMessages: CompanyAiContext["recentMessages"] = []
   let customerDescription: string | undefined
+  let customerId: string | undefined
+  let customerName: string | undefined
 
   if (params.conversationId) {
     const conversationSnap = await adminDb
@@ -134,7 +147,11 @@ export const loadCompanyAiContext = async (params: {
       .doc(params.conversationId)
       .get()
 
-    const customerId = conversationSnap.data()?.customerId as string | undefined
+    const conversationData = conversationSnap.data()
+    customerId = conversationData?.customerId as string | undefined
+    customerName =
+      (conversationData?.customerName as string | undefined)?.trim() ||
+      undefined
 
     if (customerId) {
       const customerSnap = await adminDb
@@ -169,6 +186,8 @@ export const loadCompanyAiContext = async (params: {
     companyId: params.companyId,
     companyName: (companyData?.name as string) ?? "Company",
     companyDescription: truncate((companyData?.description as string) ?? "", 500),
+    customerId,
+    customerName,
     customerDescription,
     language: resolveResponseLanguage({
       agentLanguage,
@@ -179,6 +198,9 @@ export const loadCompanyAiContext = async (params: {
     }),
     agentLanguage,
     agentName,
+    agentId: resolvedAgentId,
+    ticketsEnabled,
+    schedulingEnabled,
     customSystemPrompt,
     knowledgeText,
     quickAnswersText,
@@ -213,6 +235,12 @@ export const buildSystemPrompt = (context: CompanyAiContext): string => {
       "## Pesquisas de satisfação",
       context.surveysText,
       "Não envie pesquisas sem consentimento do cliente, exceto quando as regras automáticas se aplicarem.",
+      ...(context.ticketsEnabled !== false
+        ? [
+            "",
+            "Ao tratar chamados de suporte, você pode usar as ferramentas de tickets (search_tickets, create_ticket) quando disponíveis no fluxo da conversa.",
+          ]
+        : []),
     ]
       .filter(Boolean)
       .join("\n")
@@ -240,8 +268,14 @@ export const buildSystemPrompt = (context: CompanyAiContext): string => {
     "",
     "## Customer surveys",
     context.surveysText,
-    "Do not send surveys without customer consent unless auto-trigger rules apply.",
-  ]
+      "Do not send surveys without customer consent unless auto-trigger rules apply.",
+      ...(context.ticketsEnabled !== false
+        ? [
+            "",
+            "When handling support cases, you may use ticket tools (search_tickets, create_ticket) if available in the conversation flow.",
+          ]
+        : []),
+    ]
     .filter(Boolean)
     .join("\n")
 }

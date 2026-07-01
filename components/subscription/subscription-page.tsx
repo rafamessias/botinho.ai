@@ -442,13 +442,24 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                                         </span>
                                     </div>
                                     <div className="text-right">
-                                        <span className="text-sm font-medium">
-                                            {formatMetricUsage(metric.metricType, metric.currentUsage)} / {metric.limit === -1 ? t("page.unlimited") : formatMetricUsage(metric.metricType, metric.limit)}
-                                        </span>
-                                        {metric.limit !== -1 && (
-                                            <span className="text-xs text-muted-foreground ml-2">
-                                                ({metric.percentageUsed.toFixed(1)}%)
+                                        {metric.metricType === "BOT_AUTO_REPLIES" ? (
+                                            <span className="text-sm font-medium">
+                                                {formatMetricUsage(metric.metricType, metric.currentUsage)}
+                                                <span className="text-xs text-muted-foreground font-normal ml-2">
+                                                    ({t("page.botAutoRepliesUsesCredits")})
+                                                </span>
                                             </span>
+                                        ) : (
+                                            <>
+                                                <span className="text-sm font-medium">
+                                                    {formatMetricUsage(metric.metricType, metric.currentUsage)} / {metric.limit === -1 ? t("page.unlimited") : formatMetricUsage(metric.metricType, metric.limit)}
+                                                </span>
+                                                {metric.limit !== -1 && (
+                                                    <span className="text-xs text-muted-foreground ml-2">
+                                                        ({metric.percentageUsed.toFixed(1)}%)
+                                                    </span>
+                                                )}
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -531,68 +542,24 @@ export const SubscriptionPage = ({ subscriptionData, checkoutCanceled = false }:
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-success" />
-                                    <span className="text-sm">
-                                        {t("page.maxSyncedNumbers")}: {formatPlanLimit(subscription.plan.maxSyncedNumbers)}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-success" />
-                                    <span className="text-sm">
-                                        {t("page.maxAiCredits")}: {formatPlanLimit(subscription.plan.maxAiCredits ?? subscription.plan.maxAiResponses)}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-success" />
-                                    <span className="text-sm">
-                                        {t("page.analytics")}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.removeBranding ? (
-                                        <CheckCircle className="h-4 w-4 text-success" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.removeBranding")}
-                                    </span>
-                                </div>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-success" />
+                                <span className="text-sm">
+                                    {t("page.maxSyncedNumbers")}: {formatPlanLimit(subscription.plan.maxSyncedNumbers)}
+                                </span>
                             </div>
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.allowExport ? (
-                                        <CheckCircle className="h-4 w-4 text-success" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.exports")}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.allowApiAccess ? (
-                                        <CheckCircle className="h-4 w-4 text-success" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.apis")}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {subscription.plan.planType === PlanType.BUSINESS || subscription.plan.planType === PlanType.ENTERPRISE || subscription.plan.planType === PlanType.PRO ? (
-                                        <CheckCircle className="h-4 w-4 text-success" />
-                                    ) : (
-                                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                                    )}
-                                    <span className="text-sm">
-                                        {t("page.prioritySupport")}
-                                    </span>
-                                </div>
+                            <div className="flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-success" />
+                                <span className="text-sm">
+                                    {t("page.maxAiCredits")}: {formatPlanLimit(subscription.plan.maxAiCredits ?? subscription.plan.maxAiResponses)}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-success" />
+                                <span className="text-sm">
+                                    {t("page.analytics")}
+                                </span>
                             </div>
                         </div>
                     </CardContent>

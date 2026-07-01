@@ -10,6 +10,7 @@ export type SessionBootstrapMember = {
   isAdmin: boolean
   canPost: boolean
   canApprove: boolean
+  canManageAgenda: boolean
   isOwner: boolean
   status: "invited" | "accepted" | "rejected"
 }
@@ -89,6 +90,7 @@ export const buildSessionCompanyContext = async (uid: string): Promise<SessionCo
         isAdmin: member.isAdmin,
         canPost: member.canPost,
         canApprove: member.canApprove,
+        canManageAgenda: member.canManageAgenda ?? member.isAdmin ?? member.isOwner ?? false,
         isOwner: member.isOwner,
         status: "accepted" as const,
       })),

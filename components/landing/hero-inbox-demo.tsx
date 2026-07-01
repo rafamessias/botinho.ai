@@ -260,7 +260,7 @@ export const HeroInboxDemo = ({
   )
 
   return (
-    <Card className="flex-1 overflow-hidden rounded-3xl border border-primary/10 bg-background/80 p-0 shadow-xl">
+    <Card className="flex-1 overflow-hidden rounded-3xl border border-border bg-card p-0 shadow-md">
       <div className="flex h-[400px]">
         <aside className="flex w-[38%] min-w-[148px] max-w-[200px] shrink-0 flex-col border-r border-border/60 bg-background">
           <header className="flex h-11 shrink-0 items-center border-b border-border/60 px-3">
@@ -322,7 +322,7 @@ export const HeroInboxDemo = ({
                         <p
                           className={cn(
                             "truncate text-[11px] transition-colors duration-300",
-                            handledByBot && !isActive ? "text-foreground/80" : "text-muted-foreground",
+                            handledByBot && !isActive ? "text-foreground" : "text-muted-foreground",
                           )}
                         >
                           {preview}

@@ -17,6 +17,15 @@ import type {
   InboxMessageStatus,
 } from "@/lib/firebase/types"
 import { getUserProfile } from "@/lib/firebase/services/user-service"
+import {
+  decodeInboxConversationCursor,
+  INBOX_CONVERSATIONS_DEFAULT_PAGE_SIZE,
+  INBOX_CONVERSATIONS_MAX_PAGE_SIZE,
+  INBOX_CONVERSATIONS_MAX_SEARCH_SCAN,
+  INBOX_CONVERSATIONS_SEARCH_SCAN_BATCH,
+  type InboxConversationCursor,
+  type InboxConversationListFilter,
+} from "@/lib/inbox/conversation-list-pagination"
 import { normalizeStoredPhone } from "@/lib/phone-utils"
 import type { CustomerImportMergeStrategy } from "@/lib/types/customer"
 
@@ -796,29 +805,64 @@ export const listInboxCustomers = async (params: {
   }
 }
 
-export const listInboxConversations = async (params: {
-  companyId: string
-  search?: string
-  sessionId?: string
-  sessionIds?: string[]
-  page?: number
-  pageSize?: number
-  includeArchived?: boolean
-}) => {
-  const page = params.page ?? 1
-  const pageSize = params.pageSize ?? 20
-  const searchTerm = params.search?.trim().toLowerCase() ?? ""
+type ConversationRecord = ReturnType<typeof buildConversationRecord>
 
-  const snapshot = await conversationsRef(params.companyId)
-    .orderBy("lastMessageSentAt", "desc")
-    .get()
+const matchesConversationListFilter = (
+  conversation: ConversationRecord,
+  filter: InboxConversationListFilter,
+) => {
+  switch (filter) {
+    case "unread":
+      return conversation.unreadCount > 0
+    case "favorites":
+      return conversation.isBookmarked
+    case "human":
+      return Boolean(conversation.assignedToId)
+    case "bot":
+      return !conversation.assignedToId
+    default:
+      return true
+  }
+}
 
-  const conversationDocs = snapshot.docs
+const matchesConversationSearch = (conversation: ConversationRecord, searchTerm: string) => {
+  const customer = conversation.customer
+  return (
+    customer?.name?.toLowerCase().includes(searchTerm) ||
+    customer?.email?.toLowerCase().includes(searchTerm) ||
+    customer?.phone?.includes(searchTerm) ||
+    conversation.lastMessagePreview?.toLowerCase().includes(searchTerm) ||
+    conversation.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+  )
+}
+
+const toConversationCursor = (
+  doc: FirebaseFirestore.QueryDocumentSnapshot,
+): InboxConversationCursor | null => {
+  const data = doc.data() as FirestoreInboxConversation
+  const lastMessageSentAt = toIso(data.lastMessageSentAt)
+  if (!lastMessageSentAt) {
+    return null
+  }
+
+  return {
+    lastMessageSentAt: lastMessageSentAt.toISOString(),
+    id: doc.id,
+  }
+}
+
+const mapConversationDocuments = async (
+  companyId: string,
+  docs: FirebaseFirestore.QueryDocumentSnapshot[],
+): Promise<ConversationRecord[]> => {
+  if (docs.length === 0) {
+    return []
+  }
 
   const customerIdsToFetch = new Set<string>()
   const assignedToIdsToFetch = new Set<string>()
 
-  for (const doc of conversationDocs) {
+  for (const doc of docs) {
     const data = doc.data() as FirestoreInboxConversation
     if (!hasDenormalizedCustomer(data)) {
       customerIdsToFetch.add(data.customerId)
@@ -831,7 +875,7 @@ export const listInboxConversations = async (params: {
   const [customerSnapshots, assignedToSnapshots] = await Promise.all([
     customerIdsToFetch.size > 0
       ? batchGetDocumentSnapshots(
-          [...customerIdsToFetch].map((customerId) => customersRef(params.companyId).doc(customerId)),
+          [...customerIdsToFetch].map((customerId) => customersRef(companyId).doc(customerId)),
         )
       : Promise.resolve(new Map<string, FirebaseFirestore.DocumentSnapshot>()),
     assignedToIdsToFetch.size > 0
@@ -841,7 +885,7 @@ export const listInboxConversations = async (params: {
       : Promise.resolve(new Map<string, FirebaseFirestore.DocumentSnapshot>()),
   ])
 
-  let conversations = conversationDocs.map((doc) => {
+  return docs.map((doc) => {
     const data = doc.data() as FirestoreInboxConversation
     const denormalizedCustomer = customerFromDenormalizedFields(data.customerId, data)
     const customerSnap = customerSnapshots.get(data.customerId)
@@ -862,44 +906,341 @@ export const listInboxConversations = async (params: {
           : null
         : denormalizedAssignedTo
 
-    return buildConversationRecord(params.companyId, doc.id, data, customer, assignedTo)
+    return buildConversationRecord(companyId, doc.id, data, customer, assignedTo)
   })
+}
 
-  if (!params.includeArchived) {
-    conversations = conversations.filter((conversation) => !conversation.isArchived)
+const passesConversationListParams = (
+  conversation: ConversationRecord,
+  params: {
+    includeArchived?: boolean
+    filter?: InboxConversationListFilter
+    sessionId?: string
+    sessionIds?: string[]
+    search?: string
+  },
+) => {
+  if (!params.includeArchived && conversation.isArchived) {
+    return false
   }
 
   if (params.sessionIds?.length) {
     const allowedSessionIds = new Set(params.sessionIds)
-    conversations = conversations.filter(
-      (conversation) => conversation.sessionId != null && allowedSessionIds.has(conversation.sessionId),
+    if (conversation.sessionId == null || !allowedSessionIds.has(conversation.sessionId)) {
+      return false
+    }
+  } else if (params.sessionId && conversation.sessionId !== params.sessionId) {
+    return false
+  }
+
+  if (!matchesConversationListFilter(conversation, params.filter ?? "all")) {
+    return false
+  }
+
+  const searchTerm = params.search?.trim().toLowerCase() ?? ""
+  if (searchTerm && !matchesConversationSearch(conversation, searchTerm)) {
+    return false
+  }
+
+  return true
+}
+
+const buildInboxConversationsQuery = (companyId: string) =>
+  conversationsRef(companyId).orderBy("lastMessageSentAt", "desc")
+
+const applyConversationCursor = async (
+  query: FirebaseFirestore.Query,
+  companyId: string,
+  cursor: InboxConversationCursor | null,
+) => {
+  if (!cursor) {
+    return query
+  }
+
+  const cursorSnap = await conversationsRef(companyId).doc(cursor.id).get()
+  if (!cursorSnap.exists) {
+    return query
+  }
+
+  return query.startAfter(cursorSnap)
+}
+
+const usesDirectConversationPagination = (params: {
+  search?: string
+  filter?: InboxConversationListFilter
+  sessionId?: string
+  sessionIds?: string[]
+}) => {
+  if (params.search?.trim()) {
+    return false
+  }
+
+  if ((params.filter ?? "all") !== "all") {
+    return false
+  }
+
+  if (params.sessionId || params.sessionIds?.length) {
+    return false
+  }
+
+  return true
+}
+
+const countUnreadInboxConversations = async (params: {
+  companyId: string
+  sessionId?: string
+  sessionIds?: string[]
+}) => {
+  try {
+    if (params.sessionIds?.length || params.sessionId) {
+      let cursor: InboxConversationCursor | null = null
+      let unreadTotal = 0
+      let scanned = 0
+
+      while (scanned < INBOX_CONVERSATIONS_MAX_SEARCH_SCAN) {
+        const query = await applyConversationCursor(
+          buildInboxConversationsQuery(params.companyId),
+          params.companyId,
+          cursor,
+        )
+        const snapshot = await query.limit(INBOX_CONVERSATIONS_SEARCH_SCAN_BATCH).get()
+        if (snapshot.empty) {
+          break
+        }
+
+        scanned += snapshot.docs.length
+        for (const doc of snapshot.docs) {
+          const data = doc.data() as FirestoreInboxConversation
+          if ((data.isArchived ?? false) || (data.unreadCount ?? 0) <= 0) {
+            continue
+          }
+
+          if (params.sessionIds?.length) {
+            const allowedSessionIds = new Set(params.sessionIds)
+            if (data.sessionId == null || !allowedSessionIds.has(data.sessionId)) {
+              continue
+            }
+          } else if (params.sessionId && data.sessionId !== params.sessionId) {
+            continue
+          }
+
+          unreadTotal += data.unreadCount ?? 0
+        }
+
+        const lastDoc = snapshot.docs.at(-1)
+        cursor = lastDoc ? toConversationCursor(lastDoc) : null
+        if (snapshot.docs.length < INBOX_CONVERSATIONS_SEARCH_SCAN_BATCH) {
+          break
+        }
+      }
+
+      return unreadTotal
+    }
+
+    const snapshot = await conversationsRef(params.companyId)
+      .where("unreadCount", ">", 0)
+      .count()
+      .get()
+
+    return snapshot.data().count
+  } catch (error) {
+    console.error("Failed to count unread inbox conversations", error)
+    return 0
+  }
+}
+
+const listInboxConversationsDirect = async (params: {
+  companyId: string
+  pageSize: number
+  cursor?: InboxConversationCursor | null
+  includeArchived?: boolean
+}) => {
+  const matched: ConversationRecord[] = []
+  let cursor = params.cursor ?? null
+  let batchHasMore = false
+  let nextCursor: InboxConversationCursor | null = null
+  let scannedBatches = 0
+  const maxBatches = 10
+
+  while (matched.length < params.pageSize && scannedBatches < maxBatches) {
+    scannedBatches += 1
+    const query = await applyConversationCursor(
+      buildInboxConversationsQuery(params.companyId),
+      params.companyId,
+      cursor,
     )
-  } else if (params.sessionId) {
-    conversations = conversations.filter((conversation) => conversation.sessionId === params.sessionId)
+    const snapshot = await query.limit(params.pageSize + 1).get()
+
+    if (snapshot.empty) {
+      batchHasMore = false
+      break
+    }
+
+    batchHasMore = snapshot.docs.length > params.pageSize
+    const pageDocs = batchHasMore ? snapshot.docs.slice(0, params.pageSize) : snapshot.docs
+    const conversations = await mapConversationDocuments(params.companyId, pageDocs)
+
+    for (const conversation of conversations) {
+      if (!params.includeArchived && conversation.isArchived) {
+        continue
+      }
+
+      matched.push(conversation)
+      if (matched.length >= params.pageSize) {
+        break
+      }
+    }
+
+    const lastFetchedDoc = pageDocs.at(-1)
+    nextCursor = lastFetchedDoc ? toConversationCursor(lastFetchedDoc) : null
+    cursor = nextCursor
+
+    if (!batchHasMore) {
+      break
+    }
   }
 
-  if (searchTerm) {
-    conversations = conversations.filter((conversation) => {
-      const customer = conversation.customer
-      return (
-        customer?.name?.toLowerCase().includes(searchTerm) ||
-        customer?.email?.toLowerCase().includes(searchTerm) ||
-        customer?.phone?.includes(searchTerm) ||
-        conversation.lastMessagePreview?.toLowerCase().includes(searchTerm) ||
-        conversation.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
-      )
-    })
-  }
-
-  const total = conversations.length
-  const totalPages = Math.max(1, Math.ceil(total / pageSize))
-  const start = (page - 1) * pageSize
+  const hasMore = batchHasMore || matched.length > params.pageSize
 
   return {
-    conversations: conversations.slice(start, start + pageSize),
-    pagination: { page, pageSize, total, totalPages },
+    conversations: matched.slice(0, params.pageSize),
+    pagination: {
+      pageSize: params.pageSize,
+      hasMore,
+      nextCursor: hasMore ? nextCursor : null,
+    },
+  }
+}
+
+const listInboxConversationsScanned = async (params: {
+  companyId: string
+  pageSize: number
+  cursor?: InboxConversationCursor | null
+  includeArchived?: boolean
+  filter?: InboxConversationListFilter
+  sessionId?: string
+  sessionIds?: string[]
+  search?: string
+}) => {
+  const matched: ConversationRecord[] = []
+  let cursor = params.cursor ?? null
+  let scanned = 0
+  let hasMore = false
+  let nextCursor: InboxConversationCursor | null = null
+
+  while (matched.length < params.pageSize && scanned < INBOX_CONVERSATIONS_MAX_SEARCH_SCAN) {
+    const query = await applyConversationCursor(
+      buildInboxConversationsQuery(params.companyId),
+      params.companyId,
+      cursor,
+    )
+
+    const snapshot = await query.limit(INBOX_CONVERSATIONS_SEARCH_SCAN_BATCH).get()
+    if (snapshot.empty) {
+      hasMore = false
+      nextCursor = null
+      break
+    }
+
+    scanned += snapshot.docs.length
+    const conversations = await mapConversationDocuments(params.companyId, snapshot.docs)
+
+    for (const conversation of conversations) {
+      if (!passesConversationListParams(conversation, params)) {
+        continue
+      }
+
+      matched.push(conversation)
+      if (matched.length >= params.pageSize) {
+        break
+      }
+    }
+
+    const lastDoc = snapshot.docs.at(-1)
+    const batchCursor = lastDoc ? toConversationCursor(lastDoc) : null
+    hasMore = snapshot.docs.length === INBOX_CONVERSATIONS_SEARCH_SCAN_BATCH
+    nextCursor = batchCursor
+
+    if (!hasMore) {
+      break
+    }
+
+    cursor = batchCursor
+  }
+
+  if (matched.length > params.pageSize) {
+    return {
+      conversations: matched.slice(0, params.pageSize),
+      pagination: {
+        pageSize: params.pageSize,
+        hasMore: true,
+        nextCursor,
+      },
+    }
+  }
+
+  const canLoadMore = hasMore
+
+  return {
+    conversations: matched,
+    pagination: {
+      pageSize: params.pageSize,
+      hasMore: canLoadMore,
+      nextCursor: canLoadMore ? nextCursor : null,
+    },
+  }
+}
+
+export const listInboxConversations = async (params: {
+  companyId: string
+  search?: string
+  sessionId?: string
+  sessionIds?: string[]
+  pageSize?: number
+  cursor?: string
+  filter?: InboxConversationListFilter
+  includeArchived?: boolean
+  includeCounts?: boolean
+}) => {
+  const pageSize = Math.min(
+    Math.max(params.pageSize ?? INBOX_CONVERSATIONS_DEFAULT_PAGE_SIZE, 1),
+    INBOX_CONVERSATIONS_MAX_PAGE_SIZE,
+  )
+  const decodedCursor = params.cursor ? decodeInboxConversationCursor(params.cursor) : null
+  const listParams = {
+    companyId: params.companyId,
+    pageSize,
+    cursor: decodedCursor,
+    includeArchived: params.includeArchived,
+    filter: params.filter,
+    sessionId: params.sessionId,
+    sessionIds: params.sessionIds,
+    search: params.search,
+  }
+
+  const [listResult, unreadTotal] = await Promise.all([
+    usesDirectConversationPagination(params)
+      ? listInboxConversationsDirect({
+          companyId: params.companyId,
+          pageSize,
+          cursor: decodedCursor,
+          includeArchived: params.includeArchived,
+        })
+      : listInboxConversationsScanned(listParams),
+    params.includeCounts
+      ? countUnreadInboxConversations({
+          companyId: params.companyId,
+          sessionId: params.sessionId,
+          sessionIds: params.sessionIds,
+        })
+      : Promise.resolve(0),
+  ])
+
+  return {
+    conversations: listResult.conversations,
+    pagination: listResult.pagination,
     metrics: {
-      unreadTotal: conversations.reduce((sum, item) => sum + item.unreadCount, 0),
+      unreadTotal,
     },
   }
 }

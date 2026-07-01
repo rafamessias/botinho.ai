@@ -7,9 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { ErrorState } from "@/components/ai-training/components/error-state"
+import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog"
 import {
   archiveSurveyAction,
   createSurveyAction,
+  deleteSurveyAction,
   duplicateSurveyAction,
   getSurveyAction,
   getSurveyMetricsAction,
@@ -37,6 +39,7 @@ export default function SurveysPage({
   initialLoadError = null,
 }: SurveysPageProps) {
   const t = useTranslations("Surveys")
+  const commonT = useTranslations("Common")
   const { toast } = useToast()
 
   const [view, setView] = useState<PageView>("list")
@@ -47,6 +50,10 @@ export default function SurveysPage({
   const [isSaving, setIsSaving] = useState(false)
   const [isLoadingEditor, setIsLoadingEditor] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(initialLoadError)
+  const [surveyToDelete, setSurveyToDelete] = useState<SurveySummaryView | null>(null)
+  const [surveyToArchive, setSurveyToArchive] = useState<SurveySummaryView | null>(null)
+  const [deletingSurveyId, setDeletingSurveyId] = useState<string | null>(null)
+  const [isArchiving, setIsArchiving] = useState(false)
 
   const loadSurveys = useCallback(async () => {
     if (!hasCompanyAccess) {
@@ -160,13 +167,39 @@ export default function SurveysPage({
   }
 
   const handleArchive = async (surveyId: string) => {
-    const result = await archiveSurveyAction({ surveyId })
-    if (!result.success) {
-      toast({ title: result.error || t("errors.archiveFailed"), variant: "destructive" })
-      return
+    setIsArchiving(true)
+    try {
+      const result = await archiveSurveyAction({ surveyId })
+      if (!result.success) {
+        toast({ title: result.error || t("errors.archiveFailed"), variant: "destructive" })
+        return
+      }
+      if (selectedSurvey?.id === surveyId) goToList()
+      await loadSurveys()
+      toast({ title: t("messages.archived") })
+      setSurveyToArchive(null)
+    } finally {
+      setIsArchiving(false)
     }
-    if (selectedSurvey?.id === surveyId) goToList()
-    await loadSurveys()
+  }
+
+  const handleDelete = async () => {
+    if (!surveyToDelete) return
+
+    setDeletingSurveyId(surveyToDelete.id)
+    try {
+      const result = await deleteSurveyAction({ surveyId: surveyToDelete.id })
+      if (!result.success) {
+        toast({ title: result.error || t("errors.deleteFailed"), variant: "destructive" })
+        return
+      }
+      if (selectedSurvey?.id === surveyToDelete.id) goToList()
+      await loadSurveys()
+      toast({ title: t("messages.deleted") })
+      setSurveyToDelete(null)
+    } finally {
+      setDeletingSurveyId(null)
+    }
   }
 
   const handleDuplicate = async (surveyId: string) => {
@@ -274,9 +307,47 @@ export default function SurveysPage({
           onEdit={(survey) => void openEdit(survey)}
           onMetrics={openMetrics}
           onDuplicate={(id) => void handleDuplicate(id)}
-          onArchive={(id) => void handleArchive(id)}
+          onDelete={(id) => {
+            const survey = surveys.find((entry) => entry.id === id)
+            if (survey) setSurveyToDelete(survey)
+          }}
+          onArchive={(id) => {
+            const survey = surveys.find((entry) => entry.id === id)
+            if (survey) setSurveyToArchive(survey)
+          }}
+          deletingSurveyId={deletingSurveyId}
         />
       )}
+
+      <DeleteConfirmDialog
+        open={surveyToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open && !deletingSurveyId) setSurveyToDelete(null)
+        }}
+        title={t("deleteConfirm.title")}
+        description={t("deleteConfirm.description")}
+        onConfirm={() => void handleDelete()}
+        isDeleting={Boolean(deletingSurveyId)}
+        confirmLabel={commonT("delete")}
+        cancelLabel={commonT("cancel")}
+        deletingLabel={commonT("deleting")}
+      />
+
+      <DeleteConfirmDialog
+        open={surveyToArchive !== null}
+        onOpenChange={(open) => {
+          if (!open && !isArchiving) setSurveyToArchive(null)
+        }}
+        title={t("archiveConfirm.title")}
+        description={t("archiveConfirm.description")}
+        onConfirm={() => {
+          if (surveyToArchive) void handleArchive(surveyToArchive.id)
+        }}
+        isDeleting={isArchiving}
+        confirmLabel={t("actions.archive")}
+        cancelLabel={commonT("cancel")}
+        deletingLabel={commonT("loading")}
+      />
     </div>
   )
 }

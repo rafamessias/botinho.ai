@@ -2,9 +2,14 @@
 
 import { useCallback, useState } from "react"
 import { useTranslations } from "next-intl"
+import { Loader2, MessageSquare, Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { TemplatesSection } from "@/components/ai-training/sections/templates-section"
+import { Button } from "@/components/ui/button"
+import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog"
+import { ErrorState } from "@/components/ai-training/components/error-state"
+import { TemplateDialog } from "@/components/ai-training/dialogs/template-dialog"
+import { TemplateListTable } from "@/components/ai-interaction/template-list-table"
 import {
   createAiTemplateAction,
   deleteAiTemplateAction,
@@ -28,6 +33,7 @@ export default function CompanyTemplatesPage({
   hasCompanyAccess,
 }: CompanyTemplatesPageProps) {
   const t = useTranslations("Templates")
+  const commonT = useTranslations("Common")
   const { toast } = useToast()
 
   const [items, setItems] = useState<TemplateView[]>(initialItems)
@@ -40,6 +46,7 @@ export default function CompanyTemplatesPage({
   const [content, setContent] = useState("")
   const [category, setCategory] = useState<AiTemplateCategory>(AiTemplateCategory.greeting)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [itemToDelete, setItemToDelete] = useState<TemplateView | null>(null)
 
   const loadItems = useCallback(async () => {
     if (!hasCompanyAccess) {
@@ -70,6 +77,11 @@ export default function CompanyTemplatesPage({
     setName("")
     setContent("")
     setCategory(AiTemplateCategory.greeting)
+  }
+
+  const openCreate = () => {
+    resetForm()
+    setIsDialogOpen(true)
   }
 
   const preserveTemplateOptions = (template: TemplateView) =>
@@ -131,7 +143,10 @@ export default function CompanyTemplatesPage({
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!itemToDelete) return
+
+    const id = itemToDelete.id
     setDeletingId(id)
     try {
       const result = await deleteAiTemplateAction({ id })
@@ -144,6 +159,7 @@ export default function CompanyTemplatesPage({
         return
       }
       setItems((prev) => prev.filter((item) => item.id !== id))
+      setItemToDelete(null)
       toast({ title: t("success.deleted"), description: t("success.deletedDescription") })
     } finally {
       setDeletingId(null)
@@ -152,9 +168,9 @@ export default function CompanyTemplatesPage({
 
   if (!hasCompanyAccess) {
     return (
-      <Card className="elegant-card">
-        <CardHeader className="space-y-2 text-center">
-          <CardTitle className="heading-secondary text-xl">{t("noCompany.title")}</CardTitle>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("noCompany.title")}</CardTitle>
           <CardDescription>{t("noCompany.description")}</CardDescription>
         </CardHeader>
       </Card>
@@ -162,58 +178,98 @@ export default function CompanyTemplatesPage({
   }
 
   return (
-    <TemplatesSection
-      t={t}
-      items={items}
-      isFetching={isFetching}
-      loadError={loadError}
-      onRetry={() => void loadItems()}
-      onCopy={async (text) => {
-        try {
-          await copyToClipboard(text)
-          toast({ title: t("success.copied"), description: t("success.copiedDescription") })
-        } catch (error) {
-          console.error("Copy template error", error)
-          toast({
-            title: t("errors.copyFailed"),
-            description: t("errors.tryAgain"),
-            variant: "destructive",
-          })
+    <div className="section-spacing space-y-6">
+      <div className="flex justify-end">
+        <Button onClick={openCreate} className="sm:w-auto" aria-label={t("toolbar.addTemplate")}>
+          <Plus className="mr-2 size-4" aria-hidden="true" />
+          {t("toolbar.addTemplate")}
+        </Button>
+        <TemplateDialog
+          t={t}
+          hideTrigger
+          isOpen={isDialogOpen}
+          onOpenChange={(open) => {
+            setIsDialogOpen(open)
+            if (!open) resetForm()
+          }}
+          onTriggerClick={openCreate}
+          editingTemplate={editingItem}
+          isSubmitting={isSubmitting}
+          newTemplateName={name}
+          onNameChange={setName}
+          newTemplateContent={content}
+          onContentChange={setContent}
+          newTemplateCategory={category}
+          onCategoryChange={setCategory}
+          onCancel={() => {
+            setIsDialogOpen(false)
+            resetForm()
+          }}
+          onSubmit={() => void handleSubmit()}
+        />
+      </div>
+
+      {isFetching ? (
+        <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          {t("loading")}
+        </div>
+      ) : loadError ? (
+        <ErrorState
+          icon={MessageSquare}
+          title={t("errors.loadFailed")}
+          description={loadError}
+          retryLabel={t("toolbar.retry")}
+          onRetry={() => void loadItems()}
+        />
+      ) : (
+        <TemplateListTable
+          templates={items}
+          onEdit={(item) => {
+            setEditingItem(item)
+            setName(item.name)
+            setContent(item.content)
+            setCategory(item.category)
+            setIsDialogOpen(true)
+          }}
+          onCopy={async (text) => {
+            try {
+              await copyToClipboard(text)
+              toast({ title: t("success.copied"), description: t("success.copiedDescription") })
+            } catch (error) {
+              console.error("Copy template error", error)
+              toast({
+                title: t("errors.copyFailed"),
+                description: t("errors.tryAgain"),
+                variant: "destructive",
+              })
+            }
+          }}
+          onDelete={(id) => {
+            const template = items.find((item) => item.id === id)
+            if (template) setItemToDelete(template)
+          }}
+          isDeletingId={deletingId}
+        />
+      )}
+
+      <DeleteConfirmDialog
+        open={itemToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open && !deletingId) setItemToDelete(null)
+        }}
+        title={t("deleteConfirm.title")}
+        description={
+          itemToDelete
+            ? t("deleteConfirm.description", { name: itemToDelete.name })
+            : t("deleteConfirm.descriptionGeneric")
         }
-      }}
-      onEdit={(item) => {
-        setEditingItem(item)
-        setName(item.name)
-        setContent(item.content)
-        setCategory(item.category)
-        setIsDialogOpen(true)
-      }}
-      onDelete={(id) => void handleDelete(id)}
-      isDeletingId={deletingId}
-      dialog={{
-        isOpen: isDialogOpen,
-        onOpenChange: (open) => {
-          setIsDialogOpen(open)
-          if (!open) resetForm()
-        },
-        onTriggerClick: () => {
-          resetForm()
-          setIsDialogOpen(true)
-        },
-        editingTemplate: editingItem,
-        isSubmitting,
-        newTemplateName: name,
-        onNameChange: setName,
-        newTemplateContent: content,
-        onContentChange: setContent,
-        newTemplateCategory: category,
-        onCategoryChange: setCategory,
-        onCancel: () => {
-          setIsDialogOpen(false)
-          resetForm()
-        },
-        onSubmit: () => void handleSubmit(),
-      }}
-    />
+        onConfirm={() => void handleDelete()}
+        isDeleting={Boolean(deletingId)}
+        confirmLabel={commonT("delete")}
+        cancelLabel={commonT("cancel")}
+        deletingLabel={commonT("deleting")}
+      />
+    </div>
   )
 }

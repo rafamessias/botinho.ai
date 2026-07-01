@@ -42,8 +42,8 @@ function NavMenuItems({ items }: { items: NavItem[] }) {
               className={cn(
                 "cursor-pointer rounded-xl transition-all group-data-[collapsible=icon]:justify-center",
                 isSelected
-                  ? "bg-primary/15 text-primary shadow-sm hover:bg-primary/20"
-                  : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                  ? "bg-muted font-medium text-foreground shadow-none"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               <Link
@@ -55,7 +55,7 @@ function NavMenuItems({ items }: { items: NavItem[] }) {
                   <item.icon
                     className={cn(
                       "h-4 w-4 shrink-0 transition-colors group-hover/menu-item:text-primary",
-                      isSelected ? "text-primary" : "text-muted-foreground"
+                      isSelected ? "text-primary" : "text-muted-foreground group-hover/menu-item:text-foreground"
                     )}
                   />
                 )}

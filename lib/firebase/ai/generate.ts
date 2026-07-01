@@ -2,9 +2,11 @@ import { z } from "zod"
 import {
   AI_MODELS,
   generateGeminiContent,
+  generateGeminiWithTools,
   isAiConfigured,
   parseGeminiJsonResponse,
   suggestionResponseSchema,
+  type GeminiContent,
 } from "@/lib/gemini/client"
 import {
   buildAutoReplyInstruction,
@@ -12,6 +14,16 @@ import {
   formatConversationHistory,
   loadCompanyAiContext,
 } from "@/lib/firebase/ai/prompt-context"
+import {
+  buildTicketToolsInstruction,
+  executeTicketTool,
+  ticketToolDeclarations,
+} from "@/lib/firebase/ai/ticket-tools"
+import {
+  buildScheduleToolsInstruction,
+  executeScheduleTool,
+  scheduleToolDeclarations,
+} from "@/lib/firebase/ai/schedule-tools"
 import { assertAiUsageAllowed, incrementAiUsage, SUGGESTION_CREDIT_TENTHS } from "@/lib/firebase/services/ai-usage-service"
 
 const suggestionSchema = z.array(
@@ -133,8 +145,33 @@ export const generateAutoReplyText = async (params: {
 
   await assertAiUsageAllowed(params.companyId)
 
+  const agentId = params.agentId ?? "default"
+  const ticketToolContext = {
+    companyId: params.companyId,
+    agentId,
+    agentName: context.agentName,
+    conversationId: params.conversationId,
+    customerId: context.customerId,
+    customerName: context.customerName,
+  }
+
+  const ticketsOn = context.ticketsEnabled !== false
+  const schedulingOn = context.schedulingEnabled !== false
+  const toolsOn = ticketsOn || schedulingOn
+
+  const toolInstructions = [
+    ...(ticketsOn ? ["", buildTicketToolsInstruction(context.language)] : []),
+    ...(schedulingOn ? ["", buildScheduleToolsInstruction(context.language)] : []),
+  ]
+
+  const toolDeclarations = [
+    ...(ticketsOn ? [...ticketToolDeclarations] : []),
+    ...(schedulingOn ? [...scheduleToolDeclarations] : []),
+  ]
+
   const prompt = [
     buildSystemPrompt(context),
+    ...toolInstructions,
     "",
     "## Conversation",
     formatConversationHistory(context.recentMessages),
@@ -145,7 +182,98 @@ export const generateAutoReplyText = async (params: {
   ].join("\n")
 
   try {
-    const text = await generateGeminiContent({
+    if (!toolsOn) {
+      const text = await generateGeminiContent({
+        model: AI_MODELS.autoReply,
+        prompt,
+        temperature: 0.3,
+        maxOutputTokens: 256,
+        disableThinking: true,
+      })
+      await incrementAiUsage(params.companyId)
+      return text
+    }
+
+    const contents: GeminiContent[] = [{ role: "user", parts: [{ text: prompt }] }]
+    const maxToolRounds = 3
+    let usageCounted = false
+
+    for (let round = 0; round <= maxToolRounds; round += 1) {
+      const response = await generateGeminiWithTools({
+        model: AI_MODELS.autoReply,
+        contents,
+        tools: toolDeclarations,
+        temperature: 0.3,
+        maxOutputTokens: 256,
+        disableThinking: true,
+      })
+
+      if (response.functionCalls.length === 0) {
+        if (!usageCounted) {
+          await incrementAiUsage(params.companyId)
+          usageCounted = true
+        }
+        return response.text
+      }
+
+      if (round === maxToolRounds) {
+        break
+      }
+
+      contents.push({
+        role: "model",
+        parts: response.functionCalls.map((call) => ({
+          functionCall: {
+            id: call.id,
+            name: call.name,
+            args: call.args,
+          },
+        })),
+      })
+
+      const functionResponses = await Promise.all(
+        response.functionCalls.map(async (call) => {
+          try {
+            let result: Record<string, unknown>
+            if (call.name === "search_tickets" || call.name === "create_ticket") {
+              result = (await executeTicketTool(ticketToolContext, call.name, call.args)) as Record<
+                string,
+                unknown
+              >
+            } else {
+              result = (await executeScheduleTool(ticketToolContext, call.name, call.args)) as Record<
+                string,
+                unknown
+              >
+            }
+            return {
+              functionResponse: {
+                id: call.id,
+                name: call.name,
+                response: result,
+              },
+            }
+          } catch (error) {
+            return {
+              functionResponse: {
+                id: call.id,
+                name: call.name,
+                response: {
+                  error: error instanceof Error ? error.message : "Tool execution failed",
+                },
+              },
+            }
+          }
+        }),
+      )
+
+      contents.push({
+        role: "user",
+        parts: functionResponses,
+      })
+    }
+
+    const fallback = await generateGeminiContent({
       model: AI_MODELS.autoReply,
       prompt,
       temperature: 0.3,
@@ -153,8 +281,10 @@ export const generateAutoReplyText = async (params: {
       disableThinking: true,
     })
 
-    await incrementAiUsage(params.companyId)
-    return text
+    if (!usageCounted) {
+      await incrementAiUsage(params.companyId)
+    }
+    return fallback
   } catch (error) {
     console.error("[gemini] auto-reply generation failed:", error)
     return context.language === "pt-BR"

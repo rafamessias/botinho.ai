@@ -10,7 +10,6 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
 } from "@tanstack/react-table"
 import {
@@ -56,10 +55,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { CustomerTagFilter } from "@/components/customer/customer-tag-filter"
 import type { CampaignSummaryView } from "@/components/server-actions/campaigns"
 import type { CampaignStatus } from "@/lib/types/campaign"
+import { usePersistedTableSorting } from "@/hooks/use-persisted-table-sorting"
 
 type CampaignStatusFilter = CampaignStatus | "all"
 
@@ -107,7 +108,7 @@ export const CampaignListTable = ({
 }: CampaignListTableProps) => {
   const t = useTranslations("Campaigns")
 
-  const [sorting, setSorting] = useState<SortingState>([{ id: "name", desc: false }])
+  const [sorting, setSorting] = usePersistedTableSorting("campaigns", [{ id: "name", desc: false }])
   const [globalFilter, setGlobalFilter] = useState("")
   const [statusFilter, setStatusFilter] = useState<CampaignStatusFilter>("all")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -135,7 +136,9 @@ export const CampaignListTable = ({
     () => [
       {
         accessorKey: "name",
-        header: t("table.name"),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t("table.name")} />
+        ),
         cell: ({ row }) => (
           <button
             type="button"
@@ -148,7 +151,9 @@ export const CampaignListTable = ({
       },
       {
         accessorKey: "status",
-        header: t("table.status"),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t("table.status")} />
+        ),
         cell: ({ row }) => (
           <Badge variant={statusVariant(row.original.status)} className="capitalize">
             {t(`status.${row.original.status}`)}
@@ -158,7 +163,13 @@ export const CampaignListTable = ({
       },
       {
         id: "audienceCount",
-        header: () => <span className="block text-center">{t("table.contacts")}</span>,
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.contacts")}
+            className="justify-center"
+          />
+        ),
         cell: ({ row }) => (
           <span className="block text-center tabular-nums font-medium">
             {row.original.audienceCount}
@@ -168,7 +179,13 @@ export const CampaignListTable = ({
       },
       {
         id: "progress",
-        header: () => <span className="block text-center">{t("table.progress")}</span>,
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title={t("table.progress")}
+            className="justify-center"
+          />
+        ),
         cell: ({ row }) => {
           const { delivered, targeted } = row.original.metrics
           if (targeted === 0) {
@@ -185,7 +202,9 @@ export const CampaignListTable = ({
       },
       {
         accessorKey: "targetTags",
-        header: t("table.tags"),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={t("table.tags")} />
+        ),
         cell: ({ row }) => {
           const tags = row.original.targetTags
           if (tags.length === 0) {
@@ -206,6 +225,7 @@ export const CampaignListTable = ({
       },
       {
         id: "actions",
+        enableSorting: false,
         header: () => <span className="sr-only">{t("table.actions")}</span>,
         cell: ({ row }) => {
           const campaign = row.original

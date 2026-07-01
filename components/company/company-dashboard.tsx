@@ -120,7 +120,7 @@ export const CompanyDashboard = ({ initialCompanies, currentUserId }: CompanyDas
         <div className="space-y-6">
             <Tabs defaultValue="company" className="space-y-6">
                 <div className="no-scrollbar overflow-x-auto sm:overflow-visible">
-                    <TabsList className="grid w-[24rem] grid-cols-2 sm:w-full">
+                    <TabsList className="grid w-fit grid-cols-2">
                         <TabsTrigger value="company">{t("tabs.company")}</TabsTrigger>
                         <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
                     </TabsList>

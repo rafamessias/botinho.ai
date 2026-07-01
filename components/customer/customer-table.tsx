@@ -10,7 +10,6 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    type SortingState,
     type VisibilityState,
     useReactTable,
 } from "@tanstack/react-table"
@@ -20,6 +19,7 @@ import { DataTableViewOptions } from "@/components/data-table/data-table-view-op
 import { useCustomerColumnLabels, useCustomerColumns } from "@/components/customer/columns"
 import { CustomerTagFilter } from "@/components/customer/customer-tag-filter"
 import { customerMatchesTagFilter } from "@/components/customer/customer-tag-utils"
+import { usePersistedTableSorting } from "@/hooks/use-persisted-table-sorting"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -72,7 +72,9 @@ const CustomerTableComponent = ({
     const columns = useCustomerColumns({ onEdit, onStartConversation })
     const columnLabels = useCustomerColumnLabels()
 
-    const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }])
+    const [sorting, setSorting] = usePersistedTableSorting("customers", [
+        { id: "createdAt", desc: true },
+    ])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [globalFilter, setGlobalFilter] = useState("")
     const [statusFilter, setStatusFilter] = useState<CustomerStatusFilter>("all")

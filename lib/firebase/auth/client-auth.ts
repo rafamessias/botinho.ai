@@ -10,7 +10,6 @@ import {
 } from "firebase/auth"
 import { FirebaseError } from "firebase/app"
 import { firebaseAuth } from "@/lib/firebase/client"
-import { establishServerSession } from "@/lib/firebase/auth-client"
 import { ensureGoogleUserProvisioned } from "@/lib/firebase/auth/signup-flow"
 import { postGoogleSignInAction } from "@/components/server-actions/auth"
 
@@ -63,12 +62,10 @@ export const finalizeGoogleAuthFlow = async (user: User, locale: string) => {
 
 export const signInWithEmail = async (email: string, password: string) => {
   const credential = await signInWithEmailAndPassword(firebaseAuth, email, password)
-  await establishServerSession()
   return credential.user
 }
 
 export const completeGoogleSignIn = async (credential: UserCredential) => {
-  await establishServerSession()
   return credential.user
 }
 
@@ -80,6 +77,5 @@ export const isGoogleAuthPopupBlockedError = (error: unknown) =>
 
 export const signInWithCustomTokenClient = async (customToken: string) => {
   const credential = await signInWithCustomToken(firebaseAuth, customToken)
-  await establishServerSession()
   return credential.user
 }

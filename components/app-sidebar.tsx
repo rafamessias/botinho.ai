@@ -15,6 +15,8 @@ import {
   IconTemplate,
   IconClipboardList,
   IconSpeakerphone,
+  IconTicket,
+  IconCalendar,
 } from "@tabler/icons-react"
 
 import { BrandLogo, BrandLogoIcon } from "@/components/brand-logo"
@@ -37,30 +39,47 @@ import { useUser } from "@/components/user-provider"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations("AppSidebar")
-  const { usagePercentage } = useUser()
+  const { usagePercentage, hasPermission } = useUser()
+  const permissions = hasPermission()
   const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
+
+  const workspaceItems = [
+    {
+      title: t("navigation.dashboard"),
+      url: "/dashboard",
+      icon: IconDashboard,
+    },
+    {
+      title: t("navigation.inbox"),
+      url: "/inbox",
+      icon: IconMessageCircle,
+    },
+    {
+      title: t("navigation.customer"),
+      url: "/customer",
+      icon: IconUserCircle,
+    },
+    {
+      title: t("navigation.tickets"),
+      url: "/tickets",
+      icon: IconTicket,
+    },
+    ...(permissions.isAdmin || permissions.canManageAgenda
+      ? [
+          {
+            title: t("navigation.schedule"),
+            url: "/schedule",
+            icon: IconCalendar,
+          },
+        ]
+      : []),
+  ]
 
   const navGroups = [
     {
       label: t("sections.workspace"),
-      items: [
-        {
-          title: t("navigation.dashboard"),
-          url: "/dashboard",
-          icon: IconDashboard,
-        },
-        {
-          title: t("navigation.inbox"),
-          url: "/inbox",
-          icon: IconMessageCircle,
-        },
-        {
-          title: t("navigation.customer"),
-          url: "/customer",
-          icon: IconUserCircle,
-        },
-      ],
+      items: workspaceItems,
     },
     {
       label: t("sections.customerInteraction"),
@@ -120,7 +139,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   ]
   return (
     <Sidebar
-      className="border-r border-border/60 bg-background/80 backdrop-blur pt-0"
+      className="border-r border-border bg-sidebar pt-0"
       collapsible="icon"
       {...props}
     >
@@ -143,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <BrandLogoIcon priority className="size-8" />
                   ) : (
                     <BrandLogo
-                      className="h-8 w-auto max-w-[135px] object-contain object-left"
+                      className="h-7 w-auto max-w-[120px] object-contain object-left"
                       priority
                     />
                   )}
@@ -184,7 +203,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             statusLabel={usagePercentage >= 100 ? "Limit reached" : "Limit utilization"}
           />
         )}
-        <div className="rounded-xl bg-muted/40 px-3 py-2 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0">
+        <div className="rounded-xl bg-muted px-3 py-2 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0">
           <NavUser />
         </div>
       </SidebarFooter>

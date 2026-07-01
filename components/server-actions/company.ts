@@ -48,6 +48,7 @@ const inviteMemberSchema = z.object({
   isAdmin: z.boolean().default(false),
   canPost: z.boolean().default(true),
   canApprove: z.boolean().default(false),
+  canManageAgenda: z.boolean().default(false),
 })
 
 const updateMemberSchema = z.object({
@@ -56,6 +57,7 @@ const updateMemberSchema = z.object({
   isAdmin: z.boolean(),
   canPost: z.boolean(),
   canApprove: z.boolean(),
+  canManageAgenda: z.boolean(),
 })
 
 const removeMemberSchema = z.object({
@@ -78,6 +80,7 @@ const bulkInviteMembersSchema = z.object({
       isAdmin: z.union([z.boolean(), z.string()]).optional(),
       canPost: z.union([z.boolean(), z.string()]).optional(),
       canApprove: z.union([z.boolean(), z.string()]).optional(),
+      canManageAgenda: z.union([z.boolean(), z.string()]).optional(),
     }),
   ),
 })
@@ -184,6 +187,7 @@ export const inviteMemberAction = async (formData: z.infer<typeof inviteMemberSc
       isAdmin: validatedData.isAdmin,
       canPost: validatedData.canPost,
       canApprove: validatedData.canApprove,
+      canManageAgenda: validatedData.canManageAgenda,
       inviterEmail: session.email!,
       locale: currentLocale,
       confirmationToken,
@@ -230,6 +234,7 @@ export const updateMemberAction = async (formData: z.infer<typeof updateMemberSc
       isAdmin: validatedData.isAdmin,
       canPost: validatedData.canPost,
       canApprove: validatedData.canApprove,
+      canManageAgenda: validatedData.canManageAgenda,
     })
     return { success: true, message: t("messages.memberUpdateSuccess") }
   } catch (error) {
@@ -312,6 +317,7 @@ export const bulkInviteMembersAction = async (formData: z.infer<typeof bulkInvit
           isAdmin: normalizeBool(memberData.isAdmin ?? false),
           canPost: normalizeBool(memberData.canPost ?? true),
           canApprove: normalizeBool(memberData.canApprove ?? false),
+          canManageAgenda: normalizeBool(memberData.canManageAgenda ?? false),
           inviterEmail: session.email!,
           locale: currentLocale,
           confirmationToken,

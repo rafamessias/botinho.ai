@@ -1,4 +1,5 @@
 import createMiddleware from 'next-intl/middleware';
+import { hasLocale } from 'next-intl';
 import { NextResponse, NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
 import { isPublicPathname, localizePathname, stripLocalePrefix } from './i18n/pathname';
@@ -57,12 +58,18 @@ export default async function middleware(request: NextRequest) {
 
     const { locale: currentLocale, pathname: basePathname } = stripLocalePrefix(pathname);
     const isPostLoginRoute = basePathname === "/auth/post-login";
+    const isOnboardingRoute = basePathname === "/onboarding" || basePathname.startsWith("/onboarding/");
+
+    if (basePathname === '/register') {
+        const signUpPath = localizePathname('/sign-up', currentLocale);
+        return NextResponse.redirect(new URL(`${request.nextUrl.origin}${signUpPath}${request.nextUrl.search}`));
+    }
 
     if (isAuthenticated) {
         const redirectParam = request.nextUrl.searchParams.get("redirect");
         const oauthRedirectCookie = request.cookies.get('oauth_redirect')?.value;
 
-        if (isPublicPathname(pathname) && !isPasswordResetRoute(pathname) && basePathname !== '/') {
+        if (isPublicPathname(pathname) && !isPasswordResetRoute(pathname) && basePathname !== '/' && !isOnboardingRoute) {
             const postLoginPath = localizePathname('/auth/post-login', currentLocale);
             const safeRedirect =
                 redirectParam?.startsWith('/') && !redirectParam.startsWith('//')
@@ -78,7 +85,7 @@ export default async function middleware(request: NextRequest) {
             return NextResponse.redirect(redirectUrl);
         }
 
-        if ((redirectParam || oauthRedirectCookie) && !isPostLoginRoute) {
+        if ((redirectParam || oauthRedirectCookie) && !isPostLoginRoute && !isOnboardingRoute) {
             const postLoginPath = localizePathname('/auth/post-login', currentLocale);
             const safeRedirect =
                 redirectParam?.startsWith('/') && !redirectParam.startsWith('//')
@@ -95,6 +102,15 @@ export default async function middleware(request: NextRequest) {
         }
 
         if (currentLocale !== userLocale) {
+            const nextLocaleCookie = request.cookies.get('NEXT_LOCALE')?.value;
+
+            if (
+                nextLocaleCookie === currentLocale &&
+                hasLocale(routing.locales, nextLocaleCookie)
+            ) {
+                return intlResponse;
+            }
+
             const newPathname = localizePathname(pathname, userLocale);
             const redirectUrl = new URL(
                 `${request.nextUrl.origin}${newPathname}${request.nextUrl.search}`,

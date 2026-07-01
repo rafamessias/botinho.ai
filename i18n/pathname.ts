@@ -35,8 +35,11 @@ export function localizePathname(pathname: string, locale: string): string {
 
 const PUBLIC_PATHS = new Set([
     '/',
+    '/terms',
+    '/privacy',
     '/sign-in',
     '/sign-up',
+    '/register',
     '/reset-password',
     '/reset-password/new',
     '/sign-up/confirm',

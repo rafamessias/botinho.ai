@@ -83,6 +83,7 @@ import { useInboxRealtime } from "@/hooks/use-inbox-realtime"
 import { useInboxReplyBookmarks } from "@/hooks/use-inbox-reply-bookmarks"
 import { applyItemOrder, mergeItemOrder, resolveSidebarItems } from "@/lib/inbox-reply-bookmarks"
 import { isTransientServerActionError, withServerActionRetry } from "@/lib/server-action-retry"
+import { estimateInboxConversationsPageSize } from "@/lib/inbox/conversation-list-pagination"
 
 type InboxPageProps = {
     hasCompanyAccess: boolean
@@ -245,20 +246,29 @@ export default function InboxPage({
     const [isLoadingConversations, setIsLoadingConversations] = useState(
         hasCompanyAccess && !hasBootstrap,
     )
+    const [isLoadingMoreConversations, setIsLoadingMoreConversations] = useState(false)
+    const [hasMoreConversations, setHasMoreConversations] = useState(false)
     const [isLoadingMessages, setIsLoadingMessages] = useState(false)
     const [isSendingMessage, setIsSendingMessage] = useState(false)
     const [isConnectionsLoaded, setIsConnectionsLoaded] = useState(hasBootstrap)
     const [isReplyResourcesLoaded, setIsReplyResourcesLoaded] = useState(hasBootstrap)
     const messageInputRef = useRef<HTMLTextAreaElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
-    const initialLoadRef = useRef(isFreshSession && hasCompanyAccess)
+    const initialLoadRef = useRef(
+        isFreshSession &&
+            hasCompanyAccess &&
+            (bootstrapSnapshot?.conversations.length ?? 0) > 0,
+    )
     const selectedConversationIdRef = useRef<string | null>(
         bootstrapSnapshot?.selectedConversationId ?? null,
     )
     const searchQueryRef = useRef(bootstrapSnapshot?.searchQuery ?? "")
     const selectedConnectionIdsRef = useRef<string[]>(bootstrapSnapshot?.selectedConnectionIds ?? [])
     const loadConversationsRef = useRef<
-        (page?: number, searchValue?: string, options?: { silent?: boolean }) => Promise<void>
+        (
+            searchValue?: string,
+            options?: { silent?: boolean; append?: boolean },
+        ) => Promise<void>
     >(async () => {})
     const fetchConversationDetailRef = useRef<
         (conversationId: string, options?: { silent?: boolean; force?: boolean }) => Promise<void>
@@ -272,6 +282,7 @@ export default function InboxPage({
     const conversationsRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const messagesRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const isFetchingConversationsRef = useRef(false)
+    const conversationsNextCursorRef = useRef<string | null>(null)
     const inFlightConversationDetailPromisesRef = useRef(new Map<string, Promise<void>>())
     const inFlightSuggestedResponsesPromisesRef = useRef(
         new Map<string, Promise<SuggestedResponse[]>>(),
@@ -287,6 +298,7 @@ export default function InboxPage({
     const skipInitialConnectionsLoadRef = useRef(isFreshSession)
     const skipInitialReplyResourcesLoadRef = useRef(isFreshSession)
     const isFirstConnectionFilterEffectRef = useRef(true)
+    const isFirstFilterEffectRef = useRef(true)
     const initialHydrationRef = useRef(isFreshSession)
     const isMountedRef = useRef(true)
     const conversationFilterRef = useRef<ConversationFilter>(
@@ -406,26 +418,6 @@ export default function InboxPage({
         () => conversations.find((conversation) => conversation.id === selectedConversationId) ?? null,
         [conversations, selectedConversationId],
     )
-
-    const filteredConversations = useMemo(() => {
-        if (conversationFilter === "unread") {
-            return conversations.filter((conversation) => conversation.unreadCount > 0)
-        }
-
-        if (conversationFilter === "favorites") {
-            return conversations.filter((conversation) => conversation.isBookmarked)
-        }
-
-        if (conversationFilter === "human") {
-            return conversations.filter((conversation) => Boolean(conversation.assignedToId))
-        }
-
-        if (conversationFilter === "bot") {
-            return conversations.filter((conversation) => !conversation.assignedToId)
-        }
-
-        return conversations
-    }, [conversationFilter, conversations])
 
     const isConversationListFiltered =
         conversationFilter !== "all" || searchQuery.trim().length > 0
@@ -717,23 +709,34 @@ export default function InboxPage({
     )
 
     const loadConversations = useCallback(
-        async (page = 1, searchValue = "", options?: { silent?: boolean }) => {
+        async (searchValue = "", options?: { silent?: boolean; append?: boolean }) => {
+            const isAppend = options?.append === true
             if (isFetchingConversationsRef.current) {
                 return
             }
 
+            if (isAppend && !conversationsNextCursorRef.current) {
+                return
+            }
+
             isFetchingConversationsRef.current = true
-            if (!options?.silent) {
+            if (isAppend) {
+                setIsLoadingMoreConversations(true)
+            } else if (!options?.silent) {
                 setIsLoadingConversations(true)
             }
+
             try {
                 const selectedSessionIds = selectedConnectionIdsRef.current
+                const pageSize = estimateInboxConversationsPageSize()
                 const result = await withServerActionRetry(() =>
                     getInboxConversationsAction({
-                        page,
+                        pageSize,
+                        cursor: isAppend ? (conversationsNextCursorRef.current ?? undefined) : undefined,
                         search: searchValue.trim() ? searchValue.trim() : undefined,
                         sessionIds: selectedSessionIds.length > 0 ? selectedSessionIds : undefined,
-                        includeCounts: true,
+                        filter: conversationFilterRef.current,
+                        includeCounts: !isAppend,
                     }),
                 )
 
@@ -745,18 +748,39 @@ export default function InboxPage({
                     (result.data.conversations as ConversationEntity[]).map(buildConversationSummary),
                 )
 
-                if (result.data.metrics?.unreadTotal != null) {
+                conversationsNextCursorRef.current = result.data.pagination.nextCursor
+                setHasMoreConversations(result.data.pagination.hasMore)
+
+                if (!isAppend && result.data.metrics?.unreadTotal != null) {
                     setUnreadTotal(result.data.metrics.unreadTotal)
                 }
 
                 const currentSelectedId = selectedConversationIdRef.current
 
                 setConversations((previous) => {
+                    if (isAppend) {
+                        const existingIds = new Set(previous.map((conversation) => conversation.id))
+                        const newItems = mapped.filter((conversation) => !existingIds.has(conversation.id))
+                        return sortConversations([...previous, ...newItems])
+                    }
+
+                    if (options?.silent) {
+                        const mappedById = new Map(mapped.map((conversation) => [conversation.id, conversation]))
+                        const updated = previous.map(
+                            (conversation) => mappedById.get(conversation.id) ?? conversation,
+                        )
+                        const existingIds = new Set(previous.map((conversation) => conversation.id))
+                        const newOnes = mapped.filter((conversation) => !existingIds.has(conversation.id))
+                        return sortConversations([...newOnes, ...updated])
+                    }
+
                     if (!currentSelectedId || mapped.some((conversation) => conversation.id === currentSelectedId)) {
                         return mapped
                     }
 
-                    const selectedSummary = previous.find((conversation) => conversation.id === currentSelectedId)
+                    const selectedSummary = previous.find(
+                        (conversation) => conversation.id === currentSelectedId,
+                    )
                     if (!selectedSummary) {
                         return mapped
                     }
@@ -764,12 +788,16 @@ export default function InboxPage({
                     return sortConversations([...mapped, selectedSummary])
                 })
 
-                if (mapped.length === 0) {
+                if (mapped.length === 0 && !isAppend) {
                     if (!currentSelectedId) {
                         setSelectedConversationId(null)
                         setMessages([])
                         setSuggestedResponses([])
                     }
+                    return
+                }
+
+                if (isAppend) {
                     return
                 }
 
@@ -794,20 +822,39 @@ export default function InboxPage({
                     return
                 }
                 console.error("Failed to load conversations", error)
-                setConversations([])
-                setMessages([])
-                setSuggestedResponses([])
-                selectedConversationIdRef.current = null
-                setSelectedConversationId(null)
+                if (!isAppend) {
+                    setConversations([])
+                    setMessages([])
+                    setSuggestedResponses([])
+                    selectedConversationIdRef.current = null
+                    setSelectedConversationId(null)
+                    conversationsNextCursorRef.current = null
+                    setHasMoreConversations(false)
+                }
             } finally {
                 isFetchingConversationsRef.current = false
-                if (!options?.silent) {
+                if (isAppend) {
+                    setIsLoadingMoreConversations(false)
+                } else if (!options?.silent) {
                     setIsLoadingConversations(false)
                 }
             }
         },
         [buildConversationSummary, fetchConversationDetail],
     )
+
+    const loadMoreConversations = useCallback(() => {
+        if (
+            !hasMoreConversations ||
+            isLoadingMoreConversations ||
+            isLoadingConversations ||
+            !conversationsNextCursorRef.current
+        ) {
+            return
+        }
+
+        void loadConversations(searchQueryRef.current, { append: true, silent: true })
+    }, [hasMoreConversations, isLoadingConversations, isLoadingMoreConversations, loadConversations])
 
     loadConversationsRef.current = loadConversations
     fetchConversationDetailRef.current = fetchConversationDetail
@@ -820,6 +867,8 @@ export default function InboxPage({
             setConversations([])
             setMessages([])
             setSuggestedResponses([])
+            conversationsNextCursorRef.current = null
+            setHasMoreConversations(false)
             setQuickAnswers([])
             setTemplates([])
             setWhatsappConfigured(false)
@@ -842,6 +891,8 @@ export default function InboxPage({
             setConversations([])
             setMessages([])
             setSuggestedResponses([])
+            conversationsNextCursorRef.current = null
+            setHasMoreConversations(false)
             setQuickAnswers([])
             setTemplates([])
             selectedConversationIdRef.current = null
@@ -866,7 +917,7 @@ export default function InboxPage({
         }
 
         initialLoadRef.current = true
-        void loadConversationsRef.current(1, "")
+        void loadConversationsRef.current("")
     }, [companyId])
 
     useEffect(() => {
@@ -998,8 +1049,21 @@ export default function InboxPage({
             return
         }
 
-        void loadConversationsRef.current(1, searchQueryRef.current)
+        conversationsNextCursorRef.current = null
+        setHasMoreConversations(false)
+        void loadConversationsRef.current(searchQueryRef.current)
     }, [selectedConnectionIds])
+
+    useEffect(() => {
+        if (!initialLoadRef.current || isFirstFilterEffectRef.current) {
+            isFirstFilterEffectRef.current = false
+            return
+        }
+
+        conversationsNextCursorRef.current = null
+        setHasMoreConversations(false)
+        void loadConversationsRef.current(searchQueryRef.current)
+    }, [conversationFilter])
 
     useEffect(() => {
         if (!initialLoadRef.current || isFirstSearchEffectRef.current) {
@@ -1007,8 +1071,11 @@ export default function InboxPage({
             return
         }
 
+        conversationsNextCursorRef.current = null
+        setHasMoreConversations(false)
+
         const handler = setTimeout(() => {
-            void loadConversationsRef.current(1, searchQuery)
+            void loadConversationsRef.current(searchQuery)
         }, 400)
 
         return () => clearTimeout(handler)
@@ -1034,7 +1101,7 @@ export default function InboxPage({
         }
 
         conversationsRefreshTimeoutRef.current = setTimeout(() => {
-            void loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
+            void loadConversationsRef.current(searchQueryRef.current, { silent: true })
         }, 300)
     }, [])
 
@@ -1086,7 +1153,7 @@ export default function InboxPage({
 
         const interval = setInterval(() => {
             void (async () => {
-                await loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
+                await loadConversationsRef.current(searchQueryRef.current, { silent: true })
                 const conversationId = selectedConversationIdRef.current
                 if (conversationId) {
                     void fetchConversationDetailRef.current(conversationId, { silent: true })
@@ -1294,7 +1361,7 @@ export default function InboxPage({
             setSelectedConversationId(conversationId)
             setShowConversationsList(false)
             await fetchConversationDetailRef.current(conversationId, { force: true })
-            await loadConversationsRef.current(1, searchQueryRef.current, { silent: true })
+            await loadConversationsRef.current(searchQueryRef.current, { silent: true })
         },
         [],
     )
@@ -1464,7 +1531,7 @@ export default function InboxPage({
     ])
 
     const conversationListPanelProps = {
-        conversations: filteredConversations,
+        conversations,
         selectedConversationId,
         searchQuery,
         onSearchChange: setSearchQuery,
@@ -1472,6 +1539,9 @@ export default function InboxPage({
         onFilterChange: setConversationFilter,
         unreadTotal,
         isLoading: isLoadingConversations,
+        isLoadingMore: isLoadingMoreConversations,
+        hasMore: hasMoreConversations,
+        onLoadMore: loadMoreConversations,
         isFiltered: isConversationListFiltered,
         onSelectConversation: handleSelectConversation,
         onNewConversation: handleOpenNewConversation,
@@ -1659,7 +1729,7 @@ export default function InboxPage({
                         "text-xs font-semibold",
                         isCustomer && "bg-muted text-muted-foreground",
                         isAgent && "bg-agent/10 text-agent",
-                        isBot && "bg-primary/10 text-primary",
+                        isBot && "bg-muted text-primary",
                         isSystem && "bg-muted text-muted-foreground",
                     )
 
@@ -1751,7 +1821,7 @@ export default function InboxPage({
     }
 
     return (
-        <div className="flex h-[calc(100vh-48px)] flex-col overflow-hidden bg-background">
+        <div className="flex h-[calc(100vh-48px)] w-full min-w-0 flex-1 flex-col overflow-hidden bg-background">
             {whatsappConfigured && !whatsappAvailable && (
                 <StatusCallout
                     variant="warning"
@@ -1770,7 +1840,7 @@ export default function InboxPage({
                     linkLabel={t("whatsappRepair.settingsLink")}
                 />
             )}
-            <div className="flex min-h-0 flex-1 overflow-hidden bg-background">
+            <div className="flex min-h-0 min-w-0 w-full flex-1 overflow-hidden bg-background">
                 {showDesktopConversations && (
                     <div className="hidden w-[350px] shrink-0 overflow-hidden border-r border-border/60 md:flex">
                         <ConversationListPanel {...conversationListPanelProps} className="w-full" />
@@ -1783,7 +1853,7 @@ export default function InboxPage({
                     </SheetContent>
                 </Sheet>
 
-                <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+                <div className="flex min-h-0 min-w-0 flex-1 basis-0 flex-col">
                     <div className="h-14 px-4 flex items-center justify-between border-b border-border/60 flex-shrink-0">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
                             <Button
