@@ -4,6 +4,16 @@ export type TicketStatus = "open" | "in_progress" | "waiting" | "resolved" | "cl
 
 export type TicketPriority = "low" | "medium" | "high"
 
+export type TicketListItem = {
+  id: string
+  ticketNumber: string
+  title: string
+  status: TicketStatus
+  priority: TicketPriority
+  customerName?: string
+  updatedAt: string
+}
+
 export type Ticket = {
   id: string
   ticketNumber: string
@@ -25,6 +35,16 @@ export type Ticket = {
   createdAt: string
   updatedAt: string
 }
+
+export const mapTicketToListItem = (ticket: Ticket): TicketListItem => ({
+  id: ticket.id,
+  ticketNumber: ticket.ticketNumber,
+  title: ticket.title,
+  status: ticket.status,
+  priority: ticket.priority,
+  customerName: ticket.customerName,
+  updatedAt: ticket.updatedAt,
+})
 
 export type TicketActivityAction =
   | "created"

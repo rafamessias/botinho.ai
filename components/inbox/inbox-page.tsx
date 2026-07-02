@@ -1,25 +1,19 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import dynamic from "next/dynamic"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
-import { Link, useRouter } from "@/i18n/navigation"
+import { useRouter } from "@/i18n/navigation"
 import { toast } from "sonner"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import {
     Send,
-    Bot,
     User,
-    Clock,
-    CheckCheck,
     Info,
-    Phone,
-    Mail,
-    MapPin,
     X,
     PanelRight,
     PanelRightClose,
@@ -29,13 +23,6 @@ import {
     Bookmark,
     MessageCircle,
     MessageSquarePlus,
-    Contact,
-    Sparkles,
-    MessageSquare,
-    Zap,
-    AlertTriangle,
-    Building2,
-    CornerDownLeft,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { StatusCallout } from "@/components/ui/status-callout"
@@ -46,24 +33,22 @@ import {
     getInboxConnectionsAction,
     getInboxConversationsAction,
     getInboxConversationDetailAction,
+    getInboxReplyResourcesAction,
     getSuggestedResponsesAction,
     markInboxConversationReadAction,
     sendInboxMessageAction,
     updateInboxConversationMetadataAction,
     type InboxConnectionView,
 } from "../server-actions/inbox"
-import { getAiTrainingDataAction } from "@/components/server-actions/ai-training"
 import { listActiveSurveysAction, sendSurveyAction, type SurveyView } from "@/components/server-actions/surveys"
 import type { QuickAnswerView, TemplateView } from "@/components/ai-training/types"
 import { ContextPanel, ContextPanelSkeleton } from "@/components/inbox/context-panel"
-import { NewConversationDialog } from "@/components/inbox/new-conversation-dialog"
-import { InboxReplyListModal } from "@/components/inbox/inbox-reply-list-modal"
-import { ReplyPreviewHoverCard } from "@/components/inbox/reply-preview-hover-card"
 import {
     ConversationListPanel,
     type ConversationFilter,
 } from "@/components/inbox/conversation-list-panel"
-import { MessageQuoteBlock, resolveQuoteSenderLabel } from "@/components/inbox/message-quote-block"
+import { InboxMessageThread, MessageThreadSkeleton } from "@/components/inbox/inbox-message-thread"
+import { resolveQuoteSenderLabel } from "@/components/inbox/message-quote-block"
 import {
     mapConversationSummary,
     mapMessage,
@@ -77,81 +62,47 @@ import {
 } from "@/components/inbox/inbox-mappers"
 import {
     inboxSessionCache,
-    resolveInboxBootstrap,
 } from "@/lib/inbox/inbox-session-cache"
+import type { InboxInitialData } from "@/lib/inbox/load-inbox-initial-data"
+import { resolveInboxMountState } from "@/lib/inbox/resolve-inbox-mount-state"
+import { scheduleIdle } from "@/lib/inbox/schedule-idle"
+import {
+    mapRealtimeConversationDoc,
+    mapRealtimeMessageDoc,
+} from "@/lib/inbox/realtime-mappers"
 import { useInboxRealtime } from "@/hooks/use-inbox-realtime"
 import { useInboxReplyBookmarks } from "@/hooks/use-inbox-reply-bookmarks"
 import { applyItemOrder, mergeItemOrder, resolveSidebarItems } from "@/lib/inbox-reply-bookmarks"
 import { isTransientServerActionError, withServerActionRetry } from "@/lib/server-action-retry"
 import { estimateInboxConversationsPageSize } from "@/lib/inbox/conversation-list-pagination"
+import { INBOX_MESSAGES_DEFAULT_PAGE_SIZE } from "@/lib/inbox/message-pagination"
+import type { DocumentData, QuerySnapshot } from "firebase/firestore"
+
+const NewConversationDialog = dynamic(
+    () =>
+        import("@/components/inbox/new-conversation-dialog").then((module) => module.NewConversationDialog),
+    { ssr: false },
+)
+
+const InboxReplyListModal = dynamic(
+    () =>
+        import("@/components/inbox/inbox-reply-list-modal").then((module) => module.InboxReplyListModal),
+    { ssr: false },
+)
 
 type InboxPageProps = {
     hasCompanyAccess: boolean
     initialCompanyId?: string | null
+    initialData?: InboxInitialData | null
 }
 
 const INBOX_BACKGROUND_POLL_MS = 60_000
-
-const getInboxMountBootstrap = (companyId: string | null) => {
-    const { source, snapshot } = resolveInboxBootstrap(companyId)
-    const isFreshSession =
-        source === "session" &&
-        companyId != null &&
-        inboxSessionCache.isFresh(String(companyId))
-
-    return {
-        snapshot,
-        hasBootstrap: Boolean(snapshot),
-        isFreshSession,
-    }
-}
 
 type SuggestedResponse = {
     id: string
     text: string
     category: string
 }
-
-type MessageSkeletonItem = {
-    side: "left" | "right"
-    widthClass: string
-    heightClass: string
-}
-
-const MESSAGE_THREAD_SKELETON_ITEMS: MessageSkeletonItem[] = [
-    { side: "left", widthClass: "w-[52%]", heightClass: "h-10" },
-    { side: "right", widthClass: "w-[44%]", heightClass: "h-10" },
-    { side: "left", widthClass: "w-[36%]", heightClass: "h-10" },
-    { side: "right", widthClass: "w-[58%]", heightClass: "h-14" },
-    { side: "left", widthClass: "w-[48%]", heightClass: "h-10" },
-    { side: "right", widthClass: "w-[40%]", heightClass: "h-10" },
-    { side: "left", widthClass: "w-[55%]", heightClass: "h-14" },
-    { side: "right", widthClass: "w-[32%]", heightClass: "h-10" },
-    { side: "left", widthClass: "w-[42%]", heightClass: "h-10" },
-    { side: "right", widthClass: "w-[50%]", heightClass: "h-12" },
-]
-
-const MessageThreadSkeleton = () => (
-    <div className="flex h-full min-h-full flex-col px-4 py-5" aria-hidden="true">
-        <div className="space-y-3">
-            {MESSAGE_THREAD_SKELETON_ITEMS.map((item, index) => (
-                <div
-                    key={`message-skeleton-${index}`}
-                    className={cn("flex items-end gap-2", item.side === "right" && "flex-row-reverse")}
-                >
-                    <div className="h-8 w-8 flex-shrink-0 rounded-full bg-muted animate-pulse" />
-                    <div
-                        className={cn(
-                            "max-w-[80%] rounded-lg bg-muted/80 animate-pulse md:max-w-[70%]",
-                            item.widthClass,
-                            item.heightClass,
-                        )}
-                    />
-                </div>
-            ))}
-        </div>
-    </div>
-)
 
 const useMediaQuery = (query: string) => {
     const [matches, setMatches] = useState(() => {
@@ -186,13 +137,16 @@ const useMediaQuery = (query: string) => {
 export default function InboxPage({
     hasCompanyAccess,
     initialCompanyId = null,
+    initialData = null,
 }: InboxPageProps) {
-    const mountBootstrap = getInboxMountBootstrap(
-        initialCompanyId != null ? String(initialCompanyId) : null,
-    )
-    const bootstrapSnapshot = mountBootstrap.snapshot
-    const hasBootstrap = mountBootstrap.hasBootstrap
-    const isFreshSession = mountBootstrap.isFreshSession
+    const mountState = resolveInboxMountState({
+        initialCompanyId: initialCompanyId != null ? String(initialCompanyId) : null,
+        initialData,
+    })
+    const bootstrapSnapshot = mountState.snapshot
+    const hasBootstrap = mountState.hasBootstrap
+    const isFreshSession = mountState.isFreshSession
+    const seededFromServer = mountState.seededFromServer
 
     const [conversations, setConversations] = useState<InboxConversationSummary[]>(
         bootstrapSnapshot?.conversations ?? [],
@@ -249,14 +203,18 @@ export default function InboxPage({
     const [isLoadingMoreConversations, setIsLoadingMoreConversations] = useState(false)
     const [hasMoreConversations, setHasMoreConversations] = useState(false)
     const [isLoadingMessages, setIsLoadingMessages] = useState(false)
+    const [isLoadingOlderMessages, setIsLoadingOlderMessages] = useState(false)
+    const [hasMoreOlderMessages, setHasMoreOlderMessages] = useState(
+        initialData?.hasMoreOlderMessages ?? false,
+    )
     const [isSendingMessage, setIsSendingMessage] = useState(false)
     const [isConnectionsLoaded, setIsConnectionsLoaded] = useState(hasBootstrap)
     const [isReplyResourcesLoaded, setIsReplyResourcesLoaded] = useState(hasBootstrap)
     const messageInputRef = useRef<HTMLTextAreaElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const initialLoadRef = useRef(
-        isFreshSession &&
-            hasCompanyAccess &&
+        hasCompanyAccess &&
+            hasBootstrap &&
             (bootstrapSnapshot?.conversations.length ?? 0) > 0,
     )
     const selectedConversationIdRef = useRef<string | null>(
@@ -295,11 +253,13 @@ export default function InboxPage({
                 .map((message) => message.id),
         ),
     )
-    const skipInitialConnectionsLoadRef = useRef(isFreshSession)
-    const skipInitialReplyResourcesLoadRef = useRef(isFreshSession)
+    const skipInitialConnectionsLoadRef = useRef(isFreshSession || seededFromServer)
+    const skipInitialReplyResourcesLoadRef = useRef(isFreshSession || seededFromServer)
+    const realtimeListenersHealthyRef = useRef(false)
+    const backgroundPollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
     const isFirstConnectionFilterEffectRef = useRef(true)
     const isFirstFilterEffectRef = useRef(true)
-    const initialHydrationRef = useRef(isFreshSession)
+    const initialHydrationRef = useRef(isFreshSession || seededFromServer)
     const isMountedRef = useRef(true)
     const conversationFilterRef = useRef<ConversationFilter>(
         bootstrapSnapshot?.conversationFilter ?? "all",
@@ -422,11 +382,12 @@ export default function InboxPage({
     const isConversationListFiltered =
         conversationFilter !== "all" || searchQuery.trim().length > 0
 
-    const isInboxReady =
-        !hasCompanyAccess ||
-        (isConnectionsLoaded && isReplyResourcesLoaded && !isLoadingConversations)
+    const isConversationListReady = !hasCompanyAccess || !isLoadingConversations
+    const isComposerReady = !hasCompanyAccess || isConnectionsLoaded
+    const isContextPanelReady = !hasCompanyAccess || isReplyResourcesLoaded
+    const isMessageThreadReady = isConversationListReady
 
-    const showConversationSkeleton = !isInboxReady || isLoadingMessages
+    const showConversationSkeleton = !isMessageThreadReady || isLoadingMessages
 
     const tRef = useRef(t)
     tRef.current = t
@@ -548,13 +509,26 @@ export default function InboxPage({
     }, [])
 
     useEffect(() => {
+        if (!seededFromServer || !initialData || !initialCompanyId) {
+            return
+        }
+
+        const normalizedCompanyId = String(initialCompanyId)
+        if (!inboxSessionCache.isFresh(normalizedCompanyId)) {
+            inboxSessionCache.seedFromInitialData(normalizedCompanyId, initialData)
+        }
+    }, [initialCompanyId, initialData, seededFromServer])
+
+    useEffect(() => {
         if (!hasCompanyAccess) return
-        void (async () => {
-            const result = await listActiveSurveysAction()
-            if (result.success && result.data) {
-                setSurveys(result.data.surveys)
-            }
-        })()
+        scheduleIdle(() => {
+            void (async () => {
+                const result = await listActiveSurveysAction()
+                if (result.success && result.data) {
+                    setSurveys(result.data.surveys)
+                }
+            })()
+        })
     }, [hasCompanyAccess])
 
     useEffect(() => {
@@ -584,7 +558,9 @@ export default function InboxPage({
         void markInboxConversationReadAction({ conversationId }).catch((error) => {
             console.error("Failed to mark conversation as read", error)
         })
-        void loadSuggestedResponses(conversationId)
+        scheduleIdle(() => {
+            void loadSuggestedResponses(conversationId)
+        })
     }, [bootstrapSnapshot, loadSuggestedResponses])
 
     const applyCachedConversation = useCallback((conversationId: string) => {
@@ -626,7 +602,10 @@ export default function InboxPage({
                 }
                 try {
                     const result = await withServerActionRetry(() =>
-                        getInboxConversationDetailAction({ conversationId }),
+                        getInboxConversationDetailAction({
+                            conversationId,
+                            messageLimit: INBOX_MESSAGES_DEFAULT_PAGE_SIZE,
+                        }),
                     )
                     if (!result.success || !result.data) {
                         throw new Error(result.error || "Unable to load conversation")
@@ -635,8 +614,10 @@ export default function InboxPage({
                     const detail = result.data as ConversationEntity & {
                         assignedTo?: { id: string; name: string } | null
                         activeSurveyResponseId?: string | null
+                        hasMoreOlderMessages?: boolean
                     }
                     setActiveSurveyResponseId(detail.activeSurveyResponseId ?? null)
+                    setHasMoreOlderMessages(Boolean(detail.hasMoreOlderMessages))
 
                     const summaryBase = buildConversationSummary(result.data as ConversationEntity)
                     const summary = { ...summaryBase, unreadCount: 0 }
@@ -676,7 +657,9 @@ export default function InboxPage({
                         }
                     }
 
-                    void loadSuggestedResponses(conversationId)
+                    scheduleIdle(() => {
+                        void loadSuggestedResponses(conversationId)
+                    })
                 } catch (error) {
                     if (!isMountedRef.current) {
                         return
@@ -707,6 +690,50 @@ export default function InboxPage({
         },
         [applyCachedConversation, buildConversationSummary, loadSuggestedResponses],
     )
+
+    const loadOlderMessages = useCallback(async () => {
+        const conversationId = selectedConversationIdRef.current
+        if (!conversationId || isLoadingOlderMessages || !hasMoreOlderMessages) {
+            return
+        }
+
+        const oldestMessage = messagesRef.current[0]
+        if (!oldestMessage) {
+            return
+        }
+
+        const messagesBeforeSentAt =
+            typeof oldestMessage.sentAt === "string"
+                ? oldestMessage.sentAt
+                : oldestMessage.sentAt.toISOString()
+
+        setIsLoadingOlderMessages(true)
+        try {
+            const result = await withServerActionRetry(() =>
+                getInboxConversationDetailAction({
+                    conversationId,
+                    messageLimit: INBOX_MESSAGES_DEFAULT_PAGE_SIZE,
+                    messagesBeforeSentAt,
+                }),
+            )
+
+            if (!result.success || !result.data) {
+                return
+            }
+
+            const olderMessages = (result.data.messages as MessageEntity[]).map(mapMessage)
+            setHasMoreOlderMessages(Boolean(result.data.hasMoreOlderMessages))
+            setMessages((previous) => {
+                const existingIds = new Set(previous.map((message) => message.id))
+                const newMessages = olderMessages.filter((message) => !existingIds.has(message.id))
+                return [...newMessages, ...previous]
+            })
+        } catch (error) {
+            console.error("Failed to load older messages", error)
+        } finally {
+            setIsLoadingOlderMessages(false)
+        }
+    }, [hasMoreOlderMessages, isLoadingOlderMessages])
 
     const loadConversations = useCallback(
         async (searchValue = "", options?: { silent?: boolean; append?: boolean }) => {
@@ -989,7 +1016,7 @@ export default function InboxPage({
 
         const loadReplyResources = async () => {
             try {
-                const result = await getAiTrainingDataAction()
+                const result = await getInboxReplyResourcesAction()
                 if (!isMounted || !result.success || !result.data) {
                     return
                 }
@@ -1125,33 +1152,12 @@ export default function InboxPage({
         }, 300)
     }, [])
 
-    const handleRealtimeConversationsChange = useCallback(() => {
-        scheduleRealtimeConversationsRefresh()
-    }, [scheduleRealtimeConversationsRefresh])
-
-    const handleRealtimeMessagesChange = useCallback(() => {
-        scheduleRealtimeMessagesRefresh()
-    }, [scheduleRealtimeMessagesRefresh])
-
-    const handleRealtimeListenerError = useCallback(() => {
-        scheduleRealtimeConversationsRefresh()
-        scheduleRealtimeMessagesRefresh()
-    }, [scheduleRealtimeConversationsRefresh, scheduleRealtimeMessagesRefresh])
-
-    useInboxRealtime({
-        companyId,
-        conversationId: selectedConversationId,
-        onConversationsChange: handleRealtimeConversationsChange,
-        onMessagesChange: handleRealtimeMessagesChange,
-        onListenerError: handleRealtimeListenerError,
-    })
-
-    useEffect(() => {
-        if (!companyId) {
+    const startBackgroundPolling = useCallback(() => {
+        if (backgroundPollIntervalRef.current) {
             return
         }
 
-        const interval = setInterval(() => {
+        backgroundPollIntervalRef.current = setInterval(() => {
             void (async () => {
                 await loadConversationsRef.current(searchQueryRef.current, { silent: true })
                 const conversationId = selectedConversationIdRef.current
@@ -1160,9 +1166,103 @@ export default function InboxPage({
                 }
             })()
         }, INBOX_BACKGROUND_POLL_MS)
+    }, [])
 
-        return () => clearInterval(interval)
-    }, [companyId])
+    const stopBackgroundPolling = useCallback(() => {
+        if (backgroundPollIntervalRef.current) {
+            clearInterval(backgroundPollIntervalRef.current)
+            backgroundPollIntervalRef.current = null
+        }
+    }, [])
+
+    const handleRealtimeConversationsChange = useCallback(
+        (snapshot: QuerySnapshot<DocumentData>) => {
+            const isFiltered =
+                conversationFilterRef.current !== "all" ||
+                searchQueryRef.current.trim().length > 0 ||
+                selectedConnectionIdsRef.current.length > 0
+
+            if (isFiltered) {
+                scheduleRealtimeConversationsRefresh()
+                return
+            }
+
+            const mapped = sortConversations(
+                snapshot.docs.map((doc) =>
+                    buildConversationSummary(mapRealtimeConversationDoc(doc)),
+                ),
+            )
+
+            setConversations((previous) => {
+                const currentSelectedId = selectedConversationIdRef.current
+                if (!currentSelectedId || mapped.some((item) => item.id === currentSelectedId)) {
+                    return mapped
+                }
+
+                const selectedSummary = previous.find((item) => item.id === currentSelectedId)
+                return selectedSummary ? sortConversations([...mapped, selectedSummary]) : mapped
+            })
+        },
+        [buildConversationSummary, scheduleRealtimeConversationsRefresh],
+    )
+
+    const handleRealtimeMessagesChange = useCallback((snapshot: QuerySnapshot<DocumentData>) => {
+        const conversationId = selectedConversationIdRef.current
+        if (!conversationId) {
+            return
+        }
+
+        const mappedMessages = snapshot.docs.map((doc) => mapMessage(mapRealtimeMessageDoc(doc)))
+        const conversationSummary = conversationsRef.current.find(
+            (conversation) => conversation.id === conversationId,
+        )
+        const cachedSuggestions =
+            messageCacheRef.current.get(conversationId)?.suggestedResponses ?? []
+
+        messageCacheRef.current.set(
+            conversationId,
+            messageCacheRef.current.createEntry(
+                mappedMessages,
+                cachedSuggestions,
+                conversationSummary?.lastMessageAt,
+            ),
+        )
+
+        if (selectedConversationIdRef.current === conversationId) {
+            setMessages(mappedMessages)
+        }
+    }, [])
+
+    const handleRealtimeListenerConnected = useCallback(() => {
+        realtimeListenersHealthyRef.current = true
+        stopBackgroundPolling()
+    }, [stopBackgroundPolling])
+
+    const handleRealtimeListenerError = useCallback(() => {
+        realtimeListenersHealthyRef.current = false
+        startBackgroundPolling()
+        scheduleRealtimeConversationsRefresh()
+        scheduleRealtimeMessagesRefresh()
+    }, [
+        scheduleRealtimeConversationsRefresh,
+        scheduleRealtimeMessagesRefresh,
+        startBackgroundPolling,
+    ])
+
+    useInboxRealtime({
+        companyId,
+        conversationId: selectedConversationId,
+        onConversationsChange: handleRealtimeConversationsChange,
+        onMessagesChange: handleRealtimeMessagesChange,
+        onListenerError: handleRealtimeListenerError,
+        onListenerConnected: handleRealtimeListenerConnected,
+    })
+
+    useEffect(() => {
+        return () => {
+            stopBackgroundPolling()
+        }
+    }, [stopBackgroundPolling])
 
     const handleSelectConversation = useCallback(
         async (conversationId: string) => {
@@ -1174,6 +1274,7 @@ export default function InboxPage({
             setSelectedConversationId(conversationId)
             selectedConversationIdRef.current = conversationId
             setShowConversationsList(false)
+            setHasMoreOlderMessages(false)
 
             const hasCachedMessages = applyCachedConversation(conversationId)
             if (!hasCachedMessages) {
@@ -1634,7 +1735,7 @@ export default function InboxPage({
         [fetchConversationDetail, selectedConversationId, t, user?.language],
     )
 
-    const contextPanelElement = !isInboxReady ? (
+    const contextPanelElement = !isContextPanelReady ? (
         <ContextPanelSkeleton />
     ) : (
         <ContextPanel
@@ -1658,8 +1759,6 @@ export default function InboxPage({
         />
     )
 
-    const renderMessageSkeleton = () => <MessageThreadSkeleton />
-
     const renderConversationHeaderSkeleton = () => (
         <div className="flex items-center gap-3 min-w-0 flex-1">
             <div className="w-9 h-9 rounded-full bg-muted animate-pulse flex-shrink-0" />
@@ -1671,8 +1770,8 @@ export default function InboxPage({
     )
 
     const renderMessages = () => {
-        if (!isInboxReady) {
-            return renderMessageSkeleton()
+        if (!isMessageThreadReady) {
+            return <MessageThreadSkeleton />
         }
 
         if (!selectedConversationId) {
@@ -1690,7 +1789,7 @@ export default function InboxPage({
         }
 
         if (showConversationSkeleton) {
-            return renderMessageSkeleton()
+            return <MessageThreadSkeleton />
         }
 
         if (!messages.length) {
@@ -1708,115 +1807,15 @@ export default function InboxPage({
         }
 
         return (
-            <div className="px-4 py-5 space-y-3">
-                {messages.map((message) => {
-                    const sentBy = message.sentBy
-                    const isCustomer = sentBy === "customer"
-                    const isBot = sentBy === "robot"
-                    const isAgent = sentBy === "user"
-                    const isSystem = sentBy === "system"
-                    const isOutbound = !isCustomer
-                    const shouldShowStatus =
-                        isOutbound &&
-                        message.status &&
-                        (message.status === "delivered" ||
-                            message.status === "read" ||
-                            (isBot && (message.status === "pending" || message.status === "failed")))
-                    const isBotFailed = isBot && message.status === "failed"
-                    const isBotPending = isBot && message.status === "pending"
-
-                    const avatarFallbackClass = cn(
-                        "text-xs font-semibold",
-                        isCustomer && "bg-muted text-muted-foreground",
-                        isAgent && "bg-agent/10 text-agent",
-                        isBot && "bg-muted text-primary",
-                        isSystem && "bg-muted text-muted-foreground",
-                    )
-
-                    const bubbleClass = cn(
-                        "max-w-[80%] md:max-w-[70%] rounded-lg px-3 py-2 text-sm",
-                        isCustomer && "bg-card border border-border text-foreground",
-                        isAgent && "bg-agent/10 border border-agent/20 text-foreground",
-                        isBot && "bg-primary/5 border border-primary/20 text-foreground",
-                        isSystem && "bg-muted/60 border border-border/60 text-muted-foreground italic",
-                    )
-
-                    const metaClass = cn(
-                        "flex items-center gap-1.5 mt-2 text-[11px]",
-                        isCustomer && "text-muted-foreground",
-                        isAgent && "text-agent/70",
-                        isBot && "text-primary/60",
-                        isSystem && "text-muted-foreground",
-                    )
-
-                    return (
-                        <div
-                            key={message.id}
-                            className={cn("group flex items-end gap-2", isOutbound && "flex-row-reverse")}
-                        >
-                            <Avatar className="w-8 h-8 flex-shrink-0 border border-border/70">
-                                <AvatarFallback className={avatarFallbackClass}>
-                                    {isBot ? (
-                                        <Bot className="w-4 h-4" aria-hidden="true" />
-                                    ) : (
-                                        <User className="w-4 h-4" aria-hidden="true" />
-                                    )}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className={cn("flex min-w-0 items-end gap-1", isOutbound && "flex-row-reverse")}>
-                                <div className={bubbleClass}>
-                                    {message.quotedMessage && (
-                                        <MessageQuoteBlock
-                                            quote={message.quotedMessage}
-                                            senderLabel={getQuoteSenderLabel(message.quotedMessage.senderType)}
-                                            accentClassName={
-                                                isCustomer ? "border-muted-foreground/50" : "border-agent/60"
-                                            }
-                                            labelClassName={
-                                                isCustomer ? "text-muted-foreground" : "text-agent"
-                                            }
-                                        />
-                                    )}
-                                    <p>{message.content}</p>
-                                    <div className={metaClass}>
-                                        <Clock className="w-3 h-3" aria-hidden="true" />
-                                        <span>{message.sentAtLabel}</span>
-                                        {shouldShowStatus && message.status === "delivered" && (
-                                            <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />
-                                        )}
-                                        {shouldShowStatus && message.status === "read" && (
-                                            <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />
-                                        )}
-                                        {isBotPending && (
-                                            <span className="italic">{t("messages.botPending")}</span>
-                                        )}
-                                        {isBotFailed && (
-                                            <span className="flex items-center gap-1 text-destructive">
-                                                <AlertTriangle className="w-3 h-3" aria-hidden="true" />
-                                                {t("messages.botFailed")}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                                {!isSystem && selectedConversationId && (
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-7 w-7 shrink-0 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
-                                        onClick={() => handleReplyToMessage(message)}
-                                        title={t("messages.reply")}
-                                        aria-label={t("messages.reply")}
-                                    >
-                                        <CornerDownLeft className="h-3.5 w-3.5 text-muted-foreground" />
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-                    )
-                })}
-                <div ref={messagesEndRef} />
-            </div>
+            <InboxMessageThread
+                messages={messages}
+                selectedConversationId={selectedConversationId}
+                onReplyToMessage={handleReplyToMessage}
+                onLoadOlderMessages={() => void loadOlderMessages()}
+                hasMoreOlderMessages={hasMoreOlderMessages}
+                isLoadingOlderMessages={isLoadingOlderMessages}
+                messagesEndRef={messagesEndRef}
+            />
         )
     }
 
@@ -2008,7 +2007,7 @@ export default function InboxPage({
                                     }}
                                     className="flex-1 min-h-[48px] max-h-[120px] resize-none text-sm bg-background border-border focus-visible:ring-1 focus-visible:ring-primary pr-9"
                                     rows={2}
-                                    disabled={!selectedConversationId || !isInboxReady}
+                                    disabled={!selectedConversationId || !isComposerReady}
                                     aria-label={
                                         selectedConversation
                                             ? t("typeMessagePlaceholder")
@@ -2027,7 +2026,7 @@ export default function InboxPage({
                                     !messageInput.trim() ||
                                     !selectedConversationId ||
                                     isSendingMessage ||
-                                    !isInboxReady
+                                    !isComposerReady
                                 }
                                 size="icon"
                                 className="bg-primary hover:bg-primary/90 text-primary-foreground h-[48px] w-[48px] flex-shrink-0 disabled:opacity-50"

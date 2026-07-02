@@ -6,10 +6,11 @@ import {
   getInboxConnectionsAction,
   getInboxConversationDetailAction,
   getInboxConversationsAction,
+  getInboxReplyResourcesAction,
   type InboxConnectionView,
 } from "@/components/server-actions/inbox"
-import { getAiTrainingDataAction } from "@/components/server-actions/ai-training"
 import { INBOX_CONVERSATIONS_DEFAULT_PAGE_SIZE } from "@/lib/inbox/conversation-list-pagination"
+import { INBOX_MESSAGES_DEFAULT_PAGE_SIZE } from "@/lib/inbox/message-pagination"
 import {
   mapConversationSummary,
   mapMessage,
@@ -32,6 +33,7 @@ export type InboxInitialData = {
   quickAnswers: QuickAnswerView[]
   templates: TemplateView[]
   loadError: string | null
+  hasMoreOlderMessages?: boolean
 }
 
 const mapInboxQuickAnswers = (items: QuickAnswerView[]): QuickAnswerView[] =>
@@ -66,6 +68,7 @@ export const loadInboxInitialData = async (): Promise<InboxInitialData> => {
     quickAnswers: [],
     templates: [],
     loadError: null,
+    hasMoreOlderMessages: false,
   }
 
   const [conversationsResult, connectionsResult, trainingResult] = await Promise.all([
@@ -74,7 +77,7 @@ export const loadInboxInitialData = async (): Promise<InboxInitialData> => {
       includeCounts: true,
     }),
     getInboxConnectionsAction(),
-    getAiTrainingDataAction(),
+    getInboxReplyResourcesAction(),
   ])
 
   if (!conversationsResult.success || !conversationsResult.data) {
@@ -94,15 +97,18 @@ export const loadInboxInitialData = async (): Promise<InboxInitialData> => {
 
   let selectedConversationId: string | null = null
   let messages: InboxMessage[] = []
+  let hasMoreOlderMessages = false
 
   if (conversations.length > 0) {
     selectedConversationId = conversations[0]!.id
     const detailResult = await getInboxConversationDetailAction({
       conversationId: selectedConversationId,
+      messageLimit: INBOX_MESSAGES_DEFAULT_PAGE_SIZE,
     })
 
     if (detailResult.success && detailResult.data) {
       messages = (detailResult.data.messages as MessageEntity[]).map(mapMessage)
+      hasMoreOlderMessages = Boolean(detailResult.data.hasMoreOlderMessages)
       const summary = mapConversationSummary(detailResult.data as ConversationEntity, fallbackName)
       conversations = sortConversations(
         conversations.map((conversation) =>
@@ -144,5 +150,6 @@ export const loadInboxInitialData = async (): Promise<InboxInitialData> => {
     quickAnswers,
     templates,
     loadError: null,
+    hasMoreOlderMessages,
   }
 }

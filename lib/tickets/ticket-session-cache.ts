@@ -1,16 +1,18 @@
 import type { TicketTypeFilter } from "@/components/tickets/ticket-list-panel"
 import { TicketDetailCache } from "@/lib/tickets/ticket-detail-cache"
 import { DEFAULT_TICKET_STATUS_FILTERS } from "@/lib/tickets/ticket-status-filters"
-import type { Ticket, TicketStatus } from "@/lib/types/ticket"
+import type { TicketListItem, TicketStatus } from "@/lib/types/ticket"
 
 export type TicketSessionSnapshot = {
   companyId: string
-  tickets: Ticket[]
+  tickets: TicketListItem[]
   selectedTicketId: string | null
   searchQuery: string
   statusFilters: TicketStatus[]
   typeFilter: TicketTypeFilter
   showDesktopList: boolean
+  hasMore: boolean
+  nextCursor: string | null
   updatedAt: number
 }
 
@@ -52,12 +54,14 @@ class TicketSessionCacheStore {
   seedFromInitialData(
     companyId: string,
     data: {
-      tickets: Ticket[]
+      tickets: TicketListItem[]
       selectedTicketId?: string | null
       searchQuery?: string
       statusFilters?: TicketStatus[]
       typeFilter?: TicketTypeFilter
       showDesktopList?: boolean
+      hasMore?: boolean
+      nextCursor?: string | null
     },
   ) {
     this.save({
@@ -68,6 +72,8 @@ class TicketSessionCacheStore {
       statusFilters: data.statusFilters ?? DEFAULT_TICKET_STATUS_FILTERS,
       typeFilter: data.typeFilter ?? "all",
       showDesktopList: data.showDesktopList ?? true,
+      hasMore: data.hasMore ?? false,
+      nextCursor: data.nextCursor ?? null,
     })
   }
 

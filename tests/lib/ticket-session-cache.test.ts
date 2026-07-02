@@ -9,15 +9,9 @@ import { DEFAULT_TICKET_STATUS_FILTERS } from "../../lib/tickets/ticket-status-f
 const sampleTicket = {
   id: "ticket-1",
   ticketNumber: "TKT-001",
-  ticketSequence: 1,
-  ticketScopeCode: "default",
   title: "Printer issue",
-  description: "Printer is offline",
-  type: "support" as const,
   status: "open" as const,
   priority: "medium" as const,
-  createdById: "user-1",
-  createdAt: "2026-01-01T00:00:00.000Z",
   updatedAt: "2026-01-01T00:00:00.000Z",
 }
 
@@ -45,6 +39,8 @@ test("session cache persists and restores tickets snapshot", () => {
     statusFilters: DEFAULT_TICKET_STATUS_FILTERS,
     typeFilter: "support",
     showDesktopList: false,
+    hasMore: true,
+    nextCursor: "cursor-1",
   })
 
   const bootstrap = resolveTicketsBootstrap("company-1")
@@ -67,6 +63,8 @@ test("session cache clears per company", () => {
     statusFilters: DEFAULT_TICKET_STATUS_FILTERS,
     typeFilter: "all",
     showDesktopList: true,
+    hasMore: false,
+    nextCursor: null,
   })
 
   ticketSessionCache.save({
@@ -77,6 +75,8 @@ test("session cache clears per company", () => {
     statusFilters: DEFAULT_TICKET_STATUS_FILTERS,
     typeFilter: "all",
     showDesktopList: true,
+    hasMore: false,
+    nextCursor: null,
   })
 
   ticketSessionCache.clear("company-1")

@@ -33,6 +33,11 @@ import {
   encodeInboxConversationCursor,
   type InboxConversationListFilter,
 } from "@/lib/inbox/conversation-list-pagination"
+import {
+  INBOX_MESSAGES_DEFAULT_PAGE_SIZE,
+  INBOX_MESSAGES_MAX_PAGE_SIZE,
+} from "@/lib/inbox/message-pagination"
+import { listInboxReplyResources } from "@/lib/firebase/services/ai-training-service"
 
 const companyIdSchema = z.object({
   companyId: z.string().optional(),
@@ -94,11 +99,19 @@ export const getInboxConversationsAction = async (
 
 const getInboxConversationDetailSchema = z.object({
   conversationId: z.string().min(1),
+  messageLimit: z.number().int().min(1).max(INBOX_MESSAGES_MAX_PAGE_SIZE).optional(),
+  messagesBeforeSentAt: z.string().min(1).optional(),
 })
 
 export const getInboxConversationDetailAction = async (
   input: z.infer<typeof getInboxConversationDetailSchema>,
-): Promise<BaseActionResponse<SerializedInboxConversationDetail>> =>
+): Promise<
+  BaseActionResponse<
+    SerializedInboxConversationDetail & {
+      hasMoreOlderMessages?: boolean
+    }
+  >
+> =>
   handleAction(async () => {
     const payload = getInboxConversationDetailSchema.parse(input)
     const { companyId } = await resolveCompanyContext()
@@ -106,13 +119,23 @@ export const getInboxConversationDetailAction = async (
     const conversation = await getInboxConversationDetail({
       companyId,
       conversationId: payload.conversationId,
+      messageLimit: payload.messageLimit,
+      messagesBeforeSentAt: payload.messagesBeforeSentAt,
     })
 
     if (!conversation) {
       return { success: false, error: "Conversation not found" }
     }
 
-    return { success: true, data: serializeInboxConversationDetail(conversation) }
+    const { hasMoreOlderMessages, ...detail } = conversation
+
+    return {
+      success: true,
+      data: {
+        ...serializeInboxConversationDetail(detail),
+        hasMoreOlderMessages,
+      },
+    }
   })
 
 const baseCustomerSchema = z.object({
@@ -385,6 +408,15 @@ export const updateInboxConversationMetadataAction = async (
       success: true,
       data: { conversation: serializeInboxConversation(await conversation) },
     }
+  })
+
+export const getInboxReplyResourcesAction = async (): Promise<
+  BaseActionResponse<Awaited<ReturnType<typeof listInboxReplyResources>>>
+> =>
+  handleAction(async () => {
+    const { companyId } = await resolveCompanyContext()
+    const data = await listInboxReplyResources(companyId)
+    return { success: true, data }
   })
 
 const getSuggestedResponsesSchema = z.object({

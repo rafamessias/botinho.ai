@@ -524,6 +524,8 @@
             "reply": "Responder",
             "replyingTo": "Respondendo a {name}",
             "cancelReply": "Cancelar resposta",
+            "loadingOlder": "Carregando mensagens anteriores…",
+            "scrollForOlder": "Role para cima para ver mensagens anteriores",
             "quoteSender": {
                 "customer": "Cliente",
                 "agent": "Você",
@@ -3592,6 +3594,7 @@
             "type": "Tipo de bloqueio",
             "start": "Início",
             "end": "Fim",
+            "selectDateTime": "Selecione data e hora",
             "reason": "Motivo"
         },
         "services": {

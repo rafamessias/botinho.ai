@@ -1,4 +1,4 @@
-import { FieldValue, Timestamp, type Query } from "firebase-admin/firestore"
+import { FieldPath, FieldValue, Timestamp, type Query } from "firebase-admin/firestore"
 import { adminDb } from "@/lib/firebase/admin"
 import { collections, companySubcollections, ticketSubcollections } from "@/lib/firebase/collections"
 import {
@@ -37,6 +37,16 @@ const toDate = (value: Timestamp) => value.toDate()
 type ActorContext = {
   userId: string
   userName?: string
+}
+
+export type TicketListItemRecord = {
+  id: string
+  ticketNumber: string
+  title: string
+  status: TicketStatus
+  priority: TicketPriority
+  customerName: string | null
+  updatedAt: Date
 }
 
 export type TicketRecord = {
@@ -103,6 +113,19 @@ const mapTicket = (id: string, data: FirestoreTicket): TicketRecord => ({
   createdAt: toDate(data.createdAt),
   updatedAt: toDate(data.updatedAt),
 })
+
+const mapTicketRecordToListItem = (ticket: TicketRecord): TicketListItemRecord => ({
+  id: ticket.id,
+  ticketNumber: ticket.ticketNumber,
+  title: ticket.title,
+  status: ticket.status,
+  priority: ticket.priority,
+  customerName: ticket.customerName,
+  updatedAt: ticket.updatedAt,
+})
+
+const mapTicketListItem = (id: string, data: FirestoreTicket): TicketListItemRecord =>
+  mapTicketRecordToListItem(mapTicket(id, data))
 
 const mapComment = (ticketId: string, id: string, data: FirestoreTicketComment): TicketCommentRecord => ({
   id,
@@ -271,7 +294,13 @@ export const searchTicketsForAgent = async (params: {
     pageSize: limit,
   })
 
-  return result.tickets.map(mapTicketForAgent)
+  const fullTickets = await Promise.all(
+    result.tickets.map((item) => getTicket(params.companyId, item.id)),
+  )
+
+  return fullTickets
+    .filter((ticket): ticket is TicketRecord => ticket != null)
+    .map(mapTicketForAgent)
 }
 
 const ticketMatchesSearch = (ticket: TicketRecord, search: string) => {
@@ -300,7 +329,9 @@ const buildTicketsListQuery = (
   companyId: string,
   params: { statuses?: TicketStatus[]; type?: TicketType },
 ) => {
-  let query = ticketsRef(companyId).orderBy("updatedAt", "desc")
+  let query = ticketsRef(companyId)
+    .orderBy("updatedAt", "desc")
+    .orderBy(FieldPath.documentId(), "desc")
 
   if (params.statuses && params.statuses.length > 0) {
     if (params.statuses.length === 1) {
@@ -317,21 +348,17 @@ const buildTicketsListQuery = (
   return query
 }
 
-const applyTicketListCursor = async (
-  query: Query,
-  companyId: string,
-  cursor: TicketListCursor | null,
-) => {
+const applyTicketListCursor = (query: Query, cursor: TicketListCursor | null) => {
   if (!cursor) {
     return query
   }
 
-  const cursorSnap = await ticketsRef(companyId).doc(cursor.id).get()
-  if (!cursorSnap.exists) {
+  const updatedAt = new Date(cursor.updatedAt)
+  if (Number.isNaN(updatedAt.getTime())) {
     return query
   }
 
-  return query.startAfter(cursorSnap)
+  return query.startAfter(Timestamp.fromDate(updatedAt), cursor.id)
 }
 
 const listTicketsDirect = async (params: {
@@ -345,12 +372,12 @@ const listTicketsDirect = async (params: {
     statuses: params.statuses,
     type: params.type,
   })
-  query = await applyTicketListCursor(query, params.companyId, params.cursor ?? null)
+  query = applyTicketListCursor(query, params.cursor ?? null)
 
   const snapshot = await query.limit(params.pageSize + 1).get()
   const hasMore = snapshot.docs.length > params.pageSize
   const pageDocs = hasMore ? snapshot.docs.slice(0, params.pageSize) : snapshot.docs
-  const tickets = pageDocs.map((doc) => mapTicket(doc.id, doc.data() as FirestoreTicket))
+  const tickets = pageDocs.map((doc) => mapTicketListItem(doc.id, doc.data() as FirestoreTicket))
   const lastDoc = pageDocs.at(-1)
   const nextCursor = lastDoc
     ? toTicketListCursor(lastDoc.id, toDate((lastDoc.data() as FirestoreTicket).updatedAt))
@@ -374,7 +401,7 @@ const listTicketsScanned = async (params: {
   pageSize: number
   cursor?: TicketListCursor | null
 }) => {
-  const matched: TicketRecord[] = []
+  const matched: TicketListItemRecord[] = []
   let cursor = params.cursor ?? null
   let batchHasMore = false
   let nextCursor: TicketListCursor | null = null
@@ -387,7 +414,7 @@ const listTicketsScanned = async (params: {
       statuses: params.statuses,
       type: params.type,
     })
-    query = await applyTicketListCursor(query, params.companyId, cursor)
+    query = applyTicketListCursor(query, cursor)
 
     const snapshot = await query.limit(TICKETS_SEARCH_SCAN_BATCH + 1).get()
     if (snapshot.empty) {
@@ -404,7 +431,7 @@ const listTicketsScanned = async (params: {
         continue
       }
 
-      matched.push(ticket)
+      matched.push(mapTicketRecordToListItem(ticket))
       if (matched.length >= params.pageSize) {
         break
       }
@@ -446,7 +473,7 @@ export const listTickets = async (params: {
   pageSize?: number
   cursor?: TicketListCursor | null
 }): Promise<{
-  tickets: TicketRecord[]
+  tickets: TicketListItemRecord[]
   pagination: { pageSize: number; hasMore: boolean; nextCursor: TicketListCursor | null }
 }> => {
   const pageSize = Math.min(params.pageSize ?? TICKETS_DEFAULT_PAGE_SIZE, TICKETS_MAX_PAGE_SIZE)
@@ -488,8 +515,13 @@ export const listTicketComments = async (
   companyId: string,
   ticketId: string,
 ): Promise<TicketCommentRecord[]> => {
-  const snap = await ticketCommentsRef(companyId, ticketId).orderBy("createdAt", "asc").get()
-  return snap.docs.map((doc) => mapComment(ticketId, doc.id, doc.data() as FirestoreTicketComment))
+  const snap = await ticketCommentsRef(companyId, ticketId)
+    .orderBy("createdAt", "desc")
+    .limit(50)
+    .get()
+  return snap.docs
+    .map((doc) => mapComment(ticketId, doc.id, doc.data() as FirestoreTicketComment))
+    .reverse()
 }
 
 export const listTicketActivities = async (

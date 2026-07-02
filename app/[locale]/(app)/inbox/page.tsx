@@ -1,7 +1,8 @@
 import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
 import { AppShell } from "@/components/app-shell"
-import Inbox from "@/components/inbox/inbox-page"
+import { InboxPageLoader } from "@/components/inbox/inbox-page-loader"
+import { InboxPageSkeleton } from "@/components/inbox/inbox-page-skeleton"
 import { getBotinhoSession } from "@/lib/botinho-auth"
 import { enforceAppAccess } from "@/lib/onboarding/enforce-app-access"
 
@@ -13,8 +14,8 @@ export default async function InboxPage() {
 
   return (
     <AppShell title={t("title")} variant="fullBleed">
-      <Suspense fallback={null}>
-        <Inbox
+      <Suspense fallback={<InboxPageSkeleton />}>
+        <InboxPageLoader
           hasCompanyAccess={hasCompanyAccess}
           initialCompanyId={session.companyId ?? null}
         />

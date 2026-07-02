@@ -5,6 +5,7 @@ import type {
   Ticket,
   TicketActivity,
   TicketComment,
+  TicketListItem,
   TicketPriority,
   TicketStatus,
   TicketType,
@@ -13,12 +14,14 @@ import { BaseActionResponse, handleAction, resolveCompanyContext } from "./utils
 import {
   addTicketComment,
   createTicket,
+  getTicket,
   listTicketActivities,
   listTicketComments,
   listTickets,
   updateTicket,
   type TicketActivityRecord,
   type TicketCommentRecord,
+  type TicketListItemRecord,
   type TicketRecord,
 } from "@/lib/firebase/services/ticket-service"
 import {
@@ -56,6 +59,16 @@ const mapTicketRecord = (record: TicketRecord): Ticket => ({
   createdById: record.createdById,
   createdByName: record.createdByName ?? undefined,
   createdAt: record.createdAt.toISOString(),
+  updatedAt: record.updatedAt.toISOString(),
+})
+
+const mapTicketListItemRecord = (record: TicketListItemRecord): TicketListItem => ({
+  id: record.id,
+  ticketNumber: record.ticketNumber,
+  title: record.title,
+  status: record.status,
+  priority: record.priority,
+  customerName: record.customerName ?? undefined,
   updatedAt: record.updatedAt.toISOString(),
 })
 
@@ -109,7 +122,7 @@ export const listTicketsAction = async (
   input?: z.infer<typeof listTicketsSchema>,
 ): Promise<
   BaseActionResponse<{
-    tickets: Ticket[]
+    tickets: TicketListItem[]
     pagination: {
       pageSize: number
       hasMore: boolean
@@ -141,7 +154,7 @@ export const listTicketsAction = async (
     return {
       success: true,
       data: {
-        tickets: result.tickets.map(mapTicketRecord),
+        tickets: result.tickets.map(mapTicketListItemRecord),
         pagination: {
           pageSize: result.pagination.pageSize,
           hasMore: result.pagination.hasMore,
@@ -150,6 +163,23 @@ export const listTicketsAction = async (
             : null,
         },
       },
+    }
+  })
+
+export const getTicketAction = async (
+  input: z.infer<typeof ticketIdSchema>,
+): Promise<BaseActionResponse<{ ticket: Ticket }>> =>
+  handleAction(async () => {
+    const payload = ticketIdSchema.parse(input)
+    const { companyId } = await resolveCompanyContext()
+    const ticket = await getTicket(companyId, payload.ticketId)
+    if (!ticket) {
+      throw new Error("Ticket not found")
+    }
+
+    return {
+      success: true,
+      data: { ticket: mapTicketRecord(ticket) },
     }
   })
 

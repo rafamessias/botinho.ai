@@ -18,12 +18,12 @@ import {
 } from "@/components/ui/select"
 import { ALL_TICKET_STATUSES } from "@/lib/tickets/ticket-status-filters"
 import { cn } from "@/lib/utils"
-import type { Ticket, TicketStatus, TicketType } from "@/lib/types/ticket"
+import type { TicketListItem, TicketStatus, TicketType } from "@/lib/types/ticket"
 
 export type TicketTypeFilter = TicketType | "all"
 
 type TicketListPanelProps = {
-  tickets: Ticket[]
+  tickets: TicketListItem[]
   selectedTicketId: string | null
   searchQuery: string
   onSearchChange: (value: string) => void
@@ -48,7 +48,7 @@ const statusBadgeVariant: Record<TicketStatus, "default" | "secondary" | "outlin
   closed: "outline",
 }
 
-const priorityBadgeVariant: Record<Ticket["priority"], "default" | "secondary" | "outline" | "destructive"> = {
+const priorityBadgeVariant: Record<TicketListItem["priority"], "default" | "secondary" | "outline" | "destructive"> = {
   low: "outline",
   medium: "secondary",
   high: "destructive",

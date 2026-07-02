@@ -4,7 +4,7 @@ import { AppShell } from "@/components/app-shell"
 import TicketsPage from "@/components/tickets/tickets-page"
 import { listTicketsAction } from "@/components/server-actions/tickets"
 import { getBotinhoSession } from "@/lib/botinho-auth"
-import type { Ticket } from "@/lib/types/ticket"
+import type { TicketListItem } from "@/lib/types/ticket"
 import { enforceAppAccess } from "@/lib/onboarding/enforce-app-access"
 import { DEFAULT_TICKET_STATUS_FILTERS } from "@/lib/tickets/ticket-status-filters"
 
@@ -12,11 +12,10 @@ export const dynamic = "force-dynamic"
 
 export default async function TicketsRoute() {
   await enforceAppAccess()
-  const t = await getTranslations("Tickets")
-  const session = await getBotinhoSession()
+  const [t, session] = await Promise.all([getTranslations("Tickets"), getBotinhoSession()])
   const hasCompanyAccess = session.ok && Boolean(session.companyId)
 
-  let initialTickets: Ticket[] = []
+  let initialTickets: TicketListItem[] = []
   let initialHasMore = false
   let initialNextCursor: string | null = null
   let initialLoadError: string | null = null

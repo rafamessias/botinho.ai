@@ -1,15 +1,18 @@
+import { cache } from "react"
 import { FieldValue } from "firebase-admin/firestore"
 import { adminDb } from "@/lib/firebase/admin"
 import { collections } from "@/lib/firebase/collections"
 import type { FirestoreUser, OnboardingStatus, OnboardingStep, UserLanguage, UserTheme } from "@/lib/firebase/types"
 
-export const getUserProfile = async (uid: string): Promise<FirestoreUser | null> => {
+const loadUserProfile = cache(async (uid: string): Promise<FirestoreUser | null> => {
   const snap = await adminDb.collection(collections.users).doc(uid).get()
   if (!snap.exists) {
     return null
   }
   return snap.data() as FirestoreUser
-}
+})
+
+export const getUserProfile = (uid: string): Promise<FirestoreUser | null> => loadUserProfile(uid)
 
 export const createUserProfile = async (params: {
   uid: string

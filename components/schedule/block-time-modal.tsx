@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import { DateTimePicker } from "@/components/ui/date-time-picker"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -34,13 +34,7 @@ type BlockTimeModalProps = {
   onSaved: () => void
 }
 
-const toLocalInput = (value?: string) => {
-  if (!value) return ""
-  const date = new Date(value)
-  const offset = date.getTimezoneOffset()
-  const local = new Date(date.getTime() - offset * 60_000)
-  return local.toISOString().slice(0, 16)
-}
+const parseDate = (value?: string) => (value ? new Date(value) : undefined)
 
 export const BlockTimeModal = ({
   open,
@@ -53,8 +47,8 @@ export const BlockTimeModal = ({
   const t = useTranslations("Schedule")
   const [assigneeId, setAssigneeId] = useState(defaultAssigneeId ?? profiles[0]?.memberUid ?? "")
   const [type, setType] = useState<ScheduleBlock["type"]>("blocked")
-  const [startAt, setStartAt] = useState(toLocalInput(defaultStartAt))
-  const [endAt, setEndAt] = useState("")
+  const [startAt, setStartAt] = useState<Date | undefined>(parseDate(defaultStartAt))
+  const [endAt, setEndAt] = useState<Date | undefined>()
   const [reason, setReason] = useState("")
   const [isSaving, setIsSaving] = useState(false)
 
@@ -62,13 +56,13 @@ export const BlockTimeModal = ({
     if (!open) return
     setAssigneeId(defaultAssigneeId ?? profiles[0]?.memberUid ?? "")
     setType("blocked")
-    setStartAt(toLocalInput(defaultStartAt))
+    setStartAt(parseDate(defaultStartAt))
     if (defaultStartAt) {
       const end = new Date(defaultStartAt)
       end.setHours(end.getHours() + 1)
-      setEndAt(toLocalInput(end.toISOString()))
+      setEndAt(end)
     } else {
-      setEndAt("")
+      setEndAt(undefined)
     }
     setReason("")
   }, [defaultAssigneeId, defaultStartAt, open, profiles])
@@ -84,8 +78,8 @@ export const BlockTimeModal = ({
       const result = await createScheduleBlockAction({
         assigneeId,
         type,
-        startAt: new Date(startAt).toISOString(),
-        endAt: new Date(endAt).toISOString(),
+        startAt: startAt.toISOString(),
+        endAt: endAt.toISOString(),
         reason: reason || undefined,
       })
       if (!result.success) throw new Error(result.error)
@@ -142,11 +136,21 @@ export const BlockTimeModal = ({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>{t("blockModal.start")}</Label>
-              <Input type="datetime-local" value={startAt} onChange={(event) => setStartAt(event.target.value)} />
+              <DateTimePicker
+                value={startAt}
+                onChange={setStartAt}
+                placeholder={t("blockModal.selectDateTime")}
+                disabled={isSaving}
+              />
             </div>
             <div className="space-y-2">
               <Label>{t("blockModal.end")}</Label>
-              <Input type="datetime-local" value={endAt} onChange={(event) => setEndAt(event.target.value)} />
+              <DateTimePicker
+                value={endAt}
+                onChange={setEndAt}
+                placeholder={t("blockModal.selectDateTime")}
+                disabled={isSaving}
+              />
             </div>
           </div>
 

@@ -10,15 +10,35 @@ const knowledgeRef = (companyId: string) => companyRef(companyId).collection(com
 const quickAnswersRef = (companyId: string) => companyRef(companyId).collection(companySubcollections.quickAnswers)
 const templatesRef = (companyId: string) => companyRef(companyId).collection(companySubcollections.templates)
 
-export const listAiTrainingData = async (companyId: string) => {
-  const [knowledgeSnap, quickSnap, templateSnap] = await Promise.all([
-    knowledgeRef(companyId).orderBy("createdAt", "desc").get(),
-    quickAnswersRef(companyId).orderBy("createdAt", "desc").get(),
-    templatesRef(companyId).orderBy("createdAt", "desc").get(),
-  ])
+const mapKnowledgeDocs = (docs: FirebaseFirestore.QueryDocumentSnapshot[]) =>
+  docs.map((doc) => {
+    const data = doc.data()
+    return {
+      id: doc.id,
+      type: data.type as KnowledgeItemType,
+      title: data.title as string,
+      content: data.content as string,
+      urlSummary: data.urlSummary as string | undefined,
+      createdAt: toDate(data.createdAt as Timestamp),
+      updatedAt: toDate(data.updatedAt as Timestamp),
+    }
+  })
 
-  const templates = await Promise.all(
-    templateSnap.docs.map(async (doc) => {
+const mapQuickAnswerDocs = (docs: FirebaseFirestore.QueryDocumentSnapshot[]) =>
+  docs.map((doc) => {
+    const data = doc.data()
+    return {
+      id: doc.id,
+      title: data.title as string,
+      content: data.content as string,
+      createdAt: toDate(data.createdAt as Timestamp),
+      updatedAt: toDate(data.updatedAt as Timestamp),
+    }
+  })
+
+const mapTemplateDocs = async (docs: FirebaseFirestore.QueryDocumentSnapshot[]) =>
+  Promise.all(
+    docs.map(async (doc) => {
       const optionsSnap = await doc.ref.collection("options").orderBy("createdAt", "asc").get()
       const data = doc.data()
       return {
@@ -37,30 +57,29 @@ export const listAiTrainingData = async (companyId: string) => {
     }),
   )
 
+export const listAiTrainingData = async (companyId: string) => {
+  const [knowledgeSnap, quickSnap, templateSnap] = await Promise.all([
+    knowledgeRef(companyId).orderBy("createdAt", "desc").get(),
+    quickAnswersRef(companyId).orderBy("createdAt", "desc").get(),
+    templatesRef(companyId).orderBy("createdAt", "desc").get(),
+  ])
+
   return {
-    knowledgeBase: knowledgeSnap.docs.map((doc) => {
-      const data = doc.data()
-      return {
-        id: doc.id,
-        type: data.type as KnowledgeItemType,
-        title: data.title as string,
-        content: data.content as string,
-        urlSummary: data.urlSummary as string | undefined,
-        createdAt: toDate(data.createdAt as Timestamp),
-        updatedAt: toDate(data.updatedAt as Timestamp),
-      }
-    }),
-    quickAnswers: quickSnap.docs.map((doc) => {
-      const data = doc.data()
-      return {
-        id: doc.id,
-        title: data.title as string,
-        content: data.content as string,
-        createdAt: toDate(data.createdAt as Timestamp),
-        updatedAt: toDate(data.updatedAt as Timestamp),
-      }
-    }),
-    templates,
+    knowledgeBase: mapKnowledgeDocs(knowledgeSnap.docs),
+    quickAnswers: mapQuickAnswerDocs(quickSnap.docs),
+    templates: await mapTemplateDocs(templateSnap.docs),
+  }
+}
+
+export const listInboxReplyResources = async (companyId: string) => {
+  const [quickSnap, templateSnap] = await Promise.all([
+    quickAnswersRef(companyId).orderBy("createdAt", "desc").get(),
+    templatesRef(companyId).orderBy("createdAt", "desc").get(),
+  ])
+
+  return {
+    quickAnswers: mapQuickAnswerDocs(quickSnap.docs),
+    templates: await mapTemplateDocs(templateSnap.docs),
   }
 }
 

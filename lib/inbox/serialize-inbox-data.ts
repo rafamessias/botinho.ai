@@ -1,7 +1,8 @@
 import type { getInboxConversationDetail } from "@/lib/firebase/services/inbox-service"
 
-export type InboxConversationDetail = NonNullable<
-  Awaited<ReturnType<typeof getInboxConversationDetail>>
+export type InboxConversationDetail = Omit<
+  NonNullable<Awaited<ReturnType<typeof getInboxConversationDetail>>>,
+  "hasMoreOlderMessages"
 >
 
 export type SerializedInboxConversation = Omit<

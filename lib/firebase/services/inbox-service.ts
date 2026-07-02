@@ -640,16 +640,43 @@ export const mapConversation = async (
   conversationId: string,
   data: FirestoreInboxConversation,
 ) => {
-  const customerSnap = await customersRef(companyId).doc(data.customerId).get()
-  const customerData = customerSnap.data() as FirestoreInboxCustomer | undefined
+  const denormalizedCustomer = customerFromDenormalizedFields(data.customerId, data)
+  const denormalizedAssignedTo = assignedToFromDenormalizedFields(data)
 
-  return buildConversationRecord(
-    companyId,
-    conversationId,
-    data,
-    customerData ? mapCustomer(data.customerId, customerData) : null,
-    await mapAssignedTo(data.assignedToId),
-  )
+  const customerIdsToFetch = denormalizedCustomer ? [] : [data.customerId]
+  const assignedToIdsToFetch =
+    data.assignedToId && denormalizedAssignedTo === undefined ? [data.assignedToId] : []
+
+  const [customerSnapshots, assignedToSnapshots] = await Promise.all([
+    customerIdsToFetch.length > 0
+      ? batchGetDocumentSnapshots(
+          customerIdsToFetch.map((customerId) => customersRef(companyId).doc(customerId)),
+        )
+      : Promise.resolve(new Map<string, FirebaseFirestore.DocumentSnapshot>()),
+    assignedToIdsToFetch.length > 0
+      ? batchGetDocumentSnapshots(
+          assignedToIdsToFetch.map((userId) => adminDb.collection(collections.users).doc(userId)),
+        )
+      : Promise.resolve(new Map<string, FirebaseFirestore.DocumentSnapshot>()),
+  ])
+
+  const customerSnap = customerSnapshots.get(data.customerId)
+  const customerData = customerSnap?.data() as FirestoreInboxCustomer | undefined
+  const customer =
+    denormalizedCustomer ??
+    (customerData ? mapCustomer(data.customerId, customerData) : null)
+
+  const assignedTo =
+    denormalizedAssignedTo === undefined
+      ? data.assignedToId
+        ? mapAssignedToFromProfile(
+            data.assignedToId,
+            assignedToSnapshots.get(data.assignedToId)?.data() as FirestoreUser | undefined,
+          )
+        : null
+      : denormalizedAssignedTo
+
+  return buildConversationRecord(companyId, conversationId, data, customer, assignedTo)
 }
 
 export const mapMessage = (id: string, data: FirestoreInboxMessage) => ({
@@ -1248,6 +1275,8 @@ export const listInboxConversations = async (params: {
 export const getInboxConversationDetail = async (params: {
   companyId: string
   conversationId: string
+  messageLimit?: number
+  messagesBeforeSentAt?: Date | string
 }) => {
   const conversationSnap = await conversationsRef(params.companyId)
     .doc(params.conversationId)
@@ -1263,15 +1292,31 @@ export const getInboxConversationDetail = async (params: {
     conversationSnap.data() as FirestoreInboxConversation,
   )
 
-  const messagesSnap = await messagesRef(params.companyId, params.conversationId)
-    .orderBy("sentAt", "asc")
-    .get()
+  const pageSize = params.messageLimit
+  let messagesQuery = messagesRef(params.companyId, params.conversationId).orderBy("sentAt", "desc")
 
-  const messages = messagesSnap.docs.map((doc) =>
-    mapMessage(doc.id, doc.data() as FirestoreInboxMessage),
-  )
+  if (params.messagesBeforeSentAt) {
+    const cursorDate =
+      typeof params.messagesBeforeSentAt === "string"
+        ? new Date(params.messagesBeforeSentAt)
+        : params.messagesBeforeSentAt
+    messagesQuery = messagesQuery.endBefore(Timestamp.fromDate(cursorDate))
+  }
 
-  return { ...conversation, messages }
+  if (pageSize) {
+    messagesQuery = messagesQuery.limit(pageSize)
+  }
+
+  const messagesSnap = await messagesQuery.get()
+  const messages = messagesSnap.docs
+    .map((doc) => mapMessage(doc.id, doc.data() as FirestoreInboxMessage))
+    .reverse()
+
+  return {
+    ...conversation,
+    messages,
+    hasMoreOlderMessages: pageSize ? messagesSnap.size === pageSize : false,
+  }
 }
 
 export const getInboxConversationForSend = async (params: {
